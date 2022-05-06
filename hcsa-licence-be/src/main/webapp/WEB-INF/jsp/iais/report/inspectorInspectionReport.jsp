@@ -126,7 +126,7 @@
                                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
                                                                         </iais:value>
                                                                     </iais:row>
-                                                                  <c:if test = "${applicationViewDto.applicationDto.status eq 'APST019'}">
+                                                                  <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037'}">
                                                                     <iais:row id="ao1SelectRow">
                                                                         <iais:field value="Officer" required="false"/>
                                                                         <iais:value width="7" id = "showAoDiv">
@@ -274,7 +274,7 @@
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
 <script>
-<c:if test = "${applicationViewDto.applicationDto.status eq 'APST019'}">
+<c:if test = "${applicationViewDto.applicationDto.status eq 'APST037'}">
     $(document).ready(function () {
         $("#ao1SelectRow").hide();
         $("#processSubmit").change(function () {
