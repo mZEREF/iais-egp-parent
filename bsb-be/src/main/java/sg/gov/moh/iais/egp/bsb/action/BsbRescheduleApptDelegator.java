@@ -4,8 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -18,6 +16,8 @@ import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.ApptSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentUserDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SearchResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -169,11 +169,11 @@ public class BsbRescheduleApptDelegator {
         HttpServletRequest request = bpc.request;
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         OfficerRescheduleDto rescheduleDto = getRescheduleDto(request);
-        AppointmentDto appointmentDto = rescheduleDto.getAppointmentDto();
+        BsbAppointmentDto appointmentDto = rescheduleDto.getAppointmentDto();
         List<String> userIds = rescheduleDto.getUserIds();
-        List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
+        List<BsbAppointmentUserDto> appointmentUserDtos = new ArrayList<>();
         for (String userId : userIds) {
-            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+            BsbAppointmentUserDto appointmentUserDto = new BsbAppointmentUserDto();
             appointmentUserDto.setLoginUserId(userId);
             appointmentUserDto.setWorkHours(8);
             //

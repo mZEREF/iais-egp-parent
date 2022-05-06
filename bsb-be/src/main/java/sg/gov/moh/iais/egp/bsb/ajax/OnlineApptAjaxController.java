@@ -1,15 +1,14 @@
 package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,11 @@ import sg.gov.moh.iais.egp.bsb.client.AppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentUserDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,81 +56,61 @@ public class OnlineApptAjaxController {
     @PostMapping(value = "insp.date")
     public @ResponseBody
     Map<String, Object> getInspectionDate(HttpServletRequest request) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(3);
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
+        BsbApptInspectionDateDto bsbApptInspectionDateDto = (BsbApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
         List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos = (List<InspectionAppointmentDraftDto>) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO);
         boolean newInspDateFlag = getNewInspDateFlag(appPremInspApptDraftDtos);
-        if (apptInspectionDateDto != null && CollectionUtils.isEmpty(apptInspectionDateDto.getInspectionDate())) {
+        if (bsbApptInspectionDateDto != null && CollectionUtils.isEmpty(bsbApptInspectionDateDto.getInspectionDate())) {
             AppointmentReviewDataDto dto = (AppointmentReviewDataDto) ParamUtil.getSessionAttr(request, APPOINTMENT_REVIEW_DATA);
-            String appType = dto.getApplicationType();
-            String actionButtonFlag = apptInspectionDateDto.getActionButtonFlag();
+            String actionButtonFlag = bsbApptInspectionDateDto.getActionButtonFlag();
             //get inspection date
             if (AppConsts.SUCCESS.equals(actionButtonFlag)) {
-                AppointmentDto appointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getApplicationId()).getEntity();
+                BsbAppointmentDto bsbAppointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getApplicationId()).getEntity();
                 //Compares user specified time with the current time
-                apptInspectionDateService.setStartEndDateNull(appointmentDto);
-
-                List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
-                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                appointmentUserDto.setLoginUserId(loginContext.getLoginId());
-                appointmentUserDto.setWorkHours(8);
-                //
-                appointmentUserDto.setWorkGrpName("BSB-Inspect");
-                appointmentUserDtos.add(appointmentUserDto);
+                apptInspectionDateService.setStartEndDateNull(bsbAppointmentDto);
                 //set system key
-                appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                bsbAppointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
                 //get Start date and End date when application no date
-                apptInspectionDateService.setStartDtAndEndDt(appointmentDto);
-//                    List<String> premCorrIds = apptInspectionDateDto.getRefNo();
-                //todo no service in application
-//               Map<String, String> appIdServiceIdMap = getappIdServiceIdMapByRefNo(premCorrIds);
-
-//                    List<String> serviceIds = new ArrayList<>(appIdServiceIdMap.size());
-                //get service data for get Date period
-//                    appointmentDto = getServiceDataForDatePeriod(appointmentDto, appType, appIdServiceIdMap, serviceIds);
+                apptInspectionDateService.setStartDtAndEndDt(bsbAppointmentDto);
                 //get inspection date
-                //todo get task dto list by refNo
-                List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
+                List<TaskDto> taskDtoList = bsbApptInspectionDateDto.getTaskDtos();
                 //set manHours and inspectors
-                // todo use this method when ref_no is not null
-                getManHoursInspectors(appointmentUserDtos, taskDtoList, null, appType);
+                List<BsbAppointmentUserDto> bsbAppointmentUserDtos = new ArrayList<>();
+                getManHoursInspectors(bsbAppointmentUserDtos, taskDtoList);
                 //If one person is doing multiple services at the same time, The superposition of time
-                appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
-                appointmentDto.setUsers(appointmentUserDtos);
-                apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                boolean dateFlag = apptInspectionDateService.getStartEndDateFlag(appointmentDto);
+                bsbAppointmentUserDtos = getOnePersonBySomeService(bsbAppointmentUserDtos);
+                bsbAppointmentDto.setUsers(bsbAppointmentUserDtos);
+                bsbApptInspectionDateDto.setBsbAppointmentDto(bsbAppointmentDto);
+                boolean dateFlag = apptInspectionDateService.getStartEndDateFlag(bsbAppointmentDto);
                 if (dateFlag && newInspDateFlag) {
                     //set Inspection date show, flag,
-                    getNewInspDateData(apptInspectionDateDto, appointmentDto, map, request, taskDtoList);
+                    getNewInspDateData(bsbApptInspectionDateDto, bsbAppointmentDto, map, request, taskDtoList);
                 } else if (!newInspDateFlag) {
                     //get Inspection date Draft
-                    setInspDateDraftData(apptInspectionDateDto, appPremInspApptDraftDtos);
-                    apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
-                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
+                    setInspDateDraftData(bsbApptInspectionDateDto, appPremInspApptDraftDtos);
+                    bsbApptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                    bsbApptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                     map.put(BUTTON_FLAG, AppConsts.TRUE);
                     map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
-                    map.put(INSP_DATE_LIST, apptInspectionDateDto.getInspectionDate());
+                    map.put(INSP_DATE_LIST, bsbApptInspectionDateDto.getInspectionDate());
                 } else {
                     map.put(BUTTON_FLAG, AppConsts.FALSE);
                     map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
                     map.put(INSP_DATE_LIST, null);
                 }
                 //specific date dto
-                AppointmentDto specificApptDto = new AppointmentDto();
-                specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
-                specificApptDto.setUsers(appointmentDto.getUsers());
-                specificApptDto.setSysClientKey(appointmentDto.getSysClientKey());
-                specificApptDto.setServiceIds(appointmentDto.getServiceIds());
-                specificApptDto.setServiceId(appointmentDto.getServiceId());
-                apptInspectionDateDto.setSpecificApptDto(specificApptDto);
-                ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, apptInspectionDateDto);
+                BsbAppointmentDto bsbSpecificApptDto = new BsbAppointmentDto();
+                bsbSpecificApptDto.setSubmitDt(bsbAppointmentDto.getSubmitDt());
+                bsbSpecificApptDto.setUsers(bsbAppointmentDto.getUsers());
+                bsbSpecificApptDto.setSysClientKey(bsbAppointmentDto.getSysClientKey());
+                bsbApptInspectionDateDto.setBsbSpecificApptDto(bsbSpecificApptDto);
+                ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, bsbApptInspectionDateDto);
             }
         }
         return map;
     }
 
-    private void setInspDateDraftData(ApptInspectionDateDto apptInspectionDateDto, List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos) {
+    private void setInspDateDraftData(BsbApptInspectionDateDto bsbApptInspectionDateDto, List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos) {
         if (!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
             log.info(StringUtil.changeForLog("Inspection Scheduling appPremInspApptDraftDtos Size ====" + appPremInspApptDraftDtos.size()));
             Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(4);
@@ -157,12 +140,12 @@ public class OnlineApptAjaxController {
                 }
             }
             //set insp date string show
-            setInspDateDraftStrShow(appPremInspApptDraftDtos, apptInspectionDateDto);
-            apptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
+            setInspDateDraftStrShow(appPremInspApptDraftDtos, bsbApptInspectionDateDto);
+            bsbApptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
         }
     }
 
-    private void setInspDateDraftStrShow(List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos, ApptInspectionDateDto apptInspectionDateDto) {
+    private void setInspDateDraftStrShow(List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos, BsbApptInspectionDateDto bsbApptInspectionDateDto) {
         InspectionAppointmentDraftDto appPremInspApptDraftDto = appPremInspApptDraftDtos.get(0);
         Date inspStartDate = appPremInspApptDraftDto.getStartDate();
         Date inspEndDate = appPremInspApptDraftDto.getEndDate();
@@ -172,66 +155,14 @@ public class OnlineApptAjaxController {
         String inspectionDate = inspStartDateStr + " - " + inspEndDateStr;
         List<String> inspectionDates = new ArrayList<>(1);
         inspectionDates.add(inspectionDate);
-        apptInspectionDateDto.setInspectionDate(inspectionDates);
+        bsbApptInspectionDateDto.setInspectionDate(inspectionDates);
     }
 
-    private void setSomeDataForVali(ApptInspectionDateDto apptInspectionDateDto, Map<String, Object> map, String appType) {
-//        TaskDto taskDto = apptInspectionDateDto.getTaskDto();
-//        //get Applicant set start date and end date from appGroup
-//        AppointmentDto specificApptDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
-//        specificApptDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-//        List<String> premCorrIds = apptInspectionDateDto.getRefNo();
-//        Map<String, String> corrIdServiceIdMap = getappIdServiceIdMapByApplicationIds(premCorrIds);
-//        List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-//        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-//            if(!StringUtil.isEmpty(mapDate.getValue())){
-//                serviceIds.add(mapDate.getValue());
-//            }
-//        }
-//        //get Start date and End date when group no date
-//        if (specificApptDto.getStartDate() == null && specificApptDto.getEndDate() == null) {
-//            specificApptDto.setServiceIds(serviceIds);
-//            specificApptDto.setSvcIdLicDtMap(null);
-//            specificApptDto = hcsaConfigClient.getApptStartEndDateByService(specificApptDto).getEntity();
-//        }
-//        //set data to validate
-//        List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
-//        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
-//        for (TaskDto tDto : taskDtoList) {
-//            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-//            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
-//            appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
-//            String workGroupId = tDto.getWkGrpId();
-//            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
-//            appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
-//            //get service id by task refno
-//            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
-//            //get manHours by service and stage
-//            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
-//            apptAppInfoShowDto.setApplicationType(appType);
-//            apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-//            apptAppInfoShowDto.setServiceId(serviceId);
-//            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
-//            //Divide the time according to the number of people
-//            List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
-//            double hours = manHours;
-//            double peopleCount = sizeTask.size();
-//            int peopleHours = (int) Math.ceil(hours/peopleCount);
-//            appointmentUserDto.setWorkHours(peopleHours);
-//            appointmentUserDtos.add(appointmentUserDto);
-//        }
-//        //If one person is doing multiple services at the same time, The superposition of time
-//        appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
-//        specificApptDto.setUsers(appointmentUserDtos);
-//        apptInspectionDateDto.setSpecificApptDto(specificApptDto);
-//        apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
-//        map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
-    }
-
-    private void getNewInspDateData(ApptInspectionDateDto apptInspectionDateDto, AppointmentDto appointmentDto, Map<String, Object> map,
+    private void getNewInspDateData(BsbApptInspectionDateDto bsbApptInspectionDateDto, BsbAppointmentDto bsbAppointmentDto, Map<String, Object> map,
                                     HttpServletRequest request, List<TaskDto> taskDtoList) {
         try {
-            appointmentDto.setResultNum(1);
+            bsbAppointmentDto.setResultNum(1);
+            AppointmentDto appointmentDto = apptInspectionDateService.toAppointmentDto(bsbAppointmentDto);
             FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
             Map<String, Collection<String>> headers = result.getHeaders();
             //Has it been blown up
@@ -242,20 +173,20 @@ public class OnlineApptAjaxController {
                     for (ApptRequestDto apptRequestDto : apptRequestDtos) {
                         inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                     }
-                    apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
-                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
-                    getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                    bsbApptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                    bsbApptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
+                    getShowTimeStringList(inspectionDateMap, bsbApptInspectionDateDto);
                     //save inspection draft
                     List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos = saveInspectionDateDraft(apptRequestDtos, taskDtoList);
                     ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO, (Serializable) appPremInspApptDraftDtos);
                     map.put(BUTTON_FLAG, AppConsts.TRUE);
                     map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
-                    map.put(INSP_DATE_LIST, apptInspectionDateDto.getInspectionDate());
+                    map.put(INSP_DATE_LIST, bsbApptInspectionDateDto.getInspectionDate());
                 } else {
                     map.put(BUTTON_FLAG, AppConsts.FALSE);
                     map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
                     map.put(INSP_DATE_LIST, null);
-                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
+                    bsbApptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                 }
             } else {
                 map.put(BUTTON_FLAG, AppConsts.FALSE);
@@ -280,10 +211,11 @@ public class OnlineApptAjaxController {
                         Date inspStartDate = apptRequestDto.getUserClandars().get(0).getStartSlot().get(0);
                         Date inspEndDate = apptRequestDto.getUserClandars().get(0).getEndSlot().get(endTimeSize - 1);
                         //set data
-                        if (!appNoList.contains(taskDto.getApplicationNo())) {
-                            appNoList.add(taskDto.getApplicationNo());
+                        String applicationNo = taskDto.getApplication().getApplicationNo();
+                        if (!appNoList.contains(applicationNo)) {
+                            appNoList.add(applicationNo);
                             InspectionAppointmentDraftDto draftDto = new InspectionAppointmentDraftDto();
-                            draftDto.setApplicationNo(taskDto.getApplicationNo());
+                            draftDto.setApplicationNo(applicationNo);
                             draftDto.setApptRefNo(apptRequestDto.getApptRefNo());
                             draftDto.setStartDate(inspStartDate);
                             draftDto.setEndDate(inspEndDate);
@@ -299,59 +231,19 @@ public class OnlineApptAjaxController {
         return appPremInspApptDraftDtos;
     }
 
-    private AppointmentDto getServiceDataForDatePeriod(AppointmentDto appointmentDto, String appType, Map<String, String> corrIdServiceIdMap, List<String> serviceIds) {
-        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            Map<String, Date> svcIdLicDtMap = Maps.newHashMapWithExpectedSize(corrIdServiceIdMap.size());
-            for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-                if (StringUtils.hasLength(mapDate.getValue())) {
-                    setSvcIdLicDtMapByApp(mapDate.getKey(), mapDate.getValue(), svcIdLicDtMap);
-                    serviceIds.add(mapDate.getValue());
-                }
-            }
-            appointmentDto.setSvcIdLicDtMap(svcIdLicDtMap);
-        } else {
-            for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-                if (StringUtils.hasLength(mapDate.getValue())) {
-                    serviceIds.add(mapDate.getValue());
-                }
-            }
-            appointmentDto.setSvcIdLicDtMap(null);
-        }
-        return appointmentDto;
-    }
-
-    private void getManHoursInspectors(List<AppointmentUserDto> appointmentUserDtos, List<TaskDto> taskDtoList,
-                                       Map<String, String> corrIdServiceIdMap, String appType) {
+    private void getManHoursInspectors(List<BsbAppointmentUserDto> bsbAppointmentUserDtos, List<TaskDto> taskDtoList) {
         for (TaskDto tDto : taskDtoList) {
-            //todo the if will be deleted future
-            if (StringUtils.hasLength(tDto.getRefNo())) {
-
-                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
-                appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
-                //todo working group
-                String workGroupId = tDto.getWkGrpId();
-//            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
-//            appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
-                appointmentUserDto.setWorkGrpName("BSB-Inspect");
-                //get service id by task refno
-//            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
-//            //get manHours by service and stage
-//            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
-//            apptAppInfoShowDto.setApplicationType(appType);
-//            apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-//            apptAppInfoShowDto.setServiceId(serviceId);
-                //todo get manHours
-//            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
-                int manHours = 2;
-                //Divide the time according to the number of people
-                //get the tasks where status in (pending,read)
-                List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
-                double peopleCount = sizeTask.size();
-                int peopleHours = (int) Math.ceil((double) manHours / peopleCount);
-                appointmentUserDto.setWorkHours(peopleHours);
-                appointmentUserDtos.add(appointmentUserDto);
-            }
+            BsbAppointmentUserDto bsbAppointmentUserDto = new BsbAppointmentUserDto();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+            bsbAppointmentUserDto.setLoginUserId(orgUserDto.getUserId());
+            bsbAppointmentUserDto.setWorkGrpName("BSB-Inspect");
+            int manHours = 8;
+            //Divide the time according to the number of people
+            //get the tasks where status in (pending,read)
+            double peopleCount = taskDtoList.size();
+            int peopleHours = (int) Math.ceil((double) manHours / peopleCount);
+            bsbAppointmentUserDto.setWorkHours(peopleHours);
+            bsbAppointmentUserDtos.add(bsbAppointmentUserDto);
         }
     }
 
@@ -372,36 +264,29 @@ public class OnlineApptAjaxController {
         return newInspDateFlag;
     }
 
-    private void setSvcIdLicDtMapByApp(String appPremCorrId, String serviceId, Map<String, Date> svcIdLicDtMap) {
-        //error method
-//        Date date = bsbAppointmentClient.getExpiryDate(appPremCorrId).getEntity();
-        Date date = new Date();
-        svcIdLicDtMap.put(serviceId, date);
-    }
-
-    private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
-        List<AppointmentUserDto> appointmentUserDtoList = null;
-        if (!IaisCommonUtils.isEmpty(appointmentUserDtos)) {
-            appointmentUserDtoList = new ArrayList<>(appointmentUserDtos.size());
-            for (AppointmentUserDto appointmentUserDto : appointmentUserDtos) {
-                if (appointmentUserDtoList.isEmpty()) {
-                    appointmentUserDtoList.add(appointmentUserDto);
+    private List<BsbAppointmentUserDto> getOnePersonBySomeService(List<BsbAppointmentUserDto> bsbAppointmentUserDtos) {
+        List<BsbAppointmentUserDto> bsbAppointmentUserDtoList = null;
+        if (!IaisCommonUtils.isEmpty(bsbAppointmentUserDtos)) {
+            bsbAppointmentUserDtoList = new ArrayList<>(bsbAppointmentUserDtos.size());
+            for (BsbAppointmentUserDto bsbAppointmentUserDto : bsbAppointmentUserDtos) {
+                if (bsbAppointmentUserDtoList.isEmpty()) {
+                    bsbAppointmentUserDtoList.add(bsbAppointmentUserDto);
                 } else {
-                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    filterRepetitiveUser(bsbAppointmentUserDto, bsbAppointmentUserDtoList);
                 }
             }
         }
-        return appointmentUserDtoList;
+        return bsbAppointmentUserDtoList;
     }
 
-    private void filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
-        List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>(appointmentUserDtoList.size());
+    private void filterRepetitiveUser(BsbAppointmentUserDto bsbAppointmentUserDto, List<BsbAppointmentUserDto> bsbAppointmentUserDtoList) {
+        List<BsbAppointmentUserDto> appointmentUserDtos = new ArrayList<>(bsbAppointmentUserDtoList.size());
         boolean sameUserFlag = false;
-        for (AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList) {
-            String loginUserId = appointmentUserDto.getLoginUserId();
+        for (BsbAppointmentUserDto appointmentUserDto1 : bsbAppointmentUserDtoList) {
+            String loginUserId = bsbAppointmentUserDto.getLoginUserId();
             String curLoginUserId = appointmentUserDto1.getLoginUserId();
             if (loginUserId.equals(curLoginUserId)) {
-                int hours = appointmentUserDto.getWorkHours();
+                int hours = bsbAppointmentUserDto.getWorkHours();
                 int curHours = appointmentUserDto1.getWorkHours();
                 int allHours = hours + curHours;
                 appointmentUserDto1.setWorkHours(allHours);
@@ -409,34 +294,18 @@ public class OnlineApptAjaxController {
             }
         }
         if (!sameUserFlag) {
-            appointmentUserDtos.add(appointmentUserDto);
+            appointmentUserDtos.add(bsbAppointmentUserDto);
         }
         if (!CollectionUtils.isEmpty(appointmentUserDtos)) {
-            for (AppointmentUserDto auDto : appointmentUserDtos) {
+            for (BsbAppointmentUserDto auDto : appointmentUserDtos) {
                 if (auDto != null) {
-                    appointmentUserDtoList.add(auDto);
+                    bsbAppointmentUserDtoList.add(auDto);
                 }
             }
         }
     }
 
-    private int getServiceManHours(String refNo, ApptAppInfoShowDto apptAppInfoShowDto) {
-        int manHours = 0;
-//        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
-//        if(appPremisesRecommendationDto != null){
-//            String hours = appPremisesRecommendationDto.getRecomDecision();
-//            if(StringUtils.hasLength(hours)){
-//                manHours = Integer.parseInt(hours);
-//            } else {
-//                manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
-//            }
-//        } else {
-//            manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
-//        }
-        return manHours;
-    }
-
-    private void getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, ApptInspectionDateDto apptInspectionDateDto) {
+    private void getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, BsbApptInspectionDateDto bsbApptInspectionDateDto) {
         if (inspectionDateMap != null) {
             List<String> inspectionDates = new ArrayList<>(inspectionDateMap.size());
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
@@ -447,11 +316,11 @@ public class OnlineApptAjaxController {
                 String inspectionDate = inspStartDate + " - " + inspEndDate;
                 inspectionDates.add(inspectionDate);
             }
-            apptInspectionDateDto.setInspectionDate(inspectionDates);
-            apptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
+            bsbApptInspectionDateDto.setInspectionDate(inspectionDates);
+            bsbApptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
         } else {
-            apptInspectionDateDto.setInspectionDate(null);
-            apptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
+            bsbApptInspectionDateDto.setInspectionDate(null);
+            bsbApptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
         }
     }
 
@@ -470,11 +339,5 @@ public class OnlineApptAjaxController {
         }
         specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
         return specificDate;
-    }
-
-    private Map<String, String> getappIdServiceIdMapByRefNo(List<String> refNos) {
-        //error method
-//        return bsbAppointmentClient.getServiceIdsByRefNo(refNos).getEntity();
-        return null;
     }
 }

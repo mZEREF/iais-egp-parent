@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.task;
+package sg.gov.moh.iais.egp.bsb.dto.appointment;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,21 +7,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.task.ApplicationGroupDto;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Shicheng
- * @date 2020/4/17 10:34
- **/
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApptAppInfoShowDto extends ApplicationDto implements Serializable {
+public class BsbApptAppInfoShowDto extends ApplicationDto implements Serializable {
     private static final long serialVersionUID = 1L;
     private String srcSystemId;
     private List<String> userDisName;

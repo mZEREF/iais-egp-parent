@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.google.common.collect.Maps;
+import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,11 +24,12 @@ import sg.gov.moh.iais.egp.bsb.constant.AppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SaveAppointmentDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.ApptAppInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.*;
-import sg.gov.moh.iais.egp.bsb.dto.task.ApptInspectionDateDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 
@@ -94,9 +96,9 @@ public class ApptInspectionDateService {
         return hourOption;
     }
 
-    public AppointmentDto getValidateValue(AppointmentReviewDataDto dto, HttpServletRequest request) {
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
-        AppointmentDto specificApptDto = apptInspectionDateDto.getSpecificApptDto();
+    public BsbAppointmentDto getValidateValue(AppointmentReviewDataDto dto, HttpServletRequest request) {
+        BsbApptInspectionDateDto bsbApptInspectionDateDto = (BsbApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
+        BsbAppointmentDto bsbSpecificApptDto = bsbApptInspectionDateDto.getBsbSpecificApptDto();
 
         String specificStartDate = ParamUtil.getDate(request, KEY_SPECIFY_START_DATE);
         String specificEndDate = ParamUtil.getDate(request, KEY_SPECIFY_END_DATE);
@@ -126,14 +128,14 @@ public class ApptInspectionDateService {
         String startDate = getSpecificDate(specificStartDate, startHoursOptionMap, startHour);
         String endDate = getSpecificDate(specificEndDate, endHoursOptionMap, endHour);
         if (startDate != null) {
-            specificApptDto.setStartDate(startDate);
+            bsbSpecificApptDto.setStartDate(startDate);
         }
         if (endDate != null) {
-            specificApptDto.setEndDate(endDate);
+            bsbSpecificApptDto.setEndDate(endDate);
         }
-        apptInspectionDateDto.setSpecificApptDto(specificApptDto);
-        ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, apptInspectionDateDto);
-        return specificApptDto;
+        bsbApptInspectionDateDto.setBsbSpecificApptDto(bsbSpecificApptDto);
+        ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, bsbApptInspectionDateDto);
+        return bsbSpecificApptDto;
     }
 
     public String getSpecificDate(String specificDate1, Map<String, SelectOption> optionMap, String hours) {
@@ -162,7 +164,7 @@ public class ApptInspectionDateService {
         return false;
     }
 
-    public Map<String, String> validateDateFromUserCalendar(AppointmentDto specificApptDto) {
+    public Map<String, String> validateDateFromUserCalendar(BsbAppointmentDto specificApptDto) {
         Map<String, String> errMap = Maps.newHashMapWithExpectedSize(1);
         SimpleDateFormat sdf3 = new SimpleDateFormat(AppConstants.DEFAULT_DATE_TIME_FORMAT);
         Date startDate = null;
@@ -183,16 +185,16 @@ public class ApptInspectionDateService {
             errMap.put(KEY_ERROR_SPECIFIC_DATE, ERROR_MSG_END_DATE_BEFORE_START_DATE);
             return errMap;
         }
-
+        AppointmentDto appointmentDto = toAppointmentDto(specificApptDto);
         try {
-            appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
+            appointmentClient.validateUserCalendar(appointmentDto).getStatusCode();
         } catch (Exception e) {
             errMap.put(KEY_ERROR_SPECIFIC_DATE, ERROR_MSG_COLLISION_DATE);
         }
         return errMap;
     }
 
-    public String ensureValResult(String actionValue, ValidationResultDto validationResultDto, HttpServletRequest request, AppointmentDto specificApptDto) {
+    public String ensureValResult(String actionValue, ValidationResultDto validationResultDto, HttpServletRequest request, BsbAppointmentDto specificApptDto) {
         String actionType;
         if ("back".equals(actionValue)) {
             actionType = "back";
@@ -218,8 +220,8 @@ public class ApptInspectionDateService {
         appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
     }
 
-    public void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, String applicationId) {
-        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+    public void saveSystemInspectionDate(BsbApptInspectionDateDto bsbApptInspectionDateDto, String applicationId) {
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = bsbApptInspectionDateDto.getInspectionDateMap();
         List<InspectionAppointmentDto> appPremisesInspecApptDtoList = new ArrayList<>(inspectionDateMap.size());
         //save AppPremisesInspecApptDto
         List<String> confirmRefNo = new ArrayList<>();
@@ -250,7 +252,7 @@ public class ApptInspectionDateService {
             appPremisesInspecApptDtoList.add(inspectionAppointmentDto);
             confirmRefNo.add(apptRefNo);
         }
-        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        List<TaskDto> taskDtos = bsbApptInspectionDateDto.getTaskDtos();
         //create application and inspectors correlation data
         List<AppInspectorCorrelationDto> appInspectorCorrelationDtos = fillAppInspectorCorrelationDtos(taskDtos);
 
@@ -269,13 +271,15 @@ public class ApptInspectionDateService {
     }
 
 
-    public void saveUserSpecificDate(ApptInspectionDateDto apptInspectionDateDto, String applicationId) {
+    public void saveUserSpecificDate(BsbApptInspectionDateDto bsbApptInspectionDateDto, String applicationId) {
         List<InspectionAppointmentDto> appPremisesInspecApptDtoList = new ArrayList<>(1);
         //get AppointmentDto
-        AppointmentDto appointmentDtoSave = apptInspectionDateDto.getSpecificApptDto();
+        BsbAppointmentDto bsbAppointmentDtoSave = bsbApptInspectionDateDto.getBsbSpecificApptDto();
         //save and return apptRefNo
         List<String> confirmRefNo = new ArrayList<>(1);
-        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
+        //to common appointmentDto
+        AppointmentDto appointmentDto = toAppointmentDto(bsbAppointmentDtoSave);
+        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDto).getEntity();
         confirmRefNo.add(apptRefNo);
         //save data
         ResponseDto<InspectionAppointmentDto> responseDto = bsbAppointmentClient.getInspectionAppointmentByAppId(applicationId);
@@ -292,23 +296,23 @@ public class ApptInspectionDateService {
         inspectionAppointmentDto.setSpecInsDate(null);
         inspectionAppointmentDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-        if (appointmentDtoSave.getStartDate() != null) {
+        if (bsbAppointmentDtoSave.getStartDate() != null) {
             try {
-                inspectionAppointmentDto.setStartDate(Formatter.parseDateTime(appointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionAppointmentDto.setStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
         }
-        if (appointmentDtoSave.getEndDate() != null) {
+        if (bsbAppointmentDtoSave.getEndDate() != null) {
             try {
-                inspectionAppointmentDto.setEndDate(Formatter.parseDateTime(appointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionAppointmentDto.setEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
         }
         appPremisesInspecApptDtoList.add(inspectionAppointmentDto);
 
-        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = bsbApptInspectionDateDto.getInspectionDateMap();
         List<String> cancelRefNo = new ArrayList<>();
         if (inspectionDateMap != null) {
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
@@ -316,7 +320,7 @@ public class ApptInspectionDateService {
                 cancelRefNo.add(refNo);
             }
         }
-        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        List<TaskDto> taskDtos = bsbApptInspectionDateDto.getTaskDtos();
         //create application and inspectors correlation data
         List<AppInspectorCorrelationDto> appInspectorCorrelationDtos = fillAppInspectorCorrelationDtos(taskDtos);
 
@@ -348,8 +352,8 @@ public class ApptInspectionDateService {
         return appInspCorrelationDtos;
     }
 
-    public void setStartEndDateNull(AppointmentDto appointmentDto) {
-        String startDateStr = appointmentDto.getStartDate();
+    public void setStartEndDateNull(BsbAppointmentDto bsbAppointmentDto) {
+        String startDateStr = bsbAppointmentDto.getStartDate();
         //Compares user specified time with the current time
         if (StringUtils.hasLength(startDateStr)) {
             Date today = new Date();
@@ -358,8 +362,8 @@ public class ApptInspectionDateService {
                 today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
                 Date startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                 if (startDate.before(today)) {
-                    appointmentDto.setStartDate(null);
-                    appointmentDto.setEndDate(null);
+                    bsbAppointmentDto.setStartDate(null);
+                    bsbAppointmentDto.setEndDate(null);
                 }
             } catch (ParseException e) {
                 log.info("AppointmentDto: start date conversion Error!!!!!");
@@ -371,22 +375,22 @@ public class ApptInspectionDateService {
     /**************************************************** reschedule ***************************************************/
     public OfficerRescheduleDto getReScheduleNewDateInfo(OfficerRescheduleDto dto) {
         //get start and end date from application4
-        AppointmentDto appointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getAppId()).getEntity();
+        BsbAppointmentDto bsbAppointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getAppId()).getEntity();
         //if start date before today,set start and end date null
-        setStartEndDateNull(appointmentDto);
+        setStartEndDateNull(bsbAppointmentDto);
         //set start date and end date when application no date
-        setStartDtAndEndDt(appointmentDto);
+        setStartDtAndEndDt(bsbAppointmentDto);
         //set display info dto
         dto = bsbAppointmentClient.getOfficerRescheduleReviewData(dto.getAppId()).getEntity();
         //get start date and end date by Service and appShow info
         List<String> appNoList = new ArrayList<>(1);
         appNoList.add(dto.getApptAppInfoDto().getAppNo());
         //set application no list
-        appointmentDto.setAppNoList(appNoList);
+        bsbAppointmentDto.setAppNoList(appNoList);
         //set insp date draft
         List<InspectionAppointmentDraftDto> draftDtos = setInspApptDraftDto(dto.getApptAppInfoDto().getAppNo());
-        boolean dateFlag = getStartEndDateFlag(appointmentDto);
-        dto.setAppointmentDto(appointmentDto);
+        boolean dateFlag = getStartEndDateFlag(bsbAppointmentDto);
+        dto.setAppointmentDto(bsbAppointmentDto);
         if (CollectionUtils.isEmpty(draftDtos) && dateFlag) {
             //set app data to show ,and set userId correlation app No. to save
             setInfoByDateAndUserIdToSave(dto);
@@ -401,11 +405,11 @@ public class ApptInspectionDateService {
         return bsbAppointmentClient.getActiveAppointmentDraftData(appNo).getEntity();
     }
 
-    public boolean getStartEndDateFlag(AppointmentDto appointmentDto) {
+    public boolean getStartEndDateFlag(BsbAppointmentDto bsbAppointmentDto) {
         Date today = new Date();
         String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
-        String startDateStr = appointmentDto.getStartDate();
-        String endDateStr = appointmentDto.getEndDate();
+        String startDateStr = bsbAppointmentDto.getStartDate();
+        String endDateStr = bsbAppointmentDto.getEndDate();
         Date startDate = null;
         Date endDate = null;
         try {
@@ -429,7 +433,7 @@ public class ApptInspectionDateService {
                 } else {
                     if (startDate.before(today)) {
                         startDate = new Date();
-                        appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                        bsbAppointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                     }
                 }
             }
@@ -439,15 +443,15 @@ public class ApptInspectionDateService {
             } else {
                 if (startDate.before(today)) {
                     startDate = new Date();
-                    appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    bsbAppointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                 }
             }
         }
         return true;
     }
 
-    public void setStartDtAndEndDt(AppointmentDto appointmentDto) {
-        if (!StringUtils.hasLength(appointmentDto.getStartDate()) && !StringUtils.hasLength(appointmentDto.getEndDate())) {
+    public void setStartDtAndEndDt(BsbAppointmentDto bsbAppointmentDto) {
+        if (!StringUtils.hasLength(bsbAppointmentDto.getStartDate()) && !StringUtils.hasLength(bsbAppointmentDto.getEndDate())) {
             Calendar startCal = Calendar.getInstance();
             startCal.setTime(new Date());
             startCal.add(Calendar.DAY_OF_YEAR, 7);
@@ -459,7 +463,7 @@ public class ApptInspectionDateService {
             startCal.set(Calendar.MINUTE, 0);
             startCal.set(Calendar.SECOND, 0);
             startCal.set(Calendar.MILLISECOND, 0);
-            appointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(), null));
+            bsbAppointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(), null));
 
             Calendar endCal = Calendar.getInstance();
             endCal.setTime(startCal.getTime());
@@ -472,12 +476,11 @@ public class ApptInspectionDateService {
             endCal.set(Calendar.MINUTE, 0);
             endCal.set(Calendar.SECOND, 0);
             endCal.set(Calendar.MILLISECOND, 0);
-            appointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(), null));
+            bsbAppointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(), null));
         }
     }
 
     private void setInfoByDateAndUserIdByDraft(List<InspectionAppointmentDraftDto> draftDtoList, OfficerRescheduleDto dto) {
-        ApptAppInfoDto apptAppInfoDto = dto.getApptAppInfoDto();
         for (InspectionAppointmentDraftDto draftDto : draftDtoList) {
             if (draftDto != null) {
                 //set new inspection date string to show
@@ -489,8 +492,9 @@ public class ApptInspectionDateService {
 
     public void setInfoByDateAndUserIdToSave(OfficerRescheduleDto dto) {
         try {
-            AppointmentDto appointmentDto = dto.getAppointmentDto();
-            if (appointmentDto != null) {
+            BsbAppointmentDto bsbAppointmentDto = dto.getAppointmentDto();
+            if (bsbAppointmentDto != null) {
+                AppointmentDto appointmentDto = toAppointmentDto(bsbAppointmentDto);
                 FeignResponseEntity<List<ApptRequestDto>> result = bsbAppointmentClient.getRescheduleNewDateFromBE(appointmentDto);
                 Map<String, Collection<String>> headers = result.getHeaders();
                 //Has it been blown up
@@ -665,9 +669,9 @@ public class ApptInspectionDateService {
         return draftDtos;
     }
 
-    public AppointmentDto getRescheduleValidateValue(OfficerRescheduleDto rescheduleDto, HttpServletRequest request) {
+    public BsbAppointmentDto getRescheduleValidateValue(OfficerRescheduleDto rescheduleDto, HttpServletRequest request) {
         AppointmentReviewDataDto reviewDataDto = new AppointmentReviewDataDto();
-        AppointmentDto specificApptDto = rescheduleDto.getAppointmentDto();
+        BsbAppointmentDto bsbSpecificApptDto = rescheduleDto.getAppointmentDto();
 
         String specificStartDate = ParamUtil.getDate(request, KEY_SPECIFY_START_DATE);
         String specificEndDate = ParamUtil.getDate(request, KEY_SPECIFY_END_DATE);
@@ -703,22 +707,23 @@ public class ApptInspectionDateService {
         String startDate = getSpecificDate(specificStartDate, startHoursOptionMap, startHour);
         String endDate = getSpecificDate(specificEndDate, endHoursOptionMap, endHour);
         if (startDate != null) {
-            specificApptDto.setStartDate(startDate);
+            bsbSpecificApptDto.setStartDate(startDate);
         }
         if (endDate != null) {
-            specificApptDto.setEndDate(endDate);
+            bsbSpecificApptDto.setEndDate(endDate);
         }
         ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, reviewDataDto);
-        return specificApptDto;
+        return bsbSpecificApptDto;
     }
 
     public void saveRescheduleSpecificDate(OfficerRescheduleDto dto) {
         List<InspectionAppointmentDto> inspectionAppointmentDtos = new ArrayList<>(1);
         //get AppointmentDto
-        AppointmentDto appointmentDtoSave = dto.getAppointmentDto();
+        BsbAppointmentDto bsbAppointmentDtoSave = dto.getAppointmentDto();
         //save and return apptRefNo
         List<String> confirmRefNos = new ArrayList<>(1);
-        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
+        AppointmentDto appointmentDto = toAppointmentDto(bsbAppointmentDtoSave);
+        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDto).getEntity();
         confirmRefNos.add(apptRefNo);
         //save data
 
@@ -736,16 +741,16 @@ public class ApptInspectionDateService {
         inspectionAppointmentDto.setSpecInsDate(null);
         inspectionAppointmentDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-        if (appointmentDtoSave.getStartDate() != null) {
+        if (bsbAppointmentDtoSave.getStartDate() != null) {
             try {
-                inspectionAppointmentDto.setStartDate(Formatter.parseDateTime(appointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionAppointmentDto.setStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
         }
-        if (appointmentDtoSave.getEndDate() != null) {
+        if (bsbAppointmentDtoSave.getEndDate() != null) {
             try {
-                inspectionAppointmentDto.setEndDate(Formatter.parseDateTime(appointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionAppointmentDto.setEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
@@ -774,4 +779,11 @@ public class ApptInspectionDateService {
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //todo email
     }
+
+    public AppointmentDto toAppointmentDto(BsbAppointmentDto bsbAppointmentDto){
+        JMapper<AppointmentDto,BsbAppointmentDto> appointmentDtoJMapper = new JMapper<>(AppointmentDto.class,BsbAppointmentDto.class);
+        return appointmentDtoJMapper.getDestinationWithoutControl(bsbAppointmentDto);
+    }
+
+
 }
