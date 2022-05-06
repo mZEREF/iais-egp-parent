@@ -14,7 +14,7 @@
                                  containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${isUncertifiedFacility}">
                         <jsp:attribute name="editFrag"/>
                         <jsp:attribute name="docFrag">
-                            <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
+                            <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>
                         </jsp:attribute>
                     </fac:preview>
                 </div>

@@ -13,21 +13,18 @@ public class DocConstants {
     public static final String DOC_TYPE_DATA_AUTHORISER = "authoriserData";
     public static final String DOC_TYPE_DATA_CERTIFYING_TEAM = "certifyingTeamData";
 
-    public static final String DOC_TYPE_GAZETTE_ORDER = "gazetteOrder";
-
-    public static final String DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN = "facAdminOversightPlan";
-    public static final String DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS = "facLayoutAndAcmvSchematics";
-    public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "bsfCoordinatorCert";
-    public static final String DOC_TYPE_FACILITY_LAYOUT = "facLayout";
-    public static final String DOC_TYPE_BIO_SAFETY_COMMITTEE = "bsfCommittee";
-    public static final String DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES = "riskAssessmentManagement";
-    public static final String DOC_TYPE_STANDARD_OPERATING_PROCEDURE = "stdOperatingProcedure";
-    public static final String DOC_TYPE_EMERGENCY_RESPONSE_PLAN = "emgResponsePlan";
-    public static final String DOC_TYPE_APPLICATION_LETTER = "appLetter";
+    public static final String DOC_TYPE_GAZETTE_ORDER = "DOCTYPE005";
+    public static final String DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN = "DOCTYPE004";
+    public static final String DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS = "DOCTYPE007";
+    public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "DOCTYPE008";
+    public static final String DOC_TYPE_BIO_SAFETY_COMMITTEE = "DOCTYPE019";
+    public static final String DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES = "DOCTYPE023";
+    public static final String DOC_TYPE_STANDARD_OPERATING_PROCEDURE = "DOCTYPE010";
+    public static final String DOC_TYPE_EMERGENCY_RESPONSE_PLAN = "DOCTYPE035";
+    public static final String DOC_TYPE_APPLICATION_LETTER = "DOCTYPE011";
     public static final String DOC_TYPE_INVENTORY_TEMPLATE = "inventoryTemplate";
 
     public static final String DOC_TYPE_GMAC_ENDORSEMENT = "gmacEndorsement";
-    public static final String DOC_TYPE_RISK_ASSESS_PLAN = "riskAssessPlan";
 
 
     public static final String DOC_RED_TEAMING_REPORT = "REPTYPE01";
@@ -59,31 +56,31 @@ public class DocConstants {
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, DOC_TYPE_FACILITY_LAYOUT, DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS,
+            DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS,
             DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, DOC_TYPE_BIO_SAFETY_COMMITTEE,
             DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
             DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_APPLICATION_LETTER,
-            DOC_TYPE_INVENTORY_TEMPLATE, DOC_TYPE_OTHERS));
+            DOC_TYPE_INVENTORY_TEMPLATE));
 
     public static final List<String> APP_POSSESS_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
             DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
-            DOC_TYPE_GMAC_ENDORSEMENT, DOC_TYPE_OTHERS));
+            DOC_TYPE_GMAC_ENDORSEMENT));
 
     public static final List<String> APP_LARGE_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
             DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
-            DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_OTHERS));
+            DOC_TYPE_EMERGENCY_RESPONSE_PLAN));
 
     public static final List<String> APP_SPECIAL_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
             DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_APPROVAL_DOCUMENT_FROM_MOH,
-            DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_SPECIAL_APPROVAL_TO_HANDLE, DOC_TYPE_OTHERS));
+            DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_SPECIAL_APPROVAL_TO_HANDLE));
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_CERTIFIER_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_COMPANY_INFORMATION,DOC_TYPE_SOP_FOR_CERTIFICATION,DOC_TYPE_OTHERS));
+            DOC_TYPE_COMPANY_INFORMATION,DOC_TYPE_SOP_FOR_CERTIFICATION));
 
     public static final List<String> DATA_SUBMISSION_REPORT_AND_INVENTORY = Collections.unmodifiableList(Arrays.asList(
             DOC_RED_TEAMING_REPORT,DOC_PNEF_INVENTORY_REPORT,DOC_BI_ANNUAL_TOXIN_REPORT,DOC_PEF_INVENTORY_REPORT,
-            DOC_FACILITY_SELF_INSPECTION_REPORT,DOC_EMERGENCY_RESPONSE_SELF_AUDIT_REPORT,DOC_ANNUAL_LENTIVIRUS_REPORT,DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE, DOC_TYPE_OTHERS));
+            DOC_FACILITY_SELF_INSPECTION_REPORT,DOC_EMERGENCY_RESPONSE_SELF_AUDIT_REPORT,DOC_ANNUAL_LENTIVIRUS_REPORT,DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE));
 
 
     public static final String DOC_TYPE_INSPECTION_REPORT = "inspectionReport";

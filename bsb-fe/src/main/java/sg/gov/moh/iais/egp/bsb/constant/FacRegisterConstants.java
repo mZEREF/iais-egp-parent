@@ -50,8 +50,19 @@ public class FacRegisterConstants {
     public static final String KEY_DATA_LIST               = "DATA_LIST";
     public static final String KEY_SOURCE_NODE_PATH        = "srcNodePath";
 
+    public static final String KEY_SELECTED_CLASSIFICATION = "SELECTED_CLASSIFICATION";
+    public static final String KEY_SELECTED_ACTIVITIES     = "SELECTED_ACTIVITIES";
+    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
+
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
+    public static final String KEY_BAT_LIST                = "batList";
+
+    public static final String KEY_DOC_SETTINGS            = "docSettings";
+    public static final String KEY_OTHER_DOC_TYPES         = "otherDocTypes";
+    public static final String KEY_FILE_MAP_NEW            = "newFiles";
+    public static final String KEY_FILE_MAP_SAVED          = "savedFiles";
+    public static final String KEY_DOC_TYPES_JSON          = "docTypeOpsJson";
 
     public static final String KEY_NAV_NEXT                = "next";
     public static final String KEY_NAV_PREVIOUS            = "previous";
@@ -70,11 +81,6 @@ public class FacRegisterConstants {
 
     public static final String KEY_SHOW_ERROR_SWITCH       = "needShowValidationError";
 
-    public static final String KEY_SELECTED_CLASSIFICATION = "SELECTED_CLASSIFICATION";
-    public static final String KEY_SELECTED_ACTIVITIES     = "SELECTED_ACTIVITIES";
-
-    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
-
     public static final String KEY_OPTIONS_NATIONALITY     = "nationalityOps";
     public static final String KEY_OPTION_SALUTATION       = "salutationOps";
     public static final String KEY_OPTIONS_FAC_TYPE        = "facTypeOps";
@@ -82,6 +88,7 @@ public class FacRegisterConstants {
     public static final String KEY_OPTIONS_AFC             = "afcOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
+    public static final String KEY_OPTIONS_DOC_TYPES       = "docTypeOps";
 
     public static final String KEY_DECLARATION_CONFIG      = "configList";
     public static final String KEY_DECLARATION_ANSWER_MAP  = "answerMap";

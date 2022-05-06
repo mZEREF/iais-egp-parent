@@ -9,6 +9,8 @@
 <%@attribute name="savedFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>" %>
 <%@attribute name="newFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>" %>
 <%@attribute name="docSettings" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>" %>
+<%@attribute name="otherDocTypes" required="true" type="java.util.Collection<java.lang.String>" %>
+<%@attribute name="docTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
 <%@attribute name="dashboardFrag" fragment="true" %>
 <%@attribute name="innerFooterFrag" fragment="true" %>
@@ -26,9 +28,18 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
 <jsp:invoke fragment="specialJsFrag"/>
 
+<script>
+    <% String jsonStr = (String) request.getAttribute("docTypeOpsJson");
+    if (jsonStr == null || "".equals(jsonStr)) {
+       jsonStr = "undefined";
+    }
+    %>
+    var docTypeOps = <%=jsonStr%>;
+</script>
+
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <jsp:invoke fragment="dashboardFrag"/>
-<form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
+<form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>" onsubmit="return validateOtherDocType();">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
@@ -89,6 +100,37 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
+                                            <div class="document-upload-list">
+                                                <h3>Others</h3>
+                                                <div id="upload-other-doc-gp" class="file-upload-gp">
+                                                    <c:forEach var="type" items="${otherDocTypes}">
+                                                        <c:set var="maskDocType"><iais:mask name="file" value="${type}"/></c:set>
+                                                        <c:if test="${savedFiles.get(type) ne null}">
+                                                            <c:forEach var="info" items="${savedFiles.get(type)}">
+                                                                <c:set var="tmpId"><iais:mask name="file" value="${info.repoId}"/></c:set>
+                                                                <div id="${tmpId}FileDiv">
+                                                                    <a href="/bsb-fe/ajax/doc/download/facReg/repo/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
+                                                                    (<iais:code code="${info.docType}"/>)</label><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button>
+                                                                    <span data-err-ind="${info.repoId}" class="error-msg"></span>
+                                                                </div>
+                                                            </c:forEach>
+                                                        </c:if>
+                                                        <c:if test="${newFiles.get(type) ne null}">
+                                                            <c:forEach var="info" items="${newFiles.get(type)}">
+                                                                <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
+                                                                <div id="${tmpId}FileDiv">
+                                                                    <a href="/bsb-fe/ajax/doc/download/facReg/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
+                                                                    (<iais:code code="${info.docType}"/>)</label><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button>
+                                                                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                                                </div>
+                                                            </c:forEach>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    <a class="btn file-upload btn-secondary" data-upload-file="others" href="javascript:void(0);">Upload</a><span data-err-ind="others" class="error-msg"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

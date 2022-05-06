@@ -40,6 +40,7 @@ import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -175,6 +176,12 @@ public class FacilityRegistrationService {
                     // set selected value in the dashboard
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
+
+                    // update impacted supporting document node
+                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                    primaryDocDto.setFacClassification(selectionDto.getFacClassification());
+                    Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
                     // jump
                     jump(request, facRegRoot, actionValue);
@@ -624,6 +631,7 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
+    @SneakyThrows(JsonProcessingException.class)
     public void prePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
@@ -635,13 +643,23 @@ public class FacilityRegistrationService {
         }
         Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings(selectionDto.getFacClassification()));
-
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
+
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
+
+        List<SelectOption> docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
+        ObjectMapper mapper = new ObjectMapper();
+        String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_DOC_TYPES_JSON, docTypeOpsJson);
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
@@ -726,7 +744,7 @@ public class FacilityRegistrationService {
         } else if (isUcf) {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
-            ParamUtil.setRequestAttr(request, "batList", batList);
+            ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
         }
 
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
@@ -736,13 +754,17 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings(selectionDto.getFacClassification()));
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
