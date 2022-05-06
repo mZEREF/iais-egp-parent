@@ -134,9 +134,9 @@
                     <iais:row>
                         <iais:field width="5" value="No. of Living Children" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input id="childrenNum" maxLength="2" type="text" name="livingChildrenNo"
-                                        value="${patientInformationDto.livingChildrenNo}"/>
+                            <iais:input id="childrenNum" maxLength="2" type="text" name="livingChildrenNo" value="${patientInformationDto.livingChildrenNo}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_livingChildrenNo"></span>
+                            <span id="childrenNumMsg" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -363,4 +363,20 @@
         console.log("clearSelection!")
         clearErrorMsg();
     }
+    //Judge whether the input number is greater than 10
+    $(function(){
+        var preValue = '';
+        $("body").on("keyup", "input[name=livingChildrenNo]", function(){
+            var value = $(this).val();
+            if(!!value && !$(this).val().match(/^(?:10|[0-9])$/)) {
+                /*$(this).val(preValue);*/
+                $('#childrenNum').val(null);
+                clearErrorMsg();
+                $("#childrenNumMsg").text('cannot enter more than 10.');
+                $('#childrenNum').trigger('keyup');
+            }
+            preValue = $(this).val();
+            return true;
+        });
+    });
 </script>

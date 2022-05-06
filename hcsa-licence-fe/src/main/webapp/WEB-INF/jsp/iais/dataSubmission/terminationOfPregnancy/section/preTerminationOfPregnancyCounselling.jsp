@@ -147,6 +147,13 @@
                 </iais:value>
             </iais:row>
             <iais:row>
+                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
+                <iais:field width="5" value="Doctor's Professional Reign / MRC No." info="${toolMsg}" style="padding-right: 0px;"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+                </iais:value>
+            </iais:row>
+            <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counselling Date
                     <span id="counsellingDate" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
@@ -246,7 +253,7 @@
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select name="secCounsellingResult" firstOption="Please Select" codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT" value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
+                <iais:select name="secCounsellingResult" firstOption="Please Select" id="secCounsellingResult" codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT" value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_secCounsellingResult"></span>
             </iais:value>
         </iais:row>
@@ -376,6 +383,8 @@
             $('#secCounsellingDates').show();
         }else {
             $('#secCounsellingDates').hide();
+            $('#secCounsellingDateDate').val(null);
+
         }
     }
     function secCounsellingResult(){
@@ -384,6 +393,7 @@
             $('#secCounsellingResults').show();
         }else {
             $('#secCounsellingResults').hide();
+            fillValue($('#secCounsellingResult'),null);
         }
     }
 

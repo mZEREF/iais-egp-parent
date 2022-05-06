@@ -32,9 +32,11 @@
 
     .form-check input.form-check-input:disabled + .form-check-label span.check-circle{
         border-color: #999999;
+        color: #999999 !important;
     }
     .form-check input.form-check-input:checked:disabled + .form-check-label span.check-circle:before{
         background-color: #999999;
+        color: #999999 !important;
     }
 
     @media all and (min-width: 429px) {

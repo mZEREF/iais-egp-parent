@@ -76,6 +76,12 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
+                        <iais:field width="5" value="Doctor's Professional Reign / MRC No."/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${preTerminationDto.counsellingReignNo}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
                         <iais:field width="5" value="Pre-Termination Counselling Date"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>

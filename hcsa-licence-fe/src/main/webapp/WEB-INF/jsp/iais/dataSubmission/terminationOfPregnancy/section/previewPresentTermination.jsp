@@ -156,7 +156,7 @@
                         <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:if test="${terminationDto.takenOwn == true}">${'unknown'}</c:if>
-                            <c:if test="${terminationDto.takenOwn == false}"><iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/></c:if>
+                            <c:if test="${terminationDto.takenOwn == false}"><iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others (E.g. Home)' : terminationDto.topDrugPlace}"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
