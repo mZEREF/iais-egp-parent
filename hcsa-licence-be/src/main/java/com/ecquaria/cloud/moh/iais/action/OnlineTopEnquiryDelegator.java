@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -28,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +75,7 @@ public class OnlineTopEnquiryDelegator {
 
     }
 
-    public void preSearch(BaseProcessClass bpc){
+    public void preSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "topParam");
@@ -80,20 +84,15 @@ public class OnlineTopEnquiryDelegator {
 
 
         if(!"back".equals(back)||searchParam==null){
-            DsTopEnquiryFilterDto arDto=setDsTopEnquiryFilterDto(request);
-
-            Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
-
-            
-
-            topParameter.setFilters(filter);
-
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
             String sortType = ParamUtil.getString(request,"crud_action_additional");
             if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
                 topParameter.setSortType(sortType);
                 topParameter.setSortField(sortFieldName);
             }
+            DsTopEnquiryFilterDto topDto=setDsTopEnquiryFilterDto(request);
+
+            setQueryFilter(topDto,topParameter);
 
             SearchParam topParam = SearchResultHelper.getSearchParam(request, topParameter,true);
 
@@ -102,7 +101,7 @@ public class OnlineTopEnquiryDelegator {
                 topParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(topParam,bpc.request);
-            QueryHelp.setMainSql("onlineEnquiry","searchTop",topParam);
+            QueryHelp.setMainSql("onlineEnquiry","searchByTop",topParam);
             SearchResult<DsTopEnquiryResultsDto> topResult = assistedReproductionService.searchDsTopByParam(topParam);
             ParamUtil.setRequestAttr(request,"topResult",topResult);
             ParamUtil.setSessionAttr(request,"topParam",topParam);
@@ -113,8 +112,77 @@ public class OnlineTopEnquiryDelegator {
         }
     }
 
-    private DsTopEnquiryFilterDto setDsTopEnquiryFilterDto(HttpServletRequest request) {
-        return new DsTopEnquiryFilterDto();
+    private DsTopEnquiryFilterDto setDsTopEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+        DsTopEnquiryFilterDto filterDto=new DsTopEnquiryFilterDto();
+        String centerName=ParamUtil.getString(request,"centerName");
+        filterDto.setCenterName(centerName);
+        String submissionNo=ParamUtil.getString(request,"submissionNo");
+        filterDto.setSubmissionNo(submissionNo);
+        String patientName=ParamUtil.getString(request,"patientName");
+        filterDto.setPatientName(patientName);
+        String patientIdType=ParamUtil.getString(request,"patientIdType");
+        filterDto.setPatientIdType(patientIdType);
+        String patientIdNo=ParamUtil.getString(request,"patientIdNo");
+        filterDto.setPatientIdNo(patientIdNo);
+        String doctorRegnNo=ParamUtil.getString(request,"doctorRegnNo");
+        filterDto.setDoctorRegnNo(doctorRegnNo);
+        Date birthDateFrom= Formatter.parseDate(ParamUtil.getString(request, "birthDateFrom"));
+        filterDto.setBirthDateFrom(birthDateFrom);
+        Date birthDateTo= Formatter.parseDate(ParamUtil.getString(request, "birthDateTo"));
+        filterDto.setBirthDateTo(birthDateTo);
+        Date submissionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "submissionDateFrom"));
+        filterDto.setSubmissionDateFrom(submissionDateFrom);
+        Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
+        filterDto.setSubmissionDateTo(submissionDateTo);
+        ParamUtil.setSessionAttr(request,"dsEnquiryTopFilterDto",filterDto);
+        return filterDto;
+    }
+
+    private void setQueryFilter(DsTopEnquiryFilterDto filterDto, FilterParameter filterParameter){
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+//        if(filterDto.getCenterName()!=null) {
+//            filter.put("arCentre", filterDto.getCenterName());
+//        }
+        if(filterDto.getPatientIdType()!=null) {
+            filter.put("patientIdType", filterDto.getPatientIdType());
+        }
+        if(filterDto.getPatientIdNo()!=null){
+            filter.put("patientIdNo",filterDto.getPatientIdNo());
+        }
+        if(filterDto.getSubmissionNo()!=null){
+            filter.put("submissionNo",filterDto.getSubmissionNo());
+        }
+        if(filterDto.getPatientName()!=null){
+            filter.put("patientName", filterDto.getPatientName());
+        }
+
+        if(filterDto.getDoctorRegnNo()!=null){
+            filter.put("doctorRegnNo",filterDto.getDoctorRegnNo());
+        }
+        if(filterDto.getSubmissionDateFrom()!=null){
+            String submissionDateFrom = Formatter.formatDateTime(filterDto.getSubmissionDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("submissionDateFrom", submissionDateFrom);
+        }
+
+        if(filterDto.getSubmissionDateTo()!=null){
+            String submissionDateTo = Formatter.formatDateTime(filterDto.getSubmissionDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("submissionDateTo", submissionDateTo);
+        }
+        if(filterDto.getBirthDateFrom()!=null){
+            String birthDateFrom = Formatter.formatDateTime(filterDto.getBirthDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("birthDateFrom", birthDateFrom);
+        }
+
+        if(filterDto.getBirthDateTo()!=null){
+            String birthDateTo = Formatter.formatDateTime(filterDto.getBirthDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("birthDateTo", birthDateTo);
+        }
+        filterParameter.setFilters(filter);
+
     }
 
     public void nextStep(BaseProcessClass bpc){
@@ -145,6 +213,6 @@ public class OnlineTopEnquiryDelegator {
             }
         }
 
-        ParamUtil.setRequestAttr(request,"topInfoDataSubmissionDto",topInfo);
+        ParamUtil.setRequestAttr(request,"topSuperDataSubmissionDto",topInfo);
     }
 }

@@ -1031,10 +1031,14 @@
          ]]>
     </sql>
 
-    <sql key = "searchTop" remarks="Search Termination of Pregnancy">
+    <sql key = "searchByTop" remarks="Search Termination of Pregnancy">
         <![CDATA[
             select distinct * from (
             SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
+                ,(SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
+                FROM  ds_top_patient dtpNew
+                where dtpNew.PATIENT_ID_NO =dtp.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dtp.PATIENT_ID_TYPE
+                ) num
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
@@ -1063,7 +1067,7 @@
     <sql key = "searchTopAjax" remarks="Search Termination of Pregnancy Ajax">
         <![CDATA[
             select distinct * from (
-            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
+            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT,null num
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
@@ -1077,8 +1081,8 @@
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
                 ) T1
             where 1 = 1
-            <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
-            <#if patientIdNo??> AND  charindex(:patientIdNo, T1.PATIENT_ID_NO) >0</#if>
+            <#if patientIdType??> AND  :patientIdType = T1.PATIENT_ID_TYPE</#if>
+            <#if patientIdNo??> AND  :patientIdNo = T1.PATIENT_ID_NO</#if>
          ]]>
     </sql>
 

@@ -19,20 +19,22 @@
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
                     <div class="center-content">
-                        <div class="intranet-content">
-                            <iais:body >
-                                <div class="tab-gp col-xs-10" style="left: 8%;">
-                                    <%@include file="previewPatientDetails.jsp" %>
-                                    <%@include file="previewFamilyPlanning.jsp" %>
-                                    <%@include file="previewPreTermination.jsp" %>
-                                    <%@include file="previewPresentTermination.jsp" %>
-                                    <%@include file="previewPostTermination.jsp" %>
-                                    <div class="tab-content row">
-                                        <a href="#" onclick="javascript:$('#back').val('back');$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                        <iais:body >
+                            <div class="tab-gp dashboard-tab">
+                                <div class="tab-content row">
+                                    <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;">
+                                        <%@include file="previewPatientDetails.jsp" %>
+                                        <%@include file="previewFamilyPlanning.jsp" %>
+                                        <%@include file="previewPreTermination.jsp" %>
+                                        <%@include file="previewPresentTermination.jsp" %>
+                                        <%@include file="previewPostTermination.jsp" %>
                                     </div>
                                 </div>
-                            </iais:body>
-                        </div>
+                                <div class="tab-content row">
+                                    <a href="#" onclick="javascript:$('#back').val('back');$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                </div>
+                            </div>
+                        </iais:body>
                     </div>
                 </div>
             </div>

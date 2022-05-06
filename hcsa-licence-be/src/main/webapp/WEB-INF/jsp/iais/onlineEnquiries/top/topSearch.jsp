@@ -64,7 +64,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Patient ID Type"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"
+                                    <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                                  cssClass="clearSel"   value="${dsEnquiryTopFilterDto.patientIdType}" />
                                 </iais:value>
                             </iais:row>
@@ -170,35 +170,41 @@
                                                 <c:forEach var="top"
                                                            items="${topResult.rows}"
                                                            varStatus="status">
-                                                    <tr >
+                                                    <tr id="advfilter${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}">
 
-                                                        <td style="vertical-align:middle;">
-                                                            <c:out value="${top.centerName}"/>
+                                                        <td width="16%" style="vertical-align:middle;">
+                                                            <p style="white-space: nowrap;"><c:out value="${top.centerName}"/>
+                                                                <c:if test="${top.patientCount > 1}">
+                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}" onclick="getTopByIdType('${top.patientIdNo}','${top.patientIdType}','${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}')">
+                                                                    </a>
+                                                                </c:if>
+                                                            </p>
+
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="12%" style="vertical-align:middle;">
                                                             <a href="#" onclick="fullDetailsView('${top.submissionNo}')">${top.submissionNo}</a>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <c:out value="${top.patientName}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <iais:code code="${top.patientIdType}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <c:out value="${top.patientIdNo}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="12%" style="vertical-align:middle;">
                                                             <fmt:formatDate
                                                                     value="${top.patientBirthday}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <c:out value="${top.doctorRegnNo}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <c:out value="${top.doctorName}"/>
                                                         </td>
-                                                        <td style="vertical-align:middle;">
+                                                        <td width="10%" style="vertical-align:middle;">
                                                             <fmt:formatDate
                                                                     value="${top.submitDt}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
@@ -269,5 +275,102 @@
         $('#mainForm').submit();
     }
 
+    var dividajaxlist = [];
 
+    var getTopByIdType = function (patientIdNo,patientIdType, divid) {
+        showWaiting();
+        var advfiltersonList=$("[id^='advfilterson']");
+        var lenSon = advfiltersonList.length;
+        for (var i = 0;i<lenSon;i++){
+            var hideSon = $(advfiltersonList[i]);
+            if(hideSon.prop('id') !=='advfilterson'+divid){
+                hideSon.hide();
+            }
+        }
+        var advfilterList=$("a[data-target^='#dropdown']");
+        var len = advfilterList.length;
+        for (var j = 0;j<len;j++){
+            var hide = $(advfilterList[j]);
+            if(hide.prop('data-target') !=='#dropdown'+divid){
+                hide.addClass('collapsed')
+                hide.prop('aria-expanded', false);
+            }
+        }
+        var dropdownList=$("[id^='dropdown']");
+        var lendropdown = dropdownList.length;
+        for (var k = 0;k<lendropdown;k++){
+            var dropdown = $(dropdownList[k]);
+            if(dropdown.prop('id') !=='dropdown'+divid){
+                dropdown.removeClass('in')
+                dropdown.prop('aria-expanded', false);
+            }
+        }
+        if (!isInArray(dividajaxlist,divid)) {
+            groupAjax(patientIdNo,patientIdType, divid);
+        } else {
+            var display = $('#advfilterson' + divid).css('display');
+            if (display == 'none') {
+                $('#advfilterson' + divid).show();
+            } else {
+                $('#advfilterson' + divid).hide();
+            }
+        }
+        dismissWaiting();
+    };
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    var groupAjax = function (patientIdNo,patientIdType, divid) {
+        dividajaxlist.push(divid);
+        $.post(
+            '/hcsa-licence-web/hcsa/enquiry/ar/topDetail.do',
+            {patientIdNo: patientIdNo,
+             patientIdType: patientIdType
+            },
+            function (data) {
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="9" class="hiddenRow">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
+                        '<thead>' +
+                        '<tr>';
+
+
+                    html += '<th colspan="9" style=" text-align: center">Previous Submissions</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.rowCount; i++) {
+                        var color = "black";
+
+                        html += '<tr style = "color : ' + color + ';">';
+
+                        html += '<td width="14%" style="vertical-align:middle;"><p>' + res.rows[i].centerName + '<p></td>';
+                        html += '<td width="12%" style="vertical-align:middle;"><p><a href="#" onclick="javascript:fullDetailsView(' + "'" + res.rows[i].submissionNo + "'" + ');">' + res.rows[i].submissionNo + '</a></p></td>';
+
+                        html += '</p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientName + '<p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdType + '<p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
+                            '<td width="12%" style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].doctorRegnNo + '<p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].doctorName + '</p></td>' +
+                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
+                }
+            }
+        )
+
+    };
 </script>
