@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -67,6 +68,9 @@ public class InspecAssignTaskDelegator {
 
     @Autowired
     private InspectionService inspectionService;
+
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Autowired
     private InspecAssignTaskDelegator(ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService){
@@ -129,6 +133,13 @@ public class InspecAssignTaskDelegator {
                 throw new IaisRuntimeException("Login context Null");
             }
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
+            if (RoleConsts.USER_ROLE_BROADCAST.equals(loginContext.getCurRoleId())) {
+                List<String> wrkGrps = organizationClient.getWorkGrpsByUserId(loginContext.getUserId()).getEntity();
+                if (wrkGrps != null && !wrkGrps.isEmpty()) {
+                    loginContext.getWrkGrpIds().clear();
+                    loginContext.getWrkGrpIds().addAll(wrkGrps);
+                }
+            }
             List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());
             int workGroupIdsSize = 0;
             if(!IaisCommonUtils.isEmpty(workGroupIds)) {
