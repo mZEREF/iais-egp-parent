@@ -162,7 +162,7 @@ public class InspectionDODelegator {
         List<ProcessHistoryDto> processHistoryDtoList = initDataDto.getProcessHistoryDtoList();
         ParamUtil.setSessionAttr(request,KEY_ROUTING_HISTORY_LIST,new ArrayList<>(processHistoryDtoList));
 
-        setCheckListUnFinishedTask(request,appId);
+
 
     }
 
@@ -246,6 +246,8 @@ public class InspectionDODelegator {
 
     public void preChecklist(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "nowTabIn",  "Combined");
+        String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
+        setCheckListUnFinishedTask(bpc.request,appId);
         // do nothing now
     }
 
