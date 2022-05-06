@@ -70,8 +70,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employmentStartDate")
         private String employmentStartDt;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.expertiseArea")
-        private String expertiseArea;
+        private String workArea;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.role")
         private String role;

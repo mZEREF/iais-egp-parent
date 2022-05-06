@@ -24,7 +24,7 @@ public class FacilityCommitteeDto {
         private String contactNo;
         private String email;
         private String employmentStartDt;
-        private String expertiseArea;
+        private String workArea;
         private String role;
         private String employee;
         private String externalCompName;

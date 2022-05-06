@@ -1239,16 +1239,6 @@ public class FacilityRegistrationService {
 
 
 
-    /* Will be removed in future, will get this from master code */
-    public static List<SelectOption> tmpPersonnelRoleOps() {
-        List<SelectOption> personnelRoleOps = new ArrayList<>(4);
-        personnelRoleOps.add(new SelectOption("COMTPRO001", "Senior Management Representative"));
-        personnelRoleOps.add(new SelectOption("COMTPRO002", "Biosafety Coordinator"));
-        personnelRoleOps.add(new SelectOption("COMTPRO003", "Person in charge of safe and proper functioning of facility and equipment"));
-        personnelRoleOps.add(new SelectOption("COMTPRO004", "Other qualified personnel"));
-        return personnelRoleOps;
-    }
-
 
     /**
      * only use to 'rfc' module

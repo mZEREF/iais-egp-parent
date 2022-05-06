@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.jmapper.JMapper;
-import com.googlecode.jmapper.annotations.JGlobalMap;
+import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 
@@ -27,71 +27,104 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JGlobalMap
 public class FacilityCommitteeFileDto implements Serializable {
     @JsonProperty("Salutation")
-    @JsonAlias("salutation")
+    @JsonAlias({"BC_SALUTATION", "salutation"})
+    @JMap
     private String salutation;
 
     @JsonProperty("Name")
-    @JsonAlias("name")
+    @JsonAlias({"BC_NAME", "name"})
+    @JMap
     private String name;
 
     @JsonProperty("Nationality")
-    @JsonAlias("nationality")
+    @JsonAlias({"BC_NATIONALITY", "nationality"})
+    @JMap
     private String nationality;
 
     @JsonProperty("ID Type")
-    @JsonAlias("idType")
+    @JsonAlias({"BC_ID_TYPE", "idType"})
+    @JMap
     private String idType;
 
     @JsonProperty("ID Number")
-    @JsonAlias("idNumber")
+    @JsonAlias({"BC_ID_NUMBER", "idNumber"})
+    @JMap
     private String idNumber;
 
     @JsonProperty("Designation")
-    @JsonAlias("designation")
+    @JsonAlias({"BC_DESIGNATION", "designation"})
+    @JMap
     private String designation;
 
     @JsonProperty("Contact No.")
-    @JsonAlias("contactNo")
+    @JsonAlias({"BC_CONTACT_NO", "contactNo"})
+    @JMap
     private String contactNo;
 
     @JsonProperty("Email")
-    @JsonAlias("email")
+    @JsonAlias({"BC_EMAIL", "email"})
+    @JMap
     private String email;
 
     @JsonProperty("Employment Start Date")
-    @JsonAlias("employmentStartDt")
+    @JsonAlias({"BC_EMPLOYMENT_START_DATE", "employmentStartDt"})
+    @JMap
     private String employmentStartDt;
 
-    @JsonProperty("Area of Expertise")
-    @JsonAlias("expertiseArea")
-    private String expertiseArea;
+    @JsonProperty("Area of Work")
+    @JsonAlias({"BC_AREA_OF_WORK", "workArea"})
+    @JMap
+    private String workArea;
 
-    @JsonProperty("Role")
-    @JsonAlias("role")
+    @JsonProperty("Role under Sixth Schedule")
+    @JsonAlias({"BC_ROLE_UNDER_SIXTH_SCHEDULE", "role"})
+    @JMap
     private String role;
 
     @JsonProperty("Is This Person an Employee of This Company")
-    @JsonAlias("employee")
+    @JsonAlias({"BC_IS_PERSON_EMPLOYEE", "employee"})
+    @JMap
     private String employee;
 
     @JsonProperty("Company Name")
-    @JsonAlias("externalCompName")
+    @JsonAlias({"BC_COMPANY_NAME", "externalCompName"})
+    @JMap
     private String externalCompName;
 
 
+    private static final String YES_IN_EXCEL = "YES";
+    private static final String NO_IN_EXCEL = "NO";
+    private static final String YES_IN_DB = "Y";
+    private static final String NO_IN_DB = "N";
+    private static final String YES_TO_DISPLAY = "Yes";
+    private static final String NO_TO_DISPLAY = "No";
+
     public void value2MasterCode() {
         this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
+        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.value2Code(this.role);
+        if (YES_IN_EXCEL.equals(employee)) {
+            this.employee = YES_IN_DB;
+        } else if (NO_IN_EXCEL.equals(employee)) {
+            this.employee = NO_IN_DB;
+        } else {
+            this.employee = null;
+        }
     }
 
     public void code2Value() {
         this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
+        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.code2Value(this.role);
+        if (YES_IN_DB.equals(employee)) {
+            this.employee = YES_TO_DISPLAY;
+        } else if (NO_IN_DB.equals(employee)) {
+            this.employee = NO_TO_DISPLAY;
+        }
     }
 
 

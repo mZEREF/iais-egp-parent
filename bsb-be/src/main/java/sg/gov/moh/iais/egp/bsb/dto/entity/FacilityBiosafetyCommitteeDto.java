@@ -39,7 +39,7 @@ public class FacilityBiosafetyCommitteeDto extends BaseEntityDto {
 
     private Date employmentStartDate;
 
-    private String areaOfExpertise;
+    private String workArea;
 
     private String role;
 
