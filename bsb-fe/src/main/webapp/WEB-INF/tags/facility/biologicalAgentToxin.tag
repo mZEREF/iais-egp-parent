@@ -13,6 +13,10 @@
 <%@attribute name="firstScheduleOp" required="true" type="java.lang.String" %>
 <%@attribute name="scheduleBatMap" required="true" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
+<%@attribute name="specialJsFrag" fragment="true" %>
+<%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
+<%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -27,7 +31,7 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-cascade-dropdown.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-biological-agent-toxin.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<jsp:invoke fragment="specialJsFrag"/>
 
 <script>
     <% String jsonStr = (String) request.getAttribute("scheduleBatMapJson");
@@ -39,7 +43,7 @@
 </script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/facRegistration/dashboard.jsp" %>
+<jsp:invoke fragment="dashboardFrag"/>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -63,6 +67,7 @@
                                 <div id="batInfoPanel" role="tabpanel">
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
+                                            <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                             <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
                                             <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
                                             <ul id = "tabUl" class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
@@ -593,7 +598,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerFooter.jsp" %>
+                                <jsp:invoke fragment="innerFooterFrag"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>

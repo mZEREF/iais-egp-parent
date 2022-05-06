@@ -9,6 +9,10 @@
 <%@attribute name="savedFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>" %>
 <%@attribute name="newFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>" %>
 <%@attribute name="docSettings" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>" %>
+<%@attribute name="specialJsFrag" fragment="true" %>
+<%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
+<%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -20,10 +24,10 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<jsp:invoke fragment="specialJsFrag"/>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/facRegistration/dashboard.jsp" %>
+<jsp:invoke fragment="dashboardFrag"/>
 <form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -52,6 +56,7 @@
                                             </ul>
                                         </div>
                                         <div class="document-upload-gp">
+                                            <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                             <h2>Supporting Documents</h2>
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
@@ -87,7 +92,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerFooter.jsp" %>
+                                <jsp:invoke fragment="innerFooterFrag"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>

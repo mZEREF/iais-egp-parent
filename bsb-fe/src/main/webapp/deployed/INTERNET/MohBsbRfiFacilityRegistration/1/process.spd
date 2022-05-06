@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohBsbRfiFacilityRegistration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="-20" y="20">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="80" y="20">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreCompInfo" x="190" y="20">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCompInfo_OnStepProcess_0" name="preCompInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacProfile" x="190" y="110">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacProfile_OnStepProcess_0" name="preFacProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacOperator" x="190" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacOperator_OnStepProcess_0" name="preFacOperator_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacAdminOfficer" x="190" y="290">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacAdminOfficer_OnStepProcess_0" name="preFacAdminOfficer_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacInfoCommittee" x="190" y="370">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacInfoCommittee_OnStepProcess_0" name="preFacInfoCommittee_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacCommitteePreview" x="190" y="450">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacCommitteePreview_OnStepProcess_0" name="preFacCommitteePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacInfoAuthoriser" x="190" y="540">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacInfoAuthoriser_OnStepProcess_0" name="preFacInfoAuthoriser_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacAuthoriserPreview" x="190" y="620">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacAuthoriserPreview_OnStepProcess_0" name="preFacAuthoriserPreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreBAToxin" x="190" y="700">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preBAToxin_OnStepProcess_0" name="preBAToxin_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreOtherAppInfo" x="190" y="790">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preOtherAppInfo_OnStepProcess_0" name="preOtherAppInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrePrimaryDoc" x="190" y="870">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePrimaryDoc_OnStepProcess_0" name="prePrimaryDoc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAfc" x="190" y="960">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAfc_OnStepProcess_0" name="preAfc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrePreviewSubmit" x="160" y="1060">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePreviewSubmit_OnStepProcess_0" name="prePreviewSubmit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleCompInfo" x="470" y="20">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleCompInfo_OnStepProcess_0" name="handleCompInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacProfile" x="470" y="90">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacProfile_OnStepProcess_0" name="handleFacProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacOperator" x="460" y="160">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacOperator_OnStepProcess_0" name="handleFacOperator_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacAdminOfficer" x="460" y="260">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacAdminOfficer_OnStepProcess_0" name="handleFacAdminOfficer_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacInfoCommittee" x="470" y="340">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacInfoCommittee_OnStepProcess_0" name="handleFacInfoCommittee_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacCommitteePreview" x="460" y="430">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacCommitteePreview_OnStepProcess_0" name="handleFacCommitteePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacInfoAuthoriser" x="470" y="530">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacInfoAuthoriser_OnStepProcess_0" name="handleFacInfoAuthoriser_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacAuthoriserPreview" x="460" y="600">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacAuthoriserPreview_OnStepProcess_0" name="handleFacAuthoriserPreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleBAToxin" x="460" y="690">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleBAToxin_OnStepProcess_0" name="handleBAToxin_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleOtherAppInfo" x="470" y="790">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleOtherAppInfo_OnStepProcess_0" name="handleOtherAppInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePrimaryDoc" x="470" y="870">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePrimaryDoc_OnStepProcess_0" name="handlePrimaryDoc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleAfc" x="460" y="960">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAfc_OnStepProcess_0" name="handleAfc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePreviewSubmit" x="430" y="1050">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePreviewSubmit_OnStepProcess_0" name="handlePreviewSubmit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ActionFilter" x="700" y="530">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="900" y="530">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Print" x="900" y="900">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="print_OnStepProcess_0" name="print_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="JumpFilter" x="-70" y="280">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpFilter_OnStepProcess_0" name="jumpFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfo" stageIndicator="" x="350" y="20">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacProfilePage" stageIndicator="" x="350" y="100">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacOperatorPage" stageIndicator="" x="350" y="180">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacAdminOfficerPage" stageIndicator="" x="350" y="270">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacInfoCommitteePage" stageIndicator="" x="350" y="360">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacCommitteePreview" stageIndicator="" x="350" y="440">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacInfoAuthoriserPage" stageIndicator="" x="350" y="540">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacAuthoriserPreview" stageIndicator="" x="350" y="610">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BAToxinPage" stageIndicator="" x="350" y="700">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="OtherAppInfo" stageIndicator="" x="350" y="790">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SupportingDocPage" stageIndicator="" x="330" y="870">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AfcPage" stageIndicator="" x="320" y="960">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewSubmit" stageIndicator="" x="290" y="1060">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="900" y="670">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrintPage" stageIndicator="" x="900" y="1020">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(0,40)(100,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
+   <position>{(100,40)(210,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CompanyInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreCompInfo" style="oblique">
+   <position>{(210,40)(370,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleCompInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfo" style="oblique">
+   <position>{(370,40)(490,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PageJumpSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/JumpFilter" style="oblique">
+   <position>{(-50,300)(-50,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacProfile" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacProfilePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacProfile" style="oblique">
+   <position>{(210,130)(370,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacProfile" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacProfilePage" style="oblique">
+   <position>{(370,120)(490,110)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacOperator" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacOperatorPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacOperator" style="oblique">
+   <position>{(210,210)(370,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacOperator" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacOperatorPage" style="oblique">
+   <position>{(370,200)(480,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacAdminOfficer" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacAdminOfficerPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacAdminOfficer" style="oblique">
+   <position>{(210,310)(370,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacAdminOfficer" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacAdminOfficerPage" style="oblique">
+   <position>{(370,290)(480,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacInfoCommittee" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacInfoCommitteePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacInfoCommittee" style="oblique">
+   <position>{(210,390)(370,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacInfoCommittee" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacInfoCommitteePage" style="oblique">
+   <position>{(370,380)(490,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacCommitteePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,470)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacCommitteePreview" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacCommitteePreview" style="oblique">
+   <position>{(210,470)(370,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacCommitteePreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacCommitteePreview" style="oblique">
+   <position>{(370,460)(480,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacInfoAuthoriser" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacInfoAuthoriserPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacInfoAuthoriser" style="oblique">
+   <position>{(210,560)(370,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacInfoAuthoriser" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacInfoAuthoriserPage" style="oblique">
+   <position>{(370,560)(490,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacAuthoriserPreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacAuthoriserPreview" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacAuthoriserPreview" style="oblique">
+   <position>{(210,640)(370,630)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacAuthoriserPreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacAuthoriserPreview" style="oblique">
+   <position>{(370,630)(480,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBAToxin" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/BAToxinPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreBAToxin" style="oblique">
+   <position>{(210,720)(370,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleBAToxin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BAToxinPage" style="oblique">
+   <position>{(370,720)(480,710)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreOtherAppInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/OtherAppInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreOtherAppInfo" style="oblique">
+   <position>{(210,810)(370,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleOtherAppInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/OtherAppInfo" style="oblique">
+   <position>{(370,810)(490,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePrimaryDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,890)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SupportingDocPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrePrimaryDoc" style="oblique">
+   <position>{(210,890)(350,890)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePrimaryDoc" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SupportingDocPage" style="oblique">
+   <position>{(350,890)(490,890)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAfc" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(210,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AfcPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAfc" style="oblique">
+   <position>{(210,980)(340,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleAfc" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AfcPage" style="oblique">
+   <position>{(340,980)(480,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePreviewSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-50,550)(180,1080)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreviewSubmit" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrePreviewSubmit" style="oblique">
+   <position>{(180,1080)(310,1080)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePreviewSubmit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewSubmit" style="oblique">
+   <position>{(310,1080)(450,1070)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePreviewSubmit" style="oblique">
+   <position>{(450,1070)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(620,550)(720,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="oblique">
+   <position>{(720,550)(810,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleAfc" style="oblique">
+   <position>{(480,980)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePrimaryDoc" style="oblique">
+   <position>{(490,890)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleOtherAppInfo" style="oblique">
+   <position>{(490,810)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleBAToxin" style="oblique">
+   <position>{(480,710)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacAuthoriserPreview" style="oblique">
+   <position>{(480,620)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacInfoAuthoriser" style="oblique">
+   <position>{(490,550)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacCommitteePreview" style="oblique">
+   <position>{(480,450)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacInfoCommittee" style="oblique">
+   <position>{(490,360)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacAdminOfficer" style="oblique">
+   <position>{(480,280)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacOperator" style="oblique">
+   <position>{(480,180)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacProfile" style="oblique">
+   <position>{(490,110)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleCompInfo" style="oblique">
+   <position>{(490,40)(620,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(810,550)(920,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowleagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
+   <position>{(920,550)(920,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PostSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AcknowleagePage" style="oblique">
+   <position>{(920,690)(920,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Print" linkstyle="Direct" name="" sourceName="/Switches/Switch/PostSwitch" style="oblique">
+   <position>{(920,800)(920,920)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrintPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Print" style="oblique">
+   <position>{(920,920)(920,1040)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/JumpFilter" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(810,550)(822,-30)(-54,-35)(-50,300)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="ActionSwitch" x="790" y="530">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/JumpFilter" value="&quot;jump&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="PostSwitch" x="900" y="780">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Print" value="&quot;print&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="PageJumpSwitch" x="-70" y="530">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacProfile" value="&quot;facInfo_facProfile&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacOperator" value="&quot;facInfo_facOperator&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacAdminOfficer" value="&quot;facInfo_facAdminOfficer&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacInfoCommittee" value="&quot;facInfo_facCommittee&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacCommitteePreview" value="&quot;committeePreview&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacInfoAuthoriser" value="&quot;facInfo_facAuth&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacAuthoriserPreview" value="&quot;authoriserPreview&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreBAToxin" value="&quot;batInfo&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreOtherAppInfo" value="&quot;otherInfo&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrePrimaryDoc" value="&quot;primaryDocs&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreAfc" value="&quot;afc&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrePreviewSubmit" value="&quot;previewSubmit&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="600" y="530">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

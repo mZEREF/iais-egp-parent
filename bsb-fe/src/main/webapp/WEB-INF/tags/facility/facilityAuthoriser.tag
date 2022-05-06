@@ -10,6 +10,10 @@
 <%@attribute name="dataHasError" required="true" type="java.lang.Boolean" %>
 <%@attribute name="dataErrors" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit>" %>
 <%@attribute name="validFile" required="true" type="java.lang.Boolean" %>
+<%@attribute name="specialJsFrag" fragment="true" %>
+<%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
+<%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -21,10 +25,10 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<jsp:invoke fragment="specialJsFrag"/>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/facRegistration/dashboard.jsp" %>
+<jsp:invoke fragment="dashboardFrag"/>
 <form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -42,6 +46,7 @@
                                 <div id="facInfoPanel" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
+                                        <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Please upload the list of Personnel Authorised to Access the Facility</h3>
                                         <div class="document-info-list">
                                             <div style="margin-bottom: 10px">
@@ -112,7 +117,7 @@
                                         </c:if>
                                     </div>
                                 </div>
-                                <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerFooter.jsp" %>
+                                <jsp:invoke fragment="innerFooterFrag"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
