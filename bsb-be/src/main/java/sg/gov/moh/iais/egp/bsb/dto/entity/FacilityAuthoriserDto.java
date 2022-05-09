@@ -39,9 +39,11 @@ public class FacilityAuthoriserDto extends BaseEntityDto {
 
     private Date employmentStartDate;
 
-    private String employmentPeriod;
-
     private String workArea;
 
     private Date securityClearanceDate;
+
+    private String employeeOfComp;
+
+    private String externalCompName;
 }

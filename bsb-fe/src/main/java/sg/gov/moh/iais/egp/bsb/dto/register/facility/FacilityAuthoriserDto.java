@@ -70,14 +70,15 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentStartDate")
         private String employmentStartDt;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentPeriod")
-        private String employmentPeriod;
-
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.workArea")
         private String workArea;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.securityClearanceDate")
         private String securityClearanceDt;
+
+        private String employee;
+
+        private String externalCompName;
     }
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.addOrDelete")

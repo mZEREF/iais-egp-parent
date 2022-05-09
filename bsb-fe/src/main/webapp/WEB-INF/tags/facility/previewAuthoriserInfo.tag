@@ -30,13 +30,13 @@
             <div class="row">
                 <div class="col-xs-12" style="padding-left: 0">
                     <div class="tab-gp steps-tab" style="margin-top: 0;">
-                        <div class="tab-content" style="padding-left: 30px">
+                        <div class="tab-content" style="padding: 50px 0">
                             <div>
                                 <p style="font-weight: bold; padding-left: 8px;">Preview Personnel Authorised to Access the Facility Information</p>
                             </div>
 
                             <div>
-                                <table class="table" aria-describedby="">
+                                <table class="table" style="font-size: 12px;" aria-describedby="">
                                     <thead>
                                     <tr>
                                         <th scope="col">S/N</th>
@@ -48,10 +48,11 @@
                                         <th scope="col">Contact No.</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Employment Start Date</th>
-                                        <th scope="col">Designation</th>
-                                        <th scope="col">Employment Period</th>
-                                        <th scope="col">Work Area</th>
                                         <th scope="col">Security Clearance Date</th>
+                                        <th scope="col">Designation</th>
+                                        <th scope="col">Area of Work</th>
+                                        <th scope="col">Is This Person an Employee of This Company</th>
+                                        <th scope="col">Company Name</th>
                                     </tr>
                                     </thead>
                                     <c:forEach var="personnel" items="${dataList}" varStatus="status">
@@ -65,10 +66,11 @@
                                             <td>${personnel.contactNo}</td>
                                             <td>${personnel.email}</td>
                                             <td>${personnel.employmentStartDt}</td>
-                                            <td>${personnel.designation}</td>
-                                            <td>${personnel.employmentPeriod}</td>
-                                            <td>${personnel.workArea}</td>
                                             <td>${personnel.securityClearanceDt}</td>
+                                            <td>${personnel.designation}</td>
+                                            <td>${personnel.workArea}</td>
+                                            <td>${personnel.employee}</td>
+                                            <td>${personnel.externalCompName}</td>
                                         </tr>
                                     </c:forEach>
                                 </table>

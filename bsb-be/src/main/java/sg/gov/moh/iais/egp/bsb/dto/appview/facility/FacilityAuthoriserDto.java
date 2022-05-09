@@ -35,6 +35,10 @@ public class FacilityAuthoriserDto {
         private String workArea;
 
         private String securityClearanceDt;
+
+        private String employee;
+
+        private String externalCompName;
     }
 
     private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
