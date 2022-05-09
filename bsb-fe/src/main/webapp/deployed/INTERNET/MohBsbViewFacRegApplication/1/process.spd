@@ -1,38 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBsbViewFacRegApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices />
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohBsbViewFacRegApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="Init" x="250" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="400" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleAction" x="700" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAction_OnStepProcess_0" name="handleAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreCommitteeInfo" x="600" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCommitteeInfo_OnStepProcess_0" name="preCommitteeInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAuthoriserInfo" x="780" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAuthoriserInfo_OnStepProcess_0" name="preAuthoriserInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="550" y="100">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CommitteeInfoPage" stageIndicator="" x="600" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AuthoriserInfoPage" stageIndicator="" x="780" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
  </Pages>
- <Forms />
+ <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(120,120)(270,120)}</position>
@@ -43,13 +76,49 @@
   <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
    <position>{(420,120)(570,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewPage" style="oblique">
+   <position>{(570,120)(720,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleAction" style="oblique">
+   <position>{(720,120)(720,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAuthoriserInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(720,260)(800,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CommitteeInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreCommitteeInfo" style="oblique">
+   <position>{(620,370)(620,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AuthoriserInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAuthoriserInfo" style="oblique">
+   <position>{(800,370)(800,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CommitteeInfoPage" style="oblique">
+   <position>{(620,500)(720,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AuthoriserInfoPage" style="oblique">
+   <position>{(800,500)(720,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(720,620)(431,619)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCommitteeInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(720,260)(620,370)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions />
- <Switches />
- <Branches />
- <Merges />
- <StudioLabels />
- <StageIndicator />
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="ActionSwitch" x="700" y="240">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PreAuthoriserInfo" value="&quot;authoriser&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreCommitteeInfo" value="&quot;committee&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="700" y="600">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
 </Application>
-
