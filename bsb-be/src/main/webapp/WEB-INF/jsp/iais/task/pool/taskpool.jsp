@@ -72,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-                <h3>
+                <h3 style="margin-top: 20px">
                     <span>Search Results</span>
                 </h3>
                 <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
@@ -86,15 +86,17 @@
                             <th scope="col" style="display: none"></th>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
                             <%--<iais:sortableHeader needSort="false" field="" value=""/>--%>
-                            <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
-                            <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>
-                            <iais:sortableHeader needSort="false" field="appType" value="Application Type"/>
-                            <iais:sortableHeader needSort="false" field="applicationDt" value="Application Date"/>
-                            <iais:sortableHeader needSort="false" field="" value="Action"/>
+                            <iais:sortableHeader needSort="true" field="applicationNo" value="Application No."/>
+                            <iais:sortableHeader needSort="true" field="appType" value="Application Type"/>
+                            <iais:sortableHeader needSort="true" field="processType" value="Submission Type"/>
+                            <iais:sortableHeader needSort="true" field="status" value="Application Status"/>
+                            <iais:sortableHeader needSort="true" field="applicationDt" value="Application Date"/>
+                            <iais:sortableHeader needSort="true" field="modifiedDt" value="Last Modified Date"/>
+                            <iais:sortableHeader needSort="true" field="" value="Action"/>
                         </tr>
                         </thead>
                         <c:choose>
-                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.TaskView>"--%>
+                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto>"--%>
                             <c:when test="${empty dataList}">
                                 <tr>
                                     <td colspan="7">
@@ -120,16 +122,24 @@
                                             <p><c:out value="${entity.application.applicationNo}"/></p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Process Type</p>
-                                            <p><iais:code code="${entity.application.processType}"/></p>
-                                        </td>
-                                        <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
                                             <p><iais:code code="${entity.application.appType}"/></p>
                                         </td>
                                         <td>
+                                            <p class="visible-xs visible-sm table-row-title">Submission Type</p>
+                                            <p><iais:code code="${entity.application.processType}"/></p>
+                                        </td>
+                                        <td>
+                                            <p class="visible-xs visible-sm table-row-title">Application Status</p>
+                                            <p><iais:code code="${entity.application.status}"/></p>
+                                        </td>
+                                        <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Date</p>
                                             <p><fmt:formatDate value="${entity.application.applicationDt}" pattern="dd/MM/yyyy"/></p>
+                                        </td>
+                                        <td>
+                                            <p class="visible-xs visible-sm table-row-title">Last Modified Date</p>
+                                            <p><fmt:formatDate value="${entity.modifiedAt}" pattern="dd/MM/yyyy"/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Action</p>
@@ -145,7 +155,6 @@
                         <button type="button" class="btn btn-primary" onclick="pickUpMultiTask()">Pick Up</button>
                     </div>--%>
                 </div>
-                <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
             </div>
         </div>
         <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="multiAssignCancel()" popupOrder="multiAssignAlert"/>
