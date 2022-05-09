@@ -8,9 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFilterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryFilterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -36,21 +36,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * OnlineTopEnquiryDelegator
+ * OnlinedrpEnquiryDelegator
  *
  * @author junyu
  * @date 2022/5/5
  */
-@Delegator(value = "mohTopOnlineEnquiry")
+@Delegator(value = "mohDrpOnlineEnquiry")
 @Slf4j
-public class OnlineTopEnquiryDelegator {
+public class OnlineDrpEnquiryDelegator {
 
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
 
-    FilterParameter topParameter = new FilterParameter.Builder()
-            .clz(DsTopEnquiryResultsDto.class)
-            .searchAttr("topParam")
-            .resultAttr("topResult")
+    FilterParameter drpParameter = new FilterParameter.Builder()
+            .clz(DsDrpEnquiryResultsDto.class)
+            .searchAttr("drpParam")
+            .resultAttr("drpResult")
             .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     @Autowired
@@ -62,58 +62,58 @@ public class OnlineTopEnquiryDelegator {
     private AssistedReproductionClient assistedReproductionClient;
 
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DRP);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
-        topParameter.setPageSize(pageSize);
-        topParameter.setPageNo(1);
-        topParameter.setSortField("ID");
-        topParameter.setSortType(SearchParam.DESCENDING);
-        ParamUtil.setSessionAttr(bpc.request,"dsEnquiryTopFilterDto",null);
-        ParamUtil.setSessionAttr(bpc.request, "topParam",null);
+        drpParameter.setPageSize(pageSize);
+        drpParameter.setPageNo(1);
+        drpParameter.setSortField("ID");
+        drpParameter.setSortType(SearchParam.DESCENDING);
+        ParamUtil.setSessionAttr(bpc.request,"dsEnquirydrpFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "drpParam",null);
 
     }
 
     public void preSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "topParam");
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
-        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "drpParam");
+        List<SelectOption> arCentreSelecToption  = assistedReproductionService.genPremisesOptions("null");
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelecToption",arCentreSelecToption);
 
 
         if(!"back".equals(back)||searchParam==null){
             String sortFieldName = ParamUtil.getString(request,"crud_action_value");
             String sortType = ParamUtil.getString(request,"crud_action_additional");
             if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                topParameter.setSortType(sortType);
-                topParameter.setSortField(sortFieldName);
+                drpParameter.setSortType(sortType);
+                drpParameter.setSortField(sortFieldName);
             }
-            DsTopEnquiryFilterDto topDto=setDsTopEnquiryFilterDto(request);
+            DsDrpEnquiryFilterDto drpDto=setDsDrpEnquiryFilterDto(request);
 
-            setQueryFilter(topDto,topParameter);
+            setQueryFilter(drpDto,drpParameter);
 
-            SearchParam topParam = SearchResultHelper.getSearchParam(request, topParameter,true);
+            SearchParam drpParam = SearchResultHelper.getSearchParam(request, drpParameter,true);
 
             if(searchParam!=null){
-                topParam.setPageNo(searchParam.getPageNo());
-                topParam.setPageSize(searchParam.getPageSize());
+                drpParam.setPageNo(searchParam.getPageNo());
+                drpParam.setPageSize(searchParam.getPageSize());
             }
-            CrudHelper.doPaging(topParam,bpc.request);
-            QueryHelp.setMainSql("onlineEnquiry","searchByTop",topParam);
-            SearchResult<DsTopEnquiryResultsDto> topResult = assistedReproductionService.searchDsTopByParam(topParam);
-            ParamUtil.setRequestAttr(request,"topResult",topResult);
-            ParamUtil.setSessionAttr(request,"topParam",topParam);
+            CrudHelper.doPaging(drpParam,bpc.request);
+            QueryHelp.setMainSql("onlineEnquiry","searchByDrpPatient",drpParam);
+            SearchResult<DsDrpEnquiryResultsDto> drpResult = assistedReproductionService.searchDrpByParam(drpParam);
+            ParamUtil.setRequestAttr(request,"drpResult",drpResult);
+            ParamUtil.setSessionAttr(request,"drpParam",drpParam);
         }else {
-            SearchResult<DsTopEnquiryResultsDto> topResult = assistedReproductionService.searchDsTopByParam(searchParam);
-            ParamUtil.setRequestAttr(request,"topResult",topResult);
-            ParamUtil.setSessionAttr(request,"topParam",searchParam);
+            SearchResult<DsDrpEnquiryResultsDto> drpResult = assistedReproductionService.searchDrpByParam(searchParam);
+            ParamUtil.setRequestAttr(request,"drpResult",drpResult);
+            ParamUtil.setSessionAttr(request,"drpParam",searchParam);
         }
     }
 
-    private DsTopEnquiryFilterDto setDsTopEnquiryFilterDto(HttpServletRequest request) throws ParseException {
-        DsTopEnquiryFilterDto filterDto=new DsTopEnquiryFilterDto();
+    private DsDrpEnquiryFilterDto setDsDrpEnquiryFilterDto(HttpServletRequest request) throws ParseException {
+        DsDrpEnquiryFilterDto filterDto=new DsDrpEnquiryFilterDto();
         String centerName=ParamUtil.getString(request,"centerName");
         filterDto.setCenterName(centerName);
         String submissionNo=ParamUtil.getString(request,"submissionNo");
@@ -124,8 +124,6 @@ public class OnlineTopEnquiryDelegator {
         filterDto.setPatientIdType(patientIdType);
         String patientIdNo=ParamUtil.getString(request,"patientIdNo");
         filterDto.setPatientIdNo(patientIdNo);
-        String doctorRegnNo=ParamUtil.getString(request,"doctorRegnNo");
-        filterDto.setDoctorRegnNo(doctorRegnNo);
         Date birthDateFrom= Formatter.parseDate(ParamUtil.getString(request, "birthDateFrom"));
         filterDto.setBirthDateFrom(birthDateFrom);
         Date birthDateTo= Formatter.parseDate(ParamUtil.getString(request, "birthDateTo"));
@@ -134,15 +132,15 @@ public class OnlineTopEnquiryDelegator {
         filterDto.setSubmissionDateFrom(submissionDateFrom);
         Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
         filterDto.setSubmissionDateTo(submissionDateTo);
-        ParamUtil.setSessionAttr(request,"dsEnquiryTopFilterDto",filterDto);
+        ParamUtil.setSessionAttr(request,"dsEnquiryDrpFilterDto",filterDto);
         return filterDto;
     }
 
-    private void setQueryFilter(DsTopEnquiryFilterDto filterDto, FilterParameter filterParameter){
+    private void setQueryFilter(DsDrpEnquiryFilterDto filterDto, FilterParameter filterParameter){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-//        if(filterDto.getCenterName()!=null) {
-//            filter.put("arCentre", filterDto.getCenterName());
-//        }
+        if(filterDto.getCenterName()!=null) {
+            filter.put("arCentre", filterDto.getCenterName());
+        }
         if(filterDto.getPatientIdType()!=null) {
             filter.put("patientIdType", filterDto.getPatientIdType());
         }
@@ -156,9 +154,6 @@ public class OnlineTopEnquiryDelegator {
             filter.put("patientName", filterDto.getPatientName());
         }
 
-        if(filterDto.getDoctorRegnNo()!=null){
-            filter.put("doctorRegnNo",filterDto.getDoctorRegnNo());
-        }
         if(filterDto.getSubmissionDateFrom()!=null){
             String submissionDateFrom = Formatter.formatDateTime(filterDto.getSubmissionDateFrom(),
                     SystemAdminBaseConstants.DATE_FORMAT);
@@ -189,13 +184,13 @@ public class OnlineTopEnquiryDelegator {
 
     }
 
-    public void perTopInfo(BaseProcessClass bpc){
+    public void perDrpInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
 
         String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
 
 
-        TopSuperDataSubmissionDto topInfo = assistedReproductionClient.getTopSuperDataSubmissionDto(submissionNo).getEntity();
+        DpSuperDataSubmissionDto drpInfo = assistedReproductionClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
         List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
@@ -213,6 +208,6 @@ public class OnlineTopEnquiryDelegator {
             }
         }
 
-        ParamUtil.setRequestAttr(request,"topSuperDataSubmissionDto",topInfo);
+        ParamUtil.setRequestAttr(request,"dpSuperDataSubmissionDto",drpInfo);
     }
 }

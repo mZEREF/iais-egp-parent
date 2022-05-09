@@ -107,7 +107,7 @@
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
@@ -128,7 +128,7 @@
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 where dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
@@ -149,7 +149,7 @@
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
                 where 1=1
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
             <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
             <#if patient_id_types??> AND  ${patient_id_types}</#if>
@@ -215,7 +215,7 @@
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
@@ -321,7 +321,7 @@
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
@@ -444,7 +444,7 @@
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
@@ -547,7 +547,7 @@
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
@@ -648,7 +648,7 @@
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
                 <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
-                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
@@ -752,7 +752,7 @@
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
                 where dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
@@ -779,7 +779,7 @@
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
                 where dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
@@ -890,7 +890,7 @@
                 left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
 
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
@@ -945,7 +945,7 @@
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE and dcen2.CENTER_TYPE ='ART'
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
-            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
@@ -1086,6 +1086,58 @@
          ]]>
     </sql>
 
+    <sql key = "searchByDrpPatient" remarks="Search Drug Practices Patient">
+        <![CDATA[
+
+             SELECT distinct dds.ID,
+              CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME ,dds.SUBMISSION_NO,dpi.NAME PATIENT_NAME, dpi.ID_TYPE PATIENT_ID_TYPE, dpi.ID_NUMBER PATIENT_ID_NO, dpi.DATE_OF_BIRTH PATIENT_BIRTHDAY, dds.SUBMIT_DT,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
+                FROM ds_patient_information dpi
+                join ds_data_submission dds on (dds.ID = dpi.SUBMISSION_ID or dds.CYCLE_ID in(select dcp.ID from ds_cycle dcp where dcp.PATIENT_CODE = dpi.PATIENT_CODE)) AND dds.STATUS in ('DS001', 'DS011')
+                JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'DRP'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'DRP'
+                left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
+                where 1=1
+            <#if arCenter??> AND  dc.HCI_CODE = :arCenter </#if>
+            <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+            <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+            <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
+            <#if birthDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:birthDateFrom)</#if>
+            <#if birthDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:birthDateTo)</#if>
+            <#if submissionDateFrom??> AND dds.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
+            <#if submissionDateTo??> AND dds.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+            <#if submissionNo??> AND  charindex(:submissionNo, dds.SUBMISSION_NO) >0</#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+         ]]>
+    </sql>
+
+    <sql key = "searchByDrpAjax" remarks="Search Drug Practices Ajax">
+        <![CDATA[
+            SELECT distinct dds.ID,
+                CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME,
+                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,NULL DOCTOR_NAME ,dds.SUBMIT_DT
+              FROM ds_dp_prescribed_dispensed ddpd
+            join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
+            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE='DSCL_005'
+            join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE ='DRP'
+            where 1 = 1
+            <#if patientCode??> AND  :patientCode = dc.PATIENT_CODE</#if>
+
+         ]]>
+    </sql>
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

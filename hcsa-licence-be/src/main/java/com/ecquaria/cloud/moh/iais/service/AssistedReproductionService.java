@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycleDto;
@@ -48,6 +50,9 @@ public interface AssistedReproductionService{
 
     SearchResult<DsTopEnquiryResultsDto> searchDsTopByParam(SearchParam searchParam);
 
+    SearchResult<DsDrpEnquiryResultsDto> searchDrpByParam(SearchParam searchParam);
+
+    SearchResult<DsDrpEnquiryAjaxResultsDto> searchDrpAjaxByParam(SearchParam searchParam);
 
     List<DataSubmissionDto> allDataSubmissionByCycleId(String cycleId);
 

@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -53,7 +55,7 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/hcsa/enquiry/ar")
-public class OnlineArAjaxController {
+public class OnlineDsAjaxController {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
 
@@ -255,6 +257,40 @@ public class OnlineArAjaxController {
                 map.put("result", "Fail");
             }
             map.put("ajaxResult", results);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "drpDetail.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> drpDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+
+        String patientCode = request.getParameter("patientCode");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(patientCode)){
+            SearchParam searchParam = new SearchParam(DsDrpEnquiryAjaxResultsDto.class.getName());
+            searchParam.setPageSize(Integer.MAX_VALUE);
+            searchParam.setPageNo(0);
+            searchParam.setSort("SUBMIT_DT", SearchParam.DESCENDING);
+            searchParam.addFilter("patientCode", patientCode, true);
+            //search
+            QueryHelp.setMainSql("onlineEnquiry", "searchByDrpAjax", searchParam);
+            SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = assistedReproductionService.searchDrpAjaxByParam(searchParam);
+            List<DsDrpEnquiryAjaxResultsDto> queryList = null;
+            if (!Objects.isNull(searchResult)){
+                queryList = searchResult.getRows();
+                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+                queryList.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
+                queryList.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
+                queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+
+                map.put("result", "Success");
+            }else {
+                map.put("result", "Fail");
+            }
+            map.put("ajaxResult", searchResult);
         } else {
             map.put("result", "Fail");
         }
@@ -492,6 +528,45 @@ public class OnlineArAjaxController {
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, DsTopEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "DRP-SearchResults-DownloadS")
+    public @ResponseBody
+    void fileDrpHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "drpParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("onlineEnquiry", "searchByDrpPatient",searchParam);
+
+        SearchResult<DsDrpEnquiryResultsDto> results = assistedReproductionService.searchDrpByParam(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<DsDrpEnquiryResultsDto> queryList = results.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, DsDrpEnquiryResultsDto.class, "Drug_Practices_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

@@ -26,7 +26,7 @@
             </a>
         </h4>
     </div>
-    <div id="previewLicensee" class="panel-collapse collapse">
+    <div id="previewLicensee" class="panel-collapse collapse in">
         <div class="panel-body">
             <p class="text-right">
                 <c:if test="${rfi == 'rfi'}">
