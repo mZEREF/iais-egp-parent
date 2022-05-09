@@ -443,7 +443,7 @@ public class InspectionDODelegator {
 
                     String deconflict=ParamUtil.getRequestString(request,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"Deconflict");
                     if(deconflict!=null){
-                        temp.setSameAnswer(true);
+                        temp.setSameAnswer(false);
                         temp.setDeconflict(deconflict);
                         AnswerForDifDto answerForDifDto=temp.getAnswerForDifDtoMaps().get(deconflict);
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
