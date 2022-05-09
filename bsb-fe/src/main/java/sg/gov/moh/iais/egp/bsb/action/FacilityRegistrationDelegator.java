@@ -53,6 +53,8 @@ public class FacilityRegistrationDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        request.getSession().removeAttribute(KEY_SAMPLE_COMMITTEE);
+        request.getSession().removeAttribute(KEY_SAMPLE_AUTHORISER);
         AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }
 

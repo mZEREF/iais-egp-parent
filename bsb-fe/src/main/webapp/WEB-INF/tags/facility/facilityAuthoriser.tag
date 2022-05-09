@@ -6,6 +6,7 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%@attribute name="authoriserSampleFile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto" %>
 <%@attribute name="facAuth" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
 <%@attribute name="dataHasError" required="true" type="java.lang.Boolean" %>
 <%@attribute name="dataErrors" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit>" %>
@@ -53,7 +54,7 @@
                                                 Note: The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of authorised personnel is always kept up to date i.e. prompt submission of updates to include newly authorised personnel or to remove personnel who are no longer authorised to access the facility.
                                             </div>
                                             <ul>
-                                                <li>Click <a href="#" style="text-decoration: underline">here</a> to download the template for the list of Personnel Authorised to Access the Facility.</li>
+                                                <li>Click <a href="/bsb-fe/ajax/doc/download/facReg/authoriser/sample/<iais:mask name="file" value="${authoriserSampleFile.fileRepoId}"/>" style="text-decoration: underline">here</a> to download the template for the list of Personnel Authorised to Access the Facility.</li>
                                                 <li>Acceptable file format is XLSX, CSV.</li>
                                                 <li>The maximum file size is 10 MB.</li>
                                             </ul>

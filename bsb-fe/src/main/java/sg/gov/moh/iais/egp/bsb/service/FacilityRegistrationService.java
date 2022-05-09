@@ -28,7 +28,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -358,6 +360,18 @@ public class FacilityRegistrationService {
             }
         }
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
+
+        // load sample file data and set into session
+        getBsbCommitteeSampleFileRecord(request);
+    }
+
+    public SampleFileDto getBsbCommitteeSampleFileRecord(HttpServletRequest request) {
+        SampleFileDto committeeSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, KEY_SAMPLE_COMMITTEE);
+        if (committeeSampleFileDto == null) {
+            committeeSampleFileDto = facRegClient.retrieveSampleFileByType(SampleFileConstants.TYPE_FACILITY_BSB_COMMITTEE_DATA_FILE);
+            ParamUtil.setSessionAttr(request, KEY_SAMPLE_COMMITTEE, committeeSampleFileDto);
+        }
+        return committeeSampleFileDto;
     }
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
@@ -452,8 +466,18 @@ public class FacilityRegistrationService {
                 ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthDto.retrieveValidationResult());
             }
         }
-
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facAuthDto);
+
+        getAuthoriserSampleFileRecord(request);
+    }
+
+    public SampleFileDto getAuthoriserSampleFileRecord(HttpServletRequest request) {
+        SampleFileDto committeeSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, KEY_SAMPLE_AUTHORISER);
+        if (committeeSampleFileDto == null) {
+            committeeSampleFileDto = facRegClient.retrieveSampleFileByType(SampleFileConstants.TYPE_FACILITY_AUTHORISER_PERSONNEL_DATA_FILE);
+            ParamUtil.setSessionAttr(request, KEY_SAMPLE_AUTHORISER, committeeSampleFileDto);
+        }
+        return committeeSampleFileDto;
     }
 
     public void handleFacInfoAuthoriser(BaseProcessClass bpc) {

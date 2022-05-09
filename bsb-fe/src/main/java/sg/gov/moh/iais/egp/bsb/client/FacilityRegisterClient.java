@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationAnswerDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
@@ -32,6 +33,13 @@ public interface FacilityRegisterClient {
     @GetMapping(value = "/declaration/config", produces = MediaType.APPLICATION_JSON_VALUE)
     DeclarationConfigInfo getDeclarationConfigBySpecificType(@RequestParam("type") String type,
                                                              @RequestParam("sub-type") String subType);
+
+    @GetMapping(value = "/sample-file", produces = MediaType.APPLICATION_JSON_VALUE)
+    SampleFileDto retrieveSampleFileByType(@RequestParam(value = "type") String type);
+
+    @GetMapping(value = "/sample-file", produces = MediaType.APPLICATION_JSON_VALUE)
+    SampleFileDto retrieveSampleFileByTypeAndVersion(@RequestParam(value = "type") String type,
+                                                     @RequestParam(value = "version") Integer version);
 
     @PostMapping(path = "/register/facility/form-validation/selection", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilitySelection(@RequestBody FacilitySelectionDto dto);

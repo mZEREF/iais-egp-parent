@@ -33,6 +33,8 @@ public class FacRegisterConstants {
     public static final String NODE_PATH_FAC_COMMITTEE     = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_COMMITTEE;
     public static final String NODE_PATH_FAC_AUTH          = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_AUTH;
 
+    public static final String KEY_SAMPLE_COMMITTEE        = "committeeSampleFile";
+    public static final String KEY_SAMPLE_AUTHORISER       = "authoriserSampleFile";
     public static final String STEP_NAME_COMMITTEE_PREVIEW = "committeePreview";
     public static final String STEP_NAME_AUTHORISER_PREVIEW= "authoriserPreview";
 

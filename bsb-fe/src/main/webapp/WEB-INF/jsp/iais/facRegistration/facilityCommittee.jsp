@@ -4,7 +4,8 @@
 <%--@elvariable id="DATA_HAS_ERROR" type="java.lang.Boolean"--%>
 <%--@elvariable id="DATA_ERRORS" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit>"--%>
 <%--@elvariable id="VALID_FILE" type="java.lang.Boolean"--%>
-<fac:facilityCommittee facCommittee="${facCommittee}" dataHasError="${DATA_HAS_ERROR}" dataErrors="${DATA_ERRORS}" validFile="${VALID_FILE}">
+<%--@elvariable id="committeeSampleFile" type="sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto"--%>
+<fac:facilityCommittee facCommittee="${facCommittee}" dataHasError="${DATA_HAS_ERROR}" dataErrors="${DATA_ERRORS}" validFile="${VALID_FILE}" committeeSampleFile="${committeeSampleFile}">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>

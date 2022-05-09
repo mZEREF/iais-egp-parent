@@ -176,7 +176,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         } catch (IOException e) {
             log.error("Fail to convert EXCEL/CSV to DTOs", e);
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-            errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "Could not parse file content.");
+            errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "Could not parse the file. Please download and fill the template file.");
             this.newFile = null;
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);
             return false;

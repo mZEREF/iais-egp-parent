@@ -6,6 +6,7 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%@attribute name="committeeSampleFile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto" %>
 <%@attribute name="facCommittee" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
 <%@attribute name="dataHasError" required="true" type="java.lang.Boolean" %>
 <%@attribute name="dataErrors" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit>" %>
@@ -50,7 +51,7 @@
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Please upload the list of Biosafety Committee Members</h3>
                                         <div class="document-info-list">
                                             <ul>
-                                                <li>Click <a href="#" style="text-decoration: underline">here</a> to download the template for the list of biosafety committee members.</li>
+                                                <li>Click <a href='/bsb-fe/ajax/doc/download/facReg/committee/sample/<iais:mask name="file" value="${committeeSampleFile.fileRepoId}"/>' style="text-decoration: underline">here</a> to download the template for the list of biosafety committee members.</li>
                                                 <li>Acceptable file format is XLSX, CSV.</li>
                                                 <li>The maximum file size is 10 MB.</li>
                                             </ul>
