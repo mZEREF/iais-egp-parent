@@ -190,6 +190,8 @@ public class InspectionDODelegator {
             InspectionChecklistDto inspectionChecklistDto=inspectionClient.getChkListDraft(officer.getId(),appId).getBody();
 
             if(inspectionChecklistDto!=null){
+                InspectionChecklistDto combinedChecklistDto=inspectionClient.getCombinedChkList(appId).getBody();
+
                 List<ChklstItemAnswerDto> answerDtos=inspectionChecklistDto.getAnswer();
                 inspectionChecklistDtoList.add(inspectionChecklistDto);
                 InspectionFillCheckListDto comDto = inspectionFDtosDto.getFdtoList().get(0);
@@ -198,13 +200,22 @@ public class InspectionDODelegator {
                     for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
 
                         if(IaisCommonUtils.isNotEmpty(answerDtos)){
-                            String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
                             Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
                             for (AnswerForDifDto answerForDifDto: inspectionCheckQuestionDto.getAnswerForDifDtos()
                                  ) {
                                 for (ChklstItemAnswerDto answer: answerDtos
                                 ) {
                                     if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())&&inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())){
+                                        if(combinedChecklistDto!=null){
+                                            List<ChklstItemAnswerDto> answerDtoCombineds=combinedChecklistDto.getAnswer();
+                                            for (ChklstItemAnswerDto combined:answerDtoCombineds
+                                                 ) {
+                                                if(combined.equals(answer)){
+                                                    inspectionCheckQuestionDto.setSameAnswer(false);
+                                                    inspectionCheckQuestionDto.setDeconflict(officer.getId());
+                                                }
+                                            }
+                                        }
                                         answerForDifDto.setAnswer(answer.getAnswer());
                                         answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
                                         answerForDifDto.setNcs(answer.getFindings());
@@ -432,7 +443,7 @@ public class InspectionDODelegator {
 
                     String deconflict=ParamUtil.getRequestString(request,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"Deconflict");
                     if(deconflict!=null){
-                        temp.setSameAnswer(true);
+                        temp.setSameAnswer(false);
                         temp.setDeconflict(deconflict);
                         AnswerForDifDto answerForDifDto=temp.getAnswerForDifDtoMaps().get(deconflict);
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();

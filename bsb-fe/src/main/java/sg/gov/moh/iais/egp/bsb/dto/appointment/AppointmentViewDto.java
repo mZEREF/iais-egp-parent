@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.dto.appointment;
 
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuditDto;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +24,12 @@ public class AppointmentViewDto implements Serializable {
     private String processType;
     private String applicationStatus;
     private Date inspectionDateAndTime;
+    //facility
+    private String facilityName;
 
+    private String facilityClassification;
+
+    private String address;
     //user entered data
     private String reason;
     private String newStartDate;

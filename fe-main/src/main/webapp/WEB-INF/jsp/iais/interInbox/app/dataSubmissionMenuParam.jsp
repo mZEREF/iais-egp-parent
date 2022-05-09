@@ -9,6 +9,13 @@
             <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryDonorSample">Donor sample enquiry</a>
         </li>
         </c:if>
+
+        <c:if test="${dataSubLDTPrivilege == 1}">
+            <li>
+                <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Enquiry</a>
+            </li>
+        </c:if>
+
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Amend a Submission</a>
         </li>

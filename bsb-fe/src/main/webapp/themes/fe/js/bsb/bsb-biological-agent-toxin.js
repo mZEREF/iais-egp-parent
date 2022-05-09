@@ -92,10 +92,27 @@ $(function () {
         var addressType = $(this).val();
         if(addressType === 'ADDTY001') {
             $("#aptMandatoryBlkT" + idx).show();
-            $("#aptMandatoryFloorUnitT" + idx).show();
+            $("#aptMandatoryFloorT" + idx).show();
+            $("#aptMandatoryUnitT" + idx).show();
         } else {
             $("#aptMandatoryBlkT" + idx).hide();
-            $("#aptMandatoryFloorUnitT" + idx).hide();
+            $("#aptMandatoryFloorT" + idx).hide();
+            $("#aptMandatoryUnitT" + idx).hide();
+        }
+    });
+
+    $("select[data-custom-ind=addressTypeE]").change(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('addressTypeE'.length, id.length);
+        var addressType = $(this).val();
+        if(addressType === 'ADDTY001') {
+            $("#aptMandatoryBlkE" + idx).show();
+            $("#aptMandatoryFloorE" + idx).show();
+            $("#aptMandatoryUnitE" + idx).show();
+        } else {
+            $("#aptMandatoryBlkE" + idx).hide();
+            $("#aptMandatoryFloorE" + idx).hide();
+            $("#aptMandatoryUnitE" + idx).hide();
         }
     });
 

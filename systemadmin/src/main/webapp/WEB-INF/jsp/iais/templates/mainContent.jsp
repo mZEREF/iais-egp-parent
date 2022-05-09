@@ -21,11 +21,11 @@
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:5%;"/>
                                 <iais:sortableHeader needSort="true" field="message_type" value="Message Type" style="width:10%;" customSpacing="12"/>
                                 <iais:sortableHeader needSort="true" field="template_name" value="Template Name" style="width:15%;" customSpacing="12"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode" style="width:10%;" customSpacing="12"/>
-                                <iais:sortableHeader needSort="true" field="process" value="Process" style="width:10%;" customSpacing="12"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="To Recipients" style="width:10%;" customSpacing="12"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="CC Recipients" style="width:10%;" customSpacing="12"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="BCC Recipients" style="width:10%;" customSpacing="12"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode_desc" value="Delivery Mode" style="width:10%;" customSpacing="12"/>
+                                <iais:sortableHeader needSort="true" field="process_desc" value="Process" style="width:10%;" customSpacing="12"/>
+                                <iais:sortableHeader needSort="true" field="RECSort" value="To Recipients" style="width:10%;" customSpacing="12"/>
+                                <iais:sortableHeader needSort="true" field="CCSort" value="CC Recipients" style="width:10%;" customSpacing="12"/>
+                                <iais:sortableHeader needSort="true" field="BCCSort" value="BCC Recipients" style="width:10%;" customSpacing="12"/>
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date" style="width:10%;" customSpacing="12"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date" style="width:10%;" customSpacing="12"/>
                                 <iais:sortableHeader needSort="false" field="" value="Action"/>

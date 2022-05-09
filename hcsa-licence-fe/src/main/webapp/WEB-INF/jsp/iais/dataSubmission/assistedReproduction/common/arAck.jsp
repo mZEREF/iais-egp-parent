@@ -34,7 +34,14 @@
                     </p>
                 </div>
                 <label class="col-xs-12" style="font-size: 20px">Submission Successful</label>
-                <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
+                <p class="col-xs-12 margin-btm">-<strong>
+                    <%--<iais:code code="${arSuperDataSubmissionDto.submissionType}"/>--%>
+                    <c:choose>
+                        <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP001'}">Submit Patient Information</c:when>
+                        <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP002'}">Submit Cycle Stage</c:when>
+                        <c:when test="${arSuperDataSubmissionDto.submissionType == 'AR_TP003'}">Submit Donor Sample</c:when>
+                    </c:choose>
+                </strong></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
                     <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>

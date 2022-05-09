@@ -1,4 +1,16 @@
-f<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
+<%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 <%--@elvariable id="organizationAddress" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo"--%>
 <fac:companyInfo organizationAddress="${organizationAddress}">
+    <jsp:attribute name="specialJsFrag">
+        <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
+        <%--@elvariable id="webroot" type="java.lang.String"--%>
+        <script type="text/javascript" src="${webroot}/js/bsb/bsb-facility-register.js"></script>
+    </jsp:attribute>
+    <jsp:attribute name="dashboardFrag">
+        <%@include file="dashboard.jsp" %>
+    </jsp:attribute>
+    <jsp:attribute name="innerFooterFrag">
+        <%@include file="InnerFooter.jsp" %>
+    </jsp:attribute>
 </fac:companyInfo>

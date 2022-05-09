@@ -1031,6 +1031,61 @@
          ]]>
     </sql>
 
+    <sql key = "searchByTop" remarks="Search Termination of Pregnancy">
+        <![CDATA[
+            select distinct * from (
+            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
+                ,(SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
+                FROM  ds_top_patient dtpNew
+                where dtpNew.PATIENT_ID_NO =dtp.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dtp.PATIENT_ID_TYPE
+                ) num
+                FROM ds_data_submission dds
+                join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
+                left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
+                left join ds_top_family_plan dtfp on dds.ID =dtfp.SUBMISSION_ID
+                left join ds_top_post_termination dtpt  on dds.ID = dtpt.SUBMISSION_ID
+                left join ds_top_pre_termination dtpt2  on dds.ID = dtpt2.SUBMISSION_ID
+
+                where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                ) T1
+            where 1 = 1
+            <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
+            <#if patientIdNo??> AND  charindex(:patientIdNo, T1.PATIENT_ID_NO) >0</#if>
+            <#if submissionNo??> AND  charindex(:submissionNo, T1.SUBMISSION_NO) >0</#if>
+            <#if patientName??> AND  charindex(:patientName, T1.PATIENT_NAME) >0</#if>
+            <#if doctorRegnNo??> AND  charindex(:doctorRegnNo, T1.DOCTOR_REGN_NO) >0</#if>
+            <#if birthDateFrom??> AND T1.PATIENT_BIRTHDAY >= convert(date,:birthDateFrom)</#if>
+            <#if birthDateTo??> AND T1.PATIENT_BIRTHDAY <= convert(datetime,:birthDateTo)</#if>
+            <#if submissionDateFrom??> AND T1.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
+            <#if submissionDateTo??> AND T1.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+         ]]>
+    </sql>
+
+    <sql key = "searchTopAjax" remarks="Search Termination of Pregnancy Ajax">
+        <![CDATA[
+            select distinct * from (
+            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT,null num
+                FROM ds_data_submission dds
+                join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
+                left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
+                left join ds_top_family_plan dtfp on dds.ID =dtfp.SUBMISSION_ID
+                left join ds_top_post_termination dtpt  on dds.ID = dtpt.SUBMISSION_ID
+                left join ds_top_pre_termination dtpt2  on dds.ID = dtpt2.SUBMISSION_ID
+
+                where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                ) T1
+            where 1 = 1
+            <#if patientIdType??> AND  :patientIdType = T1.PATIENT_ID_TYPE</#if>
+            <#if patientIdNo??> AND  :patientIdNo = T1.PATIENT_ID_NO</#if>
+         ]]>
+    </sql>
+
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

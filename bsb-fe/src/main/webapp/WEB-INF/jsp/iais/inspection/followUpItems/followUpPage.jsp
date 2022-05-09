@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="button-group">
-                                        <a class="btn btn-secondary" id="cancelBtn">CANCEL</a>
+                                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
                                         <a class="btn btn-secondary" id="draftBtn">SAVE AS DRAFT</a>
                                         <a class="btn btn-primary" id="saveBtn">SUBMIT</a>
                                     </div>

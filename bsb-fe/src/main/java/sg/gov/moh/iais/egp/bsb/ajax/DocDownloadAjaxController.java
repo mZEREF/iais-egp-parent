@@ -22,11 +22,14 @@ import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamSavedDoc;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
@@ -56,6 +59,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSU
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_APPLICATION_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
@@ -161,6 +165,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/facReg/profile/repo/{id}")
     public void downloadProfileSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegProfileGetSavedFile);
+    }
+
+    @GetMapping("/facReg/committee/sample/{id}")
+    public void downloadFacCommitteeSampleFile(@PathVariable("id") String maskedFileRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedFileRepoId, this::unmaskFileId, this::facRegCommitteeSampleFile);
+    }
+
+    @GetMapping("/facReg/authoriser/sample/{id}")
+    public void downloadFacAuthoriserSampleFile(@PathVariable("id") String maskedFileRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedFileRepoId, this::unmaskFileId, this::facRegAuthoriserSampleFile);
     }
 
     @GetMapping("/facReg/committee/new/{id}")
@@ -350,6 +364,16 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getViewReportableEventSavedFile);
     }
 
+    @GetMapping("/insAFC/new/{id}")
+    public void downloadNewInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCNewFile);
+    }
+
+    @GetMapping("/insAFC/repo/{id}")
+    public void downloadSavedInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCSavedFile);
+    }
+
 
     /**
      * Use the param 'file' to unmask the id
@@ -489,6 +513,26 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
+    }
+
+    /** Facility registration download biosafety committee sample file  */
+    private MultipartFile facRegCommitteeSampleFile(HttpServletRequest request, String id) {
+        SampleFileDto committeeSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_SAMPLE_COMMITTEE);
+        if (!committeeSampleFileDto.getFileRepoId().equals(id)) {
+            throw new IllegalStateException(ERROR_MESSAGE_INVALID_ID);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, committeeSampleFileDto.getName(), null, content);
+    }
+
+    /** Facility registration download authoriser sample file  */
+    private MultipartFile facRegAuthoriserSampleFile(HttpServletRequest request, String id) {
+        SampleFileDto authoriserSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_SAMPLE_AUTHORISER);
+        if (!authoriserSampleFileDto.getFileRepoId().equals(id)) {
+            throw new IllegalStateException(ERROR_MESSAGE_INVALID_ID);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, authoriserSampleFileDto.getName(), null, content);
     }
 
     /**
@@ -744,5 +788,20 @@ public class DocDownloadAjaxController {
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
 
+    }
+
+    private MultipartFile getInsAFCNewFile(HttpServletRequest request, String id) {
+        AFCCommonDocDto dto = (AFCCommonDocDto) ParamUtil.getSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO);
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getInsAFCSavedFile(HttpServletRequest request, String id){
+        Map<String, CertificationDocDisPlayDto> repoIdDocDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        CertificationDocDisPlayDto info = repoIdDocDtoMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getDocName(), null, content);
     }
 }

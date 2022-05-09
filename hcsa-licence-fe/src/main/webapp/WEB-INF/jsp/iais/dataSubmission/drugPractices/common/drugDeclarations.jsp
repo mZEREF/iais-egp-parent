@@ -18,8 +18,8 @@
                             <span class="mandatory">*</span>
                         </c:if>
                     </div>
-                    <c:choose>
-                        <c:when test="${DeclarationsCheckBox != 'hide'}">
+                    <%--<c:choose>
+                        <c:when test="${DeclarationsCheckBox != 'hide'}">--%>
                             <div class="form-check col-md-3 col-xs-3">
                                 <input class="form-check-input" <c:if test="${dataSubmissionDto.dpLateReasonRadio == 'Yes'}">checked="checked"</c:if>
                                        type="radio" name="dpLateReasonRadio" value="Yes" aria-invalid="false">
@@ -31,13 +31,13 @@
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
                             <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_dpLateReasonRadio"></span>
-                        </c:when>
+                        <%--</c:when>
                         <c:otherwise>
                             <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dataSubmissionDto.dpLateReasonRadio}"/>
                             </iais:value>
                         </c:otherwise>
-                    </c:choose>
+                    </c:choose>--%>
 
                 </iais:row>
                 <iais:row>

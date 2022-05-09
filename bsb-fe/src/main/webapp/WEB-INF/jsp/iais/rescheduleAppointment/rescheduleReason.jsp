@@ -27,8 +27,9 @@
                         <table aria-describedby="" class="table">
                             <tr>
                                 <th scope="col" class="sorting">S/N</th>
-                                <th scope="col" class="sorting">Application No.</th>
-                                <th scope="col" class="sorting">Application Type</th>
+                                <th scope="col" class="sorting">Facility Name</th>
+                                <th scope="col" class="sorting">Facility Classification</th>
+                                <th scope="col" class="sorting">Address</th>
                                 <th scope="col" class="sorting">Date and Time of Inspection</th>
                                 <th scope="col" class="sorting">Reason for Request <strong style="color:#ff0000;">*</strong></th>
                                 <th scope="col" class="sorting" style="width:16%">New Preferred Date Range <strong style="color:#ff0000;">*</strong></th>
@@ -48,8 +49,9 @@
                                     <c:forEach var="apptView" items="${appointmentViewList}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                            <td><c:out value="${apptView.applicationNo}"/></td>
-                                            <td><iais:code code="${apptView.applicationType}"/></td>
+                                            <td><c:out value="${apptView.facilityName}"/></td>
+                                            <td><iais:code code="${apptView.facilityClassification}"/></td>
+                                            <td><c:out value="${apptView.address}"/></td>
                                             <td><fmt:formatDate value="${apptView.inspectionDateAndTime}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
                                             <td style="float:left;">
                                                 <textarea name="reason${apptView.maskedAppId}" maxlength="500" rows="10" style=" font-weight:normal;"

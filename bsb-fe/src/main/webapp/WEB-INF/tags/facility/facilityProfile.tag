@@ -10,6 +10,10 @@
 <%@attribute name="organizationAddress" required="true" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo" %>
 <%@attribute name="facTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
+<%@attribute name="specialJsFrag" fragment="true" %>
+<%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
+<%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -21,10 +25,16 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<jsp:invoke fragment="specialJsFrag"/>
+
+<style>
+    .align-label-and-input {
+        padding-left: 15px;
+    }
+</style>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/facRegistration/dashboard.jsp" %>
+<jsp:invoke fragment="dashboardFrag"/>
 <form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -46,6 +56,7 @@
                                 <div id="facInfoPanel" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
+                                        <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
@@ -80,18 +91,20 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-                                                    <label for="isSameAddress">Yes</label>
-                                                    <input type="radio" name="isSameAddress" id="isSameAddress" value="Y" <c:if test="${facProfile.sameAddress eq 'Y'}">checked="checked"</c:if> />
+                                                <div class="form-check col-xs-4" style="margin-top: 8px">
+                                                    <input type="radio" class="form-check-input" name="isSameAddress" id="isSameAddress" value="Y" <c:if test="${facProfile.sameAddress eq 'Y'}">checked="checked"</c:if> />
+                                                    <label for="isSameAddress" class="form-check-label"><span class="check-circle"></span>Yes</label>
                                                 </div>
-                                                <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-                                                    <label for="notSameAddress">No</label>
-                                                    <input type="radio" name="isSameAddress" id="notSameAddress" value="N" <c:if test="${facProfile.sameAddress eq 'N'}">checked="checked"</c:if> />
+                                                <div class="form-check col-xs-4" style="margin-top: 8px">
+                                                    <input type="radio" class="form-check-input" name="isSameAddress" id="notSameAddress" value="N" <c:if test="${facProfile.sameAddress eq 'N'}">checked="checked"</c:if> />
+                                                    <label for="notSameAddress" class="form-check-label"><span class="check-circle"></span>No</label>
                                                 </div>
                                                 <span data-err-ind="isSameAddr" class="error-msg"></span>
                                             </div>
                                         </div>
 
+                                        <iais-bsb:single-constant constantName="ADDRESS_TYPE_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="aptBlk"/>
+                                        <%--@elvariable id="aptBlk" type="java.lang.String"--%>
                                         <div id="isSameAddrSection" <c:if test="${facProfile.sameAddress eq null}">style="display: none"</c:if>>
                                             <div id="isSameAddrSectionY" <c:if test="${facProfile.sameAddress ne 'Y'}">style="display: none"</c:if>>
                                                 <div class="form-group">
@@ -100,7 +113,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="postalCodeY">${organizationAddress.postalCode}</label>
+                                                        <label id="postalCodeY" class="align-label-and-input">${organizationAddress.postalCode}</label>
                                                     </div>
                                                 </div>
 
@@ -110,7 +123,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="addressTypeY"><iais:code code="${organizationAddress.addressType}"/></label>
+                                                        <label id="addressTypeY" class="align-label-and-input"><iais:code code="${organizationAddress.addressType}"/></label>
                                                     </div>
                                                 </div>
 
@@ -118,18 +131,30 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="blockY">Block / House No.</label>
+                                                        <span id="aptMandatorySameAddressBlk" class="mandatory otherQualificationSpan" <c:if test="${organizationAddress.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="blockY">${organizationAddress.blockNo}</label>
+                                                        <label id="blockY" class="align-label-and-input">${organizationAddress.blockNo}</label>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
-                                                        <label for="floorY">Floor and Unit No.</label>
+                                                        <label for="floorY">Floor No.</label>
+                                                        <span id="aptMandatorySameAddressFloor" class="mandatory otherQualificationSpan" <c:if test="${organizationAddress.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="floorY">${organizationAddress.floor} - ${organizationAddress.unitNo}</label>
+                                                        <label id="floorY" class="align-label-and-input">${organizationAddress.floor}</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group ">
+                                                    <div class="col-sm-5 control-label">
+                                                        <label for="unitNoY">Unit No.</label>
+                                                        <span id="aptMandatorySameAddressUnit" class="mandatory otherQualificationSpan" <c:if test="${organizationAddress.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-7">
+                                                        <label id="unitNoY" class="align-label-and-input">${organizationAddress.unitNo}</label>
                                                     </div>
                                                 </div>
 
@@ -139,17 +164,16 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="streetNameY">${organizationAddress.street}</label>
+                                                        <label id="streetNameY" class="align-label-and-input">${organizationAddress.street}</label>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="buildingNameY">Building Name</label>
-                                                        <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <label id="buildingNameY">${organizationAddress.building}</label>
+                                                        <label id="buildingNameY" class="align-label-and-input">${organizationAddress.building}</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -188,7 +212,7 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="blockN">Block / House No.</label>
-                                                        <span id="aptMandatoryBlk" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
+                                                        <span id="aptMandatoryBlk" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <input maxLength="10" type="text" autocomplete="off" name="block" id="blockN" value='<c:out value="${facProfile.block}"/>'/>
@@ -198,17 +222,21 @@
 
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
-                                                        <label for="floorN">Floor and Unit No.</label>
-                                                        <span id="aptMandatoryFloorUnit" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
+                                                        <label for="floorN">Floor No.</label>
+                                                        <span id="aptMandatoryFloor" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
-                                                    <div class="col-sm-2">
+                                                    <div class="col-sm-6 col-md-7">
                                                         <input maxLength="4" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${facProfile.floor}"/>'/>
                                                         <span data-err-ind="floor" class="error-msg"></span>
                                                     </div>
-                                                    <div class="hidden-xs col-sm-1" style="text-align: center">
-                                                        <p>-</p>
+                                                </div>
+
+                                                <div class="form-group ">
+                                                    <div class="col-sm-5 control-label">
+                                                        <label for="unitNoN">Unit No.</label>
+                                                        <span id="aptMandatoryUnit" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
-                                                    <div class="col-sm-3 col-md-4">
+                                                    <div class="col-sm-6 col-md-7">
                                                         <input maxLength="4" type="text" autocomplete="off" name="unitNo" id="unitNoN" value='<c:out value="${facProfile.unitNo}"/>'/>
                                                         <span data-err-ind="unitNo" class="error-msg"></span>
                                                     </div>
@@ -244,11 +272,11 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <div class="form-check col-sm-4 col-md-2" style="margin-top: 8px">
+                                                    <div class="form-check col-xs-4" style="margin-top: 8px">
                                                         <input type="radio" class="form-check-input" name="protectedPlace" id="isAProtectedPlace" value="Y" <c:if test="${facProfile.facilityProtected eq 'Y'}">checked="checked"</c:if> />
                                                         <label for="isAProtectedPlace" class="form-check-label">Yes<span class="check-circle"></span></label>
                                                     </div>
-                                                    <div class="form-check col-sm-4 col-md-2" style="margin-top: 8px">
+                                                    <div class="form-check col-xs-4" style="margin-top: 8px">
                                                         <input type="radio" class="form-check-input" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.facilityProtected eq 'N'}">checked="checked"</c:if> />
                                                         <label for="notAProtectedPlace" class="form-check-label">No<span class="check-circle"></span></label>
                                                     </div>
@@ -316,7 +344,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerFooter.jsp" %>
+                                <jsp:invoke fragment="innerFooterFrag"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>

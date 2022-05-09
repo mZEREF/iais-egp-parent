@@ -95,7 +95,7 @@
                 </iais:row>
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Is Termination of Pregnancy by Surgery performed inown premises?"/>
+                        <iais:field width="6" value="Is Termination of Pregnancy by Surgery performed in own premises?"/>
                         <iais:value width="6" display="true">
                             <c:if test="${terminationDto.performedOwn == true }">
                                 Yes
@@ -108,9 +108,10 @@
                 </div>
                 <div <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Place of Termination of Pregnancy"/>
+                        <iais:field width="5" value="Place of Termination of Pregnancy by Surgery"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.topPlace}"/>
+                            <c:if test="${terminationDto.performedOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.performedOwn == false}"><iais:code code="${terminationDto.topPlace}"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -132,7 +133,8 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.prescribeTopPlace}"/>
+                            <c:if test="${terminationDto.pregnancyOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.pregnancyOwn == false}"><iais:code code="${terminationDto.prescribeTopPlace}"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -153,7 +155,8 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
+                            <c:if test="${terminationDto.takenOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.takenOwn == false}"><iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others (E.g. Home)' : terminationDto.topDrugPlace}"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -167,13 +170,13 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Doctor Professional Regn No."/>
+                    <iais:field width="5" value="Professional Registration Number"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorRegnNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Name of Doctor who performed the Termination of Pregnancy"/>
+                    <iais:field width="5" value="Name of Doctor"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorName}"/>
                     </iais:value>

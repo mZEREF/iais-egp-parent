@@ -9,6 +9,7 @@ import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -46,7 +47,6 @@ public class ChklstItemAnswerDto implements Serializable {
     @CustomMsg(placeHolders = {"field", "maxlength"}, replaceVals = {"Actions Required", "500"})
     private String actionRequired;
 
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"file", "page"})
     private Boolean rectified;
 
     @NotBlank(message = "Invlid value", profiles = {"file", "page"})
@@ -61,7 +61,18 @@ public class ChklstItemAnswerDto implements Serializable {
     @CustomMsg(placeHolders = {"field", "maxlength"}, replaceVals = {"Action Required", "500"})
     private String followupAction;
 
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"file", "page"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"file", "page"})
     private String dueDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChklstItemAnswerDto answerDto = (ChklstItemAnswerDto) o;
+        return Objects.equals(configId, answerDto.configId) && Objects.equals(sectionId, answerDto.sectionId) && Objects.equals(itemId, answerDto.itemId) && Objects.equals(answer, answerDto.answer) && Objects.equals(remarks, answerDto.remarks) && Objects.equals(findings, answerDto.findings) && Objects.equals(actionRequired, answerDto.actionRequired) && Objects.equals(rectified, answerDto.rectified) && Objects.equals(followupItem, answerDto.followupItem) && Objects.equals(observeFollowup, answerDto.observeFollowup) && Objects.equals(followupAction, answerDto.followupAction) && Objects.equals(dueDate, answerDto.dueDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(configId, sectionId, itemId, answer, remarks, findings, actionRequired, rectified, followupItem, observeFollowup, followupAction, dueDate);
+    }
 }

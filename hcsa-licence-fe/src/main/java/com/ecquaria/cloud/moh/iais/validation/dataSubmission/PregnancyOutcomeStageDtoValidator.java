@@ -27,6 +27,17 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
     @SneakyThrows
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
+        final String MASTER_FIRST_SINGLETION = "OSIOU001";
+        final String MASTER_FIRST_TWIN = "OSIOU002";
+        final String MASTER_FIRST_TRIPLET = "OSIOU003";
+        final String MASTER_FIRST_ABOVE = "OSIOU004";
+        final String MASTER_FIRST_UNKNOWN = "OSIOU005";
+
+        final String MASTER_OUTCOME_LIVE = "OUTOPRE001";
+        final String MASTER_OUTCOME_NO_LIVE = "OUTOPRE002";
+        final String MASTER_OUTCOME_UNKNOWN = "OUTOPRE003";
+        final String MASTER_OUTCOME_OTHERS = "OUTOPRE004";
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         PregnancyOutcomeStageDto pregnancyOutcomeStageDto = (PregnancyOutcomeStageDto) obj;
         String firstUltrasoundOrderShow = pregnancyOutcomeStageDto.getFirstUltrasoundOrderShow();
@@ -34,12 +45,13 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
 
         int femaleLiveBirthNum = getInt(pregnancyOutcomeStageDto.getFemaleLiveBirthNum());
         int maleLiveBirthNum = getInt(pregnancyOutcomeStageDto.getMaleLiveBirthNum());
-        if ("OUTOPRE004".equals(pregnancyOutcome)) {
+        int totalLiveBirth = femaleLiveBirthNum + maleLiveBirthNum;
+        if (MASTER_OUTCOME_OTHERS.equals(pregnancyOutcome)) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getOtherPregnancyOutcome())) {
                 errorMap.put("otherPregnancyOutcome", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }
-        if ("OUTOPRE001".equals(pregnancyOutcome)) {
+        if (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome)) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getDeliveryDateType()) && StringUtil.isEmpty(pregnancyOutcomeStageDto.getDeliveryDate())) {
                 errorMap.put("deliveryDate", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
@@ -52,11 +64,17 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
                 errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
-            if ("OSIOU001".equals(firstUltrasoundOrderShow) && femaleLiveBirthNum + maleLiveBirthNum != 1) {
+            if (MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow) && totalLiveBirth != 1) {
                 errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) must be 1.");
             }
+            if (MASTER_FIRST_TWIN.equals(firstUltrasoundOrderShow) && totalLiveBirth > 2) {
+                errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) Cannot be greater 2.");
+            }
+            if (MASTER_FIRST_TRIPLET.equals(firstUltrasoundOrderShow) && totalLiveBirth > 3) {
+                errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) Cannot be greater 3.");
+            }
         }
-        if ("OUTOPRE002".equals(pregnancyOutcome) || ("OUTOPRE001".equals(pregnancyOutcome) && !"OSIOU001".equals(firstUltrasoundOrderShow))) {
+        if (MASTER_OUTCOME_NO_LIVE.equals(pregnancyOutcome) || (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome) && !MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow))) {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getStillBirthNum())) {
                 errorMap.put("stillBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
@@ -67,7 +85,7 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
                 errorMap.put("intraUterDeathNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }
-        if (pregnancyOutcomeStageDto.getNicuCareBabyNum() > femaleLiveBirthNum + maleLiveBirthNum) {
+        if (pregnancyOutcomeStageDto.getNicuCareBabyNum() > totalLiveBirth) {
             errorMap.put("NICUCareBabyNum", MessageUtil.getMessageDesc("The filed cannot be greater than Total No. of Live Births"));
         }
         if (pregnancyOutcomeStageDto.getL2CareBabyNum() + pregnancyOutcomeStageDto.getL3CareBabyNum() > pregnancyOutcomeStageDto.getNicuCareBabyNum()) {

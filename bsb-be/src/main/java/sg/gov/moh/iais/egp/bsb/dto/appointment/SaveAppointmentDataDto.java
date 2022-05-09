@@ -1,9 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.appointment;
 
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AppInspectorCorrelationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 
 import java.util.List;
 

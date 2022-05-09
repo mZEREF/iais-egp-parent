@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -61,7 +62,7 @@ public interface DpFeClient {
                                                   @RequestParam(name = "orgId") String orgId);
 
     @GetMapping(value = "/data-submission/DrugMedicationDtos/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNo(@PathVariable("submissionNo") String submissionNo);
+    FeignResponseEntity<DrugPrescribedDispensedDto> getDrugMedicationDtoBySubmissionNo(@PathVariable("submissionNo") String submissionNo);
 
     @GetMapping(value = "/data-submission/DrugMedicationDtos/Dispensed", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(@RequestParam(name = "pSubmissionNo") String pSubmissionNo,

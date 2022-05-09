@@ -44,7 +44,7 @@ public class TopDataSubmissionDelegator {
     public static final String ACTION_TYPE_BACK = "back";
     private static final String PREMISES = "premises";
     protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
-    protected final static String  TOP_OTHERS    = "Others";
+    protected final static String  TOP_OTHERS    = "Others (E.g. Home)";
     private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
@@ -562,6 +562,8 @@ public class TopDataSubmissionDelegator {
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto() == null ? new TerminationDto() : terminationOfPregnancyDto.getTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, terminationDto);
+        String doctorName = ParamUtil.getString(request, "names");
+        terminationDto.setDoctorName(doctorName);
         String topDate=ParamUtil.getString(request,"topDate");
         terminationDto.setTopDate(topDate);
         terminationOfPregnancyDto.setTerminationDto(terminationDto);

@@ -11,15 +11,7 @@
       <div class="panel-main-content form-horizontal">
         <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
         <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-        <h3>
-          <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-        </h3>
-        <iais:row>
-          <iais:field width="5"  value="" />
-          <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="Current Version"/>
-          </iais:value>
-        </iais:row>
+        <%@include file="comPart.jsp" %>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >

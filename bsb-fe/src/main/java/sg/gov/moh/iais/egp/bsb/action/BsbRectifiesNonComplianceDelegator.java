@@ -34,6 +34,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 @Slf4j
 @Delegator("rectifiesNCsDelegator")
 public class BsbRectifiesNonComplianceDelegator {
+    private static final String MASK_PARAM_APP_ID = "ncAppId";
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
 
@@ -55,8 +56,12 @@ public class BsbRectifiesNonComplianceDelegator {
         HttpServletRequest request = bpc.request;
         //get application id
         //search NCs list info
-        ParamUtil.setSessionAttr(request,KEY_APP_ID,"C945DF6C-99BC-EC11-BE76-000C298D317C");
-        String appId = (String) ParamUtil.getSessionAttr(request,KEY_APP_ID);
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
+        if (appId == null || appId.equals(maskedAppId)) {
+            throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+        }
+        ParamUtil.setSessionAttr(request,KEY_APP_ID,appId);
         InsRectificationDisplayDto displayDto = inspectionClient.getNonComplianceFindingFormDtoByAppId(appId).getEntity();
         //save basic info such as appId and config id
         if(displayDto != null){

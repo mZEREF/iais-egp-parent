@@ -1374,7 +1374,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
                 ) {
-                    versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"V "+arSdOld.getDataSubmissionDto().getVersion()));
+                    versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"Version "+arSdOld.getDataSubmissionDto().getVersion()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
                         initDataForView(arSdOld, bpc.request);
                         arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));

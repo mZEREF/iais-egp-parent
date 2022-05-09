@@ -146,6 +146,7 @@ public class MohDsDraftDelegator {
             DsConfigHelper.initTopConfig(request);
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch";
         }
+        DsConfigHelper.clearTopSession(request);
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
     }

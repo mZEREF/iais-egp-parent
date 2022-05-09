@@ -19,9 +19,7 @@
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="currentValidateId" value="">
-
     <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
-    <br><br><br>
     <div class="components">
       <iais:pagination param="checklistItemSearch" result="checklistItemResult"/>
       <div class="table-gp">

@@ -1,3 +1,37 @@
+$(function () {
+    $("#next").unbind("click");
+    $("#previous").unbind("click");
+    $("a[data-step-key]").unbind("click");
+    $("li[data-step-key]").unbind("click");
+
+    $("#next").click(function () {
+        showWaiting();
+        removeDisable();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val("next");
+        $("#mainForm").submit();
+    });
+
+    $("#previous").click(function () {
+        showWaiting();
+        removeDisable();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val("previous");
+        $("#mainForm").submit();
+    });
+
+    $("a[data-step-key]").click(jumpStep);
+    $("li[data-step-key]").click(jumpStep);
+});
+
+function jumpStep() {
+    showWaiting();
+    removeDisable();
+    $("input[name='action_type']").val("jump");
+    $("input[name='action_value']").val($(this).attr("data-step-key"));
+    $("#mainForm").submit();
+}
+
 function readonlyPartPage() {
     $("input[type='text']").css("color", "#999");
     $("input[type='text']").css("border-color", "#ededed");
@@ -19,15 +53,6 @@ function readonlyPartPage() {
     $("#addNewBatSection").css({opacity:0.5});
 }
 
-function unreadonlyPartPage() {
-    $("input[type='radio'][class!='form-check-input']").removeAttr("disabled");
-    removeDisable();
-}
-
-function sumbitRemoveDisable(){
-    $("input[type='radio']").removeAttr("disabled");
-    removeDisable();
-}
 
 function removeDisable(){
     $("input[type='text']").css("color", "");
@@ -36,6 +61,7 @@ function removeDisable(){
     $("input[type='number']").css("color", "");
     $("input[type='number']").css("border-color", "");
     $("input[type='number']").removeAttr("disabled");
+    $("input[type='radio']").removeAttr("disabled");
     $("input[type='checkbox']").removeAttr("disabled");
     $("textarea").removeAttr("disabled");
     $("textarea").css("color", "");

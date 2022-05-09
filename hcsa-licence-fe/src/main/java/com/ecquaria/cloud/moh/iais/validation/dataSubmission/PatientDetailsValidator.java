@@ -86,7 +86,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 errorMap.put("livingChildrenNo", "Negative numbers are not allowed on this field.");
             }
         }
-        if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
+        if("TOPOCC011".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
             errorMap.put("otherOccupation", "GENERAL_ERR0006");
         }
         if("TOPAS001".equals(patientInformationDto.getActivityStatus()) && StringUtil.isEmpty(patientInformationDto.getOccupation())){

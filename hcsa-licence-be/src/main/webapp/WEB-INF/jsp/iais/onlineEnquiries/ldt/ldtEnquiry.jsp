@@ -1,5 +1,4 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
@@ -38,7 +37,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of Laboratory"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="laboratoryName"  name="laboratoryName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.laboratoryName}" >
+                                    <input type="text" maxlength="100" id="laboratoryName"  name="laboratoryName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.laboratoryName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>

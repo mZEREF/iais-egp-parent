@@ -13,15 +13,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -216,6 +219,47 @@ public class OnlineArAjaxController {
         return map;
     }
 
+    @RequestMapping(value = "topDetail.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> topDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+
+        String patientIdNo = request.getParameter("patientIdNo");
+        String patientIdType = request.getParameter("patientIdType");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
+            FilterParameter topParameter = new FilterParameter.Builder()
+                    .clz(DsTopEnquiryResultsDto.class)
+                    .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
+
+
+            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+
+            filter.put("patientIdType", patientIdType);
+            filter.put("patientIdNo",patientIdNo);
+            topParameter.setFilters(filter);
+            SearchParam searchParam = SearchResultHelper.getSearchParam(request, topParameter,true);
+            QueryHelp.setMainSql("onlineEnquiry", "searchTopAjax",searchParam);
+
+            SearchResult<DsTopEnquiryResultsDto> results = assistedReproductionService.searchDsTopByParam(searchParam);
+            List<DsTopEnquiryResultsDto> queryList = null;
+            if (!Objects.isNull(results)){
+                 queryList = results.getRows();
+                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+                queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+                queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+                queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+                queryList.forEach(i -> i.setDoctorRegnNo(i.getDoctorRegnNo()==null?"":i.getDoctorRegnNo()));
+                queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
+                map.put("result", "Success");
+            }else {
+                map.put("result", "Fail");
+            }
+            map.put("ajaxResult", results);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
 
     @GetMapping(value = "PatientInfo-SearchResults-DownloadS")
     public @ResponseBody
@@ -410,6 +454,44 @@ public class OnlineArAjaxController {
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, DsLaboratoryDevelopTestEnquiryResultsDto.class, "LaboratoryDevelopTest_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "TOP-SearchResults-DownloadS")
+    public @ResponseBody
+    void fileTopHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "topParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("onlineEnquiry", "searchByTop",searchParam);
+
+        SearchResult<DsTopEnquiryResultsDto> results = assistedReproductionService.searchDsTopByParam(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<DsTopEnquiryResultsDto> queryList = results.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, DsTopEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

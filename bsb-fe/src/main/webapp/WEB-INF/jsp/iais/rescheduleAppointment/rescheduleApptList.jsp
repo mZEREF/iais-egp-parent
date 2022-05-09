@@ -44,10 +44,10 @@
                                                 <%-- need to use new tag in future --%>
                                                 <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
-                                                <iais:sortableHeader needSort="true" field="application.applicationNo" value="Application No." isFE="true" style="width:15%"/>
-                                                <iais:sortableHeader needSort="true" field="application.appType" value="Application Type" isFE="true" style="width:18%"/>
-                                                <iais:sortableHeader needSort="true" field="application.processType" value="Process Type" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="application.status" value="Status" isFE="true"/>
+                                                <iais:sortableHeader needSort="false" field="" value="S/N" />
+                                                <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="true" style="width:15%"/>
+                                                <iais:sortableHeader needSort="true" field="facilityClassification" value="Facility Classification" isFE="true" style="width:18%"/>
+                                                <iais:sortableHeader needSort="true" field="address" value="Address" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="startDate" value="Date and Time of Inspection" isFE="true" style="width:18%"/>
                                             </tr>
                                             </thead>
@@ -67,20 +67,20 @@
                                                                 <input name="apptAppId" type="checkbox" value="<iais:mask name='maskedApptAppId' value='${entity.appId}'/>">
                                                             </td>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                                <p style="text-align: center"><c:out value="${entity.applicationNo}"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                                <p style="text-align: center"><c:out value="${status.index + 1}"/></p>
                                                             </td>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Application Type</p>
-                                                                <p style="text-align: center"><iais:code code="${entity.applicationType}"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                                <p style="text-align: center"><c:out value="${entity.facilityName}"/></p>
                                                             </td>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Process Type</p>
-                                                                <p><iais:code code="${entity.processType}"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Classification</p>
+                                                                <p style="text-align: center"><iais:code code="${entity.facilityClassification}"/></p>
                                                             </td>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Application Status</p>
-                                                                <p><iais:code code="${entity.applicationStatus}"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Address</p>
+                                                                <p><c:out value="${entity.address}"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Date Submitted</p>

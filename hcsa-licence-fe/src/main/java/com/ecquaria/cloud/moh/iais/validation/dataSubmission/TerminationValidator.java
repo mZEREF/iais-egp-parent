@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -106,7 +108,11 @@ public class TerminationValidator implements CustomizeValidator {
         if(StringUtil.isEmpty(terminationDto.getComplicationForOperRslt())){
             errorMap.put("complicationForOperRslt", "GENERAL_ERR0006");
         }
-
+        String doctorName=terminationDto.getDoctorName();
+        if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+            errorMap.put("showValidatePT", AppConsts.YES);
+            ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
+        }
         return errorMap;
     }
 }

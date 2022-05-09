@@ -16,6 +16,7 @@
 %>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+  <%--@elvariable id="apptInspectionDateDto" type="sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto"--%>
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="apptReSchInspDateType" value="">
@@ -85,11 +86,11 @@
                                 <label style="font-size: 16px">Date<span style="color: red"> *</span></label>
                               </div>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-4" style="padding-left: 0px;">
-                                  <iais:datePicker id = "specificStartDate" name = "specificStartDate" dateVal="${apptInspectionDateDto.specificStartDate}"></iais:datePicker>
+                                <div class="col-xs-12 col-md-4" style="padding-left: 0;">
+                                  <iais:datePicker id = "specificStartDate" name = "specificStartDate" dateVal="${apptInspectionDateDto.specificStartDate}"/>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
-                                  <iais:select name="startHours" cssClass="startHoursDropdown" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.startHours}"></iais:select>
+                                  <iais:select name="startHours" cssClass="startHoursDropdown" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.startHours}"/>
                                 </div>
                               </div>
                             </div>
@@ -98,7 +99,7 @@
                                 <label style="font-size: 16px"> </label>
                               </div>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-4" style="padding-left: 0px;">
+                                <div class="col-xs-12 col-md-4" style="padding-left: 0;">
                                   <span style="font-size: 16px">To</span>
                                   <p></p>
                                 </div>
@@ -109,11 +110,11 @@
                                 <label style="font-size: 16px"></label>
                               </div>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-4" style="padding-left: 0px;">
-                                  <iais:datePicker id = "specificEndDate" name = "specificEndDate" dateVal="${apptInspectionDateDto.specificEndDate}"></iais:datePicker>
+                                <div class="col-xs-12 col-md-4" style="padding-left: 0;">
+                                  <iais:datePicker id = "specificEndDate" name = "specificEndDate" dateVal="${apptInspectionDateDto.specificEndDate}"/>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
-                                  <iais:select name="endHours" cssClass="endHoursDropdown" options="endHoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"></iais:select>
+                                  <iais:select name="endHours" cssClass="endHoursDropdown" options="endHoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"/>
                                 </div>
                               </div>
                             </div>
@@ -122,7 +123,7 @@
                                 <label style="font-size: 16px"> </label>
                               </div>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-6" style="padding-left: 0px;">
+                                <div class="col-xs-12 col-md-6" style="padding-left: 0;">
                                   <span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
                                 </div>
                               </div>

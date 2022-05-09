@@ -92,7 +92,7 @@
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>
-<iais:confirm msg="Patient does not exist in the system. Please enter the patient information manually." callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close" yesBtnCls="btn btn-secondary"
+<iais:confirm msg="DS_MSG024" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close" yesBtnCls="btn btn-secondary"
               needFungDuoJi="false" needCancel="false"/>
 <iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>

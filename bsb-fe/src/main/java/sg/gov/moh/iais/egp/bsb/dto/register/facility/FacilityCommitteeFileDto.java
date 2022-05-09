@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.jmapper.JMapper;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 
 import java.io.Serializable;
@@ -30,68 +31,72 @@ import java.util.List;
 @JGlobalMap
 public class FacilityCommitteeFileDto implements Serializable {
     @JsonProperty("Salutation")
-    @JsonAlias("salutation")
+    @JsonAlias({"BC_SALUTATION", "salutation"})
     private String salutation;
 
     @JsonProperty("Name")
-    @JsonAlias("name")
+    @JsonAlias({"BC_NAME", "name"})
     private String name;
 
     @JsonProperty("Nationality")
-    @JsonAlias("nationality")
+    @JsonAlias({"BC_NATIONALITY", "nationality"})
     private String nationality;
 
     @JsonProperty("ID Type")
-    @JsonAlias("idType")
+    @JsonAlias({"BC_ID_TYPE", "idType"})
     private String idType;
 
     @JsonProperty("ID Number")
-    @JsonAlias("idNumber")
+    @JsonAlias({"BC_ID_NUMBER", "idNumber"})
     private String idNumber;
 
     @JsonProperty("Designation")
-    @JsonAlias("designation")
+    @JsonAlias({"BC_DESIGNATION", "designation"})
     private String designation;
 
     @JsonProperty("Contact No.")
-    @JsonAlias("contactNo")
+    @JsonAlias({"BC_CONTACT_NO", "contactNo"})
     private String contactNo;
 
     @JsonProperty("Email")
-    @JsonAlias("email")
+    @JsonAlias({"BC_EMAIL", "email"})
     private String email;
 
     @JsonProperty("Employment Start Date")
-    @JsonAlias("employmentStartDt")
+    @JsonAlias({"BC_EMPLOYMENT_START_DATE", "employmentStartDt"})
     private String employmentStartDt;
 
-    @JsonProperty("Area of Expertise")
-    @JsonAlias("expertiseArea")
-    private String expertiseArea;
+    @JsonProperty("Area of Work")
+    @JsonAlias({"BC_AREA_OF_WORK", "workArea"})
+    private String workArea;
 
-    @JsonProperty("Role")
-    @JsonAlias("role")
+    @JsonProperty("Role under Sixth Schedule")
+    @JsonAlias({"BC_ROLE_UNDER_SIXTH_SCHEDULE", "role"})
     private String role;
 
     @JsonProperty("Is This Person an Employee of This Company")
-    @JsonAlias("employee")
+    @JsonAlias({"BC_IS_PERSON_EMPLOYEE", "employee"})
     private String employee;
 
     @JsonProperty("Company Name")
-    @JsonAlias("externalCompName")
+    @JsonAlias({"BC_COMPANY_NAME", "externalCompName"})
     private String externalCompName;
 
 
     public void value2MasterCode() {
         this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
+        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.value2Code(this.role);
+        this.employee = MasterCodeConstants.readUpperCaseYesNo(this.employee);
     }
 
     public void code2Value() {
         this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
+        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.code2Value(this.role);
+        this.employee = MasterCodeConstants.displayYesNo(this.employee);
     }
 
 

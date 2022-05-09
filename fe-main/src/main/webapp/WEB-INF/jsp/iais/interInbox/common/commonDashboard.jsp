@@ -59,7 +59,6 @@
                             <p class="dashboard-txt">Active Licences</p>
                         </a></div>
                     </div>
-                  </c:if>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile txt-only">
                             <a href="/main-web/eservice/INTERNET/MohAccessmentGuide">
@@ -70,6 +69,7 @@
                             </a>
                         </div>
                     </div>
+                    </c:if>
                 </div>
             </div>
         </div>

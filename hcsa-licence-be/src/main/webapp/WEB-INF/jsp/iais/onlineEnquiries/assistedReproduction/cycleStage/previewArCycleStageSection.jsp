@@ -13,17 +13,7 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
-                <h3>
-                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
-                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
-                    </span>
-                </h3>
-                <iais:row>
-                    <iais:field width="5"  value="" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="Current Version"/>
-                    </iais:value>
-                </iais:row>
+                <%@include file="comPart.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">

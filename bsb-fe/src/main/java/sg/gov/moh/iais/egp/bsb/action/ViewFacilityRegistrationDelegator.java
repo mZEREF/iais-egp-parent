@@ -2,6 +2,9 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -9,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
@@ -21,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -29,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -39,12 +45,14 @@ public class ViewFacilityRegistrationDelegator {
     private static final String FUNCTION_NAME = "View Application";
 
     private final FacilityRegisterClient facRegClient;
+    private final OrganizationInfoClient orgInfoClient;
     private final DocSettingService docSettingService;
 
     @Autowired
-    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient,
+    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, OrganizationInfoClient orgInfoClient,
                                              DocSettingService docSettingService) {
         this.facRegClient = facRegClient;
+        this.orgInfoClient = orgInfoClient;
         this.docSettingService = docSettingService;
     }
 
@@ -77,19 +85,20 @@ public class ViewFacilityRegistrationDelegator {
         // retrieve app data of facility registration
         ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
         if (resultDto.ok()) {
-            // TODO retrieve company address
+            AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+            assert auditTrailDto != null;
+            LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
             OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-            orgAddressInfo.setUen("185412420D");
-            orgAddressInfo.setCompName("DBO Laboratories");
-            orgAddressInfo.setPostalCode("980335");
-            orgAddressInfo.setAddressType("ADDTY001");
-            orgAddressInfo.setBlockNo("10");
-            orgAddressInfo.setFloor("03");
-            orgAddressInfo.setUnitNo("01");
-            orgAddressInfo.setStreet("Toa Payoh Lorong 2");
-            orgAddressInfo.setBuilding("-");
-            ParamUtil.setRequestAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
-
+            orgAddressInfo.setUen(auditTrailDto.getUenId());
+            orgAddressInfo.setCompName(licenseeDto.getName());
+            orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+            orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+            orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+            orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+            orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+            orgAddressInfo.setStreet(licenseeDto.getStreetName());
+            orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
+            ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
 
             NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
 
@@ -110,7 +119,7 @@ public class ViewFacilityRegistrationDelegator {
             } else if (isUcf) {
                 NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
                 List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
-                ParamUtil.setRequestAttr(request, "batList", batList);
+                ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
             }
 
             OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
@@ -119,10 +128,13 @@ public class ViewFacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+            List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
             PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+            ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+            Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet());
+            ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");
         }

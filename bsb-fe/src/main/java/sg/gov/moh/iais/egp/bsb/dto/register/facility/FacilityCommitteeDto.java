@@ -70,8 +70,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employmentStartDate")
         private String employmentStartDt;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.expertiseArea")
-        private String expertiseArea;
+        private String workArea;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.role")
         private String role;
@@ -177,7 +176,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         } catch (IOException e) {
             log.error("Fail to convert EXCEL/CSV to DTOs", e);
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-            errorMap.put(DocConstants.DOC_TYPE_DATA_COMMITTEE, "Could not parse file content.");
+            errorMap.put(DocConstants.DOC_TYPE_DATA_COMMITTEE, "Could not parse the file. Please download and fill the template file.");
             this.newFile = null;
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);
             return false;

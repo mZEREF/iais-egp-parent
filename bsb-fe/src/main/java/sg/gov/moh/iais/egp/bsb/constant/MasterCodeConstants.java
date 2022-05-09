@@ -12,6 +12,29 @@ public class MasterCodeConstants {
 
     public static final String YES = "Y";
     public static final String NO = "N";
+    public static final String YES_UPPER_CASE = "YES";
+    public static final String NO_UPPER_CASE = "NO";
+    public static final String YES_CAPITALIZED = "Yes";
+    public static final String NO_CAPITALIZED = "No";
+
+    public static String readUpperCaseYesNo(String raw) {
+        String value = null;
+        if (YES_UPPER_CASE.equals(raw)) {
+            value = YES;
+        } else if (NO_UPPER_CASE.equals(raw)) {
+            value = NO;
+        }
+        return value;
+    }
+    public static String displayYesNo(String value) {
+        String display = null;
+        if (YES.equals(value)) {
+            display = YES_CAPITALIZED;
+        } else if (NO.equals(value)) {
+            display = NO_CAPITALIZED;
+        }
+        return display;
+    }
 
 
     public static final String FIRST_SCHEDULE_PART_I = "SCHTYPE001";

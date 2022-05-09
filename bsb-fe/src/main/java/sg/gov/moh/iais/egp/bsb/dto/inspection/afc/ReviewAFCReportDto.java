@@ -16,7 +16,9 @@ public class ReviewAFCReportDto implements Serializable {
     private String facName;
     private String facAddress;
     private Date insDate;
-    private List<CertificationDocDto> certificationDocDtos;
+    private List<CertificationDocDisPlayDto> certificationDocDisPlayDtos;
     private List<DocMeta> docMetas;
     private String profile;
+    private Integer maxRound;
+    private boolean actionOnOld;
 }

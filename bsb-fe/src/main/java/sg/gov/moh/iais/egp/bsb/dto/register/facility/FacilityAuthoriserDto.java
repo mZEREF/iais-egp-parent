@@ -70,14 +70,15 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentStartDate")
         private String employmentStartDt;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentPeriod")
-        private String employmentPeriod;
-
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.workArea")
         private String workArea;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.securityClearanceDate")
         private String securityClearanceDt;
+
+        private String employee;
+
+        private String externalCompName;
     }
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.addOrDelete")
@@ -175,7 +176,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         } catch (IOException e) {
             log.error("Fail to convert EXCEL/CSV to DTOs", e);
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-            errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "Could not parse file content.");
+            errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "Could not parse the file. Please download and fill the template file.");
             this.newFile = null;
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);
             return false;

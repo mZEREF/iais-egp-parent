@@ -10,22 +10,9 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <h3>
-                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
-                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
-                    </span>
-                </h3>
+                <%@include file="comPart.jsp" %>
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
                 <c:set var="outcomeStageDtoVersion" value="${arSuperDataSubmissionDtoVersion.outcomeStageDto}" />
-                <iais:row>
-                    <iais:field width="4" cssClass="col-md-4"  value="" />
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="Current Version"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4" display="true">
-                        <iais:select  id="oldDsSelect" name="oldDsSelect" options="versionOptions" value="${arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}"/>
-                    </iais:value>
-                </iais:row>
                 <iais:row>
                     <iais:field width="4" value="Is Clinical Pregnancy Detected?"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">

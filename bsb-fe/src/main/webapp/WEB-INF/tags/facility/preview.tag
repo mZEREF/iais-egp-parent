@@ -31,6 +31,9 @@
 
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
+
+<iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
+<%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
     <div class="row">
         <div class="col-xs-12">
@@ -399,13 +402,15 @@
                                         <div class="clear"></div>
                                     </div>
                                     <c:forEach var="info" items="${bat.batInfos}">
-                                        <c:set var="BAorT" value='${"SCHTYPE006" eq info.schedule ? "Toxin" : "Biological Agent"}'/>
+                                        <c:set var="BAorT" value='${masterCodeConstants.FIFTH_SCHEDULE eq info.schedule ? "Toxin" : "Biological Agent"}'/>
                                         <div>
+                                            <c:if test="${masterCodeConstants.FIFTH_SCHEDULE ne info.schedule}">
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Schedule</label>
                                                 <div class="col-xs-6"><p><iais:code code="${info.schedule}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
+                                            </c:if>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Name of ${BAorT}</label>
                                                 <div class="col-xs-6"><p>${info.batName}</p></div>
@@ -429,7 +434,7 @@
                                                 </div>
                                                 <div class="clear"></div>
                                             </div>
-                                            <c:if test='${info.sampleType.contains("BNOTS007") or info.workType.contains("BSBWT005") or info.workType.contains("BSBWT006")}'>
+                                            <c:if test='${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER) or info.workType.contains(masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT) or info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}'>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Details regarding the type of samples that will be handled and the intended work</label>
                                                 <div class="col-xs-6"><p>${info.sampleWorkDetail}</p></div>
@@ -589,7 +594,7 @@
                             <c:if test="${otherAppInfoEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "otherInfo")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
-                                    <div class="col-10"><strong>Declaration</strong></div>
+                                    <div class="col-10" style="padding-bottom: 15px;"><strong>Declaration</strong></div>
                                     <div class="clear"></div>
                                 </div>
                                 <div class="col-xs-12 form-group">
@@ -653,6 +658,10 @@
                         <div class="panel-body">
                             <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10" style="padding-bottom: 15px;"><strong>Uploaded Documents</strong></div>
+                                    <div class="clear"></div>
+                                </div>
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>

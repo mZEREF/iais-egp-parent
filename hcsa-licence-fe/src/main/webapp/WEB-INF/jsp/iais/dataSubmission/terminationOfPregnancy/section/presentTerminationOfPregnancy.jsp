@@ -44,7 +44,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Anaesthesia" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherAnType"/>
+                <iais:input maxLength="66" type="text" name="otherAnType" value="${terminationDto.otherAnType}"/>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherAnType"></span>
             </iais:value>
         </iais:row>
@@ -283,32 +283,48 @@
         </iais:row>
     </div>
     <iais:row>
-        <iais:field width="5" value="Professional Registration Number" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="doctorRegnNo" value="${terminationDto.doctorRegnNo}" onchange="clearDockerSelection();"/>
+            <strong>Doctor who Performed the Termination of Pregnancy</strong>
         </iais:value>
-        <%--<iais:value width="3" cssClass="col-md-3" display="true">
+    </iais:row>
+    <iais:row>
+        <iais:field width="3" value="Professional Registration Number" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
+            <iais:input maxLength="20" type="text" name="doctorRegnNo" value="${terminationDto.doctorRegnNo}" onchange="clearDockerSelection()"/>
+            <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
+        </iais:value>
+        <iais:value width="3" cssClass="col-md-3" display="true">
             <a class="ValidateDoctor" onclick="validateDoctors()">
                 Validate Doctor
             </a>
-        </iais:value>--%>
+            <div>
+                <span id="msg" name="iaisErrorMsg" class="error-msg"></span>
+            </div>
+        </iais:value>
     </iais:row>
+   <%-- <iais:row>
+        <iais:field width="5" value="Name of Doctor" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7" id="names">
+            &lt;%&ndash;<iais:input maxLength="66" type="text" name="doctorName" value="${terminationDto.doctorName}" />&ndash;%&gt;
+            ${terminationDto.doctorName}
+        </iais:value>
+    </iais:row>--%>
     <iais:row>
-        <iais:field width="5" value="Name of Doctor who performed the Termination of Pregnancy" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" name="doctorName" value="${terminationDto.doctorName}" />
+        <iais:field width="5" value="Name of Doctor" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7" display="true" id="names">
+            ${terminationDto.doctorName}
         </iais:value>
     </iais:row>
 </div>
 </c:if>
-<%--<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body" >
                 <div class="row">
                     <div class="col-md-12">
                         <span style="font-size: 2rem;" id="prsErrorMsg">
-                            <iais:message key="This Doctor is not authorized to perform Termination of Pregnancy." escape="false" />
+                            <iais:message key="DS_MSG011" escape="false" />
                         </span>
                     </div>
                 </div>
@@ -320,8 +336,8 @@
     </div>
 </div>
 <div class="doctorNameSelectionHidden">
-    <input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
-</div>--%>
+    <input type="hidden" name="names" id="doctorNameHidden" value="${terminationDto.doctorName}">
+</div>
 <script>
     $(document).ready(function() {
         $('#topType').change(function () {
@@ -375,6 +391,11 @@
         $('#otherTopDrugPlace').change(function () {
             otherTopDrugPlace();
         });
+        if ("1" == $('#showValidatePT').val()) {
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
+
+
     });
     function spTypes() {
         var topType= $('#topType').val();
@@ -545,13 +566,15 @@
             $('#otherTopDrugPlaces').hide();
         }
     }
-    /*function validateDoctors() {
+    function validateDoctors() {
         console.log('loading info ...');
         showWaiting();
         var prgNo =  $('input[name="doctorRegnNo"]').val();
         if(prgNo == "" || prgNo == null || prgNo == undefined){
             clearPrsInfo();
             dismissWaiting();
+            clearErrorMsg();
+            $('#doctorRegnNoMsg').text('This is a mandatory field.');
             return;
         }
         var no = $('input[name="doctorRegnNo"]').val();
@@ -568,17 +591,18 @@
                     console.log("The return data is null");
                 } else if('-1' == data.statusCode || '-2' == data.statusCode) {
                     $('#prsErrorMsg').val($('#flagDocMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
+                    $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
                     clearPrsInfo();
                 } else if (data.hasException) {
                     $('#prsErrorMsg').val($('#flagInvaMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
+                    $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
                     clearPrsInfo();
                 } else if ('401' == data.statusCode) {
                     $('#prsErrorMsg').val($('#flagPrnMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
+                    $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
                     clearPrsInfo();
                 } else {
+                    console.log("1");
                     loadingSp(data);
                 }
                 dismissWaiting();
@@ -593,9 +617,20 @@
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+    var clearPrsInfo = function () {
+        $('#names').find('p').text('');
+    };
     function loadingSp(data) {
+        console.log("2");
         const name = data.name;
+        console.log(name);
         $('#names').find('p').text(name);
         $('#doctorNameHidden').val(name);
-    }*/
+    }
+    function clearDockerSelection(){
+        console.log("clearDockerSelection!")
+        clearErrorMsg();
+        $('#names').find('p').text('');
+        clearFields('.doctorNameSelectionHidden');
+    }
 </script>

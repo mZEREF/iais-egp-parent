@@ -3,25 +3,33 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -36,6 +44,38 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private DpDataSubmissionService dpDataSubmissionService;
+
+    @PostMapping(value = "/checkPrescriptionSubmissionId")
+    public @ResponseBody
+    AjaxResDto checkPrescriptionSubmissionId(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do checkPrescriptionSubmissionId start ...."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        String prescriptionSubmissionId = ParamUtil.getString(request, "prescriptionSubmissionId");
+        log.info(StringUtil.changeForLog("prescriptionSubmissionId is -->:"+prescriptionSubmissionId));
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if(StringUtil.isEmpty(prescriptionSubmissionId)){
+            errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0006");
+        }else {
+            DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
+                    getDrugMedicationDtoBySubmissionNo(prescriptionSubmissionId);
+            if(drugPrescribedDispensedDto == null
+                    || IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos())){
+                errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+            }else{
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+                ajaxResDto.setResultJson(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
+            }
+        }
+        if(!errorMap.isEmpty()){
+            ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
+            ajaxResDto.setResultJson(MessageUtil.getMessageDesc(errorMap.get("prescriptionSubmissionId")));
+        }
+        log.info(StringUtil.changeForLog("the do checkPrescriptionSubmissionId end ...."));
+        return ajaxResDto;
+    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {

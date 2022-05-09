@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.jmapper.JMapper;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 
 import java.io.Serializable;
@@ -18,65 +19,70 @@ import java.util.List;
 @JGlobalMap
 public class FacilityAuthoriserFileDto implements Serializable {
     @JsonProperty("Salutation")
-    @JsonAlias("salutation")
+    @JsonAlias({"AUTHORISED_PERSONNEL_SALUTATION", "salutation"})
     private String salutation;
 
     @JsonProperty("Name")
-    @JsonAlias("name")
+    @JsonAlias({"AUTHORISED_PERSONNEL_NAME", "name"})
     private String name;
 
     @JsonProperty("Nationality")
-    @JsonAlias("nationality")
+    @JsonAlias({"AUTHORISED_PERSONNEL_NATIONALITY", "nationality"})
     private String nationality;
 
     @JsonProperty("ID Type")
-    @JsonAlias("idType")
+    @JsonAlias({"AUTHORISED_PERSONNEL_ID_TYPE", "idType"})
     private String idType;
 
     @JsonProperty("ID Number")
-    @JsonAlias("idNumber")
+    @JsonAlias({"AUTHORISED_PERSONNEL_ID_NUMBER", "idNumber"})
     private String idNumber;
 
     @JsonProperty("Designation")
-    @JsonAlias("designation")
+    @JsonAlias({"AUTHORISED_PERSONNEL_DESIGNATION", "designation"})
     private String designation;
 
     @JsonProperty("Contact No.")
-    @JsonAlias("contactNo")
+    @JsonAlias({"AUTHORISED_PERSONNEL_CONTACT_NO", "contactNo"})
     private String contactNo;
 
     @JsonProperty("Email")
-    @JsonAlias("email")
+    @JsonAlias({"AUTHORISED_PERSONNEL_EMAIL", "email"})
     private String email;
 
     @JsonProperty("Employment Start Date")
-    @JsonAlias("employmentStartDt")
+    @JsonAlias({"AUTHORISED_PERSONNEL_EMPLOYMENT_START_DATE", "employmentStartDt"})
     private String employmentStartDt;
 
-    @JsonProperty("Employment Period")
-    @JsonAlias("employmentPeriod")
-    private String employmentPeriod;
-
-    @JsonProperty("Work Area")
-    @JsonAlias("workArea")
+    @JsonProperty("Area of Work")
+    @JsonAlias({"AUTHORISED_PERSONNEL_AREA_OF_WORK", "workArea"})
     private String workArea;
 
     @JsonProperty("Security Clearance Date")
-    @JsonAlias("securityClearanceDt")
+    @JsonAlias({"AUTHORISED_PERSONNEL_SECURITY_CLEARANCE_DATE", "securityClearanceDt"})
     private String securityClearanceDt;
 
+    @JsonProperty("Is This Person an Employee of This Company")
+    @JsonAlias({"AUTHORISED_PERSONNEL_IS_PERSON_EMPLOYEE", "employee"})
+    private String employee;
+
+    @JsonProperty("Company Name")
+    @JsonAlias({"AUTHORISED_PERSONNEL_COMPANY_NAME", "externalCompName"})
+    private String externalCompName;
 
 
     public void value2MasterCode() {
         this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
+        this.employee = MasterCodeConstants.readUpperCaseYesNo(this.employee);
     }
 
     public void code2Value() {
         this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
         this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
+        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
+        this.employee = MasterCodeConstants.displayYesNo(this.employee);
     }
 
 

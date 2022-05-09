@@ -11,17 +11,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
-                <h3>
-                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
-                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
-                    </span>
-                </h3>
-                <iais:row>
-                    <iais:field width="5" value="" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="Current Version"/>
-                    </iais:value>
-                </iais:row>
+                <%@include file="comPart.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Is Clinical Pregnancy Detected?"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">

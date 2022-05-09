@@ -35,4 +35,5 @@
             + $(ele).val() + '</div>');
         $(ele).remove();
     });
+    $('#ar-declaration').find('input').prop("disabled", true);
 </script>

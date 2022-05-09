@@ -105,10 +105,15 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
            if(StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId())){
                 errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0006");
             }else {
-               preDrugMedicationDtos = dpDataSubmissionService.
+               DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
                        getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
+               if(drugPrescribedDispensedDto != null){
+                   preDrugMedicationDtos =  drugPrescribedDispensedDto.getDrugMedicationDtos();
+               }
                if(IaisCommonUtils.isEmpty(preDrugMedicationDtos)){
                    errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+               }else{
+                   drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
                }
             }
 

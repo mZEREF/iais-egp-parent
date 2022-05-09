@@ -176,7 +176,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_APPROVED_FACILITY_CERTIFIER_SELECTION            = "9934209F-CB20-47C4-9FC3-E920B13B8923";
 
     public static final String CATE_ID_BSB_IS_THE_COMPANY_REGISTERED_IN_LOCAL_OR_OVERSEAS = "82C27D1E-9C5A-44EC-8A91-F07F8D7FC462";
-    public static final String CATE_ID_BSB_ROLE                                           = "C5446D8E-A31F-4174-9E55-BD616F5B5FB8";
+    public static final String CATE_ID_BSB_ROLE_UNDER_SIXTH_SCHEDULE                    = "57B494C2-5836-40AA-938D-3C98EC0F146C";
+    public static final String CATE_ID_BSB_AFC_TEAM_ROLE                                = "C6B46D8E-A31F-4174-9E55-BD616F5B5FB8";
 
     public static final String CATE_ID_BSB_ROLE_IN_FACILITY                             = "56F494C2-5836-40AA-938D-3C98EC0F146C";
 

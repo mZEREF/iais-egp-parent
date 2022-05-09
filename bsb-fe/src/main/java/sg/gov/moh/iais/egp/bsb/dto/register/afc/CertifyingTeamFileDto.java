@@ -84,7 +84,7 @@ public class CertifyingTeamFileDto implements Serializable {
     public void value2MasterCode() {
         this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
         this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
-        this.role = MasterCodeHolder.ROLE.value2Code(this.role);
+        this.role = MasterCodeHolder.AFC_TEAM_ROLE.value2Code(this.role);
     }
 
     public void value2SpecialYN(){
@@ -98,7 +98,7 @@ public class CertifyingTeamFileDto implements Serializable {
     public void code2Value() {
         this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
         this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
-        this.role = MasterCodeHolder.ROLE.code2Value(this.role);
+        this.role = MasterCodeHolder.AFC_TEAM_ROLE.code2Value(this.role);
     }
 
 

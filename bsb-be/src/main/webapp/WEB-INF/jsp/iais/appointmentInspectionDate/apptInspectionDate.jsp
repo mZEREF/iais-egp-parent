@@ -19,6 +19,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-appointment.js"></script>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <%--@elvariable id="apptReviewData" type="sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto"--%>
+  <%--@elvariable id="apptInspectionDateDto" type="sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto"--%>
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
@@ -27,7 +28,6 @@
     <input type="hidden" id="processDec" name="processDec" value="">
     <input type="hidden" id="sysInspDateFlag" name="sysInspDateFlag" value="${apptInspectionDateDto.sysInspDateFlag}">
     <input type="hidden" id="sysSpecDateFlag" name="sysSpecDateFlag" value="${apptInspectionDateDto.sysSpecDateFlag}">
-    <input type="hidden" id="apptBackShow" name="apptBackShow" value="${apptBackShow}">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">

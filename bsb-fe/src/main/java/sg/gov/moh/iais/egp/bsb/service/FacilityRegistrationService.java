@@ -1,7 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,12 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -31,9 +38,11 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -57,15 +66,58 @@ public class FacilityRegistrationService {
     private final BsbFileClient bsbFileClient;
     private final FacilityRegisterClient facRegClient;
     private final DocSettingService docSettingService;
+    private final OrganizationInfoClient orgInfoClient;
 
     @Autowired
     public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
                                        FacilityRegisterClient facRegClient,
-                                       DocSettingService docSettingService) {
+                                       DocSettingService docSettingService, OrganizationInfoClient orgInfoClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
         this.docSettingService = docSettingService;
+        this.orgInfoClient = orgInfoClient;
+    }
+
+    public void retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
+        NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+
+        // check data uploaded by committee data file
+        String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
+        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
+        /* If there is no committee data, we don't need to show error message.
+         * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
+         * so the error table should be displayed. This situation means user click save as draft when user
+         * upload a file contains error fields.
+         * If pass validation, we set the node status to avoid not necessary validation again. */
+        if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
+            Nodes.passValidation(facRegRoot, committeeNodePath);
+        }
+        // check data uploaded by authoriser data file
+        String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
+        if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
+            Nodes.passValidation(facRegRoot, authoriserNodePath);
+        }
+
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
+    public void retrieveOrgAddressInfo(HttpServletRequest request) {
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        assert auditTrailDto != null;
+        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
+        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
+        orgAddressInfo.setUen(auditTrailDto.getUenId());
+        orgAddressInfo.setCompName(licenseeDto.getName());
+        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+        orgAddressInfo.setStreet(licenseeDto.getStreetName());
+        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
+        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
     }
 
     public void handleBeforeBegin(BaseProcessClass bpc) {
@@ -126,6 +178,12 @@ public class FacilityRegistrationService {
                     // set selected value in the dashboard
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
+
+                    // update impacted supporting document node
+                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                    primaryDocDto.setFacClassification(selectionDto.getFacClassification());
+                    Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
                     // jump
                     jump(request, facRegRoot, actionValue);
@@ -302,6 +360,18 @@ public class FacilityRegistrationService {
             }
         }
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
+
+        // load sample file data and set into session
+        getBsbCommitteeSampleFileRecord(request);
+    }
+
+    public SampleFileDto getBsbCommitteeSampleFileRecord(HttpServletRequest request) {
+        SampleFileDto committeeSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, KEY_SAMPLE_COMMITTEE);
+        if (committeeSampleFileDto == null) {
+            committeeSampleFileDto = facRegClient.retrieveSampleFileByType(SampleFileConstants.TYPE_FACILITY_BSB_COMMITTEE_DATA_FILE);
+            ParamUtil.setSessionAttr(request, KEY_SAMPLE_COMMITTEE, committeeSampleFileDto);
+        }
+        return committeeSampleFileDto;
     }
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
@@ -396,8 +466,18 @@ public class FacilityRegistrationService {
                 ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthDto.retrieveValidationResult());
             }
         }
-
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facAuthDto);
+
+        getAuthoriserSampleFileRecord(request);
+    }
+
+    public SampleFileDto getAuthoriserSampleFileRecord(HttpServletRequest request) {
+        SampleFileDto committeeSampleFileDto = (SampleFileDto) ParamUtil.getSessionAttr(request, KEY_SAMPLE_AUTHORISER);
+        if (committeeSampleFileDto == null) {
+            committeeSampleFileDto = facRegClient.retrieveSampleFileByType(SampleFileConstants.TYPE_FACILITY_AUTHORISER_PERSONNEL_DATA_FILE);
+            ParamUtil.setSessionAttr(request, KEY_SAMPLE_AUTHORISER, committeeSampleFileDto);
+        }
+        return committeeSampleFileDto;
     }
 
     public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
@@ -482,7 +562,8 @@ public class FacilityRegistrationService {
         // convert BatBasicInfo to SelectOption object
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
         for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
-            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
+            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size() + 1);
+            optionList.add(new SelectOption("", "Please Select"));
             for (BatBasicInfo info : entry.getValue()) {
                 SelectOption option = new SelectOption();
                 option.setText(info.getName());
@@ -574,6 +655,7 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
+    @SneakyThrows(JsonProcessingException.class)
     public void prePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
@@ -585,12 +667,23 @@ public class FacilityRegistrationService {
         }
         Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
-
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
+
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
+
+        List<SelectOption> docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
+        ObjectMapper mapper = new ObjectMapper();
+        String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_DOC_TYPES_JSON, docTypeOpsJson);
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
@@ -675,7 +768,7 @@ public class FacilityRegistrationService {
         } else if (isUcf) {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
-            ParamUtil.setRequestAttr(request, "batList", batList);
+            ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
         }
 
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
@@ -684,12 +777,18 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
+
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+        ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
@@ -1163,16 +1262,6 @@ public class FacilityRegistrationService {
     }
 
 
-
-    /* Will be removed in future, will get this from master code */
-    public static List<SelectOption> tmpPersonnelRoleOps() {
-        List<SelectOption> personnelRoleOps = new ArrayList<>(4);
-        personnelRoleOps.add(new SelectOption("COMTPRO001", "Senior Management Representative"));
-        personnelRoleOps.add(new SelectOption("COMTPRO002", "Biosafety Coordinator"));
-        personnelRoleOps.add(new SelectOption("COMTPRO003", "Person in charge of safe and proper functioning of facility and equipment"));
-        personnelRoleOps.add(new SelectOption("COMTPRO004", "Other qualified personnel"));
-        return personnelRoleOps;
-    }
 
 
     /**

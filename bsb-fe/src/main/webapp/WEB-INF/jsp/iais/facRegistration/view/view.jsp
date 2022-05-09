@@ -30,6 +30,7 @@
 <%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto"--%>
 <%--@elvariable id="previewSubmit" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
+<%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="maskedEditId" type="java.lang.String"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -68,6 +69,24 @@
                                                     </div>
                                                 </c:if>
                                             </c:forEach>
+                                            <c:if test="${not empty otherDocTypes}">
+                                                <div class="form-group">
+                                                    <div class="col-10"><strong>Others</strong></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div>
+                                                    <c:forEach var="type" items="${otherDocTypes}">
+                                                        <c:set var="savedFileList" value="${savedFiles.get(type)}" />
+                                                        <c:forEach var="file" items="${savedFileList}">
+                                                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                            <div class="form-group">
+                                                                <div class="col-10"><p><a href="/bsb-fe/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </c:forEach>
+                                                    </c:forEach>
+                                                </div>
+                                            </c:if>
                                         </jsp:attribute>
                                     </fac:preview>
                                 </div>

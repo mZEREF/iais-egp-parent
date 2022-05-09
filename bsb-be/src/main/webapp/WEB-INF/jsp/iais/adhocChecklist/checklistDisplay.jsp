@@ -22,8 +22,6 @@
         <div class="main-content">
             <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
                 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-                <br><br><br>
-
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                 <div class="tab-pane" id="tabInspection" role="tabpanel">
                     <div class="center-content">

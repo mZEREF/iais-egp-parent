@@ -880,4 +880,79 @@
     </sql>
 
 
+    <sql key = "searchLaboratoryDevelopTest" remarks="search Laboratory Develop Test">
+        <![CDATA[
+            select distinct * from (
+            SELECT  ldt.ID,null SUBMISSION_ID,
+                   CONCAT(case Prem.HCI_NAME
+                  when null then null
+                  else ', '+Prem.HCI_NAME end ,
+                  case Prem.BLK_NO
+                  when null then null
+                  else ''+Prem.BLK_NO end ,
+               case Prem.STREET_NAME
+                  when null then null
+                  else ' '+Prem.STREET_NAME end
+               , case Prem.BUILDING_NAME
+                  when null then null
+                  else ' '+Prem.BUILDING_NAME end
+               , case Prem.FLOOR_NO
+                  when null then null
+                  else ' #'+Prem.FLOOR_NO end
+               , case Prem.UNIT_NO
+                  when null then null
+                  else '-'+Prem.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM hcsal.dbo.premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =Prem.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case Prem.POSTAL_CODE
+                  when null then null
+                  else ', '+Prem.POSTAL_CODE end
+              )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
+              case ldt.TEST_STATUS
+              when 1 then 'Active'
+              when 0 then 'Inactive'
+              else '' end TEST_STATUS
+              , ldt.REMARKS ,ldt.LDT_NO
+                FROM ds_laboratory_develop_test ldt
+                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID
+                join ds_cycle dc on dc.ID=dds.CYCLE_ID
+                join premises Prem on Prem.HCI_CODE = dc.HCI_CODE and dc.HCI_CODE not in (select ldt_cen.HCI_CODE from ds_center ldt_cen where ldt_cen.CENTER_TYPE = 'LDT')
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+                UNION ALL
+              SELECT  ldt.ID,null SUBMISSION_ID,
+                   CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
+              case ldt.TEST_STATUS
+              when 1 then 'Active'
+              when 0 then 'Inactive'
+              else '' end TEST_STATUS
+              , ldt.REMARKS ,ldt.LDT_NO
+                FROM ds_laboratory_develop_test ldt
+                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID
+                join ds_cycle dc on dc.ID=dds.CYCLE_ID
+                join ds_center dcen on dcen.HCI_CODE = dc.HCI_CODE and dcen.CENTER_TYPE = 'LDT'
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+                ) T1
+            where 1 = 1
+            <#if ldtDateFrom??> AND T1.LDT_DATE >= convert(date,:ldtDateFrom)</#if>
+            <#if ldtDateTo??> AND T1.LDT_DATE <= convert(datetime,:ldtDateTo)</#if>
+            <#if laboratoryName??> AND  charindex(:laboratoryName, T1.LDT_NAME) >0</#if>
+            <#if ldtTestName??> AND  charindex(:ldtTestName, T1.LDT_TEST_NAME) >0</#if>
+            <#if responsePerson??> AND  charindex(:responsePerson, T1.RESPONSE_PERSON) >0</#if>
+            <#if testStatus??> AND  T1.TEST_STATUS = :testStatus</#if>
+         ]]>
+    </sql>
+
 </sqls>

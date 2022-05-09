@@ -19,14 +19,15 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Description DpCommonDelegator
@@ -102,7 +103,7 @@ public abstract class DpCommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission";
+        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSubmission";
         if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
             URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         }

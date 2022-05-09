@@ -44,6 +44,9 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(answerDto.getActionRequired())) {
                 errorMap.put("actionRequired", messageCommon);
             }
+            if (answerDto.getRectified() == null) {
+                errorMap.put("rectified", messageCommon);
+            }
         } else {
             Boolean rectified = answerDto.getRectified();
             if (rectified != null && rectified) {
@@ -56,6 +59,9 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
             }
             if (StringUtil.isEmpty(answerDto.getFollowupAction())) {
                 errorMap.put("followupAction", messageCommon);
+            }
+            if (StringUtil.isEmpty(answerDto.getDueDate())) {
+                errorMap.put("dueDate", messageCommon);
             }
         } else if (!StringUtil.isEmpty(answerDto.getFollowupItem())) {
             if (!StringUtil.isEmpty(answerDto.getObserveFollowup())) {

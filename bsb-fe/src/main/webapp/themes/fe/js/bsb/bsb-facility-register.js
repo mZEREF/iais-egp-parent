@@ -100,10 +100,12 @@ $(function () {
         var addressType = $(this).val();
         if(addressType === 'ADDTY001') {
             $("#aptMandatoryBlk").show();
-            $("#aptMandatoryFloorUnit").show();
+            $("#aptMandatoryFloor").show();
+            $("#aptMandatoryUnit").show();
         } else {
             $("#aptMandatoryBlk").hide();
-            $("#aptMandatoryFloorUnit").hide();
+            $("#aptMandatoryFloor").hide();
+            $("#aptMandatoryUnit").hide();
         }
     });
 

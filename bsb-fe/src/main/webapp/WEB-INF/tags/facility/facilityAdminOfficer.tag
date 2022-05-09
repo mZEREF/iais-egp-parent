@@ -8,6 +8,10 @@
 <%@attribute name="facAdminOfficer" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto" %>
 <%@attribute name="salutationOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
+<%@attribute name="specialJsFrag" fragment="true" %>
+<%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
+<%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -20,10 +24,10 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-add-section.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<jsp:invoke fragment="specialJsFrag"/>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/facRegistration/dashboard.jsp" %>
+<jsp:invoke fragment="dashboardFrag"/>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -48,6 +52,7 @@
                                 <div id="facInfoPanel" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
+                                        <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
 
                                         <section id="mainAdmin">
@@ -79,6 +84,15 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
+                                                    <label for="idNumberM">ID No</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label id="idNumberM">${facAdminOfficer.mainAdmin.idNumber}</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
                                                     <label for="nationalityM">Nationality</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
@@ -90,15 +104,6 @@
                                                         </c:forEach>
                                                     </select>
                                                     <span data-err-ind="nationalityM" class="error-msg"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group ">
-                                                <div class="col-sm-5 control-label">
-                                                    <label for="idNumberM">ID No</label>
-                                                    <span class="mandatory otherQualificationSpan">*</span>
-                                                </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <label id="idNumberM">${facAdminOfficer.mainAdmin.idNumber}</label>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -123,7 +128,7 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="emailM">Email</label>
+                                                    <label for="emailM">Email Address</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
@@ -172,21 +177,6 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="nationalityA">Nationality</label>
-                                                    <span class="mandatory otherQualificationSpan">*</span>
-                                                </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <select name="nationalityA" class="nationalityADropdown" id="nationalityA">
-                                                        <option value="">Please Select</option>
-                                                        <c:forEach items="${nationalityOps}" var="na">
-                                                            <option value="${na.value}" <c:if test="${facAdminOfficer.alternativeAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <span data-err-ind="nationalityA" class="error-msg"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group ">
-                                                <div class="col-sm-5 control-label">
                                                     <label for="idNumberA">ID No</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
@@ -200,6 +190,21 @@
                                                 <div class="col-sm-3 col-md-4">
                                                     <input maxLength="9" type="text" autocomplete="off" name="idNumberA" id="idNumberA" value='<c:out value="${facAdminOfficer.alternativeAdmin.idNumber}"/>'/>
                                                     <span data-err-ind="idNumberA" class="error-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label for="nationalityA">Nationality</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <select name="nationalityA" class="nationalityDown" id="nationalityA">
+                                                        <option value="">Please Select</option>
+                                                        <c:forEach items="${nationalityOps}" var="na">
+                                                            <option value="${na.value}" <c:if test="${facAdminOfficer.alternativeAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <span data-err-ind="nationalityA" class="error-msg"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -224,7 +229,7 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="emailA">Email</label>
+                                                    <label for="emailA">Email Address</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
@@ -281,21 +286,6 @@
                                                     </div>
                                                     <div class="form-group ">
                                                         <div class="col-sm-5 control-label">
-                                                            <label for="nationality--v--${status.index}">Nationality</label>
-                                                            <span class="mandatory otherQualificationSpan">*</span>
-                                                        </div>
-                                                        <div class="col-sm-6 col-md-7">
-                                                            <select name="nationality--v--${status.index}" class="nationalityDropdown${status.index}" id="nationality--v--${status.index}">
-                                                                <option value="">Please Select</option>
-                                                                <c:forEach items="${nationalityOps}" var="na">
-                                                                    <option value="${na.value}" <c:if test="${officer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                            <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group ">
-                                                        <div class="col-sm-5 control-label">
                                                             <label for="idNumber--v--${status.index}">ID No</label>
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
@@ -309,6 +299,21 @@
                                                         <div class="col-sm-3 col-md-4">
                                                             <input maxLength="9" type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${officer.idNumber}"/>'/>
                                                             <span data-err-ind="idNumber--v--${status.index}" class="error-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <div class="col-sm-5 control-label">
+                                                            <label for="nationality--v--${status.index}">Nationality</label>
+                                                            <span class="mandatory otherQualificationSpan">*</span>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-7">
+                                                            <select name="nationality--v--${status.index}" class="nationalityvv" id="nationality--v--${status.index}">
+                                                                <option value="">Please Select</option>
+                                                                <c:forEach items="${nationalityOps}" var="na">
+                                                                    <option value="${na.value}" <c:if test="${officer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                            <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group ">
@@ -363,7 +368,7 @@
                                     </div>
                                 </div>
 
-                                <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerFooter.jsp" %>
+                                <jsp:invoke fragment="innerFooterFrag"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>

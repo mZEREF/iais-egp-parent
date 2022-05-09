@@ -71,3 +71,19 @@ label {
 ol.no-margin-list, ul.no-margin-list > li {
     margin: 0;
 }
+
+
+
+
+label.other-doc-type-label {
+    padding: 0 10px;
+}
+
+.nice-select.other-doc-type-dropdown {
+    max-width: 300px;
+    float: none;
+    display: inline-block;
+    height: 24px;
+    padding: 2px 8px 5px;
+    vertical-align: middle;
+}
