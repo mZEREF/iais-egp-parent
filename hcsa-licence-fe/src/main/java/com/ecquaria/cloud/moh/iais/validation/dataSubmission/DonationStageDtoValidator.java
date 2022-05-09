@@ -29,7 +29,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr008 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
-        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
+        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002");
 
         int maxSamplesNum=100;
         if(arSuperDataSubmissionDto.getArCurrentInventoryDto()!=null){
@@ -46,6 +46,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                         break;
                     case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
                         maxSamplesNum=arSuperDataSubmissionDto.getArCurrentInventoryDto().getFrozenSpermNum();
+                        errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
                         break;
                     default:
                 }

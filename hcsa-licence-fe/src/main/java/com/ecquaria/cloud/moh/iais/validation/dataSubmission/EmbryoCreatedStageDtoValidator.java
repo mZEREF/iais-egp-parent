@@ -31,6 +31,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int totalThawedMax = (int) ParamUtil.getSessionAttr(httpServletRequest,"totalThawedMax");
         int totalFreshMax =(int) ParamUtil.getSessionAttr(httpServletRequest,"totalFreshMax");
+        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002");
 
         int totalThawedNum =0;
         int totalFreshNum =0;
@@ -122,18 +123,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
 
 
         if(totalThawedNum>totalThawedMax&&!errorMap.containsKey("poorDevThawOccNum")){
-            Map<String, String> repMap2=IaisCommonUtils.genNewHashMap();
-            repMap2.put("item","No. of Transferrable embryos created from thawed oocyte(s) and No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from thawed oocyte(s)");
-            repMap2.put("inventory","thawed oocytes");
-            String errMsgThawed = MessageUtil.getMessageDesc("DS_ERR060",repMap2);
-            errorMap.put("poorDevThawOccNum", errMsgThawed);
+            errorMap.put("poorDevThawOccNum", errMsg002);
         }
         if(totalFreshNum>totalFreshMax&&!errorMap.containsKey("poorDevFreshOccNum")){
-            Map<String, String> repMap1=IaisCommonUtils.genNewHashMap();
-            repMap1.put("item","No. of Transferrable embryos created from fresh oocyte(s) and No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from fresh oocyte(s)");
-            repMap1.put("inventory","fresh oocytes");
-            String errMsgFresh = MessageUtil.getMessageDesc("DS_ERR060",repMap1);
-            errorMap.put("poorDevFreshOccNum", errMsgFresh);
+            errorMap.put("poorDevFreshOccNum", errMsg002);
         }
         return errorMap;
     }

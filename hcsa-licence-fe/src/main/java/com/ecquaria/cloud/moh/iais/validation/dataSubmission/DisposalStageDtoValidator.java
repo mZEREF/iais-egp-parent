@@ -27,7 +27,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
-        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
+        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR002");
         if(disposalStageDto.getDisposedTypeDisplay()!=null&&(disposalStageDto.getTotalNum()==null||disposalStageDto.getTotalNum()==0)){
             errorMap.put("totalNum", "One data item in the list must be entered");
 
@@ -57,6 +57,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                         break;
                     case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
                         maxSamplesNum=arSuperDataSubmissionDto.getArCurrentInventoryDto().getFrozenSpermNum();
+                        errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
                         break;
                     default:
                 }
