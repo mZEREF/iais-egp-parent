@@ -47,7 +47,6 @@ public class ChklstItemAnswerDto implements Serializable {
     @CustomMsg(placeHolders = {"field", "maxlength"}, replaceVals = {"Actions Required", "500"})
     private String actionRequired;
 
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"file", "page"})
     private Boolean rectified;
 
     @NotBlank(message = "Invlid value", profiles = {"file", "page"})
@@ -62,8 +61,6 @@ public class ChklstItemAnswerDto implements Serializable {
     @CustomMsg(placeHolders = {"field", "maxlength"}, replaceVals = {"Action Required", "500"})
     private String followupAction;
 
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"file", "page"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"file", "page"})
     private String dueDate;
 
     @Override
