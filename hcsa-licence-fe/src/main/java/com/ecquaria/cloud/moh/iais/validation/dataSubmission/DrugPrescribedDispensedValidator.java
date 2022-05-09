@@ -118,7 +118,11 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
 
         }
-
+        //validate the medication
+        result = WebValidationHelper.validateProperty(drugSubmission, "medication");
+        if (result != null) {
+            errorMap.putAll(result.retrieveAll());
+        }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {
                 if(Formatter.compareDateByDay(prescriptionDate,startDate)>=0){

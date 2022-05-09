@@ -163,6 +163,7 @@
             if(drugtype == "DPD001"){
                 $('#prescriptionDate').show();
                 unDisableContent('div.medication');
+                fillValue($('#medication'),null);
             }else {
                 $('#prescriptionDate').hide();
             }
