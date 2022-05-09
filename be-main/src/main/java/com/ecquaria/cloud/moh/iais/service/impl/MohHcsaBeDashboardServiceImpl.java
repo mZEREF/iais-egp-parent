@@ -192,6 +192,13 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     if(!("common".equals(switchAction))) {
                         searchParam.addFilter("dashUserId", loginContext.getUserId(), true);
                     } else {
+                        if (RoleConsts.USER_ROLE_BROADCAST.equals(loginContext.getCurRoleId())) {
+                            List<String> wrkGrps = organizationMainClient.getWorkGrpsByUserId(loginContext.getUserId()).getEntity();
+                            if (wrkGrps != null && !wrkGrps.isEmpty()) {
+                                loginContext.getWrkGrpIds().clear();
+                                loginContext.getWrkGrpIds().addAll(wrkGrps);
+                            }
+                        }
                         Set<String> wrkGrpIds = loginContext.getWrkGrpIds();
                         if(!IaisCommonUtils.isEmpty(wrkGrpIds)) {
                             workGroupIds = new ArrayList<>(wrkGrpIds);
