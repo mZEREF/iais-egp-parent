@@ -66,7 +66,8 @@
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="drugType"  name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED" value="${drugSubmission.drugType}"/>
+                        <iais:select cssClass="drugType"  name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED"
+                                     value="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
                 </div>
@@ -160,14 +161,17 @@
         $('#drugType').change(function () {
             var drugtype= $('#drugType option:selected').val();
             if(drugtype == "DPD001"){
-                $('#prescriptionDate').attr("style","display: block");
+                $('#prescriptionDate').show();
+                unDisableContent('div.medication');
             }else {
-                $('#prescriptionDate').attr("style","display: none");
+                $('#prescriptionDate').hide();
             }
             if(drugtype == "DPD002"){
-                $('#dispensingDate').attr("style","display: block");
+                $('#dispensingDate').show();
+                $('#prescriptionSubmissionId').val('');
+                $('#error_prescriptionSubmissionId').html('');
             }else {
-                $('#dispensingDate').attr("style","display: none");
+                $('#dispensingDate').hide();
             }
         });
         $('#medication').change(function (){
@@ -180,6 +184,7 @@
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
         </c:if>
+        checkPrescriptionSubmissionId();
 
     });
 
