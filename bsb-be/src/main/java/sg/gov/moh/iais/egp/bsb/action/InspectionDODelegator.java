@@ -61,7 +61,6 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
-import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sg.gov.moh.iais.egp.bsb.validation.CheckListCommonValidate;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -126,8 +125,9 @@ public class InspectionDODelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-
+        //MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
+        ParamUtil.setSessionAttr(request, KEY_APP_ID, "6CECAB1A-E3C1-EC11-BE76-000C298D317C");
+        ParamUtil.setSessionAttr(request, KEY_TASK_ID, "7357F13D-8DC7-EC11-BE76-000C298D317C");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST);
     }
 
@@ -190,6 +190,8 @@ public class InspectionDODelegator {
             InspectionChecklistDto inspectionChecklistDto=inspectionClient.getChkListDraft(officer.getId(),appId).getBody();
 
             if(inspectionChecklistDto!=null){
+                InspectionChecklistDto combinedChecklistDto=inspectionClient.getCombinedChkList(appId).getBody();
+
                 List<ChklstItemAnswerDto> answerDtos=inspectionChecklistDto.getAnswer();
                 inspectionChecklistDtoList.add(inspectionChecklistDto);
                 InspectionFillCheckListDto comDto = inspectionFDtosDto.getFdtoList().get(0);
@@ -198,13 +200,22 @@ public class InspectionDODelegator {
                     for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
 
                         if(IaisCommonUtils.isNotEmpty(answerDtos)){
-                            String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
                             Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
                             for (AnswerForDifDto answerForDifDto: inspectionCheckQuestionDto.getAnswerForDifDtos()
                                  ) {
                                 for (ChklstItemAnswerDto answer: answerDtos
                                 ) {
                                     if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())&&inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())){
+                                        if(combinedChecklistDto!=null){
+                                            List<ChklstItemAnswerDto> answerDtoCombineds=combinedChecklistDto.getAnswer();
+                                            for (ChklstItemAnswerDto combined:answerDtoCombineds
+                                                 ) {
+                                                if(combined.equals(answer)){
+                                                    inspectionCheckQuestionDto.setSameAnswer(false);
+                                                    inspectionCheckQuestionDto.setDeconflict(officer.getId());
+                                                }
+                                            }
+                                        }
                                         answerForDifDto.setAnswer(answer.getAnswer());
                                         answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
                                         answerForDifDto.setNcs(answer.getFindings());
