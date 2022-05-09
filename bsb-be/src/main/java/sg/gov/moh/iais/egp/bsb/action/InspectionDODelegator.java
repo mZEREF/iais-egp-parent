@@ -61,6 +61,7 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sg.gov.moh.iais.egp.bsb.validation.CheckListCommonValidate;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -125,9 +126,8 @@ public class InspectionDODelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        //MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-        ParamUtil.setSessionAttr(request, KEY_APP_ID, "6CECAB1A-E3C1-EC11-BE76-000C298D317C");
-        ParamUtil.setSessionAttr(request, KEY_TASK_ID, "7357F13D-8DC7-EC11-BE76-000C298D317C");
+        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
+
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST);
     }
 
