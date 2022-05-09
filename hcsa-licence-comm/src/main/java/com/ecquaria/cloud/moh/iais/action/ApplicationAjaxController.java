@@ -314,7 +314,6 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
-
     @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
     public void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
@@ -326,14 +325,18 @@ public class ApplicationAjaxController {
             return;
         }
         byte[] fileData = configCommService.downloadFileRepo(fileRepoId);
-        response.setContentType("application/OCTET-STREAM");
-        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-        response.addHeader("Content-Length", "" + fileData.length);
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
+        if (fileData == null || fileData.length == 0) {
+            IaisEGPHelper.redirectUrl(response, "https://" + request.getServerName() + "/main-web/404-error.jsp");
+        } else {
+            response.setContentType("application/OCTET-STREAM");
+            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
+            response.addHeader("Content-Length", "" + fileData.length);
+            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+            ops.write(fileData);
+            ops.close();
+            ops.flush();
+            log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
+        }
     }
 
 

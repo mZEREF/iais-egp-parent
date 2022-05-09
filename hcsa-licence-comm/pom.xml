@@ -13,12 +13,6 @@
   <artifactId>hcsa-licence-web-comm</artifactId>
   <packaging>jar</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>sg.gov.moh.iais-egp</groupId>
@@ -27,45 +21,20 @@
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-bus-amqp</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-bus</artifactId>
-    </dependency>
-    <dependency>
       <groupId>sg.gov.moh.iais</groupId>
       <artifactId>iais-common</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>com.ecquaria.sz</groupId>
-      <artifactId>ecq-sz-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.ecquaria.kafka</groupId>
-      <artifactId>servicewrapper</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.ncs.secureconnect</groupId>
-      <artifactId>sim-lite</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.ncs.secureconnect</groupId>
-      <artifactId>sim-entities</artifactId>
+      <groupId>sg.gov.moh.iais-egp</groupId>
+      <artifactId>web-common</artifactId>
+      <version>${revision}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.xhtmlrenderer</groupId>
+          <artifactId>core-renderer</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xhtmlrenderer</groupId>
@@ -80,27 +49,6 @@
           <artifactId>bcmail-jdk14</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>sg.gov.moh.iais-egp</groupId>
-      <artifactId>web-common</artifactId>
-      <version>${revision}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.xhtmlrenderer</groupId>
-          <artifactId>core-renderer</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.17.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.17.1</version>
     </dependency>
   </dependencies>
 

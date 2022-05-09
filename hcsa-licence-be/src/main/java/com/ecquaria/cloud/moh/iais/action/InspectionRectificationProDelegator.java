@@ -237,32 +237,6 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         return iDto;
     }
 
-    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
-    public @ResponseBody
-    void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if (StringUtil.isEmpty(fileRepoId)) {
-            log.debug(StringUtil.changeForLog("file-repo-popup id is empty"));
-            return;
-        }
-        byte[] fileData = inspectionRectificationProService.downloadFile(fileRepoId);
-        if (fileData == null || fileData.length == 0) {
-            IaisEGPHelper.redirectUrl(response, "https://" + request.getServerName() + "/main-web/404-error.jsp");
-        } else {
-            response.setContentType("application/OCTET-STREAM");
-            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-            response.addHeader("Content-Length", "" + fileData.length);
-            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-            ops.write(fileData);
-            ops.close();
-            ops.flush();
-        }
-        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
-    }
-
     /**
      * StartStep: inspectorProRectificationValid
      *
