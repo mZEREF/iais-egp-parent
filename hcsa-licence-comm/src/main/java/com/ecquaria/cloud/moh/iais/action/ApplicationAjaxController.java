@@ -289,9 +289,9 @@ public class ApplicationAjaxController {
      * @description: ajax
      * @author: zixian
      */
-    @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
+    @GetMapping({"/file-repo", "/file-repo-popup"})
     public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("file-repo start ...."));
+        log.info(StringUtil.changeForLog("file-repo start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
         String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
         String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
@@ -303,42 +303,16 @@ public class ApplicationAjaxController {
         if (fileData == null || fileData.length == 0) {
             IaisEGPHelper.redirectUrl(response, "https://" + request.getServerName() + "/main-web/404-error.jsp");
         } else {
-            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
+            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName + "\"");
             response.addHeader("Content-Length", "" + fileData.length);
             response.setContentType("application/x-octet-stream");
             OutputStream ops = new BufferedOutputStream(response.getOutputStream());
             ops.write(fileData);
-            ops.close();
             ops.flush();
-        }
-        log.debug(StringUtil.changeForLog("file-repo end ...."));
-    }
-
-    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
-    public void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if (StringUtil.isEmpty(fileRepoId)) {
-            log.debug(StringUtil.changeForLog("file-repo id is empty"));
-            return;
-        }
-        byte[] fileData = configCommService.downloadFileRepo(fileRepoId);
-        if (fileData == null || fileData.length == 0) {
-            IaisEGPHelper.redirectUrl(response, "https://" + request.getServerName() + "/main-web/404-error.jsp");
-        } else {
-            response.setContentType("application/OCTET-STREAM");
-            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-            response.addHeader("Content-Length", "" + fileData.length);
-            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-            ops.write(fileData);
             ops.close();
-            ops.flush();
-            log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
         }
+        log.info(StringUtil.changeForLog("file-repo end ...."));
     }
-
 
     @PostMapping(value = "/governance-officer-html")
     public Map<String, String> genGovernanceOfficerHtmlList(HttpServletRequest request) {
