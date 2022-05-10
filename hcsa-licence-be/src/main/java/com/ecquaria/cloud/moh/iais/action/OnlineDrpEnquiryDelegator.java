@@ -79,8 +79,8 @@ public class OnlineDrpEnquiryDelegator {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "drpParam");
-        List<SelectOption> arCentreSelecToption  = assistedReproductionService.genPremisesOptions("null");
-        ParamUtil.setRequestAttr(bpc.request,"arCentreSelecToption",arCentreSelecToption);
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
 
 
         if(!"back".equals(back)||searchParam==null){
