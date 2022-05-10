@@ -377,8 +377,11 @@ public class TopDataSubmissionDelegator {
             postTerminationDto = new PostTerminationDto();
         }*/
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(declaration == null || declaration.length == 0){
-            errMap.put("declaration", "GENERAL_ERR0006");
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
+            if(declaration == null || declaration.length == 0){
+                errMap.put("declaration", "GENERAL_ERR0006");
+            }
         }
         if(isRfc(request)){
             if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
@@ -742,7 +745,7 @@ public class TopDataSubmissionDelegator {
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request,"currentStage");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, currentStage);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, currentStage);
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto != null) {
             topSuperDataSubmissionDto.setDraftNo(topDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_TOP, topSuperDataSubmissionDto.getDraftNo()));
@@ -813,6 +816,8 @@ public class TopDataSubmissionDelegator {
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
         } else if ("page".equals(crudType) || "preview".equals(crudType)) {
             actionType = crudType;
+        } else if("confim".equals(crudType)){
+            actionType="page";
         } else {
             actionType = crudType;
             DsConfigHelper.setActiveConfig(actionType, bpc.request);

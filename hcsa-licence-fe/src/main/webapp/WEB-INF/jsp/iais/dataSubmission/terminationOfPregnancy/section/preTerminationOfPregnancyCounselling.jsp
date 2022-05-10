@@ -128,8 +128,8 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="counsellor"/></c:set>
-                <iais:field width="5" id="counsellorIdNoLabel" value="Pre-Termination Counsellor ID No." mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
+                <%--<c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="counsellor"/></c:set>--%>
+                <iais:field width="5" id="counsellorIdNoLabel" value="Pre-Termination Counsellor ID No." mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${preTerminationDto.counsellorIdNo}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
