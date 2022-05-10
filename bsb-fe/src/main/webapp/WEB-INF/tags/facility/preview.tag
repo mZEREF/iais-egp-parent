@@ -443,10 +443,10 @@
                                             </c:if>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Mode of Procurement</label>
-                                                <div class="col-xs-6"><p><iais:code code="${info.procurementMode}"/></p></div>
+                                                <div class="col-xs-6"><p><iais:code code="${info.details.procurementMode}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
-                                            <c:if test="${'BMOP001' eq info.procurementMode}">
+                                            <c:if test="${'BMOP001' eq info.details.procurementMode}">
                                             <div id="transferringFacilityDetailsInfo">
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label" style="font-weight: bold">Details of Transferring Facility</label>
@@ -454,22 +454,22 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Block No.</label>
-                                                    <div class="col-xs-6"><p>${info.blockNoT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.blockNoT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                    <div class="col-xs-6"><p>${info.floorNoT}-${info.unitNoT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.floorNoT}-${info.details.unitNoT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Street</label>
-                                                    <div class="col-xs-6"><p>${info.streetNameT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.streetNameT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Postal Code</label>
-                                                    <div class="col-xs-6"><p>${info.postalCodeT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.postalCodeT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
@@ -478,37 +478,37 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name</label>
-                                                    <div class="col-xs-6"><p>${info.contactPersonNameT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.contactPersonNameT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Email address</label>
-                                                    <div class="col-xs-6"><p>${info.emailAddressT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.emailAddressT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Contact No.</label>
-                                                    <div class="col-xs-6"><p>${info.contactNoT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.contactNoT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Expected Date of Transfer</label>
-                                                    <div class="col-xs-6"><p>${info.expectedDateT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.expectedDateT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                    <div class="col-xs-6"><p>${info.courierServiceProviderNameT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.courierServiceProviderNameT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Remarks</label>
-                                                    <div class="col-xs-6"><p>${info.remarksT}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.remarksT}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                             </div>
                                             </c:if>
-                                            <c:if test="${'BMOP002' eq info.procurementMode}">
+                                            <c:if test="${'BMOP002' eq info.details.procurementMode}">
                                             <div id="exportingFacilityDetailsInfo">
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label" style="font-weight: bold">Details of Exporting Facility</label>
@@ -516,27 +516,27 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Facility Name</label>
-                                                    <div class="col-xs-6"><p>${info.facNameE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.facNameE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Block No.</label>
-                                                    <div class="col-xs-6"><p>${info.blockNoE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.blockNoE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                    <div class="col-xs-6"><p>${info.floorNoE}-${info.unitNoE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.floorNoE}-${info.details.unitNoE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Street</label>
-                                                    <div class="col-xs-6"><p>${info.streetNameE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.streetNameE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Postal Code</label>
-                                                    <div class="col-xs-6"><p>${info.postalCodeE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.postalCodeE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
@@ -545,32 +545,32 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name</label>
-                                                    <div class="col-xs-6"><p>${info.contactPersonNameE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.contactPersonNameE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Email address</label>
-                                                    <div class="col-xs-6"><p>${info.emailAddressE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.emailAddressE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Contact No.</label>
-                                                    <div class="col-xs-6"><p>${info.contactNoE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.contactNoE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Expected Date of Export</label>
-                                                    <div class="col-xs-6"><p>${info.expectedDateE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.expectedDateE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                    <div class="col-xs-6"><p>${info.courierServiceProviderNameE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.courierServiceProviderNameE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Remarks</label>
-                                                    <div class="col-xs-6"><p>${info.remarksE}</p></div>
+                                                    <div class="col-xs-6"><p>${info.details.remarksE}</p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                             </div>
