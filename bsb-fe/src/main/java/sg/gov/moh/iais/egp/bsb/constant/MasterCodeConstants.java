@@ -332,4 +332,8 @@ public class MasterCodeConstants {
     public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
     public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
     public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
+
+    //Inspection date status
+    public static final String PENDING_DO_CONFIRM = "INSDTST001";
+    public static final String CONFIRMED          = "INSDTST002";
 }
