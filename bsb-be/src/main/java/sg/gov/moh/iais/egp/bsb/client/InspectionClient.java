@@ -16,15 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterInitDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -200,6 +192,9 @@ public interface InspectionClient {
 
     @GetMapping(value = "/inspection/actual/approval-letter/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsApprovalLetterInitDataDto getInitInsApprovalLetterData(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/inspection/certification/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    InsCertificationInitDataDto getInsCertificationInitDataDto(@RequestParam("appId") String appId);
 
     @GetMapping(value = "/inspection/actual/do-review-follow-up-items/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     ReviewInsFollowUpDto getInitInsFollowUpData(@RequestParam("appId") String appId);
