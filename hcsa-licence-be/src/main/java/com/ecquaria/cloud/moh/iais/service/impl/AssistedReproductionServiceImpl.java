@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAj
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
@@ -89,6 +90,11 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public SearchResult<DsTopEnquiryResultsDto> searchDsTopByParam(SearchParam searchParam) {
         return assistedReproductionClient.searchTopByParam(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DsVssEnquiryResultsDto> searchDsVssByParam(SearchParam searchParam) {
+        return assistedReproductionClient.searchVssByParam(searchParam).getEntity();
     }
 
     @Override

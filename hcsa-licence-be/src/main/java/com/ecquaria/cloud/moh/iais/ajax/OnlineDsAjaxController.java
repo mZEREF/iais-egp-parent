@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAj
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -251,6 +252,48 @@ public class OnlineDsAjaxController {
                 queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
                 queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
                 queryList.forEach(i -> i.setDoctorRegnNo(i.getDoctorRegnNo()==null?"":i.getDoctorRegnNo()));
+                queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
+                map.put("result", "Success");
+            }else {
+                map.put("result", "Fail");
+            }
+            map.put("ajaxResult", results);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "vssDetail.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> vssDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+
+        String patientIdNo = request.getParameter("patientIdNo");
+        String patientIdType = request.getParameter("patientIdType");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
+            FilterParameter vssParameter = new FilterParameter.Builder()
+                    .clz(DsTopEnquiryResultsDto.class)
+                    .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
+
+
+            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+
+            filter.put("patientIdType", patientIdType);
+            filter.put("patientIdNo",patientIdNo);
+            vssParameter.setFilters(filter);
+            SearchParam searchParam = SearchResultHelper.getSearchParam(request, vssParameter,true);
+            QueryHelp.setMainSql("onlineEnquiry", "searchVssAjax",searchParam);
+
+            SearchResult<DsVssEnquiryResultsDto> results = assistedReproductionService.searchDsVssByParam(searchParam);
+            List<DsVssEnquiryResultsDto> queryList = null;
+            if (!Objects.isNull(results)){
+                queryList = results.getRows();
+                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+                queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+                queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+                queryList.forEach(i -> i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus())));
+                queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
                 queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
                 map.put("result", "Success");
             }else {
@@ -528,6 +571,46 @@ public class OnlineDsAjaxController {
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, DsTopEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    @GetMapping(value = "VSS-SearchResults-DownloadS")
+    public @ResponseBody
+    void fileVssHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "vssParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("onlineEnquiry", "searchByVss",searchParam);
+
+        SearchResult<DsVssEnquiryResultsDto> results = assistedReproductionService.searchDsVssByParam(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<DsVssEnquiryResultsDto> queryList = results.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+            queryList.forEach(i -> i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus())));
+            queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
