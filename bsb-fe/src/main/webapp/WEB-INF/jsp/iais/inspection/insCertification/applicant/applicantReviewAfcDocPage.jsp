@@ -16,7 +16,8 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 
 <%@include file="../dashboard.jsp" %>
@@ -45,7 +46,7 @@
                         </ul>
                         <%@ include file="../upload.jsp" %>
                         <br><br>
-                        <%@ include file="applicantCertificationDocumentsPage.jsp" %>
+                        <%@ include file="../afc/afcCertificationDocumentsPage.jsp" %>
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-12">

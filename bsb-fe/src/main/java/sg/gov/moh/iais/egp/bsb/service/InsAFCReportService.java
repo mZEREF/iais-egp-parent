@@ -93,6 +93,24 @@ public class InsAFCReportService {
         return actionType;
     }
 
+    public String validateApplicant(HttpServletRequest request) {
+        ReviewAFCReportDto dto = getDisplayDto(request);
+        AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
+        bindApplicantParam(request, dto,commonDocDto);
+        List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
+        dto.setDocMetas(docMetas);
+        dto.setProfile(getProfile(dto.getAppStatus()));
+        String actionType;
+        ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
+        if (!validationResultDto.isPass()) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = InspectionConstants.PARAM_PREPARE;
+        } else {
+            actionType = InspectionConstants.PARAM_NEXT;
+        }
+        return actionType;
+    }
+
     public ReviewAFCReportDto getDisplayDto(HttpServletRequest request) {
         ReviewAFCReportDto dto = (ReviewAFCReportDto) ParamUtil.getSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO);
         if (dto == null) {
