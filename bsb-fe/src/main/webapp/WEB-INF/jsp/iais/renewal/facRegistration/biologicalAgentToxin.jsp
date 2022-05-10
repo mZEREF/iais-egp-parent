@@ -22,7 +22,7 @@
 
 <%@include file="dashboard.jsp"%>
 
-<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto"--%>
+<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">

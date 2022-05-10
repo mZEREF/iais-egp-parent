@@ -1,6 +1,6 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
-<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto"--%>
+<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
 <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="nationalityOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="activeNodeKey" type="java.lang.String"--%>
