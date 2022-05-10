@@ -25,55 +25,62 @@ public class InsChklItemExcelDto implements Serializable {
 
     @ExcelProperty(
             cellIndex = 1,
+            cellName = "Section",
+            readOnly = true
+    )
+    private String section;
+
+    @ExcelProperty(
+            cellIndex = 2,
             cellName = "Item Description",
             readOnly = true
     )
     private String checklistItem;
 
     @ExcelProperty(
-            cellIndex = 2,
+            cellIndex = 3,
             cellName = "Compliance"
     )
     private String answer;
 
     @ExcelProperty(
-            cellIndex = 3,
+            cellIndex = 4,
             cellName = "Findings/Non-Compliance"
     )
     private String findings;
 
     @ExcelProperty(
-            cellIndex = 4,
+            cellIndex = 5,
             cellName = "Actions Required"
     )
     private String actionRequired;
 
     @ExcelProperty(
-            cellIndex = 5,
+            cellIndex = 6,
             cellName = "Rectified"
     )
     private String rectified;
 
     @ExcelProperty(
-            cellIndex = 6,
+            cellIndex = 7,
             cellName = "Follow-up Item"
     )
     private String followupItem;
 
     @ExcelProperty(
-            cellIndex = 7,
+            cellIndex = 8,
             cellName = "Observations for Follow-up"
     )
     private String observeFollowup;
 
     @ExcelProperty(
-            cellIndex = 8,
+            cellIndex = 9,
             cellName = "Action Required"
     )
     private String followupAction;
 
     @ExcelProperty(
-            cellIndex = 9,
+            cellIndex = 10,
             cellName = "Due Date",
             objectType = Date.class
     )

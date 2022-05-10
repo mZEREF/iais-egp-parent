@@ -885,6 +885,7 @@ public class InspectionDODelegator {
                     excelDto.setObserveFollowup(dto.getObserveFollowup());
                     excelDto.setFollowupAction(dto.getFollowupAction());
                     excelDto.setDueDate(dto.getDueDate());
+                    excelDto.setSection(sectionDto.getSection());
                 } else {
                     excelDto.setAnswer("");
                     excelDto.setFindings("");
@@ -894,6 +895,7 @@ public class InspectionDODelegator {
                     excelDto.setObserveFollowup("");
                     excelDto.setFollowupAction("");
                     excelDto.setDueDate("");
+                    excelDto.setSection("");
                 }
                 excelDto.setItemKey(itemKey);
                 result.add(excelDto);
@@ -910,15 +912,16 @@ public class InspectionDODelegator {
         }
         widthMap = IaisCommonUtils.genNewHashMap(5);
         widthMap.put(0, 9);
-        widthMap.put(1, 25);
-        widthMap.put(2, 12);
-        widthMap.put(3, 25);
+        widthMap.put(1, 18);
+        widthMap.put(2, 25);
+        widthMap.put(3, 12);
         widthMap.put(4, 25);
-        widthMap.put(5, 10);
-        widthMap.put(6, 12);
-        widthMap.put(7, 25);
+        widthMap.put(5, 25);
+        widthMap.put(6, 10);
+        widthMap.put(7, 12);
         widthMap.put(8, 25);
-        widthMap.put(9, 15);
+        widthMap.put(9, 25);
+        widthMap.put(10, 15);
         return widthMap;
     }
 }
