@@ -92,7 +92,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                <div  <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if>>
+                <div  <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
@@ -108,7 +108,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if>>
+                <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Type of Fetal Anomalies" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
