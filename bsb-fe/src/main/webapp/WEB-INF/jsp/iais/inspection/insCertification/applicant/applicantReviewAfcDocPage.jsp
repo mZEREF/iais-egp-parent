@@ -57,6 +57,7 @@
                             </div>
                         </div>
                     </form>
+                    <%@ include file="/WEB-INF/jsp/iais/document/fileUploadModal.jsp" %>
                 </div>
             </div>
         </div>

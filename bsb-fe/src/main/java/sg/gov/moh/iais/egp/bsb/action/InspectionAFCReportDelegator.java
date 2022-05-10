@@ -73,6 +73,15 @@ public class InspectionAFCReportDelegator {
                 ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, new ReviewAFCReportDto());
             }
         }
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = dto.getCertificationDocDisPlayDtos();
+        if(certificationDocDisPlayDtos==null){
+            certificationDocDisPlayDtos = new ArrayList<>(0);
+        }
+        for (int i=0; i<certificationDocDisPlayDtos.size();i++){
+            certificationDocDisPlayDtos.get(i).setMaskedRepoId(MaskUtil.maskValue("file",certificationDocDisPlayDtos.get(i).getRepoId()));
+        }
+        dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+
         insAFCReportService.setSavedDocMap(dto, request);
         ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setRequestAttr(request, KEY_DASHBOARD_MSG, KEY_AFC_DASHBOARD_MSG);
