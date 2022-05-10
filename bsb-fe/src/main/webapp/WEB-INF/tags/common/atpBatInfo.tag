@@ -13,7 +13,6 @@
 <%@attribute name="firstScheduleOp" required="true" type="java.lang.String" %>
 <%@attribute name="scheduleBatMap" required="true" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
-<%@attribute name="innerFooterFrag" fragment="true" %>
 <%@attribute name="editJudge" type="java.lang.Boolean" %>
 
 
@@ -177,6 +176,5 @@
         </div>
       </div>
     </div>
-    <jsp:invoke fragment="innerFooterFrag"/>
   </div>
 </div>

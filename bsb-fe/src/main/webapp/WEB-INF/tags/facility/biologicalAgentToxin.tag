@@ -9,6 +9,7 @@
 <%@attribute name="activityTypes" required="true" type="java.util.List<java.lang.String>" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
 <%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerFooterFrag" fragment="true" %>
 
 
 <%
@@ -53,7 +54,50 @@
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
                         <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/InnerNavTab.jsp" %>
-                        <%@include file="../common/atpBatInfo.tag"%>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active">
+                                    <div id="batInfoPanel" role="tabpanel">
+                                        <div class="multiservice">
+                                            <div class="tab-gp side-tab clearfix">
+                                                <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
+                                                <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
+                                                <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
+                                                <ul id = "tabUl" class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}" role="tab">Possession of First and/or Second Schedule Biological Agent</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE}" role="tab">Possession of First Schedule Biological Agent</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}" role="tab">Possession of Fifth Schedule Toxin</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}" role="tab">Large-Scale Production of First Schedule Biological Agent</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}" role="tab">Large-Scale Production of Third Schedule Biological Agent</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}" role="tab">Large-Scale Production of First and/or Third Schedule Biological Agent</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}" role="tab">Handling of non-First Schedule Poliovirus Infectious Materials</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}" role="tab">Handling of Poliovirus Potentially Infectious Materials</a></li>
+                                                    </c:if>
+                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}'>
+                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}" role="tab">Handling of Fifth Schedule Toxin for Exempted Purposes</a></li>
+                                                    </c:if>
+                                                </ul>
+                                                <%@include file="../common/atpBatInfo.tag"%>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <jsp:invoke fragment="innerFooterFrag"/>
+                                </div>
+                            </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
                     </div>
                 </div>
