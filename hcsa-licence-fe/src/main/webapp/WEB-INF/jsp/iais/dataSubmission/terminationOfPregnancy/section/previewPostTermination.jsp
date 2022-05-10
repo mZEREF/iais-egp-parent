@@ -77,7 +77,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Post-Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${postTerminationDto.counsellingPlace}"/>
+                            <iais:optionText value="${postTerminationDto.counsellingPlace}" selectionOptions="TopPlace"/>
                         </iais:value>
                     </iais:row>
                 </div>

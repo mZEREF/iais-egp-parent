@@ -111,7 +111,7 @@
                         <iais:field width="5" value="Place of Termination of Pregnancy by Surgery"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:if test="${terminationDto.performedOwn == true}">${'unknown'}</c:if>
-                            <c:if test="${terminationDto.performedOwn == false}"><iais:code code="${terminationDto.topPlace}"/></c:if>
+                            <c:if test="${terminationDto.performedOwn == false}"><iais:optionText value="${terminationDto.topPlace}" selectionOptions="TopPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -134,7 +134,7 @@
                         <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:if test="${terminationDto.pregnancyOwn == true}">${'unknown'}</c:if>
-                            <c:if test="${terminationDto.pregnancyOwn == false}"><iais:code code="${terminationDto.prescribeTopPlace}"/></c:if>
+                            <c:if test="${terminationDto.pregnancyOwn == false}"><iais:optionText value="${terminationDto.prescribeTopPlace}" selectionOptions="TopPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -156,7 +156,7 @@
                         <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:if test="${terminationDto.takenOwn == true}">${'unknown'}</c:if>
-                            <c:if test="${terminationDto.takenOwn == false}"><iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others (E.g. Home)' : terminationDto.topDrugPlace}"/></c:if>
+                            <c:if test="${terminationDto.takenOwn == false}"><iais:optionText value="${terminationDto.topDrugPlace}" selectionOptions="TopDrugPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>

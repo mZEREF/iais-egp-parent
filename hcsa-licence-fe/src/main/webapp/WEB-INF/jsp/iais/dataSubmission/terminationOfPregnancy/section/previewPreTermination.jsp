@@ -90,7 +90,7 @@
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Place"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${preTerminationDto.counsellingPlace == 'AR_SC_001' ? 'Health Promotion Board Counselling Centre' : preTerminationDto.counsellingPlace}"/>
+                            <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlace"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
