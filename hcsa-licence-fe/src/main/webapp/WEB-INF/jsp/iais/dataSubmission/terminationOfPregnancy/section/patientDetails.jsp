@@ -368,7 +368,9 @@
         var preValue = '';
         $("body").on("keyup", "input[name=livingChildrenNo]", function(){
             var value = $(this).val();
-            if(!!value && !$(this).val().match(/^(?:10|[0-9])$/)) {
+            var reg=/^[1-9][0-9]+$/gi;
+            var data=$('#childrenNum').val();
+            if(!!value && !$(this).val().match(/^(?:10|[0-9])$/) && reg.test(data)) {
                 /*$(this).val(preValue);*/
                 $('#childrenNum').val(null);
                 clearErrorMsg();
