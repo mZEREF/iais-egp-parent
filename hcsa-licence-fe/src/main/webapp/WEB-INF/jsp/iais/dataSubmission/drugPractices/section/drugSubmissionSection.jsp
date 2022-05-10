@@ -49,6 +49,7 @@
                     <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
                         <iais:input maxLength="20" type="text" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" onchange="clearDockerSelection();"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>
+                        <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3" display="true">
                         <a class="ValidateDoctor" onclick="validateDoctors()">
@@ -310,6 +311,8 @@
         if(prgNo == "" || prgNo == null || prgNo == undefined){
             clearPrsInfo();
             dismissWaiting();
+            clearErrorMsg();
+            $('#doctorRegnNoMsg').text('This is a mandatory field.');
             return;
         }
         var no = $('input[name="doctorReignNo"]').val();
