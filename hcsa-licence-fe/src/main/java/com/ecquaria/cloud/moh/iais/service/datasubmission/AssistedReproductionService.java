@@ -53,7 +53,7 @@ public interface AssistedReproductionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo);
 
-    List<SelectOption> genPremisesOptions(String patientCode,String orgId);
+    List<SelectOption> genPremisesOptions(String centerType,String patientCode,String orgId);
 
     List<PgtStageDto> listPgtStageByPatientCode( String patientCode);
 

@@ -117,9 +117,9 @@ public class OnlineEnquiryDonorSampleDelegator {
 
         String back = (String) ParamUtil.getRequestAttr(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,"null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
-        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
+        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,"null",loginContext.getOrgId());
         SelectOption otherSelectOption=new SelectOption();
         otherSelectOption.setText("Others");
         otherSelectOption.setValue("AR_SC_001");
@@ -229,7 +229,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         if(StringUtil.isNotEmpty(sampleHciCode)){
             donorInfo.getDonorSampleDto().setSampleFromHciCode(sampleHciCode);
         }else {
-            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_AR,"null","null").getEntity();
             Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
             if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                 for (PremisesDto premisesDto : premisesDtos) {

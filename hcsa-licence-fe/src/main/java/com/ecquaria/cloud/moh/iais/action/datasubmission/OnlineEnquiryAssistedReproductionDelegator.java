@@ -859,7 +859,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stage"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Sample"));
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,"null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         List<SelectOption> stageTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_AR,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_AR)));
@@ -1008,7 +1008,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));
         sourceSemenOptions.add(new SelectOption("Husband","Husband"));
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null","null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,"null","null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
@@ -1132,7 +1132,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentFrozenSperms=0;
                 List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
 
-                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode(),"null").getEntity();
+                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_AR,patientInfoDto.getPatient().getPatientCode(),"null").getEntity();
                 Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
                 if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                     for (PremisesDto premisesDto : premisesDtos) {
@@ -1188,7 +1188,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request=bpc.request;
         PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
         if(patientInfoDto!=null){
-            List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(patientInfoDto.getPatient().getPatientCode(),"null");
+            List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_AR,patientInfoDto.getPatient().getPatientCode(),"null");
             ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         }
         ParamUtil.setSessionAttr(request,"arViewFull",1);
@@ -1470,7 +1470,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     ParamUtil.setRequestAttr(request, "appealDisplayShow",true);
                 }
             }
-            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_AR,"null","null").getEntity();
             Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
             if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                 for (PremisesDto premisesDto : premisesDtos) {
