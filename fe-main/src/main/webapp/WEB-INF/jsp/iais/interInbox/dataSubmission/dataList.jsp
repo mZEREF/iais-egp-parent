@@ -7,61 +7,76 @@
     <div class="tab-search">
         <div id="clearBody">
         <div class="row">
-            <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Submission ID:</label>
-                    <div class="col-xs-9 col-md-9">
+                    <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Submission ID:</label>
+                    <div class="col-xs-9 col-md-4 col-lg-4">
                         <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="19"
                                value="${param.submissionNoDataSubmission}">
                     </div>
-                </iais:value>
-            </div>
-        </div>
-        <div class="row" style="margin-bottom: 1.5%">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-3 col-md-3" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type:</label>
-                    <div class="col-xs-9 col-md-9">
+                    <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
+                        <label>Type:</label>
+                    </div>
+                    <div class="col-xs-9 col-md-4 col-lg-4">
                         <iais:select name="typeDataSubmission" id ="typeDataSubmission" options="submissionTypes" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
                     </div>
                 </iais:value>
-            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1.5%">
+            <iais:value>
+                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient Name:</label>
+                <div class="col-xs-9 col-md-4 col-lg-4">
+                    <input id="patientNameDataSubmission" name="patientNameDataSubmission" type="text" maxlength="255"
+                           value="${param.patientNameDataSubmission}">
+                </div>
+                <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
+                    <label>Status:</label>
+                </div>
+                <div class="col-xs-9 col-md-4 col-lg-4">
+                    <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus" needSort="true" />
+                </div>
+            </iais:value>
         </div>
 
+
         <div class="row" style="margin-bottom: 1.5%">
-            <div class="col-md-12">
-                <iais:value>
-                    <label class="col-xs-3 col-md-3" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status:</label>
-                    <div class="col-xs-9 col-md-9">
-                        <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus" needSort="true" />
-                    </div>
-                </iais:value>
-            </div>
+            <iais:value>
+                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Business Name:</label>
+                <div class="col-xs-9 col-md-4 col-lg-4">
+                    <input id="businessNameDataSubmission" name="businessNameDataSubmission" type="text" maxlength="255"
+                           value="${param.businessNameDataSubmission}">
+                </div>
+                <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
+                    <label>Submitted By:</label>
+                </div>
+                <div class="col-xs-9 col-md-4 col-lg-4">
+                    <input id="submittedByDataSubmission" name="submittedByDataSubmission" type="text" maxlength="255"
+                           value="${param.submittedByDataSubmission}">
+                </div>
+            </iais:value>
         </div>
+
         <div class="row">
-            <div class="col-md-12">
                 <iais:value>
-                    <label class="col-xs-3 col-md-3 col-lg-3" style="text-align:left;margin-top: 1.5%">Last Updated:</label>
+                    <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Last Updated:</label>
                     <div class="col-xs-9 col-md-4 col-lg-4">
                         <iais:datePicker id="lastDateStart" name="lastDateStart" value="${param.lastDateStart}"/>
                     </div>
-                    <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
-                        <label>To</label>
+                    <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
+                        <label>To:</label>
                     </div>
                     <div class="col-xs-9 col-md-4 col-lg-4">
                         <iais:datePicker id="lastDateEnd" name="lastDateEnd" value="${param.lastDateEnd}"/>
                     </div>
                 </iais:value>
-            </div>
         </div>
+
             <div class="row" style="margin-bottom: 30px;">
-                <div class="col-md-12">
-                    <span class="col-xs-3 col-md-3"></span>
+                    <span class="col-xs-3 col-md-2"></span>
                     <div class="col-md-9">
                         <span id="lastDateerror-msg" class="error-msg" style="width: 150%;font-size:1.5rem">${lastUpdateINBOX_ERR011}</span>
                     </div>
-                </div>
             </div>
+
             <div class="col-md-12">
                 <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearSearch()">Clear</button>
@@ -73,7 +88,7 @@
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="table-responsive">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
                     <thead>
@@ -81,21 +96,25 @@
                         <th scope="col" style="display: none;"></th>
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="SUBMISSION_NO"
-                                             value="Submission ID" style="width:15%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="typeDesc" value="Type" style="width:12%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="statusDesc" value="Status" style="width:10%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:22%;" isFE="true"/>
+                                             value="Submission ID"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="Patient_Name"
+                                             value="Patient Name"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="typeDesc" value="Type"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="statusDesc" value="Status"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="UPDATED_DT"
-                                             value="Last Updated" style="width:13%;" isFE="true"/>
+                                             value="Last Updated"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="SUBMIT_DT"
-                                             value="Submitted On" style="width:13%;" isFE="true"/>
+                                             value="Submitted On" isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="SUBMIT_BY"
+                                             value="Submitted By"  isFE="true"/>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
                         <c:when test="${empty dataSubmissionResult.rows}">
                             <tr>
-                                <td colspan="8">
+                                <td colspan="10">
                                     <iais:message key="GENERAL_ACK018" escape="true"/>
                                 </td>
                             </tr>
@@ -122,6 +141,10 @@
                                         <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
+                                        <p class="visible-xs visible-sm table-row-title">Patient Name</p>
+                                        <iais:code code="${inboxDataSubmissionQuery.patientName}"/>
+                                    </td>
+                                    <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
                                         <input type="hidden" value="${typeForWithdraw}" id="typeValue${submissionNo}" name="typeValue${submissionNo}">
                                        <iais:code code="${inboxDataSubmissionQuery.type}"/>
@@ -144,6 +167,10 @@
                                         <p><fmt:formatDate value="${inboxDataSubmissionQuery.submittedOn}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Submitted By</p>
+                                        <p style="margin-right: 26px;"><c:out value="${inboxDataSubmissionQuery.submittedBy}"/></p>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
@@ -151,22 +178,31 @@
                     </tbody>
                 </table>
                 <div class="row" style="padding-bottom: 9%">
-                    <div class="col-md-12">
-                        <div class="col-md-12 text-right">
-                            <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
-                            <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
-                            <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>
-                            <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
-                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
-                            <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
-                        </div>
+                    <div class="col-md-12 text-right">
+                        <c:set var="buttonSize" value="${dataSubARTPrivilege ==1 && dataSubLDTPrivilege == 1 ?  7 : dataSubARTPrivilege ==1 ? 6 : 5}"/>
+                        <c:if test="${dataSubARTPrivilege == 1}">
+                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
+                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online enquiry</a>
+                        </c:if>
+                        <c:if test="${dataSubLDTPrivilege == 1}">
+                            <a  class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Online Enquiry</a>
+                        </c:if>
+                        <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
+                        <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
+                        <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>
+                        <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
+                        <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+                        <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
+                        <c:if test="${buttonSize ==7}"> <br><br></c:if>
+                        <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                        <c:if test="${buttonSize ==6}"> <br><br></c:if>
+                        <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
         <input type="hidden" value="${empty selectAllTypeSub ? '' : selectAllTypeSub}" id="selectAllTypeSub" name="selectAllTypeSub">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
@@ -192,8 +228,9 @@
         $("#typeDataSubmission option:first").prop("selected", 'selected').val("");
         $("#submissionNoDataSubmission").val("");
         $("#clearBody .current").text("All");
-        $("#submissionNoDataSubmission").val("");
-        $("#submissionNoDataSubmission").val("");
+        $("#patientNameDataSubmission").val("");
+        $("#submittedByDataSubmission").val("");
+        $("#businessNameDataSubmission").val("");
         $("[name='lastDateStart']").val("");
         $("[name='lastDateEnd']").val("");
         $("#lastDateerror-msg").html('');

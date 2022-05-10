@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
 import java.io.Serializable;
@@ -66,8 +68,11 @@ public class DataSubmissionInboxDelegator {
 	private final static  String DS_STATUSES            = "dsStatuses";
 	private final static  String SORT_INIT              = "UPDATED_DT";
 	private final static String SUBMISSION_TYPES       = "submissionTypes";
+	private final static String FE_USERS               = "feUsersForLicSearch";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
+	@Autowired
+	private OrgUserManageService orgUserManageService;
     @Autowired
 	private InterInboxDelegator interInboxDelegator;
 	/**
@@ -89,10 +94,11 @@ public class DataSubmissionInboxDelegator {
 		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 		ParamUtil.setSessionAttr(request,SUBMISSION_TYPES,(Serializable) FeInboxHelper.getSubmissionTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
+		ParamUtil.setSessionAttr(request,FE_USERS,(Serializable) orgUserManageService.getAccountByOrgId(AccessUtil.getLoginUser(request).getOrgId()).stream().map(u-> new SelectOption(u.getId(),u.getDisplayName())).collect(Collectors.toList()));
 	}
 
 	public void clearSession(HttpServletRequest request){
-		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT,DS_TYPES);
+		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT,DS_TYPES,FE_USERS);
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -141,6 +147,7 @@ public class DataSubmissionInboxDelegator {
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
 				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
+				setSearchParamOnlyForDsTab(searchParam,(List<SelectOption>)ParamUtil.getSessionAttr(request,FE_USERS));
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 			}else {
@@ -152,6 +159,13 @@ public class DataSubmissionInboxDelegator {
 			ParamUtil.reSetSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 		}
 		setLog("prepare",false);
+	}
+
+	private void setSearchParamOnlyForDsTab(SearchParam searchParam, List<SelectOption> selectOptions){
+		String sql = searchParam.getMainSql();
+		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"replaceSubByOne","dds.SUBMIT_BY","SUBMIT_BY",sql);
+		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"replaceSubByTwo","ddsd.CREATED_BY","SUBMIT_BY",sql);
+		searchParam.setMainSql(sql);
 	}
 
 	/**
@@ -183,6 +197,9 @@ public class DataSubmissionInboxDelegator {
 		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"businessName",inboxDataSubmissionQueryDto.getBusinessName(),true);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submittedBy",inboxDataSubmissionQueryDto.getSubmittedBy(),true);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"patientName",inboxDataSubmissionQueryDto.getPatientName(),true);
 		//when status -> DS014 , status cannot be DS013,DS014.
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);

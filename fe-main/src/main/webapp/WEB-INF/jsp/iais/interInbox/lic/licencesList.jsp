@@ -230,7 +230,6 @@
                 </div>
                 <!--Modal End-->
                 <div class="row" style="padding-bottom: 9%">
-                    <div class="col-md-12">
                         <div class="col-md-12 text-right">
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-renew">Renew</a>
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-cease">Cease</a>
@@ -244,7 +243,6 @@
                             </c:if>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
