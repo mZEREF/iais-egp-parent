@@ -970,6 +970,30 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do support end ...."));
     }
 
+
+
+    private void addNewUserToWorkGroup(List<UserGroupCorrelationDto> userGroupCorrelationDtoList,List<String> userIds){
+        log.info(StringUtil.changeForLog("The addNewUserToWorkGroup start ..."));
+        List<String> oldUserIdList = IaisCommonUtils.genNewArrayList();
+        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtoList){
+            oldUserIdList.add(userGroupCorrelationDto.getUserId());
+        }
+        if(IaisCommonUtils.isNotEmpty(userIds)){
+            for (String userId : userIds) {
+                if(!oldUserIdList.contains(userId)){
+                    log.info(StringUtil.changeForLog("The addNewUserToWorkGroup new  add userId -->:"+userId));
+                    UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                    userGroupCorrelationDto.setUserId(userId);
+                    userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    userGroupCorrelationDto.setIsLeadForGroup(Integer.valueOf(AppConsts.NO));
+                    userGroupCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    userGroupCorrelationDtoList.add(userGroupCorrelationDto);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The addNewUserToWorkGroup start ..."));
+    }
+
     /**
      * StartStep: broadcast
      *
@@ -1007,6 +1031,7 @@ public class HcsaApplicationDelegator {
                 CopyUtil.copyMutableObjectList(userGroupCorrelationDtoList, cloneUserGroupCorrelationDtos);
                 broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
                 userGroupCorrelationDtoList = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtoList, AppConsts.COMMON_STATUS_ACTIVE);
+                addNewUserToWorkGroup(userGroupCorrelationDtoList,userIds);
             } else {
                 userGroupCorrelationDtoList = IaisCommonUtils.genNewArrayList();
                 for (String id : userIds) {
