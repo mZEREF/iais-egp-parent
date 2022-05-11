@@ -446,17 +446,19 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }else if(isRfc(request)){
-            TopSuperDataSubmissionDto topOldSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(request);
-            TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-            if(topOldSuperDataSubmissionDto != null){
-                if(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto()!= null){
-                    if(terminationOfPregnancyDto.getPatientInformationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto())){
-                        if(terminationOfPregnancyDto.getFamilyPlanDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto())){
-                            if(terminationOfPregnancyDto.getPreTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPreTerminationDto())){
-                                if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
-                                    if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
-                                        ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                                        return 0;
+            if("next".equals(actionType)){
+                TopSuperDataSubmissionDto topOldSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(request);
+                TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+                if(topOldSuperDataSubmissionDto != null){
+                    if(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto()!= null){
+                        if(terminationOfPregnancyDto.getPatientInformationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto())){
+                            if(terminationOfPregnancyDto.getFamilyPlanDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto())){
+                                if(terminationOfPregnancyDto.getPreTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPreTerminationDto())){
+                                    if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
+                                        if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
+                                            ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                                            return 0;
+                                        }
                                     }
                                 }
                             }
