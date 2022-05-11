@@ -41,6 +41,7 @@ public class DocConstants {
     public static final String DOC_TYPE_INVENTORY_AGENT   = "inventoryBat";
     public static final String DOC_TYPE_INVENTORY_TOXIN   = "inventoryToxins";
     public static final String DOC_TYPE_INS_CHECKLIST   = "insCheckList";
+    public static final String PARAM_REPO_ID_DOC_MAP          = "repoIdDocMap";
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
@@ -71,4 +72,5 @@ public class DocConstants {
 
     public static final String DOC_TYPE_INSPECTION_REPORT = "inspectionReport";
     public static final String DOC_TYPE_APPLICANT_COMMENT_REPORT = "commentedInsReport";
+    public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
 }

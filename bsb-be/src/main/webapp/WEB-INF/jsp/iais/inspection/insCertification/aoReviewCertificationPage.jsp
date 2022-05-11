@@ -11,7 +11,8 @@
 <webui:setLayout name="iais-intranet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc.js"></script>
 <%--@elvariable id="reviewFollowUpDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto"--%>
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -89,7 +90,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${reviewFollowUpDto.currentStatus}"/></p>
+                                                                        <p><iais:code code="${reviewAFCReportDto.appStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -138,5 +139,8 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/fileUploadModal.jsp"%>
 </div>
+<script>
+
+</script>

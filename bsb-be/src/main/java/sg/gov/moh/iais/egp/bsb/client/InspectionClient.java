@@ -55,7 +55,10 @@ public interface InspectionClient {
     ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
 
     @PostMapping(value = "/inspection/certification/do/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateCertificationInsSubmission(@RequestBody InsProcessDto dto);
+    ValidationResultDto validateDoCertification(@RequestBody InsProcessDto dto);
+
+    @PostMapping(value = "/inspection/certification/ao/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateAoCertification(@RequestBody InsProcessDto dto);
 
     @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
@@ -160,6 +163,21 @@ public interface InspectionClient {
     void reviewInspectionNCToAO(@RequestParam("appId") String appId,
                                 @RequestParam("taskId") String taskId,
                                 @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/review/certification/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionDoCertificationToAO(@RequestParam("appId") String appId,
+                                @RequestParam("taskId") String taskId,
+                                @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/review/certification/to-do", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionAoCertificationToDO(@RequestParam("appId") String appId,
+                                             @RequestParam("taskId") String taskId,
+                                             @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/certification/review/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionCertificationApprove(@RequestParam("appId") String appId,
+                                       @RequestParam("taskId") String taskId,
+                                       @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/non-compliance/review/finalization", consumes = MediaType.APPLICATION_JSON_VALUE)
     void finalizeReviewInspectionNC(@RequestParam("appId") String appId,

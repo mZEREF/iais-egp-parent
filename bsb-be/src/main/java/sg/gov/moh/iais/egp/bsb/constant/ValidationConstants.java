@@ -12,4 +12,7 @@ public class ValidationConstants {
     public static final String NO = "N";
     public static final String IS_VALID = "isValid";
     public static final String KEY_VALIDATION_ERRORS = "errorMsg";
+
+    public static final String PROFILE_AFC_ADMIN_FIRST_SUBMIT = "afcAdminFirstSubmit";
+    public static final String PROFILE_AFC_REPORT_SUBMIT = "afcReportSubmit";
 }

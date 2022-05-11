@@ -14,42 +14,42 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___InsAOCertification___1 extends BaseProcessClass {
-//	private static final String DELEGATOR ="";
+	private static final String DELEGATOR ="insAoCertificationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "prepareDate", this);
 	}
 
 	public void bingAction_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "bingAction", this);
 	}
 
 	public void handleSaveReport_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "handleSaveReport", this);
 	}
 
 	public void handleSubmit_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
 	public void skip_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "skip", this);
 	}
 
 	public void approve_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
 	public void routeBack_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "routeBack", this);
 	}
 
 }

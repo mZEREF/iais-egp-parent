@@ -11,7 +11,8 @@
 <webui:setLayout name="iais-intranet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc.js"></script>
 <%--@elvariable id="reviewFollowUpDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto"--%>
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -89,7 +90,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${reviewFollowUpDto.currentStatus}"/></p>
+                                                                        <p><iais:code code="${reviewAFCReportDto.appStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -99,9 +100,24 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="pro-select" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="?" <c:if test="${insDecision.decision eq '?'}">selected="selected"</c:if>>Route to AO</option>
+                                                                                <option value="MOHPRO030" <c:if test="${insDecision.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Route to AO</option>
                                                                             </select>
                                                                             <span data-err-ind="decision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group" id="selectMohUserDiv"  <c:if test="${insDecision.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_AO}">style="display: none;"</c:if>>
+                                                                    <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="selectMohUser" class="selectMohUserDropdown" id="selectMohUser">
+                                                                                <option value="">Please Select</option>
+                                                                                <c:forEach var="selection" items="${selectRouteToMoh}">
+                                                                                    <option value="${selection.value}" <c:if test="${insDecision.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                            <span data-err-ind="selectMohUser" class="error-msg" ></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>
@@ -137,5 +153,24 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/fileUploadModal.jsp"%>
 </div>
+<script>
+    $(function () {
+        var processingDecisionObj = $("#processingDecision");
+        var processingDecisionVal =  processingDecisionObj.val();
+        if (processingDecisionVal === "MOHPRO030") {
+            $("#selectMohUserDiv").show();
+        } else {
+            $("#selectMohUserDiv").hide();
+        }
+        processingDecisionObj.change(function () {
+            var selectValue = $(this).val();
+            if (selectValue === "MOHPRO030") {
+                $("#selectMohUserDiv").show();
+            } else {
+                $("#selectMohUserDiv").hide();
+            }
+        })
+    })
+</script>
