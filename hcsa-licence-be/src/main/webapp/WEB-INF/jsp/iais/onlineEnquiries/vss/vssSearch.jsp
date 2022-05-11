@@ -173,7 +173,7 @@
                                                         <td  style="vertical-align:middle;">
                                                             <p style="white-space: nowrap;"><c:out value="${vss.centerName}"/>
                                                                 <c:if test="${vss.patientCount > 1}">
-                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}" onclick="getTopByIdType('${vss.patientIdNo}','${vss.patientIdType}','${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}')">
+                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}" onclick="getVssByIdType('${vss.patientIdNo}','${vss.patientIdType}','${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}')">
                                                                     </a>
                                                                 </c:if>
                                                             </p>

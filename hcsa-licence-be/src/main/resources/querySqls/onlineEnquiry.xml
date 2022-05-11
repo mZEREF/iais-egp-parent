@@ -1106,12 +1106,19 @@
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
-              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,1 num
+              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,
+               (SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
+                FROM  ds_vs_treatment dtpNew
+                where dtpNew.PATIENT_ID_NO =dvt.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dvt.PATIENT_ID_TYPE
+                ) num
             FROM ds_vs_treatment dvt
             join ds_data_submission dds on dvt.SUBMISSION_ID =dds.ID
             join ds_cycle dc on dds.CYCLE_ID =dc.ID
             left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
-            where 1 = 1
+             where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
             <#if submissionNo??> AND  charindex(:submissionNo, dds.SUBMISSION_NO) >0</#if>
@@ -1123,7 +1130,7 @@
          ]]>
     </sql>
 
-    <sql key = "searchVssAjax" remarks="Search Voluntary Sterilisation Ajax">
+    <sql key = "searchVssByAjax" remarks="Search Voluntary Sterilisation Ajax">
         <![CDATA[
             SELECT distinct dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
@@ -1132,12 +1139,15 @@
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
-              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,1 num
+              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,null num
             FROM ds_vs_treatment dvt
             join ds_data_submission dds on dvt.SUBMISSION_ID =dds.ID
             join ds_cycle dc on dds.CYCLE_ID =dc.ID
             left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
-            where 1 = 1
+             where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
 

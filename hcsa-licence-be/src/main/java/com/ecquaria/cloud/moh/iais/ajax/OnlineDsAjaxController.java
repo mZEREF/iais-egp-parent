@@ -283,7 +283,7 @@ public class OnlineDsAjaxController {
             filter.put("patientIdNo",patientIdNo);
             vssParameter.setFilters(filter);
             SearchParam searchParam = SearchResultHelper.getSearchParam(request, vssParameter,true);
-            QueryHelp.setMainSql("onlineEnquiry", "searchVssAjax",searchParam);
+            QueryHelp.setMainSql("onlineEnquiry", "searchVssByAjax",searchParam);
 
             SearchResult<DsVssEnquiryResultsDto> results = assistedReproductionService.searchDsVssByParam(searchParam);
             List<DsVssEnquiryResultsDto> queryList = null;
