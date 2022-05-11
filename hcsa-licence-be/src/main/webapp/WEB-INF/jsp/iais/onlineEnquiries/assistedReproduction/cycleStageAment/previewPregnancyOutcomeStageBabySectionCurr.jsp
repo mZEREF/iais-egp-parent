@@ -1,12 +1,13 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<div <c:if test="${pregnancyOutcomeStageDtoVersion.babyDetailsUnknown}">style="display:none;"</c:if>>
+<div <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
+
     <iais:row>
-        <iais:field cssClass="col-md-8"  value="" />
+        <iais:field cssClass="col-md-8" value="" />
         <iais:value cssClass="col-md-4" display="true">
-            <c:out value="Version "/>${arSuperDataSubmissionDtoVersion.dataSubmissionDto.version}
+            <c:out value="Current Version"/>
         </iais:value>
     </iais:row>
-    <c:forEach items="${pregnancyOutcomeStageDtoVersion.pregnancyOutcomeBabyDtos}"
+    <c:forEach items="${pregnancyOutcomeStageDto.pregnancyOutcomeBabyDtos}"
                var="pregnancyOutcomeBabyDto"
                varStatus="status">
         <c:set value="${defectTypesArray[status.index]}" var="defectTypes"/>

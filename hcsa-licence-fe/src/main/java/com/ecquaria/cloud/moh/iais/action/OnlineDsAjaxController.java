@@ -50,7 +50,7 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/hcsa/enquiry/ar")
-public class OnlineArAjaxController {
+public class OnlineDsAjaxController {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
 
