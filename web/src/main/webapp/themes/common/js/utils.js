@@ -576,3 +576,61 @@ function refreshIndex(targetSelector) {
         });
     });
 }
+
+function callCommonAjax(options, callback) {
+    if (isEmpty(options)) {
+        options = {};
+    }
+    var url = '';
+    if (!isEmpty(options.url)) {
+        url = options.url;
+    }
+    var type = 'POST';
+    if (!isEmpty(options.type)) {
+        type = options.type;
+    }
+    var async = true;
+    if (!isEmpty(options.async)) {
+        async = options.async;
+    }
+    var data = options.data;
+    if (isEmpty(data)) {
+        data = options;
+    }
+    console.log(url);
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        data: data,
+        async: async,
+        type: type,
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            } else if (!isEmpty(callback)) {
+                callFunc(callback, data);
+            }
+            dismissWaiting();
+        },
+        error: function (data) {
+            console.log("err");
+            console.log(data);
+            dismissWaiting();
+        }
+    });
+}
+
+function callFunc(func) {
+    try {
+        this[func].apply(this, Array.prototype.slice.call(arguments, 1));
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function getContextPath() {
+    var pathName = document.location.pathname;
+    var index = pathName.substr(1).indexOf("/");
+    var result = pathName.substr(0,index+1);
+    return result;
+}
