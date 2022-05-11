@@ -326,9 +326,9 @@
            <#if dsType ??> and DS_TYPE in ${dsType} </#if>
             <#if lastDateStart??> AND DATEDIFF(DAY,:lastDateStart,UPDATED_DT) >=0 </#if>
             <#if lastDateEnd??> AND DATEDIFF(DAY,:lastDateEnd,UPDATED_DT) <=0 </#if>
-            <#if submittedBy??> AND HARINDEX(:submittedBy, t1.SUBMIT_BY) >0 </#if>
-           <#if businessName??> AND HARINDEX(:businessName, t2.BUSINESS_NAME) >0 </#if>
-            <#if patientName??> AND HARINDEX(:patientName, t1.Patient_Name) >0 </#if>
+            <#if submittedBy??> AND CHARINDEX(:submittedBy, t1.SUBMIT_BY) >0 </#if>
+           <#if businessName??> AND CHARINDEX(:businessName, t2.BUSINESS_NAME) >0 </#if>
+            <#if patientName??> AND CHARINDEX(:patientName, t1.Patient_Name) >0 </#if>
         ]]>
     </sql>
 </sqls>

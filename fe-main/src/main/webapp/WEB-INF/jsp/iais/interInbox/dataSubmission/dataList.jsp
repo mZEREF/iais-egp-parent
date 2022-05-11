@@ -1,4 +1,15 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
+<style>
+    .table {
+        width: 140%;
+        max-width: 140%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+        border-spacing: 0;
+        background-color: transparent;
+    }
+</style>
 <form class="" method="post" id="dataForm" action=<%=process.runtime.continueURL()%>>
     <%-- validation --%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -87,9 +98,9 @@
         <br> <br>
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
-    <div class="row">
-        <div class="table-responsive">
-            <div class="table-gp">
+
+
+            <div class="table-responsive table-gp">
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
@@ -177,11 +188,10 @@
                     </c:choose>
                     </tbody>
                 </table>
-                <div class="row" style="padding-bottom: 9%">
-                    <div class="col-md-12 text-right">
-                        <c:set var="buttonSize" value="${dataSubARTPrivilege ==1 && dataSubLDTPrivilege == 1 ?  7 : dataSubARTPrivilege ==1 ? 6 : 5}"/>
+                <br>
+                <div  style="padding-bottom: 3%;width: 140%" class="text-left">
+                      <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
                         <c:if test="${dataSubARTPrivilege == 1}">
-                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
                             <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online enquiry</a>
                         </c:if>
                         <c:if test="${dataSubLDTPrivilege == 1}">
@@ -193,15 +203,12 @@
                         <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                         <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                        <c:if test="${buttonSize ==7}"> <br><br></c:if>
                         <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                        <c:if test="${buttonSize ==6}"> <br><br></c:if>
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
-                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+
 
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
         <input type="hidden" value="${empty selectAllTypeSub ? '' : selectAllTypeSub}" id="selectAllTypeSub" name="selectAllTypeSub">
