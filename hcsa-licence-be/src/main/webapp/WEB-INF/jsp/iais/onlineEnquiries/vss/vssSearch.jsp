@@ -14,9 +14,10 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <style>
-
-    thead > tr > th > span {
-        line-height: 0px;
+    .table-gp table.table > tbody > tr > td p a[data-toggle=collapse] {
+        position: relative;
+        margin-right: 25px;
+        margin-top: -12px;
     }
 </style>
 <webui:setLayout name="iais-intranet"/>
@@ -127,7 +128,7 @@
 
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                  field="CENTER_NAME"
-                                                                 value="Medical Clinic/Hospital"/>
+                                                                 value="Name of Medical Clinic/Hospital"/>
                                             <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
@@ -341,15 +342,15 @@
                         '<thead>' +
                         '<tr>';
 
-                    html += '<th >Name of Medical Clinic/Hospital</th>' +
-                        '<th >Submission ID</th>' +
-                        '<th >Name of Patient</th>' +
-                        '<th >Patient ID Type</th>' +
-                        '<th >Patient ID Number</th>' +
-                        '<th >Patient Date Of Birth</th>' +
-                        '<th >Marital Status</th>' +
-                        '<th >Main Reason For Sterilisation</th>' +
-                        '<th >Submission Date</th>' +
+                    html += '<th style="white-space: nowrap; font-size: 1.2rem;">Name of Medical Clinic/Hospital</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Submission ID</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Name of Patient</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient ID Type</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient ID Number</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient Date Of Birth</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Marital Status</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Main Reason For Sterilisation</th>' +
+                        '<th style="white-space: nowrap; font-size: 1.2rem;">Submission Date</th>' +
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';

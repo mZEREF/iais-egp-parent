@@ -273,7 +273,7 @@ public class OnlineDsAjaxController {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
             FilterParameter vssParameter = new FilterParameter.Builder()
-                    .clz(DsTopEnquiryResultsDto.class)
+                    .clz(DsVssEnquiryResultsDto.class)
                     .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
 
 

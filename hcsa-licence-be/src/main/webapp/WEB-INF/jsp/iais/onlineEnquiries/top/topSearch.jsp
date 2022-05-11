@@ -14,9 +14,10 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <style>
-
-    thead > tr > th > span {
-        line-height: 0px;
+    .table-gp table.table > tbody > tr > td p a[data-toggle=collapse] {
+        position: relative;
+        margin-right: 25px;
+        margin-top: -12px;
     }
 </style>
 <webui:setLayout name="iais-intranet"/>

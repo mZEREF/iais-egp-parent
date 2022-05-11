@@ -1085,7 +1085,7 @@
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
                 join ds_cycle dc on dds.CYCLE_ID =dc.ID
                 left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
-
+                left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
                 where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
