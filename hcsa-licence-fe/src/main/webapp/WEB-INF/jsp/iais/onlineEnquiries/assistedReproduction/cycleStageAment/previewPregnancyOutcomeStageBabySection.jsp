@@ -1,8 +1,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div <c:if test="${pregnancyOutcomeStageDtoVersion.babyDetailsUnknown}">style="display:none;"</c:if>>
     <iais:row>
-        <iais:field cssClass="col-md-8"  value="" />
-        <iais:value cssClass="col-md-4" display="true">
+        <iais:field cssClass="col-md-4"  value="" />
+        <iais:value cssClass="col-md-8" display="true">
             <c:out value="Version "/>${arSuperDataSubmissionDtoVersion.dataSubmissionDto.version}
         </iais:value>
     </iais:row>
