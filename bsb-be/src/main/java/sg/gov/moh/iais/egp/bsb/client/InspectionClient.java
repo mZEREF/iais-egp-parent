@@ -54,6 +54,9 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
 
+    @PostMapping(value = "/inspection/certification/do/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateCertificationInsSubmission(@RequestBody InsProcessDto dto);
+
     @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
                                      @RequestParam("taskId") String taskId,
