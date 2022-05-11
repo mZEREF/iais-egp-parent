@@ -195,15 +195,15 @@
                 ${patientInformationDto.patientAge}
         </iais:value>
         </iais:row>
-        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
-            <iais:row>
-                <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="100" type="text" name="preCounsNoCondReason" value="${preTerminationDto.preCounsNoCondReason}"/>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_preCounsNoCondReason"></span>
-                </iais:value>
-            </iais:row>
-        </div>
+            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
+                <iais:row>
+                    <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="preCounsNoCondReason" value="${preTerminationDto.preCounsNoCondReason}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_preCounsNoCondReason"></span>
+                    </iais:value>
+                </iais:row>
+            </div>
         <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
@@ -288,7 +288,7 @@
         $('#counsellingResults,input[name=counsellingGiven]').change(function () {
             counselling();
         });
-        $('#counsellingPlaces').change(function () {
+        $('#counsellingPlaces,input[name=counsellingGiven]').change(function () {
             counsellingPlace();
         });
         $('#counsellingResults').change(function () {
@@ -370,10 +370,16 @@
         var counsellingPlace = $('#counsellingPlaces').val();
         var maritalStatus = $('#maritalStatus').val();
         var patientAge = $('#patientAge').val();
-        if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16) {
-            $('#preCounsNoCondReasons').hide();
+        if($('#counsellingYes').prop('checked')){
+            console.log("true");
+            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16) {
+                $('#preCounsNoCondReasons').hide();
+            }else {
+                console.log("1");
+                $('#preCounsNoCondReasons').show();
+            }
         }else {
-            $('#preCounsNoCondReasons').show();
+            $('#preCounsNoCondReasons').hide();
         }
     }
 

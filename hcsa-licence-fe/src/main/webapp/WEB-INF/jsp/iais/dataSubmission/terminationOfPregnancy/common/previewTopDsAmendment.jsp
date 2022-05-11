@@ -13,7 +13,7 @@
                 <div class="panel-main-content form-horizontal">
                     <iais:row>
                         <iais:field width="5" value="Reason for Amendment"/>
-                        <iais:value width="7" display="true">
+                        <iais:value width="7" cssClass="col-md-6" display="true">
                             <iais:code code="${dataSubmission.amendReason}" />
                         </iais:value>
                     </iais:row>
