@@ -161,4 +161,16 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Query name of BAT code to display</description>
+        <name>bat-code</name>
+        <tag-class>sg.gov.moh.iais.egp.bsb.common.tags.BatCodeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>code</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </taglib>

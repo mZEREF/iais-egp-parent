@@ -413,7 +413,7 @@
                                             </c:if>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Name of ${BAorT}</label>
-                                                <div class="col-xs-6"><p>${info.batName}</p></div>
+                                                <div class="col-xs-6"><p><iais-bsb:bat-code code="${info.batName}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
