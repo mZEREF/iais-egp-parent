@@ -2,10 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,15 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -58,29 +54,25 @@ public class RfiFacilityRegistrationDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-//        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
-//        boolean failRetrieveRfiData = true;
-//        if (StringUtils.hasLength(maskedAppId)) {
-//            if (log.isInfoEnabled()) {
-//                log.info("masked application ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
-//            }
-//            String appId = MaskUtil.unMaskValue("rfiFacRegAppId", maskedAppId);
-//            if (appId != null) {
-//                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
-//                if (resultDto.ok()) {
-//                    failRetrieveRfiData = false;
-//                    facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
-//                    facilityRegistrationService.retrieveOrgAddressInfo(request);
-//                }
-//            }
-//        }
-//        if (failRetrieveRfiData) {
-//            throw new IaisRuntimeException("Fail to retrieve rfi data");
-//        }
-        String appId = "62583C09-13CC-EC11-BE6C-000C29FAAE4D";
-        ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
-        facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
-        facilityRegistrationService.retrieveOrgAddressInfo(request);
+        String maskedAppId = request.getParameter(RfiConstants.KEY_APP_ID);
+        boolean failRetrieveRfiData = true;
+        if (StringUtils.hasLength(maskedAppId)) {
+            if (log.isInfoEnabled()) {
+                log.info("masked application ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
+            }
+            String appId = MaskUtil.unMaskValue(RfiConstants.KEY_RFI_APP_ID, maskedAppId);
+            if (appId != null) {
+                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
+                if (resultDto.ok()) {
+                    failRetrieveRfiData = false;
+                    facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
+                    facilityRegistrationService.retrieveOrgAddressInfo(request);
+                }
+            }
+        }
+        if (failRetrieveRfiData) {
+            throw new IaisRuntimeException("Fail to retrieve rfi data");
+        }
 
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
 

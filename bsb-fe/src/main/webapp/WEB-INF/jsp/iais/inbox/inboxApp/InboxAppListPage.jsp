@@ -230,9 +230,8 @@
                                                                             <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq 'BSBAPST033'}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
                                                                             </c:if>
-                                                                                <%--todo: will update for all rfi module--%>
                                                                             <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT}">
-                                                                                <option value="/bsb-fe/eservice/INTERNET/MohBsbCommentInspectionReport?appId=<iais:mask name='commentInsReportAppId' value='${app.id}'/>">Comment Inspection Report</option>
+                                                                                <option value="/bsb-fe/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Rfi</option>
                                                                             </c:if>
                                                                             <c:if test="${AFCUploadReportJudge}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/InsAfcCertification?appId=<iais:mask name='afcCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
