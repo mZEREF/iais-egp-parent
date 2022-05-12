@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="bingAction_OnStepProcess_0" name="bingAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="HandleSaveReport" x="470" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="HandleSaveReport" x="480" y="320">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -103,11 +103,11 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/BingAction" style="rectanular">
    <position>{(660,120)(670,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSaveReport" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(670,270)(490,270)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSaveReport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,270)(500,340)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleSaveReport" style="rectanular">
-   <position>{(490,270)(370,270)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleSaveReport" style="oblique">
+   <position>{(500,340)(370,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(370,270)(370,120)}</position>
@@ -139,17 +139,21 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(670,570)(670,670)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(670,270)(370,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="650" y="250">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="action_type" name="Switch1" x="650" y="250">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/HandleSaveReport" value="&quot;saveReport&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/HandleSubmit" value="&quot;submit&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;upload&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="route" name="Switch2" x="650" y="550">
    <Description/>
-   <SwitchCase component="/Merges/Merge/Merge1" value=""/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Skip" value="&quot;skip&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/RouteBack" value="&quot;routeBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
