@@ -9,12 +9,13 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
+import sg.gov.moh.iais.egp.bsb.client.RfiClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.ApplicationRfiIndicatorDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveInspectionReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -32,10 +33,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbCommentInspectionReport")
 public class BsbCommentInspectionReport {
     private final InspectionClient inspectionClient;
+    private final RfiClient rfiClient;
 
     @Autowired
-    public BsbCommentInspectionReport(InspectionClient inspectionClient) {
+    public BsbCommentInspectionReport(InspectionClient inspectionClient, RfiClient rfiClient) {
         this.inspectionClient = inspectionClient;
+        this.rfiClient = rfiClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -66,7 +69,7 @@ public class BsbCommentInspectionReport {
     }
 
     public void pre(BaseProcessClass bpc) {
-        // do nothinf now
+        // do nothing now
     }
 
     public void validateSubmit(BaseProcessClass bpc) {
@@ -99,9 +102,12 @@ public class BsbCommentInspectionReport {
                 applicationRfiIndicatorDto.setStatus(Boolean.TRUE);
             }
         }
-        reportDto.setRfiDisplayDto(rfiDisplayDto);
+        SaveInspectionReportDto saveInspectionReportDto = new SaveInspectionReportDto();
+        saveInspectionReportDto.setReportDto(reportDto);
+        saveInspectionReportDto.setRfiDisplayDto(rfiDisplayDto);
+        saveInspectionReportDto.setAppId(appId);
         // save data
-        inspectionClient.saveInspectionReport(reportDto, appId);
+        rfiClient.saveInspectionReport(saveInspectionReportDto);
         // acknowledge page need appId
         ParamUtil.setRequestAttr(request, RfiConstants.KEY_APP_ID, appId);
     }

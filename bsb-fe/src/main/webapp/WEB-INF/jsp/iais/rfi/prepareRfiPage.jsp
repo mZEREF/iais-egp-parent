@@ -27,7 +27,6 @@
                         <%--@elvariable id="rfiDisplayDto" type="sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto"--%>
                         <%--@elvariable id="applicationRfiIndicatorDtoList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.rfi.ApplicationRfiIndicatorDto>"--%>
                         <div class="table-gp">
-                            <h2>List of RFI</h2>
                             <table aria-describedby="" class="table">
                                 <thead>
                                 <tr style="text-align: center">

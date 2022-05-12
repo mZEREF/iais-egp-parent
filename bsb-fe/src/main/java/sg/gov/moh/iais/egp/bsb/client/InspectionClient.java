@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpSaveDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpViewDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
@@ -62,7 +61,4 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/submit-report/report/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateReportDto(ReportDto reportDto);
-
-    @PostMapping(value = "/inspection/submit-report/report", produces = MediaType.APPLICATION_JSON_VALUE)
-    void saveInspectionReport(@RequestBody ReportDto reportDto, @RequestParam("appId") String appId);
 }

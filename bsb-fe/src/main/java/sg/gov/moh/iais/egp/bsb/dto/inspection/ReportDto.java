@@ -58,8 +58,6 @@ public class ReportDto implements Serializable {
 
     private Set<String> toBeDeletedDocIds;
 
-    private RfiDisplayDto rfiDisplayDto;
-
     private static final String KEY_APPLICANT_REMARKS = "applicantRemarks";
 
     public void reqObjMapping(HttpServletRequest request) {
