@@ -56,15 +56,12 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppGroupMiscService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
@@ -129,10 +126,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private LicenceFileDownloadService licenceFileDownloadService;
-    @Autowired
-    private BroadcastService broadcastService;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -156,8 +150,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private EmailSmsClient emailSmsClient;
     @Autowired
     private EmailHistoryCommonClient emailHistoryCommonClient;
-    @Autowired
-    private CessationClient cessationClient;
+
 
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
@@ -177,8 +170,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
-    @Autowired
-    private AppGroupMiscService appGroupMiscService;
+
 
     @Override
     public boolean decompression() {
@@ -270,18 +262,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return true;
     }
 
-    @Override
-    public Boolean changeFeApplicationStatus() {
-        int status = applicationClient.updateStatus("AGST002").getStatusCode();
-        if(status==200){
-            return Boolean.TRUE;
-        }else if(status==500){
-            return Boolean.FALSE;
-        }
-        return Boolean.FALSE;
-    }
 
-    @Override
+
+
     public List<TaskDto> getTasksByRefNo(String refNo) {
         return organizationClient.getTasksByRefNo(refNo).getEntity();
 
@@ -894,7 +877,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos =   requestInformationSubmitDto.getOldAppPremisesCorrelationDtos();
                     List<AppPremisesCorrelationDto> newAppPremisesCorrelationDtos =   requestInformationSubmitDto.getNewAppPremisesCorrelationDtos();
                     if(!IaisCommonUtils.isEmpty(oldAppPremisesCorrelationDtos)){
-                        List<TaskDto> taskDtos =  licenceFileDownloadService.getTasksByRefNo(oldAppPremisesCorrelationDtos.get(0).getId());
+                        List<TaskDto> taskDtos =  getTasksByRefNo(oldAppPremisesCorrelationDtos.get(0).getId());
 
                         if(!IaisCommonUtils.isEmpty(taskDtos)){
                             TaskDto taskDto = taskDtos.get(0);

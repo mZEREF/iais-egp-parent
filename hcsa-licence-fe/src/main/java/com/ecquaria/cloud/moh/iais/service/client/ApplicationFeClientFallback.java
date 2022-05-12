@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
@@ -939,6 +940,32 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
+        return getFeignResponseEntity(licenseeId);
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
+            List<String> excludeStatus) {
+        return getFeignResponseEntity(type, appId, excludeStatus);
+    }
+
+    @Override
+    public FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile() {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
+        return getFeignResponseEntity(processFileTrackDto);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> saveFeData(ApplicationListFileDto applicationListFileDto) {
+        return getFeignResponseEntity(applicationListFileDto);
     }
 
 }

@@ -346,7 +346,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> updateStatus(String status) {
+    public FeignResponseEntity<Void> updateStatus(Map<String, List<String>> map) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

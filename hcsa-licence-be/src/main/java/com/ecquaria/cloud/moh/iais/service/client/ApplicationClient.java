@@ -155,8 +155,9 @@ public interface ApplicationClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "id") String id);
 
-    @PutMapping(path = "/iais-application/status")
-    FeignResponseEntity<Void> updateStatus(@RequestParam("status") String status);
+    @RequestMapping(value = "/iais-application/status",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
+    FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
 
     @PostMapping (path = "/iais-broadcast/RequestInformationSubmitDtos",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(@RequestBody List<ApplicationDto> applicationDtos);

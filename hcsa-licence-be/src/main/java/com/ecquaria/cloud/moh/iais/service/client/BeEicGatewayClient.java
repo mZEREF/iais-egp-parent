@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -379,4 +380,11 @@ public class BeEicGatewayClient {
                 PremisesDto.class);
     }
 
+    public FeignResponseEntity<String> saveFileApplication(ProcessFileTrackDto processFileTrackDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                String.class);
+    }
 }

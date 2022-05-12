@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
@@ -42,6 +43,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -376,5 +378,21 @@ public interface ApplicationFeClient {
 
     @PutMapping(value="/iais-application/inactive-declaration-message", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveDeclaration(@RequestBody AppSubmissionDto appSubmissionDto);
+
+    @GetMapping(value = "/iais-submission/active-pending-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(@PathVariable("licenseeId") String licenseeId);
+
+    @GetMapping(value="/iais-application/app-premise-miscs", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(@RequestParam("type") String type, @RequestParam("appId") String appId,
+            @RequestParam(value = "excludeStatus", required = false) List<String> excludeStatus);
+
+    @GetMapping(value = "/all-need-process-file",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile();
+
+    @PutMapping(value = "/uprocessfiletrack", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(@RequestBody ProcessFileTrackDto processFileTrackDto);
+
+    @PostMapping(value = "/iais-application/data-to-fe",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveFeData(@RequestBody ApplicationListFileDto applicationListFileDto);
 
 }
