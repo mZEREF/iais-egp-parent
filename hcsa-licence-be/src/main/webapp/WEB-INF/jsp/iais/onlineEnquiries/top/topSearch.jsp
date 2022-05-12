@@ -19,6 +19,13 @@
         margin-right: 25px;
         margin-top: -12px;
     }
+    .form-horizontal p {
+        line-height: 23px;
+    }
+    .hiddenRow {
+        padding: 0px 0px !important;
+        background-color: #f3f3f3;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -128,31 +135,31 @@
                                         <thead>
                                         <tr >
 
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="CENTER_NAME"
                                                                  value="Medical Clinic/Hospital"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_NAME"
                                                                  value="Patient Name"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_TYPE"
                                                                  value="Patient ID Type"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_NO"
                                                                  value="Patient ID No."/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_BIRTHDAY"
                                                                  value="Patient Date of Birth"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="DOCTOR_REGN_NO"
                                                                  value="Doctor PRN"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="DOCTOR_NAME"
                                                                  value="Doctor's Name"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMIT_DT"
                                                                  value="Submission Date"/>
                                         </tr>
@@ -173,7 +180,7 @@
                                                            varStatus="status">
                                                     <tr id="advfilter${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}">
 
-                                                        <td width="16%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <p style="white-space: nowrap;"><c:out value="${top.centerName}"/>
                                                                 <c:if test="${top.patientCount > 1}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}" onclick="getTopByIdType('${top.patientIdNo}','${top.patientIdType}','${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}')">
@@ -182,30 +189,30 @@
                                                             </p>
 
                                                         </td>
-                                                        <td width="12%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <a href="#" onclick="fullDetailsView('${top.submissionNo}')">${top.submissionNo}</a>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <c:out value="${top.patientName}"/>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <iais:code code="${top.patientIdType}"/>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <c:out value="${top.patientIdNo}"/>
                                                         </td>
-                                                        <td width="12%" style="vertical-align:middle;">
+                                                        <td style="vertical-align:middle;">
                                                             <fmt:formatDate
                                                                     value="${top.patientBirthday}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td style="vertical-align:middle;">
                                                             <c:out value="${top.doctorRegnNo}"/>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td  style="vertical-align:middle;">
                                                             <c:out value="${top.doctorName}"/>
                                                         </td>
-                                                        <td width="10%" style="vertical-align:middle;">
+                                                        <td style="vertical-align:middle;">
                                                             <fmt:formatDate
                                                                     value="${top.submitDt}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
@@ -339,7 +346,7 @@
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="9" class="hiddenRow">' +
-                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<div class="accordian-body collapse in" id="dropdown' + divid + '" >' +
                         '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                         '<thead>' +
                         '<tr>';
@@ -354,17 +361,17 @@
 
                         html += '<tr style = "color : ' + color + ';">';
 
-                        html += '<td width="14%" style="vertical-align:middle;"><p>' + res.rows[i].centerName + '<p></td>';
-                        html += '<td width="12%" style="vertical-align:middle;"><p><a href="#" onclick="javascript:fullDetailsView(' + "'" + res.rows[i].submissionNo + "'" + ');">' + res.rows[i].submissionNo + '</a></p></td>';
+                        html += '<td width="13.9%" style="vertical-align:middle;"><p>' + res.rows[i].centerName + '<p></td>';
+                        html += '<td width="12.5%" style="vertical-align:middle;"><p><a href="#" onclick="javascript:fullDetailsView(' + "'" + res.rows[i].submissionNo + "'" + ');">' + res.rows[i].submissionNo + '</a></p></td>';
 
                         html += '</p></td>' +
-                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientName + '<p></td>' +
+                            '<td width="10.6%" style="vertical-align:middle;"><p>' + res.rows[i].patientName + '<p></td>' +
                             '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdType + '<p></td>' +
-                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
-                            '<td width="12%" style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
-                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].doctorRegnNo + '<p></td>' +
+                            '<td width="9.7%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
+                            '<td width="13.8%" style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
+                            '<td width="9.1%" style="vertical-align:middle;"><p>' + res.rows[i].doctorRegnNo + '<p></td>' +
                             '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].doctorName + '</p></td>' +
-                            '<td width="10%" style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
+                            '<td width="14.8%" style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';

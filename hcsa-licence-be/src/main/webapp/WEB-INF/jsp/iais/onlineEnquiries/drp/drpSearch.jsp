@@ -13,7 +13,11 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-
+<style>
+    .form-horizontal p {
+        line-height: 23px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -116,25 +120,25 @@
                                         <thead>
                                         <tr >
 
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="CENTER_NAME"
-                                                                 value="Medical Clinic/Hospital"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                                                 value="Name of Medical Clinic/Hospital"/>
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_NAME"
                                                                  value="Name of Patient"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_TYPE"
                                                                  value="Patient ID Type"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_NO"
                                                                  value="Patient ID Number"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_BIRTHDAY"
                                                                  value="Patient Date of Birth"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMIT_DT"
                                                                  value="Submission Date"/>
                                         </tr>
@@ -320,13 +324,13 @@
                         '<thead>' +
                         '<tr>';
 
-                    html += '<th >Name of Medical Clinic/Hospital</th>' +
-                        '<th >Submission ID</th>' +
-                        '<th >Drug Prescribed/Dispensed</th>' +
-                        '<th >Type of Medication</th>' +
-                        '<th >Doctor PRN</th>' +
-                        '<th >Doctor Name</th>' +
-                        '<th >Submission Date</th>' +
+                    html += '<th style="font-size: 1.4rem;">Name of Medical Clinic/Hospital</th>' +
+                        '<th style="font-size: 1.4rem;">Submission ID</th>' +
+                        '<th style="font-size: 1.4rem;">Drug Prescribed/Dispensed</th>' +
+                        '<th style="font-size: 1.4rem;">Type of Medication</th>' +
+                        '<th style="font-size: 1.4rem;">Doctor PRN</th>' +
+                        '<th style="font-size: 1.4rem;">Doctor Name</th>' +
+                        '<th style="font-size: 1.4rem;">Submission Date</th>' +
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';

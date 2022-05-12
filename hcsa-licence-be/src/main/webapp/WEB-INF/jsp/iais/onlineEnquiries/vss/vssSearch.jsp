@@ -19,6 +19,13 @@
         margin-right: 25px;
         margin-top: -12px;
     }
+    .form-horizontal p {
+        line-height: 23px;
+    }
+    .hiddenRow {
+        padding: 0px 0px !important;
+        background-color: #f3f3f3;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -126,31 +133,31 @@
                                         <thead>
                                         <tr >
 
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="CENTER_NAME"
                                                                  value="Name of Medical Clinic/Hospital"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_NAME"
                                                                  value="Name of Patient"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_TYPE"
                                                                  value="Patient ID Type"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_ID_NO"
                                                                  value="Patient ID Number"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="PATIENT_BIRTHDAY"
                                                                  value="Patient Date of Birth"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="MARITAL_STATUS"
                                                                  value="Marital Status"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="STERILIZATION_REASON"
                                                                  value="Main Reason For Sterilisation"/>
-                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
+                                            <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 25px 15px 0px;"
                                                                  field="SUBMIT_DT"
                                                                  value="Submission Date"/>
                                         </tr>
@@ -337,20 +344,12 @@
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="9" class="hiddenRow">' +
-                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<div class="accordian-body collapse in" id="dropdown' + divid + '" >' +
                         '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                         '<thead>' +
                         '<tr>';
 
-                    html += '<th style="white-space: nowrap; font-size: 1.2rem;">Name of Medical Clinic/Hospital</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Submission ID</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Name of Patient</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient ID Type</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient ID Number</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Patient Date Of Birth</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Marital Status</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Main Reason For Sterilisation</th>' +
-                        '<th style="white-space: nowrap; font-size: 1.2rem;">Submission Date</th>' +
+                    html += '<th colspan="9" style=" text-align: center">Previous Submissions</th>' +
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';
@@ -359,17 +358,17 @@
 
                         html += '<tr style = "color : ' + color + ';">';
 
-                        html += '<td  style="vertical-align:middle;"><p>' + res.rows[i].centerName + '<p></td>';
-                        html += '<td  style="vertical-align:middle;"><p><a href="#" onclick="javascript:fullDetailsView(' + "'" + res.rows[i].submissionNo + "'" + ');">' + res.rows[i].submissionNo + '</a></p></td>';
+                        html += '<td width="15.6%" style="vertical-align:middle;"><p>' + res.rows[i].centerName + '<p></td>';
+                        html += '<td width="10.3%" style="vertical-align:middle;"><p><a href="#" onclick="javascript:fullDetailsView(' + "'" + res.rows[i].submissionNo + "'" + ');">' + res.rows[i].submissionNo + '</a></p></td>';
 
                         html += '</p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].patientName + '<p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].patientIdType + '<p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].maritalStatus + '</p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].sterilisationReason + '</p></td>' +
-                            '<td  style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
+                            '<td width="9.4%" style="vertical-align:middle;"><p>' + res.rows[i].patientName + '<p></td>' +
+                            '<td width="8.6%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdType + '<p></td>' +
+                            '<td width="10.4%" style="vertical-align:middle;"><p>' + res.rows[i].patientIdNo + '</p></td>' +
+                            '<td width="11%" style="vertical-align:middle;"><p>' + res.rows[i].patientBirthdayStr + '</p></td>' +
+                            '<td width="8.3%" style="vertical-align:middle;"><p>' + res.rows[i].maritalStatus + '</p></td>' +
+                            '<td width="15%" style="vertical-align:middle;"><p>' + res.rows[i].sterilisationReason + '</p></td>' +
+                            '<td width="9.4%" style="vertical-align:middle;"><p>' + res.rows[i].submitDtStr + '</p></td>' +
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';
