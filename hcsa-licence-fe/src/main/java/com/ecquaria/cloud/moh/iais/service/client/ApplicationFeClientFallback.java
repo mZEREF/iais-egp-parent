@@ -685,14 +685,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<Boolean> isApplicationWithdrawal(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -775,14 +767,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(String appId, String changeType) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

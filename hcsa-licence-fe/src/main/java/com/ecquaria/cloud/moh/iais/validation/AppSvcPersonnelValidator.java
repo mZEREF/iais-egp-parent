@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;

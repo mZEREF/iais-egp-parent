@@ -45,7 +45,7 @@ public interface ConfigCommService {
 
     List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId);
 
-    List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids);
+    List<HcsaSvcDocConfigDto> listSvcDocConfigByIds(List<String> ids);
 
     List<HcsaSvcDocConfigDto> getPrimaryDocConfigById(String id);
 

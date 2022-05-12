@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -82,6 +83,9 @@ public class AppealDelegator {
     private RequestForChangeService requestForChangeService;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private AppCommService appCommService;
+
     public void preparetionData(BaseProcessClass bpc) throws Exception {
         log.info("start**************preparetionData************");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -90,7 +94,7 @@ public class AppealDelegator {
         }
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if(appNo!=null){
-            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
             if(applicationDto!=null){
                 if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())){
                     bpc.request.setAttribute("appealRfi",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);

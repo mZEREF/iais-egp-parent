@@ -24,12 +24,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
@@ -162,7 +160,7 @@ public class DealSessionUtil {
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                     AppServicesConsts.HCSASERVICEDTOLIST);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto;
             for (HcsaServiceDto svc : hcsaServiceDtos) {
                 appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(svc.getId());
@@ -173,7 +171,7 @@ public class DealSessionUtil {
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
             //set licseeId and psn drop down
-            setLicseeAndPsnDropDown(appSubmissionDto, bpc);
+            setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(bpc.request), appSvcRelatedInfoDtoList, bpc.request);
         } else {
             String appType = appSubmissionDto.getAppType();
             boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
@@ -206,13 +204,10 @@ public class DealSessionUtil {
                     appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
                 }
             }
-
-            //set licseeId and psn drop down
-            setLicseeAndPsnDropDown(appSubmissionDto, bpc);
-
-            Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request
-                    , HcsaAppConst.PERSONSELECTMAP);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            //set licseeId and psn drop down
+            setLicseeAndPsnDropDown(appSubmissionDto.getLicenseeId(), appSvcRelatedInfoDtos, bpc.request);
+
             if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                 List<HcsaSvcDocConfigDto> primaryDocConfig;
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -267,41 +262,11 @@ public class DealSessionUtil {
                                 }
                             }
                         }
-                        //handle dupForPerson svc doc
-                        /*if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
-                            for(AppSvcDocDto svcDocDto:appSvcDocDtos){
-                                HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
-
-
-                            }
-                        }*/
                     }
                     //set AppSvcLaboratoryDisciplinesDto
                     if (!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)) {
                         ApplicationHelper.setLaboratoryDisciplinesInfo(appGrpPremisesDtos, appSvcRelatedInfoDto,
                                 hcsaSvcSubtypeOrSubsumedDtos);
-                    }
-                    //set AppSvcDisciplineAllocationDto
-                    //ApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                            || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                            || isRfi) {
-                        //gen dropdown map
-                        String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(
-                                appSvcRelatedInfoDto.getAppSvcCgoDtoList());
-                        ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcCgoDtos, svcCode);
-                        //reset dto
-                        List<AppSvcPrincipalOfficersDto> newCgoDtoList = IaisCommonUtils.genNewArrayList();
-                        for (AppSvcPrincipalOfficersDto item : appSvcCgoDtos) {
-                            newCgoDtoList.add(MiscUtil.transferEntityDto(item, AppSvcPrincipalOfficersDto.class));
-                        }
-                        appSvcRelatedInfoDto.setAppSvcCgoDtoList(newCgoDtoList);
-                        ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),
-                                svcCode);
-                        ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
-                        ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(),
-                                svcCode);
                     }
                     //set dpo select flag
                     List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
@@ -607,27 +572,24 @@ public class DealSessionUtil {
         appSvcDisciplineAllocationDtoList.removeAll(svcLaboratoryDisciplinesDtos);
     }
 
-    public static void setLicseeAndPsnDropDown(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+    public static void setLicseeAndPsnDropDown(String licenseeId, List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            HttpServletRequest request) {
         Map<String, AppSvcPersonAndExtDto> licPersonMap = IaisCommonUtils.genNewHashMap();
-        if (loginContext != null) {
-            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
+        if (!StringUtil.isEmpty(licenseeId)) {
             //user account
-            List<FeUserDto> feUserDtos = getOrganizationService().getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+            List<FeUserDto> feUserDtos = getOrganizationService().getFeUserDtoByLicenseeId(licenseeId);
+            ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
             //existing person
-            List<PersonnelListQueryDto> licPersonList = getLicCommService().getLicencePersonnelListQueryDto(
-                    loginContext.getLicenseeId());
+            List<PersonnelListQueryDto> licPersonList = getLicCommService().getLicencePersonnelListQueryDto(licenseeId);
             licPersonMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos, licPersonList, licPersonMap);
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
-            Object draft = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.DRAFTCONFIG);
+            ParamUtil.setSessionAttr(request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
             //set data into psnMap
             Map<String, AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
             personMap.putAll(licPersonMap);
-            if (draft != null) {
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                boolean isRfi = ApplicationHelper.checkIsRfi(request);
+                Object draft = ParamUtil.getSessionAttr(request, HcsaAppConst.DRAFTCONFIG);
+                if (draft != null || isRfi) {
                     for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                         String svcCode = appSvcRelatedInfoDto.getServiceCode();
                         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -644,13 +606,11 @@ public class DealSessionUtil {
                     }
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+            ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
         } else {
-            appSubmissionDto.setLicenseeId("");
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
+            ParamUtil.setSessionAttr(request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
     }
-
 
 }

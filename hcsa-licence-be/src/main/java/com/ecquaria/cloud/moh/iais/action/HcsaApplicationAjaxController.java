@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -19,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -36,7 +40,7 @@ import java.util.*;
  * @author zhilin
  * @date 2020/03/30
  */
-@Controller
+@RestController
 @Slf4j
 public class HcsaApplicationAjaxController{
 
@@ -45,11 +49,15 @@ public class HcsaApplicationAjaxController{
 
     @Autowired
     FileRepoClient fileRepoClient;
+
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+
+    @Autowired
+    private ApplicationService applicationService;
+
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
-    @ResponseBody
     public String uploadInternalFile(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile,@RequestParam("fileRemark")String remark){
         String data = "";
         request.setAttribute("selectedFile",selectedFile);
@@ -152,7 +160,6 @@ public class HcsaApplicationAjaxController{
     }
 
     @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
-    @ResponseBody
     public Map<String, Object> deleteInternalFile(HttpServletRequest request){
         String guid = MaskUtil.unMaskValue("interalFileId", request.getParameter("appDocId"));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -189,7 +196,6 @@ public class HcsaApplicationAjaxController{
 
 
     @RequestMapping(value = "/verifyFileExist", method = RequestMethod.POST)
-    @ResponseBody
     public Map<String, Object> verifyFileExist(HttpServletRequest request){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String reportId  = ParamUtil.getString(request,"repoId");
@@ -203,6 +209,19 @@ public class HcsaApplicationAjaxController{
             return map;
         }
         map.put("verify","Y");
+        return map;
+    }
+
+    @GetMapping("/check-application")
+    public Map<String, Object> checkApplication(HttpServletRequest request) {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String appGrpNo = ParamUtil.getMaskedString(request, "appGrpNo");
+        if (StringUtil.isEmpty(appGrpNo)) {
+            map.put("appGrpNoError", "No records Found");
+        } else {
+            // applicationViewService
+            Map<String, String> result = applicationService.checkApplicationByAppGrpNo(appGrpNo);
+        }
         return map;
     }
 }

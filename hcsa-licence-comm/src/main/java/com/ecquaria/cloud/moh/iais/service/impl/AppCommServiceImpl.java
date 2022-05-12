@@ -116,6 +116,15 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
+    public ApplicationDto getApplicationDtoByAppNo(String appNo) {
+        log.info(StringUtil.changeForLog("AppNo is " + appNo));
+        if (StringUtil.isEmpty(appNo)) {
+            return null;
+        }
+        return appCommClient.getApplicationDtoByAppNo(appNo).getEntity();
+    }
+
+    @Override
     public String getDraftNo(String appType) {
         return systemAdminClient.draftNumber(appType).getEntity();
     }
@@ -142,11 +151,11 @@ public class AppCommServiceImpl implements AppCommService {
             try {
                 FeignResponseEntity<List> entity = null;
                 if (ApplicationHelper.isFrontend()) {
-                    entity = IaisEGPHelper.invokeBeanMethod("feEicGatewayClient", "getProfessionalDetail",
-                            professionalParameterDto);
+                    entity = IaisEGPHelper.invokeBeanMethod("com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient",
+                            "getProfessionalDetail", professionalParameterDto);
                 } else if (ApplicationHelper.isBackend()) {
-                    entity = IaisEGPHelper.invokeBeanMethod("applicationClient", "getProfessionalDetail",
-                            professionalParameterDto);
+                    entity = IaisEGPHelper.invokeBeanMethod("com.ecquaria.cloud.moh.iais.service.client.ApplicationClient",
+                            "getProfessionalDetail", professionalParameterDto);
                 }
                 if (entity != null && 401 == entity.getStatusCode()) {
                     professionalResponseDto = new ProfessionalResponseDto();
@@ -368,7 +377,7 @@ public class AppCommServiceImpl implements AppCommService {
                 if (hcsaSvcSubtypeOrSubsumedDtos != null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()) {
                     changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos, appSubmissionDto);
                 }
-                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                /*List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 if (appSvcDocDtoLit != null) {
                     appSvcDocDtoLit.forEach((v) -> {
                         if (v.getSvcDocId() != null) {
@@ -377,14 +386,16 @@ public class AppCommServiceImpl implements AppCommService {
                             v.setDupForPerson(dupForPerson);
                         }
                     });
-                }
+                }*/
             }
         }
-        RfcHelper.svcDocToPresmise(appSubmissionDto);
+        if (!StringUtil.isEmpty(licenseeId)) {
+            appSubmissionDto.setLicenseeId(licenseeId);
+        }
         changeDocToNewVersion(appSubmissionDto, isRfi);
+        RfcHelper.svcDocToPresmise(appSubmissionDto);
         appSubmissionDto.setAmount(appSubmissionDto.getAmount() == null ? amount : appSubmissionDto.getAmount());
         appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
-        appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         RfcHelper.setRiskToDto(appSubmissionDto);
@@ -412,7 +423,7 @@ public class AppCommServiceImpl implements AppCommService {
                             svcDocConfigIdList.add(appSvcDocDto.getSvcDocId());
                         }
                     }
-                    List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos = configCommService.getPrimaryDocConfigByIds(svcDocConfigIdList);
+                    List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos = configCommService.listSvcDocConfigByIds(svcDocConfigIdList);
                     List<HcsaSvcDocConfigDto> svcDocConfig = configCommService.getAllHcsaSvcDocs(currentSvcId);
                     appSvcDocDtos = updateSvcDoc(appSvcDocDtos, oldSvcDocConfigDtos, svcDocConfig);
                     appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
@@ -440,6 +451,7 @@ public class AppCommServiceImpl implements AppCommService {
                                         newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
                                         newAppSvcDocDto.setDupForPerson(svcDocConfigDto.getDupForPerson());
                                         newAppSvcDocDto.setDupForPrem(svcDocConfigDto.getDupForPrem());
+                                        newAppSvcDocDto.setPersonType(ApplicationHelper.getPsnType(newAppSvcDocDto.getDupForPerson()));
                                         newAppSvcDocDtoList.add(newAppSvcDocDto);
                                         break;
                                     }
@@ -731,4 +743,14 @@ public class AppCommServiceImpl implements AppCommService {
         }
         return appCommClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
     }
+
+    @Override
+    public AppGrpPremisesEntityDto getPremisesByAppNo(String appNo) {
+        log.info(StringUtil.changeForLog("AppNo is " + appNo));
+        if (StringUtil.isEmpty(appNo)) {
+            return null;
+        }
+        return appCommClient.getPremisesByAppNo(appNo).getEntity();
+    }
+
 }

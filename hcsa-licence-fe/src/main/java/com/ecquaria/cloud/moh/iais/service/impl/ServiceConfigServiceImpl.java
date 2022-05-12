@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -106,6 +107,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Autowired
     private LicCommService licCommService;
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
@@ -757,7 +761,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public String getGiroAccountByGroupNo(String groupNo){
 
-        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(groupNo+"-01");
         if( applicationDto == null){
             return "";
         }
@@ -780,7 +784,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     private List<String> getGiroAccountAndBICByGroupNo(String groupNo){
-        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(groupNo+"-01");
         if( applicationDto == null){
             return null;
         }

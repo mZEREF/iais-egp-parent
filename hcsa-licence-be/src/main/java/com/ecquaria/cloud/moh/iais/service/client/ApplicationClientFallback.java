@@ -47,6 +47,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -1041,4 +1043,10 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(String appGrpNo) {
+        return IaisEGPHelper.getFeignResponseEntity(appGrpNo);
+    }
+
 }

@@ -159,12 +159,12 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
-    public List<HcsaSvcDocConfigDto> getPrimaryDocConfigByIds(List<String> ids) {
+    public List<HcsaSvcDocConfigDto> listSvcDocConfigByIds(List<String> ids) {
         log.info(StringUtil.changeForLog("Ids: " + ids));
         if (ids == null || ids.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return configCommClient.listSvcDocConfig(ids).getEntity();
+        return configCommClient.listSvcDocConfigByIds(ids).getEntity();
     }
 
     @Override
@@ -307,7 +307,8 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         }
         PostCodeDto postCodeDto = null;
         if (ApplicationHelper.isFrontend()) {
-            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("feEicGatewayClient", "getPostalCode", postalCode);
+            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient",
+                    "getPostalCode", postalCode);
         } else if (ApplicationHelper.isBackend()) {
             postCodeDto = systemAdminClient.getPostCodeByCode(postalCode).getEntity();
         }
@@ -327,7 +328,8 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         if (StringUtil.isEmpty(fileRepoId)) {
             return new byte[0];
         }
-        return IaisEGPHelper.invokeFeignRespMethod("fileRepoClient", "getFileFormDataBase", fileRepoId);
+        return IaisEGPHelper.invokeFeignRespMethod("com.ecquaria.cloud.moh.iais.service.client.FileRepoClient",
+                "getFileFormDataBase", fileRepoId);
     }
 
 }

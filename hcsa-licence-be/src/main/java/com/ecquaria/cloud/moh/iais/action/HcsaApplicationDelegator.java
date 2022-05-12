@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -40,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -129,6 +131,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -388,40 +391,41 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if (applicationDto != null) {
+            AppEditSelectDto appEditSelectDto = null;
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())|| ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
                 //RFC
                 String applicationNo = applicationDto.getApplicationNo();
                 List<AppEditSelectDto> appEditSelectDtosByAppIds = rfiCanCheck.getAppEditSelectDtoSForRfi(applicationNo);
                 if (!appEditSelectDtosByAppIds.isEmpty()) {
-                    applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
+                    appEditSelectDto = appEditSelectDtosByAppIds.get(0);
+                } else {
+                    appEditSelectDto = createAppEditSelectDto(false);
+                }
+                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+                if (!licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
                 }
             } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
                 if (!StringUtil.isEmpty(applicationDto.getId())) {
                     List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_NEW);
                     if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
-                        applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
+                        appEditSelectDto = appEditSelectDtos.get(0);
                     } else {
-                        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                        appEditSelectDto.setLicenseeEdit(true);
-                        appEditSelectDto.setPremisesEdit(true);
-                        appEditSelectDto.setDocEdit(true);
-                        appEditSelectDto.setServiceEdit(true);
-                        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        applicationViewDto.setAppEditSelectDto(appEditSelectDto);
+                        appEditSelectDto = createAppEditSelectDto(true);
                     }
                 }
-
+                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
+                if (licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
+                }
             } else {
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setPremisesEdit(true);
-                appEditSelectDto.setDocEdit(true);
-                appEditSelectDto.setMedAlertEdit(true);
-                appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                appEditSelectDto.setServiceEdit(true);
-                appEditSelectDto.setPoEdit(true);
-                appEditSelectDto.setDpoEdit(true);
-                applicationViewDto.setAppEditSelectDto(appEditSelectDto);
+                appEditSelectDto = createAppEditSelectDto(true);
             }
+            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         }
         bpc.request.getSession().removeAttribute("appEditSelectDto");
         bpc.request.getSession().removeAttribute("pageAppEditSelectDto");
@@ -442,15 +446,19 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
-
-    private void dealWithDoc(ApplicationViewDto applicationViewDto){
-        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
-        if(appSupDocDtoList!=null){
-            for(AppSupDocDto v : appSupDocDtoList){
-
-            }
-        }
+    private AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setLicenseeEdit(canEdit);
+        appEditSelectDto.setPremisesEdit(canEdit);
+        appEditSelectDto.setDocEdit(canEdit);
+        appEditSelectDto.setMedAlertEdit(canEdit);
+        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appEditSelectDto.setServiceEdit(canEdit);
+        appEditSelectDto.setPoEdit(canEdit);
+        appEditSelectDto.setDpoEdit(canEdit);
+        return appEditSelectDto;
     }
+
     /**
      * StartStep: chooseStage
      *

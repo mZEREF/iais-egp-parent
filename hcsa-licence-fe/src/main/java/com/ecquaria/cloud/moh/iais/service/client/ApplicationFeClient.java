@@ -304,8 +304,7 @@ public interface ApplicationFeClient {
 
     @GetMapping(value = "/iais-application/app-grp-premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName,@RequestParam("licencessId") String licencessId,@RequestParam("premType") String premType);
-    @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
+
     @GetMapping(value = "/appeal/application-withdrawal-by-app-id")
     FeignResponseEntity<Boolean> isApplicationWithdrawal(@RequestParam("appId") String appId);
 
@@ -330,8 +329,6 @@ public interface ApplicationFeClient {
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
     @GetMapping(value = "/iais-application/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(@RequestParam(name="appId")String appId, @RequestParam(name = "changeType")String changeType);
-    @GetMapping(value = "/iais-submission/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 
     @PostMapping(path = "/iais-submission/requestInformation-cessation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);

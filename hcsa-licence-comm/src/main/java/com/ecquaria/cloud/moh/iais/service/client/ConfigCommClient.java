@@ -64,7 +64,7 @@ public interface ConfigCommClient {
     FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
 
     @PostMapping(path = "/iais-hcsa-service/list-svc-doc-config", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(@RequestBody List<String> docId);
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfigByIds(@RequestBody List<String> docId);
 
     @GetMapping(path = "/iais-hcsa-service/list-svc-doc-config/{docId}",produces =MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getPrimaryDocConfigList(@PathVariable(name="docId") String docId);

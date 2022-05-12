@@ -49,6 +49,11 @@
                 View Application
             </button>
         </a>
+        <a   href="javascript:void(0);" onclick="javascript:doEditApp()">
+            <button type="button" class="btn btn-primary">
+                Edit Application
+            </button>
+        </a>
         <c:if test="${'APST004' eq applicationViewDto.applicationDto.status}">
             <c:if test="${not empty commonDto}">
                 <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
@@ -127,6 +132,11 @@
     <script type="text/javascript">
         function doOpenApp() {
             window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
+        }
+
+        function doEditApp() {
+            showWaiting();
+            document.location = "/hcsa-licence-web/eservice/INTRANET/MohApplication";
         }
     </script>
 

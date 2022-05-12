@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,7 +51,7 @@ import java.util.Map;
 /**
  * @Auther chenlei on 4/19/2022.
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("/file")
 public class FileAjaxController {
@@ -58,7 +59,6 @@ public class FileAjaxController {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    @ResponseBody
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String ajaxUpload(HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile,
             @RequestParam("fileAppendId") String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
@@ -161,7 +161,6 @@ public class FileAjaxController {
         return JsonUtil.parseToJson(messageCode);
     }
 
-    @ResponseBody
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     public String deleteFeCallFile(HttpServletRequest request) {
         log.info("-----------deleteFeCallFile start------------");
@@ -218,7 +217,6 @@ public class FileAjaxController {
         return "";
     }
 
-    @ResponseBody
     @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
     public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
@@ -315,7 +313,6 @@ public class FileAjaxController {
         }
     }
 
-    @ResponseBody
     @PostMapping("/init")
     public String initFileData(HttpServletRequest request) {
         Map<String, String> data = new HashMap<>();

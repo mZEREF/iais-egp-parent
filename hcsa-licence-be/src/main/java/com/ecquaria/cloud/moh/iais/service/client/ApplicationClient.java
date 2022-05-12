@@ -424,4 +424,8 @@ public interface ApplicationClient {
     FeignResponseEntity<AppGroupMiscDto> getAppGrpMiscByAppGrpIdTypeStatus(@PathVariable(name = "appGrpId") String appGrpId,
                                                                              @PathVariable(name = "miscType") String miscType,
                                                                              @PathVariable(name = "status") String status);
+
+    @GetMapping(value = "/iais-application-be/check-application/{appGrpNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(@PathVariable(name = "appGrpNo") String appGrpNo);
+
 }

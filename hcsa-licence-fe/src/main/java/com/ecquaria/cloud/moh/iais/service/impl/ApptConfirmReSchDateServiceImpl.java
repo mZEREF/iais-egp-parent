@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -64,6 +65,9 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private ApplicationFeClient applicationFeClient;
 
     @Autowired
+    private AppCommService appCommService;
+
+    @Autowired
     private FeEicGatewayClient feEicGatewayClient;
 
     @Value("${iais.email.sender}")
@@ -80,7 +84,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public ApplicationDto getApplicationDtoByAppNo(String applicationNo) {
-        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(applicationNo).getEntity();
+        ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(applicationNo);
         return applicationDto;
     }
 

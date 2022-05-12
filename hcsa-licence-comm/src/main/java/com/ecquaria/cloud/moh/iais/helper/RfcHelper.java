@@ -1736,7 +1736,7 @@ public final class RfcHelper {
                 docConfigIds.add(appGrpPrimaryDocDto.getSvcComDocId());
             }
             log.debug(StringUtil.changeForLog("docConfigIds size:" + docConfigIds.size()));
-            List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = getConfigCommService().getPrimaryDocConfigByIds(docConfigIds);
+            List<HcsaSvcDocConfigDto> oldHcsaSvcDocConfigDtos = getConfigCommService().listSvcDocConfigByIds(docConfigIds);
             if (!IaisCommonUtils.isEmpty(oldHcsaSvcDocConfigDtos)) {
                 if (rfcOrRenwOrNew && !isRfi) {
                     for (HcsaSvcDocConfigDto oldDocConfig : oldHcsaSvcDocConfigDtos) {

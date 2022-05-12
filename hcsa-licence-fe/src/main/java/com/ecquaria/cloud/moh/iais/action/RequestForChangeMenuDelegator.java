@@ -1106,28 +1106,6 @@ public class RequestForChangeMenuDelegator {
         return selectOptions;
     }
 
-    private void setLicseeAndPsnDropDown(BaseProcessClass bpc) {
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-            //exchange order
-            Map<String, AppSvcPrincipalOfficersDto> licPersonMap = ApplicationHelper.getLicPsnIntoSelMap(bpc.request, licPersonList);
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
-            Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "PersonSelectMap");
-            if (personMap != null) {
-                licPersonMap.forEach((k, v) -> {
-                    personMap.put(k, v);
-                });
-                ParamUtil.setSessionAttr(bpc.request, PERSONSELECTMAP, (Serializable) personMap);
-            } else {
-                ParamUtil.setSessionAttr(bpc.request, PERSONSELECTMAP, (Serializable) licPersonMap);
-            }
-        } else {
-            log.info(StringUtil.changeForLog("user info is empty....."));
-        }
-    }
-
     private List<SelectOption> getPsnType() {
         List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
         personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER));
@@ -1140,7 +1118,7 @@ public class RequestForChangeMenuDelegator {
     }
 
     public void doPersonnelList(BaseProcessClass bpc) {
-        setLicseeAndPsnDropDown(bpc);
+        DealSessionUtil.setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(bpc.request), null, bpc.request);
         log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
         String actionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);

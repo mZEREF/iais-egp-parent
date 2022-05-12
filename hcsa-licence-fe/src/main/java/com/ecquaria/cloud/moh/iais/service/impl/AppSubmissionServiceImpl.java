@@ -612,7 +612,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
         appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFC Renew Application",
@@ -1443,12 +1443,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return feMessageClient.getInterMessageBySubjectLike(subject,status).getEntity();
 
     }
-
-    @Override
-    public AppGrpPremisesEntityDto getPremisesByAppNo(String appNo) {
-        return applicationFeClient.getPremisesByAppNo(appNo).getEntity();
-    }
-
 
     @Override
     public AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo) {

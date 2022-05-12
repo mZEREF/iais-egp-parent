@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
@@ -19,6 +21,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationService
@@ -129,4 +132,9 @@ public interface ApplicationService {
       * @Descripation: setAppGrpMiscInactive
       */
     BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
+
+    Map<String, String> checkApplicationByAppGrpNo(String appGrpNo);
+
+    AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, String appType);
+
 }

@@ -21,7 +21,6 @@ public final class HcsaAppConst {
 
     public static final String ATTR_RELOAD_PAYMENT_METHOD                   = "reloadPaymentMethod";
 
-    public static final String ACK_STATUS_ERROR                             = "error";
     public static final String PREMISES_HCI_LIST                            = "premisesHciList";
 
     public static final String DASHBOARDTITLE                               = "DashboardTitle";
@@ -131,4 +130,19 @@ public final class HcsaAppConst {
 
     public static final String APP_SVC_RELATED_INFO_LIST                    = "appSvcRelatedInfoList";
     public static final String APP_SELECT_SERVICE                           = "appSelectSvc";
+
+    public static final String MAP_KEY_STATUS                               = "status";
+    public static final String MAP_KEY_ERROR                                = "appError";
+
+    public static final String ACK_STATUS_ERROR                             = "error";
+    public static final String COND_TYPE_RFI                                = "isrfiSuccess";
+
+    public static final String ACTION_LICENSEE                              = "licensee";
+    public static final String ACTION_PREMISES                              = "premises";
+    public static final String ACTION_DOCUMENTS                             = "documents";
+    public static final String ACTION_FORMS                                 = "serviceForms";
+    public static final String ACTION_PREVIEW                               = "preview";
+    public static final String ACTION_JUMP                                  = "jump";
+    public static final String ACTION_RFI                                   = "information";
+
 }

@@ -1188,7 +1188,8 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         String actionType = bpc.request.getParameter("nextStep");
         Map<String, String> errList = IaisCommonUtils.genNewHashMap();
-        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,PERSONSELECTMAP);
+        // Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+        // PERSONSELECTMAP);
         Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,LICPERSONSELECTMAP);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
@@ -2656,23 +2657,24 @@ public class ServiceInfoDelegator {
     }
 
     private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,
-            String svcCode, HttpServletRequest request){
+            String svcCode, HttpServletRequest request) {
         if (StringUtil.isEmpty(svcCode)) {
             svcCode = (String) ParamUtil.getSessionAttr(request, CURRENTSVCCODE);
         }
-        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,PERSONSELECTMAP);
+        Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                PERSONSELECTMAP);
         if (personList == null || personList.isEmpty()) {
             return personMap;
         }
-        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
-                LICPERSONSELECTMAP);
         boolean isSync = syncDropDownAndPsn(personMap, appSubmissionDto, personList, svcCode);
         log.info(StringUtil.changeForLog("-----Sync Dropdown and Psn: " + isSync + "-----"));
         if (!isSync) {
             return personMap;
         }
-        Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
-        ParamUtil.setSessionAttr(request,PERSONSELECTMAP, (Serializable) newPersonMap);
+        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                LICPERSONSELECTMAP);
+        Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
+        ParamUtil.setSessionAttr(request, PERSONSELECTMAP, (Serializable) newPersonMap);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         //remove dirty psn doc info
         String dupForPerson = null;
@@ -2684,7 +2686,8 @@ public class ServiceInfoDelegator {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(personType)) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_MAP;
-        } else if (StringUtil.isIn(personType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_PO, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO})) {
+        } else if (StringUtil.isIn(personType,
+                new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_PO, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO})) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_PO;
             dupForPerson2 = ApplicationConsts.DUP_FOR_PERSON_DPO;
         }
@@ -2881,6 +2884,7 @@ public class ServiceInfoDelegator {
                     appSvcDocDto.setPremisesType(premType);
                     appSvcDocDto.setPsnIndexNo(psnIndexNo);
                     appSvcDocDto.setSeqNum(seqNum);
+                    appSvcDocDto.setDupForPrem(dupForPrem);
                     appSvcDocDto.setDupForPerson(dupForPerson);
                     appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,appGrpId,appNo,seqNum,dupForPrem,dupForPerson,psnId));
                     appSvcDocDto.setPersonType(ApplicationHelper.getPsnType(dupForPerson));

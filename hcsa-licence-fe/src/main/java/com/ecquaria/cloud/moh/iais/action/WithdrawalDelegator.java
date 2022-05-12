@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -80,6 +81,9 @@ public class WithdrawalDelegator {
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
 
+    @Autowired
+    private AppCommService appCommService;
+
     private String wdIsValid = IaisEGPConstant.YES;
 
     public void start(BaseProcessClass bpc){
@@ -105,7 +109,7 @@ public class WithdrawalDelegator {
         ApplicationDto entity=null;
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
-            entity = applicationFeClient.getApplicationDtoByAppNo(withdrawAppNo).getEntity();
+            entity = appCommService.getApplicationDtoByAppNo(withdrawAppNo);
         }
         String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
         if(entity!=null){
@@ -481,7 +485,7 @@ public class WithdrawalDelegator {
                     }
                 }
                 String appNo = withdrawAppNos[i];
-                ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+                ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
                 String appId = applicationDto.getId();
                 Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedWdFile");
                 Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");

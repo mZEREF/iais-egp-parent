@@ -38,6 +38,12 @@ public interface AppCommClient {
     @GetMapping(path = "/application-licenceId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getAppByLicIdAndExcludeNew(@RequestParam(name = "licenceId") String licenceId);
 
+    @GetMapping(value = "/application-group-no", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(@RequestParam("groupNo") String groupNo);
+
+    @GetMapping(value = "/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
+
     @GetMapping(value = "/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
 
@@ -53,8 +59,8 @@ public interface AppCommClient {
     @PostMapping(value = "/pending-app-premises", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestBody AppPremisesDoQueryDto appPremisesDoQueryDto);
 
-    @GetMapping(value = "/application-group-no", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(@RequestParam("groupNo") String groupNo);
+    @GetMapping(value = "/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 
     @GetMapping(value = "/active-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();

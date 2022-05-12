@@ -35,6 +35,8 @@ public interface AppCommService {
 
     List<ApplicationDto> getApplicationsByGroupNo(String appGrpNo);
 
+    ApplicationDto getApplicationDtoByAppNo(String appNo);
+
     String getDraftNo(String appType);
     
     String getGroupNo(String appType);
@@ -79,5 +81,7 @@ public interface AppCommService {
     AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
 
     List<AppGrpPremisesEntityDto> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto);
+
+    AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
 
 }

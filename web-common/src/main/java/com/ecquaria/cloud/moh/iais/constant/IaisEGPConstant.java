@@ -11,6 +11,7 @@ public class IaisEGPConstant {
     private IaisEGPConstant(){
     }
 
+    public static final String CRUD_TYPE                           = "crud_type";
     public static final String CRUD_ACTION_TYPE                    = "crud_action_type";
     public static final String CRUD_ACTION_TYPE_VALUE              = "crud_action_type_value";
     public static final String CRUD_ACTION_VALUE                   = "crud_action_value";

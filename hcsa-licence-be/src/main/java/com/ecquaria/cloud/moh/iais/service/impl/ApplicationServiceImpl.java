@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -20,6 +21,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -46,9 +49,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -90,6 +95,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * ApplicationServiceImpl
@@ -153,6 +159,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -1303,4 +1312,46 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info(StringUtil.changeForLog("The containStatus is end ..."));
         return result;
     }
+
+    @Override
+    public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(appGrpNo)) {
+            errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "Can't find the related application!");
+            return errorMap;
+        }
+        Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
+        if (AppConsts.YES.equals(map.get("isRfi"))) {
+            errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "There is a related application is in doing RFI, please wait for it.");
+        } else  {
+            String appGrpStatus = map.get("appGrpStatus");
+            if (StringUtil.isIn(appGrpStatus, new String[]{
+                    ApplicationConsts.APPLICATION_SUCCESS_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_FIRST,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD,
+                    ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE})) {
+                errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "There is a related application is waiting for synchronization, please wait and " +
+                        "and try it later.");
+            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
+                errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "The application can't be edited.");
+            }
+        }
+        return errorMap;
+    }
+
+    @Override
+    public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            String appType) {
+        appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
+        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+                generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFI Application",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
+        return appSubmissionRequestInformationDto.getAppSubmissionDto();
+    }
+
 }

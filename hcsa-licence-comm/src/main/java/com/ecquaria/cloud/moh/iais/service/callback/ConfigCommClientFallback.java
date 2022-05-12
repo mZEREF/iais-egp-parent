@@ -69,7 +69,7 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(List<String> docId) {
+    public FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfigByIds(List<String> docId) {
         return IaisEGPHelper.getFeignResponseEntity(docId);
     }
 

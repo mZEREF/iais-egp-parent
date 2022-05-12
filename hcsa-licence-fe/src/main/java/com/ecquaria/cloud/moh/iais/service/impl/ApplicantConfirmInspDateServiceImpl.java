@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -83,6 +84,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private ConfigCommClient configCommClient;
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -527,7 +531,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         String apptPreDateFlag = AppConsts.FAIL;
         if(inspSetMaskValueDto != null) {
             String appNo = inspSetMaskValueDto.getApplicationNo();
-            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
             if(applicationDto != null) {
                 if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationDto.getStatus())) {
                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
@@ -548,7 +552,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     public String getAppGroupIdByMaskValueDto(InspSetMaskValueDto inspSetMaskValueDto) {
         if(inspSetMaskValueDto != null) {
             String appNo = inspSetMaskValueDto.getApplicationNo();
-            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
             if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationDto.getStatus())) {
                 ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
                 if(applicationGroupDto != null) {
