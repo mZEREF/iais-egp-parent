@@ -19,7 +19,6 @@ public class AppActionTag extends SimpleTagSupport {
         List<AppActionJudge> judgeList = Arrays.asList(
                 new AppEditableJudge(info.getStatus(), info.getAssigned()),
                 new DraftAppJudge(info.getStatus()),
-                new SelfAssessJudge(info.getStatus()),
                 new InsReportJudge(info.getStatus()),
                 new AppWithdrawableJudge(info.getAppType(), info.getStatus()),
                 new InsAppointmentJudge(info.getAppType(), info.getStatus()),

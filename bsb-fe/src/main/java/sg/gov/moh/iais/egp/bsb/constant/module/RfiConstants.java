@@ -5,7 +5,7 @@ public class RfiConstants {
 
     // * module name from be api RfiConstants *
     public static final String MODULE_NAME_FACILITY_REGISTRATION           = "Facility Registration";
-    public static final String MODULE_NAME_INSPECTION_PPE                  = "Inspection Pre";
+    public static final String MODULE_NAME_INSPECTION_SELF_ASSESSMENT      = "Inspection Self-Assessment";
     public static final String MODULE_NAME_INSPECTION_REPORT               = "Inspection Report";
     public static final String MODULE_NAME_INSPECTION_NC                   = "Inspection Non-Compliance";
     public static final String MODULE_NAME_INSPECTION_FOLLOW_UP            = "Inspection Follow-Up";
