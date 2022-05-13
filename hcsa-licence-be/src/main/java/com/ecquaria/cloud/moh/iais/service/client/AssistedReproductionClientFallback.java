@@ -95,7 +95,7 @@ public class AssistedReproductionClientFallback implements AssistedReproductionC
     }
 
     @Override
-    public FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(String cycleId) {
+    public FeignResponseEntity<List<DataSubmissionDto>> getActionAllDataSubmissionByCycleId(String cycleId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

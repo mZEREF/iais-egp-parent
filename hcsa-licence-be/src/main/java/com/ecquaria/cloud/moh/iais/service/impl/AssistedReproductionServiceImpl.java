@@ -109,7 +109,7 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
 
     @Override
     public List<DataSubmissionDto> allDataSubmissionByCycleId(String cycleId) {
-        return assistedReproductionClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+        return assistedReproductionClient.getActionAllDataSubmissionByCycleId(cycleId).getEntity();
     }
 
     @Override
