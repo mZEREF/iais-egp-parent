@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Wenkang
  * @date 2020/9/23 14:51
  */
-@JobHandler(value="licenceFileDownloadDelegatorHander")
+@JobHandler(value="downloadEditFileDelegatorHander")
 @Component
 @Slf4j
 public class DownloadEditFileDelegatorHander extends IJobHandler {
