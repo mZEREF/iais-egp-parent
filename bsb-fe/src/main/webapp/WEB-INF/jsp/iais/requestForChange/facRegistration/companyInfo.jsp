@@ -25,7 +25,7 @@
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <div class="row">
                 <div class="col-xs-12 col-md-3">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="text-right text-center-mobile">
