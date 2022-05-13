@@ -99,6 +99,15 @@ public class TopDataSubmissionDelegator {
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
+            if(crud_action_type==null){
+                DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
+                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                        .map(LoginContext::getOrgId).orElse("");
+                if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
+                    ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+                }
+            }
         }
 
         DsConfigHelper.initTopConfig(bpc.request);
@@ -339,7 +348,7 @@ public class TopDataSubmissionDelegator {
 
     private int doPreview(HttpServletRequest request) {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
-        /*TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();*/
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
         String[] declaration = ParamUtil.getStrings(request, "declaration");
         if(declaration != null && declaration.length >0){
@@ -357,8 +366,12 @@ public class TopDataSubmissionDelegator {
         }
 
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
-        /*if(terminationOfPregnancyDto==null){
+        if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto = new TerminationOfPregnancyDto();
+        }
+        PatientInformationDto patientInformationDto=terminationOfPregnancyDto.getPatientInformationDto();
+        if(patientInformationDto==null){
+            patientInformationDto=new PatientInformationDto();
         }
         FamilyPlanDto familyPlanDto = terminationOfPregnancyDto.getFamilyPlanDto();
         if(familyPlanDto==null){
@@ -375,14 +388,9 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto();
         if(postTerminationDto==null){
             postTerminationDto = new PostTerminationDto();
-        }*/
+        }
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(declaration == null || declaration.length == 0){
-                errMap.put("declaration", "GENERAL_ERR0006");
-            }
-        }
         if(isRfc(request)){
             if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
                 errMap.put("amendReason","GENERAL_ERR0006");
@@ -390,32 +398,42 @@ public class TopDataSubmissionDelegator {
                 errMap.put("amendReasonOther","GENERAL_ERR0006");
             }
         }
-       /* ValidationResult result2 = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
-        if(result2 !=null){
+        ValidationResult result1 = WebValidationHelper.validateProperty(patientInformationDto,"TOP");
+        if(result1.isHasErrors()){
+            errMap.putAll(result1.retrieveAll());
+            ParamUtil.setRequestAttr(request, "patientInfor", "false");
+        }
+        ValidationResult result2 = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
+        if(result2.isHasErrors()){
             errMap.putAll(result2.retrieveAll());
-        }*/
-       /* ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
-        if(result3 !=null){
+            ParamUtil.setRequestAttr(request, "familyPlan", "false");
+        }
+        ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
+        if(result3.isHasErrors()){
             errMap.putAll(result3.retrieveAll());
-        }*/
-       /* if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+            ParamUtil.setRequestAttr(request, "preTermination", "false");
+        }
+        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                if (result4 != null) {
+                if (result4.isHasErrors()) {
                     errMap.putAll(result4.retrieveAll());
+                    ParamUtil.setRequestAttr(request, "termination", "false");
                 }
             } else {
                 if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                     if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                        if (result4 != null) {
+                        if (result4.isHasErrors()) {
                             errMap.putAll(result4.retrieveAll());
+                            ParamUtil.setRequestAttr(request, "termination", "false");
                         }
                     }
                 }else {
                     ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result4 != null) {
+                    if (result4.isHasErrors()) {
                         errMap.putAll(result4.retrieveAll());
+                        ParamUtil.setRequestAttr(request, "termination", "false");
                     }
                 }
             }
@@ -423,32 +441,40 @@ public class TopDataSubmissionDelegator {
         if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
-                if (result5 != null) {
+                if (result5.isHasErrors()) {
                     errMap.putAll(result5.retrieveAll());
+                    ParamUtil.setRequestAttr(request, "postTermination", "false");
                 }
             } else {
                 if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                     if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
-                        if (result5 != null) {
+                        if (result5.isHasErrors()) {
                             errMap.putAll(result5.retrieveAll());
+                            ParamUtil.setRequestAttr(request, "postTermination", "false");
                         }
                     }
                 }else {
                     ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
-                    if (result5 != null) {
+                    if (result5.isHasErrors()) {
                         errMap.putAll(result5.retrieveAll());
+                        ParamUtil.setRequestAttr(request, "postTermination", "false");
                     }
                 }
             }
-        }*/
+        }
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
+            if(declaration == null || declaration.length == 0){
+                errMap.put("declaration", "GENERAL_ERR0006");
+            }
+        }
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }else if(isRfc(request)){
             if("next".equals(actionType)){
                 TopSuperDataSubmissionDto topOldSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(request);
-                TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+                /*TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();*/
                 if(topOldSuperDataSubmissionDto != null){
                     if(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto()!= null){
                         if(terminationOfPregnancyDto.getPatientInformationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto())){

@@ -147,6 +147,15 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     }
 
     @Override
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType,String dataSubmissionId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + dataSubmissionId +"-----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+            return null;
+        }
+        return topFeClient.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, dataSubmissionId).getEntity();
+    }
+
+    @Override
     public void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {

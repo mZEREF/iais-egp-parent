@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfP
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -68,21 +67,21 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if(!StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
         }
-        String livingChildrenNo = ParamUtil.getRequestString(request, "livingChildrenNo");
-        if (StringUtil.isEmpty(livingChildrenNo)) {
+        /*String livingChildrenNo = ParamUtil.getRequestString(request, "livingChildrenNo");*/
+        if (StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo())) {
             errorMap.put("livingChildrenNo","GENERAL_ERR0006");
         }
         int m=0;
-        if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
-            if (Integer.valueOf(livingChildrenNo) > 10) {
+        if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo())){
+            if (Integer.valueOf(patientInformationDto.getLivingChildrenNo()) > 10) {
                 errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
-            } else if(livingChildrenNo.length()>2){
+            } else if(patientInformationDto.getLivingChildrenNo().length()>2){
                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                 repMap.put("maxlength", "2");
                 repMap.put("field", "No. of Living Children");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("livingChildrenNo", errMsg);
-            }else if(Integer.valueOf(livingChildrenNo)<m){
+            }else if(Integer.valueOf(patientInformationDto.getLivingChildrenNo())<m){
                 errorMap.put("livingChildrenNo", "Negative numbers are not allowed on this field.");
             }
         }

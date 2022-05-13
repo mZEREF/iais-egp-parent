@@ -18,6 +18,9 @@ public class PostTerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PostTerminationDto postTerminationDto=terminationOfPregnancyDto.getPostTerminationDto();
+        if(postTerminationDto==null){
+            postTerminationDto=new PostTerminationDto();
+        }
         if (!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling())  ) {
             if(postTerminationDto.getGivenPostCounselling()==true){
                 if(StringUtil.isEmpty(postTerminationDto.getCounsellorIdType())){
