@@ -8,7 +8,7 @@
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="status" required="true" type="javax.servlet.jsp.jstl.core.LoopTagStatus" %>
-<%@attribute name="detail" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.ProcModeLSPDetails" %>
+<%@attribute name="detail" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.ProcModeDetails" %>
 <%@attribute name="procModeLSPJudge" required="false" type="java.lang.Boolean" %>
 
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
@@ -368,77 +368,6 @@
         <div class="col-sm-6">
             <textarea maxLength="250" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${detail.remarksE}"/></textarea>
             <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
-        </div>
-    </div>
-</div>
-<div id="sourceFacilityDiv--v--${status.index}" <c:if test="${detail.procurementMode ne masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}">style="display: none;"</c:if>>
-    <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Source Facility:</p>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="facNameS--v--${status.index}">Facility Name</label>
-            <span class="mandatory otherQualificationSpan">*</span>
-        </div>
-        <div class="col-sm-6">
-            <label id="facNameS--v--${status.index}">${detail.facNameS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="postalCodeS--v--${status.index}">Postal Code</label>
-            <span class="mandatory otherQualificationSpan">*</span>
-        </div>
-        <div class="col-sm-6">
-            <label id="postalCodeS--v--${status.index}">${detail.postalCodeS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="addressTypeS--v--${status.index}">Address Type</label>
-            <span class="mandatory otherQualificationSpan">*</span>
-        </div>
-        <div class="col-sm-6">
-            <label id="addressTypeS--v--${status.index}">${detail.addressTypeS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="blockNoS--v--${status.index}">Block / House No.</label>
-        </div>
-        <div class="col-sm-6">
-            <label id="blockNoS--v--${status.index}">${detail.blockNoS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="floorNoS--v--${status.index}">Floor</label>
-        </div>
-        <div class="col-sm-6">
-            <label id="floorNoS--v--${status.index}">${detail.floorNoS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="unitNoS--v--${status.index}">Unit No.</label>
-        </div>
-        <div class="col-sm-6">
-            <label id="unitNoS--v--${status.index}">${detail.unitNoS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="streetNameS--v--${status.index}">Street Name</label>
-            <span class="mandatory otherQualificationSpan">*</span>
-        </div>
-        <div class="col-sm-6">
-            <label id="streetNameS--v--${status.index}">${detail.streetNameS}</label>
-        </div>
-    </div>
-    <div class="form-group ">
-        <div class="col-sm-5 control-label">
-            <label for="buildingNameS--v--${status.index}">Building Name</label>
-        </div>
-        <div class="col-sm-6">
-            <label id="buildingNameS--v--${status.index}">${detail.buildingNameS}</label>
         </div>
     </div>
 </div>
