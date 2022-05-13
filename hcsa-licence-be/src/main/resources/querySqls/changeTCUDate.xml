@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="changeTCUDate">
+    <sql key = "listLicenceInfo" remarks="get all licence info">
+        <![CDATA[
+            SELECT
+                l.ID AS ID,
+                l.LICENCE_NO AS LICENCE_NO,
+                lp.BUSINESS_NAME AS BUSINESS_NAME,
+                p.HCI_CODE AS HCI_CODE,
+                CONCAT(p.BLK_NO ,
+                           case p.STREET_NAME
+                              when null then null
+                              when '' then null
+                              else ' ' + p.STREET_NAME end
+                           , case p.BUILDING_NAME
+                              when null then null
+                              when '' then null
+                              else ' ' + p.BUILDING_NAME end
+                           , case p.FLOOR_NO
+                              when null then null
+                              when '' then null
+                              else ' # ' + p.FLOOR_NO end
+                           , case p.UNIT_NO
+                              when null then null
+                              when '' then null
+                              else '-' + p.UNIT_NO end
+                           , case p.POSTAL_CODE
+                              when null then null
+                              when '' then null
+                              else ', ' + p.POSTAL_CODE end
+                          ) AS ADDRESS ,
+                p.POSTAL_CODE AS POSTAL_CODE,
+                l.SVC_NAME AS SVC_NAME,
+                lp.TCU_DATE AS TCU_DATE,
+                (case
+                    when LEN(lp.TCU_DATE_REMARKS) > 50 then CONCAT(subString(lp.TCU_DATE_REMARKS, 1, 50), '...')
+                    else lp.TCU_DATE_REMARKS
+                END) AS TCU_DATE_REMARKS
+            FROM
+                hcsal.dbo.lic_premises lp
+            join hcsal.dbo.licence l on
+                lp.LICENCE_ID = l.ID
+            JOIN hcsal.dbo.premises p on
+                lp.PREMISES_ID = p.ID
+            WHERE  l.STATUS in ('LICEST001','LICEST007')
+            AND l.ID NOT IN (SELECT l.ORIGIN_LICENCE_ID  FROM hcsal.dbo.licence l WHERE l.ORIGIN_LICENCE_ID IS  NOT NULL)
+            <#if licence_no??>AND charindex(:licence_no,l.LICENCE_NO) > 0</#if>
+            <#if hci_code??>AND charindex(:hci_code,p.HCI_CODE) > 0</#if>
+            <#if business_name??>AND charindex(:business_name,lp.BUSINESS_NAME) > 0</#if>
+            <#if postal_code??>AND charindex(:postal_code,p.POSTAL_CODE) > 0</#if>
+            <#if address??>AND :address = l.ADDRESS</#if>
+            <#if svc_name??>AND :svc_name = l.SVC_NAME</#if>
+            <#if date_from??>AND lp.TCU_DATE >= CONVERT(date,:date_from)</#if>
+            <#if date_to??>AND lp.TCU_DATE <= CONVERT(date,:date_to)</#if>
+        ]]>
+    </sql>
+
+</sqls>

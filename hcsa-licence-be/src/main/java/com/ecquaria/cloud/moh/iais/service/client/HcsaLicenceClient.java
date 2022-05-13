@@ -13,8 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceAppRiskInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -187,6 +187,9 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/hcsa-licence/licId-premises", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicPremisesDto>> getPremisesByLicIds(@RequestBody List<String> licenceIds);
 
+    @PostMapping(value = "/hcsa-licence/lic-premises", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicPremisesDto>> saveLicPremises(@RequestBody List<LicPremisesDto> licPremisesDtos);
+
     @GetMapping(path= "/hcsa-licence/application-licence-correlation/{licId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getAppIdsByLicId(@PathVariable("licId") String licId);
 
@@ -278,4 +281,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/premises/{premisedId}/floor-units", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getPremisesFloorUnits(@PathVariable("premisedId") String premisedId);
+
+    @PostMapping(value = "/hcsa-licence/licence-change-tcu-date", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<LicPremisesQueryDto>> searchLicencesInChangeTCUDate(@RequestBody SearchParam searchParam);
 }

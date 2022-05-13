@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -24,6 +26,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
@@ -1146,5 +1150,20 @@ public class LicenceServiceImpl implements LicenceService {
             result = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         }
         return result;
+    }
+
+    @Override
+    public SearchResult<LicPremisesQueryDto> searchLicencesInChangeTCUDate(SearchParam searchParam) {
+        return hcsaLicenceClient.searchLicencesInChangeTCUDate(searchParam).getEntity();
+    }
+
+    @Override
+    public List<LicPremisesDto> getPremisesByLicIds(List<String> licenceIds) {
+        return  hcsaLicenceClient.getPremisesByLicIds(licenceIds).getEntity();
+    }
+
+    @Override
+    public List<LicPremisesDto> saveLicPremises(List<LicPremisesDto> licPremisesDtos) {
+        return hcsaLicenceClient.saveLicPremises(licPremisesDtos).getEntity();
     }
 }
