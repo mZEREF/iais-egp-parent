@@ -9,6 +9,7 @@ import java.util.Set;
 public class ChecklistConstants {
     private ChecklistConstants() {}
 
+    public static final String ADHOC_SECTION_ID = "A5BD3570-68D2-EC11-8B82-000C293F0C99";
     public static final String ANSWER_YES = "YES";
     public static final String ANSWER_NO = "NO";
     public static final String ANSWER_NA = "NA";
