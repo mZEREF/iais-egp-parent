@@ -1,7 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -92,20 +92,22 @@ public class RescheduleAppointmentDelegator {
     }
 
     //
-    public void submitData(BaseProcessClass bpc) throws ParseException {
+    public void submitData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         List<AppointmentViewDto> appointmentViewDtos = getAppointmentViewDtos(request);
         List<SaveRescheduleDataDto> rescheduleDataDtos = new ArrayList<>(appointmentViewDtos.size());
         for (AppointmentViewDto viewDto : appointmentViewDtos) {
+            List<ApptUserCalendarDto> userCalendarDtos = viewDto.getUserCalendarDtos();
+            ApptUserCalendarDto calendarDto = userCalendarDtos.get(0);
             SaveRescheduleDataDto dto = new SaveRescheduleDataDto();
             dto.setSpecInsDate(viewDto.getInspNewDate());
-            dto.setStartDate(Formatter.parseDate(viewDto.getNewStartDate()));
-            dto.setEndDate(Formatter.parseDate(viewDto.getNewEndDate()));
+            dto.setStartDate(calendarDto.getStartSlot().get(0));
+            dto.setEndDate(calendarDto.getEndSlot().get(0));
             dto.setReason(viewDto.getReason());
             dto.setAppId(viewDto.getAppId());
             dto.setAppNo(viewDto.getApplicationNo());
             dto.setApptRefNo(viewDto.getApptRefNo());
-            dto.setUserCalendarDtos(viewDto.getUserCalendarDtos());
+            dto.setUserCalendarDtos(userCalendarDtos);
             rescheduleDataDtos.add(dto);
         }
         ResponseDto<String> responseDto = bsbAppointmentClient.saveRescheduleData(rescheduleDataDtos);

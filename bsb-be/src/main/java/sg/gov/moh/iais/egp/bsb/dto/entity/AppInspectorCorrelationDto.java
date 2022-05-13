@@ -13,7 +13,7 @@ import lombok.ToString;
 @JGlobalMap
 public class AppInspectorCorrelationDto extends BaseEntityDto {
 	private String id;
-	private String applicationNo;
+	private String applicationId;
 	private String userId;
 	private String status;
 }

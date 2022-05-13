@@ -30,6 +30,7 @@
           <div class="center-content">
             <div class="intranet-content">
               <iais:body >
+                <%--@elvariable id="backUrl" type="java.lang.String"--%>
                 <%--@elvariable id="officerRescheduleDto" type="sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto"--%>
                 <iais:section title="">
                   <c:if test="${not empty officerRescheduleDto.availableDate}">
@@ -86,7 +87,7 @@
                       </div>
                     </div>
                     <iais:action >
-                      <a href="#" class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                      <a href="${backUrl}" class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Find new Date</button>
                       <span style="float:right">&nbsp;</span>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Confirm System-proposed Date</button>
@@ -110,7 +111,6 @@
                     <br>
                     <br>
                     <br>
-                    <%--@elvariable id="backUrl" type="java.lang.String"--%>
                     <iais:action>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Find new Date</button>
                       <a href="${backUrl}" class="back" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>

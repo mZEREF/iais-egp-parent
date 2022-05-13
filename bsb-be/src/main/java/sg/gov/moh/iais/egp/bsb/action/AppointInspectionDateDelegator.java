@@ -15,7 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -62,10 +62,10 @@ public class AppointInspectionDateDelegator {
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, null);
         ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, null);
-        ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO, null);
         ParamUtil.setSessionAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, null);
         ParamUtil.setSessionAttr(request, KEY_START_HOURS_OPTION, null);
         ParamUtil.setSessionAttr(request, KEY_END_HOURS_OPTION, null);
+        ParamUtil.setSessionAttr(request, INSPECTION_INFO_DTO,null);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -90,7 +90,7 @@ public class AppointInspectionDateDelegator {
                 ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, new AppointmentReviewDataDto());
             }
             setApptInspectionDateDto(taskId, request);
-            setInspApptDraftDto(dto.getApplicationNo(), request);
+            apptInspectionDateService.setInspectionInfoDto(appId,request);
         }
         // view application need appId and moduleType
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
@@ -117,11 +117,6 @@ public class AppointInspectionDateDelegator {
                 ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, new BsbApptInspectionDateDto());
             }
         }
-    }
-
-    public void setInspApptDraftDto(String appNo, HttpServletRequest request) {
-        List<InspectionAppointmentDraftDto> draftDtoList = bsbAppointmentClient.getActiveAppointmentDraftData(appNo).getEntity();
-        ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO, (Serializable) draftDtoList);
     }
 
     public void preSwitch(BaseProcessClass bpc) {
@@ -159,15 +154,15 @@ public class AppointInspectionDateDelegator {
 
     public void saveAppointmentDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        InspectionInfoDto inspectionInfoDto = (InspectionInfoDto) ParamUtil.getSessionAttr(request, INSPECTION_INFO_DTO);
         BsbApptInspectionDateDto bsbApptInspectionDateDto = (BsbApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
-        AppointmentReviewDataDto dto = (AppointmentReviewDataDto) ParamUtil.getSessionAttr(request, APPOINTMENT_REVIEW_DATA);
         if (PROCESS_DEC_SPECIFY_NEW_DATE.equals(bsbApptInspectionDateDto.getProcessDec())) {
             log.info("user specify date");
-            apptInspectionDateService.saveUserSpecificDate(bsbApptInspectionDateDto, dto.getApplicationId());
+            apptInspectionDateService.saveUserSpecificDate(bsbApptInspectionDateDto,inspectionInfoDto);
         } else if (PROCESS_DEC_CONFIRM_DATE.equals(bsbApptInspectionDateDto.getProcessDec())) {
-            apptInspectionDateService.saveSystemInspectionDate(bsbApptInspectionDateDto, dto.getApplicationId());
-            ParamUtil.setSessionAttr(bpc.request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO, null);
+            apptInspectionDateService.saveSystemInspectionDate(bsbApptInspectionDateDto,inspectionInfoDto);
         }
+        ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_TASK_LIST);
     }
 
     private AppointmentReviewDataDto getReviewDataDto(HttpServletRequest request) {

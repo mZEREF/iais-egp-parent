@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentUserDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SearchResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -67,7 +68,7 @@ public class BsbRescheduleApptDelegator {
 
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, resultDto.getEntity().getAppointmentDtos());
+            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, resultDto.getEntity().getAppointmentViewDtos());
         } else {
             log.info("Search Reschedule Appointment List fail");
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
@@ -76,6 +77,7 @@ public class BsbRescheduleApptDelegator {
                 log.warn("Fail reason: {}", resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
             }
         }
+        ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_TASK_LIST);
     }
 
     public void search(BaseProcessClass bpc) {
@@ -143,8 +145,9 @@ public class BsbRescheduleApptDelegator {
                 throw new IaisRuntimeException("Invalid masked application ID");
             }
             dto.setAppId(appId);
+            apptInspectionDateService.setInspectionInfoDto(appId,request);
         }
-        dto = apptInspectionDateService.getReScheduleNewDateInfo(dto);
+        dto = apptInspectionDateService.getReScheduleNewDateInfo(request,dto);
         ParamUtil.setSessionAttr(request,OFFICER_RESCHEDULE_DTO,dto);
         ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_RESCHEDULE_APPOINTMENT);
     }
@@ -202,12 +205,14 @@ public class BsbRescheduleApptDelegator {
 
     public void saveRescheduleDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        InspectionInfoDto inspectionInfoDto = (InspectionInfoDto) ParamUtil.getSessionAttr(request, INSPECTION_INFO_DTO);
         OfficerRescheduleDto dto = getRescheduleDto(request);
         if (PROCESS_DEC_SPECIFY_NEW_DATE.equals(dto.getProcessDec())) {
             log.info("user specify date");
-            apptInspectionDateService.saveRescheduleSpecificDate(dto);
+            apptInspectionDateService.saveRescheduleSpecificDate(dto,inspectionInfoDto);
         } else if (PROCESS_DEC_CONFIRM_DATE.equals(dto.getProcessDec())) {
-//            apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, dto.getApplicationId());
+            apptInspectionDateService.saveRescheduleSystemInspectionDate(request,inspectionInfoDto);
         }
+        ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_RESCHEDULE_APPOINTMENT);
     }
 }

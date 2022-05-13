@@ -13,6 +13,7 @@ public class OfficerRescheduleDto implements Serializable {
     private List<String> availableDate;
     private BsbAppointmentDto appointmentDto;
     private List<String> userIds;
+    private List<String> dispalyNames;
     private String cancelApptRefNo;
     private String refNo;
     private String processDec;
