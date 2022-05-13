@@ -74,13 +74,13 @@
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
                                                 <div class="document-upload-list">
-                                                    <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
+                                                    <h3><c:out value="${doc.typeDisplay}"/><c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
                                                     <div class="file-upload-gp">
                                                         <c:if test="${savedFiles.get(doc.type) ne null}">
                                                             <c:forEach var="info" items="${savedFiles.get(doc.type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="${savedFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    <a href="${savedFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span"><c:out value="${info.filename}"/></span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
@@ -91,7 +91,7 @@
                                                             <c:forEach var="info" items="${newFiles.get(doc.type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="${newFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    <a href="${newFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span"><c:out value="${info.filename}"/></span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
@@ -111,7 +111,7 @@
                                                             <c:forEach var="info" items="${savedFiles.get(type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="${savedFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
+                                                                    <a href="${savedFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span"><c:out value="${info.filename}"/></span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
                                                                     (<iais:code code="${info.docType}"/>)</label><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button>
                                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
@@ -122,7 +122,7 @@
                                                             <c:forEach var="info" items="${newFiles.get(type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="${newFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
+                                                                    <a href="${newFileDLUrl}${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span"><c:out value="${info.filename}"/></span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<label class="other-doc-type-label">
                                                                     (<iais:code code="${info.docType}"/>)</label><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button>
                                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
