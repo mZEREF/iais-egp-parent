@@ -132,9 +132,11 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
 
     @Override
     public String getData() {
-        List<String> list=new ArrayList<>();
-        String entity = applicationFeClient.fileAll(list).getEntity();
-        return entity;
+        List<String> list=applicationFeClient.checkPendToFeAppGrps().getEntity();
+        if(IaisCommonUtils.isNotEmpty(list)){
+            return applicationFeClient.fileAll(list).getEntity();
+        }
+        return null;
     }
 
     @Override

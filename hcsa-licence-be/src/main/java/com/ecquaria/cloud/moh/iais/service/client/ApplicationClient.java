@@ -159,6 +159,9 @@ public interface ApplicationClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
     FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
 
+    @GetMapping(value = "/iais-application/check-pend-to-fe-grps", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> checkPendToFeAppGrps();
+
     @PostMapping (path = "/iais-broadcast/RequestInformationSubmitDtos",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(@RequestBody List<ApplicationDto> applicationDtos);
 

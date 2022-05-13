@@ -51,10 +51,13 @@ public class UploadEditDelegator {
     /**********************************/
 
     private void start(){
-        for (int i=0;i<10;i++){// loop 10 time
+
             String data = uploadFileService.getData();
             log.info("------------------- getData  end --------------");
             //Parse the
+            if (data==null){
+                return;
+            }
             List<ApplicationListFileDto> parse = uploadFileService.parse(data);
             if (parse.isEmpty()){
                 return;
@@ -87,13 +90,13 @@ public class UploadEditDelegator {
                     List<String> newStatus=IaisCommonUtils.genNewArrayList();
                     List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
                     errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
-                    newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
+                    newStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
                     errorMap.put("oldStatus",errorOldStatus);
                     errorMap.put("newStatus",newStatus);
                     uploadFileService.changeStatus(applicationListFileDto,errorMap);
                 }
             }
-        }
+
     }
     private  void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " +methodName +" ******Start ****"));
