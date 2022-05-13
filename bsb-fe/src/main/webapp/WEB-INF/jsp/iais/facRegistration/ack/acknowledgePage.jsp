@@ -28,6 +28,7 @@
             <c:forEach var="activity" items="${SELECTED_ACTIVITIES}" varStatus="status">
                 <p>- <iais:code code="${activity}"/></p>
             </c:forEach>
+            <p>We will notify you of the status of the application or if additional information is required.</p>
             <br/>
             <div class="col-xs-12" style="padding: 0 0 10px 0">
                 <div class="col-xs-4" style="padding: 0"><strong>Application Number</strong></div>

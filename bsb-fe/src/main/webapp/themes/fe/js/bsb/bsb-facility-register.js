@@ -72,6 +72,13 @@ $(function () {
         rfActivityTypesDiv.show();
     });
 
+    $("#facType").change(function () {
+        if (this.value === 'FACTYPE005') {
+            $("#facTypeDetailsFormGroup").show();
+        } else {
+            $("#facTypeDetailsFormGroup").hide();
+        }
+    });
 
     $("input[name=protectedPlace]").change(function () {
         var id = $(this).attr("id");
@@ -81,7 +88,7 @@ $(function () {
             $("#docUploadDiv").hide();
             $("#notGazetteModal").modal('show');
         }
-    })
+    });
 
     $("input[name=isSameAddress ]").change(function (){
         var id = $(this).attr("id");
@@ -94,7 +101,7 @@ $(function () {
             $("#isSameAddrSectionY").hide();
             $("#isSameAddrSectionN").show();
         }
-    })
+    });
 
     $("#addressType").change(function () {
         var addressType = $(this).val();
@@ -116,7 +123,7 @@ $(function () {
         } else if(id === 'notAppointedCertifier'){
             $("#appointedCertifierSection").hide();
         }
-    })
+    });
 
     $("input[data-custom-ind=committeePersonnelIsEmployee]").change(function () {
         var id = $(this).attr("id");

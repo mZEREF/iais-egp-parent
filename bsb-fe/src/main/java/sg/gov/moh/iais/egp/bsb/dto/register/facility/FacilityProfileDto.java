@@ -45,6 +45,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     public static class FacilityProfileValidateDto {
         private String facName;
         private String facType;
+        private String facTypeDetails;
         private String sameAddress;
         private String postalCode;
         private String addressType;
@@ -64,6 +65,8 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     private String facName;
 
     private String facType;
+
+    private String facTypeDetails;
 
     private String sameAddress;
 
@@ -267,6 +270,14 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.facType = facType;
     }
 
+    public String getFacTypeDetails() {
+        return facTypeDetails;
+    }
+
+    public void setFacTypeDetails(String facTypeDetails) {
+        this.facTypeDetails = facTypeDetails;
+    }
+
     public String getSameAddress() {
         return sameAddress;
     }
@@ -294,6 +305,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_FAC_NAME = "facName";
     private static final String KEY_FACILITY_TYPE = "facType";
+    private static final String KEY_FACILITY_TYPE_DETAILS = "facTypeDetails";
     private static final String KEY_IS_SAME_ADDRESS_AS_COMPANY = "isSameAddress";
     private static final String KEY_BLOCK = "block";
     private static final String KEY_ADDRESS_TYPE = "addressType";
@@ -313,7 +325,10 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
         this.setFacName(ParamUtil.getString(mulReq, KEY_FAC_NAME));
-        this.setFacType(ParamUtil.getString(mulReq,KEY_FACILITY_TYPE));
+        this.setFacType(ParamUtil.getString(mulReq, KEY_FACILITY_TYPE));
+        if (MasterCodeConstants.FACILITY_TYPE_OTHERS.equals(this.getFacType())) {
+            this.setFacTypeDetails(ParamUtil.getString(mulReq, KEY_FACILITY_TYPE_DETAILS));
+        }
 
         String sameAddressAsCompany = ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY);
         if (MasterCodeConstants.YES.equals(sameAddressAsCompany)) {

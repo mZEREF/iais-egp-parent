@@ -53,7 +53,7 @@
                                     <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
                                         <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
-                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Administrator</h3>
 
                                         <section id="mainAdmin">
                                             <div class="form-group ">
@@ -148,7 +148,7 @@
                                             </div>
                                         </section>
 
-                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternative Adminstrator</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternate Administrator</h3>
                                         <section id="alternativeAdmin">
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
@@ -171,7 +171,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input maxLength="60" type="text" autocomplete="off" name="employeeNameA" id="employeeNameA" value='<c:out value="${facAdminOfficer.alternativeAdmin.name}"/>'/>
+                                                    <input maxLength="66" type="text" autocomplete="off" name="employeeNameA" id="employeeNameA" value='<c:out value="${facAdminOfficer.alternativeAdmin.name}"/>'/>
                                                     <span data-err-ind="nameA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -280,7 +280,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input maxLength="132" type="text" autocomplete="off" name="employeeName--v--${status.index}" id="employeeName--v--${status.index}" value='<c:out value="${officer.name}"/>'/>
+                                                            <input maxLength="66" type="text" autocomplete="off" name="employeeName--v--${status.index}" id="employeeName--v--${status.index}" value='<c:out value="${officer.name}"/>'/>
                                                             <span data-err-ind="name--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>

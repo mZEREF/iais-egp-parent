@@ -226,6 +226,11 @@ public class MasterCodeConstants {
         VALID_RF_ACTIVITIES = Collections.unmodifiableSet(rfSet);
     }
 
+    public static final String FACILITY_TYPE_ACADEMIC = "FACTYPE001";
+    public static final String FACILITY_TYPE_CLINICAL = "FACTYPE002";
+    public static final String FACILITY_TYPE_COMMERCIAL = "FACTYPE003";
+    public static final String FACILITY_TYPE_GOVERNMENT = "FACTYPE004";
+    public static final String FACILITY_TYPE_OTHERS = "FACTYPE005";
 
     public static final String ADMIN_TYPE_MAIN = "main";
     public static final String ADMIN_TYPE_ALTERNATIVE = "alter";
