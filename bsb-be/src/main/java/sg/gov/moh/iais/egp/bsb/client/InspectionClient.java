@@ -146,6 +146,7 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
                                      @RequestParam("taskId") String taskId,
+                                     @RequestParam("rfiFlag") int rfiFlag,
                                      @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)

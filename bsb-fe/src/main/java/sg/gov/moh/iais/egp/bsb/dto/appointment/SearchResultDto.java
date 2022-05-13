@@ -12,5 +12,5 @@ import java.util.List;
 @Data
 public class SearchResultDto {
     private PageInfo pageInfo;
-    private List<AppointmentViewDto> appointmentDtos;
+    private List<AppointmentViewDto> appointmentViewDtos;
 }

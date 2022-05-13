@@ -51,7 +51,7 @@
                             <label for="searchAppStatus" class="col-sm-5 col-md-5 control-label">Application Status</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppStatus" class="error-msg"></span>
-                                <iais:select name="searchAppStatus" cssClass="searchAppStatusDropdown" id="searchAppStatus" codeCategory="CATE_ID_APP_STATUS"
+                                <iais:select name="searchAppStatus" cssClass="searchAppStatusDropdown" id="searchAppStatus" codeCategory="CATE_ID_BSB_APP_STATUS"
                                              firstOption="Please Select" value="${searchDto.searchAppStatus}"/>
                             </div>
                         </div>

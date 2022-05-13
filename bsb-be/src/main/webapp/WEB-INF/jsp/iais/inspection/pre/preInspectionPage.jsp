@@ -198,7 +198,7 @@
                                                                                        <c:if test="${SelfPreInspRfiCheck}">checked="checked"</c:if>
                                                                                 />
                                                                                 <span style="font-size: 16px"><c:out
-                                                                                        value="Pre inspection checklist"/></span>
+                                                                                        value="Pre-Inspection Checklist"/></span>
                                                                             </p>
                                                                             <span class="error-msg"
                                                                                   name="iaisErrorMsg"

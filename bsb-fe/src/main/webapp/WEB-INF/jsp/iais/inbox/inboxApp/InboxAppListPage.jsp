@@ -230,7 +230,7 @@
                                                                             <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq 'BSBAPST033'}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
                                                                             </c:if>
                                                                             <c:if test="${AFCUploadReportJudge}">
