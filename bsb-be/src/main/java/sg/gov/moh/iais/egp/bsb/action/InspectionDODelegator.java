@@ -599,8 +599,9 @@ public class InspectionDODelegator {
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
             List<ChklstItemAnswerDto> bsbData = result.get(InspectionConstants.SHEET_NAME_BSB);
+            AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(checklistDto.getApplicationId()).getBody();
             Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, checklistDto.getChkLstConfigId(),
-                    errorMsgs);
+                    adhocConfig == null ? null : adhocConfig.getId(), errorMsgs);
             if (isValid != null && isValid) {
                 answerDtos.addAll(bsbData);
             }
@@ -668,14 +669,14 @@ public class InspectionDODelegator {
         bpc.getSession().removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
     }
 
-    private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
+    private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId, String adhocConfId,
                                              List<FileErrorMsg> errorMsgs) {
         if (data == null || data.isEmpty()) {
             log.info("No data found!");
             return null;
         }
         Optional<ChklstItemAnswerDto> optional = data.stream()
-                .filter(dto -> !Objects.equals(chkLstConfigId, dto.getConfigId())
+                .filter(dto -> (!Objects.equals(chkLstConfigId, dto.getConfigId()) && !Objects.equals(adhocConfId, dto.getConfigId()))
                         || !ExcelValidatorHelper.isValidUuid(dto.getSectionId())
                         || !ExcelValidatorHelper.isValidUuid(dto.getItemId()))
                 .findAny();
@@ -878,6 +879,7 @@ public class InspectionDODelegator {
                 InsChklItemExcelDto excelDto = new InsChklItemExcelDto();
                 excelDto.setSnNo((i+1) + "." + (j+1));
                 excelDto.setChecklistItem(itemDto.getChecklistItem());
+                excelDto.setSection(sectionDto.getSection());
                 String itemKey = new StringBuilder()
                         .append(configDto.getId())
                         .append(KEY_SEPARATOR)
@@ -895,7 +897,6 @@ public class InspectionDODelegator {
                     excelDto.setObserveFollowup(dto.getObserveFollowup());
                     excelDto.setFollowupAction(dto.getFollowupAction());
                     excelDto.setDueDate(dto.getDueDate());
-                    excelDto.setSection(sectionDto.getSection());
                 } else {
                     excelDto.setAnswer("");
                     excelDto.setFindings("");
@@ -905,7 +906,6 @@ public class InspectionDODelegator {
                     excelDto.setObserveFollowup("");
                     excelDto.setFollowupAction("");
                     excelDto.setDueDate("");
-                    excelDto.setSection("");
                 }
                 excelDto.setItemKey(itemKey);
                 result.add(excelDto);
@@ -926,12 +926,13 @@ public class InspectionDODelegator {
             InsChklItemExcelDto excelDto = new InsChklItemExcelDto();
             excelDto.setSnNo((sectionSn + 1) + "." + (j + 1));
             excelDto.setChecklistItem(itemDto.getQuestion());
+            excelDto.setSection("Adhoc");
             String itemKey = new StringBuilder()
                     .append(adhocConfig.getId())
                     .append(KEY_SEPARATOR)
                     .append(ChecklistConstants.ADHOC_SECTION_ID)
                     .append(KEY_SEPARATOR)
-                    .append(itemDto.getItemId())
+                    .append(itemDto.getId())
                     .toString();
             ChklstItemAnswerDto dto = answerMap != null ? answerMap.get(itemKey) : null;
             if (dto != null) {
@@ -943,7 +944,6 @@ public class InspectionDODelegator {
                 excelDto.setObserveFollowup(dto.getObserveFollowup());
                 excelDto.setFollowupAction(dto.getFollowupAction());
                 excelDto.setDueDate(dto.getDueDate());
-                excelDto.setSection("Adhoc");
             } else {
                 excelDto.setAnswer("");
                 excelDto.setFindings("");
@@ -953,7 +953,6 @@ public class InspectionDODelegator {
                 excelDto.setObserveFollowup("");
                 excelDto.setFollowupAction("");
                 excelDto.setDueDate("");
-                excelDto.setSection("");
             }
             excelDto.setItemKey(itemKey);
             result.add(excelDto);
