@@ -273,9 +273,12 @@ public class InboxServiceImpl implements InboxService {
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         if(!IaisCommonUtils.isEmpty(apps)){
-            for(ApplicationDto app : apps){
-                if(!finalStatusList.contains(app.getStatus())){
-                    errorMap.put("errorMessage1","This application is performing the renew process");
+            for (ApplicationDto app : apps) {
+                // 81903
+                if ((ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus())
+                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType()))
+                        || !finalStatusList.contains(app.getStatus())) {
+                    errorMap.put("errorMessage1", "This application is performing the renew process");
                 }
             }
         }
