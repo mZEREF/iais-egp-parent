@@ -383,7 +383,7 @@ public class BeEicGatewayClient {
     public FeignResponseEntity<String> saveFileApplication(ProcessFileTrackDto processFileTrackDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/ext-sync-app-file-track", HttpMethod.POST, processFileTrackDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
                 String.class);
     }
