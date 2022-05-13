@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
@@ -46,9 +45,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RE
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SELF_ASSESSMENT_AVAILABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SEPARATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_APPLICATION;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_SELF;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_SELF_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
@@ -62,8 +58,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
 
-    private final static String RFI_APPLICATION = "AppPreInspRfiCheck";
-    private final static String RFI_SELF = "SelfPreInspRfiCheck";
+    private static final String RFI_APPLICATION = "AppPreInspRfiCheck";
+    private static final String RFI_SELF = "SelfPreInspRfiCheck";
 
     @Autowired
     public PreInspectionDelegator(InspectionClient inspectionClient) {
@@ -197,10 +193,9 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
-        inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiFlag, processDto);
+        log.info("AppId {} TaskId {} Inspection mark as rfi", appId, taskId);
+        inspectionClient.changeInspectionStatusToRfi(appId, taskId, processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
@@ -230,18 +225,6 @@ public class PreInspectionDelegator {
             Boolean rfiSelf = "true".equals(ParamUtil.getString(request, RFI_SELF));
             ParamUtil.setSessionAttr(request, RFI_APPLICATION, rfiApp);
             ParamUtil.setSessionAttr(request, RFI_SELF, rfiSelf);
-        }
-    }
-
-    private int getRfiFlag(HttpServletRequest request) {
-        Boolean rfiApp = (Boolean) ParamUtil.getSessionAttr(request, RFI_APPLICATION);
-        Boolean rfiSelf = (Boolean) ParamUtil.getSessionAttr(request, RFI_SELF);
-        if (rfiSelf && rfiApp) {
-            return VALUE_RFI_FLAG_SELF_APPLICATION;
-        } else if (rfiApp) {
-            return VALUE_RFI_FLAG_APPLICATION;
-        } else {
-            return VALUE_RFI_FLAG_SELF;
         }
     }
 }

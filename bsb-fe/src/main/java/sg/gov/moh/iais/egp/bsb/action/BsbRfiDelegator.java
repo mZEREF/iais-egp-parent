@@ -60,17 +60,17 @@ public class BsbRfiDelegator {
 
     public void prepareRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        boolean completed = true;
+        boolean allCompleted = true;
         RfiDisplayDto rfiDisplayDto = (RfiDisplayDto) ParamUtil.getSessionAttr(request, KEY_RFI_DISPLAY_DTO);
         List<ApplicationRfiIndicatorDto> applicationRfiIndicatorDtoList = rfiDisplayDto.getApplicationRfiIndicatorDtoList();
         for (ApplicationRfiIndicatorDto applicationRfiIndicatorDto : applicationRfiIndicatorDtoList) {
-            Boolean status = applicationRfiIndicatorDto.getStatus();
-            if (status == Boolean.FALSE) {
-                completed = false;
+            boolean status = applicationRfiIndicatorDto.isStatus();
+            if (!status) {
+                allCompleted = false;
                 break;
             }
         }
-        if (completed) {
+        if (allCompleted) {
             ParamUtil.setRequestAttr(request, "completedAllRfi", "true");
         } else {
             ParamUtil.setRequestAttr(request, "completedAllRfi", "false");
@@ -80,17 +80,17 @@ public class BsbRfiDelegator {
 
     public void doRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        boolean completed = true;
+        boolean allCompleted = true;
         RfiDisplayDto rfiDisplayDto = (RfiDisplayDto) ParamUtil.getSessionAttr(request, KEY_RFI_DISPLAY_DTO);
         List<ApplicationRfiIndicatorDto> applicationRfiIndicatorDtoList = rfiDisplayDto.getApplicationRfiIndicatorDtoList();
         for (ApplicationRfiIndicatorDto applicationRfiIndicatorDto : applicationRfiIndicatorDtoList) {
-            Boolean status = applicationRfiIndicatorDto.getStatus();
-            if (status == Boolean.FALSE) {
-                completed = false;
+            boolean status = applicationRfiIndicatorDto.isStatus();
+            if (!status) {
+                allCompleted = false;
                 break;
             }
         }
-        if (completed) {
+        if (allCompleted) {
             rfiClient.saveRfi(rfiDisplayDto.getId());
             ParamUtil.setRequestAttr(request, KEY_CRUD_ACTION_TYPE, KEY_ACTION_TYPE_PRE_ACKNOWLEDGE);
         } else {

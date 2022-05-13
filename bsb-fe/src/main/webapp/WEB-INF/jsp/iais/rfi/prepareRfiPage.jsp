@@ -48,10 +48,10 @@
                                             <td><c:out value="${dto.moduleName}"/></td>
                                             <td><a class="btn btn-default btn-sm" href="${dto.internetProcessUrl}?appId=<iais:mask name='rfiAppId' value='${rfiDisplayDto.appId}'/>">Handle</a></td>
                                             <td>
-                                                <c:if test="${dto.status eq null or dto.status eq 'false'}">
+                                                <c:if test="${dto.status eq false}">
                                                     <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
                                                 </c:if>
-                                                <c:if test="${dto.status eq 'true'}">
+                                                <c:if test="${dto.status eq true}">
                                                     <h4 class="text-success"><em class="fa fa-check-circle del-size-36"></em></h4>
                                                 </c:if>
                                             </td>

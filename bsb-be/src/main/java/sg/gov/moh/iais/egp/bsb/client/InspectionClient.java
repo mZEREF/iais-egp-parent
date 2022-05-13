@@ -26,14 +26,8 @@ import java.util.List;
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
-    @GetMapping(value = "/inspection/pre/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
-    PreInspectionDataDto getPreInspectionDataDto(@RequestParam("appId") String appId);
-
     @GetMapping(value = "/inspection/actual/submit-findings/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitFindingDataDto getInitInsFindingData(@RequestParam("appId") String appId);
-
-    @GetMapping(path = "/inspection/pre/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
 
     @GetMapping(path = "/checklist/inspection", produces = MediaType.APPLICATION_JSON_VALUE)
     InspectionChecklistDto getSavedInspectionChecklist(@RequestParam("appId") String appId);
@@ -45,25 +39,11 @@ public interface InspectionClient {
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
 
-    @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
-
     @PostMapping(value = "/inspection/certification/do/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateDoCertification(@RequestBody InsProcessDto dto);
 
     @PostMapping(value = "/inspection/certification/ao/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateAoCertification(@RequestBody InsProcessDto dto);
-
-    @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
-                                     @RequestParam("taskId") String taskId,
-                                     @RequestParam("rfiFlag") int rfiFlag,
-                                     @RequestBody InsProcessDto processDto);
-
-    @PostMapping(value = "/inspection/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void changeInspectionStatusToReady(@RequestParam("appId") String appId,
-                                       @RequestParam("taskId") String taskId,
-                                       @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/finding", consumes = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto saveInspectionFindings(@RequestBody InsFindingFormDto findingFormDto);
@@ -153,6 +133,26 @@ public interface InspectionClient {
                         @RequestParam("taskId") String taskId,
                         @RequestBody InsProcessDto processDto);
 
+    /************************************* pre *************************************/
+    @GetMapping(value = "/inspection/pre/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    PreInspectionDataDto getPreInspectionDataDto(@RequestParam("appId") String appId);
+
+    @GetMapping(path = "/inspection/pre/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
+
+    @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
+
+    @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
+                                     @RequestParam("taskId") String taskId,
+                                     @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void changeInspectionStatusToReady(@RequestParam("appId") String appId,
+                                       @RequestParam("taskId") String taskId,
+                                       @RequestBody InsProcessDto processDto);
+
     /************************************* report *************************************/
     @GetMapping(value = "/inspection/actual/report", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitReportDataDto getInitInsSubmitReportData(@RequestParam("appId") String appId);
@@ -230,6 +230,11 @@ public interface InspectionClient {
                                                              @RequestParam("taskId") String taskId,
                                                              @RequestParam("appStatus") String appStatus,
                                                              @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/do-review-follow-up-items/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void doReviewInspectionFollowUpItemsRFI(@RequestParam("appId") String appId,
+                                            @RequestParam("taskId") String taskId,
+                                            @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/post/do-review-follow-up-items/accept-response", consumes = MediaType.APPLICATION_JSON_VALUE)
     void doReviewInspectionFollowUpItemsAcceptResponse(@RequestParam("appId") String appId,

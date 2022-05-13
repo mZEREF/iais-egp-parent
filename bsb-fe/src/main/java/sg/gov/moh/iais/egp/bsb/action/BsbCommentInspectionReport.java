@@ -99,7 +99,7 @@ public class BsbCommentInspectionReport {
         List<ApplicationRfiIndicatorDto> applicationRfiIndicatorDtoList = rfiDisplayDto.getApplicationRfiIndicatorDtoList();
         for (ApplicationRfiIndicatorDto applicationRfiIndicatorDto : applicationRfiIndicatorDtoList) {
             if (applicationRfiIndicatorDto.getModuleName().equals(RfiConstants.MODULE_NAME_INSPECTION_REPORT)) {
-                applicationRfiIndicatorDto.setStatus(Boolean.TRUE);
+                applicationRfiIndicatorDto.setStatus(true);
             }
         }
         SaveInspectionReportDto saveInspectionReportDto = new SaveInspectionReportDto();

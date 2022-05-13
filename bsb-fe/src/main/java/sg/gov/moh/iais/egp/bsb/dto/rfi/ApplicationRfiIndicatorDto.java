@@ -11,5 +11,5 @@ public class ApplicationRfiIndicatorDto implements Serializable {
     // bsb fe different process module url
     private String internetProcessUrl;
     // completed status
-    private Boolean status;
+    private boolean status;
 }
