@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -211,6 +212,18 @@ public class OnlineTopEnquiryDelegator {
         if (!premisesMap.isEmpty()) {
             for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+            }
+        }
+        TerminationDto terminationDto=topInfo.getTerminationOfPregnancyDto().getTerminationDto();
+        if(terminationDto!=null){
+            if(StringUtil.isNotEmpty(terminationDto.getTopPlace())&&premisesMap.containsKey(terminationDto.getTopPlace())){
+                terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
+            }
+            if(StringUtil.isNotEmpty(terminationDto.getPrescribeTopPlace())&&premisesMap.containsKey(terminationDto.getPrescribeTopPlace())){
+                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getPremiseLabel());
+            }
+            if(StringUtil.isNotEmpty(terminationDto.getTopDrugPlace())&&premisesMap.containsKey(terminationDto.getTopDrugPlace())){
+                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
             }
         }
 
