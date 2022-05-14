@@ -1,12 +1,12 @@
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#patientDetails">
                 Patient Information
             </a>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse">
+    <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>

@@ -47,15 +47,18 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.put("counsellingResult", "GENERAL_ERR0006");
             }
         }
-        if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
-            if(StringUtil.isEmpty(preTerminationDto.getCounsellingGivenOnMin())){
-                errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
-            }
-            if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
-                errorMap.put("patientSign", "GENERAL_ERR0006");
-            }
+        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+            if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
+                if(StringUtil.isEmpty(preTerminationDto.getCounsellingGivenOnMin())){
+                    errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
+                }
+                if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
+                    errorMap.put("patientSign", "GENERAL_ERR0006");
+                }
 
+            }
         }
+
         if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
                 if (preTerminationDto.getCounsellingGiven()==true && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
@@ -85,16 +88,18 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.put("noCounsReason", "GENERAL_ERR0006");
             }
         }
-        if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
-            if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
-                if(patientInformationDto.getPatientAge()<16){
-                    if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
-                        errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+        if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true){
+            if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
+                if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
+                    if(patientInformationDto.getPatientAge()<16){
+                        if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
+                            errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+                        }
                     }
                 }
             }
-
         }
+
         return errorMap;
     }
 }

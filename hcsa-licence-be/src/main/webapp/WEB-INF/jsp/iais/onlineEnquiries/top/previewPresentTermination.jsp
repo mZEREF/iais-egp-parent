@@ -1,14 +1,14 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
 <c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#terminationDetails">
                 Termination Of Pregnancy
             </a>
         </h4>
     </div>
-    <div id="terminationDetails" class="panel-collapse collapse">
+    <div id="terminationDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>

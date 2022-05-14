@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -23,7 +22,7 @@ public interface BsbAppointmentClient {
     FeignResponseEntity<String> saveInsDate(@RequestBody InspectionDateDto dto);
 
     @GetMapping("/appointment/reschedule/list")
-    ResponseDto<SearchResultDto> searchRescheduleAppt(@SpringQueryMap ApptSearchDto searchDto);
+    ResponseDto<List<AppointmentViewDto>> searchRescheduleAppt();
 
     @PostMapping(path = "/appointment/reschedule/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateRescheduleAppointment(@RequestBody List<AppointmentViewDto> dtos);

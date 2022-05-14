@@ -8,13 +8,14 @@ import sg.gov.moh.iais.egp.bsb.util.mastercode.option.MasterCodeOptionsSupplier;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeListRetriever;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeMapRetriever;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeRetriever;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.validation.MasterCodeValidator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConverter, MasterCodeOptionsSupplier {
+public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConverter, MasterCodeOptionsSupplier, MasterCodeValidator {
     private final String categoryId;
     private MasterCodeRetriever retriever;
     public static final String DEFAULT_UNKNOWN = "Unknown";
@@ -132,4 +133,12 @@ public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConvert
         return options;
     }
 
+    @Override
+    public boolean validate(String code) {
+        if (code == null) {
+            return false;
+        }
+        tryLoad();
+        return retrieveByCode(code) != null;
+    }
 }

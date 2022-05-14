@@ -78,6 +78,9 @@ public interface AssistedReproductionClient {
     @GetMapping(value = "/ar-common/ar-center-premises-patient-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getAllArCenterPremisesDtoByPatientCode(@RequestParam(name = "patientCode") String patientCode,@RequestParam(name = "orgId") String orgId);
 
+    @GetMapping(value = "/ar-common/center-premises-patient-code", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getAllCenterPremisesDtoByPatientCode(@RequestParam(name = "centerType") String centerType,@RequestParam(name = "patientCode") String patientCode,@RequestParam(name = "orgId") String orgId);
+
     @GetMapping(value = "/ar-common/patient-info/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(@PathVariable("patientCode") String patientCode);
 

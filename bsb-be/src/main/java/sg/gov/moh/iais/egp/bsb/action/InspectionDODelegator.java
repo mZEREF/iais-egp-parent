@@ -50,6 +50,7 @@ import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFillCheckListDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
@@ -598,8 +599,9 @@ public class InspectionDODelegator {
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
             List<ChklstItemAnswerDto> bsbData = result.get(InspectionConstants.SHEET_NAME_BSB);
+            AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(checklistDto.getApplicationId()).getBody();
             Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, checklistDto.getChkLstConfigId(),
-                    errorMsgs);
+                    adhocConfig == null ? null : adhocConfig.getId(), errorMsgs);
             if (isValid != null && isValid) {
                 answerDtos.addAll(bsbData);
             }
@@ -667,14 +669,14 @@ public class InspectionDODelegator {
         bpc.getSession().removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
     }
 
-    private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
+    private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId, String adhocConfId,
                                              List<FileErrorMsg> errorMsgs) {
         if (data == null || data.isEmpty()) {
             log.info("No data found!");
             return null;
         }
         Optional<ChklstItemAnswerDto> optional = data.stream()
-                .filter(dto -> !Objects.equals(chkLstConfigId, dto.getConfigId())
+                .filter(dto -> (!Objects.equals(chkLstConfigId, dto.getConfigId()) && !Objects.equals(adhocConfId, dto.getConfigId()))
                         || !ExcelValidatorHelper.isValidUuid(dto.getSectionId())
                         || !ExcelValidatorHelper.isValidUuid(dto.getItemId()))
                 .findAny();
@@ -694,7 +696,7 @@ public class InspectionDODelegator {
         Map<String, List<ChklstItemAnswerDto>> resultMap = IaisCommonUtils.genNewHashMap();
         try {
             File file = fileInfo.getFile();
-            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, false);
+            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, null, false);
             Map<String, List<InsChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (data != null && !data.isEmpty()) {
                 for (Map.Entry<String, List<InsChklItemExcelDto>> entry : data.entrySet()) {
@@ -763,7 +765,10 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, null, "Inspection_Checklist_Template", response);
+        //Add Adhoc check list -- Jinhua
+        AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+
+        exportExcel(null, configDto, adhocConfig, null, "Inspection_Checklist_Template", response);
     }
 
     /**
@@ -800,14 +805,17 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, answerMap, "Inspection_Checklist", response);
+        //Add Adhoc check list -- Jinhua
+        AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+
+        exportExcel(null, configDto, adhocConfig, answerMap, "Inspection_Checklist", response);
     }
 
-    private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
+    private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto, AdhocChecklistConfigDto adhocConfig,
             Map<String, ChklstItemAnswerDto> answerMap, String filename, HttpServletResponse response) throws Exception {
         try {
             File configInfoTemplate = ResourceUtils.getFile("classpath:template/Inspection_Checklist_Template.xlsx");
-            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, answerMap, true);
+            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, adhocConfig, answerMap, true);
             File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, filename);
             FileUtils.writeFileResponseContent(response, inputFile);
             FileUtils.deleteTempFile(inputFile);
@@ -818,7 +826,7 @@ public class InspectionDODelegator {
     }
 
     private List<ExcelSheetDto> getExcelSheetDtos(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
-            Map<String, ChklstItemAnswerDto> answerMap, boolean withData) {
+          AdhocChecklistConfigDto adhocConfig, Map<String, ChklstItemAnswerDto> answerMap, boolean withData) {
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
         int sheetAt = 1;
         if (commonConfigDto != null) {
@@ -833,6 +841,9 @@ public class InspectionDODelegator {
             List<InsChklItemExcelDto> data = null;
             if (withData) {
                 data = getChklItemExcelDtos(configDto, answerMap);
+                if (adhocConfig != null) {
+                    data.addAll(getAdhocChklItemExcelDtos(adhocConfig, configDto.getSectionDtos().size(), answerMap));
+                }
             }
             excelSheetDtos.add(getExcelSheetDto(sheetAt++, SHEET_NAME_BSB, data));
         }
@@ -868,6 +879,7 @@ public class InspectionDODelegator {
                 InsChklItemExcelDto excelDto = new InsChklItemExcelDto();
                 excelDto.setSnNo((i+1) + "." + (j+1));
                 excelDto.setChecklistItem(itemDto.getChecklistItem());
+                excelDto.setSection(sectionDto.getSection());
                 String itemKey = new StringBuilder()
                         .append(configDto.getId())
                         .append(KEY_SEPARATOR)
@@ -902,6 +914,52 @@ public class InspectionDODelegator {
         return result;
     }
 
+    private List<InsChklItemExcelDto> getAdhocChklItemExcelDtos(AdhocChecklistConfigDto adhocConfig, int sectionSn,
+                                                    Map<String, ChklstItemAnswerDto> answerMap) {
+        if (adhocConfig == null || IaisCommonUtils.isEmpty(adhocConfig.getAdhocChecklistItemList())) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<InsChklItemExcelDto> result = IaisCommonUtils.genNewArrayList();
+        List<AdhocChecklistItemDto> checklistItemDtos = adhocConfig.getAdhocChecklistItemList();
+        for (int j = 0, n = checklistItemDtos.size(); j < n; j++) {
+            AdhocChecklistItemDto itemDto = checklistItemDtos.get(j);
+            InsChklItemExcelDto excelDto = new InsChklItemExcelDto();
+            excelDto.setSnNo((sectionSn + 1) + "." + (j + 1));
+            excelDto.setChecklistItem(itemDto.getQuestion());
+            excelDto.setSection("Adhoc");
+            String itemKey = new StringBuilder()
+                    .append(adhocConfig.getId())
+                    .append(KEY_SEPARATOR)
+                    .append(ChecklistConstants.ADHOC_SECTION_ID)
+                    .append(KEY_SEPARATOR)
+                    .append(itemDto.getId())
+                    .toString();
+            ChklstItemAnswerDto dto = answerMap != null ? answerMap.get(itemKey) : null;
+            if (dto != null) {
+                excelDto.setAnswer(ChecklistConstants.displayAnswer(dto.getAnswer()));
+                excelDto.setFindings(dto.getFindings());
+                excelDto.setActionRequired(dto.getActionRequired());
+                excelDto.setRectified(ChecklistConstants.getRectified(dto.getRectified()));
+                excelDto.setFollowupItem(ChecklistConstants.displayAnswer(dto.getFollowupItem()));
+                excelDto.setObserveFollowup(dto.getObserveFollowup());
+                excelDto.setFollowupAction(dto.getFollowupAction());
+                excelDto.setDueDate(dto.getDueDate());
+            } else {
+                excelDto.setAnswer("");
+                excelDto.setFindings("");
+                excelDto.setActionRequired("");
+                excelDto.setRectified("");
+                excelDto.setFollowupItem("");
+                excelDto.setObserveFollowup("");
+                excelDto.setFollowupAction("");
+                excelDto.setDueDate("");
+            }
+            excelDto.setItemKey(itemKey);
+            result.add(excelDto);
+        }
+        return result;
+    }
+
     private static Map<Integer, Integer> widthMap;
 
     public static Map<Integer, Integer> getWidthMap() {
@@ -910,15 +968,16 @@ public class InspectionDODelegator {
         }
         widthMap = IaisCommonUtils.genNewHashMap(5);
         widthMap.put(0, 9);
-        widthMap.put(1, 25);
-        widthMap.put(2, 12);
-        widthMap.put(3, 25);
+        widthMap.put(1, 18);
+        widthMap.put(2, 25);
+        widthMap.put(3, 12);
         widthMap.put(4, 25);
-        widthMap.put(5, 10);
-        widthMap.put(6, 12);
-        widthMap.put(7, 25);
+        widthMap.put(5, 25);
+        widthMap.put(6, 10);
+        widthMap.put(7, 12);
         widthMap.put(8, 25);
-        widthMap.put(9, 15);
+        widthMap.put(9, 25);
+        widthMap.put(10, 15);
         return widthMap;
     }
 }

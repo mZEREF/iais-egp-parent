@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbRfi" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="70" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="190" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareRfi" x="300" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareRfi_OnStepProcess_0" name="prepareRfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoRfi" x="550" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doRfi_OnStepProcess_0" name="doRfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="400" y="340">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrepareRfiPage" stageIndicator="" x="400" y="80">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowledgePage" stageIndicator="" x="400" y="470">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(90,100)(210,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRfi" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
+   <position>{(210,100)(320,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrepareRfiPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareRfi" style="oblique">
+   <position>{(320,100)(420,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoRfi" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PrepareRfiPage" style="oblique">
+   <position>{(420,100)(570,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoRfi" style="oblique">
+   <position>{(570,100)(440,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(440,240)(420,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
+   <position>{(420,360)(420,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(440,240)(320,100)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch" x="420" y="220">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;preAcknowledge&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareRfi" value="&quot;prepareRfi&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

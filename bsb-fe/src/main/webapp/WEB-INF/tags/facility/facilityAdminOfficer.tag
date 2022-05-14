@@ -23,7 +23,6 @@
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-add-section.js"></script>
-<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <jsp:invoke fragment="specialJsFrag"/>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
@@ -53,7 +52,7 @@
                                     <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
                                         <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
-                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Administrator</h3>
 
                                         <section id="mainAdmin">
                                             <div class="form-group ">
@@ -148,7 +147,7 @@
                                             </div>
                                         </section>
 
-                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternative Adminstrator</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternate Administrator</h3>
                                         <section id="alternativeAdmin">
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
@@ -171,7 +170,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input maxLength="60" type="text" autocomplete="off" name="employeeNameA" id="employeeNameA" value='<c:out value="${facAdminOfficer.alternativeAdmin.name}"/>'/>
+                                                    <input maxLength="66" type="text" autocomplete="off" name="employeeNameA" id="employeeNameA" value='<c:out value="${facAdminOfficer.alternativeAdmin.name}"/>'/>
                                                     <span data-err-ind="nameA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -184,6 +183,7 @@
                                                     <select name="idTypeA" class="idTypeADropdown" id="idTypeA">
                                                         <option value="IDTYPE001" <c:if test="${facAdminOfficer.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                                                         <option value="IDTYPE002" <c:if test="${facAdminOfficer.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
+                                                        <option value="IDTYPE003" <c:if test="${facAdminOfficer.alternativeAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
                                                     </select>
                                                     <span data-err-ind="idTypeA" class="error-msg"></span>
                                                 </div>
@@ -251,13 +251,22 @@
 
 
                                         <div id="sectionGroup">
-                                            <c:forEach var="officer" items="${facAdminOfficer.officerList}" varStatus="status">
-                                                <section id="officerSection--v--${status.index}">
+                                            <%
+                                                sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto facAdminAndOfficerDto = (sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto) request.getAttribute("facAdminOfficer");
+                                                if (facAdminAndOfficerDto.getOfficerList().isEmpty()) {
+                                                    java.util.List<sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo> emptyOfficerList = new java.util.ArrayList<>(1);
+                                                    emptyOfficerList.add(new sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo());
+                                                    request.setAttribute("officerList", emptyOfficerList);
+                                                    request.setAttribute("noOfficer", java.lang.Boolean.TRUE);
+                                                } else {
+                                                    request.setAttribute("officerList", facAdminAndOfficerDto.getOfficerList());
+                                                }
+                                            %>
+                                            <c:forEach var="officer" items="${officerList}" varStatus="status">
+                                            <section id="officerSection--v--${status.index}" <c:if test="${noOfficer}">style="display: none"</c:if>>
                                                     <div class="form-group">
                                                         <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Facility Officer <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note: The Facility Officer refers to personnel who are authorised by the Facility Administrator/Alternate Facility Administrator to login to HALP to perform selected transactions for the facility. Nomination of a Facility Officer is optional. The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of Facility Officer is always kept up to date i.e. prompt submission of updates to include newly appointed Facility Officer or to remove Facility Officer who are no longer authorised to transact for the facility.</p>">i</a></h3>
-                                                        <c:if test="${status.index gt 0}">
-                                                            <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
-                                                        </c:if>
+                                                        <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
                                                     </div>
                                                     <div class="form-group ">
                                                         <div class="col-sm-5 control-label">
@@ -280,7 +289,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input maxLength="132" type="text" autocomplete="off" name="employeeName--v--${status.index}" id="employeeName--v--${status.index}" value='<c:out value="${officer.name}"/>'/>
+                                                            <input maxLength="66" type="text" autocomplete="off" name="employeeName--v--${status.index}" id="employeeName--v--${status.index}" value='<c:out value="${officer.name}"/>'/>
                                                             <span data-err-ind="name--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -361,7 +370,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-12">
-                                                <a id="addNewSection" style="text-decoration: none" href="javascript:void(0)">+ Add Facility Officer</a>
+                                                <a id="addNewOfficerSection" data-add-section="officer" style="text-decoration: none" href="javascript:void(0)">+ Add Facility Officer</a>
                                                 <span data-err-ind="facOfficer" class="error-msg"></span>
                                             </div>
                                         </div>

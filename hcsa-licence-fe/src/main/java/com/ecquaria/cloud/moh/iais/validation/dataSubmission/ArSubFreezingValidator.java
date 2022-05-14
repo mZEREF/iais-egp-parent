@@ -48,7 +48,7 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                     }
                 }
                 if (cryopreservedNum > oocytesOrEmbryos) {
-                    errMap.put("cryopreservedNum", "DS_ERR015");
+                    errMap.put("cryopreservedNum", "DS_ERR002");
                 }
             }
         }

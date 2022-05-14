@@ -30,6 +30,7 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002");
         EmbryoTransferStageDto embryoTransferStageDto = (EmbryoTransferStageDto) obj;
         if (embryoTransferStageDto.getTransferNum() > 1) {
             if (StringUtil.isEmpty(embryoTransferStageDto.getSecondEmbryoAge())) {
@@ -84,10 +85,10 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
         }
         ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
         if (freshEmbryoNum > arCurrentInventoryDto.getFreshEmbryoNum()) {
-            errorMap.put("FreshEmbryosNum", "No. of Fresh Embryos cannot be greater than total number of fresh Embryos tagged patient");
+            errorMap.put("FreshEmbryosNum", errMsg002);
         }
         if (thawedEmbryoNum > arCurrentInventoryDto.getThawedEmbryoNum()) {
-            errorMap.put("thawedEmbryosNum", "No. of Thawed Embryos cannot be greater than total number of thawed Embryos tagged patient");
+            errorMap.put("thawedEmbryosNum", errMsg002);
         }
         return errorMap;
     }

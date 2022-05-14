@@ -61,7 +61,4 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/submit-report/report/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateReportDto(ReportDto reportDto);
-
-    @PostMapping(value = "/inspection/submit-report/report", produces = MediaType.APPLICATION_JSON_VALUE)
-    void saveInspectionReport(@RequestBody ReportDto reportDto, @RequestParam("appId") String appId);
 }

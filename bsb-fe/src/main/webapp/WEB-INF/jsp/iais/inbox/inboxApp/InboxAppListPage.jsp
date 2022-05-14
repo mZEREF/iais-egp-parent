@@ -215,7 +215,7 @@
 
                                                                                 <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
                                                                             </c:if>
-                                                                            <c:if test="${SelfAssessJudge}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
                                                                             </c:if>
                                                                             <c:if test="${AppWithdrawableJudge}">
@@ -224,15 +224,14 @@
                                                                             <c:if test="${InsAppointmentJudge}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Indicate Preferred Inspection Date</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION}">
+                                                                            <c:if test="${app.appType eq MasterCodeConstants.APP_TYPE_NEW and app.status eq MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/MohBsbRectifiesNCs?appId=<iais:mask name='ncAppId' value='${app.id}'/>">Submit non-compliance action</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq 'BSBAPST033'}">
+                                                                            <c:if test="${app.appType eq MasterCodeConstants.APP_TYPE_NEW and app.status eq MasterCodeConstants.APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
                                                                             </c:if>
-                                                                                <%--todo: will update for all rfi module--%>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT}">
-                                                                                <option value="/bsb-fe/eservice/INTERNET/MohBsbCommentInspectionReport?appId=<iais:mask name='commentInsReportAppId' value='${app.id}'/>">Comment Inspection Report</option>
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION}">
+                                                                                <option value="/bsb-fe/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
                                                                             </c:if>
                                                                             <c:if test="${AFCUploadReportJudge}">
                                                                                 <option value="/bsb-fe/eservice/INTERNET/InsAfcCertification?appId=<iais:mask name='afcCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>

@@ -135,12 +135,12 @@
                         </div>
                         <div id="rfTypes" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_RF}">style="display: none"</c:if>>
                             <div class="form-check">
-                                <input type="radio" class="form-check-input" name="rfActviTypes" id="rfhppim" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_RF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}"/>
-                                <label for="rfhppim" class="form-check-label"><span class="check-circle"></span>Handling of Poliovirus Potentially Infectious Materials</label>
-                            </div>
-                            <div class="form-check">
                                 <input type="radio" class="form-check-input" name="rfActviTypes" id="rfhfstep" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_RF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}"/>
                                 <label for="rfhfstep" class="form-check-label"><span class="check-circle"></span>Handling of Fifth Schedule Toxin for Exempted Purposes</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" name="rfActviTypes" id="rfhppim" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_RF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}"/>
+                                <label for="rfhppim" class="form-check-label"><span class="check-circle"></span>Handling of Poliovirus Potentially Infectious Materials</label>
                             </div>
                         </div>
                         <span data-err-ind="activityTypes" class="error-msg" style="padding-left: 1.25rem;"></span>

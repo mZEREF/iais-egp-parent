@@ -111,6 +111,10 @@ public class InspectionService {
             }
             chkDtoList.add(fDto);
         }
+        AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+        if (adhocConfig != null && !IaisCommonUtils.isEmpty(adhocConfig.getAdhocChecklistItemList())) {
+//            AdhocChecklistItemDto
+        }
         return chkDtoList;
     }
 

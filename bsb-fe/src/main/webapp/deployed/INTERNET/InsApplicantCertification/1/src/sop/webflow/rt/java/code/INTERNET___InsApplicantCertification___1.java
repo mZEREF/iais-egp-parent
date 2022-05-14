@@ -14,25 +14,25 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___InsApplicantCertification___1 extends BaseProcessClass {
-//	private static final String DELEGATOR ="";
+	private static final String DELEGATOR ="insApplicantReportDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		/*EngineHelper.delegate(DELEGATOR, "init", this);*/
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void handle_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
-		//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "submitFormData", this);
 	}
 }

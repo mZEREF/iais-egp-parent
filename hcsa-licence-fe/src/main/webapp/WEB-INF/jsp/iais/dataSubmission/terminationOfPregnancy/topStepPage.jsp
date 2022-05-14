@@ -16,7 +16,6 @@
 <%@ include file="common/topHeader.jsp" %>
 
 <c:set var="canEdit" value="${TOP_CURRENT_STEP.showEdit}" scope="request"/>
-<c:set var="headingSign" value="completed"/>
 
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}"/>

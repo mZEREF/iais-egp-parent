@@ -35,8 +35,8 @@
         color: #999999 !important;
     }
     .form-check input.form-check-input:checked:disabled + .form-check-label span.check-circle:before{
-        background-color: #999999;
-        color: #999999 !important;
+        background-color: #ffffff;
+        color: #ffffff !important;
     }
 
     @media all and (min-width: 429px) {

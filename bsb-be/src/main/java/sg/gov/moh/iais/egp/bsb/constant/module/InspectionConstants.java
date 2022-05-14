@@ -65,6 +65,7 @@ public class InspectionConstants {
     public static final String VALUE_FINDING_TYPE_FOLLOW_UP = "Follow-up";
 
     public static final String KEY_ROUTE = "route";
+    public static final String KEY_DASHBOARD_MSG = "dashboardMsg";
 
     public static final String KEY_ADHOC_CHECKLIST_ACTION_FLAG = "adhocActionFlag";
     public static final String KEY_ADHOC_CHECKLIST_LIST_ATTR = "adhocCheckListAttr";
@@ -88,4 +89,16 @@ public class InspectionConstants {
 
     public static String SHEET_NAME_COMMON                  = "General Regulation";
     public static String SHEET_NAME_BSB                     = "BSB Regulation";
+
+
+
+    //AFC
+    public static final String KEY_AFC_DASHBOARD_MSG = "AFC Certification Documents Submission";
+    public static final String KEY_APPLICANT_DASHBOARD_MSG = "AFC Certification Documents Review";
+    public static final String KEY_AFC_ACK_MSG = "Your Submission is successfully uploaded.";
+
+    public static final String KEY_REVIEW_AFC_REPORT_DTO = "reviewAFCReportDto";
+    public static final String PARAM_PREPARE = "prepare";
+    public static final String PARAM_NEXT = "next";
+    public static final String PARAM_CAN_ACTION_ROLE = "canActionRole";
 }

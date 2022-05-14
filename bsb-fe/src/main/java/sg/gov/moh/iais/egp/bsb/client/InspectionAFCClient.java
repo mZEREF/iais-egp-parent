@@ -20,4 +20,7 @@ public interface InspectionAFCClient {
 
     @PostMapping(value = "/certification/afc", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAFCAdminInsAFCData(@RequestBody AFCSaveDto dto);
+
+    @PostMapping(value = "/certification/applicant", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveApplicantCertificationData(@RequestBody AFCSaveDto dto);
 }

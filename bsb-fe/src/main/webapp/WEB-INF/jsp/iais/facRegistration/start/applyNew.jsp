@@ -27,13 +27,13 @@
         <div>
           <ul>
             <li>In the next page, you will select the classification of the facility which you intend to register and
-              the type of activities which will be conducted in the facility. Before proceeding, you are advised
-              to refer to the information that is available on the <a href="#">MOH Biosafety website</a> to understand the
-              different options, to ensure selection of the correct facility classification. Please note that
+              the corresponding facility activity type. Before proceeding, you are advised
+              to refer to the information that is available on the <a href="https://www.moh.gov.sg">MOH Biosafety website</a>
+              to understand the different options, to ensure selection of the correct facility classification. Please note that
               selection of an incorrect facility classification may result in rejection of the application.
             </li>
-            <li>This form will take approximately 10 mins to complete. You may save your progress at any
-              time and resume your application later
+            <li>This form will take approximately 15 minutes to complete. You may save your progress at any time and
+              resume your application later.
             </li>
           </ul>
         </div>

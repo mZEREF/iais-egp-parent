@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.InstructionDto;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;

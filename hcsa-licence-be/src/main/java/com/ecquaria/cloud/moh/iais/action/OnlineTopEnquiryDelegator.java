@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -62,7 +64,7 @@ public class OnlineTopEnquiryDelegator {
     private AssistedReproductionClient assistedReproductionClient;
 
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -79,7 +81,7 @@ public class OnlineTopEnquiryDelegator {
         HttpServletRequest request=bpc.request;
         String back =  ParamUtil.getString(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "topParam");
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(DataSubmissionConsts.DS_TOP,"null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
 
 
@@ -196,7 +198,7 @@ public class OnlineTopEnquiryDelegator {
 
 
         TopSuperDataSubmissionDto topInfo = assistedReproductionClient.getTopSuperDataSubmissionDto(submissionNo).getEntity();
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
             for (PremisesDto premisesDto : premisesDtos) {
@@ -210,6 +212,18 @@ public class OnlineTopEnquiryDelegator {
         if (!premisesMap.isEmpty()) {
             for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+            }
+        }
+        TerminationDto terminationDto=topInfo.getTerminationOfPregnancyDto().getTerminationDto();
+        if(terminationDto!=null){
+            if(StringUtil.isNotEmpty(terminationDto.getTopPlace())&&premisesMap.containsKey(terminationDto.getTopPlace())){
+                terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
+            }
+            if(StringUtil.isNotEmpty(terminationDto.getPrescribeTopPlace())&&premisesMap.containsKey(terminationDto.getPrescribeTopPlace())){
+                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getPremiseLabel());
+            }
+            if(StringUtil.isNotEmpty(terminationDto.getTopDrugPlace())&&premisesMap.containsKey(terminationDto.getTopDrugPlace())){
+                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
             }
         }
 

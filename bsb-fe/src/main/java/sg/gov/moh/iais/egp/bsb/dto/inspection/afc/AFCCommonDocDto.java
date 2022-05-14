@@ -27,6 +27,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_AFC_REPORT_DTO;
+
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -178,11 +180,17 @@ public class AFCCommonDocDto extends ValidatableNodeValue {
             deleteFileTmpIds.forEach(this.newDocMap::remove);
         }
 
-
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         Date currentDate = new Date();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        ReviewAFCReportDto dto = (ReviewAFCReportDto) ParamUtil.getSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO);
+        if (dto == null) {
+            dto = new ReviewAFCReportDto();
+        }
+        if(StringUtils.isEmpty(dto.getMaxRound())){
+            dto.setMaxRound(0);
+        }
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
             String docType = ParamUtil.getString(request,"docType");
@@ -205,6 +213,7 @@ public class AFCCommonDocDto extends ValidatableNodeValue {
                     docDisPlayDto.setUploadDate(currentDate);
                     docDisPlayDto.setUploadBy(loginContext.getUserId());
                     docDisPlayDto.setUserDisplayName(loginContext.getUserName());
+                    docDisPlayDto.setRoundOfReview(dto.getMaxRound()+1);
                     newDocInfo.setDisPlayDto(docDisPlayDto);
                     byte[] bytes = new byte[0];
                     try {

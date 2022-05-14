@@ -1,3 +1,4 @@
+<c:set var="headingSign" value="${preTermination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -90,7 +91,7 @@
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Place"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${preTerminationDto.counsellingPlace == 'AR_SC_001' ? 'Health Promotion Board Counselling Centre' : preTerminationDto.counsellingPlace}"/>
+                            <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlace"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -106,7 +107,7 @@
                         ${patientInformationDto.patientAge}
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
+                <div <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">

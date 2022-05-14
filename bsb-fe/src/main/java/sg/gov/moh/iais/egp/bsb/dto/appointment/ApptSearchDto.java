@@ -13,5 +13,5 @@ import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApptSearchDto extends PagingAndSortingDto {
     private String userId;
-    private String apptStatus;
+    private String applicantUEN;
 }

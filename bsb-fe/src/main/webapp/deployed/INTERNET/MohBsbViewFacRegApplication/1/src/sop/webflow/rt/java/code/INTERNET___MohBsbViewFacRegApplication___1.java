@@ -28,4 +28,15 @@ public class INTERNET___MohBsbViewFacRegApplication___1 extends BaseProcessClass
 		EngineHelper.delegate(DELEGATOR, "prepareData", this); 
 	}
 
+	public void handleAction_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleAction", this);
+	}
+
+	public void preCommitteeInfo_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preCommitteeInfo", this);
+	}
+
+	public void preAuthoriserInfo_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preAuthoriserInfo", this);
+	}
 }

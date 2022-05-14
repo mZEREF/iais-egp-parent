@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
-import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
@@ -66,7 +67,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateUploadedDataFileMeta(@RequestBody DocMeta meta);
 
     @GetMapping(path = "/bat-info/dropdown/schedule-bat/activity", produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, List<BatBasicInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity);
+    Map<String, List<BatCodeInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity);
 
     @PostMapping(path = "/register/facility/form-validation/bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);

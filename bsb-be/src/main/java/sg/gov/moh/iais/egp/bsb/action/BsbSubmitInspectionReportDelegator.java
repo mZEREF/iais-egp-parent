@@ -22,6 +22,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
@@ -72,9 +73,9 @@ public class BsbSubmitInspectionReportDelegator {
         // inspection report
         ParamUtil.setSessionAttr(request, KEY_INS_REPORT, initDataDto.getReportDto());
         // show route to moh selection list
-        ParamUtil.setRequestAttr(request, KEY_SELECT_ROUTE_TO_MOH, initDataDto.getSelectRouteToMoh());
+        ParamUtil.setSessionAttr(request, KEY_SELECT_ROUTE_TO_MOH, (Serializable) initDataDto.getSelectRouteToMoh());
         // show routingHistory list
-        ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, initDataDto.getProcessHistoryDtoList());
+        ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) initDataDto.getProcessHistoryDtoList());
 
         // inspection processing
         InsProcessDto processDto = new InsProcessDto();

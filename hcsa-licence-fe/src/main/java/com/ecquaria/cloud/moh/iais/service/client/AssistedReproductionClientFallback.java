@@ -102,6 +102,14 @@ public class AssistedReproductionClientFallback implements AssistedReproductionC
     }
 
     @Override
+    public FeignResponseEntity<List<PremisesDto>> getAllCenterPremisesDtoByPatientCode(String centerType, String patientCode, String orgId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -226,6 +226,11 @@ public class MasterCodeConstants {
         VALID_RF_ACTIVITIES = Collections.unmodifiableSet(rfSet);
     }
 
+    public static final String FACILITY_TYPE_ACADEMIC = "FACTYPE001";
+    public static final String FACILITY_TYPE_CLINICAL = "FACTYPE002";
+    public static final String FACILITY_TYPE_COMMERCIAL = "FACTYPE003";
+    public static final String FACILITY_TYPE_GOVERNMENT = "FACTYPE004";
+    public static final String FACILITY_TYPE_OTHERS = "FACTYPE005";
 
     public static final String ADMIN_TYPE_MAIN = "main";
     public static final String ADMIN_TYPE_ALTERNATIVE = "alter";
@@ -332,4 +337,8 @@ public class MasterCodeConstants {
     public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
     public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
     public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
+
+    //Inspection date status
+    public static final String PENDING_DO_CONFIRM = "INSDTST001";
+    public static final String CONFIRMED          = "INSDTST002";
 }

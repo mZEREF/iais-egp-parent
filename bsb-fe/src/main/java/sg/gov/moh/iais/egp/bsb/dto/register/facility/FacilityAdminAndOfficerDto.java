@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -37,7 +38,6 @@ public class FacilityAdminAndOfficerDto extends ValidatableNodeValue {
 
         // officer amount limit is 3
         officerList = new ArrayList<>(3);
-        officerList.add(new EmployeeInfo());
 
         // set default main admin info
         HttpServletRequest request = MiscUtil.getCurrentRequest();
@@ -116,11 +116,13 @@ public class FacilityAdminAndOfficerDto extends ValidatableNodeValue {
         // read officer
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearOfficerList();
-        String[] idxArr = idxes.trim().split(" +");
-        for (String idx : idxArr) {
-            EmployeeInfo employeeInfo = new EmployeeInfo();
-            readEmployeeInfo(request, SEPARATOR + idx, employeeInfo);
-            addOfficer(employeeInfo);
+        if (StringUtils.hasLength(idxes)) {
+            String[] idxArr = idxes.trim().split(" +");
+            for (String idx : idxArr) {
+                EmployeeInfo employeeInfo = new EmployeeInfo();
+                readEmployeeInfo(request, SEPARATOR + idx, employeeInfo);
+                addOfficer(employeeInfo);
+            }
         }
     }
 

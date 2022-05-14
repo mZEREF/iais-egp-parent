@@ -1,7 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -27,6 +26,7 @@
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">HOME</a>
+                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>">Return To RFI List</a>
                     </div>
                 </div>
             </div>

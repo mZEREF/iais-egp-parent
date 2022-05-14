@@ -6,6 +6,8 @@ import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.ApplicationRfiIndicatorDto;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;

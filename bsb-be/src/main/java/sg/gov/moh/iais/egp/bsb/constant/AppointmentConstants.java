@@ -10,9 +10,11 @@ public class AppointmentConstants {
     public static final String APPOINTMENT_REVIEW_DATA = "apptReviewData";
     public static final String APPOINTMENT_INSPECTION_DATE_DTO = "apptInspectionDateDto";
     public static final String APPOINTMENT_INSPECTION_DATE_DRAFT_DTO = "scheduledInspApptDraftDtos";
+    public static final String INSPECTION_INFO_DTO = "inspectionInfoDto";
     public static final String BUTTON_FLAG = "buttonFlag";
     public static final String SPEC_BUTTON_FLAG = "specButtonFlag";
     public static final String INSP_DATE_LIST = "inspDateList";
+    public static final String APPT_REF_NO_USER_CAL_DTO_MAP = "apptRefNoUserCalDtoMap";
 
     public static final String PROCESS_DEC_CONFIRM_DATE = "confirm";
     public static final String PROCESS_DEC_SPECIFY_NEW_DATE = "specify";
@@ -26,7 +28,7 @@ public class AppointmentConstants {
 
     public static final String KEY_ERROR_SPECIFIC_DATE = "errorSpecificDate";
     public static final String ERROR_MSG_END_DATE_BEFORE_START_DATE = "EndDate can not be earlier than startDate";
-    public static final String ERROR_MSG_COLLISION_DATE = "Rest day, please reselect another date";
+    public static final String ERROR_MSG_COLLISION_DATE = "non-working day, please reselect another date";
 
     public static final String BACK_URL = "backUrl";
     public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";

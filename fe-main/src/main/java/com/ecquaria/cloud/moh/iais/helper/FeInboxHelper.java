@@ -3,6 +3,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -74,7 +75,19 @@ public final class FeInboxHelper {
         return IaisCommonUtils.isNotEmpty(subTypes) ?
                 MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.DATA_SUBMISSION_TYPE).stream().filter( selectOption -> subTypes.contains(selectOption.getValue())).collect(Collectors.toList()) : null;
     }
-
+    public static <T extends SelectOption> String getCaseWhenSql(List<T> list,String replaceArea,String tabCol,String renameTabCol,String sql,boolean elseDefaultEmpty){
+        if(StringUtil.isNotEmpty(replaceArea) && StringUtil.isNotEmpty(sql) && IaisCommonUtils.isNotEmpty(list)){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(" CASE ");
+            list.stream().forEach( s->  stringBuilder.append(" WHEN ").append(tabCol).append(" ='").append(s.getValue()).append("' THEN '").append(s.getText()).append("' "));
+            stringBuilder.append(" ELSE ").append(elseDefaultEmpty ? "''" : tabCol ).append(" END ").append(renameTabCol).append("  ");
+            return sql.replace(replaceArea,stringBuilder);
+        }
+        return sql;
+    }
+    public static <T extends SelectOption> String getCaseWhenSql(List<T> list,String replaceArea,String tabCol,String renameTabCol,String sql){
+            return getCaseWhenSql(list,replaceArea,tabCol,renameTabCol,sql,true);
+    }
 
     private FeInboxHelper(){
         throw new IllegalStateException("Utility class");

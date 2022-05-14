@@ -1,5 +1,6 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
 <c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
+<c:set var="headingSign" value="${postTermination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -77,7 +78,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Post-Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${postTerminationDto.counsellingPlace}"/>
+                            <iais:optionText value="${postTerminationDto.counsellingPlace}" selectionOptions="TopPlace"/>
                         </iais:value>
                     </iais:row>
                 </div>

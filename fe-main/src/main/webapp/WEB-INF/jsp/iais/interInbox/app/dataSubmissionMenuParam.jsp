@@ -12,7 +12,7 @@
 
         <c:if test="${dataSubLDTPrivilege == 1}">
             <li>
-                <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Enquiry</a>
+                <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT online Enquiry</a>
             </li>
         </c:if>
 

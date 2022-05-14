@@ -95,7 +95,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
-        inspectionClient.doReviewInspectionFollowUpItemsRouteBackToApplicant(appId, taskId, APP_STATUS_PEND_CLARIFICATION, insProcessDto);
+        inspectionClient.doReviewInspectionFollowUpItemsRFI(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "Your Request for Information has been sent to the Applicant on" + DateUtil.convertToString(LocalDate.now()) + ".");
     }
 

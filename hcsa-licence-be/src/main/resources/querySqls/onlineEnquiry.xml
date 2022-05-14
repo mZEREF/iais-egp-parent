@@ -126,7 +126,7 @@
               ) AS BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
                 where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
@@ -292,7 +292,7 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS not in ('DS002','DS012')
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =ddsAcs.ID
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
@@ -1034,17 +1034,23 @@
     <sql key = "searchByTop" remarks="Search Termination of Pregnancy">
         <![CDATA[
             select distinct * from (
-            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
+            SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
                 ,(SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
                 FROM  ds_top_patient dtpNew
                 where dtpNew.PATIENT_ID_NO =dtp.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dtp.PATIENT_ID_TYPE
                 ) num
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
+                join ds_cycle dc on dds.CYCLE_ID =dc.ID
+                left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
-                left join ds_top_family_plan dtfp on dds.ID =dtfp.SUBMISSION_ID
-                left join ds_top_post_termination dtpt  on dds.ID = dtpt.SUBMISSION_ID
-                left join ds_top_pre_termination dtpt2  on dds.ID = dtpt2.SUBMISSION_ID
 
                 where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
@@ -1067,14 +1073,19 @@
     <sql key = "searchTopAjax" remarks="Search Termination of Pregnancy Ajax">
         <![CDATA[
             select distinct * from (
-            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT,null num
+            SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT,null num
                 FROM ds_data_submission dds
                 join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
+                join ds_cycle dc on dds.CYCLE_ID =dc.ID
+                left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
                 left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
-                left join ds_top_family_plan dtfp on dds.ID =dtfp.SUBMISSION_ID
-                left join ds_top_post_termination dtpt  on dds.ID = dtpt.SUBMISSION_ID
-                left join ds_top_pre_termination dtpt2  on dds.ID = dtpt2.SUBMISSION_ID
-
                 where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
@@ -1086,6 +1097,116 @@
          ]]>
     </sql>
 
+    <sql key = "searchByVss" remarks="Search Voluntary Sterilisation">
+        <![CDATA[
+            SELECT distinct dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,
+               (SELECT  COUNT(dtpNew.PATIENT_ID_NO + dtpNew.PATIENT_ID_TYPE ) as num
+                FROM  ds_vs_treatment dtpNew
+                where dtpNew.PATIENT_ID_NO =dvt.PATIENT_ID_NO and dtpNew.PATIENT_ID_TYPE =dvt.PATIENT_ID_TYPE
+                ) num
+            FROM ds_vs_treatment dvt
+            join ds_data_submission dds on dvt.SUBMISSION_ID =dds.ID
+            join ds_cycle dc on dds.CYCLE_ID =dc.ID
+            left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
+             where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+            <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
+            <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
+            <#if submissionNo??> AND  charindex(:submissionNo, dds.SUBMISSION_NO) >0</#if>
+            <#if patientName??> AND  charindex(:patientName, dvt.PATIENT_NAME) >0</#if>
+            <#if maritalStatus??> AND  charindex(:maritalStatus, dvt.MARITAL_STATUS) >0</#if>
+            <#if sterilisationReason??> AND  charindex(:sterilisationReason, dvt.STERILIZATION_REASON) >0</#if>
+            <#if submissionDateFrom??> AND T1.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
+            <#if submissionDateTo??> AND T1.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+         ]]>
+    </sql>
+
+    <sql key = "searchVssByAjax" remarks="Search Voluntary Sterilisation Ajax">
+        <![CDATA[
+            SELECT distinct dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME,dds.SUBMISSION_NO ,dvt.PATIENT_NAME ,dvt.PATIENT_ID_TYPE ,dvt.PATIENT_ID_NO ,dvt.PATIENT_BIRTHDAY ,dvt.MARITAL_STATUS ,dvt.STERILIZATION_REASON ,dds.SUBMIT_DT ,null num
+            FROM ds_vs_treatment dvt
+            join ds_data_submission dds on dvt.SUBMISSION_ID =dds.ID
+            join ds_cycle dc on dds.CYCLE_ID =dc.ID
+            left join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE  and dc.DS_TYPE =dcen.CENTER_TYPE
+             where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+            <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
+            <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
+
+         ]]>
+    </sql>
+
+
+    <sql key = "searchByDrpPatient" remarks="Search Drug Practices Patient">
+        <![CDATA[
+
+             SELECT distinct dds.ID,
+              CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME ,dds.SUBMISSION_NO,dpi.NAME PATIENT_NAME, dpi.ID_TYPE PATIENT_ID_TYPE, dpi.ID_NUMBER PATIENT_ID_NO, dpi.DATE_OF_BIRTH PATIENT_BIRTHDAY, dds.SUBMIT_DT,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
+                FROM ds_patient_information dpi
+                join ds_data_submission dds on (dds.ID = dpi.SUBMISSION_ID or dds.CYCLE_ID in(select dcp.ID from ds_cycle dcp where dcp.PATIENT_CODE = dpi.PATIENT_CODE)) AND dds.STATUS in ('DS001', 'DS011')
+                JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'DRP'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
+                left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
+                where 1=1
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+            <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+            <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
+            <#if birthDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:birthDateFrom)</#if>
+            <#if birthDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:birthDateTo)</#if>
+            <#if submissionDateFrom??> AND dds.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
+            <#if submissionDateTo??> AND dds.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+            <#if submissionNo??> AND  charindex(:submissionNo, dds.SUBMISSION_NO) >0</#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+         ]]>
+    </sql>
+
+    <sql key = "searchByDrpAjax" remarks="Search Drug Practices Ajax">
+        <![CDATA[
+            SELECT distinct dds.ID,
+                CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS CENTER_NAME,
+                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,NULL DOCTOR_NAME ,dds.SUBMIT_DT
+              FROM ds_dp_prescribed_dispensed ddpd
+            join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
+            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE='DSCL_005'
+            join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
+            where 1 = 1
+            <#if patientCode??> AND  :patientCode = dc.PATIENT_CODE</#if>
+
+         ]]>
+    </sql>
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

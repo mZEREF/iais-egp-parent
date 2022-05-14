@@ -85,6 +85,19 @@
                                             </div>
                                         </div>
 
+                                        <iais-bsb:single-constant constantName="FACILITY_TYPE_OTHERS" classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="othersFacilityTypeCode"/>
+                                        <%--@elvariable id="othersFacilityTypeCode" type="java.lang.String"--%>
+                                        <div class="form-group " id="facTypeDetailsFormGroup" <c:if test="${facProfile.facType ne othersFacilityTypeCode}">style="display: none"</c:if>>
+                                            <div class="col-sm-5 control-label">
+                                                <label for="facTypeDetails">Details of type of facility</label>
+                                                <span class="mandatory otherQualificationSpan">*</span>
+                                            </div>
+                                            <div class="col-sm-6 col-md-7">
+                                                <input maxLength="250" type="text" autocomplete="off" name="facTypeDetails" id="facTypeDetails" value='<c:out value="${facProfile.facTypeDetails}"/>'/>
+                                                <span data-err-ind="facTypeDetails" class="error-msg"></span>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
                                                 <label>Is the Facility address the same as the company address?</label>
@@ -226,7 +239,7 @@
                                                         <span id="aptMandatoryFloor" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="4" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${facProfile.floor}"/>'/>
+                                                        <input maxLength="3" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${facProfile.floor}"/>'/>
                                                         <span data-err-ind="floor" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -237,7 +250,7 @@
                                                         <span id="aptMandatoryUnit" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="4" type="text" autocomplete="off" name="unitNo" id="unitNoN" value='<c:out value="${facProfile.unitNo}"/>'/>
+                                                        <input maxLength="5" type="text" autocomplete="off" name="unitNo" id="unitNoN" value='<c:out value="${facProfile.unitNo}"/>'/>
                                                         <span data-err-ind="unitNo" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -259,7 +272,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="32" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.building}"/>'/>
+                                                        <input maxLength="64" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.building}"/>'/>
                                                         <span data-err-ind="buildingName" class="error-msg"></span>
                                                     </div>
                                                 </div>

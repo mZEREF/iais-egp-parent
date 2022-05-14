@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.appointment;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AppInspectorCorrelationDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 
 import java.util.List;
@@ -13,8 +13,7 @@ import java.util.List;
  */
 @Data
 public class SaveAppointmentDataDto {
-    private List<InspectionAppointmentDto> appointmentDtos;
-    private List<String> apptRefNos;
     private List<TaskDto> taskDtos;
     private List<AppInspectorCorrelationDto> appInspCorrelationDtos;
+    private InspectionInfoDto inspectionInfoDto;
 }

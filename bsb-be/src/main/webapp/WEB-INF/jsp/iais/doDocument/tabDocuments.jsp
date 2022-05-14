@@ -38,7 +38,7 @@
                         <c:forEach var="doc" items="${supportDocDisplayDtoList}" varStatus="status">
                             <c:set var="maskedRepoId" value="${MaskUtil.maskValue('file', doc.fileRepoId)}"/>
                             <tr>
-                                <td>${doc.docTypeDesc}</td>
+                                <td><iais:code code="${doc.docTypeDesc}"/></td>
                                 <%-- This method downloadSupportDocument should be implemented by each module iteslf --%>
                                 <td><a href="javascript:void(0)" onclick="downloadSupportDocument('${maskedAppId}', '${maskedRepoId}', '${doc.docName}')">${doc.docName}</a></td>
                                 <td>${String.format("%.1f", doc.docSize/1024.0)}KB</td>

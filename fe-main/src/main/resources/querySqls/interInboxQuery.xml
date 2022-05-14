@@ -297,11 +297,12 @@
             SELECT DISTINCT t1.*,t2.BUSINESS_NAME FROM (select * FROM (
             SELECT dds.ID ID,dds.CYCLE_ID CYCLE_ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],
             CASE WHEN dds.LOCK_STATUS >0  THEN 'DS013'
-            ELSE dds.STATUS  END  STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId,dc.STATUS group_status,dds.LOCK_STATUS LOCK_STATUS FROM  ds_cycle dc
+            ELSE dds.STATUS  END  STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId,dc.STATUS group_status,dds.LOCK_STATUS LOCK_STATUS,replaceSubByOne, null Patient_Name FROM  ds_cycle dc
            left join  ds_data_submission dds
            on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS not in ('DS002','DS012')
            UNION
-           SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId, 'DS001' group_status, 0  LOCK_STATUS
+           SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId,
+           'DS001' group_status, 0  LOCK_STATUS,replaceSubByTwo, null Patient_Name
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
            ) t1 where t1.SVC_NAME IS NULL OR t1.SVC_NAME != '') t1
            <#if fromCenter?? && !fromCenter>
@@ -325,6 +326,9 @@
            <#if dsType ??> and DS_TYPE in ${dsType} </#if>
             <#if lastDateStart??> AND DATEDIFF(DAY,:lastDateStart,UPDATED_DT) >=0 </#if>
             <#if lastDateEnd??> AND DATEDIFF(DAY,:lastDateEnd,UPDATED_DT) <=0 </#if>
+            <#if submittedBy??> AND CHARINDEX(:submittedBy, t1.SUBMIT_BY) >0 </#if>
+           <#if businessName??> AND CHARINDEX(:businessName, t2.BUSINESS_NAME) >0 </#if>
+            <#if patientName??> AND CHARINDEX(:patientName, t1.Patient_Name) >0 </#if>
         ]]>
     </sql>
 </sqls>

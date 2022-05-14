@@ -37,8 +37,10 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
@@ -554,20 +556,20 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         ParamUtil.setRequestAttr(request, "activityTypes", selectionDto.getActivityTypes());
 
-        Map<String, List<BatBasicInfo>> scheduleBatMap = facRegClient.queryScheduleBasedBatBasicInfo(batDto.getActivityType());
+        Map<String, List<BatCodeInfo>> scheduleBatMap = facRegClient.queryScheduleBasedBatBasicInfo(batDto.getActivityType());
         List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
 
         // convert BatBasicInfo to SelectOption object
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
-        for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
+        for (Map.Entry<String, List<BatCodeInfo>> entry : scheduleBatMap.entrySet()) {
             List<SelectOption> optionList = new ArrayList<>(entry.getValue().size() + 1);
             optionList.add(new SelectOption("", "Please Select"));
-            for (BatBasicInfo info : entry.getValue()) {
+            for (BatCodeInfo info : entry.getValue()) {
                 SelectOption option = new SelectOption();
                 option.setText(info.getName());
-                option.setValue(info.getId());
+                option.setValue(info.getCode());
                 optionList.add(option);
             }
             scheduleBatOptionMap.put(entry.getKey(), optionList);
@@ -757,9 +759,7 @@ public class FacilityRegistrationService {
 
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
         boolean isCf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_CF);
         boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
@@ -1277,7 +1277,7 @@ public class FacilityRegistrationService {
 //        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAdministratorDto(), newFacilityRegisterDto.getFacilityAdministratorDto(), diffContentList, FacilityAdministratorDto.FacilityEmployeeInfo.class);
 //        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
-        CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BiologicalAgentToxinDto.BATInfo.class);
+        CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BATInfo.class);
         //docRecordInfos don't process
         return diffContentList;
     }
