@@ -72,10 +72,10 @@ public class RenewalFacilityRegistrationDelegator {
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
                     FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
-                    NodeGroup viewApprovalRoot = facilityRegisterDto.toRenewalReviewRootGroup(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-                    NodeGroup facRegRoot = facilityRegisterDto.toRenewalFacRegRootGroup(KEY_ROOT_NODE_GROUP);
-                    ParamUtil.setSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP, viewApprovalRoot);
-                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+//                    NodeGroup viewApprovalRoot = facilityRegisterDto.toRenewalReviewRootGroup(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+//                    NodeGroup facRegRoot = facilityRegisterDto.toRenewalFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+//                    ParamUtil.setSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP, viewApprovalRoot);
+//                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                     ParamUtil.setSessionAttr(request, KEY_INSTRUCTION_INFO, facilityRegisterDto.getInstructionDto());
                 }
             }
@@ -213,9 +213,9 @@ public class RenewalFacilityRegistrationDelegator {
 
                     // save data
                     log.info("Save renewal facility registration data");
-                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
-                    ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
-                    log.info("save renewal facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
+//                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+//                    ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
+//                    log.info("save renewal facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
                     try {
                         // delete docs

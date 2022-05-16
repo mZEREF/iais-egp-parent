@@ -212,30 +212,37 @@ public class FacilityRegistrationDelegator {
                 if (previewSubmitNode.doValidation()) {
                     previewSubmitNode.passValidation();
 
+                    boolean isRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_RF);
+
                     // save docs
                     log.info("Save documents into file-repo");
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
                     List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
                     FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
                     List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
-                    NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
-                    FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-                    NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
                     List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
                     newFilesToSync.addAll(primaryDocNewFiles);
                     newFilesToSync.addAll(profileNewFiles);
-                    if (committeeNewFile != null) {
-                        newFilesToSync.add(committeeNewFile);
-                    }
-                    if (authoriserNewFile != null) {
-                        newFilesToSync.add(authoriserNewFile);
+
+                    FacilityCommitteeDto committeeDto = null;
+                    FacilityAuthoriserDto authDto = null;
+                    if (!isRf) {
+                        committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+                        NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
+                        authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+                        NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
+                        if (committeeNewFile != null) {
+                            newFilesToSync.add(committeeNewFile);
+                        }
+                        if (authoriserNewFile != null) {
+                            newFilesToSync.add(authoriserNewFile);
+                        }
                     }
 
 
                     // save data
                     log.info("Save facility registration data");
-                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+                    FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
                     ResponseDto<AppMainInfo> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();
@@ -248,14 +255,14 @@ public class FacilityRegistrationDelegator {
                         List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
                         List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
                         List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
-                        if (committeeDto.getToBeDeletedRepoId() != null) {
+                        if (!isRf && committeeDto.getToBeDeletedRepoId() != null) {
                             FileRepoDto committeeDeleteDto = new FileRepoDto();
                             committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
                             fileRepoClient.removeFileById(committeeDeleteDto);
                             toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
                             committeeDto.setToBeDeletedRepoId(null);
                         }
-                        if (authDto.getToBeDeletedRepoId() != null) {
+                        if (!isRf && authDto.getToBeDeletedRepoId() != null) {
                             FileRepoDto authoriserDeleteDto = new FileRepoDto();
                             authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
                             fileRepoClient.removeFileById(authoriserDeleteDto);

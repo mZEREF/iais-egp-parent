@@ -23,10 +23,15 @@
   }
 %>
 
+<%--@elvariable id="isRegisteredFacility" type="java.lang.Boolean"--%>
 <ul class="progress-tracker">
   <li class="tracker-item <%=order >= 1 ? "active" : "disabled"%>" data-step-key="facInfo_facProfile">Facility Profile</li>
-  <li class="tracker-item <%=order >= 2 ? "active" : "disabled"%>" data-step-key="facInfo_facOperator">Facility Operator</li>
+  <c:if test="${not isRegisteredFacility}">
+    <li class="tracker-item <%=order >= 2 ? "active" : "disabled"%>" data-step-key="facInfo_facOperator">Facility Operator</li>
+  </c:if>
   <li class="tracker-item <%=order >= 3 ? "active" : "disabled"%>" data-step-key="facInfo_facAdminOfficer">Facility Administrator/Officer</li>
-  <li class="tracker-item <%=order >= 4 ? "active" : "disabled"%>" data-step-key="facInfo_facCommittee">Biosafety Committee</li>
-  <li class="tracker-item <%=order >= 5 ? "active" : "disabled"%>" data-step-key="facInfo_facAuth">Authorised Personnel</li>
+  <c:if test="${not isRegisteredFacility}">
+    <li class="tracker-item <%=order >= 4 ? "active" : "disabled"%>" data-step-key="facInfo_facCommittee">Biosafety Committee</li>
+    <li class="tracker-item <%=order >= 5 ? "active" : "disabled"%>" data-step-key="facInfo_facAuth">Authorised Personnel</li>
+  </c:if>
 </ul>

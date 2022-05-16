@@ -4,20 +4,23 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 
+<%@attribute name="isCfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isUcfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isRfJudge" required="true" type="java.lang.Boolean" %>
+
 <%@attribute name="compProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo" %>
 <%@attribute name="facProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto" %>
-<%@attribute name="facOperator" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
-<%@attribute name="facAuth" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
+<%@attribute name="facOperator" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
 <%@attribute name="facAdminOfficer" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto" %>
-<%@attribute name="facCommittee" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
+<%@attribute name="facCommittee" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
+<%@attribute name="facAuth" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
 <%@attribute name="batList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto>" %>
 <%@attribute name="declarationConfigList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo>" %>
 <%@attribute name="declarationAnswerMap" required="true" type="java.util.Map<java.lang.String, java.lang.String>" %>
 <%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto" %>
 <%@attribute name="docFrag" fragment="true" %>
+
 <%@attribute name="editFrag" fragment="true" %>
-<%@attribute name="containsBatListJudge" type="java.lang.Boolean" %>
-<%@attribute name="containsAfcJudge" type="java.lang.Boolean" %>
 <%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="operatorEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="authorisedEditJudge" type="java.lang.Boolean" %>
@@ -154,6 +157,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${not isRfJudge}">
                             <c:if test="${operatorEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facOperator")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -212,6 +216,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </c:if>
                             <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -220,7 +225,7 @@
                                 </div>
                                 <div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Main Administrator</label>
+                                        <label class="col-xs-6 control-label"><strong>Main Administrator</strong></label>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -266,7 +271,7 @@
                                 </div>
                                 <div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Alternative Administrator</label>
+                                        <label class="col-xs-6 control-label"><strong>AlternateAdministrator</strong></label>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -311,6 +316,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${facAdminOfficer.officerList.size() > 0}">
                             <c:if test="${officerEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -362,6 +368,8 @@
                                     </c:forEach>
                                 </div>
                             </div>
+                            </c:if>
+                            <c:if test="${not isRfJudge}">
                             <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -382,10 +390,11 @@
                                     <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
                                 </div>
                             </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
-                <c:if test="${containsBatListJudge}">
+                <c:if test="${isUcfJudge}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
@@ -667,7 +676,7 @@
                         </div>
                     </div>
                 </div>
-                <c:if test="${containsAfcJudge}">
+                <c:if test="${isCfJudge}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
@@ -687,6 +696,7 @@
                                     </div>
                                     <div class="clear"></div>
                                 </div>
+                                <c:if test="${afc.appointed eq 'Y'}">
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label">Select Approved Facility Certifier</label>
                                     <div class="col-xs-6"><p><iais:code code="${afc.afc}"/></p></div>
@@ -697,6 +707,7 @@
                                     <div class="col-xs-6"><p>${afc.selectReason}</p></div>
                                     <div class="clear"></div>
                                 </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>
