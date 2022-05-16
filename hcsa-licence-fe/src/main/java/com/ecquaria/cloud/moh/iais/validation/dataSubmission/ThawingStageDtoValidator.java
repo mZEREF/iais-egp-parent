@@ -80,16 +80,22 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
         int thawedEmbryosSurvivedNumInt = toInt(thawingStageDto.getThawedEmbryosSurvivedNum());
         if (arCurrentInventoryDto != null) {
             if (thawedOocytesNumInt > arCurrentInventoryDto.getFrozenOocyteNum()) {
-                errorMap.put("thawedOocytesNum", "No. of Oocytes Thawed cannot be greater than total number of frozen oocytes tagged patient");
+                Map<String,String> params = IaisCommonUtils.genNewHashMap();
+                params.put("item","No. of Oocytes Thawed");
+                params.put("inventory","frozen oocytes");
+                errorMap.put("thawedOocytesNum", MessageUtil.getMessageDesc("DS_ERR060",params));
             }
             if (hawedEmbryosNumInt > arCurrentInventoryDto.getFrozenEmbryoNum()) {
-                errorMap.put("thawedEmbryosNum", "No. of Embryos Thawed cannot be greater than total number of frozen embryos tagged patient");
+                Map<String,String> params = IaisCommonUtils.genNewHashMap();
+                params.put("item","No. of Oocytes Embryos");
+                params.put("inventory","frozen embryos");
+                errorMap.put("thawedEmbryosNum", MessageUtil.getMessageDesc("DS_ERR060",params));
             }
         }
 
         if ((thawedOocytesSurvivedMatureNumInt + thawedOocytesSurvivedImmatureNumInt
                 + thawedOocytesSurvivedOtherNumInt) > thawedOocytesNumInt) {
-            errorMap.put("thawedOocytesNum", "Total sum of Thawing (Mature), Thawing (Immature), Thawing (Others) cannot be greater than No. Thawed");
+            errorMap.put("thawedOocytesNum", "DS_ERR064");
         }
         if (thawedEmbryosSurvivedNumInt > hawedEmbryosNumInt) {
             errorMap.put("thawedEmbryosNum", "Survived Thawing cannot be greater than No. Embryo");
