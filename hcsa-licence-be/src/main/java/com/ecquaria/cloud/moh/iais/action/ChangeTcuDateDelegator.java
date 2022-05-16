@@ -218,12 +218,14 @@ public class ChangeTcuDateDelegator {
     public void search(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         LicPremisesQueryDto filterParam = getFilterParamFromPage(request);
-        String tcuDateFrom = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, keyTcuDateFrom)),
+        String tcuDateFromStr = ParamUtil.getString(request, keyTcuDateFrom);
+        String tcuDateFrom = Formatter.formatDateTime(Formatter.parseDate(tcuDateFromStr),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        String tcuDateTo = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, keyTcuDateTo)),
+        String tcuDateToStr = ParamUtil.getString(request, keyTcuDateTo);
+        String tcuDateTo = Formatter.formatDateTime(Formatter.parseDate(tcuDateToStr),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        ParamUtil.setSessionAttr(request, keyTcuDateFrom, tcuDateFrom);
-        ParamUtil.setSessionAttr(request, keyTcuDateTo, tcuDateTo);
+        ParamUtil.setSessionAttr(request, keyTcuDateFrom, tcuDateFromStr);
+        ParamUtil.setSessionAttr(request, keyTcuDateTo, tcuDateToStr);
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         if (StringUtil.isNotEmpty(filterParam.getLicenceNo())) {
