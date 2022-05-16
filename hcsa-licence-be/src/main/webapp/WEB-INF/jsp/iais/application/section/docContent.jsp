@@ -42,10 +42,10 @@
                             <iais:downloadLink fileRepoIdName="fileRo${v.index}" fileRepoId="${file.fileRepoId}" docName="${file.docName}"/>
                         </c:otherwise>
                     </c:choose>
-                    <button type="button" class="btn btn-secondary btn-sm delFileBtn" onclick="javascript:deleteFileFeAjax('${configIndex}',${file.seqNum});">
+                    <button type="button" class="btn btn-secondary-del btn-sm delFileBtn" onclick="javascript:deleteFileFeAjax('${configIndex}',${file.seqNum});">
                         Delete
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm reUploadFileBtn" onclick="javascript:reUploadFileFeAjax('${configIndex}',${file.seqNum},'mainForm');">
+                    <button type="button" class="btn btn-secondary-del btn-sm reUploadFileBtn" onclick="javascript:reUploadFileFeAjax('${configIndex}',${file.seqNum},'mainForm');">
                         ReUpload
                     </button>
                 </div>

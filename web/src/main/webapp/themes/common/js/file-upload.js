@@ -181,15 +181,3 @@ function cloneUploadFile() {
         }
     }
 }
-
-//This is All Just For Logging:
-var debugFile = true;//true: add debug logs when cloning
-var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
-if (evenMoreListeners) {
-    var allFleChoosers = $("input[type='file']");
-    addEventListenersTo(allFleChoosers);
-    function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
-        fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
-    }
-}

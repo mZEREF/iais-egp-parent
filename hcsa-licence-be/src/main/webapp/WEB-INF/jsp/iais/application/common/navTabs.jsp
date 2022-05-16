@@ -10,11 +10,11 @@
     String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
-<style>
+<%--<style>
     .main-content .tab-gp.steps-tab {
         margin-top: 7px;
     }
-</style>
+</style>--%>
 
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type_form_page" value="">

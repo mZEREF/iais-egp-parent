@@ -9,11 +9,13 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 
     String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 
 <script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
 
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <%--<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
     <input type="hidden" name="paramController" id="paramController"
@@ -23,10 +25,10 @@
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
     <div class="main-content">
-        <div class="container">
+        <div class="center-content">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
+                <div class="col-xs-12 intranet-content">
+                    <div class="tab-gp steps-tab tab-be">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
 
                         <div class="tab-content">
@@ -128,7 +130,7 @@
                       yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
     </c:if>
 </form>
-
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {

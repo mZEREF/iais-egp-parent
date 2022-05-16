@@ -5626,14 +5626,23 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
   border-top: 1px solid #BABABA;
 }
 
-.main-content .tab-gp.steps-tab {
+.main-content .tab-gp.steps-tab.tab-be {
   margin-top: 7px;
 }
 
-.app-font-size-22{
+.sub-title{
+  font-weight: 600;
+  font-size: 2.2rem;
+}
+
+.font-22 {
   font-size: 22px;
 }
 
-.ack-font-16{
+.font-16 {
   font-size: 16px;
+}
+
+.font-18 {
+  font-size: 18px;
 }

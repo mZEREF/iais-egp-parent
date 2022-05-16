@@ -57,29 +57,12 @@
         $(parent).find(idTypeTag).on('change', function () {
             var $content = $(this).closest(parent.replace(':last', ''));
             console.log(nationalityDiv + ': ' + $content.find(nationalityDiv).length);
-            toggleIdType(this, $content.find(nationalityDiv));
+            toggleOnSelect(this, 'IDTYPE003', $content.find(nationalityDiv));
         });
         $(parent).each(function (index, ele) {
             console.log(idTypeTag + ': ' + $(ele).find(idTypeTag).length);
-            toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
+            toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
         });
     }
 
-    function toggleIdType(sel, elem) {
-        if (isEmpty(sel) || isEmpty(elem)) {
-            return;
-        }
-        var $sel = $(sel);
-        var $elem = $(elem);
-        if ($sel.length == 0 || $elem.length == 0) {
-            return;
-        }
-        console.log($sel.val());
-        if ($sel.val() == 'IDTYPE003') {
-            $elem.removeClass('hidden');
-        } else {
-            $elem.addClass('hidden');
-            clearFields($elem);
-        }
-    }
 </script>

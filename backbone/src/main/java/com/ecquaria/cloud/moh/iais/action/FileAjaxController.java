@@ -22,14 +22,12 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Auther chenlei on 4/19/2022.
+ * @Auther wangyu and chenlei on 4/19/2022.
  */
 @RestController
 @Slf4j
@@ -66,7 +64,7 @@ public class FileAjaxController {
             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal) {
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX
-                        + fileAppendId);
+                + fileAppendId);
         int size = 0;
         if (needMaxGlobal && ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
             size = (int) ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
@@ -123,40 +121,44 @@ public class FileAjaxController {
 
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
 
-        StringBuilder stringBuilder = new StringBuilder();
-        String suffix = "Div" + size;
-        String deleteButtonString = "      <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
-                "                                                    onclick=\"javascript:deleteFileFeAjax('replaceForDelete',indexReplace);\">\n" +
-                "                                                Delete</button>";
-
-        String reUploadButtonString = "";
-        if (!AppConsts.NO.equals(needReUpload)) {
-            reUploadButtonString = "  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
-                    "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
-                    "                                               ReUpload</button>";
+        boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
+        log.info(StringUtil.changeForLog("isBackend: " + isBackend));
+        String cssClass;
+        if (isBackend) {
+            cssClass = "btn btn-secondary-del btn-sm";
+        } else {
+            cssClass = "btn btn-secondary btn-sm";
         }
+
+        StringBuilder data = new StringBuilder();
         String originalFileName = selectedFile.getOriginalFilename();
         if (originalFileName != null) {
             String[] fileSplit = originalFileName.split("\\.");
-            //name
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
             String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            String url = "<a href=\"pageContext.request.contextPath/file/download-session-file?fileAppendIdDown" +
-                    "=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-            fileName = url + fileName + "</a>";
-            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", request.getContextPath())
-                            .replace("replaceFileAppendIdDown", fileAppendId)
-                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
-                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
-                    replace("indexReplace", String.valueOf(size)))
-                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
-                            replace("replaceForUpload", fileAppendId).
-                            replace("indexReplace", String.valueOf(size))
-                    ).append("</Div>")
-            ;
+            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(size).append("' >")
+                    .append("<a href=\"").append(request.getContextPath())
+                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
+                    .append("&fileIndexDown=").append(size)
+                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
+                    .append("\" title=\"Download\" class=\"downloadFile\">")
+                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
+                    .append('.').append(fileSplit[fileSplit.length - 1])
+                    .append("</a>")
+                    .append("<button type=\"button\" class=\"").append(cssClass)
+                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
+                    .append(fileAppendId).append("', ").append(size)
+                    .append("');\">Delete</button>");
+            if (!AppConsts.NO.equals(needReUpload)) {
+                data.append("<button type=\"button\" class=\"")
+                        .append(cssClass)
+                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
+                        .append(fileAppendId).append("', ").append(size)
+                        .append(", '").append(uploadFormId)
+                        .append("');\">ReUpload</button>");
+            }
+            data.append("</div>");
         }
-        messageCode.setDescription(stringBuilder.toString());
+        messageCode.setDescription(data.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.parseToJson(messageCode);
     }
@@ -167,7 +169,8 @@ public class FileAjaxController {
         String fileAppendId = ParamUtil.getString(request, "fileAppendId");
         String index = ParamUtil.getString(request, "fileIndex");
         if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                    IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
@@ -225,7 +228,8 @@ public class FileAjaxController {
         String index = ParamUtil.getString(request, "fileIndexDown");
 
         if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                    IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));

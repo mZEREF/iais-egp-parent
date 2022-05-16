@@ -137,7 +137,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
+                        <strong class="font-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-12 col-md-4 text-right">
                         <c:choose>
@@ -164,7 +164,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <span class="premise-type ack-font-16">
+                        <span class="premise-type font-16">
                             <strong>
                                 <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
                                     <c:out value="Address: "/>
@@ -180,11 +180,11 @@
                                 </c:if>
                             </strong>
                         </span>
-                            <span class="premise-address ack-font-16">
+                            <span class="premise-address font-16">
                             <c:out value="${appGrpPremisesDto.address}"/>
                         </span>
                     </div>
-                    <div class="col-xs-12 ack-font-16">
+                    <div class="col-xs-12 font-16">
                         <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
                             <strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span>
                         </c:if>

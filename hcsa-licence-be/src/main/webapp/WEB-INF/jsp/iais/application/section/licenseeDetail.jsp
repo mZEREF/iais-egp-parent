@@ -9,7 +9,7 @@
 <div class="form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
-            <strong class="app-font-size-22 premHeader">Licensee Details</strong>
+            <strong class="font-22 premHeader">Licensee Details</strong>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
@@ -101,7 +101,6 @@
             disableContent('div.licensee-detail');
             $('.retrieveAddr').addClass('hidden');
         }
-        //toggleIdType('#idType', '.nationalityDiv');
     }
 
     function checkLicenseeType() {
@@ -143,7 +142,8 @@
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         }
-        toggleIdType('#idType', '.nationalityDiv');
+        //toggleIdType('#idType', '.nationalityDiv');
+        toggleOnSelect('idType', 'IDTYPE003', '.nationalityDiv');
     }
 
     function editContent() {

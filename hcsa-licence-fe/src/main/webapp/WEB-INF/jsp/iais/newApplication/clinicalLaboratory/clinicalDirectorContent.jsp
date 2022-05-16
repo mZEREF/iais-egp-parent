@@ -172,7 +172,7 @@
             checkNoRegWithProfBoard($currContent.find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
-            toggleIdType($(this).find('.idType'), $(this).find('.nationalityDiv'));
+            toggleOnSelect($(this).find('.idType'), 'IDTYPE003', $(this).find('.nationalityDiv'));
         });
 
         if("${errormapIs}"=='error'){

@@ -106,9 +106,9 @@
       });
       //$('.retrieveAddr').trigger('click');
 
-    toggleIdType('#idType', '.nationalityDiv');
+    toggleOnSelect('idType', 'IDTYPE003', '.nationalityDiv');
     $('#idType').on('change', function () {
-      toggleIdType(this, '.nationalityDiv');
+      toggleOnSelect(this, 'IDTYPE003', '.nationalityDiv');
     });
   });
 
@@ -161,20 +161,4 @@
     $(selector).prop('readonly', readonly);
   }
 
-  function toggleIdType(sel, elem) {
-    if (isEmpty(sel) || isEmpty(elem)) {
-      return;
-    }
-    var $sel = $(sel);
-    var $elem = $(elem);
-    if ($sel.length == 0 || $elem.length == 0) {
-      return;
-    }
-    if ($sel.val() == 'IDTYPE003') {
-      $elem.show();
-    } else {
-      $elem.hide();
-      clearFields($elem);
-    }
-  }
 </script>

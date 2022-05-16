@@ -8,7 +8,7 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-    String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 
@@ -25,7 +25,7 @@
         <div class="row">
             <div class="center-content">
                 <div class="col-xs-12 intranet-content">
-                    <div class="tab-gp steps-tab">
+                    <div class="tab-gp steps-tab tab-be">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">

@@ -22,10 +22,10 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
-        <div class="container">
+        <div class="center-content">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
+                <div class="col-xs-12 intranet-content">
+                    <div class="tab-gp steps-tab tab-be">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane active" id="previewTab" role="tabpanel">

@@ -311,30 +311,6 @@ function memoryPageSizeChange(paginationDiv, newSize) {
     });
 }
 
-var clone = {};
-
-// FileClicked()
-function fileClicked(event) {
-    var fileElement = event.target;
-    if (fileElement.value != "") {
-        if (debugFile) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
-        clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
-    }
-    //What ever else you want to do when File Chooser Clicked
-}
-
-// FileChanged()
-function fileChanged(event) {
-    var fileElement = event.target;
-    if (fileElement.value == "") {
-        if (debugFile) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
-        clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-        $(fileElement).remove(); //'Removing Original'
-        if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
-    }
-    //What ever else you want to do when File Chooser Changed
-}
-
 function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
     var fileId= '#'+selectedFileId;
     var fileV = $( fileId).val();
@@ -374,35 +350,124 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
 }
 
 function ajaxCallSelectCheckbox(){
-        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
-        if (this.checked) {
-            destUrl += '?action=checked'
-          }else{
-            destUrl += '?action=unchecked'
-          }
-        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
-        $.ajax({
-                'url': destUrl,
-                'type': 'GET',
-                'traditional':true,
-                'async': true,
-                'success': function (data) {
-                },
-                'error': function () {
-                }
-        });
+    let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+    if (this.checked) {
+        destUrl += '?action=checked'
+      }else{
+        destUrl += '?action=unchecked'
+      }
+    destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+    $.ajax({
+            'url': destUrl,
+            'type': 'GET',
+            'traditional':true,
+            'async': true,
+            'success': function (data) {
+            },
+            'error': function () {
+            }
+    });
+}
+
+//This is All Just For Logging:
+var debugFile = true;//true: add debug logs when cloning
+var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
+if (evenMoreListeners) {
+    var allFleChoosers = $("input[type='file']");
+    addEventListenersTo(allFleChoosers);
+    function addEventListenersTo(fileChooser) {
+        fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
+        fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
     }
+}
 
+var clone = {};
 
-function toggleOnSelect(sel, val, elem) {
-    if (isEmpty(sel)) {
+// FileClicked()
+function fileClicked(event) {
+    var fileElement = event.target;
+    if (fileElement.value != "") {
+        if (debugFile) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
+        clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+    }
+    //What ever else you want to do when File Chooser Clicked
+}
+
+// FileChanged()
+function fileChanged(event) {
+    var fileElement = event.target;
+    if (fileElement.value == "") {
+        if (debugFile) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+        clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+        $(fileElement).remove(); //'Removing Original'
+        if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+    }
+    //What ever else you want to do when File Chooser Changed
+}
+
+function getJqueryNode(elem) {
+    if (isEmpty(elem)) {
         return;
     }
-    if ($('#' + sel).val() == val) {
-        $('#' + elem).show();
+    var $target = $(elem);
+    if ($target.length == 0) {
+        $target = $('#' + elem);
+    }
+    if ($target.length == 0) {
+        $target = $('.' + sel);
+    }
+    if ($target.length == 0) {
+        return null;
+    }
+    return $target;
+}
+
+function toggleOnSelect(sel, val, elem) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    if ($selector.val() == val) {
+        $target.show();
     } else {
-        $('#' + elem).hide();
-        clearFields('#' + elem);
+        $target.hide();
+        clearFields($target);
+    }
+}
+
+function toggleOnCheck(sel, elem, hide) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    if ($selector.is(':checked')) {
+        if (hide) {
+            $target.hide();
+            clearFields($target);
+        } else {
+            $target.show();
+        }
+    } else {
+        if (hide) {
+            $target.show();
+        } else {
+            $target.hide();
+            clearFields($target);
+        }
+    }
+}
+
+function checkMantory(sel, targetLabel, val) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(targetLabel);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    $target.find('.mandatory').remove();
+    if (isEmpty(val) && val != '' && $selector.is(':checked') || val == $selector.val()) {
+        $target.append('<span class="mandatory">*</span>');
     }
 }
 
@@ -567,7 +632,12 @@ function refreshIndex(targetSelector) {
     }
     $(targetSelector).each(function (k,v) {
         var $ele = $(v);
-        var $selector = $ele.find(':input');
+        var $selector;
+        if ($ele.is(':input')) {
+            $selector = $ele;
+        } else {
+            $selector = $ele.find(':input')
+        }
         if ($selector.length == 0) {
             return;
         }

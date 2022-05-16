@@ -224,7 +224,8 @@
                 if (initEnd){
                     clearFields($keyAppointmentHolder);
                 }
-                toggleIdType($keyAppointmentHolder.find('select[name^="idType"]'), $keyAppointmentHolder.find('.nationalityDiv'));
+                toggleOnSelect($keyAppointmentHolder.find('select[name^="idType"]'), 'IDTYPE003',
+                    $keyAppointmentHolder.find('.nationalityDiv'));
             }else if('newOfficer' == assignSelVal){
                 $keyAppointmentHolder.removeClass('hidden');
                 unDisabledPartPage($keyAppointmentHolder);
@@ -233,7 +234,8 @@
                 }else {
                     addDisabled();
                 }
-                toggleIdType($keyAppointmentHolder.find('select[name^="idType"]'), $keyAppointmentHolder.find('.nationalityDiv'));
+                toggleOnSelect($keyAppointmentHolder.find('select[name^="idType"]'), 'IDTYPE003',
+                    $keyAppointmentHolder.find('.nationalityDiv'));
             }else{
                 $keyAppointmentHolder.removeClass('hidden');
                 var arr = $(this).val().split(',');
@@ -410,7 +412,7 @@
         $CurrentPsnEle.find('.idNo').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name^="nationality"]'), data.nationality);
-        toggleIdType($CurrentPsnEle.find('select[name^="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
+        toggleOnSelect($CurrentPsnEle.find('select[name^="idType"]'), 'IDTYPE003', $CurrentPsnEle.find('.nationalityDiv'));
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){

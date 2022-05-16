@@ -1,9 +1,5 @@
-<style>
-  .cgo-header{
-    font-size:18px;
-  }
-</style>
-<div class="application-tab-footer">
+
+<div class="alignctr border-top-solid">
   <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
   <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
   <c:choose>
@@ -13,7 +9,7 @@
       <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
     </div>
     <div class="col-xs-12 col-sm-9">
-      <div class="button-group">
+      <div class="button-group text-right">
         <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
         <c:choose>
           <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
@@ -196,7 +192,7 @@
         $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
-        toggleIdType($CurrentPsnEle.find('select[name="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
+        toggleOnSelect($CurrentPsnEle.find('select[name="idType"]'), 'IDTYPE003', $CurrentPsnEle.find('select[name="nationalityDiv"]'));
 
         $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);

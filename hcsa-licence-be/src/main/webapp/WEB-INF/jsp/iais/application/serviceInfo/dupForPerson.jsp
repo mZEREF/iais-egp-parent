@@ -42,6 +42,6 @@
     <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.indexNo}"/>
     <c:set var="fileList" value="${svcDocReloadMap[mapKey]}"/>
     <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${premIndexNo}${psn.indexNo}"/>
-    <%@include file="../../common/docContent.jsp"%>
+    <%@include file="../section/docContent.jsp"%>
     <br/>
 </c:forEach>

@@ -414,7 +414,7 @@
                                             <div class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-6 control-label formtext col-md-8">
-                                                        <div class="cgo-header" style="font-size: 18px;">
+                                                        <div class="cgo-header font-18">
                                                             <strong>Nominee <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                                                         </div>
                                                     </div>
@@ -1240,7 +1240,7 @@
         fillValue($poContentEle.find('select[name="idType"]'), data.idType);
         <!-- Nationality  -->
         fillValue($poContentEle.find('select[name="nationality"]'), data.nationality);
-        toggleIdType($poContentEle.find('select[name="idType"]'), $poContentEle.find('.nationalityDiv'));
+        toggleOnSelect($poContentEle.find('select[name="idType"]'), 'IDTYPE003', $poContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
@@ -1291,7 +1291,7 @@
         fillValue($dpoContentEle.find('select[name="deputyIdType"]'), data.idType);
         <!-- Nationality  -->
         fillValue($dpoContentEle.find('select[name="deputyNationality"]'), data.nationality);
-        toggleIdType($dpoContentEle.find('select[name="deputyIdType"]'), $dpoContentEle.find('.nationalityDiv'));
+        toggleOnSelect($dpoContentEle.find('select[name="deputyIdType"]'), 'IDTYPE003', $dpoContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
