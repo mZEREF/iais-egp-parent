@@ -27,6 +27,22 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.google.common.collect.Maps;
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
@@ -43,7 +59,9 @@ import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.chklst.AnswerForDifDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdCheckListShowDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdhocNcCheckItemDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAnswerForDifDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InsChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
@@ -65,23 +83,6 @@ import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sg.gov.moh.iais.egp.bsb.validation.CheckListCommonValidate;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -168,45 +169,40 @@ public class InspectionDODelegator {
     }
 
     private void setCheckListUnFinishedTask(HttpServletRequest request,String appId){
-
-
         //get  commonDto draft
         List<String> ids=IaisCommonUtils.genNewArrayList();
         List<TaskAssignDto> taskAssignDtoList=inspectionClient.getOfficerTaskList("/bsb-be/eservice/INTRANET/MohBsbInspectionDO",appId).getBody();
-        for (TaskAssignDto ta:taskAssignDtoList
-             ) {
+        for (TaskAssignDto ta:taskAssignDtoList) {
             ids.add(ta.getUserId());
         }
 
         List<OrgUserDto> orgUserDtoUsers = organizationClient.retrieveOrgUserAccount(ids).getEntity();
         List<InspectionFillCheckListDto> cDtoList =  inspectionService.getServiceChkDtoListByAppPremId(appId,"service",false);
+        BsbAdCheckListShowDto adhocConf = inspectionService.getAdhocCheckListDto(appId);
         InspectionFDtosDto inspectionFDtosDto=new InspectionFDtosDto();
 
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
         inspectionFDtosDto.setFdtoList(cDtoList);
-        List<InspectionChecklistDto> inspectionChecklistDtoList=IaisCommonUtils.genNewArrayList();
-        for (OrgUserDto officer:orgUserDtoUsers
-             ) {
+        List<InspectionChecklistDto> inspectionChecklistDtoList = IaisCommonUtils.genNewArrayList();
+        for (OrgUserDto officer:orgUserDtoUsers) {
             InspectionChecklistDto inspectionChecklistDto=inspectionClient.getChkListDraft(officer.getId(),appId).getBody();
 
             if(inspectionChecklistDto!=null){
                 InspectionChecklistDto combinedChecklistDto=inspectionClient.getCombinedChkList(appId).getBody();
 
-                List<ChklstItemAnswerDto> answerDtos=inspectionChecklistDto.getAnswer();
+                List<ChklstItemAnswerDto> answerDtos = inspectionChecklistDto.getAnswer();
                 inspectionChecklistDtoList.add(inspectionChecklistDto);
                 InspectionFillCheckListDto comDto = inspectionFDtosDto.getFdtoList().get(0);
                 if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
                     List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
-                    for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
-
-                        if(IaisCommonUtils.isNotEmpty(answerDtos)){
-                            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
-                            for (AnswerForDifDto answerForDifDto: inspectionCheckQuestionDto.getAnswerForDifDtos()
-                                 ) {
-                                for (ChklstItemAnswerDto answer: answerDtos
-                                ) {
-                                    if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())&&inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())){
+                    for (InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList) {
+                        if (IaisCommonUtils.isNotEmpty(answerDtos)) {
+                            Map<String, BsbAnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
+                            for (BsbAnswerForDifDto answerForDifDto: inspectionCheckQuestionDto.getAnswerForDifDtos()) {
+                                for (ChklstItemAnswerDto answer: answerDtos) {
+                                    if (answer.getItemId() != null && answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())
+                                            && inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())) {
                                         if(combinedChecklistDto!=null){
                                             List<ChklstItemAnswerDto> answerDtoCombineds=combinedChecklistDto.getAnswer();
                                             for (ChklstItemAnswerDto combined:answerDtoCombineds
@@ -235,7 +231,41 @@ public class InspectionDODelegator {
                         }
                     }
                 }
-
+                // Set adhoc answers
+                if (adhocConf != null && !IaisCommonUtils.isEmpty(adhocConf.getAdItemList())) {
+                    for(BsbAdhocNcCheckItemDto inspectionCheckQuestionDto : adhocConf.getAdItemList()){
+                        if (IaisCommonUtils.isNotEmpty(answerDtos)) {
+                            Map<String, BsbAnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
+                            for (BsbAnswerForDifDto answerForDifDto : inspectionCheckQuestionDto.getAdhocAnswerForDifDtos()) {
+                                for (ChklstItemAnswerDto answer : answerDtos) {
+                                    if (answer.getItemId() != null && answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())
+                                            && inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())) {
+                                        if (combinedChecklistDto != null) {
+                                            List<ChklstItemAnswerDto> answerDtoCombineds=combinedChecklistDto.getAnswer();
+                                            for (ChklstItemAnswerDto combined : answerDtoCombineds) {
+                                                if (combined.equals(answer)) {
+                                                    inspectionCheckQuestionDto.setSameAnswer(false);
+                                                    inspectionCheckQuestionDto.setDeconflict(officer.getId());
+                                                }
+                                            }
+                                        }
+                                        answerForDifDto.setAnswer(answer.getAnswer());
+                                        answerForDifDto.setIsRec(answer.getRectified() ? "1" : "0");
+                                        answerForDifDto.setNcs(answer.getFindings());
+                                        answerForDifDto.setRemark(answer.getActionRequired());
+                                        answerForDifDto.setSameAnswer(false);
+                                        answerForDifDto.setFollowupItem(answer.getFollowupItem());
+                                        answerForDifDto.setFollowupAction(answer.getFollowupAction());
+                                        answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
+                                        answerForDifDto.setDueDate(answer.getDueDate());
+                                        answerForDifDtoMaps.put(officer.getId(),answerForDifDto);
+                                    }
+                                }
+                            }
+                            inspectionCheckQuestionDto.getAnswerForDifDtoMaps().putAll(answerForDifDtoMaps);
+                        }
+                    }
+                }
             }
         }
 
@@ -288,9 +318,9 @@ public class InspectionDODelegator {
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
                 String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
 
-                List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
+                List<BsbAnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
                 int index = 0;
-                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                for(BsbAnswerForDifDto answerForDifDto : answerForDifDtos){
                     if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
                         String answer =  ParamUtil.getString(request,prefix +"comradIns" + index);
                         String remark = ParamUtil.getString(request,prefix +"comremarkIns" + index);
@@ -350,8 +380,8 @@ public class InspectionDODelegator {
             List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
 
-                List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
-                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                List<BsbAnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
+                for(BsbAnswerForDifDto answerForDifDto : answerForDifDtos){
                     if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
                         answerDto.setAnswer(answerForDifDto.getAnswer());
@@ -446,7 +476,7 @@ public class InspectionDODelegator {
                     if(deconflict!=null){
                         temp.setSameAnswer(false);
                         temp.setDeconflict(deconflict);
-                        AnswerForDifDto answerForDifDto=temp.getAnswerForDifDtoMaps().get(deconflict);
+                        BsbAnswerForDifDto answerForDifDto=temp.getAnswerForDifDtoMaps().get(deconflict);
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
                         answerDto.setAnswer(answerForDifDto.getAnswer());
                         answerDto.setFindings(answerForDifDto.getNcs());
@@ -467,7 +497,6 @@ public class InspectionDODelegator {
 
             }
         }
-
 
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);

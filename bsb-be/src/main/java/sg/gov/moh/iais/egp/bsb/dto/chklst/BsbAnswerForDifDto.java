@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @date 2022/4/29
  */
 @Data
-public class AnswerForDifDto  implements Serializable {
+public class BsbAnswerForDifDto  implements Serializable {
     private static final long serialVersionUID = 1L;
     private String submitName;
     private String submitId;

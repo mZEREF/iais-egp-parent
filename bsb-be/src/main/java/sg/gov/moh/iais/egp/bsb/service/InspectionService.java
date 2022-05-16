@@ -6,16 +6,24 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.collect.Maps;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
-import sg.gov.moh.iais.egp.bsb.dto.chklst.AnswerForDifDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdCheckListShowDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdhocNcCheckItemDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAnswerForDifDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChecklistQuestionDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
@@ -27,12 +35,6 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -116,6 +118,24 @@ public class InspectionService {
 //            AdhocChecklistItemDto
         }
         return chkDtoList;
+    }
+
+    public BsbAdCheckListShowDto getAdhocCheckListDto(String appId) {
+        BsbAdCheckListShowDto adCheckListShowDto = null;
+        AdhocChecklistConfigDto confDto = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+        if (confDto != null) {
+            adCheckListShowDto = new BsbAdCheckListShowDto();
+            List<BsbAdhocNcCheckItemDto> adItemList = IaisCommonUtils.genNewArrayList();
+            if (confDto.getAdhocChecklistItemList() != null && !confDto.getAdhocChecklistItemList().isEmpty()) {
+                for (AdhocChecklistItemDto temp : confDto.getAdhocChecklistItemList()) {
+                    BsbAdhocNcCheckItemDto shwoDto = MiscUtil.transferEntityDto(temp, BsbAdhocNcCheckItemDto.class);
+                    adItemList.add(shwoDto);
+                    shwoDto.setAnswerForDifDtoMaps(IaisCommonUtils.genNewHashMap());
+                }
+            }
+            adCheckListShowDto.setAdItemList(adItemList);
+        }
+        return adCheckListShowDto;
     }
 
     public InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto, String appPremCorrId) {
@@ -257,10 +277,10 @@ public class InspectionService {
         }
 
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
-            List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
-            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
+            List<BsbAnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
+            Map<String, BsbAnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
             for (OrgUserDto entry : orgUserDtos) {
-                AnswerForDifDto answerForDifDto = new AnswerForDifDto();
+                BsbAnswerForDifDto answerForDifDto = new BsbAnswerForDifDto();
                 answerForDifDto.setSubmitId(entry.getId());
                 answerForDifDto.setSubmitName(entry.getUserId());
                 answerForDifDtos.add(answerForDifDto);
@@ -275,7 +295,7 @@ public class InspectionService {
 
 
 
-    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, AnswerForDifDto answerForDifDto){
+    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, BsbAnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));

@@ -1,12 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.dto.chklst;
 
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * InspectionCheckQuestionDto
@@ -28,9 +27,9 @@ public class InspectionCheckQuestionDto extends ChecklistQuestionDto implements 
     private String sectionNameSub;
     private String sectionNameShow;
     private String sectionId;
-    private List<AnswerForDifDto> answerForDifDtos;
+    private List<BsbAnswerForDifDto> answerForDifDtos;
     private boolean ncSelfAnswer;
-    private Map<String, AnswerForDifDto> answerForDifDtoMaps;
+    private Map<String, BsbAnswerForDifDto> answerForDifDtoMaps;
     private boolean sameAnswer;
     private String deconflict;
     private String selfAnswer;
