@@ -61,9 +61,9 @@ public class TopAjaxController {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientInformationDto top = topDataSubmissionService.getTopPatientSelect(idType, idNo, orgId);
-            if(top.getPatientAge() ==null){
+            /*if(StringUtil.isEmpty(top.getPatientAge())){
                 top.setPatientAge(0);
-            }
+            }*/
             if (top != null) {
                 patientInformation = top;
             }
