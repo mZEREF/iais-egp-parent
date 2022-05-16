@@ -61,14 +61,14 @@ public class FamilyPlanValidator implements CustomizeValidator {
             }
         }
         if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek());
+            int f=Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
             if(f<m){
                 errorMap.put("gestAgeBaseOnUltrWeek", "Negative numbers are not allowed on this field.");
             }
         }
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
             if(StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-                if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=15 && StringUtil.isEmpty(familyPlanDto.getAbortChdMoreWksGender())){
+                if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())>=15 && StringUtil.isEmpty(familyPlanDto.getAbortChdMoreWksGender())){
                     errorMap.put("abortChdMoreWksGender", "GENERAL_ERR0006");
                 }
             }
@@ -78,7 +78,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
         }
 
         if(StringUtil.isNotEmpty(familyPlanDto.getPreviousTopNumber()) && StringUtil.isNumber(familyPlanDto.getPreviousTopNumber())){
-            int f=Integer.valueOf(familyPlanDto.getPreviousTopNumber());
+            int f=Integer.parseInt(familyPlanDto.getPreviousTopNumber());
             if(f<m){
                 errorMap.put("previousTopNumber", "Negative numbers are not allowed on this field.");
             }
@@ -87,7 +87,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
             errorMap.put("gestAgeBaseOnUltrDay", "GENERAL_ERR0002");
         }
         if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseOnUltrDay()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrDay())){
-            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrDay());
+            int f=Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrDay());
             if(f<m){
                 errorMap.put("gestAgeBaseOnUltrDay", "Negative numbers are not allowed on this field.");
             }
@@ -96,7 +96,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
             errorMap.put("gestAgeBaseNotOnUltrWeek", "GENERAL_ERR0002");
         }
         if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrWeek()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrWeek())){
-            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseNotOnUltrWeek());
+            int f=Integer.parseInt(familyPlanDto.getGestAgeBaseNotOnUltrWeek());
             if(f<m){
                 errorMap.put("gestAgeBaseNotOnUltrWeek", "Negative numbers are not allowed on this field.");
             }
@@ -105,7 +105,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
             errorMap.put("gestAgeBaseNotOnUltrDay", "GENERAL_ERR0002");
         }
         if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrDay()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrDay())){
-            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseNotOnUltrDay());
+            int f=Integer.parseInt(familyPlanDto.getGestAgeBaseNotOnUltrDay());
             if(f<m){
                 errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
             }

@@ -25,7 +25,7 @@
         <iais:row>
             <iais:field width="5" value="Type of Surgical Procedure - others" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSpType" value="${terminationDto.otherSpType}" />
+                <iais:input maxLength="66" type="text" name="otherSpType" id="otherSpType" value="${terminationDto.otherSpType}" />
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherSpType"></span>
             </iais:value>
         </iais:row>
@@ -44,7 +44,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Anaesthesia" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherAnType" value="${terminationDto.otherAnType}"/>
+                <iais:input maxLength="66" type="text" name="otherAnType" id ="otherAnType" value="${terminationDto.otherAnType}"/>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherAnType"></span>
             </iais:value>
         </iais:row>
@@ -62,7 +62,7 @@
         <iais:row>
             <iais:field width="5" value="Type of Drug (Others)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherDrugType" value="${terminationDto.otherDrugType}" />
+                <iais:input maxLength="66" type="text" name="otherDrugType" id="otherDrugType" value="${terminationDto.otherDrugType}" />
             </iais:value>
         </iais:row>
     </div>
@@ -405,7 +405,7 @@
             $('#spTypes').hide();
             $('#otherSpTypes').hide();
             fillValue($('#spTypes'),null);
-            $('#otherSpTypes').val(null);
+            $('#otherSpType').val(null);
         }
     }
     function performedOwns() {
@@ -470,6 +470,7 @@
             $('#otherAnTypes').show();
         }else {
             $('#otherAnTypes').hide();
+            $('#otherAnType').val(null);
         }
     }
     function spType() {
@@ -478,6 +479,7 @@
             $('#otherSpTypes').show();
         }else {
             $('#otherSpTypes').hide();
+            $('#otherSpType').val(null);
         }
     }
     function anTypes() {
@@ -488,7 +490,7 @@
             $('#anTypes').hide();
             $('#otherAnTypes').hide();
             fillValue($('#anTypes'),null);
-            $('#otherAnTypes').val(null);
+            $('#otherAnType').val(null);
         }
     }
     function topType() {
@@ -499,7 +501,7 @@
             $('#drugTypes').hide();
             $('#otherDrugTypes').hide();
             fillValue($('#drugTypes'),null);
-            $('#otherDrugTypes').val(null);
+            $('#otherDrugType').val(null);
         }
     }
     function drugType() {
@@ -508,6 +510,7 @@
             $('#otherDrugTypes').show();
         }else {
             $('#otherDrugTypes').hide();
+            $('#otherDrugType').val(null);
         }
     }
     function complicationForOperRslt() {
