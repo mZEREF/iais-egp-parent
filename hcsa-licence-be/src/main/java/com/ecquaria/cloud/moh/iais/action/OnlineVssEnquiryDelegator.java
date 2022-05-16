@@ -205,6 +205,11 @@ public class OnlineVssEnquiryDelegator {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
+        if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto()!=null){
+            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace())){
+                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setDisinfectionPlace(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()).getPremiseLabel());
+            }
+        }
 
         ParamUtil.setRequestAttr(request,"vssSuperDataSubmissionDto",vssInfo);
     }

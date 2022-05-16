@@ -3,7 +3,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#pssDetails">
+            <a  data-toggle="collapse" href="#pssDetails">
                 Particulars of Treatment for Sexual Sterilization Performed
             </a>
         </h4>
