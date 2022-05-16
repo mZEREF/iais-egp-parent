@@ -8,7 +8,6 @@ public class FacRegisterConstants {
     public static final String MODULE_NAME_RENEWAL         = "Renewal Facility Registration";
 
     public static final String DECLARATION_TYPE            = "Facility Registration";
-    public static final String DECLARATION_SUB_TYPE        = "New";
 
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
 

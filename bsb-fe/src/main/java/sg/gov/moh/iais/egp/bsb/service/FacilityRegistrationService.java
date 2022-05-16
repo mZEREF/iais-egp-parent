@@ -620,13 +620,38 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void tryLoadOtherAppDeclaration(OtherApplicationInfoDto otherAppInfoDto) {
+    public void tryLoadOtherAppDeclaration(OtherApplicationInfoDto otherAppInfoDto, FacilitySelectionDto selectionDto) {
         if (otherAppInfoDto.isConfigNotLoaded()) {
             if (StringUtils.hasLength(otherAppInfoDto.getDeclarationId())) {
                 List<DeclarationItemMainInfo> declarationConfig = facRegClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
                 otherAppInfoDto.setDeclarationConfig(declarationConfig);
             } else {
-                DeclarationConfigInfo configInfo = facRegClient.getDeclarationConfigBySpecificType(DECLARATION_TYPE, DECLARATION_SUB_TYPE);
+                String declarationSubType;
+                switch (selectionDto.getFacClassification()) {
+                    case MasterCodeConstants.FAC_CLASSIFICATION_BSL3:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_BSL3;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_BSL4:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_BSL4;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_UF:
+                    case MasterCodeConstants.FAC_CLASSIFICATION_LSPF:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_UF;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_RF:
+                        String activity = selectionDto.getActivityTypes().get(0);
+                        if (MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activity)) {
+                            declarationSubType = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED;
+                        } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activity)) {
+                            declarationSubType = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL;
+                        } else {
+                            throw new IllegalStateException("Invalid facility activity");
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Facility classification unavailable");
+                }
+                DeclarationConfigInfo configInfo = facRegClient.getDeclarationConfigBySpecificType(DECLARATION_TYPE, declarationSubType);
                 otherAppInfoDto.setDeclarationId(configInfo.getId());
                 otherAppInfoDto.setDeclarationConfig(configInfo.getConfig());
             }
@@ -639,7 +664,8 @@ public class FacilityRegistrationService {
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         // load declaration
-        tryLoadOtherAppDeclaration(otherAppInfoDto);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        tryLoadOtherAppDeclaration(otherAppInfoDto, selectionDto);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             Map<String, String> errorMap = otherAppInfoDto.getValidationResultDto().getErrorMap();
@@ -791,13 +817,14 @@ public class FacilityRegistrationService {
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
         }
 
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
         // load declaration
-        tryLoadOtherAppDeclaration(otherAppInfoDto);
+        tryLoadOtherAppDeclaration(otherAppInfoDto, selectionDto);
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
         List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
