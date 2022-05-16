@@ -503,6 +503,26 @@
 
     }
 
+    function showThisTableNewService(obj) {
+      var $target = $(obj).closest('td');
+      var w1 = $target.css('width');
+      var w2 = $target.prev().css('width');
+      if (w1 == w2) {
+        $target.find("div.disciplinary-record").children("div").css("margin-left", "-50%");
+      } else {
+        $target.find("div.disciplinary-record").children("div").css("margin-left", "-29%");
+      }
+      $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
+    }
 
+    function showThisNameTableNewService(obj) {
+      var $target = $(obj).closest('td');
+      var h = $target.css('height');
+      $target.find("div.disciplinary-record").children("div").css("margin-top", h);
+      $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
+    }
 
+    function closeThis(obj){
+      $(obj).closest('div.disciplinary-record').hide();
+    }
 </script>
