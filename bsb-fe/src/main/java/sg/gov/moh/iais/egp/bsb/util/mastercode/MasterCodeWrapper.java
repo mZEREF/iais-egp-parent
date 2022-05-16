@@ -97,13 +97,23 @@ public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConvert
     }
 
     @Override
-    public String code2Desc(String desc) {
+    public String code2Desc(String code) {
+        if (code == null) {
+            return null;
+        }
+        tryLoad();
+        MasterCodeView data = retriever.retrieveByDesc(code);
+        return data == null ? DEFAULT_UNKNOWN : data.getDescription();
+    }
+
+    @Override
+    public String desc2Code(String desc) {
         if (desc == null) {
             return null;
         }
         tryLoad();
         MasterCodeView data = retriever.retrieveByDesc(desc);
-        return data == null ? DEFAULT_UNKNOWN : data.getDescription();
+        return data == null ? DEFAULT_UNKNOWN : data.getCode();
     }
 
     @Override

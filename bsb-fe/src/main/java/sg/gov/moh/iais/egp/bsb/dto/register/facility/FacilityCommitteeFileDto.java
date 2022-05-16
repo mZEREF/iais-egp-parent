@@ -87,7 +87,7 @@ public class FacilityCommitteeFileDto implements Serializable {
         this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
         this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
         this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
-        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.value2Code(this.role);
+        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.desc2Code(this.role);
         this.employee = MasterCodeConstants.readUpperCaseYesNo(this.employee);
     }
 

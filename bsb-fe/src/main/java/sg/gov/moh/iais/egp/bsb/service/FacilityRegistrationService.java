@@ -355,6 +355,11 @@ public class FacilityRegistrationService {
             List<ValidationListResultUnit> resultUnitList = ValidationListResultUnit.fromDateErrorMap(facCommitteeDto.getValidationResultDto());
             ParamUtil.setRequestAttr(request, KEY_DATA_ERRORS, resultUnitList);
             ParamUtil.setRequestAttr(request, KEY_ERROR_IN_DATA_FILE, Boolean.TRUE);
+            // show other error info if exists
+            String validationErrors = facCommitteeDto.retrieveValidationResult();
+            if (StringUtils.hasLength(validationErrors)) {
+                ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
+            }
         } else {
             Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
             if (needShowError == Boolean.TRUE) {
