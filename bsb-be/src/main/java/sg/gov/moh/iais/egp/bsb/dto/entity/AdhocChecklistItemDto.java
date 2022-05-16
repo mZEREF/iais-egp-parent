@@ -50,4 +50,9 @@ public class AdhocChecklistItemDto extends BaseEntityDto {
     private Boolean nonCompliant;
 
     private Boolean rectified;
+
+    private String followupItem;
+    private String observeFollowup;
+    private String followupAction;
+    private String dueDate;
 }

@@ -23,4 +23,26 @@ public class BsbAdhocNcCheckItemDto extends AdhocChecklistItemDto {
     private boolean sameAnswer;
     private String deconflict;
     private String ncs;
+
+    public BsbAdhocNcCheckItemDto() {
+        super();
+    }
+
+    public BsbAdhocNcCheckItemDto(AdhocChecklistItemDto ah) {
+        super();
+        this.setId(ah.getId());
+        this.setItemId(ah.getItemId());
+        this.setAdhocChecklistConfigId(ah.getAdhocChecklistConfigId());
+        this.setSectionId(ah.getSectionId());
+        this.setRegulationId(ah.getRegulationId());
+        this.setOrder(ah.getOrder());
+        this.setQuestion(ah.getQuestion());
+        this.setAnswer(ah.getAnswer());
+        this.setNonCompliant(ah.getNonCompliant());
+        this.setRectified(ah.getRectified());
+        this.setFollowupItem(ah.getFollowupItem());
+        this.setFollowupAction(ah.getFollowupAction());
+        this.setDueDate(ah.getDueDate());
+        this.setObserveFollowup(ah.getObserveFollowup());
+    }
 }
