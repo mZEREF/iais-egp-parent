@@ -5621,3 +5621,19 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .datepicker {
   z-index:999 !important;
 }
+
+.border-top-solid {
+  border-top: 1px solid #BABABA;
+}
+
+.main-content .tab-gp.steps-tab {
+  margin-top: 7px;
+}
+
+.app-font-size-22{
+  font-size: 22px;
+}
+
+.ack-font-16{
+  font-size: 16px;
+}

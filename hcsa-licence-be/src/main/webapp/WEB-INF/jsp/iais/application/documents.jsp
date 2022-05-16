@@ -1,5 +1,8 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -91,14 +94,14 @@
                                             <c:when test="${'0' == config.dupForPrem}">
                                                 <c:set var="fileList" value="${docReloadMap[config.id]}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
-                                                <%@include file="../common/docContent.jsp"%>
+                                                <%@include file="section/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'1' == config.dupForPrem}">
                                                 <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStat">
                                                     <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
                                                     <c:set var="fileList" value="${docReloadMap[mapKey]}"/>
                                                     <c:set var="configIndex" value="${configStat.index}primaryDoc${prem.premisesIndexNo}"/>
-                                                    <%@include file="../common/docContent.jsp"%>
+                                                    <%@include file="section/docContent.jsp"%>
                                                 </c:forEach>
                                             </c:when>
                                             <c:otherwise>
@@ -108,26 +111,7 @@
                                     </c:forEach>
                                     <!--cr-082 end -->
                                 </div>
-                                <div class="application-tab-footer">
-                                    <c:choose>
-                                        <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                                            <%@include file="../common/rfcFooter.jsp" %>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <div class="row">
-                                                <div class="col-xs-12 col-md-4"><a class="back" id="Back"><em
-                                                        class="fa fa-angle-left"></em> Back</a></div>
-                                                <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-                                                <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-                                                <div class="col-xs-12 col-md-8">
-                                                    <div class="button-group"><c:if test="${requestInformationConfig==null}"><a class="btn btn-secondary" id="SaveDraft" href="javascript:void(0);">Save as Draft</a></c:if>
-                                                        <a class="btn btn-primary next" id="Next" href="javascript:void(0);">Next</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
+                                <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp"%>
                             </div>
                         </div>
                     </div>

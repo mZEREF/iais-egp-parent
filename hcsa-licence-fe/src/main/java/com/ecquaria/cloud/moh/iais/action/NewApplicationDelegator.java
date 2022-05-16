@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
@@ -53,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -65,7 +63,6 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
@@ -1298,20 +1295,20 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected Map<String, String> checkNextStatusOnRfi(AppSubmissionDto appSubmissionDto) {
+    protected Map<String, String> checkNextStatusOnRfi(String appGrpNo, String appNo) {
+        log.info(StringUtil.changeForLog("App Grp No: " + appGrpNo + " - App No: " + appNo));
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        String appNo = null;
-        String appGrpNo = appSubmissionDto.getAppGrpNo();
+        String rfiAppNo = null;
         List<ApplicationDto> entity = appCommService.getApplicationsByGroupNo(appGrpNo);
         for (ApplicationDto applicationDto : entity) {
             if ((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus()))) {
-                appNo = applicationDto.getApplicationNo();
+                rfiAppNo = applicationDto.getApplicationNo();
                 break;
             }
         }
         String status = null;
-        if (!Objects.equals(appNo, appSubmissionDto.getRfiAppNo())) {
-            map.put(HcsaAppConst.MAP_KEY_ERROR, "The application has been changed, please try it from the beginning");
+        if (!Objects.equals(appNo, rfiAppNo)) {
+            map.put(HcsaAppConst.ERROR_APP, "The application has been changed, please try it from the beginning");
         } else {
             List<AppPremisesRoutingHistoryDto> hisList = getRoutingHistoryDtos(appNo);
             if (hisList != null) {

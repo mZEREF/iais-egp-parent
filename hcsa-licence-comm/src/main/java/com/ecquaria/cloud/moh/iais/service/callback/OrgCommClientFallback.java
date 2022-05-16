@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @Auther chenlei on 5/4/2022.
  */
-public class OrganizationClientFallback implements OrganizationClient {
+public class OrgCommClientFallback implements OrgCommClient {
 
     @Override
     public FeignResponseEntity<List<FeUserDto>> getFeUserDtoByLicenseeId(String licenseeId) {

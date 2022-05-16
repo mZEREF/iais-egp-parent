@@ -12,7 +12,7 @@ public interface OrganizationService {
 
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
 
-    SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo);
+    SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId);
 
     boolean isGiroAccount(String licenseeId);
 

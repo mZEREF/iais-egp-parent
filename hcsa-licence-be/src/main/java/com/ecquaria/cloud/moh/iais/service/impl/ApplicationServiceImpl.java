@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -67,7 +66,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -1317,12 +1315,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(appGrpNo)) {
-            errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "Can't find the related application!");
+            errorMap.put(HcsaAppConst.ERROR_APP, "Can't find the related application!");
             return errorMap;
         }
         Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
         if (AppConsts.YES.equals(map.get("isRfi"))) {
-            errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "There is a related application is in doing RFI, please wait for it.");
+            errorMap.put(HcsaAppConst.ERROR_APP, "There is a related application is in doing RFI, please wait for it.");
         } else  {
             String appGrpStatus = map.get("appGrpStatus");
             if (StringUtil.isIn(appGrpStatus, new String[]{
@@ -1333,10 +1331,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD,
                     ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE})) {
-                errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "There is a related application is waiting for synchronization, please wait and " +
+                errorMap.put(HcsaAppConst.ERROR_APP, "There is a related application is waiting for synchronization, please wait and " +
                         "and try it later.");
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
-                errorMap.put(HcsaAppConst.MAP_KEY_ERROR, "The application can't be edited.");
+                errorMap.put(HcsaAppConst.ERROR_APP, "The application can't be edited.");
             }
         }
         return errorMap;

@@ -774,11 +774,7 @@ public class ApplicationAjaxController {
 
     @GetMapping(value = "/person-info/company-licesee")
     public SubLicenseeDto getCompanyLicesee(HttpServletRequest request) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null) {
-            return null;
-        }
-        return organizationService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(), loginContext.getUenNo());
+        return organizationService.getSubLicenseeByLicenseeId(ApplicationHelper.getLicenseeId(request));
     }
 
     @GetMapping(value = "/person-info/individual-licesee")

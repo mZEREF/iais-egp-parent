@@ -51,7 +51,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
@@ -398,13 +397,16 @@ public abstract class AppCommDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         // init sub licensee
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String licenseeId = loginContext.getLicenseeId();
+        if (StringUtil.isEmpty(licenseeId)) {
+            licenseeId = appSubmissionDto.getLicenseeId();
+        }
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (subLicenseeDto == null) {
             subLicenseeDto = new SubLicenseeDto();
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
-        SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(),
-                loginContext.getUenNo());
+        SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenseeId);
         orgLicensee.setClaimUenNo(subLicenseeDto.getClaimUenNo());
         orgLicensee.setClaimCompanyName(subLicenseeDto.getClaimCompanyName());
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
@@ -505,12 +507,11 @@ public abstract class AppCommDelegator {
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
         String licenseeType = ParamUtil.getString(request, "licenseeType");
-        SubLicenseeDto dto = null;
+        SubLicenseeDto dto;
         // Check licensee type
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)
                 || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            dto = organizationService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(), loginContext.getUenNo());
+            dto = organizationService.getSubLicenseeByLicenseeId(ApplicationHelper.getLicenseeId(request));
             if (dto == null) {
                 dto = new SubLicenseeDto();
             }
@@ -1832,11 +1833,11 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         String appNo = appSubmissionDto.getRfiAppNo();
-        Map<String, String> checkMap = checkNextStatusOnRfi(appSubmissionDto);
-        String appError = checkMap.get(HcsaAppConst.MAP_KEY_ERROR);
+        Map<String, String> checkMap = checkNextStatusOnRfi(appSubmissionDto.getAppGrpNo(), appNo);
+        String appError = checkMap.get(HcsaAppConst.ERROR_APP);
         if (!StringUtil.isEmpty(appError)) {
             initAction(ACTION_PREVIEW, null, appSubmissionDto, bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.MAP_KEY_ERROR, appError);
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
             return;
         }
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
@@ -1985,7 +1986,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
-    protected abstract Map<String, String> checkNextStatusOnRfi(AppSubmissionDto appSubmissionDto);
+    protected abstract Map<String, String> checkNextStatusOnRfi(String appGrpNo, String appNo);
 
     protected abstract AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType);

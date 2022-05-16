@@ -1,5 +1,3 @@
-<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
-
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
 <c:set var="soloType" value="LICT002" />
@@ -53,7 +51,7 @@
     <c:if test="${dto.licenseeType eq soloType}">
         <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
-    <%@include file="previewLicenseeCom.jsp"%>
+    <%@include file="../view/previewLicenseeCom.jsp"%>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"

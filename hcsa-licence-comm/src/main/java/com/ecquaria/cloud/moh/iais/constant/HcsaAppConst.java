@@ -131,11 +131,14 @@ public final class HcsaAppConst {
     public static final String APP_SVC_RELATED_INFO_LIST                    = "appSvcRelatedInfoList";
     public static final String APP_SELECT_SERVICE                           = "appSelectSvc";
 
-    public static final String MAP_KEY_STATUS                               = "status";
-    public static final String MAP_KEY_ERROR                                = "appError";
-
     public static final String ACK_STATUS_ERROR                             = "error";
     public static final String COND_TYPE_RFI                                = "isrfiSuccess";
+
+    public static final String MAP_KEY_STATUS                               = "status";
+    public static final String ERROR_APP                                    = "appError";
+
+    public static final String ERROR_TYPE                                   = "ERROR_TYPE";
+    public static final String ERROR_ROLE                                   = "ERROR_ROLE";
 
     public static final String ACTION_LICENSEE                              = "licensee";
     public static final String ACTION_PREMISES                              = "premises";

@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgCommClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.Optional;
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
-    private OrganizationClient organizationClient;
+    private OrgCommClient orgCommClient;
 
     @Override
     public List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId) {
@@ -36,12 +36,16 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return organizationClient.getFeUserDtoByLicenseeId(licenseeId).getEntity();
+        return orgCommClient.getFeUserDtoByLicenseeId(licenseeId).getEntity();
     }
 
     @Override
-    public SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo) {
-        LicenseeDto licenseeDto = organizationClient.getLicenseeById(licenseeId).getEntity();
+    public SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId) {
+        log.info(StringUtil.changeForLog("licenseeId is " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return null;
+        }
+        LicenseeDto licenseeDto = orgCommClient.getLicenseeById(licenseeId).getEntity();
         Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
         fieldMap.put("name", "licenseeName");
         fieldMap.put("organizationId", "orgId");
@@ -51,7 +55,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (subLicenseeDto == null) {
             subLicenseeDto = new SubLicenseeDto();
         }
-        subLicenseeDto.setUenNo(uenNo);
         if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
         } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
@@ -72,7 +75,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public boolean isGiroAccount(String licenseeId) {
         boolean result = false;
-        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = organizationClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = orgCommClient.getGiroAccByLicenseeId(licenseeId).getEntity();
         if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
             result = true;
         }

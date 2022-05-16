@@ -1,10 +1,12 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+  String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 
 <webui:setLayout name="iais-intranet"/>
@@ -16,17 +18,15 @@
     font-size: 16px;
   }
 </style>
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%--Validation fields Start--%>
-  <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
-  <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
-  <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
   <input type="hidden" name="crud_action_type_continue" value="">
   <%--Validation fields End--%>
   <div class="main-content">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12">
+    <div class="row">
+      <div class="center-content">
+        <div class="col-xs-12 intranet-content">
           <div class="tab-gp steps-tab">
             <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
             <div class="tab-content  ">
@@ -114,6 +114,7 @@
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
   <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
+</div>
 <script type="text/javascript">
     var init;
     $(document).ready(function() {

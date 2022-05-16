@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -16,11 +17,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,10 @@ public class ApplicationDelegator extends AppCommDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE, null);
+        if (!checkData(bpc.request)) {
+            return;
+        }
         HcsaServiceCacheHelper.flushServiceMapping();
         DealSessionUtil.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
@@ -85,6 +91,46 @@ public class ApplicationDelegator extends AppCommDelegator {
             }
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
+    }
+
+    private boolean checkData(HttpServletRequest request) {
+        boolean isValid = true;
+        if (ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_TYPE) != null) {
+            return isValid;
+        }
+        String invalidRole = (String) ParamUtil.getRequestAttr(request, HcsaAppConst.ERROR_TYPE);
+        if (HcsaAppConst.ERROR_ROLE.equals(invalidRole)) {
+            isValid = false;
+        } else {
+            LoginContext loginContext = ApplicationHelper.getLoginContext(request);
+            if (loginContext == null || !StringUtil.isIn(loginContext.getCurRoleId(), new String[]{
+                    RoleConsts.USER_ROLE_ASO,
+                    RoleConsts.USER_ROLE_PSO,
+                    RoleConsts.USER_ROLE_INSPECTIOR})) {
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+                isValid = false;
+            }
+        }
+        if (isValid) {
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) request.getSession().getAttribute("applicationViewDto");
+            if (applicationViewDto == null) {
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+                isValid = false;
+            } else {
+                Map<String, String> checkMap = checkNextStatusOnRfi(applicationViewDto.getApplicationGroupDto().getGroupNo(),
+                        applicationViewDto.getApplicationDto().getApplicationNo());
+                String appError = checkMap.get(HcsaAppConst.ERROR_APP);
+                if (!StringUtil.isEmpty(appError)) {
+                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
+                    isValid = false;
+                }
+            }
+        }
+        if (!isValid) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
+        }
+        log.info(StringUtil.changeForLog("Check Roles - isValid: " + isValid));
+        return isValid;
     }
 
     @Override
@@ -169,6 +215,7 @@ public class ApplicationDelegator extends AppCommDelegator {
      */
     @Override
     public void prepare(BaseProcessClass bpc) {
+        checkData(bpc.request);
         super.prepare(bpc);
     }
 
@@ -277,18 +324,23 @@ public class ApplicationDelegator extends AppCommDelegator {
                 crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             }
         }
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        /*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         if ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && !isRfi) {
             String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(crud_action_additional)) {
                 crudActionValue = "saveDraft";
             }
-        }
-        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue) || "payFailed".equals(crudActionValue)) {
+        }*/
+        if ("ack".equals(crudActionValue)) {
             crudType = crudActionValue;
         } else if ("doSubmit".equals(crudActionValue)) {
             crudType = HcsaAppConst.ACTION_RFI;
+       /* } else if ("back".equals(crudActionValue)) {
+            String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+            if (StringUtil.isEmpty(action)) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
+            }*/
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             // 72106
             String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -315,11 +367,18 @@ public class ApplicationDelegator extends AppCommDelegator {
      */
     @Override
     public void prepareJump(BaseProcessClass bpc) throws Exception {
-        super.prepareJump(bpc);
+        String invalidRole = (String) ParamUtil.getRequestAttr(bpc.request, HcsaAppConst.ERROR_TYPE);
         StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS)
-                .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "ApplicationView/prepareData");
+        if (HcsaAppConst.ERROR_ROLE.equals(invalidRole)) {
+            url.append(InboxConst.URL_HTTPS)
+                    .append(bpc.request.getServerName())
+                    .append("main-web");
+        } else {
+            super.prepareJump(bpc);
+            url.append(InboxConst.URL_HTTPS)
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTRANET/ApplicationView/prepareData");
+        }
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
@@ -336,8 +395,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected Map<String, String> checkNextStatusOnRfi(AppSubmissionDto appSubmissionDto) {
-        String appGrpNo = appSubmissionDto.getAppGrpNo();
+    protected Map<String, String> checkNextStatusOnRfi(String appGrpNo, String appNo) {
+        log.info(StringUtil.changeForLog("App Grp No: " + appGrpNo + " - App No: " + appNo));
         Map<String, String> map = applicationService.checkApplicationByAppGrpNo(appGrpNo);
         map.put(HcsaAppConst.MAP_KEY_STATUS, ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
         log.info(StringUtil.changeForLog("NextStatusOnRfi: " + map));
@@ -347,7 +406,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     @Override
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
-        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
+        //return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
+        return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override

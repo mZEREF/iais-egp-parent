@@ -1,9 +1,11 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
