@@ -37,12 +37,13 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     private final static String DONOR_RESULT_SIZE                 = "donorResultSize";
     private final static String DONOR_MESSAGE_TIP                 = "donorMessageTip";
     protected void setDonorUserSession(HttpServletRequest request){
+        String dspc004 = MasterCodeUtil.getCodeDesc("DSPC_004");
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
         ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
         ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
         ParamUtil.setSessionAttr(request, ADD_DONOR_MAX_SIZE,SystemParamUtil.getSystemParamConfig().getArAddDonorMaxSize());
-        ParamUtil.setSessionAttr(request, DONOR_RESULT_SIZE,MasterCodeUtil.getCodeDesc("DSPC_004"));
-        ParamUtil.setSessionAttr(request,DONOR_MESSAGE_TIP,MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
+        ParamUtil.setSessionAttr(request, DONOR_RESULT_SIZE,dspc004);
+        ParamUtil.setSessionAttr(request,DONOR_MESSAGE_TIP,MessageUtil.replaceMessage("DS_ERR053",dspc004,"1"));
         ParamUtil.clearSession(request,OLD_DONORS_SELECTED);
     }
     protected void actionArDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos){
