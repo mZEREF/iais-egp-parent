@@ -108,11 +108,11 @@
                                                     <input type="radio" class="form-check-input" name="isSameAddress" id="isSameAddress" value="Y" <c:if test="${facProfile.sameAddress eq 'Y'}">checked="checked"</c:if> />
                                                     <label for="isSameAddress" class="form-check-label"><span class="check-circle"></span>Yes</label>
                                                 </div>
-                                                <div class="form-check col-xs-4" style="margin-top: 8px">
+                                                <div class="form-check col-xs-8" style="margin-top: 8px">
                                                     <input type="radio" class="form-check-input" name="isSameAddress" id="notSameAddress" value="N" <c:if test="${facProfile.sameAddress eq 'N'}">checked="checked"</c:if> />
                                                     <label for="notSameAddress" class="form-check-label"><span class="check-circle"></span>No</label>
                                                 </div>
-                                                <span data-err-ind="isSameAddr" class="error-msg"></span>
+                                                <span data-err-ind="sameAddress" class="error-msg"></span>
                                             </div>
                                         </div>
 

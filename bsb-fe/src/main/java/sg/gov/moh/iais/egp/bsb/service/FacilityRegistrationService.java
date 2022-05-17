@@ -175,9 +175,13 @@ public class FacilityRegistrationService {
                     ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
                     boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
+                    ParamUtil.setSessionAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+                    ParamUtil.setSessionAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
 
                     // change root node group
-                    changeRootNodeGroup(facRegRoot, isCf, isUcf);
+                    changeRootNodeGroup(facRegRoot, selectionDto.getFacClassification(), selectionDto.getActivityTypes());
 
                     // change BAT node group
                     if (isUcf) {
@@ -185,7 +189,7 @@ public class FacilityRegistrationService {
                         changeBatNodeGroup(batGroup, selectionDto);
                     }
 
-                    // set selected value in the dashboard
+                    // set selected value in the dashboard, it will also be used by latter logic and page
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
 
@@ -193,6 +197,7 @@ public class FacilityRegistrationService {
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                     primaryDocDto.setFacClassification(selectionDto.getFacClassification());
+                    primaryDocDto.setActivityTypes(selectionDto.getActivityTypes());
                     Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
                     // jump
@@ -802,6 +807,7 @@ public class FacilityRegistrationService {
 
         boolean isCf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_CF);
         boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
+        boolean isFifthRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_FIFTH_RF);
 
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
         if (isCf || isUcf) {
@@ -811,7 +817,7 @@ public class FacilityRegistrationService {
 
         if (isCf) {
             ParamUtil.setRequestAttr(request, NODE_NAME_AFC, ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else if (isUcf) {
+        } else if (isUcf || isFifthRf) {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
@@ -1286,15 +1292,68 @@ public class FacilityRegistrationService {
                 .build();
     }
 
-    public static void changeRootNodeGroup(NodeGroup facRegRoot, boolean isCf, boolean isUcf) {
+    public static NodeGroup registeredFacilityFifthNodeGroup(String name) {
+        return registeredFacilityFifthNodeGroup(name, null, null, null, null, null, null, null);
+    }
+
+    public static NodeGroup registeredFacilityFifthNodeGroup(String name, FacilitySelectionDto selectionDto,
+                                                             FacilityProfileDto profileDto, Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap,
+                                                             FacilityAdminAndOfficerDto adminAndOfficerDto, OtherApplicationInfoDto otherApplicationInfoDto,
+                                                             PrimaryDocDto supportingDocDto, PreviewSubmitDto previewSubmitDto) {
+        Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(selectionDto != null ? selectionDto : new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup4Rf(new Node[]{facSelectionNode}, profileDto, adminAndOfficerDto);
+        NodeGroup batNodeGroup;
+        if (biologicalAgentToxinMap != null) {
+            NodeGroup.Builder batInfoNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                    .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup});
+            for (Map.Entry<String, BiologicalAgentToxinDto> entry : biologicalAgentToxinMap.entrySet()) {
+                SimpleNode batNode = new SimpleNode(entry.getValue(), entry.getKey(), new Node[0]);
+                batInfoNodeGroupBuilder.addNode(batNode);
+            }
+            batNodeGroup = batInfoNodeGroupBuilder.build();
+        } else {
+            batNodeGroup = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                            .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup})
+                            .addNode(new SimpleNode(new BiologicalAgentToxinDto(MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED), MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED, new Node[0]))
+                            .build();
+        }
+        SimpleNode otherAppInfoNode = new SimpleNode(otherApplicationInfoDto != null ? otherApplicationInfoDto : new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(supportingDocDto != null ? supportingDocDto : new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto != null ? previewSubmitDto : new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, supportingDocNode});
+
+        return new NodeGroup.Builder().name(name)
+                .addNode(beforeBeginNode)
+                .addNode(facSelectionNode)
+                .addNode(companyInfoNode)
+                .addNode(facInfoNodeGroup)
+                .addNode(batNodeGroup)
+                .addNode(otherAppInfoNode)
+                .addNode(supportingDocNode)
+                .addNode(previewSubmitNode)
+                .build();
+    }
+
+    public static void changeRootNodeGroup(NodeGroup facRegRoot, String classification, List<String> activityTypes) {
         Assert.notNull(facRegRoot, ERR_MSG_BAT_NOT_NULL);
         NodeGroup newNodeGroup;
-        if (isCf) {
+        if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(classification)) {
             newNodeGroup = certifiedFacilityNodeGroup(facRegRoot.getName());
-        } else if (isUcf) {
+        } else if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(classification)) {
             newNodeGroup = uncertifiedFacilityNodeGroup(facRegRoot.getName());
-        } else {  // RF
-            newNodeGroup = registeredFacilityNodeGroup(facRegRoot.getName());
+        } else if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(classification)) {
+            Assert.state(activityTypes.size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
+            String activityType = activityTypes.get(0);
+            if (MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType)) {
+                newNodeGroup = registeredFacilityFifthNodeGroup(facRegRoot.getName());
+            } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType)) {
+                newNodeGroup = registeredFacilityNodeGroup(facRegRoot.getName());
+            } else {
+                throw new IllegalStateException(ERR_MSG_INVALID_ACTIVITY);
+            }
+        } else {
+            throw new IllegalStateException(ERR_MSG_INVALID_CLASSIFICATION);
         }
         Node[] subNodes = newNodeGroup.getAllNodes().toArray(new Node[0]);
         facRegRoot.reorganizeNodes(subNodes, NODE_NAME_FAC_SELECTION);
@@ -1342,10 +1401,11 @@ public class FacilityRegistrationService {
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
-        boolean isPnef = false;
+        boolean isSPFifthRf = false;
         if (isRf) {
             Assert.state(selectionDto.getActivityTypes().size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
-            isPnef = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+            String activityType = selectionDto.getActivityTypes().get(0);
+            isSPFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
         }
 
         dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
@@ -1376,7 +1436,7 @@ public class FacilityRegistrationService {
 
         if (isCf) {
             dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else if (isUcf) {
+        } else if (isUcf || isSPFifthRf) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);
             dto.setBiologicalAgentToxinMap(batInfoMap);
@@ -1393,10 +1453,13 @@ public class FacilityRegistrationService {
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
-        boolean isPnef = false;
+        boolean isSPFifthRf = false;
+        boolean isPvRf = false;
         if (isRf) {
             Assert.state(selectionDto.getActivityTypes().size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
-            isPnef = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+            String activityType = selectionDto.getActivityTypes().get(0);
+            isSPFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
+            isPvRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType);
         }
 
         // split documents for profile
@@ -1429,21 +1492,33 @@ public class FacilityRegistrationService {
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
         primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(primaryDocs, DocRecordInfo::getRepoId));
 
+        NodeGroup facRegRoot;
         if (isCf) {
-            return certifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
-                    registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
-                    registerDto.getFacilityAuthoriserDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
-                    registerDto.getAfcDto(), registerDto.getPreviewSubmitDto());
+            facRegRoot = certifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                            registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
+                            registerDto.getFacilityAuthoriserDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
+                            registerDto.getAfcDto(), registerDto.getPreviewSubmitDto());
         } else if (isUcf) {
-            return uncertifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
-                    registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
-                    registerDto.getFacilityAuthoriserDto(), registerDto.getBiologicalAgentToxinMap(), registerDto.getOtherAppInfoDto(),
-                    primaryDocDto, registerDto.getPreviewSubmitDto());
+            facRegRoot = uncertifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                            registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
+                            registerDto.getFacilityAuthoriserDto(), registerDto.getBiologicalAgentToxinMap(), registerDto.getOtherAppInfoDto(),
+                            primaryDocDto, registerDto.getPreviewSubmitDto());
+        } else if (isRf) {
+            if (isSPFifthRf) {
+                facRegRoot = registeredFacilityFifthNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                        registerDto.getBiologicalAgentToxinMap(), registerDto.getFacilityAdminAndOfficerDto(),
+                        registerDto.getOtherAppInfoDto(), primaryDocDto, registerDto.getPreviewSubmitDto());
+            } else if (isPvRf) {
+                facRegRoot = registeredFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                        registerDto.getFacilityAdminAndOfficerDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
+                        registerDto.getPreviewSubmitDto());
+            } else {
+                throw new IllegalStateException(ERR_MSG_INVALID_ACTIVITY);
+            }
         } else {
-            return registeredFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
-                    registerDto.getFacilityAdminAndOfficerDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
-                    registerDto.getPreviewSubmitDto());
+            throw new IllegalStateException(ERR_MSG_INVALID_CLASSIFICATION);
         }
+        return facRegRoot;
     }
 
 

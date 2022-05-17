@@ -2,10 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,20 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
-import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +47,19 @@ public class FacilityRegistrationDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-        request.getSession().removeAttribute(KEY_SAMPLE_COMMITTEE);
-        request.getSession().removeAttribute(KEY_SAMPLE_AUTHORISER);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ROOT_NODE_GROUP);
+        session.removeAttribute(KEY_JUMP_DEST_NODE);
+        session.removeAttribute(KEY_SAMPLE_COMMITTEE);
+        session.removeAttribute(KEY_SAMPLE_AUTHORISER);
+        session.removeAttribute(KEY_ORG_ADDRESS);
+        session.removeAttribute(KEY_IS_CF);
+        session.removeAttribute(KEY_IS_UCF);
+        session.removeAttribute(KEY_IS_RF);
+        session.removeAttribute(KEY_IS_FIFTH_RF);
+        session.removeAttribute(KEY_IS_PV_RF);
+        session.removeAttribute(KEY_SELECTED_CLASSIFICATION);
+        session.removeAttribute(KEY_SELECTED_ACTIVITIES);
         AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }
 

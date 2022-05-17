@@ -398,7 +398,7 @@
                         </div>
                     </div>
                 </div>
-                <c:if test="${isUcfJudge}">
+                <c:if test="${isUcfJudge or (isRfJudge and activities.get(0) eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">

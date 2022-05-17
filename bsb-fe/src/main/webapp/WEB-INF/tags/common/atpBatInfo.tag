@@ -35,7 +35,7 @@
                 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
                   <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
                 <c:choose>
-                  <c:when test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">
+                  <c:when test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE || activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}">
                     <label>Fifth Schedule</label>
                     <input type="hidden" name="schedule--v--${status.index}" id="schedule--v--${status.index}" value="${masterCodeConstants.FIFTH_SCHEDULE}"/>
                   </c:when>
