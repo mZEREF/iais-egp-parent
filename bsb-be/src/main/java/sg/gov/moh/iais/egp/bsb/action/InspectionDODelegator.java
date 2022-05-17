@@ -424,9 +424,9 @@ public class InspectionDODelegator {
 
     public void setRate(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
-
-        inspectionService.getRateOfCheckList(serListDto);
-
+        BsbAdCheckListShowDto adchklDto = (BsbAdCheckListShowDto) ParamUtil.getSessionAttr(request,ADHOC_DTO);
+        inspectionService.getRateOfCheckList(serListDto,adchklDto);
+        ParamUtil.setSessionAttr(request,ADHOC_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
 
@@ -516,10 +516,10 @@ public class InspectionDODelegator {
 
 
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        BsbAdCheckListShowDto adhocConf = (BsbAdCheckListShowDto) ParamUtil.getSessionAttr(request,ADHOC_DTO);
         InspectionFillCheckListDto comDto = serListDto.getFdtoList().get(0);
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
-        boolean isError = true;
         Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
         Map<String, String> errMapCombined =IaisCommonUtils.genNewHashMap();
         ArrayList<ChklstItemAnswerDto> answerDtoList=IaisCommonUtils.genNewArrayList();
@@ -552,6 +552,35 @@ public class InspectionDODelegator {
                         errMapCombined.put(StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"com",MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                     }
                 }
+
+            }
+        }
+        if(adhocConf!=null&&IaisCommonUtils.isNotEmpty(adhocConf.getAdItemList())){
+            for (BsbAdhocNcCheckItemDto adItem:adhocConf.getAdItemList()
+                 ) {
+                String adhocDeconflict=ParamUtil.getRequestString(request,adItem.getId()+"adhocDeconflict");
+                if(adhocDeconflict!=null){
+                    adItem.setSameAnswer(false);
+                    adItem.setDeconflict(adhocDeconflict);
+                    BsbAnswerForDifDto answerForDifDto=adItem.getAnswerForDifDtoMaps().get(adhocDeconflict);
+                    ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
+                    answerDto.setAnswer(answerForDifDto.getAnswer());
+                    answerDto.setFindings(answerForDifDto.getNcs());
+                    answerDto.setActionRequired(answerForDifDto.getRemark());
+                    answerDto.setConfigId(adItem.getAdhocChecklistConfigId());
+                    answerDto.setItemId(adItem.getId());
+                    answerDto.setSectionId(adItem.getSectionId());
+                    answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
+                    answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
+                    answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
+                    answerDto.setDueDate(answerForDifDto.getDueDate());
+                    answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
+                    answerDtoList.add(answerDto);
+                }else {
+                    errMapCombined.put(adItem.getId()+"adhoc",MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+
+                }
+
 
             }
         }

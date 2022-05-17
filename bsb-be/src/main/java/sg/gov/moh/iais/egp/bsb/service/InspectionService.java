@@ -5,15 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.collect.Maps;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,7 +30,12 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -287,17 +288,38 @@ public class InspectionService {
         inspectionCheckQuestionDto.setDueDate(answerForDifDto.getDueDate());
         return  inspectionCheckQuestionDto;
     }
-    public void getRateOfCheckList(InspectionFDtosDto serListDto) {
+    public void getRateOfCheckList(InspectionFDtosDto serListDto, BsbAdCheckListShowDto adchklDto) {
         if(serListDto == null) return;
         if(serListDto.getFdtoList()!=null){
             getServiceTotalAndNc(serListDto);
         }
-
+        if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
+            getAdhocTotalAndNc(adchklDto,serListDto);
+        }
         int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
 
         serListDto.setTotalNcNum(totalNcNum);
     }
 
+    private void getAdhocTotalAndNc(BsbAdCheckListShowDto adchklDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(BsbAdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(aditem.getAdAnswer())){
+                if( "NO".equalsIgnoreCase(aditem.getAdAnswer())){
+                    if(StringUtil.isNotEmpty(aditem.getRemark()) && StringUtil.isNotEmpty(aditem.getNcs())){
+                        ncNum++;
+                    }
+                }
+                doNum++;
+            }
+        }
+        serListDto.setAdhocTotal(totalNum);
+        serListDto.setAdhocNc(ncNum);
+        serListDto.setAdhocDo(doNum);
+    }
 
 
     private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
