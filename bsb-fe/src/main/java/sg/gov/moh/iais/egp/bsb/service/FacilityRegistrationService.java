@@ -27,6 +27,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -50,11 +51,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
@@ -82,24 +83,29 @@ public class FacilityRegistrationService {
     }
 
     public void retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
-        NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+        NodeGroup facRegRoot = readRegisterDtoToNodeGroup(resultDto.getEntity(), KEY_ROOT_NODE_GROUP);
 
-        // check data uploaded by committee data file
-        String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
-        /* If there is no committee data, we don't need to show error message.
-         * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
-         * so the error table should be displayed. This situation means user click save as draft when user
-         * upload a file contains error fields.
-         * If pass validation, we set the node status to avoid not necessary validation again. */
-        if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
-            Nodes.passValidation(facRegRoot, committeeNodePath);
-        }
-        // check data uploaded by authoriser data file
-        String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
-        if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
-            Nodes.passValidation(facRegRoot, authoriserNodePath);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
+        boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+
+        if (!isRf) {
+            // check data uploaded by committee data file
+            String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
+            FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
+            /* If there is no committee data, we don't need to show error message.
+             * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
+             * so the error table should be displayed. This situation means user click save as draft when user
+             * upload a file contains error fields.
+             * If pass validation, we set the node status to avoid not necessary validation again. */
+            if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
+                Nodes.passValidation(facRegRoot, committeeNodePath);
+            }
+            // check data uploaded by authoriser data file
+            String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
+            FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
+            if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
+                Nodes.passValidation(facRegRoot, authoriserNodePath);
+            }
         }
 
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -167,9 +173,15 @@ public class FacilityRegistrationService {
                     ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
                     boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+                    ParamUtil.setSessionAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
+                    ParamUtil.setSessionAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+                    ParamUtil.setSessionAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
 
                     // change root node group
-                    changeRootNodeGroup(facRegRoot, isCf, isUcf);
+                    changeRootNodeGroup(facRegRoot, selectionDto.getFacClassification(), selectionDto.getActivityTypes());
 
                     // change BAT node group
                     if (isUcf) {
@@ -177,7 +189,7 @@ public class FacilityRegistrationService {
                         changeBatNodeGroup(batGroup, selectionDto);
                     }
 
-                    // set selected value in the dashboard
+                    // set selected value in the dashboard, it will also be used by latter logic and page
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
                     ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
 
@@ -185,6 +197,7 @@ public class FacilityRegistrationService {
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                     primaryDocDto.setFacClassification(selectionDto.getFacClassification());
+                    primaryDocDto.setActivityTypes(selectionDto.getActivityTypes());
                     Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
                     // jump
@@ -249,9 +262,13 @@ public class FacilityRegistrationService {
         SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
         facProfileDto.reqObjMapping(request);
-        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-        facAuthDto.setProtectedPlace(facProfileDto.getFacilityProtected());
+
+        boolean isRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_RF);
+        if (!isRf) {
+            SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
+            FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
+            facAuthDto.setProtectedPlace(facProfileDto.getFacilityProtected());
+        }
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
@@ -355,6 +372,11 @@ public class FacilityRegistrationService {
             List<ValidationListResultUnit> resultUnitList = ValidationListResultUnit.fromDateErrorMap(facCommitteeDto.getValidationResultDto());
             ParamUtil.setRequestAttr(request, KEY_DATA_ERRORS, resultUnitList);
             ParamUtil.setRequestAttr(request, KEY_ERROR_IN_DATA_FILE, Boolean.TRUE);
+            // show other error info if exists
+            String validationErrors = facCommitteeDto.retrieveValidationResult();
+            if (StringUtils.hasLength(validationErrors)) {
+                ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
+            }
         } else {
             Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
             if (needShowError == Boolean.TRUE) {
@@ -603,13 +625,38 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void tryLoadOtherAppDeclaration(OtherApplicationInfoDto otherAppInfoDto) {
+    public void tryLoadOtherAppDeclaration(OtherApplicationInfoDto otherAppInfoDto, FacilitySelectionDto selectionDto) {
         if (otherAppInfoDto.isConfigNotLoaded()) {
             if (StringUtils.hasLength(otherAppInfoDto.getDeclarationId())) {
                 List<DeclarationItemMainInfo> declarationConfig = facRegClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
                 otherAppInfoDto.setDeclarationConfig(declarationConfig);
             } else {
-                DeclarationConfigInfo configInfo = facRegClient.getDeclarationConfigBySpecificType(DECLARATION_TYPE, DECLARATION_SUB_TYPE);
+                String declarationSubType;
+                switch (selectionDto.getFacClassification()) {
+                    case MasterCodeConstants.FAC_CLASSIFICATION_BSL3:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_BSL3;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_BSL4:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_BSL4;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_UF:
+                    case MasterCodeConstants.FAC_CLASSIFICATION_LSPF:
+                        declarationSubType = MasterCodeConstants.FAC_CLASSIFICATION_UF;
+                        break;
+                    case MasterCodeConstants.FAC_CLASSIFICATION_RF:
+                        String activity = selectionDto.getActivityTypes().get(0);
+                        if (MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activity)) {
+                            declarationSubType = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED;
+                        } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activity)) {
+                            declarationSubType = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL;
+                        } else {
+                            throw new IllegalStateException("Invalid facility activity");
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Facility classification unavailable");
+                }
+                DeclarationConfigInfo configInfo = facRegClient.getDeclarationConfigBySpecificType(DECLARATION_TYPE, declarationSubType);
                 otherAppInfoDto.setDeclarationId(configInfo.getId());
                 otherAppInfoDto.setDeclarationConfig(configInfo.getConfig());
             }
@@ -622,12 +669,13 @@ public class FacilityRegistrationService {
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         // load declaration
-        tryLoadOtherAppDeclaration(otherAppInfoDto);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        tryLoadOtherAppDeclaration(otherAppInfoDto, selectionDto);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             Map<String, String> errorMap = otherAppInfoDto.getValidationResultDto().getErrorMap();
             if (errorMap.containsKey("ID") || errorMap.containsKey("DTO")) {
-                throw new IllegalStateException();
+                log.error("ID or answer DTO does not exists");
             } else {
                 ParamUtil.setRequestAttr(request, KEY_DECLARATION_ERROR_MAP, errorMap);
             }
@@ -675,7 +723,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
@@ -757,28 +805,33 @@ public class FacilityRegistrationService {
         Nodes.needValidation(facRegRoot, NODE_NAME_PREVIEW_SUBMIT);
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
 
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
-
         boolean isCf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_CF);
         boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
+        boolean isFifthRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_FIFTH_RF);
+
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        if (isCf || isUcf) {
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
+        }
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
+
         if (isCf) {
             ParamUtil.setRequestAttr(request, NODE_NAME_AFC, ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else if (isUcf) {
+        } else if (isUcf || isFifthRf) {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
         }
 
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
         // load declaration
-        tryLoadOtherAppDeclaration(otherAppInfoDto);
+        tryLoadOtherAppDeclaration(otherAppInfoDto, selectionDto);
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
@@ -905,34 +958,38 @@ public class FacilityRegistrationService {
 
     public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        boolean isRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_RF);
 
         // save docs
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         List<NewFileSyncDto> primaryDocNewFiles = saveNewUploadedDoc(primaryDocDto);
         FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
         List<NewFileSyncDto> profileNewFiles = saveProfileNewUploadedDoc(profileDto);
-        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
-        NewFileSyncDto committeeNewFile = saveCommitteeNewDataFile(committeeDto);
-        FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-        NewFileSyncDto authoriserNewFile = saveAuthoriserNewDataFile(authDto);
+
         List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
         newFilesToSync.addAll(primaryDocNewFiles);
         newFilesToSync.addAll(profileNewFiles);
-        if (committeeNewFile != null) {
-            newFilesToSync.add(committeeNewFile);
+
+        FacilityCommitteeDto committeeDto = null;
+        FacilityAuthoriserDto authDto = null;
+        if (!isRf) {
+            committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+            NewFileSyncDto committeeNewFile = saveCommitteeNewDataFile(committeeDto);
+            authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+            NewFileSyncDto authoriserNewFile = saveAuthoriserNewDataFile(authDto);
+            if (committeeNewFile != null) {
+                newFilesToSync.add(committeeNewFile);
+            }
+            if (authoriserNewFile != null) {
+                newFilesToSync.add(authoriserNewFile);
+            }
         }
-        if (authoriserNewFile != null) {
-            newFilesToSync.add(authoriserNewFile);
-        }
+
 
         // save data
         FacilityRegisterDto finalAllDataDto = null;
         if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
-            finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
-            finalAllDataDto.setAppType(appType);
-        }else if (appType.equals(MasterCodeConstants.APP_TYPE_RENEW)){
-            NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-            finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+            finalAllDataDto = getRegisterDtoFromFacRegRoot(facRegRoot);
             finalAllDataDto.setAppType(appType);
         }
         String draftAppNo = facRegClient.saveNewFacilityDraft(finalAllDataDto);
@@ -947,14 +1004,14 @@ public class FacilityRegistrationService {
             List<String> primaryToBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
             List<String> profileToBeDeletedRepoIds = deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
             List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
-            if (committeeDto.getToBeDeletedRepoId() != null) {
+            if (!isRf && committeeDto.getToBeDeletedRepoId() != null) {
                 FileRepoDto committeeDeleteDto = new FileRepoDto();
                 committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
                 fileRepoClient.removeFileById(committeeDeleteDto);
                 toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
                 committeeDto.setToBeDeletedRepoId(null);
             }
-            if (authDto.getToBeDeletedRepoId() != null) {
+            if (!isRf && authDto.getToBeDeletedRepoId() != null) {
                 FileRepoDto authoriserDeleteDto = new FileRepoDto();
                 authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
                 fileRepoClient.removeFileById(authoriserDeleteDto);
@@ -1074,6 +1131,9 @@ public class FacilityRegistrationService {
         return destNode.startsWith(NODE_NAME_FAC_BAT_INFO) ? NODE_NAME_FAC_BAT_INFO : destNode;
     }
 
+
+
+
     /* This method only generate first two nodes, because following nodes will be determined by the selection */
     public static NodeGroup initFacRegisterRoot(String name) {
         Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
@@ -1086,11 +1146,18 @@ public class FacilityRegistrationService {
     }
 
     public static NodeGroup newFacInfoNodeGroup(Node[] dependNodes) {
-        SimpleNode facProfileNode = new SimpleNode(new FacilityProfileDto(), NODE_NAME_FAC_PROFILE, new Node[0]);
-        SimpleNode facOperatorNode = new SimpleNode(new FacilityOperatorDto(), NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
-        SimpleNode facAdminOfficerNode = new SimpleNode(new FacilityAdminAndOfficerDto(), NODE_NAME_FAC_ADMIN_OFFICER, new Node[]{facProfileNode, facOperatorNode});
-        SimpleNode facCommitteeNode = new SimpleNode(new FacilityCommitteeDto(), NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode});
-        SimpleNode facAuthNode = new SimpleNode(new FacilityAuthoriserDto(), NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode, facCommitteeNode});
+        return newFacInfoNodeGroup(dependNodes, null, null, null, null, null);
+    }
+
+    public static NodeGroup newFacInfoNodeGroup(Node[] dependNodes,
+                                                FacilityProfileDto profileDto, FacilityOperatorDto operatorDto,
+                                                FacilityAdminAndOfficerDto adminAndOfficerDto,
+                                                FacilityCommitteeDto committeeDto, FacilityAuthoriserDto authoriserDto) {
+        SimpleNode facProfileNode = new SimpleNode(profileDto != null ? profileDto : new FacilityProfileDto(), NODE_NAME_FAC_PROFILE, new Node[0]);
+        SimpleNode facOperatorNode = new SimpleNode(operatorDto != null ? operatorDto : new FacilityOperatorDto(), NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
+        SimpleNode facAdminOfficerNode = new SimpleNode(adminAndOfficerDto != null ? adminAndOfficerDto : new FacilityAdminAndOfficerDto(), NODE_NAME_FAC_ADMIN_OFFICER, new Node[]{facProfileNode, facOperatorNode});
+        SimpleNode facCommitteeNode = new SimpleNode(committeeDto != null ? committeeDto : new FacilityCommitteeDto(), NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode});
+        SimpleNode facAuthNode = new SimpleNode(authoriserDto != null ? authoriserDto : new FacilityAuthoriserDto(), NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode, facCommitteeNode});
 
         return new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
                 .dependNodes(dependNodes)
@@ -1102,6 +1169,21 @@ public class FacilityRegistrationService {
                 .build();
     }
 
+    public static NodeGroup newFacInfoNodeGroup4Rf(Node[] dependNodes) {
+        return newFacInfoNodeGroup4Rf(dependNodes, null, null);
+    }
+
+    public static NodeGroup newFacInfoNodeGroup4Rf(Node[] dependNodes,
+                                                   FacilityProfileDto profileDto, FacilityAdminAndOfficerDto adminAndOfficerDto) {
+        SimpleNode facProfileNode = new SimpleNode(profileDto != null ? profileDto : new FacilityProfileDto(), NODE_NAME_FAC_PROFILE, new Node[0]);
+        SimpleNode facAdminOfficerNode = new SimpleNode(adminAndOfficerDto != null ? adminAndOfficerDto : new FacilityAdminAndOfficerDto(), NODE_NAME_FAC_ADMIN_OFFICER, new Node[]{facProfileNode});
+        return new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
+                .dependNodes(dependNodes)
+                .addNode(facProfileNode)
+                .addNode(facAdminOfficerNode)
+                .build();
+    }
+
     public static NodeGroup initBatNodeGroup(Node[] dependNodes) {
         return new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
                 .dependNodes(dependNodes)
@@ -1110,14 +1192,23 @@ public class FacilityRegistrationService {
     }
 
     public static NodeGroup certifiedFacilityNodeGroup(String name) {
+        return certifiedFacilityNodeGroup(name, null, null, null, null, null, null, null, null, null, null);
+    }
+
+    public static NodeGroup certifiedFacilityNodeGroup(String name,
+                                                       FacilitySelectionDto selectionDto, FacilityProfileDto profileDto,
+                                                       FacilityOperatorDto operatorDto, FacilityAdminAndOfficerDto adminAndOfficerDto,
+                                                       FacilityCommitteeDto committeeDto, FacilityAuthoriserDto authoriserDto,
+                                                       OtherApplicationInfoDto otherApplicationInfoDto, PrimaryDocDto supportingDocDto,
+                                                       FacilityAfcDto afcDto, PreviewSubmitDto previewSubmitDto) {
         Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
-        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(selectionDto != null ? selectionDto : new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
         Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
-        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
-        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
-        SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
-        SimpleNode afcNode = new SimpleNode(new FacilityAfcDto(), NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode, afcNode});
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode}, profileDto, operatorDto, adminAndOfficerDto, committeeDto, authoriserDto);
+        SimpleNode otherAppInfoNode = new SimpleNode(otherApplicationInfoDto != null ? otherApplicationInfoDto : new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(supportingDocDto != null ? supportingDocDto : new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
+        SimpleNode afcNode = new SimpleNode(afcDto != null ? afcDto : new FacilityAfcDto(), NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto != null ? previewSubmitDto : new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode, afcNode});
 
         return new NodeGroup.Builder().name(name)
                 .addNode(beforeBeginNode)
@@ -1132,14 +1223,35 @@ public class FacilityRegistrationService {
     }
 
     public static NodeGroup uncertifiedFacilityNodeGroup(String name) {
+        return uncertifiedFacilityNodeGroup(name, null, null, null, null, null, null, null, null, null, null);
+    }
+
+    public static NodeGroup uncertifiedFacilityNodeGroup(String name,
+                                                         FacilitySelectionDto selectionDto, FacilityProfileDto profileDto,
+                                                         FacilityOperatorDto operatorDto, FacilityAdminAndOfficerDto adminAndOfficerDto,
+                                                         FacilityCommitteeDto committeeDto, FacilityAuthoriserDto authoriserDto,
+                                                         Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap,
+                                                         OtherApplicationInfoDto otherApplicationInfoDto,
+                                                         PrimaryDocDto supportingDocDto, PreviewSubmitDto previewSubmitDto) {
         Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
-        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(selectionDto != null ? selectionDto : new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
         Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
-        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
-        NodeGroup batNodeGroup = initBatNodeGroup(new Node[]{facSelectionNode, facInfoNodeGroup});
-        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
-        SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, supportingDocNode});
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode}, profileDto, operatorDto, adminAndOfficerDto, committeeDto, authoriserDto);
+        NodeGroup batNodeGroup;
+        if (biologicalAgentToxinMap != null) {
+            NodeGroup.Builder batInfoNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                    .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup});
+            for (Map.Entry<String, BiologicalAgentToxinDto> entry : biologicalAgentToxinMap.entrySet()) {
+                SimpleNode batNode = new SimpleNode(entry.getValue(), entry.getKey(), new Node[0]);
+                batInfoNodeGroupBuilder.addNode(batNode);
+            }
+            batNodeGroup = batInfoNodeGroupBuilder.build();
+        } else {
+            batNodeGroup = initBatNodeGroup(new Node[]{facSelectionNode, facInfoNodeGroup});
+        }
+        SimpleNode otherAppInfoNode = new SimpleNode(otherApplicationInfoDto != null ? otherApplicationInfoDto : new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(supportingDocDto != null ? supportingDocDto : new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto != null ? previewSubmitDto : new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, supportingDocNode});
 
         return new NodeGroup.Builder().name(name)
                 .addNode(beforeBeginNode)
@@ -1154,13 +1266,20 @@ public class FacilityRegistrationService {
     }
 
     public static NodeGroup registeredFacilityNodeGroup(String name) {
+        return registeredFacilityNodeGroup(name, null, null, null, null, null, null);
+    }
+
+    public static NodeGroup registeredFacilityNodeGroup(String name,
+                                                        FacilitySelectionDto selectionDto, FacilityProfileDto profileDto,
+                                                        FacilityAdminAndOfficerDto adminAndOfficerDto, OtherApplicationInfoDto otherApplicationInfoDto,
+                                                        PrimaryDocDto supportingDocDto, PreviewSubmitDto previewSubmitDto) {
         Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
-        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(selectionDto != null ? selectionDto : new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
         Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
-        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
-        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
-        SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup4Rf(new Node[]{facSelectionNode}, profileDto, adminAndOfficerDto);
+        SimpleNode otherAppInfoNode = new SimpleNode(otherApplicationInfoDto != null ? otherApplicationInfoDto : new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(supportingDocDto != null ? supportingDocDto : new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto != null ? previewSubmitDto : new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
 
         return new NodeGroup.Builder().name(name)
                 .addNode(beforeBeginNode)
@@ -1173,15 +1292,68 @@ public class FacilityRegistrationService {
                 .build();
     }
 
-    public static void changeRootNodeGroup(NodeGroup facRegRoot, boolean isCf, boolean isUcf) {
+    public static NodeGroup registeredFacilityFifthNodeGroup(String name) {
+        return registeredFacilityFifthNodeGroup(name, null, null, null, null, null, null, null);
+    }
+
+    public static NodeGroup registeredFacilityFifthNodeGroup(String name, FacilitySelectionDto selectionDto,
+                                                             FacilityProfileDto profileDto, Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap,
+                                                             FacilityAdminAndOfficerDto adminAndOfficerDto, OtherApplicationInfoDto otherApplicationInfoDto,
+                                                             PrimaryDocDto supportingDocDto, PreviewSubmitDto previewSubmitDto) {
+        Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(selectionDto != null ? selectionDto : new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup4Rf(new Node[]{facSelectionNode}, profileDto, adminAndOfficerDto);
+        NodeGroup batNodeGroup;
+        if (biologicalAgentToxinMap != null) {
+            NodeGroup.Builder batInfoNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                    .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup});
+            for (Map.Entry<String, BiologicalAgentToxinDto> entry : biologicalAgentToxinMap.entrySet()) {
+                SimpleNode batNode = new SimpleNode(entry.getValue(), entry.getKey(), new Node[0]);
+                batInfoNodeGroupBuilder.addNode(batNode);
+            }
+            batNodeGroup = batInfoNodeGroupBuilder.build();
+        } else {
+            batNodeGroup = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                            .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup})
+                            .addNode(new SimpleNode(new BiologicalAgentToxinDto(MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED), MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED, new Node[0]))
+                            .build();
+        }
+        SimpleNode otherAppInfoNode = new SimpleNode(otherApplicationInfoDto != null ? otherApplicationInfoDto : new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(supportingDocDto != null ? supportingDocDto : new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto != null ? previewSubmitDto : new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, supportingDocNode});
+
+        return new NodeGroup.Builder().name(name)
+                .addNode(beforeBeginNode)
+                .addNode(facSelectionNode)
+                .addNode(companyInfoNode)
+                .addNode(facInfoNodeGroup)
+                .addNode(batNodeGroup)
+                .addNode(otherAppInfoNode)
+                .addNode(supportingDocNode)
+                .addNode(previewSubmitNode)
+                .build();
+    }
+
+    public static void changeRootNodeGroup(NodeGroup facRegRoot, String classification, List<String> activityTypes) {
         Assert.notNull(facRegRoot, ERR_MSG_BAT_NOT_NULL);
         NodeGroup newNodeGroup;
-        if (isCf) {
+        if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(classification)) {
             newNodeGroup = certifiedFacilityNodeGroup(facRegRoot.getName());
-        } else if (isUcf) {
+        } else if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(classification)) {
             newNodeGroup = uncertifiedFacilityNodeGroup(facRegRoot.getName());
-        } else {  // RF
-            newNodeGroup = registeredFacilityNodeGroup(facRegRoot.getName());
+        } else if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(classification)) {
+            Assert.state(activityTypes.size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
+            String activityType = activityTypes.get(0);
+            if (MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType)) {
+                newNodeGroup = registeredFacilityFifthNodeGroup(facRegRoot.getName());
+            } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType)) {
+                newNodeGroup = registeredFacilityNodeGroup(facRegRoot.getName());
+            } else {
+                throw new IllegalStateException(ERR_MSG_INVALID_ACTIVITY);
+            }
+        } else {
+            throw new IllegalStateException(ERR_MSG_INVALID_CLASSIFICATION);
         }
         Node[] subNodes = newNodeGroup.getAllNodes().toArray(new Node[0]);
         facRegRoot.reorganizeNodes(subNodes, NODE_NAME_FAC_SELECTION);
@@ -1206,6 +1378,152 @@ public class FacilityRegistrationService {
         }
         return batList;
     }
+
+    public static Map<String, BiologicalAgentToxinDto> getBatInfoMap(NodeGroup batNodeGroup) {
+        Assert.notNull(batNodeGroup, ERR_MSG_BAT_NOT_NULL);
+        Map<String, BiologicalAgentToxinDto> batMap = Maps.newLinkedHashMapWithExpectedSize(batNodeGroup.count());
+        for (Node node : batNodeGroup.getAllNodes()) {
+            assert node instanceof SimpleNode;
+            batMap.put(node.getName(), (BiologicalAgentToxinDto) ((SimpleNode) node).getValue());
+        }
+        return batMap;
+    }
+
+
+    /**
+     * Convert flow-oriented NodeGroup to a DTO which will be transferred to be saved
+     */
+    public static FacilityRegisterDto getRegisterDtoFromFacRegRoot(NodeGroup facRegRoot) {
+        FacilityRegisterDto dto = new FacilityRegisterDto();
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
+        dto.setFacilitySelectionDto(selectionDto);
+
+        boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+        boolean isSPFifthRf = false;
+        if (isRf) {
+            Assert.state(selectionDto.getActivityTypes().size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
+            String activityType = selectionDto.getActivityTypes().get(0);
+            isSPFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
+        }
+
+        dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        dto.setFacilityAdminAndOfficerDto((FacilityAdminAndOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
+        dto.setOtherAppInfoDto((OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT)).getValue());
+
+        if (isCf || isUcf) {
+            dto.setFacilityOperatorDto((FacilityOperatorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
+            dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
+            dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
+        }
+
+
+        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(dto.getFacilityProfileDto().getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 2);
+        docRecordInfos.addAll(dto.getFacilityProfileDto().getSavedDocMap().values());
+        docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
+        if (isCf || isUcf) {
+            if (dto.getFacilityCommitteeDto().getSavedFile() != null) {
+                docRecordInfos.add(dto.getFacilityCommitteeDto().getSavedFile());
+            }
+            if (dto.getFacilityAuthoriserDto().getSavedFile() != null) {
+                docRecordInfos.add(dto.getFacilityAuthoriserDto().getSavedFile());
+            }
+        }
+        dto.setDocRecordInfos(docRecordInfos);
+
+        if (isCf) {
+            dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
+        } else if (isUcf || isSPFifthRf) {
+            NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
+            Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);
+            dto.setBiologicalAgentToxinMap(batInfoMap);
+        }
+        return dto;
+    }
+
+    /**
+     * Read a facility register DTO which contains all related data (usually retrieved from DB) to
+     * NodeGroup for the usage of flow
+     */
+    public static NodeGroup readRegisterDtoToNodeGroup(FacilityRegisterDto registerDto, String name) {
+        FacilitySelectionDto selectionDto = registerDto.getFacilitySelectionDto();
+        boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+        boolean isSPFifthRf = false;
+        boolean isPvRf = false;
+        if (isRf) {
+            Assert.state(selectionDto.getActivityTypes().size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
+            String activityType = selectionDto.getActivityTypes().get(0);
+            isSPFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
+            isPvRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType);
+        }
+
+        // split documents for profile
+        Collection<DocRecordInfo> profileDocs = new ArrayList<>();
+        Collection<DocRecordInfo> primaryDocs = new ArrayList<>();
+        DocRecordInfo committeeDoc = null;
+        DocRecordInfo authoriserDoc = null;
+        for (DocRecordInfo info : registerDto.getDocRecordInfos()) {
+            switch (info.getDocType()) {
+                case DocConstants.DOC_TYPE_GAZETTE_ORDER:
+                    profileDocs.add(info);
+                    break;
+                case DocConstants.DOC_TYPE_DATA_COMMITTEE:
+                    committeeDoc = info;
+                    break;
+                case DocConstants.DOC_TYPE_DATA_AUTHORISER:
+                    authoriserDoc = info;
+                    break;
+                default:
+                    primaryDocs.add(info);
+                    break;
+            }
+        }
+        registerDto.getFacilityProfileDto().setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileDocs, DocRecordInfo::getRepoId));
+        if (isCf || isUcf) {
+            registerDto.getFacilityCommitteeDto().setSavedFile(committeeDoc);
+            registerDto.getFacilityAuthoriserDto().setSavedFile(authoriserDoc);
+        }
+
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(primaryDocs, DocRecordInfo::getRepoId));
+
+        NodeGroup facRegRoot;
+        if (isCf) {
+            facRegRoot = certifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                            registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
+                            registerDto.getFacilityAuthoriserDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
+                            registerDto.getAfcDto(), registerDto.getPreviewSubmitDto());
+        } else if (isUcf) {
+            facRegRoot = uncertifiedFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                            registerDto.getFacilityOperatorDto(), registerDto.getFacilityAdminAndOfficerDto(), registerDto.getFacilityCommitteeDto(),
+                            registerDto.getFacilityAuthoriserDto(), registerDto.getBiologicalAgentToxinMap(), registerDto.getOtherAppInfoDto(),
+                            primaryDocDto, registerDto.getPreviewSubmitDto());
+        } else if (isRf) {
+            if (isSPFifthRf) {
+                facRegRoot = registeredFacilityFifthNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                        registerDto.getBiologicalAgentToxinMap(), registerDto.getFacilityAdminAndOfficerDto(),
+                        registerDto.getOtherAppInfoDto(), primaryDocDto, registerDto.getPreviewSubmitDto());
+            } else if (isPvRf) {
+                facRegRoot = registeredFacilityNodeGroup(name, registerDto.getFacilitySelectionDto(), registerDto.getFacilityProfileDto(),
+                        registerDto.getFacilityAdminAndOfficerDto(), registerDto.getOtherAppInfoDto(), primaryDocDto,
+                        registerDto.getPreviewSubmitDto());
+            } else {
+                throw new IllegalStateException(ERR_MSG_INVALID_ACTIVITY);
+            }
+        } else {
+            throw new IllegalStateException(ERR_MSG_INVALID_CLASSIFICATION);
+        }
+        return facRegRoot;
+    }
+
+
+
+
 
     /**
      * Compute the class name for the nav tab.

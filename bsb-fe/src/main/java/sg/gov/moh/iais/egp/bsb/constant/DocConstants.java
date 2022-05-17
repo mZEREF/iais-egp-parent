@@ -25,6 +25,10 @@ public class DocConstants {
     public static final String DOC_TYPE_INVENTORY_TEMPLATE = "inventoryTemplate";
 
     public static final String DOC_TYPE_GMAC_ENDORSEMENT = "gmacEndorsement";
+    public static final String DOC_TYPE_REPORTING_FORM = "facReportingForm";
+    public static final String DOC_TYPE_RISK_MITIGATION_PLAN = "riskMitigationPlan";
+    public static final String DOC_TYPE_PERSONNEL_HANDLE_TOXIN = "personnelHandleFifthToxin";
+    public static final String DOC_TYPE_BS_SECURITY_MEASURE = "bsSecurityMeasure";
 
 
     public static final String DOC_RED_TEAMING_REPORT = "REPTYPE01";

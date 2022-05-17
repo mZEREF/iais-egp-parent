@@ -8,10 +8,10 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="center-content">
-                    <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}"
-                                 facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
+                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" compProfile="${organizationAddress}"
+                                 facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                  batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                 containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${isUncertifiedFacility}">
+                                 classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}">
                         <jsp:attribute name="editFrag"/>
                         <jsp:attribute name="docFrag">
                             <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>

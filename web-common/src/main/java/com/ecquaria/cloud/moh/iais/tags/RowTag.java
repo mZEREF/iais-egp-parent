@@ -13,7 +13,7 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public final class RowTag extends DivTagSupport {
-    private static final long serialVersionUID = -4416314592778940028L;
+    private static final long serialVersionUID = 1L;
 
     private boolean inline;
 

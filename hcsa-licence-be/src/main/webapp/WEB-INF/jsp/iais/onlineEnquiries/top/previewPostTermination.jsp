@@ -3,7 +3,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#postDetails">
+            <a  data-toggle="collapse" href="#postDetails">
                 Post-Termination Of Pregnancy Counselling
             </a>
         </h4>

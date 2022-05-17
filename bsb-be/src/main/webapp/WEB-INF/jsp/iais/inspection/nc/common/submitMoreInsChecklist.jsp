@@ -28,34 +28,15 @@
         SOP.Crud.cfxSubmit("mainForm", "saveDraft");
     }
 
-
-
-
     function showCheckBox(str,indexIns){
-        if(indexIns != null &&indexIns != "" ){
-            indexIns = "Ins" + indexIns;
-        }else {
-            indexIns = "";
-        }
-        var divId = str+'ck'+ indexIns;
-        var comId = str+'comck'+indexIns;
+        var divId = str+'ckIns'+ indexIns;
         divId  = divId.replace(/\s*/g,"");
-        comId = comId.replace(/\s*/g,"");
         $("#"+divId).show();
-        $("#"+comId).show();
     }
     function hideCheckBox(str,indexIns){
-        if(indexIns != null &&indexIns != "" ){
-            indexIns = "Ins" + indexIns;
-        }else {
-            indexIns = "";
-        }
-        var divId = str+'ck'+ indexIns;
-        var comdivId = str+'comck'+indexIns;
+        var divId = str+'ckIns'+ indexIns;
         divId  = divId.replace(/\s*/g,"");
-        comdivId = comdivId.replace(/\s*/g,"");
         $("#"+divId).hide();
-        $("#"+comdivId).hide();
     }
 
     function showFollUp(str,indexIns){
@@ -70,7 +51,7 @@
         var comIdfollAction = str+'follAction'+indexIns;
         comIdfollAction = comIdfollAction.replace(/\s*/g,"");
         $("#"+comIdfollAction).show();
-        var comIdDueDate = str+'comDueDate'+indexIns;
+        var comIdDueDate = str+'DueDate'+indexIns;
         comIdDueDate = comIdDueDate.replace(/\s*/g,"");
         $("#"+comIdDueDate).show();
     }
@@ -86,7 +67,7 @@
         var comIdfollAction = str+'follAction'+ indexIns;
         comIdfollAction  = comIdfollAction.replace(/\s*/g,"");
         $("#"+comIdfollAction).hide();
-        var comIdDueDate = str+'comDueDate'+ indexIns;
+        var comIdDueDate = str+'DueDate'+ indexIns;
         comIdDueDate  = comIdDueDate.replace(/\s*/g,"");
         $("#"+comIdDueDate).hide();
     }

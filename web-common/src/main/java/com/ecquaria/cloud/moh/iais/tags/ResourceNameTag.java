@@ -18,7 +18,7 @@ import javax.servlet.jsp.JspTagException;
 @Getter
 @Slf4j
 public final class ResourceNameTag extends DivTagSupport{
-    private static final long serialVersionUID = -8905947721190557039L;
+    private static final long serialVersionUID = 1L;
 
     HttpServletRequest request;
 

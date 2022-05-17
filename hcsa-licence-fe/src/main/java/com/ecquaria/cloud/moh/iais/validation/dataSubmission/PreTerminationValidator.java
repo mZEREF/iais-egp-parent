@@ -48,7 +48,7 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-            if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
+            if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
                 if(StringUtil.isEmpty(preTerminationDto.getCounsellingGivenOnMin())){
                     errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
                 }

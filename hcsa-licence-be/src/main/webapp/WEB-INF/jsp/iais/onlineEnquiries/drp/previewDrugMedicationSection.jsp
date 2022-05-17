@@ -4,7 +4,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4  class="panel-title" >
-            <a class="collapsed" href="#medication" data-toggle="collapse"  >
+            <a  href="#medication" data-toggle="collapse"  >
                 Medication Details
             </a>
         </h4>

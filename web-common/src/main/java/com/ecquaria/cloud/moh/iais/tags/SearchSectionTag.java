@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
  */
 public final class SearchSectionTag extends DivTagSupport {
 
-    private static final long serialVersionUID = 5575347441570999758L;
+    private static final long serialVersionUID = 1L;
     private static final String ENDDIV = "</div>";
     private String title;
     private boolean collapse;

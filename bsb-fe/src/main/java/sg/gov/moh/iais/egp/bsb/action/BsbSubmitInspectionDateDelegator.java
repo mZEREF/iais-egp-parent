@@ -32,7 +32,7 @@ public class BsbSubmitInspectionDateDelegator {
     public static final String PARAM_BACK_URL = "backUrl";
     public static final String PARAM_INBOX_URL = "/bsb-fe/eservice/INTERNET/MohBSBInboxMsg";
     public static final String PARAM_ACK_MSG = "ackMsg";
-    public static final String PARAM_SUCCESS_MSG = "You have successfully submitted the inspection time.";
+    public static final String PARAM_SUCCESS_MSG = "Your submission was successful.";
 
     private final BsbAppointmentClient bsbAppointmentClient;
 

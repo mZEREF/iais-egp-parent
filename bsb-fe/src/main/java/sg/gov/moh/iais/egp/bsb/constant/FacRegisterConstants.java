@@ -8,7 +8,6 @@ public class FacRegisterConstants {
     public static final String MODULE_NAME_RENEWAL         = "Renewal Facility Registration";
 
     public static final String DECLARATION_TYPE            = "Facility Registration";
-    public static final String DECLARATION_SUB_TYPE        = "New";
 
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
 
@@ -40,6 +39,9 @@ public class FacRegisterConstants {
 
     public static final String KEY_IS_CF                   = "isCertifiedFacility";
     public static final String KEY_IS_UCF                  = "isUncertifiedFacility";
+    public static final String KEY_IS_RF                   = "isRegisteredFacility";
+    public static final String KEY_IS_FIFTH_RF             = "isSPFifthRegisteredFacility";
+    public static final String KEY_IS_PV_RF                = "isPolioVirusRegisteredFacility";
 
     public static final String KEY_EDIT_APP_ID             = "editId";
     public static final String KEY_ACTION_TYPE             = "action_type";
@@ -100,6 +102,9 @@ public class FacRegisterConstants {
     public static final String ERR_MSG_NULL_GROUP          = "Node group must not be null!";
     public static final String ERR_MSG_NULL_NAME           = "Name must not be null!";
     public static final String ERR_MSG_INVALID_ACTION      = "Invalid action";
+    public static final String ERR_MSG_INVALID_CLASSIFICATION   = "Invalid facility classification";
+    public static final String ERR_MSG_INVALID_ACTIVITY    = "Invalid facility activity type";
+    public static final String ERR_MSG_RF_INVALID_ACTIVITY = "Registered Facility is only allowed to select one activity";
 
     //view application special constant
     public static final String KEY_APP_ID                 = "appId";

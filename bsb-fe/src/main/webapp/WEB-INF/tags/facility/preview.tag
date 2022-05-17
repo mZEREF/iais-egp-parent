@@ -3,21 +3,28 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
+
+<%@attribute name="isCfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isUcfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isRfJudge" required="true" type="java.lang.Boolean" %>
+
+<%@attribute name="classification" required="true" type="java.lang.String" %>
+<%@attribute name="activities" required="false" type="java.util.List<java.lang.String>" %>
 
 <%@attribute name="compProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo" %>
 <%@attribute name="facProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto" %>
-<%@attribute name="facOperator" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
-<%@attribute name="facAuth" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
+<%@attribute name="facOperator" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
 <%@attribute name="facAdminOfficer" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto" %>
-<%@attribute name="facCommittee" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
+<%@attribute name="facCommittee" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
+<%@attribute name="facAuth" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
 <%@attribute name="batList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto>" %>
 <%@attribute name="declarationConfigList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo>" %>
 <%@attribute name="declarationAnswerMap" required="true" type="java.util.Map<java.lang.String, java.lang.String>" %>
 <%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto" %>
 <%@attribute name="docFrag" fragment="true" %>
+
 <%@attribute name="editFrag" fragment="true" %>
-<%@attribute name="containsBatListJudge" type="java.lang.Boolean" %>
-<%@attribute name="containsAfcJudge" type="java.lang.Boolean" %>
 <%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="operatorEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="authorisedEditJudge" type="java.lang.Boolean" %>
@@ -154,6 +161,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${not isRfJudge}">
                             <c:if test="${operatorEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facOperator")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -212,6 +220,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </c:if>
                             <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -220,7 +229,7 @@
                                 </div>
                                 <div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Main Administrator</label>
+                                        <label class="col-xs-6 control-label"><strong>Main Administrator</strong></label>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -266,7 +275,7 @@
                                 </div>
                                 <div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Alternative Administrator</label>
+                                        <label class="col-xs-6 control-label"><strong>AlternateAdministrator</strong></label>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -311,6 +320,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${facAdminOfficer.officerList.size() > 0}">
                             <c:if test="${officerEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -362,6 +372,8 @@
                                     </c:forEach>
                                 </div>
                             </div>
+                            </c:if>
+                            <c:if test="${not isRfJudge}">
                             <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
@@ -382,10 +394,11 @@
                                     <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
                                 </div>
                             </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
-                <c:if test="${containsBatListJudge}">
+                <c:if test="${isUcfJudge or (isRfJudge and activities.get(0) eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
@@ -621,28 +634,7 @@
                                     <div class="clear"></div>
                                 </div>
                                 <div class="col-xs-12 form-group">
-                                    <p>The following is a non-exhaustive list of supporting documents that the facility is required to provide for the application. Some of these may not be available at point of application submission but must be provided subsequently, when available. Please note that incomplete submissions may result in delays to processing or rejection of the application.</p>
-                                    <span style="text-decoration: underline; font-weight: bold">Supporting Documents</span>
-                                    <ol class="no-margin-list" style="padding-left: 20px">
-                                        <li>Application letter containing the following information:
-                                            <ul class="no-margin-list">
-                                                <li>The name of the Facility Operator designee (hyperlink to BATA FO responsibilities);</li>
-                                                <li>Address of the facility where the intended work will be conducted;</li>
-                                                <li>The reason for the application; and</li>
-                                                <li>The justification of how and why the work involving the biological agent and/or toxin can be carried out safely and securely in the intended facility. This may include facility design, the use of laboratory safety equipment, personal protective equipment, good microbiological practices and procedures, as well as reliable and competent personnel.</li>
-                                            </ul>
-                                        </li>
-                                        <li>Details of the facility's biorisk management programme.</li>
-                                        <li>Documentation of approval from the Biosafety Committee for the intended work.</li>
-                                        <li>Documentation of endorsement from the Genetic Modification Advisory Committee (if the intended work involves genetic modification of microorganism(s) or handling of genetically modified microorganism(s).</li>
-                                        <li>Documentation of successful completion of the required biosafety training for the Biosafety Coordinator.</li>
-                                        <li>Facility Administrative Oversight Plan.</li>
-                                        <li>Facility layout/floorplan.</li>
-                                        <li>Gazette Order (if the facility is a Protected Place under the Infrastructure Protection Act).</li>
-                                        <li>List of all location(s) in the facility where the biological agent(s)/toxin(s) will be handled (including storage) and specify the corresponding work activities that will be carried out at each location (mapped to facility floorplan, as provided in #7). The information can be provided in a table format.</li>
-                                        <li>Risk assessments for the intended work conducted/reviewed/endorsed by the Biosafety Committee.</li>
-                                        <li>Safety and security records related to facility certification, inspection, accreditation, if any.</li>
-                                    </ol>
+                                    <fac:supportingDocInfo classification="${classification}" activities="${activities}" masterCodeConstants="${masterCodeConstants}"/>
                                 </div>
                             </div>
                         </div>
@@ -667,7 +659,7 @@
                         </div>
                     </div>
                 </div>
-                <c:if test="${containsAfcJudge}">
+                <c:if test="${isCfJudge}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
@@ -687,6 +679,7 @@
                                     </div>
                                     <div class="clear"></div>
                                 </div>
+                                <c:if test="${afc.appointed eq 'Y'}">
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label">Select Approved Facility Certifier</label>
                                     <div class="col-xs-6"><p><iais:code code="${afc.afc}"/></p></div>
@@ -697,6 +690,7 @@
                                     <div class="col-xs-6"><p>${afc.selectReason}</p></div>
                                     <div class="clear"></div>
                                 </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>

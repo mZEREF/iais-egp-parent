@@ -62,7 +62,7 @@
                                                 <div class="document-upload-list">
                                                     <h3>Biosafety Committee Information (${facCommittee.amount} records uploaded)</h3>
                                                     <div class="file-upload-gp">
-                                                        <span data-err-ind="committeeData" class="error-msg"></span>
+                                                        <span data-err-ind="committeeData" class="error-msg" style="display: block"></span>
                                                         <c:if test="${dataHasError}">
                                                             <span class="error-msg">Unsuccessful upload due to the following invalid record. Please complete rectification before reattempting upload.</span>
                                                             <div class="row">

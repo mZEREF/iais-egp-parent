@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <div class="button-group">
-                            <a class="btn btn-primary next" id="next" >Next</a>
+                            <a class="btn btn-primary next" id="next" >Continue</a>
                         </div>
                     </div>
                 </div>

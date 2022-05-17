@@ -66,6 +66,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         ldtParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"dsLaboratoryDevelopTestEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "ldtParam",null);
+        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle", "Laboratory Developed Test");
 
     }
 

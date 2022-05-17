@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class PageShowFileDto implements Serializable {
-    private static final long serialVersionUID = -112871109805321086L;
+    private static final long serialVersionUID = 1L;
     private String fileUploadUrl;
     private String fileName;
     private String fileMapId;

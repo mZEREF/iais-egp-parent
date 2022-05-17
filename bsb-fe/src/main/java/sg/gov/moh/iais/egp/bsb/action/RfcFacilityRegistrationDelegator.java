@@ -67,7 +67,7 @@ public class RfcFacilityRegistrationDelegator {
                     FacilityRegisterDto oldFacilityRegisterDto = resultDto.getEntity();
                     ParamUtil.setSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO, oldFacilityRegisterDto);
 
-                    NodeGroup facRegRoot = oldFacilityRegisterDto.toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+                    NodeGroup facRegRoot = FacilityRegistrationService.readRegisterDtoToNodeGroup(oldFacilityRegisterDto, KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                 }
             }
@@ -188,7 +188,7 @@ public class RfcFacilityRegistrationDelegator {
                     newFilesToSync.addAll(primaryDocNewFiles);
                     newFilesToSync.addAll(profileNewFiles);
 
-                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+                    FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
                     //rfc compare to decision flowType
                     FacilityRegisterDto oldFacilityRegisterDto = (FacilityRegisterDto)ParamUtil.getSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO);
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();

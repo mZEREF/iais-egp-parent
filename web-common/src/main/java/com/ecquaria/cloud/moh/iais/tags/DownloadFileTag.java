@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public class DownloadFileTag extends TagSupport {
-    private static final long serialVersionUID = 2451010450363751735L;
+    private static final long serialVersionUID = 1L;
 
     private String fileRepoIdName;
     private String fileRepoId;

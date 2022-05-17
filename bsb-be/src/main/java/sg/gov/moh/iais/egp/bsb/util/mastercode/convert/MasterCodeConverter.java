@@ -5,5 +5,7 @@ public interface MasterCodeConverter {
 
     String value2Code(String value);
 
-    String code2Desc(String desc);
+    String code2Desc(String code);
+
+    String desc2Code(String desc);
 }

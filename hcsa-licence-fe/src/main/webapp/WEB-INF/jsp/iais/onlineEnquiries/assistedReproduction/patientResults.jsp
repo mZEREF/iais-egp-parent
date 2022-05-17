@@ -40,6 +40,9 @@
 
                     <div class="col-xs-12 col-md-12">
                         <iais:row>
+
+                        </iais:row>
+                        <iais:row>
                             <iais:field width="4" value="SEARCH BY" />
                             <div class="col-md-8 row">
                                 <iais:value width="4" cssClass="col-md-4 row">

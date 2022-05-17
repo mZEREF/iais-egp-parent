@@ -40,12 +40,15 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DocsMetaDto implements Serializable {
         private String facClassification;
+        private List<String> facActivityTypes;
         private Map<String, List<DocMeta>> metaDtoMap;
     }
 
     private String facClassification;
+    private List<String> activityTypes;
 
     /* docs already saved in DB, key is repoId */
     private Map<String, DocRecordInfo> savedDocMap;
@@ -79,7 +82,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         });
 
         Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
-        DocsMetaDto docsMetaDto = new DocsMetaDto(facClassification, metaDtoMap);
+        DocsMetaDto docsMetaDto = new DocsMetaDto(facClassification, activityTypes, metaDtoMap);
 
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPrimaryDocs", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
@@ -199,6 +202,14 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     public void setFacClassification(String facClassification) {
         this.facClassification = facClassification;
+    }
+
+    public List<String> getActivityTypes() {
+        return activityTypes;
+    }
+
+    public void setActivityTypes(List<String> activityTypes) {
+        this.activityTypes = activityTypes;
     }
 
     public Map<String, DocRecordInfo> getSavedDocMap() {

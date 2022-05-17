@@ -52,6 +52,9 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="row form-horizontal">
+                    <iais:row>
+
+                    </iais:row>
                     <div class="bg-title col-xs-12 col-md-12">
                         <h2>Lab-developed Tests Enquiry</h2>
                     </div>

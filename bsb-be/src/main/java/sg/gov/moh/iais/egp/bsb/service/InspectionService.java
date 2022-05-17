@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
+import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
-import sg.gov.moh.iais.egp.bsb.dto.chklst.AnswerForDifDto;
-import sg.gov.moh.iais.egp.bsb.dto.chklst.ChecklistQuestionDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdCheckListShowDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdhocNcCheckItemDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAnswerForDifDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFillCheckListDto;
@@ -111,11 +114,34 @@ public class InspectionService {
             }
             chkDtoList.add(fDto);
         }
-        AdhocChecklistConfigDto adhocConfig = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
-        if (adhocConfig != null && !IaisCommonUtils.isEmpty(adhocConfig.getAdhocChecklistItemList())) {
-//            AdhocChecklistItemDto
-        }
+
         return chkDtoList;
+    }
+
+    public BsbAdCheckListShowDto getAdhocCheckListDto(String appId, List<OrgUserDto> orgUserDtoUsers) {
+        BsbAdCheckListShowDto adCheckListShowDto = null;
+        AdhocChecklistConfigDto confDto = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+        if (confDto != null) {
+            adCheckListShowDto = new BsbAdCheckListShowDto();
+            List<BsbAdhocNcCheckItemDto> adItemList = IaisCommonUtils.genNewArrayList();
+            if (confDto.getAdhocChecklistItemList() != null && !confDto.getAdhocChecklistItemList().isEmpty()) {
+                for (AdhocChecklistItemDto temp : confDto.getAdhocChecklistItemList()) {
+                    BsbAdhocNcCheckItemDto showDto = new BsbAdhocNcCheckItemDto(temp);
+                    showDto.setSectionId(ChecklistConstants.ADHOC_SECTION_ID);
+                    adItemList.add(showDto);
+                    showDto.setAnswerForDifDtoMaps(IaisCommonUtils.genNewHashMap());
+                    showDto.setAdhocAnswerForDifDtos(IaisCommonUtils.genNewArrayList());
+                    for (OrgUserDto user : orgUserDtoUsers) {
+                        BsbAnswerForDifDto anDto = new BsbAnswerForDifDto();
+                        anDto.setSubmitId(user.getId());
+                        anDto.setSubmitName(user.getDisplayName());
+                        showDto.getAdhocAnswerForDifDtos().add(anDto);
+                    }
+                }
+            }
+            adCheckListShowDto.setAdItemList(adItemList);
+        }
+        return adCheckListShowDto;
     }
 
     public InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto, String appPremCorrId) {
@@ -145,8 +171,8 @@ public class InspectionService {
         dto.setCheckList(checkList);
         if(checkList!=null && !checkList.isEmpty()){
             List<InspectionCheckQuestionDto> cqDtoList = IaisCommonUtils.genNewArrayList();
-            for(ChecklistQuestionDto temp:checkList){
-                InspectionCheckQuestionDto inspectionCheckQuestionDto = transferQuestionDtotoInDto(temp);
+            for(InspectionCheckQuestionDto temp:checkList){
+                InspectionCheckQuestionDto inspectionCheckQuestionDto = (InspectionCheckQuestionDto) CopyUtil.copyMutableObject(temp);
                 inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
                 cqDtoList.add(inspectionCheckQuestionDto);
             }
@@ -156,31 +182,7 @@ public class InspectionService {
         }
         return dto;
     }
-    public InspectionCheckQuestionDto transferQuestionDtotoInDto(ChecklistQuestionDto cdto){
-        InspectionCheckQuestionDto icDto = new InspectionCheckQuestionDto();
-        icDto.setAnswerType(cdto.getAnswerType());
-        icDto.setAnswer(cdto.getAnswer());
-        icDto.setChecklistItem(cdto.getChecklistItem());
-        icDto.setCommon(cdto.getCommon());
-        icDto.setConfigId(cdto.getConfigId());
-        icDto.setHciCode(cdto.getHciCode());
-        icDto.setId(cdto.getId());
-        icDto.setItemId(cdto.getItemId());
-        icDto.setModule(cdto.getModule());
-        icDto.setSvcName(cdto.getSvcName());
-        icDto.setSvcType(cdto.getSvcType());
-        icDto.setRegClause(cdto.getRegClause());
-        icDto.setRegClauseNo(cdto.getRegClauseNo());
-        icDto.setRiskLvl(cdto.getRiskLvl());
-        icDto.setSecOrder(cdto.getSecOrder());
-        icDto.setSectionDesc(cdto.getSectionDesc());
-        icDto.setSectionName(cdto.getSectionName());
-        icDto.setSubTypeName(cdto.getSubTypeName());
-        icDto.setSvcCode(cdto.getSvcCode());
-        icDto.setSvcId(cdto.getSvcId());
-        icDto.setRectified(false);
-        return icDto;
-    }
+
     public InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         List<SectionDto> sectionDtoList = IaisCommonUtils.genNewArrayList();
@@ -257,10 +259,10 @@ public class InspectionService {
         }
 
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
-            List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
-            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
+            List<BsbAnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
+            Map<String, BsbAnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
             for (OrgUserDto entry : orgUserDtos) {
-                AnswerForDifDto answerForDifDto = new AnswerForDifDto();
+                BsbAnswerForDifDto answerForDifDto = new BsbAnswerForDifDto();
                 answerForDifDto.setSubmitId(entry.getId());
                 answerForDifDto.setSubmitName(entry.getUserId());
                 answerForDifDtos.add(answerForDifDto);
@@ -275,7 +277,7 @@ public class InspectionService {
 
 
 
-    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, AnswerForDifDto answerForDifDto){
+    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, BsbAnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
@@ -286,17 +288,38 @@ public class InspectionService {
         inspectionCheckQuestionDto.setDueDate(answerForDifDto.getDueDate());
         return  inspectionCheckQuestionDto;
     }
-    public void getRateOfCheckList(InspectionFDtosDto serListDto) {
+    public void getRateOfCheckList(InspectionFDtosDto serListDto, BsbAdCheckListShowDto adchklDto) {
         if(serListDto == null) return;
         if(serListDto.getFdtoList()!=null){
             getServiceTotalAndNc(serListDto);
         }
-
+        if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
+            getAdhocTotalAndNc(adchklDto,serListDto);
+        }
         int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
 
         serListDto.setTotalNcNum(totalNcNum);
     }
 
+    private void getAdhocTotalAndNc(BsbAdCheckListShowDto adchklDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(BsbAdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(aditem.getAdAnswer())){
+                if( "NO".equalsIgnoreCase(aditem.getAdAnswer())){
+                    if(StringUtil.isNotEmpty(aditem.getRemark()) && StringUtil.isNotEmpty(aditem.getNcs())){
+                        ncNum++;
+                    }
+                }
+                doNum++;
+            }
+        }
+        serListDto.setAdhocTotal(totalNum);
+        serListDto.setAdhocNc(ncNum);
+        serListDto.setAdhocDo(doNum);
+    }
 
 
     private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {

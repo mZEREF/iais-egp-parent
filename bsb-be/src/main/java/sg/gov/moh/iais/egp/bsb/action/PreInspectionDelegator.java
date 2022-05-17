@@ -18,13 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.RfiApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.RfiPreInspectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -41,13 +45,17 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 @Delegator("bsbPreInspection")
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
+    private final AppViewService appViewService;
 
     private static final String RFI_APPLICATION = "AppPreInspRfiCheck";
     private static final String RFI_SELF = "SelfPreInspRfiCheck";
 
+    private static final String KEY_RFI_APPLICATION_DTO = "rfiApplicationDto";
+
     @Autowired
-    public PreInspectionDelegator(InspectionClient inspectionClient) {
+    public PreInspectionDelegator(InspectionClient inspectionClient, AppViewService appViewService) {
         this.inspectionClient = inspectionClient;
+        this.appViewService = appViewService;
     }
 
 
@@ -64,11 +72,12 @@ public class PreInspectionDelegator {
         session.removeAttribute(RFI_APPLICATION);
         session.removeAttribute(RFI_SELF);
         session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
+        session.removeAttribute(KEY_RFI_APPLICATION_DTO);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         PreInspectionDataDto preInspectionDataDto = inspectionClient.getPreInspectionDataDto(appId);
         SubmissionDetailsInfo submissionDetailsInfo = preInspectionDataDto.getSubmissionDetailsInfo();
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, submissionDetailsInfo);
@@ -104,6 +113,9 @@ public class PreInspectionDelegator {
                 log.info("-----------application id is null-------");
             }
         }
+
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_NEW_FACILITY);
     }
 
     public void bindAction(BaseProcessClass bpc) {
@@ -178,8 +190,13 @@ public class PreInspectionDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        RfiApplicationDto rfiApplicationDto = (RfiApplicationDto) ParamUtil.getSessionAttr(request, KEY_RFI_APPLICATION_DTO);
+        RfiPreInspectionDto rfiPreInspectionDto = new RfiPreInspectionDto();
+        rfiPreInspectionDto.setInsProcessDto(processDto);
+        rfiPreInspectionDto.setRfiFlag(rfiFlag);
+        rfiPreInspectionDto.setRfiApplicationDto(rfiApplicationDto);
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
-        inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiFlag, processDto);
+        inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiPreInspectionDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
@@ -189,6 +206,23 @@ public class PreInspectionDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         inspectionClient.skipInspection(appId, taskId, processDto);
+    }
+
+    public void prepareApplicationRfi(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        appViewService.retrieveFacReg(request, appId);
+    }
+
+    public void doApplicationRfi(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        RfiApplicationDto rfiApplicationDto = (RfiApplicationDto) ParamUtil.getSessionAttr(request, KEY_RFI_APPLICATION_DTO);
+        if (rfiApplicationDto == null) {
+            rfiApplicationDto = new RfiApplicationDto();
+        }
+        rfiApplicationDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_RFI_APPLICATION_DTO, rfiApplicationDto);
+        ParamUtil.setRequestAttr(request, "closePage", "Y");
     }
 
     private Map<String, String> validateRfi(HttpServletRequest request, InsProcessDto processDto) {

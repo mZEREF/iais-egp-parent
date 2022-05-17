@@ -1125,8 +1125,8 @@
             <#if patientName??> AND  charindex(:patientName, dvt.PATIENT_NAME) >0</#if>
             <#if maritalStatus??> AND  charindex(:maritalStatus, dvt.MARITAL_STATUS) >0</#if>
             <#if sterilisationReason??> AND  charindex(:sterilisationReason, dvt.STERILIZATION_REASON) >0</#if>
-            <#if submissionDateFrom??> AND T1.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
-            <#if submissionDateTo??> AND T1.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+            <#if submissionDateFrom??> AND dds.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
+            <#if submissionDateTo??> AND dds.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
          ]]>
     </sql>
 
@@ -1175,8 +1175,8 @@
                 where 1=1
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
-            <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
-            <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
+            <#if patientIdNo??> AND  :patientIdNo = dpi.ID_NUMBER </#if>
+            <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
             <#if birthDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:birthDateFrom)</#if>
             <#if birthDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:birthDateTo)</#if>
             <#if submissionDateFrom??> AND dds.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>

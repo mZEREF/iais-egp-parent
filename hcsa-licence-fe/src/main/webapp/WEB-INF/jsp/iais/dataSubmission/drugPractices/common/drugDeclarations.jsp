@@ -41,7 +41,7 @@
 
                 </iais:row>
                 <iais:row>
-                    <div class="col-xs-12">Reason for Late Submission.
+                    <div class="col-xs-12">Reason for Late Submission
                         <c:if test="${DeclarationsCheckBox != 'hide' && dpSuperDataSubmissionDto.drugPrescribedDispensedDto.drugSubmission.getReasonMandatory()}">
                          <span class="mandatory">*</span>
                         </c:if>

@@ -53,4 +53,12 @@ public class INTRANET___MohBsbPreInspection___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "skip", this);
 	}
 
+	public void prepareApplicationRfi_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareApplicationRfi", this);
+	}
+
+	public void doApplicationRfi_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doApplicationRfi", this);
+	}
+
 }

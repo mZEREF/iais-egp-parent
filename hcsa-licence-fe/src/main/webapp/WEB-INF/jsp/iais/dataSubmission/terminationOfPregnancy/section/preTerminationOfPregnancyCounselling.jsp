@@ -190,7 +190,7 @@
             </iais:row>
         </div>
         <iais:row>
-            <iais:field width="5" value="Patient Age(Years)"/>
+            <iais:field width="5" value="Patient Age (Years)"/>
             <iais:value width="7" cssClass="col-md-7" display="true" id="age">
                 ${patientInformationDto.patientAge}
         </iais:value>

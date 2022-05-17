@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
 @Getter
 @Setter
 public class HcsaServiceTag extends DivTagSupport{
-	private static final long serialVersionUID = 3011331440361665994L;
+	private static final long serialVersionUID = 1L;
 
 	private String value;
 	private Boolean maskValue;

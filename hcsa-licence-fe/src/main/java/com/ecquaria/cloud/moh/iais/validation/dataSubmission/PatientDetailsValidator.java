@@ -73,7 +73,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         }
         int m=0;
         if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo())){
-            if (Integer.valueOf(patientInformationDto.getLivingChildrenNo()) > 10) {
+            if (Integer.parseInt(patientInformationDto.getLivingChildrenNo()) > 10) {
                 errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
             } else if(patientInformationDto.getLivingChildrenNo().length()>2){
                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
@@ -81,7 +81,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 repMap.put("field", "No. of Living Children");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("livingChildrenNo", errMsg);
-            }else if(Integer.valueOf(patientInformationDto.getLivingChildrenNo())<m){
+            }else if(Integer.parseInt(patientInformationDto.getLivingChildrenNo())<m){
                 errorMap.put("livingChildrenNo", "Negative numbers are not allowed on this field.");
             }
         }

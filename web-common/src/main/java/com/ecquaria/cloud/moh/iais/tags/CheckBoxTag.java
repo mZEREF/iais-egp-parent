@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 
 @Slf4j
 public final class CheckBoxTag extends DivTagSupport {
-    private static final long serialVersionUID = 4983787188588579959L;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String labelName;

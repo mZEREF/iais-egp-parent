@@ -31,16 +31,17 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
             errorMap.put("cycleAbandoned" ,"GENERAL_ERR0006");
         }
         String errMsg006 = null;
+        String msg=MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
         if (Boolean.parseBoolean(cycleAbandoned)) {
             if ( abandonReason == null){
-                 errMsg006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
+                 errMsg006 = msg;
                 errorMap.put("abandonReason", errMsg006);
             }
         }
         if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason) && Boolean.parseBoolean(cycleAbandoned)) {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {
-                errorMap.put("otherAbandonReason", errMsg006 == null ? MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field") :  errMsg006);
+                errorMap.put("otherAbandonReason", errMsg006 == null ? msg:  errMsg006);
             }else if (otherAbandonReason.length() > 20) {
                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                 repMap.put("maxlength", "20");

@@ -226,7 +226,7 @@ public class RfiFacilityRegistrationDelegator {
 
                     // save data
                     log.info("Save facility registration data");
-                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+                    FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
                     ResponseDto<AppMainInfo> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();

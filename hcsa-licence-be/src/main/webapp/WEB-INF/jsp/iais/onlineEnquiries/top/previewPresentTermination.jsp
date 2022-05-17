@@ -3,7 +3,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#terminationDetails">
+            <a  data-toggle="collapse" href="#terminationDetails">
                 Termination Of Pregnancy
             </a>
         </h4>
@@ -110,7 +110,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.topPlace}"/>
+                            <c:out value="${terminationDto.topPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -132,7 +132,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.prescribeTopPlace}"/>
+                            <c:out value="${terminationDto.prescribeTopPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -153,7 +153,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
+                            <c:out value="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>

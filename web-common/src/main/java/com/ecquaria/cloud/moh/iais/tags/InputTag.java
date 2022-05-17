@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspTagException;
  * @date 9/27/2019
  */
 public class InputTag extends DivTagSupport{
-    private static final long serialVersionUID = -698233506237359748L;
+    private static final long serialVersionUID = 1L;
 
     private String type;
     private String name;

@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>Indicate Preferred Inspection Date</h1>
+                    <h1>Appointment: Preferred Inspection Date</h1>
                 </div>
             </div>
         </div>

@@ -317,11 +317,12 @@ public class TopDataSubmissionDelegator {
         if(terminationDto==null){
             terminationDto=new TerminationDto();
         }
+        boolean b = true;
         if(StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
-            terminationDto.setPregnancyOwn(true);
+            terminationDto.setPregnancyOwn(b);
         }
         if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
-            terminationDto.setTakenOwn(true);
+            terminationDto.setTakenOwn(b);
         }
         terminationOfPregnancyDto.setTerminationDto(terminationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);

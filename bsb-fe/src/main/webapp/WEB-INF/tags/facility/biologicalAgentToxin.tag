@@ -81,14 +81,8 @@
                                                     <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}'>
                                                         <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}" role="tab">Large-Scale Production of First and/or Third Schedule Biological Agent</a></li>
                                                     </c:if>
-                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV)}'>
-                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}" role="tab">Handling of non-First Schedule Poliovirus Infectious Materials</a></li>
-                                                    </c:if>
                                                     <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}'>
                                                         <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}" role="tab">Handling of Fifth Schedule Toxin for Exempted Purposes</a></li>
-                                                    </c:if>
-                                                    <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL)}'>
-                                                        <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL}" role="tab">Handling of Poliovirus Potentially Infectious Materials</a></li>
                                                     </c:if>
                                                 </ul>
                                                 <%@include file="../common/atpBatInfo.tag"%>
