@@ -29,6 +29,10 @@
 <%@attribute name="docEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="afcEditJudge" type="java.lang.Boolean" %>
 
+<%@attribute name="facilityInfoSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="batSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="docSelectJudge" type="java.lang.Boolean" %>
+
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
 <div class="preview-gp">
@@ -103,6 +107,7 @@
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
                             <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facProfile")}</div></c:if>
+                            <c:if test="${facilityInfoSelectJudge}"><div class="text-right"><input type="checkbox" name="facilityInfoSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.facilityInfoSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -392,6 +397,7 @@
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
                             <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div></c:if>
+                            <c:if test="${batSelectJudge}"><div class="text-right"><input type="checkbox" name="batSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.batSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                             <c:forEach var="bat" items="${batList}">
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
@@ -496,6 +502,7 @@
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
                             <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
+                            <c:if test="${docSelectJudge}"><div class="text-right"><input type="checkbox" name="docSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.docSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <jsp:invoke fragment="docFrag"/>
                             </div>

@@ -71,6 +71,20 @@
     <JavaCode defClass="" executor="" methodName="skip_OnStepProcess_0" name="skip_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareApplicationRfi" x="0" y="360">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareApplicationRfi_OnStepProcess_0" name="prepareApplicationRfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoApplicationRfi" x="160" y="500">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doApplicationRfi_OnStepProcess_0" name="doApplicationRfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page" stageIndicator="" x="550" y="100">
@@ -92,6 +106,12 @@
    <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AfterSkipPage" stageIndicator="" x="1130" y="300">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ApplicationRfiPage" stageIndicator="" x="150" y="360">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -130,8 +150,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/ViewSelfAssessment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreSelfAssessment" style="oblique">
    <position>{(550,570)(550,690)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewSelfAssessment" style="rectanular">
-   <position>{(550,690)(359,689)(360,370)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewSelfAssessment" style="oblique">
+   <position>{(550,690)(360,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreSelfAssessment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
    <position>{(570,440)(550,570)}</position>
@@ -148,8 +168,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Ready" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(870,460)(1020,550)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(870,460)(359,741)(360,370)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(870,460)(859,745)(359,741)(360,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RFI" style="oblique">
    <position>{(1020,420)(1140,480)}</position>
@@ -160,8 +180,17 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Skip" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(870,460)(1020,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Skip" style="rectanular">
+  <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Skip" style="oblique">
    <position>{(1020,320)(1150,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ApplicationRfiPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareApplicationRfi" style="oblique">
+   <position>{(20,380)(170,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoApplicationRfi" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ApplicationRfiPage" style="oblique">
+   <position>{(170,380)(180,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareApplicationRfi" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoApplicationRfi" style="oblique">
+   <position>{(180,520)(20,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />

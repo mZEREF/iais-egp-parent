@@ -14,9 +14,8 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-pre-inspection.js"></script>
 
-<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
-<%--@elvariable id="selfAssessmentAvailable" type="java.lang.Boolean"--%>
+<%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -121,103 +120,63 @@
                                                         <div class="table-gp">
                                                             <div class="form-horizontal">
                                                                 <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Current
-                                                                        Status</label>
+                                                                    <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                        <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label for="remarks"
-                                                                           class="col-xs-12 col-md-4 control-label">Remarks</label>
+                                                                    <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <textarea id="remarks" name="remarks"
-                                                                                      cols="70" rows="7"
-                                                                                      maxlength="300"><c:out
-                                                                                    value="${insDecision.remark}"/></textarea>
-                                                                            <span data-err-ind="remarks"
-                                                                                  class="error-msg"></span>
+                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${insDecision.remark}"/></textarea>
+                                                                            <span data-err-ind="remarks" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label for="processingDecision"
-                                                                           class="col-xs-12 col-md-4 control-label">Processing
-                                                                        Decision <span
-                                                                                style="color: red">*</span></label>
+                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision"
-                                                                                    class="processingDecisionDropdown"
-                                                                                    id="processingDecision">
+                                                                            <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO021"
-                                                                                        <c:if test="${insDecision.decision eq 'MOHPRO021'}">selected="selected"</c:if>>
+                                                                                <option value="MOHPRO021" <c:if test="${insDecision.decision eq 'MOHPRO021'}">selected="selected"</c:if>>
                                                                                     Mark as ready
                                                                                 </option>
                                                                                 <%--@elvariable id="canRfi" type="java.lang.Boolean"--%>
                                                                                 <c:if test="${canRfi}">
-                                                                                    <option value="MOHPRO002"
-                                                                                            <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>
+                                                                                    <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>
                                                                                         Request for information
                                                                                     </option>
                                                                                 </c:if>
-                                                                                <option value="MOHPRO029"
-                                                                                        <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>
-                                                                                    Skip Inspection
-                                                                                </option>
+                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                             </select>
-                                                                            <span data-err-ind="processingDecision"
-                                                                                  class="error-msg"></span>
+                                                                            <span data-err-ind="processingDecision" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div id="rfiCheckBox"
-                                                                         <c:if test="${insDecision.decision ne 'MOHPRO002'}">style="display: none"</c:if>>
-                                                                        <iais:field value="Request For Information"
-                                                                                    mandatory="true"/>
+                                                                    <div id="rfiCheckBox" <c:if test="${insDecision.decision ne 'MOHPRO002'}">style="display: none"</c:if>>
+                                                                        <iais:field value="Request For Information" mandatory="true"/>
                                                                         <iais:value width="7">
                                                                             <p>
-                                                                                <input type="checkbox"
-                                                                                       name="AppPreInspRfiCheck"
-                                                                                       id="AppPreInspRfiCheck"
-                                                                                       value="true"
-                                                                                       <c:if test="${AppPreInspRfiCheck}">checked="checked"</c:if>
-                                                                                />
-                                                                                <span style="font-size: 16px"><c:out
-                                                                                        value="Application"/></span>
+                                                                                <input type="checkbox" name="AppPreInspRfiCheck" id="AppPreInspRfiCheck" value="true" <c:if test="${AppPreInspRfiCheck}">checked="checked"</c:if>/>
+                                                                                <span style="font-size: 16px"><c:out value="Application"/></span>
                                                                             </p>
                                                                             <p>
-                                                                                <input type="checkbox"
-                                                                                       name="SelfPreInspRfiCheck"
-                                                                                       id="SelfPreInspRfiCheck"
-                                                                                       value="true"
-                                                                                       <c:if test="${SelfPreInspRfiCheck}">checked="checked"</c:if>
-                                                                                />
-                                                                                <span style="font-size: 16px"><c:out
-                                                                                        value="Pre-Inspection Checklist"/></span>
+                                                                                <input type="checkbox" name="SelfPreInspRfiCheck" id="SelfPreInspRfiCheck" value="true" <c:if test="${SelfPreInspRfiCheck}">checked="checked"</c:if>/>
+                                                                                <span style="font-size: 16px"><c:out value="Pre-Inspection Checklist"/></span>
                                                                             </p>
-                                                                            <span class="error-msg"
-                                                                                  name="iaisErrorMsg"
-                                                                                  id="error_preInspRfiCheck"></span>
+                                                                            <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiCheck"></span>
                                                                         </iais:value>
                                                                     </div>
 
                                                                     <div class="clear"></div>
                                                                 </div>
                                                             </div>
-                                                            <a class="back"
-                                                               href="/bsb-be/eservice/INTRANET/MohBsbTaskList"
-                                                               style="float:left"><em class="fa fa-angle-left"></em>
-                                                                Previous</a>
-                                                            <div style="text-align: right">
-                                                                <button name="submitBtn" id="submitBtn" type="button"
-                                                                        class="btn btn-primary">Submit
-                                                                </button>
-                                                            </div>
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                                                            <div style="text-align: right"><button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button></div>
                                                         </div>
                                                     </div>
                                                 </div>
