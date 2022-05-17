@@ -66,10 +66,16 @@
                         </div>
                     </iais:value>
                 </iais:row>
+                <input type="hidden" name="oldReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}" />
                 <iais:row>
                     <iais:field width="5" value="Reason" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
+                        <div id="reasonDisplay1" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 0}">style="display: none"</c:if> >
+                            <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
+                        </div>
+                        <div id="reasonDisplay0" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 1}">style="display: none"</c:if> >
+                            <input type="text" maxlength="66" name="textReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}" >
+                        </div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
                 </iais:row>
