@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+
 <c:if test="${AppSubmissionDto.needEditController}">
     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
         <c:if test="${'APPSPN01' == clickEditPage}">

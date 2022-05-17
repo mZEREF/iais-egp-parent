@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
@@ -6,28 +7,26 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 
-<form method="post" id="mainForm" class="__egovform" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
-    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-
-    <div class="main-content">
-        <div class="container">
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+    <form id="mainForm" method="post" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action="<%=process.runtime.continueURL()%>">
+        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+        <div class="main-content">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
-                        <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="serviceInformationTab" role="tabpanel">
-                                <div <%--class="multiservice"--%>>
+                <div class="center-content">
+                    <div class="col-xs-12 intranet-content">
+                        <div class="tab-gp steps-tab tab-be">
+                            <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
+                            <div class="tab-content">
+                                <div class="tab-pane in active" id="serviceInformationTab" role="tabpanel">
+                                    <%--<div class="multiservice">--%>
                                     <div class="tab-gp side-tab clearfix">
                                         <%@ include file="../common/formTabs.jsp" %>
                                         <div class="tab-content" ${(empty hcsaServiceDtoList || hcsaServiceDtoList.size() <= 1) ?
-                                        'style="width:100%;"' : ''}>
+                                                'style="width:100%;"' : ''}>
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
                                                 <%@ include file="../common/step.jsp" %>
                                                 <div class="application-service-steps">
@@ -110,15 +109,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <%--</div>--%>
+                                    <%@ include file="../common/next.jsp" %>
                                 </div>
-                                <%@ include file="../common/next.jsp" %>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-</form>
+        <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+    </form>
+</div>
 <input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">

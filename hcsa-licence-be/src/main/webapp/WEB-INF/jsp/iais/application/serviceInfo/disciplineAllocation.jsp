@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+
 <style>
   .padding-left{
     padding-left: 0px;

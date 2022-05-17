@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -23,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -39,6 +41,8 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.method.RfiCanCheck;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -59,11 +63,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
-    public static final String TITLE_MODE_OF_SVCDLVY = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -88,6 +93,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     LicenceService licenceService;
     @Autowired
     private LicenceViewService licenceViewService;
+    @Autowired
+    private RfiCanCheck rfiCanCheck;
+    @Autowired
+    private ApplicationService applicationService;
+
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -119,18 +129,12 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-
-        return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
-
-
+        return hcsaConfigClient.getStageName(serviceId, stageId).getEntity();
     }
 
     @Override
-    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId,String type,Integer isPreIns) {
-
-        return   hcsaConfigClient.getStageName(serviceId,stageId,type,isPreIns).getEntity();
-
-
+    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String type, Integer isPreIns) {
+        return hcsaConfigClient.getStageName(serviceId, stageId, type, isPreIns).getEntity();
     }
 
     @Override
@@ -334,37 +338,66 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
         setTcuDate(appCorId,applicationViewDto);
 
+        setAppEditSelectDto(applicationViewDto);
+
         return applicationViewDto;
     }
 
-    private static String getDupForPersonName(String dupForPerson) {
-        String psnName = "";
-        switch (dupForPerson) {
-            case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_PO:
-                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                psnName = HcsaConsts.NOMINEE;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                psnName = HcsaConsts.MEDALERT_PERSON;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                psnName = HcsaConsts.SERVICE_PERSONNEL;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_CD:
-                psnName = HcsaConsts.CLINICAL_DIRECTOR;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_SL:
-                psnName = HcsaConsts.SECTION_LEADER;
-                break;
-            default:
-                break;
+    private void setAppEditSelectDto(ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if (applicationDto != null) {
+            AppEditSelectDto appEditSelectDto = null;
+            if (StringUtil.isIn(applicationDto.getApplicationType(),
+                    new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
+                //RFC
+                String applicationNo = applicationDto.getApplicationNo();
+                List<AppEditSelectDto> appEditSelectDtosByAppIds = rfiCanCheck.getAppEditSelectDtoSForRfi(applicationNo);
+                if (!appEditSelectDtosByAppIds.isEmpty()) {
+                    appEditSelectDto = appEditSelectDtosByAppIds.get(0);
+                } else {
+                    appEditSelectDto = createAppEditSelectDto(false);
+                }
+                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+                if (!licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
+                }
+            } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
+                if (!StringUtil.isEmpty(applicationDto.getId())) {
+                    List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_NEW);
+                    if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
+                        appEditSelectDto = appEditSelectDtos.get(0);
+                    } else {
+                        appEditSelectDto = createAppEditSelectDto(true);
+                    }
+                }
+                //appEditSelectDto = createAppEditSelectDto(true);
+                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
+                if (licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
+                }
+            } else {
+                appEditSelectDto = createAppEditSelectDto(false);
+            }
+            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         }
-        return psnName;
+    }
+
+    private AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setLicenseeEdit(canEdit);
+        appEditSelectDto.setPremisesEdit(canEdit);
+        appEditSelectDto.setDocEdit(canEdit);
+        appEditSelectDto.setMedAlertEdit(canEdit);
+        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appEditSelectDto.setServiceEdit(canEdit);
+        appEditSelectDto.setPoEdit(canEdit);
+        appEditSelectDto.setDpoEdit(canEdit);
+        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return appEditSelectDto;
     }
 
     private void setTcuDate(String appCorId,ApplicationViewDto applicationViewDto){

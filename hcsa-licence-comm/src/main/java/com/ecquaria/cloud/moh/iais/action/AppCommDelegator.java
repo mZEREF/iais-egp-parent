@@ -284,17 +284,17 @@ public abstract class AppCommDelegator {
                 .collect(Collectors.toList());
     }
 
-    protected void filtrationAppGrpPremisesDtos(String appNo,AppSubmissionDto appSubmissionDto,
-            AppGrpPremisesEntityDto actualPrem, List<AppGrpPremisesDto> newPremisesDtos){
+    protected void filtrationAppGrpPremisesDtos(String appNo, AppSubmissionDto appSubmissionDto,
+            AppGrpPremisesEntityDto actualPrem, List<AppGrpPremisesDto> newPremisesDtos) {
         if (actualPrem == null) {
             actualPrem = appCommService.getPremisesByAppNo(appNo);
         }
         if (actualPrem != null) {
             boolean addPremisesSuccess = false;
-            for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
-                if(appGrpPremisesDto.getId().equalsIgnoreCase(actualPrem.getId())){
+            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                if (appGrpPremisesDto.getId().equalsIgnoreCase(actualPrem.getId())) {
                     addPremisesSuccess = true;
-                    addAppGrpPremisesDto(appGrpPremisesDto,newPremisesDtos);
+                    addAppGrpPremisesDto(appGrpPremisesDto, newPremisesDtos);
                     break;
                 }
             }
@@ -310,7 +310,7 @@ public abstract class AppCommDelegator {
         }
     }
 
-    private void addAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto,List<AppGrpPremisesDto> newPremisesDtos){
+    private void addAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto, List<AppGrpPremisesDto> newPremisesDtos) {
         ApplicationHelper.setWrkTime(appGrpPremisesDto);
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
         //set ph name
@@ -1877,8 +1877,8 @@ public abstract class AppCommDelegator {
             initAction(ACTION_PREVIEW, null, appSubmissionDto, bpc.request);
             return;
         }
-        //add other premise
-        AppSubmissionDto beforeRemoveAppSubmissionDto = appCommService.getRfiAppSubmissionDtoByAppNo(appNo);
+        /*//add other premise
+        AppSubmissionDto beforeRemoveAppSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(appNo);
         List<AppGrpPremisesDto> beforeRemoveAppGrpPremisesDtoList = beforeRemoveAppSubmissionDto.getAppGrpPremisesDtoList();
         AppGrpPremisesDto currentAppGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
         String currentPremisesIndexNo = currentAppGrpPremisesDto.getPremisesIndexNo();
@@ -1943,7 +1943,7 @@ public abstract class AppCommDelegator {
                     }
                 }
             }
-        }
+        }*/
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1962,10 +1962,12 @@ public abstract class AppCommDelegator {
 
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
                 appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-            beforeSubmitRfi(appSubmissionDto, appNo);
+            //beforeSubmitRfi(appSubmissionDto, appNo);
         }
-        String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        appSubmissionDto.setRfiMsgId(msgId);
+        if (ApplicationHelper.isFrontend()) {
+            String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+            appSubmissionDto.setRfiMsgId(msgId);
+        }
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1992,7 +1994,7 @@ public abstract class AppCommDelegator {
             String appType);
 
 
-    private void beforeSubmitRfi(AppSubmissionDto appSubmissionDto, String appNo) throws Exception {
+    /*private void beforeSubmitRfi(AppSubmissionDto appSubmissionDto, String appNo) throws Exception {
         AppSubmissionDto submissionDto = appCommService.getRfiAppSubmissionDtoByAppNo(appNo);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = submissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -2029,7 +2031,7 @@ public abstract class AppCommDelegator {
         appSvcRelatedInfoDtoList1.removeAll(list);
         appSvcRelatedInfoDtoList.addAll(appSvcRelatedInfoDtoList1);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-    }
+    }*/
 
     private Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();

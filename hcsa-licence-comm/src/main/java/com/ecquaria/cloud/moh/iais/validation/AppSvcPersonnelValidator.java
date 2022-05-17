@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 
@@ -52,7 +51,7 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
         String profile = (String) request.getAttribute(this.getClass().getSimpleName() + "_profile");
         if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(profile) && StringUtil.isDigit(svcPersonnel.getWrkExpYear())) {
             int workExpYear = Integer.parseInt(svcPersonnel.getWrkExpYear());
-            String svcCode = (String) request.getAttribute(NewApplicationConstant.CURRENT_SVC_CODE);
+            String svcCode = (String) request.getAttribute(HcsaAppConst.CURRENT_SVC_CODE);
             SystemParamConfig systemParamConfig = SystemParamUtil.getSystemParamConfig();
             if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode)) {
                 int minWrkExprerience = systemParamConfig.getClbSlMinWrkExprerience();

@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public interface AppCommService {
 
-    AppSubmissionDto getAppSubmissionDtoByAppNo(String applicationNo);
+    AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
 
     AppSubmissionDto getRfiAppSubmissionDtoByAppNo(String appNo);
 

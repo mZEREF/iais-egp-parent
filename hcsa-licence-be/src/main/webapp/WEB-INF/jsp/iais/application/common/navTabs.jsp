@@ -40,9 +40,9 @@
     <li id="previewli" role="presentation" class="${empty coMap.previewli ? 'incomplete' : 'complete'}">
         <a id="preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a>
     </li>
-    <li id="paymentli" class="disabled" role="presentation">
+    <%--<li id="paymentli" class="disabled" role="presentation">
         <a id="payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a>
-    </li>
+    </li>--%>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm" style="overflow:hidden">
     <div class="swiper-wrapper" role="tablist">

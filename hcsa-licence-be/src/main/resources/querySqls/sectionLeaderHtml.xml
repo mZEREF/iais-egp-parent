@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="sectionLeaderHtml">
+    <sql key="genSectionLeaderHtml" cached="no" remarks="">
+        <![CDATA[
+        <div class="form-horizontal sectionLaderContent">
+            <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="1"/>
+            <div class="form-group">
+                <div class="col-sm-7 col-md-6 col-xs-6">
+                    <strong>${stepName} <label class="assign-psn-item">${slIndex}</label></strong>
+                </div>
+                <div class="col-sm-7 col-md-6 col-xs-6 text-right editDiv">
+                     <h4 class="text-danger">
+                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                     </h4>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Name&nbsp;<span class="mandatory">*</span></label>
+                <div class="col-sm-4 col-md-3 col-xs-3">
+                  <select class="salutation" name="salutation${index}" id="salutation${index}">
+                    <option value="">Please Select</option>
+                    ${salutionOptions}
+                  </select>
+                  <span id="error_salutation${index}" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="col-sm-4 col-md-4 col-xs-4">
+                  <input class="name" type="text" id="name${index}" name="name${index}" maxlength="66" autocomplete="off">
+                  <span id="error_name${index}" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Qualification&nbsp;<span class="mandatory">*</span></label>
+                <div class="col-sm-7 col-md-7 col-xs-7">
+                  <input class="qualification" type="text" id="qualification${index}" name="qualification${index}" maxlength="100" autocomplete="off" >
+                  <span id="error_qualification${index}" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Working Experience (in terms of years)&nbsp;<span class="mandatory">*</span></label>
+                <div class="col-sm-7 col-md-7 col-xs-7">
+                  <input class="wrkExpYear" type="text" id="wrkExpYear${index}" name="wrkExpYear${index}" maxlength="2" autocomplete="off">
+                  <span id="error_wrkExpYear${index}" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        ]]>
+    </sql>
+</sqls>

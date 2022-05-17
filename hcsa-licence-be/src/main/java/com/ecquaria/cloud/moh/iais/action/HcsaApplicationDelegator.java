@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -22,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -41,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -92,7 +89,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SelectHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.method.RfiCanCheck;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -123,17 +119,6 @@ import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,6 +129,17 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * HcsaApplicationDelegator
@@ -225,11 +221,9 @@ public class HcsaApplicationDelegator {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
-
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
-    @Autowired
-    private RfiCanCheck rfiCanCheck;
+
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -389,44 +383,6 @@ public class HcsaApplicationDelegator {
             setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        if (applicationDto != null) {
-            AppEditSelectDto appEditSelectDto = null;
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())|| ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
-                //RFC
-                String applicationNo = applicationDto.getApplicationNo();
-                List<AppEditSelectDto> appEditSelectDtosByAppIds = rfiCanCheck.getAppEditSelectDtoSForRfi(applicationNo);
-                if (!appEditSelectDtosByAppIds.isEmpty()) {
-                    appEditSelectDto = appEditSelectDtosByAppIds.get(0);
-                } else {
-                    appEditSelectDto = createAppEditSelectDto(false);
-                }
-                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
-                        .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
-                if (!licenseeType.isPresent()) {
-                    appEditSelectDto.setLicenseeEdit(false);
-                }
-            } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-                if (!StringUtil.isEmpty(applicationDto.getId())) {
-                    List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_NEW);
-                    if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
-                        appEditSelectDto = appEditSelectDtos.get(0);
-                    } else {
-                        appEditSelectDto = createAppEditSelectDto(true);
-                    }
-                }
-                Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
-                        .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
-                if (licenseeType.isPresent()) {
-                    appEditSelectDto.setLicenseeEdit(false);
-                }
-            } else {
-                appEditSelectDto = createAppEditSelectDto(true);
-            }
-            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        }
         bpc.request.getSession().removeAttribute("appEditSelectDto");
         bpc.request.getSession().removeAttribute("pageAppEditSelectDto");
         String roleId = taskDto.getRoleId();
@@ -444,19 +400,6 @@ public class HcsaApplicationDelegator {
         //set session
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
-    }
-
-    private AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setLicenseeEdit(canEdit);
-        appEditSelectDto.setPremisesEdit(canEdit);
-        appEditSelectDto.setDocEdit(canEdit);
-        appEditSelectDto.setMedAlertEdit(canEdit);
-        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appEditSelectDto.setServiceEdit(canEdit);
-        appEditSelectDto.setPoEdit(canEdit);
-        appEditSelectDto.setDpoEdit(canEdit);
-        return appEditSelectDto;
     }
 
     /**

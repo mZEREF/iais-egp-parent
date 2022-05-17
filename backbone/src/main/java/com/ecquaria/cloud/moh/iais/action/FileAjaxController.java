@@ -144,12 +144,12 @@ public class FileAjaxController {
                     .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
                     .append('.').append(fileSplit[fileSplit.length - 1])
                     .append("</a>")
-                    .append("<button type=\"button\" class=\"").append(cssClass)
+                    .append(" <button type=\"button\" class=\"").append(cssClass)
                     .append("\" onclick=\"javascript:deleteFileFeAjax('")
                     .append(fileAppendId).append("', ").append(size)
                     .append("');\">Delete</button>");
             if (!AppConsts.NO.equals(needReUpload)) {
-                data.append("<button type=\"button\" class=\"")
+                data.append(" <button type=\"button\" class=\"")
                         .append(cssClass)
                         .append("\" onclick=\"javascript:reUploadFileFeAjax('")
                         .append(fileAppendId).append("', ").append(size)

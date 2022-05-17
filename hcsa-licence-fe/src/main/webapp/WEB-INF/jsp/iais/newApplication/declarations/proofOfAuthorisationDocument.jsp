@@ -1,3 +1,8 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+    String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
 <div class="panel-body">
     <div class="row">
         <P>If you have selected that <span style="font-style: italic">'I am duly authorised by the Applicant to make this application on its behalf and
@@ -36,4 +41,4 @@
         </div>
     </div>
 </div>
-<%@ include file="../../appeal/FeFileCallAjax.jsp" %>
+

@@ -1,10 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ZiXian
-  Date: 2021/4/22
-  Time: 16:02
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">

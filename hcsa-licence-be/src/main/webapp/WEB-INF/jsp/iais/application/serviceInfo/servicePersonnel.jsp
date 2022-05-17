@@ -1,4 +1,6 @@
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
 

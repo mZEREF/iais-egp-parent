@@ -115,15 +115,6 @@ public interface InspectionPreTaskService {
       */
     InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto);
 
-    /**
-      * @author: shicheng
-      * @Date 2020/6/2
-      * @Param: applicationViewDto
-      * @return: ApplicationViewDto
-      * @Descripation: set Application RFI Info
-      */
-    ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto);
-
     int preInspRfiTogether(ApplicationDto applicationDto);
 
     /**

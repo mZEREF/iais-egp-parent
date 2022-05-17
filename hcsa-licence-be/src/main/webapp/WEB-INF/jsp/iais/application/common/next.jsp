@@ -1,68 +1,22 @@
-
 <div class="alignctr border-top-solid">
-  <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-  <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-  <c:choose>
-  <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+  <input type="hidden" id="selectDraftNo" value="${selectDraftNo}">
+  <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
   <div class="row">
-    <div class="col-xs-12 col-sm-3">
+    <div class="col-xs-12 col-sm-4">
       <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
     </div>
-    <div class="col-xs-12 col-sm-9">
+    <div class="col-xs-12 col-sm-8">
       <div class="button-group text-right">
-        <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
-        <c:choose>
-          <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-            <c:choose>
-              <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Preview</a>
-              </c:when>
-              <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Preview</a>
-              </c:when>
-            </c:choose>
-          </c:when>
-          <c:otherwise>
-            <a class="btn btn-primary" id="Next" href="javascript:void(0);">Next</a>
-          </c:otherwise>
-        </c:choose>
+        <a class="btn btn-primary" id="Next" href="javascript:void(0);">Next</a>
         <input name="nextStep" value="" type="hidden">
       </div>
     </div>
-    </c:when>
-    <c:otherwise>
-    <div class="row">
-      <div class="col-xs-12 col-sm-4">
-        <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
-      </div>
-      <div class="col-xs-12 col-sm-8">
-        <div class="button-group">
-          <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft"  href="javascript:void(0);">Save as Draft</a>
-          </c:if>
-          <c:choose>
-            <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Preview</a>
-            </c:when>
-            <c:when test="${serviceStepDto.isStepEnd() && !serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Next Service</a>
-            </c:when>
-            <c:otherwise>
-              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Next</a>
-            </c:otherwise>
-          </c:choose>
-        <input name="nextStep" value="" type="hidden">
-      </div>
-    </div>
-  </c:otherwise>
-</c:choose>
+  </div>
 </div>
-      <%--<c:if test="${ not empty selectDraftNo}">
-        <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-      </c:if>--%>
-  <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
-  </c:if>
+
+<c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+    <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+</c:if>
 
 <script type="text/javascript">
     var  v;

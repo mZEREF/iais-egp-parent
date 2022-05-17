@@ -996,9 +996,9 @@ public final class AppValidatorHelper {
             // validate floor and units
             validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
             boolean empty1 = StringUtil.isEmpty(blkNo);
-            if (empty1) {
+            if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                 errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-            } else if (blkNo.length() > 10) {
+            } else if (!empty1 && blkNo.length() > 10) {
                 String general_err0041 = repLength("Block / House No.", "10");
                 errorMap.put(blkNoKey, general_err0041);
             }
@@ -2170,7 +2170,8 @@ public final class AppValidatorHelper {
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APPSUBMISSIONDTO);
-        return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+        return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                && !ApplicationHelper.checkIsRfi(request);
     }
 
     public static Map<Integer, String> checkBlacklist(String name) {

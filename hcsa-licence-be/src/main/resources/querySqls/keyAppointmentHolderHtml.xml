@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="keyAppointmentHolder">
+    <sql key="generateKeyAppointmentHolderHtml" cached="no" remarks="generate Key Appointment Holder Html">
+        <![CDATA[
+            <div class="keyAppointmentHolderContent">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${keyAppointmentHolderSuffix}" value="1"/>
+                <input type="hidden" class="indexNo" name="indexNo${keyAppointmentHolderSuffix}" value=""/>
+                <div class="row control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                        <div class="control-label formtext col-md-5 col-xs-5">
+                            <label class="control-label control-set-font control-font-label">
+                                <div class="cgo-header">
+                                    <strong>Key Appointment Holder <label class="assign-psn-item">${keyAppointmentHolderLength}</label></strong>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="col-md-7 col-xs-7 text-right">
+                            <div class="removeKeyAppointmentHolderBtn">
+                                <h4 class="text-danger">
+                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-6 control-label formtext col-md-5">
+                                <label class="control-label control-set-font control-font-label">Add/Assign a Key Appointment Holder</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-5 col-md-7" id="assignSelect">
+                                <div class="">
+                                    ${personalSelect}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="keyAppointmentHolder hidden">
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
+                                    <label class="control-label control-set-font control-font-label">Name</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+
+                                <div class="col-sm-3 col-xs-12">
+                                    ${salutationSelect}
+                                </div>
+
+                                <div class="col-sm-4 col-xs-12">
+                                    <input type="text" name="name${keyAppointmentHolderSuffix}" class="name" maxlength="66" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
+                                    <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.<span class="mandatory">*</span>
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-3 col-xs-12">
+                                    <div class="">
+                                        ${idTypeSelect}
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 col-xs-12">
+                                    <input type="text" name="idNo${keyAppointmentHolderSuffix}" class="idNo" maxlength="20" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row nationalityDiv">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Country of issuance</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7">
+                                    <div class="">
+                                        ${nationality}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
+                                </div>
+                                <div class="col-sm-7">
+                                    <span class="error-msg" id="error_idTypeNo${keyAppointmentHolderSuffix}" name="iaisErrorMsg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        ]]>
+    </sql>
+</sqls>
+
+

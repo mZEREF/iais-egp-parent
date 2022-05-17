@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
@@ -333,7 +336,7 @@
                                 </c:choose>
                                 <c:if test="${!isClickEditDpo}">
                                     <c:set var="showPreview" value="true"/>
-                                    <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                                    <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit && DeputyPrincipalOfficersMandatory > 0}"/>
                                     <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                                         <c:choose>
                                             <c:when test="${canEditDpoEdit}">
@@ -388,9 +391,7 @@
                         <div class="panel-main-content">
                             <h2>Nominee</h2>
                             <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
-                            <div class="dpo-content">
-                            </div>
-                            <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController || canEditDpoEdit}" />
                             <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
                                 <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">

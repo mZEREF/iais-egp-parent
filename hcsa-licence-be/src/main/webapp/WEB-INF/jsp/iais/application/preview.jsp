@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
-<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -10,6 +10,7 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 
@@ -19,6 +20,7 @@
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
 
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
@@ -124,26 +126,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="application-tab-footer">
+                                <div class="alignctr border-top-solid">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-4">
                                             <a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a>
                                         </div>
                                         <div class="col-xs-12 col-md-8">
-                                            <div class="button-group">
-                                                <c:if test="${requestInformationConfig==null}">
-                                                    <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-                                                    <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-                                                    <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
-                                                </c:if>
-                                                <c:choose>
-                                                    <c:when test="${requestInformationConfig != null}">
-                                                        <a class="next btn btn-primary" id = "Next">Submit </a>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <a class="next btn btn-primary" id = "Next">Submit</a>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                            <div class="button-group text-right">
+                                                <a class="next btn btn-primary" id="Next">Submit</a>
                                             </div>
                                         </div>
                                     </div>
@@ -157,6 +147,7 @@
     </div>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
+</div>
 
 <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>

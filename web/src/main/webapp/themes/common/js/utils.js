@@ -410,11 +410,13 @@ function getJqueryNode(elem) {
         return;
     }
     var $target = $(elem);
-    if ($target.length == 0) {
-        $target = $('#' + elem);
-    }
-    if ($target.length == 0) {
-        $target = $('.' + sel);
+    if ($target.length == 0 && Object.prototype.toString.call(elem) === "[object String]") {
+        if (elem.indexOf('#') != 0) {
+            $target = $('#' + elem);
+        }
+        if ($target.length == 0 && elem.indexOf('.') != 0) {
+            $target = $('.' + sel);
+        }
     }
     if ($target.length == 0) {
         return null;
@@ -430,10 +432,17 @@ function toggleOnSelect(sel, val, elem) {
     }
     if ($selector.val() == val) {
         $target.show();
+        $target.removeClass('hidden');
     } else {
         $target.hide();
+        $target.addClass('hidden');
         clearFields($target);
     }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            $(ele).niceSelect("update");
+        }
+    });
 }
 
 function toggleOnCheck(sel, elem, hide) {
@@ -445,18 +454,27 @@ function toggleOnCheck(sel, elem, hide) {
     if ($selector.is(':checked')) {
         if (hide) {
             $target.hide();
+            $target.addClass('hidden');
             clearFields($target);
         } else {
             $target.show();
+            $target.removeClass('hidden');
         }
     } else {
         if (hide) {
             $target.show();
+            $target.removeClass('hidden');
         } else {
             $target.hide();
+            $target.addClass('hidden');
             clearFields($target);
         }
     }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            $(ele).niceSelect("update");
+        }
+    });
 }
 
 function checkMantory(sel, targetLabel, val) {
@@ -476,15 +494,15 @@ function isEmpty(str) {
 }
 
 function clearFields(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
         $selector.find("span[name='iaisErrorMsg']").each(function () {
             $(this).html("");
         });
-        $selector = $(targetSelector).find(':input[class!="not-clear"]');
+        $selector = $selector.find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {
         return;
@@ -507,11 +525,8 @@ function clearFields(targetSelector) {
 }
 
 function fillValue(targetSelector, data, includeHidden){
-    if (isEmpty(targetSelector)) {
-        return;
-    }
-    var $selector = $(targetSelector);
-    if ($selector.length <= 0) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
     console.info("data - " + data);
@@ -574,18 +589,18 @@ function fillValue(targetSelector, data, includeHidden){
 }
 
 function disableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input[type!="hidden"]');
     }
     if ($selector.length <= 0) {
         return;
     }
     $selector.each(function(i, ele) {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -599,12 +614,12 @@ function disableContent(targetSelector) {
 }
 
 function unDisableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input[type!="hidden"]');
     }
     if ($selector.length <= 0) {
         return;
@@ -624,13 +639,11 @@ function unDisableContent(targetSelector) {
 }
 
 function refreshIndex(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $target = getJqueryNode(targetSelector);
+    if (isEmpty($target)) {
         return;
     }
-    if ($(targetSelector).length == 0) {
-        return;
-    }
-    $(targetSelector).each(function (k,v) {
+    $target.each(function (k,v) {
         var $ele = $(v);
         var $selector;
         if ($ele.is(':input')) {
