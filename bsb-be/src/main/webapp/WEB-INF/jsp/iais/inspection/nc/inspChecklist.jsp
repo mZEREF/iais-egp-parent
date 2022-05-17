@@ -203,13 +203,13 @@
                         <td>
                             <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcsIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcsIns${inspectorsStatus.index}"  maxlength="500"><c:out value="${inspAhocAnswer.ncs}"/></textarea>
                             <br/>
-                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}DraftadhocFindNcs" var = "err"/>
+                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}FindNcs" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td>
                             <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremarkIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxRemarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.remark}"/></textarea>
                             <br/>
-                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}DraftadhocRemark" var = "err"/>
+                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}Remark" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td class="text-center">
@@ -241,7 +241,7 @@
                           <div id="<c:out value="${item.id}"/>adhocobserveFollIns${inspectorsStatus.index}" <c:if test="${inspAhocAnswer.followupItem ne 'YES'}">style="display: none;"</c:if>>
                             <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocObserveFoll${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocObserveFoll${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.observeFollowup}"/></textarea>
                             <br/>
-                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}adhocobserveFoll" var = "err"/>
+                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}comobserveFoll" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                           </div>
                         </td>
@@ -249,7 +249,7 @@
                           <div id="<c:out value="${item.id}"/>adhocfollActionIns${inspectorsStatus.index}" <c:if test="${inspAhocAnswer.followupItem ne 'YES'}">style="display: none;"</c:if>>
                             <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFollAction${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocFollAction${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.followupAction}"/></textarea>
                             <br/>
-                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}adhocfollAction" var = "err"/>
+                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}comfollAction" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                           </div>
 
@@ -260,7 +260,7 @@
                           </div>
                         </td>
                         <td>
-                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}adhocDraftadhoc" var = "err"/>
+                            <c:set value = "error_${item.sectionId}${item.id}${inspector.id}" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                     </tr>
