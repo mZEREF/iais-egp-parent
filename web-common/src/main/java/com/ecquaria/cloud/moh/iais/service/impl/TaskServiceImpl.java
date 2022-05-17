@@ -108,6 +108,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getTaskList(List<String> taskIds) {
         return taskOrganizationClient.getTaskList(taskIds).getEntity();
     }
+
     @Override
     public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId,String workGroupIdAo,String userIdAo) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
