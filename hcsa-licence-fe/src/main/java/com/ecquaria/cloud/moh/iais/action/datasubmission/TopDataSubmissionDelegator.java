@@ -100,13 +100,30 @@ public class TopDataSubmissionDelegator {
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
             String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
+            if (StringUtil.isEmpty(crud_action_type)){
+                crud_action_type="";
+            }
             if(crud_action_type==null){
-                DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
-                if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+                if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
+                    DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
+                    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                            .map(LoginContext::getOrgId).orElse("");
+                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
+                        ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+                    }
                 }
+            }
+            //draft
+            if (crud_action_type.equals("resume")) {
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                if (topSuperDataSubmissionDto == null) {
+                    log.warn("Can't resume data!");
+                    topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+                }
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+            } else if (crud_action_type.equals("delete")) {
+                topDataSubmissionService.deleteTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
         }
 
@@ -212,19 +229,21 @@ public class TopDataSubmissionDelegator {
         if (StringUtil.isEmpty(crud_action_type)){
             crud_action_type="";
         }
-        //draft
-        if (crud_action_type.equals("resume")) {
-            topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
-            if (topSuperDataSubmissionDto == null) {
-                log.warn("Can't resume data!");
-                topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+        if(DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            //draft
+            if (crud_action_type.equals("resume")) {
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
+                if (topSuperDataSubmissionDto == null) {
+                    log.warn("Can't resume data!");
+                    topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+                }
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+            } else if (crud_action_type.equals("delete")) {
+                topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+                topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             }
-            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
-        } else if (crud_action_type.equals("delete")) {
-            topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
-            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
-            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;

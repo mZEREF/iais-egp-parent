@@ -17,12 +17,13 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description DpDataSubmissionServiceImpl
@@ -141,12 +142,32 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     }
 
     @Override
+    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType,
+                                                                            String svcName, String hciCode, String dataSubmissionId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : "
+                + svcName + " : " + hciCode + " : " + dataSubmissionId + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(dataSubmissionId)) {
+            return null;
+        }
+        return dpFeClient.getDpSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, svcName, hciCode, dataSubmissionId).getEntity();
+    }
+
+    @Override
     public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
         log.info(StringUtil.changeForLog("-----Draft Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
             return;
         }
         dpFeClient.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+    }
+
+    @Override
+    public void deleteDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String hciCode, String dataSubmissionId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " : " + dataSubmissionId + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(dataSubmissionId)) {
+            return;
+        }
+        dpFeClient.deleteDpSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, hciCode, dataSubmissionId);
     }
 
     @Override

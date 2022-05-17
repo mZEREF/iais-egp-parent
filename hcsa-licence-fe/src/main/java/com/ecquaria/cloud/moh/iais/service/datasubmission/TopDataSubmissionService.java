@@ -33,6 +33,8 @@ public interface TopDataSubmissionService {
 
     void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
+    void deleteTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String dataSubmissionId);
+
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     PatientInformationDto getTopPatientSelect(String idType, String idNumber, String orgId);

@@ -139,7 +139,7 @@
                             <span id="childrenNumMsg" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
+                    <iais:row id="numMax">
                         <div id="gender" <c:if test="${!(patientInformationDto.livingChildrenNo).matches('[0-9]+') || patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null }">style="display: none"</c:if>>
                                 <iais:field width="5" value="Gender of Living Children (By Order)" mandatory="true"/>
                         </div>
@@ -204,7 +204,7 @@
 
         $('#childrenNum').keyup(function () {
             var childrenNum = $('#childrenNum').val();
-            if (childrenNum!=null && childrenNum>0) {
+            if (childrenNum!=null && childrenNum>0 && childrenNum<=10) {
                 $('#gender').show();
             } else {
                 $('#gender').hide();
@@ -372,10 +372,11 @@
             var data=$('#childrenNum').val();
             if(!!value && !$(this).val().match(/^(?:10|[0-9])$/) && reg.test(data)) {
                 /*$(this).val(preValue);*/
-                $('#childrenNum').val(null);
+                /*$('#childrenNum').val(null);*/
                 clearErrorMsg();
                 $("#childrenNumMsg").text('cannot enter more than 10.');
-                $('#childrenNum').trigger('keyup');
+                /*$('#childrenNum').trigger('keyup');*/
+                $('#numMax').hide();
             }
             preValue = $(this).val();
             return true;

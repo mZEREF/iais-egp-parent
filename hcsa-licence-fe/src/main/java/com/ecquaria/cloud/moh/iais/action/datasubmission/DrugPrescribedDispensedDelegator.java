@@ -3,12 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -22,14 +17,15 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -98,6 +94,17 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if(IaisCommonUtils.isEmpty(drugMedicationDtos)){
             drugMedicationDtos = IaisCommonUtils.genNewArrayList();
             drugMedicationDtos.add(new DrugMedicationDto());
+        }
+        String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if ("resume".equals(actionValue)) {
+            dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
+                    dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
+            if (dpSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
+            }
+        } else if ("delete".equals(actionValue)) {
+            dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
         }
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);

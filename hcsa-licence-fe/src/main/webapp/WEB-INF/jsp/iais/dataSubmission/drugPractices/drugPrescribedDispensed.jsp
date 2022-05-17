@@ -33,6 +33,11 @@
         </div>
     </div>
 </form>
+<c:if test="${hasDraft && dpSuperDataSubmissionDto.submissionType eq 'DP_TP002'}">
+    <iais:confirm msg="DS_MSG019" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('confirm', 'delete');" />
+</c:if>
 <iais:confirm msg="DS_MSG003" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close"
               cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
               cancelFunc="submit('patient', 'patient');" needFungDuoJi="false"/>

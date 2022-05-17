@@ -94,7 +94,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         int i = 0;
         List<String> livingChildrenGenders= patientInformationDto.getLivingChildrenGenders();
         if(!StringUtil.isEmpty(livingChildrenGenders)){
-            if(livingChildrenGenders.size() !=0){
+            if(livingChildrenGenders.size() !=0 && livingChildrenGenders.size()<=10){
                 for (String livingChildrenGender : livingChildrenGenders) {
                     if(livingChildrenGender.equals("")){
                         errorMap.put("livingChildrenGenders"+i, "GENERAL_ERR0006");
