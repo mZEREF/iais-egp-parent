@@ -15,7 +15,7 @@ import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
  */
 @Slf4j
 public class MaskTag extends DivTagSupport {
-    private static final long serialVersionUID = -4491768109985975380L;
+    private static final long serialVersionUID = 1L;
 
     private String value;
     private String name;

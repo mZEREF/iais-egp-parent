@@ -18,7 +18,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 @Slf4j
 public class ProcessUrlTag extends TagSupport {
-    private static final long serialVersionUID = 4909236562250134036L;
+    private static final long serialVersionUID = 1L;
     private String value;
     private String project;
     private String processName;

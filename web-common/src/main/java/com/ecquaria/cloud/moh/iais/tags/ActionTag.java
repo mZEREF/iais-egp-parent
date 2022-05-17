@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspException;
  * @author      suocheng
  */
 public final class ActionTag extends DivTagSupport {
-    private static final long serialVersionUID = 2631296297059999710L;
+    private static final long serialVersionUID = 1L;
     
     private String validator;
 

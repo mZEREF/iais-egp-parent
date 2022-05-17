@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.tags;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class DivTagSupport extends BodyTagSupport {
-    private static final long serialVersionUID = -8473191841333084485L;
+    private static final long serialVersionUID = 1L;
 
     protected String cssClass;
     protected String style;

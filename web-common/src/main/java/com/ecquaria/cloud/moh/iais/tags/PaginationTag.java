@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  */
 @Slf4j
 public class PaginationTag extends DivTagSupport {
-    private static final long serialVersionUID = -4571952182420979630L;
+    private static final long serialVersionUID = 1L;
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
     private static final String ENDTAG = "');\">";
     private String param;

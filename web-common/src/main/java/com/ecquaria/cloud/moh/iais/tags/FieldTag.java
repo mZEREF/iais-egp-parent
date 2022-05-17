@@ -3,11 +3,9 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Field Tag
@@ -18,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
  */
 @Slf4j
 public final class FieldTag extends DivTagSupport {
-    private static final long serialVersionUID = 3730754443745743902L;
+    private static final long serialVersionUID = 1L;
     private static final String ENDLABLE = "</label>";
     private String value;
     private boolean required;

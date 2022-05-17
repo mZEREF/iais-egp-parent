@@ -16,7 +16,7 @@ import java.util.Date;
  * @author      suocheng
  */
 public final class DatePickerTag extends DivTagSupport {
-    private static final long serialVersionUID = 1309499353105368737L;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String value;

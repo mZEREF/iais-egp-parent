@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public final class ValueTag extends DivTagSupport {
-    private static final long serialVersionUID = 1303076397912070932L;
+    private static final long serialVersionUID = 1L;
 
     private int width;
     private boolean label;

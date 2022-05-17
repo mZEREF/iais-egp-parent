@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public final class SectionTag extends DivTagSupport {
-    private static final long serialVersionUID = -8312895028252858180L;
+    private static final long serialVersionUID = 1L;
 
     private String title;
     private boolean collapse;
