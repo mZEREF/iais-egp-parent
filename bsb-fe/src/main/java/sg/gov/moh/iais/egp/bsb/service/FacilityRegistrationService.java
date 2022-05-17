@@ -718,7 +718,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
@@ -825,7 +825,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();

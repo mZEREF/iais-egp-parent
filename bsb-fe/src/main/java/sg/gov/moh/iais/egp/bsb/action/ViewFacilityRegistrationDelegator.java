@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
-
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -151,7 +150,7 @@ public class ViewFacilityRegistrationDelegator {
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification());
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
