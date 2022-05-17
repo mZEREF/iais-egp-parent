@@ -41,7 +41,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Is it Medically Indicated?" mandatory="false"/>
+                    <iais:field width="4" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG025')}" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
                             Yes</c:if>

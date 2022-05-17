@@ -102,7 +102,7 @@
 
                             <div class="tab-content row">
                                 <c:if test="${empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
-                                    <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
+                                    <div class="tab-pane active col-lg-12 col-xs-12 panel-group"  role="tabpanel">
                                         <c:if test="${cycleStage == 'AR_CL001'}">
                                             <%-- AR_CYCLE_AR--%>
                                             <%@include file="cycleStage/previewArCycleStageSection.jsp" %>
@@ -182,7 +182,7 @@
                                     </div>
                                 </c:if>
                                 <c:if test="${not empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
-                                    <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
+                                    <div class="tab-pane active col-lg-12 col-xs-12 panel-group"  role="tabpanel">
                                         <c:if test="${cycleStage == 'AR_CL001'}">
                                             <%-- AR_CYCLE_AR--%>
                                             <%@include file="cycleStageAment/previewArCycleStageSection.jsp" %>
