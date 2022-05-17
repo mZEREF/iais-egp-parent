@@ -518,7 +518,7 @@ public final class MasterCodeUtil {
         RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.clear(cacheName);
         conMap.entrySet().forEach(ent ->
-            rch.set(cacheName, ent.getKey(), ent.getValue())
+            rch.set(cacheName, ent.getKey(), ent.getValue(), RedisCacheHelper.NOT_EXPIRE)
         );
     }
 
