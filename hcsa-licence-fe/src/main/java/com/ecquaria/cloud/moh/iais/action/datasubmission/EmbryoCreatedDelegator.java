@@ -63,7 +63,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
         int totalThawedMax =0;
         int totalFreshMax =0;
-        List<DataSubmissionDto> dataSubmissionDtoList=arFeClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
+        List<DataSubmissionDto> dataSubmissionDtoList=arFeClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getCycleDto().getId()).getEntity();
 
         for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
         ) {
