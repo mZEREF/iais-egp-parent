@@ -127,6 +127,22 @@
                         <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
+                <div id="urineTest">
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Type" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select cssClass="urineTestType" id = "urineTestType" name="urineTestType"
+                                         firstOption="Please Select" codeCategory="DP_URINETESTTYPE" value="${drugSubmission.urineTestType}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Result" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select cssClass="urineTestResult" id = "urineTestResult" name="urineTestResult"
+                                         firstOption="Please Select" codeCategory="DP_URINETESTRESULT" value="${drugSubmission.urineTestResult}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>
@@ -228,8 +244,10 @@
         var medication= $('#medication').val();
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').hide();
         }else if('MED002' == medication){
             $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').show();
         }else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
         }

@@ -214,6 +214,8 @@ public final class MasterCodeUtil {
     public static final String DP_MEDICATION                        ="8B29293A-DDF6-460A-AE10-731196AFBB47";
     public static final String DP_FREQUENCY                         ="2C288EBF-12D5-4D5F-9A1A-EAC6EEBDE127";
 
+    public static final String DP_URINETESTTYPE                     ="11864921-52D6-EC11-BE6C-000C29FAAE4D";
+    public static final String DP_URINETESTRESULT                   ="2419FC5C-52D6-EC11-BE6C-000C29FAAE4D";
 
     public static final  String DONOR_RELATION_TO_PATIENT           ="9C2B3AFF-55A8-445B-A759-0B806FEB3317";
 
