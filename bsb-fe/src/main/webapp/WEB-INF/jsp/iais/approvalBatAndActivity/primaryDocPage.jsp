@@ -60,7 +60,7 @@
                                                             <c:forEach var="info" items="${savedFiles.get(doc.type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="/bsb-fe/ajax/doc/download/facReg/repo/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    <a href="/bsb-web/ajax/doc/download/facReg/repo/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
@@ -71,7 +71,7 @@
                                                             <c:forEach var="info" items="${newFiles.get(doc.type)}">
                                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <a href="/bsb-fe/ajax/doc/download/facReg/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    <a href="/bsb-web/ajax/doc/download/facReg/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>

@@ -43,7 +43,7 @@
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-secondary" href="javascript:void(0);">PRINT</a>
-                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">HOME</a>
+                        <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">HOME</a>
                         <a class="btn btn-secondary" href="javascript:void(0);">INSPECTION PREFERRED DATE</a>
                     </div>
                 </div>

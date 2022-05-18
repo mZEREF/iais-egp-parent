@@ -36,7 +36,7 @@
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-secondary" href="javascript:void(0);">PRINT</a>
-                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovaAfc">HOME</a>
+                        <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbInboxApprovaAfc">HOME</a>
                         <a class="btn btn-secondary" href="javascript:void(0);">Preferred Date Range for Inspection/Certification</a>
                     </div>
                 </div>

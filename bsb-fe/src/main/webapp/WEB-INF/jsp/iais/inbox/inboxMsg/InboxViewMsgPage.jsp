@@ -39,7 +39,7 @@
             <div class="row" style="margin-top: 1.5%">
               <div class="col-md-12">
                 <div class="col-md-2">
-                  <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                  <a href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
               </div>
             </div>

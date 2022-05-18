@@ -53,7 +53,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="button-group">
-                                        <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg" class="btn btn-secondary">CANCEL</a>
+                                        <a href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg" class="btn btn-secondary">CANCEL</a>
                                         <a class="btn btn-primary" id="saveBtn">SUBMIT</a>
                                     </div>
                                 </div>

@@ -82,9 +82,9 @@ function deleteNewFile(id) {
 function downloadFile(cond, id) {
     var url;
     if (cond === 'saved') {
-        url = "/bsb-fe/ajax/doc/download/followup/repo/" + id;
+        url = "/bsb-web/ajax/doc/download/followup/repo/" + id;
     } else if (cond === 'new') {
-        url = "/bsb-fe/ajax/doc/download/followup/new/" + id;
+        url = "/bsb-web/ajax/doc/download/followup/new/" + id;
     }
 
     window.open(url);
@@ -96,6 +96,6 @@ function genFileInfo(fileInputEl) {
 }
 
 function downloadFileFromRepo(maskedRepoId, filename) {
-    var url = "/bsb-fe/ajax/doc/download/repo/" + maskedRepoId + "?filename=" + filename;
+    var url = "/bsb-web/ajax/doc/download/repo/" + maskedRepoId + "?filename=" + filename;
     window.open(url);
 }

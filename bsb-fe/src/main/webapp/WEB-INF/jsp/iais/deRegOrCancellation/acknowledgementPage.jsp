@@ -21,7 +21,7 @@
                 <div class="col-xs-12 col-md-2"></div>
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp">DONE</a>
+                        <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp">DONE</a>
                     </div>
                 </div>
             </div>

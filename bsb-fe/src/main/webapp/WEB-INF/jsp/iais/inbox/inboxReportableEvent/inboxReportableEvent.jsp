@@ -140,13 +140,13 @@
                                                                     <option value="" selected="selected">Select</option>
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage--%>
                                                                     <c:if test="${item.haveInvest eq 'Y'}">
-                                                                        <option value="/bsb-fe/eservice/INTERNET/ViewInvestReport?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Investigation Report</option>
+                                                                        <option value="/bsb-web/eservice/INTERNET/ViewInvestReport?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Investigation Report</option>
                                                                     </c:if>
                                                                     <c:if test="${item.haveFollowup1A eq 'Y'}">
-                                                                        <option value="/bsb-fe/eservice/INTERNET/ViewFollowup1A?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Follow-up 1A</option>
+                                                                        <option value="/bsb-web/eservice/INTERNET/ViewFollowup1A?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Follow-up 1A</option>
                                                                     </c:if>
                                                                     <c:if test="${item.haveFollowup1A eq 'Y'}">
-                                                                        <option value="/bsb-fe/eservice/INTERNET/ViewFollowup1B?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Follow-up 1B</option>
+                                                                        <option value="/bsb-web/eservice/INTERNET/ViewFollowup1B?referenceNo=<iais:mask name='referNo' value='${item.referenceNo}'/>">Follow-up 1B</option>
                                                                     </c:if>
                                                                 </select>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>

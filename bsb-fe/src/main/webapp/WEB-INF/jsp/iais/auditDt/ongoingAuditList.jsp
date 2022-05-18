@@ -101,7 +101,7 @@
                                 </tbody>
                             </table>
                             <div class="col-xs-12 col-md-3">
-                                <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                         </div>
                     </div>
