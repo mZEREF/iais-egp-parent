@@ -137,7 +137,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)){
             try {
                 if(Formatter.compareDateByDay(endDate,startDate)<0){
-                    errorMap.put("endDate", "Must be later than date of Start Date.");
+                    errorMap.put("endDate", "Must be later than date of Prescribing Duration Start Date.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

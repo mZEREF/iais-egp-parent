@@ -82,13 +82,13 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Start Date" />
+                    <iais:field width="5" value="Prescribing Duration Start Date" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${drugSubmission.startDate}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="End Date" />
+                    <iais:field width="5" value="End Date of Dispensing" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${drugSubmission.endDate}"/>
                     </iais:value>
