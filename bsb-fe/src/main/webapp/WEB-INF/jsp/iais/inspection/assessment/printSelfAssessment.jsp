@@ -32,7 +32,7 @@
                         </c:forEach>
                     </div>
                     <c:set var="isPrint" value="${true}"/>
-                    <%@include file="../chklst/checkListAnswer.jsp" %>
+                    <%@include file="../../chklst/checkListAnswer.jsp" %>
                 </div>
             </div>
         </div>

@@ -39,12 +39,12 @@
                 </div>
             </div>
             <div>
-                <%@include file="../chklst/checkListAnswer.jsp" %>
+                <%@include file="../../chklst/checkListAnswer.jsp" %>
             </div>
 
             <div>
                 <div class="alignctr" style="text-align: left">
-                    <a id="back" href="javascript:void(0)"><em class="fa fa-angle-left"> </em> Back</a>
+                    <a id="back" href="javascript:void(0)"><em class="fa fa-angle-left"> </em> Previous</a>
                 </div>
                 <c:if test="${cur_action eq SelfAssessmentConstants.ACTION_FILL or
                             cur_action eq SelfAssessmentConstants.ACTION_EDIT}">

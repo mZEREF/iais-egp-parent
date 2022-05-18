@@ -341,8 +341,6 @@ public class BsbSubmitSelfAssessmentDelegator {
             actions = Arrays.asList(ACTION_FILL, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
         } else if (state == AssessmentState.SUBMITTED) {
             actions = Arrays.asList(ACTION_VIEW, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
-        } else if (state == AssessmentState.RFI) {
-            actions = Arrays.asList(ACTION_EDIT, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
         } else {
             actions = Collections.emptyList();
         }
@@ -351,15 +349,14 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Step: PrepareUpload
-     * @param bpc
      */
     public void prepareUpload(BaseProcessClass bpc) {
         log.info("----- PrepareUpload -----");
         clearData(bpc);
         HttpServletRequest request = bpc.request;
         SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
-        if (answerRecordDto != null && !StringUtil.isEmpty(answerRecordDto.getApplicationId())
-                && !StringUtil.isEmpty(answerRecordDto.getChkLstConfigId())) {
+        if (answerRecordDto != null && StringUtils.hasLength(answerRecordDto.getApplicationId())
+                && StringUtils.hasLength(answerRecordDto.getChkLstConfigId())) {
             ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
             return;
         }
@@ -383,7 +380,6 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Step: DoUpload
-     * @param bpc
      */
     public void doUpload(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -470,10 +466,10 @@ public class BsbSubmitSelfAssessmentDelegator {
             if (data != null && !data.isEmpty()) {
                 for (Map.Entry<String, List<SelfAssChklItemExcelDto>> entry : data.entrySet()) {
                     List<ChklstItemAnswerDto> collect = entry.getValue().stream()
-                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()))
+                            .filter(dto -> StringUtils.hasLength(dto.getSnNo()))
                             .map(dto -> {
                                 String itemKey = dto.getItemKey();
-                                if (StringUtil.isEmpty(itemKey)) {
+                                if (!StringUtils.hasLength(itemKey)) {
                                     return new ChklstItemAnswerDto();
                                 }
                                 String[] keys = itemKey.split(KEY_SEPARATOR);

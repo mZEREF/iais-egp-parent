@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/assessment/ackSubmitSelfAccessment.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inspection/assessment/ackSubmitSelfAccessment.jsp"%>

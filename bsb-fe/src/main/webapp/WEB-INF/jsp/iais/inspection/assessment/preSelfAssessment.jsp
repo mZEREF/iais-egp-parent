@@ -7,7 +7,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -45,8 +44,8 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td>${dataDto.facName}</td>
-                            <td>${dataDto.classification}</td>
+                            <td><c:out value="${dataDto.facName}"/></td>
+                            <td><iais:code code="${dataDto.classification}"/></td>
                             <td>
                                 <c:forEach var="action" items="${actions}" varStatus="status">
                                     <c:set var="maskApp"><iais:mask name="selfAssessAppId" value="${dataDto.appId}"/></c:set>
@@ -71,7 +70,7 @@
                 </table>
 
                 <div class="alignctr">
-                    <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
             </div>
         </form>
