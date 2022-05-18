@@ -32,7 +32,7 @@
 
     <div class="main-content">
       <div class="navigation-gp"></div>
-      <form id="mainForm" method="post" action="/bsb-fe/eservice/INTERNET/FE_Corppass_Landing/1/corppassCallBack">
+      <form id="mainForm" method="post" action="/bsb-web/eservice/INTERNET/FE_Corppass_Landing/1/corppassCallBack">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
           <div class="container">
