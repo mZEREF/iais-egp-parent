@@ -165,7 +165,7 @@
                     </iais:row>
                     <div id="pgtMRefNoDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMDsld !=1 }">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="5" value="PGT-M Appeal Reference No." mandatory="true"/>
+                            <iais:field width="5" value="PGT-M Appeal Reference No." />
                             <iais:value width="7" cssClass="col-md-7">
                                 <input type="text" maxlength="19"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_ref_no"></span>
