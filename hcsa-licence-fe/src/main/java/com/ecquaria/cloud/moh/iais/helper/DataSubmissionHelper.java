@@ -493,7 +493,7 @@ public final class DataSubmissionHelper {
         if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_DRP;
         } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
-            cycleType = DataSubmissionConsts.DS_CYCLE_DRP;
+            cycleType = DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED;
         } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getSubmissionType())
                 || StringUtil.isEmpty(cycleType)) {
             cycleType = DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY;

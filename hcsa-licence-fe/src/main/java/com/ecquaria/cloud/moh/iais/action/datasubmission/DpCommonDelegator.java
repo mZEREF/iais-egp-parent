@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,15 +21,14 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Description DpCommonDelegator
@@ -223,11 +224,29 @@ public abstract class DpCommonDelegator {
         }
         String stage = dataSubmissionDto.getCycleStage();
         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-        if(cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP)){
+        if(cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED) || cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED)){
             PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
             cycle.setPatientCode(patientDto.getPatientCode());
         }
         cycle.setStatus(status);
+        DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+        if(drugPrescribedDispensedDto != null){
+            DrugSubmissionDto drugSubmissionDto = drugPrescribedDispensedDto.getDrugSubmission();
+            if(drugSubmissionDto != null){
+               String drupType = drugSubmissionDto.getDrugType();
+               log.info(StringUtil.changeForLog("The drupType is -->:"+drupType));
+               if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drupType)){
+                   cycleType =DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED;
+               }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drupType)){
+                   cycleType =DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED;
+               }
+            }else{
+                log.info(StringUtil.changeForLog("The drugSubmissionDto is null ..."));
+            }
+        }else{
+            log.info(StringUtil.changeForLog("The drugPrescribedDispensedDto is null ..."));
+        }
+        cycle.setCycleType(cycleType);
         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
                 + " - Status: " + status + " -----"));
 
