@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
@@ -152,7 +153,7 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                if (checked.equals(YES)){
+                if (!StringUtils.isEmpty(checked)&&checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
                 if (role.equals(RoleConstants.ROLE_APPLICANT)) {
@@ -162,6 +163,7 @@ public class InsAFCReportService {
                     docDtoMap.get(repoId).setAfcMarkFinal(checked);
                 }
             }
+            ParamUtil.setSessionAttr(request,PARAM_REPO_ID_DOC_MAP, (Serializable) docDtoMap);
         }
     }
 

@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsCertificationInitDataDto;
@@ -36,6 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
@@ -45,7 +47,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Slf4j
 @Delegator("insAoCertificationDelegator")
 public class InspectionAoCertificationDelegator {
-    private static final String PARAM_AFC_REPORT_APP_ID = "afcCertReportAppId";
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
     private final InspectionAFCClient inspectionAFCClient;
@@ -66,7 +67,7 @@ public class InspectionAoCertificationDelegator {
         session.removeAttribute(KEY_REVIEW_AFC_REPORT_DTO);
         session.removeAttribute(KEY_COMMON_DOC_DTO);
         session.removeAttribute(PARAM_REPO_ID_DOC_MAP);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Do Review Inspection Report(Certification)");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Ao Review Inspection Report(Certification)");
     }
 
     public void init(BaseProcessClass bpc) {
@@ -85,9 +86,11 @@ public class InspectionAoCertificationDelegator {
         // facility details
         ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
         // show routingHistory list
-        ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, initDataDto.getProcessHistoryDtoList());
+        ArrayList<ProcessHistoryDto> processHistoryDtoList = new ArrayList<>(initDataDto.getProcessHistoryDtoList());
+        ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, processHistoryDtoList);
         // show supportDocDisplayDto List
-        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, initDataDto.getSupportDocDisplayDtoList());
+        ArrayList<DocDisplayDto> supportDocList = new ArrayList<>(initDataDto.getSupportDocDisplayDtoList());
+        ParamUtil.setSessionAttr(request,KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST,supportDocList);
 
         // inspection processing
         InsProcessDto processDto = new InsProcessDto();
@@ -103,12 +106,8 @@ public class InspectionAoCertificationDelegator {
         ReviewAFCReportDto dto = insAFCReportService.getDisplayDto(request);
         AFCCommonDocDto commonDocDto = insAFCReportService.getAFCCommonDocDto(request);
         if (!StringUtils.hasLength(dto.getAppId())) {
-            String maskedAppId = request.getParameter(KEY_APP_ID);
-            String applicationId = MaskUtil.unMaskValue(PARAM_AFC_REPORT_APP_ID, maskedAppId);
-            if (maskedAppId == null || applicationId == null || maskedAppId.equals(applicationId)) {
-                throw new IaisRuntimeException("Invalid Application ID");
-            }
-            ResponseDto<ReviewAFCReportDto> responseDto = inspectionAFCClient.getReviewAFCReportDto(applicationId);
+
+            ResponseDto<ReviewAFCReportDto> responseDto = inspectionAFCClient.getReviewAFCReportDto(appId);
             if (responseDto.ok()) {
                 dto = responseDto.getEntity();
             } else {
@@ -116,19 +115,25 @@ public class InspectionAoCertificationDelegator {
                 ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, new ReviewAFCReportDto());
             }
         }
-        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = dto.getCertificationDocDisPlayDtos();
-        if(certificationDocDisPlayDtos==null){
-            certificationDocDisPlayDtos = new ArrayList<>(0);
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos;
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(StringUtils.isEmpty(docDtoMap)){
+            certificationDocDisPlayDtos = dto.getCertificationDocDisPlayDtos();
+            if(certificationDocDisPlayDtos==null){
+                certificationDocDisPlayDtos = new ArrayList<>(0);
+            }
+            for (int i=0; i<certificationDocDisPlayDtos.size();i++){
+                certificationDocDisPlayDtos.get(i).setMaskedRepoId(MaskUtil.maskValue("file",certificationDocDisPlayDtos.get(i).getRepoId()));
+            }
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            insAFCReportService.setSavedDocMap(dto, request);
+        }else {
+            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
         }
-        for (int i=0; i<certificationDocDisPlayDtos.size();i++){
-            certificationDocDisPlayDtos.get(i).setMaskedRepoId(MaskUtil.maskValue("file",certificationDocDisPlayDtos.get(i).getRepoId()));
-        }
-        dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
-
-        insAFCReportService.setSavedDocMap(dto, request);
         ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setRequestAttr(request, KEY_DASHBOARD_MSG, KEY_AFC_DASHBOARD_MSG);
-        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_BSB_DO);
+        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_BSB_AO);
         ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
 
         // view application need appId and moduleType
@@ -136,8 +141,21 @@ public class InspectionAoCertificationDelegator {
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_NEW_FACILITY);
     }
 
-    public void bindAction(BaseProcessClass bpc){
-
+    public void bingAction(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ReviewAFCReportDto dto = insAFCReportService.getDisplayDto(request);
+        AFCCommonDocDto commonDocDto = insAFCReportService.getAFCCommonDocDto(request);
+        commonDocDto.reqObjMapping(request);
+        String actionValue = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_VALUE);
+        if (actionValue.equals("savaDoc")) {
+            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE, "saveReport");
+        } else if (actionValue.equals("submitDoc")) {
+            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE, "submit");
+        }else if(actionValue.equals("uploadDoc")){
+            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE, "upload");
+        }
+        ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
+        ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
     }
 
     public void handleSaveReport(BaseProcessClass bpc) {
@@ -177,7 +195,7 @@ public class InspectionAoCertificationDelegator {
             log.error("Validation failure info: {}", validationResultDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_PROCESSING);
-            validateResult = "invalid";
+            validateResult = "back";
         }
         log.info("Officer submit decision [{}] for review inspection report, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);

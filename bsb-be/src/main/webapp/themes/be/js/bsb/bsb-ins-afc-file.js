@@ -8,7 +8,6 @@ $(function () {
 
     $("#selectedFileInput").change(fileChange);
 });
-
 function closeUploadDoc() {
     $('#internalFileSelectErrorSpan').html('')
     $('#internalFileTypeErrorSpan').html('')

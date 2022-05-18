@@ -1,10 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
@@ -14,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -66,8 +69,8 @@ public class InsAFCReportService {
             case APP_STATUS_PEND_AFC_REPORT_UPLOAD:
                 profile = ValidationConstants.PROFILE_AFC_ADMIN_FIRST_SUBMIT;
                 break;
-            case APP_STATUS_PEND_AFC_INPUT:
-            case APP_STATUS_PEND_APPLICANT_REPORT_REVIEW:
+            case APP_STATUS_PEND_DO_REPORT_REVIEW:
+            case APP_STATUS_PEND_AO_REPORT_REVIEW:
                 profile = ValidationConstants.PROFILE_AFC_REPORT_SUBMIT;
                 break;
             default:
@@ -92,6 +95,11 @@ public class InsAFCReportService {
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(0);
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(!StringUtils.isEmpty(docDtoMap)){
+            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+        }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
@@ -104,8 +112,9 @@ public class InsAFCReportService {
                 afcSaveDto.setNewCertDocDtoList(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
             }
             afcSaveDto.setUploadNewDoc(uploadNewDoc);
-            if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
-                afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
+
+            if (!CollectionUtils.isEmpty(certificationDocDisPlayDtos)){
+                afcSaveDto.setSavedCertDocDtoList(certificationDocDisPlayDtos);
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveDoInsAFCData(afcSaveDto);
             if (responseDto.ok()) {
@@ -117,6 +126,7 @@ public class InsAFCReportService {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
         }
     }
+
     public void validateAo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
@@ -124,6 +134,11 @@ public class InsAFCReportService {
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(0);
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(!StringUtils.isEmpty(docDtoMap)){
+            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+        }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
@@ -136,8 +151,8 @@ public class InsAFCReportService {
                 afcSaveDto.setNewCertDocDtoList(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
             }
             afcSaveDto.setUploadNewDoc(uploadNewDoc);
-            if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
-                afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
+            if (!CollectionUtils.isEmpty(certificationDocDisPlayDtos)){
+                afcSaveDto.setSavedCertDocDtoList(certificationDocDisPlayDtos);
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveAoCertificationData(afcSaveDto);
             if (responseDto.ok()) {
@@ -162,7 +177,7 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                newDocMap.get(repoId).getDisPlayDto().setApplicantMarkFinal(checked);
+                newDocMap.get(repoId).getDisPlayDto().setMohMarkFinal(checked);
             }
         }
     }
@@ -176,11 +191,14 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                if (checked.equals(YES)){
+                if (!StringUtils.isEmpty(checked)&& checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
-                docDtoMap.get(repoId).setAfcMarkFinal(checked);
+                if (role.equals(RoleConstants.ROLE_BSB_DO)||role.equals(RoleConstants.ROLE_BSB_AO)) {
+                    docDtoMap.get(repoId).setMohMarkFinal(checked);
+                }
             }
+            ParamUtil.setSessionAttr(request,PARAM_REPO_ID_DOC_MAP, (Serializable) docDtoMap);
         }
     }
 

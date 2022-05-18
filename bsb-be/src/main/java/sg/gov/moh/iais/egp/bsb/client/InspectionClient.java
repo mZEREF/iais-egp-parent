@@ -67,7 +67,7 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/approval-letter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInsApprovalLetter(@RequestBody InsApprovalLetterDto dto);
 
-    @PostMapping(value = "/inspection/certification/review/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inspection/actual/certification/review/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionCertificationApprove(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody InsProcessDto processDto);

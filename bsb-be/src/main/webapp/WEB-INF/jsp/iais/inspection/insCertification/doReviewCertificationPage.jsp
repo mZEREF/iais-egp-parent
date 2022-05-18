@@ -12,12 +12,12 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc-file.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-ins-afc-do.js"></script>
 <%--@elvariable id="reviewFollowUpDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto"--%>
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
@@ -154,23 +154,4 @@
         </div>
     </form>
     <%@include file="/WEB-INF/jsp/iais/doDocument/fileUploadModal.jsp"%>
-</div>
-<script>
-    $(function () {
-        var processingDecisionObj = $("#processingDecision");
-        var processingDecisionVal =  processingDecisionObj.val();
-        if (processingDecisionVal === "MOHPRO030") {
-            $("#selectMohUserDiv").show();
-        } else {
-            $("#selectMohUserDiv").hide();
-        }
-        processingDecisionObj.change(function () {
-            var selectValue = $(this).val();
-            if (selectValue === "MOHPRO030") {
-                $("#selectMohUserDiv").show();
-            } else {
-                $("#selectMohUserDiv").hide();
-            }
-        })
-    })
-</script>
+</div

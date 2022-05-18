@@ -17,7 +17,7 @@
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
@@ -141,6 +141,3 @@
     </form>
     <%@include file="/WEB-INF/jsp/iais/doDocument/fileUploadModal.jsp"%>
 </div>
-<script>
-
-</script>
