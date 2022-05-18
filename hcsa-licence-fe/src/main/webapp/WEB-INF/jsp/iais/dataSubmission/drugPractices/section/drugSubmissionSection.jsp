@@ -192,6 +192,7 @@
             }else {
                 $('#dispensingDate').hide();
             }
+            changeStrength();
         });
         $('#medication').change(function (){
             changeStrength();
@@ -223,6 +224,7 @@
                     if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
                         $("#error_prescriptionSubmissionId").html('');
                         $("#medication").val(data.resultJson);
+                        changeStrength();
                         disableContent('div.medication');
                     }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
                         $("#error_prescriptionSubmissionId").html(data.resultJson + '');
@@ -250,6 +252,7 @@
             $('#urineTest').show();
         }else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').hide();
         }
     }
 

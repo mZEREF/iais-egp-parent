@@ -99,6 +99,20 @@
                         <c:out value="${drugSubmission.diagnosis}"/>
                     </iais:value>
                 </iais:row>
+                <div class="" <c:if test="${drugSubmission.medication != 'MED002'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Type" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:code code="${drugSubmission.urineTestType}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Result" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:code code="${drugSubmission.urineTestResult}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>
