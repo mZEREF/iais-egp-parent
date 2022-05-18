@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -132,6 +133,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         msgParam.setReqRefNum(submssionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(licenseeId);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
         notificationHelper.sendNotification(msgParam);
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
@@ -157,6 +159,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         msgParam.setReqRefNum(submssionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(licenseeId);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
         notificationHelper.sendNotification(msgParam);
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
