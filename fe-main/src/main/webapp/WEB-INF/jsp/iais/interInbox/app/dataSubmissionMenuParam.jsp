@@ -3,16 +3,16 @@
         </li>
        <c:if test="${dataSubARTPrivilege == 1}">
         <li>
-            <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR online enquiry</a>
+            <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online Enquiry</a>
         </li>
         <li>
-            <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryDonorSample">Donor sample enquiry</a>
+            <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryDonorSample">Donor Sample Enquiry</a>
         </li>
         </c:if>
 
         <c:if test="${dataSubLDTPrivilege == 1}">
             <li>
-                <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT online Enquiry</a>
+                <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Online Enquiry</a>
             </li>
         </c:if>
 
