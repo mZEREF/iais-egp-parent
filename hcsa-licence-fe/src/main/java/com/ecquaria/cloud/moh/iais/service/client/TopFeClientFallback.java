@@ -46,8 +46,8 @@ public class TopFeClientFallback implements TopFeClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
-        return getFeignResponseEntity(orgId, submissionType);
+    public FeignResponseEntity<Void> deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String appType) {
+        return getFeignResponseEntity(orgId, submissionType, appType);
     }
 
     @Override

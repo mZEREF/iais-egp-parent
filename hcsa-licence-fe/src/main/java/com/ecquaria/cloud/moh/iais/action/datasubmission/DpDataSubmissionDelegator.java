@@ -4,7 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -219,19 +218,6 @@ public class DpDataSubmissionDelegator {
      */
     public void prepareDrugPrecribed(BaseProcessClass bpc) {
         log.info("----- PrepareDrugPrecribed -----");
-        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
-            if (crud_action_type == null) {
-                DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
-                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-                }
-            }
-        }
     }
 
     /**

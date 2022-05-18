@@ -99,11 +99,11 @@ public class TopDataSubmissionDelegator {
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
             if (StringUtil.isEmpty(crud_action_type)){
                 crud_action_type="";
             }
-            if(crud_action_type==null){
+            if(crud_action_type.equals("rfc")){
                 if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
                     DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
                     String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
@@ -240,7 +240,7 @@ public class TopDataSubmissionDelegator {
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
             } else if (crud_action_type.equals("delete")) {
-                topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+                topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getAppType());
                 topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             }

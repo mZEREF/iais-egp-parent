@@ -156,12 +156,12 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     }
 
     @Override
-    public void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+    public void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String appType) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return;
         }
-        topFeClient.deleteTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType);
+        topFeClient.deleteTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType, appType);
     }
 
     @Override

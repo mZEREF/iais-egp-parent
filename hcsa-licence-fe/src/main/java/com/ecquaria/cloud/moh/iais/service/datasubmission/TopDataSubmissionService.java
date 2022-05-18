@@ -31,7 +31,7 @@ public interface TopDataSubmissionService {
 
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String dataSubmissionId);
 
-    void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
+    void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String appType);
 
     void deleteTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String dataSubmissionId);
 
