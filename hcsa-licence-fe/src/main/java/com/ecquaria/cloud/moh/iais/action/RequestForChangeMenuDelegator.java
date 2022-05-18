@@ -51,7 +51,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
@@ -1287,7 +1286,7 @@ public class RequestForChangeMenuDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
             }
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
-            ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
         }
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }

@@ -109,7 +109,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.RELOADAPPGRPPRIMARYDOCMAP);
         session.removeAttribute(HcsaAppConst.DRAFTCONFIG);
         Map<String, AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
-        session.setAttribute(HcsaAppConst.PERSONSELECTMAP, (Serializable) psnMap);
+        session.setAttribute(HcsaAppConst.PERSONSELECTMAP, psnMap);
         session.removeAttribute(AppServicesConsts.HCSASERVICEDTOLIST);
 
         session.removeAttribute("oldSubmitAppSubmissionDto");
@@ -586,24 +586,20 @@ public class DealSessionUtil {
             //set data into psnMap
             Map<String, AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
             personMap.putAll(licPersonMap);
-            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-                boolean isRfi = ApplicationHelper.checkIsRfi(request);
-                Object draft = ParamUtil.getSessionAttr(request, HcsaAppConst.DRAFTCONFIG);
-                if (draft != null || isRfi) {
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                        String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-                        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcCgoDtos, svcCode);
-                        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
-                                appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
-                        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
-                                appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
-                        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
-                                appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), svcCode);
-                        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
-                                appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), svcCode);
-                    }
+            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)
+                    && (ApplicationHelper.checkFromDraft(request) || ApplicationHelper.checkIsRfi(request))) {
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcCgoDtoList(), svcCode);
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), svcCode);
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), svcCode);
                 }
             }
             ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);

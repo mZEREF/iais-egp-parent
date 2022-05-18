@@ -1317,7 +1317,6 @@ public final class AppDataHelper {
         log.info(StringUtil.changeForLog("genAppSvcPrincipalOfficersDto start ...."));
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String appType = appSubmissionDto.getAppType();
         boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
@@ -1502,19 +1501,20 @@ public final class AppDataHelper {
                     }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
-                    appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
-                    appSvcPrincipalOfficersDto.setName(name[i]);
-                    appSvcPrincipalOfficersDto.setIdType(idType[i]);
-                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
-                    appSvcPrincipalOfficersDto.setNationality(nationality[i]);
-                    appSvcPrincipalOfficersDto.setDesignation(designation[i]);
-                    appSvcPrincipalOfficersDto.setOtherDesignation(otherDesignations[i]);
-                    appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
-                    appSvcPrincipalOfficersDto.setOfficeTelNo(officeTelNo[i]);
+                    appSvcPrincipalOfficersDto.setSalutation(getVal(salutation, i));
+                    appSvcPrincipalOfficersDto.setName(getVal(name, i));
+                    appSvcPrincipalOfficersDto.setIdType(getVal(idType, i));
+                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(getVal(idNo, i)));
+                    appSvcPrincipalOfficersDto.setNationality(getVal(nationality, i));
+                    appSvcPrincipalOfficersDto.setDesignation(getVal(designation, i));
+                    appSvcPrincipalOfficersDto.setOtherDesignation(getVal(otherDesignations, i));
+                    appSvcPrincipalOfficersDto.setMobileNo(getVal(mobileNo, i));
+                    appSvcPrincipalOfficersDto.setOfficeTelNo(getVal(officeTelNo, i));
                     String emailAddr = "";
                     if (emailAddress != null) {
-                        if (!StringUtil.isEmpty(emailAddress[i])) {
-                            emailAddr = StringUtil.viewHtml(emailAddress[i]);
+                        String val = getVal(emailAddress, i);
+                        if (!StringUtil.isEmpty(val)) {
+                            emailAddr = StringUtil.viewHtml(val);
                         }
                     }
                     appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
@@ -1532,7 +1532,8 @@ public final class AppDataHelper {
             }
         }
         //depo
-        if ("1".equals(deputySelect) && isGetDataFromPageDpo) {
+        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
+        if (AppConsts.YES.equals(deputySelect) && isGetDataFromPageDpo) {
             log.info(StringUtil.changeForLog("get dpo data..."));
             String[] dpoExistingPsn = ParamUtil.getStrings(request, "dpoExistingPsn");
             String[] dpoLicPerson = ParamUtil.getStrings(request, "dpoLicPerson");
@@ -1697,7 +1698,7 @@ public final class AppDataHelper {
                     --i;
                     --length;
                 } else if (getPageData) {
-                    String dpoIndexNo = dpoIndexNos[i];
+                    String dpoIndexNo = getVal(dpoIndexNos, i);
                     if (StringUtil.isEmpty(dpoIndexNo)) {
                         appSvcPrincipalOfficersDto.setIndexNo(UUID.randomUUID().toString());
                     } else {
@@ -1705,19 +1706,20 @@ public final class AppDataHelper {
                     }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
-                    appSvcPrincipalOfficersDto.setSalutation(deputySalutation[i]);
-                    appSvcPrincipalOfficersDto.setName(deputyName[i]);
-                    appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
-                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(deputyIdNo[i]));
-                    appSvcPrincipalOfficersDto.setNationality(deputyNationlity[i]);
-                    appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
-                    appSvcPrincipalOfficersDto.setOtherDesignation(deputyOtherDesignations[i]);
-                    appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
-                    appSvcPrincipalOfficersDto.setOfficeTelNo(deputyOfficeTelNo[i]);
+                    appSvcPrincipalOfficersDto.setSalutation(getVal(deputySalutation, i));
+                    appSvcPrincipalOfficersDto.setName(getVal(deputyName, i));
+                    appSvcPrincipalOfficersDto.setIdType(getVal(deputyIdType, i));
+                    appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(getVal(deputyIdNo, i)));
+                    appSvcPrincipalOfficersDto.setNationality(getVal(deputyNationlity, i));
+                    appSvcPrincipalOfficersDto.setDesignation(getVal(deputyDesignation, i));
+                    appSvcPrincipalOfficersDto.setOtherDesignation(getVal(deputyOtherDesignations, i));
+                    appSvcPrincipalOfficersDto.setMobileNo(getVal(deputyMobileNo, i));
+                    appSvcPrincipalOfficersDto.setOfficeTelNo(getVal(deputyOfficeTelNo, i));
                     String emailAddr = "";
                     if (deputyEmailAddr != null) {
-                        if (!StringUtil.isEmpty(deputyEmailAddr[i])) {
-                            emailAddr = StringUtil.viewHtml(deputyEmailAddr[i]);
+                        String val = getVal(deputyEmailAddr, i);
+                        if (!StringUtil.isEmpty(val)) {
+                            emailAddr = StringUtil.viewHtml(val);
                         }
                     }
                     appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
@@ -2513,21 +2515,6 @@ public final class AppDataHelper {
         appPsnEditDto.setDesignation(false);
     }
 
-    private static String[] removeArrItem(String[] arrs, String item) {
-        if (arrs == null || StringUtil.isEmpty(item)) {
-            return arrs;
-        }
-        String[] newArrs = new String[arrs.length - 1];
-        int i = 0;
-        for (String arr : arrs) {
-            if (!item.equals(arr)) {
-                newArrs[i] = arr;
-                i++;
-            }
-        }
-        return newArrs;
-    }
-
     private static String[] removeArrIndex(String[] arrs, int index) {
         if (arrs == null || arrs.length == 0) {
             return new String[]{""};
@@ -2543,4 +2530,10 @@ public final class AppDataHelper {
         return newArrs;
     }
 
+    private static String getVal(String[] arrs, int index) {
+        if (arrs == null || arrs.length == 0 || arrs.length < index) {
+            return null;
+        }
+        return arrs[index];
+    }
 }

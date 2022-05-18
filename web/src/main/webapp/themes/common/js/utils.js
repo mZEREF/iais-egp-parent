@@ -594,7 +594,7 @@ function disableContent(targetSelector) {
         return;
     }
     if (!$selector.is(":input")) {
-        $selector = $selector.find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
@@ -619,13 +619,13 @@ function unDisableContent(targetSelector) {
         return;
     }
     if (!$selector.is(":input")) {
-        $selector = $selector.find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function() {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+    $selector.each(function(i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }

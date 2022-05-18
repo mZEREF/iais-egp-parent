@@ -715,36 +715,14 @@ public class ApplicationAjaxController {
         }
         String currentSvcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            List<SelectOption> specialityOpts = ApplicationHelper.genSpecialtySelectList(currentSvcCode, false);
-            List<SelectOption> selectOptionList = person.getSpcOptList();
-            if (!IaisCommonUtils.isEmpty(selectOptionList)) {
-                for (SelectOption sp : selectOptionList) {
-                    if (!specialityOpts.contains(sp) && !sp.getValue().equals("other")) {
-                        specialityOpts.add(sp);
-                    }
-                }
-            }
-            String speciality = person.getSpeciality();
-            if (!StringUtil.isEmpty(speciality) && selectOptionList != null) {
-                int i = 0;
-                for (SelectOption sp : selectOptionList) {
-                    if (sp.getValue().equals(speciality)) {
-                        break;
-                    }
-                    if (i == selectOptionList.size() - 1) {
-                        specialityOpts.add(ApplicationHelper.getSpecialtyByValue(speciality));
-                    }
-                    i++;
-                }
-            }
-            //set other
-            specialityOpts.add(new SelectOption("other", "Others"));
+            List<SelectOption> specialityOpts = ApplicationHelper.genSpecialtySelectList(currentSvcCode, true);
             person.setSpcOptList(specialityOpts);
             Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
             specialtyAttr.put("name", "specialty");
             specialtyAttr.put("class", "specialty");
             specialtyAttr.put("style", "display: none;");
-            String specialityHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, speciality);
+            String specialityHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null,
+                    person.getSpeciality());
             person.setSpecialityHtml(specialityHtml);
         } else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
             Date specialtyGetDate = person.getSpecialtyGetDate();

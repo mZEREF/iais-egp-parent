@@ -449,7 +449,7 @@
                                             <span id="error_conflictError${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                         <div class="row">
-                                            <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
+                                            <div class="control control-caption-horizontal deputyPoSelectDiv <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                                                         Assign a Nominee
@@ -935,7 +935,6 @@
         });
     };
 
-
     $('.deputySelect').change(function () {
         var deputyFlag = $(this).val();
         var $poContentEle = $(this).closest('div.panel-group');
@@ -957,6 +956,11 @@
                 $contentEle.find('input[type="text"]').css('color','');
                 */
             } else {
+                if (!$('div.deputyPoSelectDiv').hasClass('hidden')) {
+                    $('div.deputyPoSelectDiv').find('div.nice-select').removeClass('disabled');
+                    $('div.deputyPoSelectDiv').find('input[type="text"]').css('border-color','');
+                    $('div.deputyPoSelectDiv').find('input[type="text"]').css('color','');
+                }
                 //add one
                 $('#addDpoBtn').trigger('click');
                 //close dropdown
@@ -964,7 +968,7 @@
                 $('#deputyPrincipalOfficer').niceSelect('update');
             }
 
-        }else{
+        } else {
             $poContentEle.find('div.deputy-content ').addClass('hidden');
         }
 

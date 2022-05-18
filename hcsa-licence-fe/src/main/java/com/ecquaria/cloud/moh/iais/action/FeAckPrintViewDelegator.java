@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -69,14 +68,14 @@ public class FeAckPrintViewDelegator {
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             title = "Licence Renewal";
         } else if("retrigger".equals(action)){
-            title = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_TITLE);
-            smallTitle = (StringBuilder) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE);
+            title = (String) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.ACK_TITLE);
+            smallTitle = (StringBuilder) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE);
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 ParamUtil.setRequestAttr(bpc.request,"renewAck", "test");
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_TITLE, title);
-        ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle.toString());
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACK_TITLE, title);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, smallTitle.toString());
 
         log.debug(StringUtil.changeForLog("ack print view doStart end ..."));
     }

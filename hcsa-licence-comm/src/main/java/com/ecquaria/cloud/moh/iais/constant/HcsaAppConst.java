@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class HcsaAppConst {
+
+    private HcsaAppConst() {throw new IllegalStateException("HcsaAppConst class");}
+
     public static final String NEW_PREMISES                                 = "newPremise";
     public static final String NEW_PSN                                      = "newOfficer";
     public static final String PLEASEINDICATE                               = "Please indicate";
@@ -24,6 +27,9 @@ public final class HcsaAppConst {
     public static final String PREMISES_HCI_LIST                            = "premisesHciList";
 
     public static final String DASHBOARDTITLE                               = "DashboardTitle";
+
+    public static final String ACK_TITLE                                    = "title";
+    public static final String ACK_SMALL_TITLE                              = "smallTitle";
 
     public static final String TITLE_LICENSEE                               = "Licensee Details";
     public static final String TITLE_MODE_OF_SVCDLVY                        = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;

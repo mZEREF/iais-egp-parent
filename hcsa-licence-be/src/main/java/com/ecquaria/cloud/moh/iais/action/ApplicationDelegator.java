@@ -69,7 +69,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         DealSessionUtil.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //for rfi loading
-        requestForInformationLoading(bpc, null);
+        requestForInformationLoading(bpc.request, null);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
@@ -134,9 +134,9 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected void requestForInformationLoading(BaseProcessClass bpc, String appNo) {
+    protected void requestForInformationLoading(HttpServletRequest request, String appNo) {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
         if (applicationViewDto == null) {
             return;
         }
@@ -192,18 +192,18 @@ public class ApplicationDelegator extends AppCommDelegator {
                 log.warn(StringUtil.changeForLog("##### No Active Licence for this ID: " + licenceId));
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
         coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
         coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
         coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_PREMISES);
         coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_PREMISES);
         coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CO_MAP, coMap);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
         //control premises edit
         handlePremises(appSubmissionDto, appNo);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG, "test");
+        ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.REQUESTINFORMATIONCONFIG, "test");
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
 

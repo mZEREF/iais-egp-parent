@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
@@ -148,13 +147,13 @@ public abstract class AppCommDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         log.info(StringUtil.changeForLog("DraftNumber: + " + draftNo + " ----- AppNo: " + appNo));
         // rfc or renew
-        requestForChangeOrRenewLoading(bpc);
+        requestForChangeOrRenewLoading(bpc.request);
         //renewLicence(bpc);
-        requestForInformationLoading(bpc, appNo);
+        requestForInformationLoading(bpc.request, appNo);
         //for loading the draft by appId
-        loadingDraft(bpc, draftNo);
+        loadingDraft(bpc.request, draftNo);
         //load new application info
-        loadingNewAppInfo(bpc);
+        loadingNewAppInfo(bpc.request);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
@@ -179,55 +178,55 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
-    protected void loadingNewAppInfo(BaseProcessClass bpc) {
+    protected void loadingNewAppInfo(HttpServletRequest request) {
     }
 
-    protected void loadingDraft(BaseProcessClass bpc, String draftNo) {}
+    protected void loadingDraft(HttpServletRequest request, String draftNo) {}
 
-    protected void requestForChangeOrRenewLoading(BaseProcessClass bpc) {
+    protected void requestForChangeOrRenewLoading(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
-        String appType = (String) ParamUtil.getRequestAttr(bpc.request, "appType");
-        String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT);
+        String appType = (String) ParamUtil.getRequestAttr(request, "appType");
+        String currentEdit = (String) ParamUtil.getRequestAttr(request, RfcConst.RFC_CURRENT_EDIT);
         boolean canDoEdit = (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
                 appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType));
         if (!canDoEdit || StringUtil.isEmpty(currentEdit)) {
             return;
         }
 
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request, RfcConst.APPSUBMISSIONDTORFCATTR);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(request, RfcConst.APPSUBMISSIONDTORFCATTR);
         if (canDoEdit && appSubmissionDto != null) {
             AuditTrailHelper.setAuditTrailInfoByAppType(appType);
-            ParamUtil.setSessionAttr(bpc.request, "hasDetail", "Y");
-            ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
+            ParamUtil.setSessionAttr(request, "hasDetail", "Y");
+            ParamUtil.setSessionAttr(request, "isSingle", "Y");
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             if (RfcConst.EDIT_LICENSEE.equals(currentEdit)) {
                 appEditSelectDto.setLicenseeEdit(true);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
             } else if (RfcConst.EDIT_PREMISES.equals(currentEdit)) {
                 appEditSelectDto.setPremisesEdit(true);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
             } else if (RfcConst.EDIT_PRIMARY_DOC.equals(currentEdit)) {
                 appEditSelectDto.setDocEdit(true);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             } else if (RfcConst.EDIT_SERVICE.equals(currentEdit)) {
                 appEditSelectDto.setServiceEdit(true);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "serviceForms");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "serviceForms");
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+            ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+            HashMap<String, String> coMap = (HashMap<String, String>) request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
             coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_PREMISES);
             coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_PREMISES);
             coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CO_MAP, coMap);
+            ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
 
-    protected void requestForInformationLoading(BaseProcessClass bpc, String appNo) {
+    protected void requestForInformationLoading(HttpServletRequest request, String appNo) {
     }
 
     protected void handlePremises(AppSubmissionDto appSubmissionDto, String appNo) {

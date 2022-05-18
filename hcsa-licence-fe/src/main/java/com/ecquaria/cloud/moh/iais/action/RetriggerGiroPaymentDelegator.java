@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
@@ -97,8 +96,8 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the retrigger giro doStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_TITLE, null);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_TITLE, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG,null);
@@ -128,7 +127,7 @@ public class RetriggerGiroPaymentDelegator {
             switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
+            ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.ACK_TITLE, title);
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"You have already resubmitted the payment!");
             return;
         }
@@ -202,8 +201,8 @@ public class RetriggerGiroPaymentDelegator {
                 count ++;
             }
         }
-        ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle);
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.ACK_TITLE, title);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, smallTitle);
 
         if(APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
             log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
@@ -409,7 +408,7 @@ public class RetriggerGiroPaymentDelegator {
             }
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO,appSubmissionDto);
-            ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,appSubmissionDto.getPaymentMethod());
+            ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.ATTR_RELOAD_PAYMENT_METHOD,appSubmissionDto.getPaymentMethod());
         }
         boolean isGiroAcc = false;
         List<SelectOption> giroAccSel = ApplicationHelper.getGiroAccOptions(forGiroList, appSubmissionDto);
