@@ -10,7 +10,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class, contextId = "revoke")
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class, contextId = "revoke")
 public interface RevocationClient {
     @PostMapping(path = "/revocation",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<Void> saveRevokeApplication(@RequestBody SubmitRevokeDto dto);

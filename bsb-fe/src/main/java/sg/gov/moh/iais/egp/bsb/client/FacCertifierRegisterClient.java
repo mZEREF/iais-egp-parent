@@ -15,7 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDto;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "cerReg")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "cerReg")
 public interface FacCertifierRegisterClient {
     @PostMapping(path = "/register/facility-certifier/form-validation/org-profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateOrganisationProfile(@RequestBody CompanyProfileDto dto);

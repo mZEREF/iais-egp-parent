@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface BsbFileClient {
     @PostMapping(value = "/file-sync/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Void> syncFiles(@RequestPart("syncFiles") NewFileSyncDto[] newFileSyncDtoList);

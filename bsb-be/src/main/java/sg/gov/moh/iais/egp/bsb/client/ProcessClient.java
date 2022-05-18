@@ -13,7 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.process.*;
  * @author : LiRan
  * @date : 2021/8/20
  */
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface ProcessClient {
     @GetMapping(path = "/bsb-moh-officer/do-screening/moh-process-dto", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<MohProcessDto> getMohProcessDtoByAppId(@RequestParam("applicationId") String applicationId, @RequestParam("moduleName") String moduleName);

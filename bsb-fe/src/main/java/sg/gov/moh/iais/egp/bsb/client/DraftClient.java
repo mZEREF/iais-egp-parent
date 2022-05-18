@@ -12,7 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
  * @author YiMing
  * @version 2022/1/15 14:29
  **/
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "fpDraft")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "fpDraft")
 public interface DraftClient {
     @GetMapping(path = "/draft/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DraftDto> retrieveDraftByApplicationId(@PathVariable("appId") String appId);

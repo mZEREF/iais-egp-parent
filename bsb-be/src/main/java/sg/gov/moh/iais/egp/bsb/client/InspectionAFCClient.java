@@ -10,7 +10,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface InspectionAFCClient {
     @GetMapping(value = "/certification/afc/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ReviewAFCReportDto> getReviewAFCReportDto(@RequestParam("appId") String appId);

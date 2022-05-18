@@ -14,7 +14,7 @@ import sg.gov.moh.iais.egp.bsb.dto.processderegistration.DOProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.HMProcessDto;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface ProcessDeregistrationClient {
     @GetMapping(path = "/deregister-cancel-be/do-process/init-data/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DOProcessDto> getDOProcessDataByAppId(@PathVariable("applicationId") String applicationId);

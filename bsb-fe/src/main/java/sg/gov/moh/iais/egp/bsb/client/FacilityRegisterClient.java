@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
 public interface FacilityRegisterClient {
     @GetMapping(value = "/declaration/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<DeclarationItemMainInfo> getDeclarationConfigInfoById(@PathVariable("id") String id);

@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.entity.Facility;
  * @author YiMing
  */
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface FacilityClient {
     @GetMapping(path = "/fac_info/email/{appNo}")
     ResponseDto<Facility> queryEmailByAppNo(@PathVariable("appNo") String appNo);

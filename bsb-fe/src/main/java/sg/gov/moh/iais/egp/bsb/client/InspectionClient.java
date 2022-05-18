@@ -14,7 +14,7 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
     @GetMapping(path = "/inspection/self-assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<PreAssessmentDto> getAssessmentState(@PathVariable("appId") String appId);

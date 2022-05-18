@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "approvalBatAndActivity")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "approvalBatAndActivity")
 public interface ApprovalBatAndActivityClient {
     @GetMapping(value = "/facility-info/approved-facility/basic", produces = MediaType.APPLICATION_JSON_VALUE)
     List<FacilityBasicInfo> getApprovedFacility();

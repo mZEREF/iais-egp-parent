@@ -18,7 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 /**
  * @author Ren Fanghao
  */
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface AdhocRfiClient {
 
     @GetMapping(value = "/adhoc-rfi", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)

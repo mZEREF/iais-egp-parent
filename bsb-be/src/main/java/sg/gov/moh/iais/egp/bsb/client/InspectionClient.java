@@ -24,7 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import java.util.List;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
     @GetMapping(value = "/inspection/actual/submit-findings/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitFindingDataDto getInitInsFindingData(@RequestParam("appId") String appId);

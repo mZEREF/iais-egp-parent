@@ -17,7 +17,7 @@ import java.util.List;
  * @author Zhu Tangtang
  */
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface DocClient {
     @PostMapping(value = "/bsb-doc/saveDoc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveFacilityDoc(@RequestBody FacilityDoc facilityDoc);

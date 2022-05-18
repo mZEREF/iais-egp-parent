@@ -30,7 +30,7 @@ import java.util.Map;
  * @author YiMing
  * @version 2022/3/2 13:51
  **/
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "reportableEvent")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "reportableEvent")
 public interface ReportableEventClient {
     @PostMapping(path = "/reportable-event/incident-notification/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftIncidentNotification(@RequestBody IncidentNotificationDto dto);

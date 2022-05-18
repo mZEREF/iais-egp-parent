@@ -8,7 +8,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveInspectionReportDto;
 
-@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "rfi")
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class, contextId = "rfi")
 public interface RfiClient {
     @GetMapping(value = "/rfi/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<RfiDisplayDto> getProcessingRfiByApplicationId(@PathVariable("applicationId") String applicationId);

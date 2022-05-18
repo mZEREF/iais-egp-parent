@@ -19,7 +19,7 @@ import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import java.util.List;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface AppViewClient {
     @GetMapping(path = "/app-view/register/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacRegDtoByAppId(@PathVariable("appId") String applicationId);
