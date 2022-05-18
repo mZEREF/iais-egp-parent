@@ -248,43 +248,12 @@ public final class ExcelReader {
     }
 
     public static <T> Map<String, List<T>> readerToBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
-        if (file == null || !file.exists()) {
-            throw new IaisRuntimeException("Please check excel source is exists");
-        }
-
-        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
-            throw new IaisRuntimeException("excel sheet dot error");
-        }
+        Map<String, List<?>> map = readerToDiffBeans(file, excelSheetDtos);
         Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
-        Workbook workBook = null;
-        try (InputStream in = Files.newInputStream(file.toPath())) {
-            workBook = new XSSFWorkbook(in);
-            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
-                int sheetAt = excelSheetDto.getSheetAt();
-                Sheet sheet = workBook.getSheetAt(sheetAt);
-                if (sheet == null) {
-                    log.info(StringUtil.changeForLog("excel sheet name error"));
-                    continue;
-                }
-                String sheetName = sheet.getSheetName();
-                String name = excelSheetDto.getSheetName();
-                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
-                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
-                    continue;
-                }
-                List<T> ans = parseSheetToList(sheet, excelSheetDto);
-                data.put(excelSheetDto.getSheetName(), ans);
-            }
-            return data;
-        } finally {
-            try {
-                if (workBook != null) {
-                    workBook.close();
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+        for (Map.Entry<String, List<?>> entry : map.entrySet()) {
+            data.put(entry.getKey(), entry.getValue().stream().map(obj -> (T)obj).collect(Collectors.toList()));
         }
+        return data;
     }
 
     public static Map<String, List<?>> readerToDiffBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
