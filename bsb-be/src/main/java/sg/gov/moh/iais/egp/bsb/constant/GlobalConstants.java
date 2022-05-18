@@ -13,5 +13,5 @@ public class GlobalConstants {
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    public static final String WEB_ROOT = "/bsb-be/themes/be";
+    public static final String WEB_ROOT = "/bsb-web/themes/be";
 }

@@ -85,11 +85,11 @@
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 ">
-                                    <a class="back" id="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
+                                    <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="button-group">
-                                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
+                                        <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
                                         <a class="btn btn-secondary" id="draftBtn">SAVE AS DRAFT</a>
                                         <a class="btn btn-primary" id="saveBtn">SUBMIT</a>
                                     </div>

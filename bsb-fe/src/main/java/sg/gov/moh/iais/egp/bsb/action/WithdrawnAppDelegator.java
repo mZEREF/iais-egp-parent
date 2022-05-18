@@ -86,9 +86,9 @@ public class WithdrawnAppDelegator {
             ParamUtil.setSessionAttr(request, PARAM_FROM, from);
         }
         if (dto.getFrom().equals("application")){
-            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-fe/eservice/INTERNET/MohBSBInboxApp");
+            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-web/eservice/INTERNET/MohBSBInboxApp");
         }else if (dto.getFrom().equals("dataSubmission")){
-            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-fe/eservice/INTERNET/DataSubInbox");
+            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-web/eservice/INTERNET/DataSubInbox");
         }
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
     }

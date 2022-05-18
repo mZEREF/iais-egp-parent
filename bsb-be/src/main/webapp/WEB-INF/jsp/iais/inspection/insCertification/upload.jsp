@@ -17,7 +17,7 @@
                        <%-- <c:forEach var="info" items="${oldSavedDoc}">
                             <c:set var="repoId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
                             <div id="${repoId}FileDiv">
-                                <span id="${repoId}Span"><a href="/bsb-be/ajax/doc/download/commentInsReport/comment/${repoId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span>
+                                <span id="${repoId}Span"><a href="/bsb-web/ajax/doc/download/commentInsReport/comment/${repoId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button>
                                 <span data-err-ind="${info.repoId}" class="error-msg"></span>
                             </div>

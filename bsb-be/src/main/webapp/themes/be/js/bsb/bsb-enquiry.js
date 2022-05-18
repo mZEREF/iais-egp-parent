@@ -47,7 +47,7 @@ function doAppInfo(appId) {
 $(function (){
     $('select[name="scheduleType"]').change(function (){
         var schedule = $('select[name="scheduleType"] option:selected').val();
-        $.post('/bsb-be/bio-info/bio.do',
+        $.post('/bsb-web/bio-info/bio.do',
             {schedule: schedule},
             function (data){
                 var result = data.result;

@@ -59,7 +59,7 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">

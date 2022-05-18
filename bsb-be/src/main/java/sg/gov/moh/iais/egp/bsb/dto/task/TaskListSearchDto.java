@@ -10,7 +10,7 @@ import java.util.Set;
 
 
 /**
- * Search DTO for task list module under bsb-be
+ * Search DTO for task list module under bsb-web
  */
 @Data
 @ToString(callSuper = true)

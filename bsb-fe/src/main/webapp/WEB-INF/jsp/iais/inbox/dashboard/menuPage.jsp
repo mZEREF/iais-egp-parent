@@ -4,7 +4,7 @@
     <div class="col-xs-12 col-md-10">
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
-                <li class="active"><a href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg" style="cursor: pointer"><span>Dashboard</span></a></li>
+                <li class="active"><a href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg" style="cursor: pointer"><span>Dashboard</span></a></li>
                 <menu:load id="inbox-top-menus">
                     <menu:include name="BSB_INTER_INBOX"/>
                 </menu:load>

@@ -35,5 +35,5 @@ function hideImplement(cause){
 }
 
 function openIncident(maskedEditId){
-    window.open("/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
+    window.open("/bsb-web/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
 }

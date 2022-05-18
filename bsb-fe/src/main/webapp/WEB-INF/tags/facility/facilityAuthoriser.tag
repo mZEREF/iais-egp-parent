@@ -54,7 +54,7 @@
                                                 Note: The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of authorised personnel is always kept up to date i.e. prompt submission of updates to include newly authorised personnel or to remove personnel who are no longer authorised to access the facility.
                                             </div>
                                             <ul>
-                                                <li>Click <a href="/bsb-fe/ajax/doc/download/facReg/authoriser/sample/<iais:mask name="file" value="${authoriserSampleFile.fileRepoId}"/>" style="text-decoration: underline">here</a> to download the template for the list of Personnel Authorised to Access the Facility.</li>
+                                                <li>Click <a href="/bsb-web/ajax/doc/download/facReg/authoriser/sample/<iais:mask name="file" value="${authoriserSampleFile.fileRepoId}"/>" style="text-decoration: underline">here</a> to download the template for the list of Personnel Authorised to Access the Facility.</li>
                                                 <li>Acceptable file format is XLSX, CSV.</li>
                                                 <li>The maximum file size is 10 MB.</li>
                                             </ul>
@@ -94,7 +94,7 @@
                                                         <c:if test="${facAuth.savedFile ne null}">
                                                             <c:set var="repoId"><iais:mask name="file" value="${facAuth.savedFile.repoId}"/></c:set>
                                                             <div id="${repoId}FileDiv">
-                                                                <a href="/bsb-fe/ajax/doc/download/facReg/authoriser/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${facAuth.savedFile.filename}</span></a>(<fmt:formatNumber value="${facAuth.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/authoriser/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${facAuth.savedFile.filename}</span></a>(<fmt:formatNumber value="${facAuth.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                     type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${repoId}')">Delete</button>
                                                                 <span data-err-ind="${facAuth.savedFile.repoId}" class="error-msg"></span>
                                                             </div>
@@ -102,7 +102,7 @@
                                                         <c:if test="${facAuth.newFile ne null}">
                                                             <c:set var="tmpId"><iais:mask name="file" value="${facAuth.newFile.tmpId}"/></c:set>
                                                             <div id="${tmpId}FileDiv">
-                                                                <a href="/bsb-fe/ajax/doc/download/facReg/authoriser/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${facAuth.newFile.filename}</span></a>(<fmt:formatNumber value="${facAuth.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/authoriser/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${facAuth.newFile.filename}</span></a>(<fmt:formatNumber value="${facAuth.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                     type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${tmpId}')">Delete</button>
                                                                 <span data-err-ind="${facAuth.newFile.tmpId}" class="error-msg"></span>
                                                             </div>

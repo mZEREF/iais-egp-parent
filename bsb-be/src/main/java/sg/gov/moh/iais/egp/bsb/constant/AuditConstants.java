@@ -86,6 +86,6 @@ public final class AuditConstants {
     public static final String PARAM_MODULE_TYPE = "moduleType";
 
     public static final String BACK_URL = "backUrl";
-    public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";
-    public static final String BACK_URL_CANCEL_LIST = "/bsb-be/eservicecontinue/INTRANET/AuditCancellationList";
+    public static final String BACK_URL_TASK_LIST = "/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList";
+    public static final String BACK_URL_CANCEL_LIST = "/bsb-web/eservicecontinue/INTRANET/AuditCancellationList";
 }

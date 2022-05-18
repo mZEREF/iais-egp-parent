@@ -54,7 +54,7 @@
                 <c:if test="${certTeam.savedFile ne null}">
                     <c:set var="repoId"><iais:mask name="file" value="${certTeam.savedFile.repoId}"/></c:set>
                     <div id="${repoId}FileDiv">
-                        <a href="/bsb-fe/ajax/doc/download/facCertReg/certTeamDto/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${certTeam.savedFile.filename}</span></a>(<fmt:formatNumber value="${certTeam.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                        <a href="/bsb-web/ajax/doc/download/facCertReg/certTeamDto/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${certTeam.savedFile.filename}</span></a>(<fmt:formatNumber value="${certTeam.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                             type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${repoId}')">Delete</button>
                         <span data-err-ind="${certTeam.savedFile.repoId}" class="error-msg"></span>
                     </div>
@@ -62,7 +62,7 @@
                 <c:if test="${certTeam.newFile ne null}">
                     <c:set var="tmpId"><iais:mask name="file" value="${certTeam.newFile.tmpId}"/></c:set>
                     <div id="${tmpId}FileDiv">
-                        <a href="/bsb-fe/ajax/doc/download/facCertReg/certTeamDto/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${certTeam.newFile.filename}</span></a>(<fmt:formatNumber value="${certTeam.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                        <a href="/bsb-web/ajax/doc/download/facCertReg/certTeamDto/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${certTeam.newFile.filename}</span></a>(<fmt:formatNumber value="${certTeam.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                             type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${tmpId}')">Delete</button>
                         <span data-err-ind="${certTeam.newFile.tmpId}" class="error-msg"></span>
                     </div>

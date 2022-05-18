@@ -134,7 +134,7 @@ function callAjaxUploadFile() {
     var form = new FormData($("#fileUploadForm")[0]);
     $.ajax({
         type: "post",
-        url: "/bsb-be/ajax/doc/internal-doc",
+        url: "/bsb-web/ajax/doc/internal-doc",
         data: form,
         async: true,
         processData: false,
@@ -175,7 +175,7 @@ function callAjaxDeleteFile(appId, repoId) {
     var reqData = {"appId":appId,"repoId":repoId};
     $.ajax({
         type: "delete",
-        url: "/bsb-be/ajax/doc/internal-doc",
+        url: "/bsb-web/ajax/doc/internal-doc",
         data: reqData,
         async: true,
         dataType: "json",
@@ -187,7 +187,7 @@ function callAjaxDeleteFile(appId, repoId) {
 
 
 function downloadInternalDocument(repoId, filename) {
-    var url = "/bsb-be/ajax/doc/internal-doc?repoId=" + repoId + "&filename=" + filename;
+    var url = "/bsb-web/ajax/doc/internal-doc?repoId=" + repoId + "&filename=" + filename;
     url = encodeURI(url);
     window.open(url);
 }

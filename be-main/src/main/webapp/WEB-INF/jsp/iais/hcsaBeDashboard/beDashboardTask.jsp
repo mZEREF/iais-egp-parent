@@ -28,7 +28,7 @@
 <c:if test="${fn:startsWith(crole, 'BSB_')}">
   <script>
     $(function () {
-      document.location ="/bsb-be/eservice/INTRANET/MohBsbTaskList"
+      document.location ="/bsb-web/eservice/INTRANET/MohBsbTaskList"
     })
   </script>
 </c:if>

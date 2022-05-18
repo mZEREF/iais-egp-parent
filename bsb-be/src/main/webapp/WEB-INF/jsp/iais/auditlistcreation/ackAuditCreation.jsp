@@ -21,7 +21,7 @@
                         </div>
                         <div align="left">
                             <span>
-                                <a href="/bsb-be/eservice/INTRANET/AuditListCreationList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="/bsb-web/eservice/INTRANET/AuditListCreationList"><em class="fa fa-angle-left"></em> Back</a>
                             </span>
                         </div>
                     </div>

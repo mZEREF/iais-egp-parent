@@ -51,7 +51,7 @@
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Please upload the list of Biosafety Committee Members</h3>
                                         <div class="document-info-list">
                                             <ul>
-                                                <li>Click <a href='/bsb-fe/ajax/doc/download/facReg/committee/sample/<iais:mask name="file" value="${committeeSampleFile.fileRepoId}"/>' style="text-decoration: underline">here</a> to download the template for the list of biosafety committee members.</li>
+                                                <li>Click <a href='/bsb-web/ajax/doc/download/facReg/committee/sample/<iais:mask name="file" value="${committeeSampleFile.fileRepoId}"/>' style="text-decoration: underline">here</a> to download the template for the list of biosafety committee members.</li>
                                                 <li>Acceptable file format is XLSX, CSV.</li>
                                                 <li>The maximum file size is 10 MB.</li>
                                             </ul>
@@ -91,7 +91,7 @@
                                                         <c:if test="${facCommittee.savedFile ne null}">
                                                             <c:set var="repoId"><iais:mask name="file" value="${facCommittee.savedFile.repoId}"/></c:set>
                                                             <div id="${repoId}FileDiv">
-                                                                <a href="/bsb-fe/ajax/doc/download/facReg/committee/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${facCommittee.savedFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/committee/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${facCommittee.savedFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                     type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${repoId}')">Delete</button>
                                                                 <span data-err-ind="${facCommittee.savedFile.repoId}" class="error-msg"></span>
                                                             </div>
@@ -99,7 +99,7 @@
                                                         <c:if test="${facCommittee.newFile ne null}">
                                                             <c:set var="tmpId"><iais:mask name="file" value="${facCommittee.newFile.tmpId}"/></c:set>
                                                             <div id="${tmpId}FileDiv">
-                                                                <a href="/bsb-fe/ajax/doc/download/facReg/committee/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${facCommittee.newFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/committee/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${facCommittee.newFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                     type="button" class="btn btn-secondary btn-sm" onclick="delete1DataFile('${tmpId}')">Delete</button>
                                                                 <span data-err-ind="${facCommittee.newFile.tmpId}" class="error-msg"></span>
                                                             </div>

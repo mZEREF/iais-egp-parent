@@ -322,7 +322,7 @@
     </div>
 </div>
 <div style="text-align: right">
-    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+    <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     <button name="saveReportBtn" id="saveReportBtn" type="button" class="btn btn-default">Save</button>
 </div>
 <%@include file="jumpAfterReport.jsp"%>

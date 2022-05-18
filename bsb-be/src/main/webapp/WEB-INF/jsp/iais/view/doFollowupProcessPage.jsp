@@ -111,7 +111,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class = "row">
-                                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"> </em> Back</a>
+                                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back" href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"> </em> Back</a>
                                                                 <button class="btn btn-primary" type="button" id="addNote" style="float: right">Add Note</button>
                                                                 <button class="btn btn-primary" type="button" id="close" style="float: right">Close Report</button>
                                                             </div>

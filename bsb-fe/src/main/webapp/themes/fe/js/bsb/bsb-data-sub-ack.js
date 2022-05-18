@@ -5,7 +5,7 @@ function facChange(obj){
         dataSub.html("<option value=\"\">Please select<\/option>");
         dataSub.next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>");
     } else {
-        $.post('/bsb-fe/sub-info/sub.do',
+        $.post('/bsb-web/sub-info/sub.do',
             {maskFacId: maskFacId},
             function (data) {
                 var result = data.result;

@@ -42,7 +42,7 @@ function schTypeChange(obj) {
 }
 
 function callAjaxGetBat(scheduleType,meta,num){
-    $.post('/bsb-fe/bio-info/bio.do',
+    $.post('/bsb-web/bio-info/bio.do',
         {schedule: scheduleType},
         function (data) {
             var result = data.result;

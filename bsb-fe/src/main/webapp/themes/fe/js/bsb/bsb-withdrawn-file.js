@@ -100,6 +100,6 @@ function genFileInfo(fileInputEl) {
 
 function downloadFile(id) {
     console.log(id);
-    var url = "/bsb-fe/ajax/doc/download/withdrawn/repo/" + id;
+    var url = "/bsb-web/ajax/doc/download/withdrawn/repo/" + id;
     window.open(url);
 }

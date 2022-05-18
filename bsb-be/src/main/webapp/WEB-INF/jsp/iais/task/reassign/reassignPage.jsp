@@ -41,7 +41,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:action >
-                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohBsbReassignTaskList" class="back" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                                        <a href="/bsb-web/eservicecontinue/INTRANET/MohBsbReassignTaskList" class="back" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                                         <button class="btn btn-primary" id="submitBtn" style="float:right" type="button">Submit</button>
                                     </iais:action>
                                 </iais:section>

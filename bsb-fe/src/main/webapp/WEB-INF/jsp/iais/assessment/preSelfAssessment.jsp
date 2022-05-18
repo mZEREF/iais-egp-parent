@@ -71,7 +71,7 @@
                 </table>
 
                 <div class="alignctr">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </form>

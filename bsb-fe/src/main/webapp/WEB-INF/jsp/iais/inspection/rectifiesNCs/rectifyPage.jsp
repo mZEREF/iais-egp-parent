@@ -74,7 +74,7 @@
                                             <c:forEach var="info" items="${newSavedDoc}">
                                                 <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                                                 <div id="${tmpId}FileDiv">
-                                                    <a href="/bsb-fe/ajax/doc/download/insNonCompliance/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                    <a href="/bsb-web/ajax/doc/download/insNonCompliance/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button>
                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                                                 </div>
@@ -84,7 +84,7 @@
                                             <c:forEach var="info" items="${oldSavedDoc}">
                                                 <c:set var="repoId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                                                 <div id="${repoId}FileDiv">
-                                                    <a href="/bsb-fe/ajax/doc/download/insNonCompliance/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                    <a href="/bsb-web/ajax/doc/download/insNonCompliance/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button>
                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
                                                 </div>

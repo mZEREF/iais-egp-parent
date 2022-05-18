@@ -14,6 +14,6 @@ function validate(){
     }
 }
 function downloadSupportDocument(appId, repoId, docName) {
-    var url = "/bsb-be/ajax/doc/download/applicationDoc/" + repoId;
+    var url = "/bsb-web/ajax/doc/download/applicationDoc/" + repoId;
     window.open(url);
 }

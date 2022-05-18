@@ -116,7 +116,7 @@ public class RescheduleAppointmentDelegator {
         } else {
             ParamUtil.setRequestAttr(request,"ackMsg","You are failed to reschedule inspection");
         }
-        ParamUtil.setRequestAttr(request,"backUrl","/bsb-fe/eservice/INTERNET/MohBsbRescheduleApptList");
+        ParamUtil.setRequestAttr(request,"backUrl","/bsb-web/eservice/INTERNET/MohBsbRescheduleApptList");
     }
 
     private List<AppointmentViewDto> getAppointmentViewDtos(HttpServletRequest request) {

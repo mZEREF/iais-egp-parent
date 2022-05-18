@@ -72,27 +72,27 @@ function deleteFile(id) {
 function downloadFile(cond, id) {
     var url;
     if (cond === 'saved') {
-        url = "/bsb-be/ajax/doc/download/facility/repo/" + id;
+        url = "/bsb-web/ajax/doc/download/facility/repo/" + id;
     }
     window.open(url);
 }
 
 function downloadWithdrawnFile(id) {
-    var url = "/bsb-be/ajax/doc/download/withdrawn/repo/" + id;
+    var url = "/bsb-web/ajax/doc/download/withdrawn/repo/" + id;
     window.open(url);
 }
 
 function downloadNewSuspensionFile(id) {
-    var url = "/bsb-be/ajax/doc/download/suspension/new/" + id;
+    var url = "/bsb-web/ajax/doc/download/suspension/new/" + id;
     window.open(url);
 }
 
 function downloadSavedSuspensionFile(id) {
-    var url = "/bsb-be/ajax/doc/download/suspension/repo/" + id;
+    var url = "/bsb-web/ajax/doc/download/suspension/repo/" + id;
     window.open(url);
 }
 
 function downloadSupportDocument(appId, repoId, docName) {
-    var url = "/bsb-be/ajax/doc/download/applicationDoc/" + repoId;
+    var url = "/bsb-web/ajax/doc/download/applicationDoc/" + repoId;
     window.open(url);
 }

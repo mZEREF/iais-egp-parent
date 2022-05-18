@@ -25,7 +25,7 @@
     </div>
 <div class="row">
     <div class="col-xs-12">
-        <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
+        <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
         <div style="text-align: right">
             <button name="previewBtn" id="previewBtn" type="button" class="btn btn-secondary">PREVIEW</button>
         </div>

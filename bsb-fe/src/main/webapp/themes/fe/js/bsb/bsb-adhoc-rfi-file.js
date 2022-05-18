@@ -100,6 +100,6 @@ function genFileInfo(fileInputEl) {
 
 function downloadFile(id,docName) {
     console.log(id);
-    var url = "/bsb-fe/ajax/doc/download/adhocRfi/repo/" + id+"/"+docName;
+    var url = "/bsb-web/ajax/doc/download/adhocRfi/repo/" + id+"/"+docName;
     window.open(url);
 }

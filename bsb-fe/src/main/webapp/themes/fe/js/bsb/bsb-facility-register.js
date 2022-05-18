@@ -281,7 +281,7 @@ $(function () {
         }
         $.ajax({
             type:"GET",
-            url:"/bsb-fe/address-info/" + postalCode,
+            url:"/bsb-web/address-info/" + postalCode,
             dataType: 'json',
             error:function(){
                 $("#invalidPostalCodeModal").modal('show');

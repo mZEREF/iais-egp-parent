@@ -67,7 +67,7 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
             </iais:action>
         </div>
     </div>

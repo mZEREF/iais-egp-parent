@@ -58,7 +58,7 @@
             <div class="col-xs-12 col-md-6 text-left">
                 <c:choose>
                     <c:when test="${back eq 'app'}">
-                        <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em>Back</a>
+                        <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em>Back</a>
                     </c:when>
                     <c:otherwise>
                         <a class="back" href="#" id="back"><em class="fa fa-angle-left"></em> Back</a>

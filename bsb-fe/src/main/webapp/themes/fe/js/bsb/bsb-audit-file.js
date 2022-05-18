@@ -82,9 +82,9 @@ function genFileInfo(fileInputEl) {
 function downloadFile(cond,id) {
         var url;
         if (cond === 'saved') {
-            url = "/bsb-fe/ajax/doc/download/audit/repo/" + id;
+            url = "/bsb-web/ajax/doc/download/audit/repo/" + id;
         } else if (cond === 'new') {
-            url = "/bsb-fe/ajax/doc/download/audit/new/" + id;
+            url = "/bsb-web/ajax/doc/download/audit/new/" + id;
         }
     window.open(url);
 }
