@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -272,6 +273,46 @@ public final class ExcelReader {
                     continue;
                 }
                 List<T> ans = parseSheetToList(sheet, excelSheetDto);
+                data.put(excelSheetDto.getSheetName(), ans);
+            }
+            return data;
+        } finally {
+            try {
+                if (workBook != null) {
+                    workBook.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static Map<String, List<?>> readerToDiffBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
+        if (file == null || !file.exists()) {
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
+
+        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
+            throw new IaisRuntimeException("excel sheet dot error");
+        }
+        Map<String, List<?>> data = IaisCommonUtils.genNewHashMap();
+        Workbook workBook = null;
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            workBook = new XSSFWorkbook(in);
+            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
+                int sheetAt = excelSheetDto.getSheetAt();
+                Sheet sheet = workBook.getSheetAt(sheetAt);
+                if (sheet == null) {
+                    log.info(StringUtil.changeForLog("excel sheet name error"));
+                    continue;
+                }
+                String sheetName = sheet.getSheetName();
+                String name = excelSheetDto.getSheetName();
+                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
+                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
+                    continue;
+                }
+                List<?> ans = parseSheetToList(sheet, excelSheetDto);
                 data.put(excelSheetDto.getSheetName(), ans);
             }
             return data;
