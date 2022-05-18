@@ -280,8 +280,31 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="hpbConsult" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" >
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span style="font-size: 2rem;" id="ages">
+                                    <iais:message key="please go to HPB for consultation." escape="false" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
     $(document).ready(function () {
+        var patientAge = $('#patientAge').val();
+        if(patientAge<16){
+            $('#hpbConsult').modal('show');
+        }
+
         $('#counsellingNo').change(function () {
             counsellingNo();
         });
@@ -300,7 +323,6 @@
         });
 
     });
-
     function counsellingNo() {
         var counsellingNo = $('#counsellingNo').val();
 
@@ -314,7 +336,7 @@
     function counsellingResults() {
         var counsellingResults = $('#counsellingResults').val();
 
-        if (counsellingResults == "TOPPCR003") {
+        if (counsellingResults == "TOPPCR004") {
             $('#firstHide').hide();
         } else {
             $('#firstHide').show();

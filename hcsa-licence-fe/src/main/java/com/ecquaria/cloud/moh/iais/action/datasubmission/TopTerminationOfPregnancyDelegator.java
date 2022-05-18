@@ -323,7 +323,7 @@ public class TopTerminationOfPregnancyDelegator {
         if(result3 !=null){
             errMap.putAll(result3.retrieveAll());
         }
-        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                 if (result4 != null) {
@@ -345,7 +345,7 @@ public class TopTerminationOfPregnancyDelegator {
                 }
             }
         }
-        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
                 if (result5 != null) {
@@ -446,7 +446,7 @@ public class TopTerminationOfPregnancyDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+            if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
                 if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                     ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                     if (result != null) {
@@ -493,7 +493,7 @@ public class TopTerminationOfPregnancyDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+            if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
                 if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                     ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                     if(result !=null){

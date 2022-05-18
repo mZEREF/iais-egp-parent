@@ -59,7 +59,7 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
 
-        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
+        if(!"TOPPCR004".equals(preTerminationDto.getCounsellingResult())){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
                 if (preTerminationDto.getCounsellingGiven()==true && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                     if(StringUtil.isEmpty(preTerminationDto.getPatientAppointment())){
@@ -69,7 +69,7 @@ public class PreTerminationValidator implements CustomizeValidator {
                 }
             }
         }
-        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
+        if(!"TOPPCR004".equals(preTerminationDto.getCounsellingResult())){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) && preTerminationDto.getCounsellingGiven() == true){
                     if ("Yes".equals(preTerminationDto.getPatientAppointment())) {

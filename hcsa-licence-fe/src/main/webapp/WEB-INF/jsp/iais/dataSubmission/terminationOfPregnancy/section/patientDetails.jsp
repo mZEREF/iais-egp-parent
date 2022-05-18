@@ -164,6 +164,10 @@
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
+        var childrenNum = $('#childrenNum').val();
+        if(childrenNum>10){
+            $('#numMax').hide();
+        }
         $('#ethnicGroups').change(function () {
 
             var ethnicGroup = $('#ethnicGroups').val();
@@ -213,6 +217,7 @@
     });
     $(function () {
         $("#childrenNum").keyup(function () {
+            $('#numMax').show();
             var value = $(this).val();
             $("#genders").empty();
             for (var i = 0; i < value; i++) {

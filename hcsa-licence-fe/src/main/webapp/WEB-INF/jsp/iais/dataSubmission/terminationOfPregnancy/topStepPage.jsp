@@ -42,12 +42,12 @@
                                         <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
                                             <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
                                         </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
                                             <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                         </c:if>
                                     </c:when>
@@ -66,10 +66,10 @@
                                             <%@ include file="section/previewPatientDetails.jsp" %>
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
-                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
                                                 <%@ include file="section/previewPresentTermination.jsp" %>
                                             </c:if>
-                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
                                                 <%@ include file="section/previewPostTermination.jsp" %>
                                             </c:if>
                                             <%@ include file="common/topDsAmendment.jsp" %>
