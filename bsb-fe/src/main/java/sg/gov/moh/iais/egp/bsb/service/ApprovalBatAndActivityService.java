@@ -4,7 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +36,13 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -44,7 +52,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 
 @Service
@@ -66,6 +76,410 @@ public class ApprovalBatAndActivityService {
         this.orgInfoClient = orgInfoClient;
     }
 
+
+    public void retrieveOrgAddressInfo(HttpServletRequest request) {
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        assert auditTrailDto != null;
+        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
+        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
+        orgAddressInfo.setUen(auditTrailDto.getUenId());
+        orgAddressInfo.setCompName(licenseeDto.getName());
+        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+        orgAddressInfo.setStreet(licenseeDto.getStreetName());
+        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
+        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+    }
+
+    public void preApprovalSelection(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        //TODO: The facility value will be obtained from another method, and the method will be deleted
+        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getApprovedFacility();
+        List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
+        if (!CollectionUtils.isEmpty(facilityBasicInfoList)) {
+            for (FacilityBasicInfo fac : facilityBasicInfoList) {
+                facilityIdList.add(new SelectOption(fac.getId(), fac.getName()));
+            }
+        }
+        ParamUtil.setRequestAttr(request, SELECTION_FACILITY_ID, facilityIdList);
+    }
+
+    public void handleApprovalSelection(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        // get approvalBatAndActivityDto
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        String oldProcessType = approvalSelectionDto.getProcessType();
+        approvalSelectionDto.reqObjMapping(request);
+        // judge jump logic
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            if (KEY_NAV_NEXT.equals(actionValue)) {
+                // do next: validate approvalSelectionDto
+                ValidationResultDto validationResultDto = approvalBatAndActivityClient.validateApprovalSelectionDto(approvalSelectionDto);
+                if (validationResultDto.isPass()) {
+                    // get nodeGroup
+                    NodeGroup approvalAppRoot;
+                    // judge whether the selected processType is the same
+                    String newProcessType = approvalSelectionDto.getProcessType();
+                    if (org.springframework.util.StringUtils.hasLength(oldProcessType) && oldProcessType.equals(newProcessType)) {
+                        // selected processType is the same
+                        approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
+                    } else {
+                        // selected processType is the different
+                        approvalAppRoot = newApprovalAppRoot(KEY_ROOT_NODE_GROUP, newProcessType);
+                    }
+                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+                    ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
+                    ParamUtil.setSessionAttr(request, KEY_APPROVAL_SELECTION_DTO, approvalSelectionDto);
+                    // dash bord display
+                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, approvalSelectionDto.getProcessType());
+                } else {
+                    ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+                    ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
+                }
+            } else if (KEY_NAV_BACK.equals(actionValue)) {
+                // do back
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_BEGIN);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+    }
+
+
+    public void handleCompanyInfo(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            if (KEY_NAV_NEXT.equals(actionValue)) {
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, "appInfo_facProfile");
+            } else if (KEY_NAV_BACK.equals(actionValue)) {
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+    }
+
+    public void preFacProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        // data display
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        String facilityId = approvalSelectionDto.getFacilityId();
+        FacProfileDto facProfileDto = getFacProfileDtoByFacilityId(facilityId);
+        ParamUtil.setSessionAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
+    }
+
+    public void handleFacProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
+        Node facProfileNode = approvalAppRoot.at(currentNodePath);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+            if (actionValue.equals(KEY_NAV_BACK)){
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
+            } else {
+                jumpHandler(request, approvalAppRoot, currentNodePath, facProfileNode);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    public void prePossessBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT;
+        SimpleNode possessBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        BiologicalAgentToxinDto approvalToPossessDto = (BiologicalAgentToxinDto) possessBatNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalToPossessDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, currentNodePath);
+        ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToPossessDto);
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
+        loadAllowedScheduleAndBatOptions(request);
+    }
+
+    public void handlePossessBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT;
+        SimpleNode possessBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        BiologicalAgentToxinDto approvalToPossessDto = (BiologicalAgentToxinDto) possessBatNode.getValue();
+        approvalToPossessDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, possessBatNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    public void preLargeBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT;
+        SimpleNode largeBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToLargeDto approvalToLargeDto = (ApprovalToLargeDto) largeBatNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalToLargeDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, currentNodePath);
+        ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToLargeDto);
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
+        loadAllowedScheduleAndBatOptions(request);
+    }
+
+    public void handleLargeBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT;
+        SimpleNode largeBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToLargeDto approvalToLargeDto = (ApprovalToLargeDto) largeBatNode.getValue();
+        approvalToLargeDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, largeBatNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    public void preSpecialBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT;
+        SimpleNode specialBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToSpecialDto approvalToSpecialDto = (ApprovalToSpecialDto) specialBatNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalToSpecialDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, currentNodePath);
+        ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToSpecialDto);
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
+        loadAllowedScheduleAndBatOptions(request);
+    }
+
+    public void handleSpecialBatDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT;
+        SimpleNode specialBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToSpecialDto approvalToSpecialDto = (ApprovalToSpecialDto) specialBatNode.getValue();
+        approvalToSpecialDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, specialBatNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    @SneakyThrows(JsonProcessingException.class)
+    public void preFacAuthorised(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED;
+        SimpleNode facAuthorisedNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        FacAuthorisedDto facAuthorisedDto = (FacAuthorisedDto) facAuthorisedNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthorisedDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, currentNodePath);
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        Map<String, FacilityAuthoriserDto> facilityAuthDtoMap = (Map<String, FacilityAuthoriserDto>) ParamUtil.getSessionAttr(request,KEY_USER_ID_FACILITY_AUTH_MAP);
+        if(facilityAuthDtoMap == null){
+            facilityAuthDtoMap = approvalBatAndActivityClient.getApprovalSelectAuthorisedPersonnelByFacId(approvalSelectionDto.getFacilityId());
+            ParamUtil.setSessionAttr(request,KEY_USER_ID_FACILITY_AUTH_MAP,new HashMap<>(facilityAuthDtoMap));
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        String authPersonnelDetailMapJson = mapper.writeValueAsString(facilityAuthDtoMap);
+        ParamUtil.setRequestAttr(request, KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON, authPersonnelDetailMapJson);
+        //generate options select facility authorised personnel
+        Collection<FacilityAuthoriserDto> facilityAuthDtoList = facilityAuthDtoMap.values();
+        List<SelectOption> authPersonnelOps = facilityAuthDtoList.stream().map(i->{
+            SelectOption selectOption = new SelectOption();
+            selectOption.setText(i.getName());
+            selectOption.setValue(i.getIdNumber());
+            return selectOption; }).collect(Collectors.toList());
+
+        //view data
+        ParamUtil.setRequestAttr(request,KEY_OPTIONS_AUTH_PERSONNEL,authPersonnelOps);
+        Map<String,FacilityAuthoriserDto> selectedPersonnelMap = facAuthorisedDto.getFacilityAuthorisedMap();
+        Set<String> authPersonnelIds = selectedPersonnelMap.keySet();
+        if(authPersonnelIds.isEmpty()){
+            authPersonnelIds = new HashSet<>(1);
+            authPersonnelIds.add("");
+        }
+        ParamUtil.setRequestAttr(request,"authPersonnelIds",authPersonnelIds);
+    }
+
+    public void handleFacAuthorised(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED;
+        SimpleNode facAuthorisedNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        FacAuthorisedDto facAuthorisedDto = (FacAuthorisedDto) facAuthorisedNode.getValue();
+        facAuthorisedDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, facAuthorisedNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    public void preActivityDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY;
+        SimpleNode facActivityNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToActivityDto approvalToActivityDto = (ApprovalToActivityDto) facActivityNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalToActivityDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, currentNodePath);
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_TO_ACTIVITY_DTO, approvalToActivityDto);
+        // get facilityId
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        String facilityId = approvalSelectionDto.getFacilityId();
+        // show that belongs to this classification without approval facActivityType
+        List<String> notExistFacActivityTypeApprovalList = approvalBatAndActivityClient.getNotApprovalActivities(facilityId);
+        ParamUtil.setRequestAttr(request, KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST, notExistFacActivityTypeApprovalList);
+    }
+
+    public void handleActivityDetails(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY;
+        SimpleNode facActivityNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalToActivityDto approvalToActivityDto = (ApprovalToActivityDto) facActivityNode.getValue();
+        approvalToActivityDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, facActivityNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    @SneakyThrows(JsonProcessingException.class)
+    public void prePrimaryDoc(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String processType = (String) ParamUtil.getSessionAttr(request, KEY_PROCESS_TYPE);
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(approvalAppRoot, NODE_NAME_PRIMARY_DOC);
+
+        List<DocSetting>  approvalAppDocSettings = docSettingService.getApprovalAppDocSettings(processType);
+        ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, approvalAppDocSettings);
+
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(approvalAppDocSettings, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
+
+        List<SelectOption> docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
+        ObjectMapper mapper = new ObjectMapper();
+        String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_DOC_TYPES_JSON, docTypeOpsJson);
+    }
+
+    public void handlePrimaryDoc(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        primaryDocDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+    }
+
+    public void actionFilter(BaseProcessClass bpc, String appType) {
+        HttpServletRequest request = bpc.request;
+        // check if there is action set to override the action from request
+        String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
+        if (!org.springframework.util.StringUtils.hasLength(actionType)) {
+            // not set, use action from user's client
+            actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        } else {
+            // set, if the action is 'save draft', we save it and route back to that page
+            if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+                actionType = KEY_ACTION_JUMP;
+                saveDraft(request, appType);
+            }
+        }
+        ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
+    }
+
+    public void jumpFilter(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String destNode = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
+        ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
+    }
+
+    //----------------------------------------------------------------------------------------------
     public ApprovalBatAndActivityDto getEditDtoData(String appId) {
         ResponseDto<ApprovalBatAndActivityDto> responseDto = approvalBatAndActivityClient.getApprovalAppAppDataByApplicationId(appId);
         if (responseDto.ok()) {
@@ -75,12 +489,12 @@ public class ApprovalBatAndActivityService {
         }
     }
 
-    public ApprovalBatAndActivityDto getApprovalBatAndActivityDto(HttpServletRequest request) {
-        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
-        if (approvalBatAndActivityDto == null) {
-            approvalBatAndActivityDto = new ApprovalBatAndActivityDto();
+    public ApprovalSelectionDto getApprovalSelectionDto(HttpServletRequest request) {
+        ApprovalSelectionDto approvalSelectionDto = (ApprovalSelectionDto) ParamUtil.getSessionAttr(request, KEY_APPROVAL_SELECTION_DTO);
+        if (approvalSelectionDto == null) {
+            approvalSelectionDto = new ApprovalSelectionDto();
         }
-        return approvalBatAndActivityDto;
+        return approvalSelectionDto;
     }
 
     public FacProfileDto getFacProfileDtoByFacilityId(String facId) {
@@ -134,7 +548,7 @@ public class ApprovalBatAndActivityService {
 
     private NodeGroup newApprovalPossessAppInfoNodeGroup(Node[] dependNodes) {
         Node facProfileNode = new Node(NODE_NAME_FAC_PROFILE, new Node[0]);
-        SimpleNode possessBatNode = new SimpleNode(new ApprovalToPossessDto(), NODE_NAME_POSSESS_BAT, new Node[]{facProfileNode});
+        SimpleNode possessBatNode = new SimpleNode(new BiologicalAgentToxinDto(), NODE_NAME_POSSESS_BAT, new Node[]{facProfileNode});
 
         return new NodeGroup.Builder().name(NODE_NAME_APP_INFO)
                 .dependNodes(dependNodes)
@@ -178,8 +592,38 @@ public class ApprovalBatAndActivityService {
                 .build();
     }
 
-    public void saveDraft(HttpServletRequest request){
+    public void saveDraft(HttpServletRequest request, String appType) {
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request,"");
 
+        // save docs
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+
+
+        // save data
+        ApprovalBatAndActivityDto finalAllDataDto = null;
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
+            finalAllDataDto = ApprovalBatAndActivityDto.from(approvalSelectionDto,approvalAppRoot);
+            finalAllDataDto.setAppType(appType);
+        }
+        String draftAppNo = approvalBatAndActivityClient.saveNewFacilityDraft(finalAllDataDto);
+        // set draft app No. into the NodeGroup
+        approvalSelectionDto.setDraftAppNo(draftAppNo);
+        ParamUtil.setSessionAttr(request,KEY_APPROVAL_SELECTION_DTO,approvalSelectionDto);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+
+        try {
+            // delete docs
+            log.info("Delete already saved documents in file-repo");
+            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            // sync docs
+            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
+
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }
 
     /**
@@ -370,9 +814,6 @@ public class ApprovalBatAndActivityService {
         Nodes.needValidation(approvalAppRoot, NODE_NAME_PREVIEW);
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW, previewDto);
 
-        FacProfileDto facProfileDto = getApprovalBatAndActivityDto(request).getFacProfileDto();
-        ParamUtil.setRequestAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
-
         String processType = (String) ParamUtil.getSessionAttr(request, KEY_PROCESS_TYPE);
         switch (processType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
@@ -393,18 +834,25 @@ public class ApprovalBatAndActivityService {
                 break;
         }
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getApprovalAppDocSettings(processType));
+        List<DocSetting> approvalAppDocSettings = docSettingService.getApprovalAppDocSettings(processType);
+        ParamUtil.setRequestAttr(request, "docSettings", approvalAppDocSettings);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+
+        Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(approvalAppDocSettings, savedFiles.keySet(), newFiles.keySet());
+        ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
     }
 
 
     @SneakyThrows(JsonProcessingException.class)
-    public void loadAllowedScheduleAndBatOptions(HttpServletRequest request, String activityType) {
-        Map<String, List<BatCodeInfo>> scheduleBatMap = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(activityType);
+    public void loadAllowedScheduleAndBatOptions(HttpServletRequest request) {
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        log.debug("facility id is {}", LogUtil.escapeCrlf(approvalSelectionDto.getFacilityId()));
+        log.debug("process Type is {}", LogUtil.escapeCrlf(approvalSelectionDto.getProcessType()));
+        Map<String, List<BatCodeInfo>> scheduleBatMap = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(approvalSelectionDto.getFacilityId(),getApprovalTypeByProcessType(approvalSelectionDto.getProcessType()));
         List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
@@ -427,5 +875,22 @@ public class ApprovalBatAndActivityService {
         ObjectMapper mapper = new ObjectMapper();
         String scheduleBatMapJson = mapper.writeValueAsString(scheduleBatOptionMap);
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP_JSON, scheduleBatMapJson);
+    }
+
+    public String getApprovalTypeByProcessType(String processType){
+        String approvalType = "";
+        switch (processType){
+            case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
+                approvalType = MasterCodeConstants.APPROVAL_TYPE_POSSESS;
+                break;
+            case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
+                approvalType = MasterCodeConstants.APPROVAL_TYPE_LSP;
+                break;
+            case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
+                approvalType = MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE;
+                break;
+            default:break;
+        }
+        return approvalType;
     }
 }

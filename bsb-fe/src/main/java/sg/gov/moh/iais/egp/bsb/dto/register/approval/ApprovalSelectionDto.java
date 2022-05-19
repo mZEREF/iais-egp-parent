@@ -15,12 +15,22 @@ import java.io.Serializable;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalSelectionDto implements Serializable {
+    private String draftAppNo;
+
     private String facilityId;
 
     @JsonIgnore
     private String facilityName;
 
     private String processType;
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
 
     public String getFacilityId() {
         return facilityId;

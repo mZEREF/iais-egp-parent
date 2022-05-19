@@ -19,9 +19,17 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST = "notExistFacActivityTypeApprovalList";
 
+    public static final String KEY_DOC_SETTINGS            = "docSettings";
+    public static final String KEY_OTHER_DOC_TYPES         = "otherDocTypes";
     public static final String NODE_NAME_BEGIN = "begin";
     public static final String NODE_NAME_APPROVAL_SELECTION = "approvalSelection";
-    public static final String NODE_NAME_COMPANY_INFO = "companyInfo";
+    public static final String NODE_NAME_COMPANY_INFO        = "companyInfo";
+    public static final String KEY_DOC_TYPES_JSON            = "docTypeOpsJson";
+    public static final String KEY_OPTIONS_DOC_TYPES       = "docTypeOps";
+
+    public static final String KEY_APP_NO                  = "appNo";
+    public static final String KEY_APP_DT                  = "appDt";
+
 
     public static final String NODE_NAME_APP_INFO = "appInfo";
     public static final String NODE_NAME_FAC_PROFILE = "facProfile";
@@ -64,7 +72,10 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_USER_ID_FACILITY_AUTH_MAP = "facilityAuthIdMap";
     public static final String KEY_OPTIONS_AUTH_PERSONNEL = "authPersonnelOps";
 
-    public static final String KEY_COUNTRY_OPTIONS = "countryOps";
+    public static final String KEY_OPTIONS_NATIONALITY     = "nationalityOps";
+    public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
+    public static final String KEY_OPTION_SALUTATION       = "salutationOps";
+    public static final String KEY_COUNTRY_OPTIONS         = "countryOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
 

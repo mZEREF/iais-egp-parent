@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
 
     private List<WorkActivity> workActivities;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     public ApprovalToSpecialDto() {
