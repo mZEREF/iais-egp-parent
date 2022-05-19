@@ -42,11 +42,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+<<<<<<< HEAD
+=======
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+>>>>>>> fbcf5145d6... ConsolRecToCompare
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -1041,4 +1046,15 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(String appGrpNo) {
+        return IaisEGPHelper.getFeignResponseEntity(appGrpNo);
+    }
+
+    @Override
+    public FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto() {
+        return IaisEGPHelper.getFeignResponseEntity();
+    }
+
 }
