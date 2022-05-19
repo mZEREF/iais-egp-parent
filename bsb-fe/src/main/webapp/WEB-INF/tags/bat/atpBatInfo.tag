@@ -3,7 +3,7 @@
 <%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@taglib prefix="bat" tagdir="/WEB-INF/tags/common" %>
+<%@taglib prefix="bat" tagdir="/WEB-INF/tags/bat" %>
 
 
 <%@attribute name="activeNodeKey" required="true" type="java.lang.String" %>
@@ -158,7 +158,7 @@
                 <span data-err-ind="sampleWorkDetail--v--${status.index}" class="error-msg"></span>
               </div>
             </div>
-            <bat:facilityDetail addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" status="${status}" detail="${info.details}"/>
+            <bat:batProcFacilityDetail addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" status="${status}" detail="${info.details}"/>
           </section>
         </c:forEach>
       </div>
