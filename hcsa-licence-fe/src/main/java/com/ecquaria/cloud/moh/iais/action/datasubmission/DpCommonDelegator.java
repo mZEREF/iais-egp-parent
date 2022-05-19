@@ -432,8 +432,9 @@ public abstract class DpCommonDelegator {
         return true;
     }
     protected boolean isOthers(String others){
-        return StringUtil.isIn(others,DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS);
+        return StringUtil.isIn(others,DataSubmissionConsts.DP_PATIENT_INFO_AMEND_REASON_OTHERS);
     }
+
     protected boolean isRfc(HttpServletRequest request){
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
         return dpSuperDataSubmissionDto != null && dpSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType());

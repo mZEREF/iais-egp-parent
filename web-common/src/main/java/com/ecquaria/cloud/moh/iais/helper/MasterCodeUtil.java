@@ -255,6 +255,8 @@ public final class MasterCodeUtil {
 
     public static final String LDT_AMENDMENT_REASON                      = "B6F2B5FA-689E-4505-97EC-8C1479D19351";
 
+    public static final String DP_PATIENT_INFO_AMENDMENT_REASON          ="DF3C1D7C-3B79-42DA-A7E7-FBFFD47BE9AA";
+
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 
     /**
