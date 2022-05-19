@@ -59,7 +59,7 @@
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
                                             <%@include file="/WEB-INF/jsp/iais/approvalBatAndActivity/subStepNavTab.jsp"%>
-                                            <%@include file="../common/atpBatInfo.tag"%>
+                                            <%@include file="atpBatInfo.tag"%>
                                             <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
                                         </div>
                                     </div>

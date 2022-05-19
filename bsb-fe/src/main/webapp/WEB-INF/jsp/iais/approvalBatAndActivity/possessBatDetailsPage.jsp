@@ -1,5 +1,5 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
+<%@taglib prefix="bat" tagdir="/WEB-INF/tags/bat" %>
 
 <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
 <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
@@ -9,7 +9,7 @@
 <%--@elvariable id="firstScheduleOp" type="java.lang.String"--%>
 <%--@elvariable id="scheduleBatMap" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>"--%>
 <%--@elvariable id="scheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-<appv:possessBatDetails batInfos="${batInfo.batInfos}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" activeNodeKey="${activeNodeKey}"
+<bat:possessBatDetails batInfos="${batInfo.batInfos}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" activeNodeKey="${activeNodeKey}"
                           processType="${processType}" firstScheduleOp="${firstScheduleOp}" scheduleBatMap="${scheduleBatMap}" scheduleOps="${scheduleOps}">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
@@ -22,5 +22,5 @@
     <jsp:attribute name="innerFooterFrag">
         <%@include file="InnerFooter.jsp" %>
     </jsp:attribute>
-</appv:possessBatDetails>
+</bat:possessBatDetails>
 
