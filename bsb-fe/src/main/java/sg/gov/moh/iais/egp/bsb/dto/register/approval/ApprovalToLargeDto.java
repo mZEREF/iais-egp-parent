@@ -53,15 +53,6 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
         private String remarks;
     }
 
-    private String activityEntityId;
-    private String activityType;
-
-    private String facilityName;
-    private String blockNo;
-    private String floorAndUnit;
-    private String street;
-    private String postalCode;
-
     private List<BATInfo> batInfos;
 
     @JsonIgnore
@@ -71,14 +62,10 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
         batInfos = new ArrayList<>();
     }
 
-    public ApprovalToLargeDto(String activityType) {
-        this();
-        this.activityType = activityType;
-    }
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validateApprovalToLargeDto", new Object[]{this});
         return validationResultDto.isPass();
     }
 
@@ -95,21 +82,6 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public String getActivityEntityId() {
-        return activityEntityId;
-    }
-
-    public void setActivityEntityId(String activityEntityId) {
-        this.activityEntityId = activityEntityId;
-    }
-
-    public String getActivityType() {
-        return activityType;
-    }
-
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
-    }
 
     public List<BATInfo> getBatInfos() {
         return new ArrayList<>(batInfos);
@@ -125,46 +97,6 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
 
     public void setBatInfos(List<BATInfo> batInfos) {
         this.batInfos = new ArrayList<>(batInfos);
-    }
-
-    public String getFacilityName() {
-        return facilityName;
-    }
-
-    public void setFacilityName(String facilityName) {
-        this.facilityName = facilityName;
-    }
-
-    public String getBlockNo() {
-        return blockNo;
-    }
-
-    public void setBlockNo(String blockNo) {
-        this.blockNo = blockNo;
-    }
-
-    public String getFloorAndUnit() {
-        return floorAndUnit;
-    }
-
-    public void setFloorAndUnit(String floorAndUnit) {
-        this.floorAndUnit = floorAndUnit;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
     }
 
     // ---------------------------- request -> object ----------------------------------------------

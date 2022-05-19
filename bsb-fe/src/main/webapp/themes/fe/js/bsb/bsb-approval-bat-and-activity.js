@@ -35,6 +35,12 @@ $(function () {
 
     $(".removeBtn").click(removeBtnEventHandler);
 
+
+    $("#addNewSection").click(function () {
+        var meta = readSectionRepeatMetaData();
+        addSection(meta.idxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
+    });
+
     $("#addNewBatSection").click(function () {
         var meta = readSectionRepeatMetaData();
         var idxInput = $("input[name=" + meta.idxInputName +"]");
@@ -79,6 +85,29 @@ $(function () {
             });
         });
     });
+
+    $("#retrieveAddressBtn").click(function retrieveAddress() {
+        var postalCode = $("#postalCodeN").val();
+        if (!postalCode) {
+            return false;
+        }
+        $.ajax({
+            type:"GET",
+            url:"/bsb-fe/address-info/" + postalCode,
+            dataType: 'json',
+            error:function(){
+                $("#invalidPostalCodeModal").modal('show');
+            },
+            success:function(data) {
+                $("#addressType").val(data.address_type);
+                $("#blockN").val(data.block_no);
+                $("#floorN").val(data.floor);
+                $("#unitNoN").val(data.unit_no);
+                $("#streetNameN").val(data.street);
+                $("#buildingNameN").val(data.building);
+            }
+        });
+    });
 });
 
 
@@ -101,23 +130,24 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     var nextIdx = parseInt(idxArr[currentAmt - 1]) + 1;
 
     var section0 = $("#" + sectionIdPrefix + separator + "0");
-    if (currentAmt === 1) {
-        if (sectionIdPrefix === 'authSection' || sectionIdPrefix === 'committeeSection') {
-            var headerDiv = newSectionHeader(1, 0, headerTitlePrefix);
-            section0[0].insertBefore(headerDiv, section0[0].firstChild);
-        } else {
-            changeFirstSectionHeader(sectionIdPrefix, 0, headerTitlePrefix, true);
-        }
+    if (currentAmt > 1) {
+        changeFirstSectionHeader(sectionIdPrefix, 0, headerTitlePrefix, true);
     }
     var newSectionDivJqObj = section0.clone(true);
     var newSectionDiv = newSectionDivJqObj[0];
+    modifyClonedNode(newSectionDiv, nextIdx, separator);
+    if(currentAmt === 2){
+        $("#" + sectionIdPrefix + separator + nextIdx).find("div");
+    }
     var newHeaderDiv = newSectionHeader(currentAmt + 1, nextIdx, headerTitlePrefix);
     newSectionDiv.replaceChild(newHeaderDiv, newSectionDiv.children[0]);
-    modifyClonedNode(newSectionDiv, nextIdx, separator);
+
 
     var sectionGroupDiv = document.getElementById(sectionGroupId);
     sectionGroupDiv.appendChild(newSectionDiv);
     appendSSInputVal(idxInput[0], nextIdx);
+
+
 
     /* Reset select to first option */
     newSectionDivJqObj.find("div.nice-select").each(function (index) {
@@ -147,16 +177,7 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     });
 
     /* Reset tool tip */
-    newSectionDivJqObj.find("a[data-toggle='tooltip']").each(function () {
-        var oldEL = $(this);
-        var newEl = newToolTip(oldEL);
-        oldEL.replaceWith(newEl);
-        newEl.tooltip();
-    });
-
-    if (sectionIdPrefix === 'committeeSection') {
-        $("#committeeExternalCompNameDiv" + separator + nextIdx).hide();
-    }
+    setupAllToolTip(newSectionDivJqObj);
 }
 
 function removeBtnEventHandler() {

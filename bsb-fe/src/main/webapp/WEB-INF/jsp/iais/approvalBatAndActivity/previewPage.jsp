@@ -32,11 +32,11 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
-                                    <approvalApp:preview facProfileDto="${facProfileDto}" approvalToPossessDto="${batInfo}"
-                                                         approvalProfileListEditJudge="true" docEditJudge="true">
+                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}"
+                                                         facProfileEditJudge="true" batListEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
-                                            <approvalApp:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
+                                            <approvalApp:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>
                                         </jsp:attribute>
                                     </approvalApp:preview>
                                     <div class="form-horizontal" style="padding: 30px 20px 10px;">
@@ -51,20 +51,20 @@
                                         </div>
                                         <div class="form-group ">
                                             <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="require" id="require" value="Y" <c:if test="${previewDto.require eq 'Y'}">checked = checked</c:if>/>
+                                                <input type="checkbox" name="declare1" id="declare1" value="Y" <c:if test="${previewDto.require eq 'Y'}">checked = checked</c:if>/>
                                             </div>
                                             <div class="col-xs-10 control-label" style="padding: 30px 0">
-                                                <label for="require" >Declaration of compliance with MOH requirements including those stipulatedin the checklist</label>
+                                                <label for="declare1" >I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
                                                 <span data-err-ind="require" class="error-msg"></span>
                                             </div>
                                         </div>
 
                                         <div class="form-group ">
                                             <div class="col-xs-1" style="padding: 30px 0 0 30px;">
-                                                <input type="checkbox" name="accuracy" id="accuracy" value="Y" <c:if test="${previewDto.accuracy eq 'Y'}">checked = checked</c:if>/>
+                                                <input type="checkbox" name="declare2" id="declare2" value="Y" <c:if test="${previewDto.accuracy eq 'Y'}">checked = checked</c:if>/>
                                             </div>
                                             <div class="col-xs-10 control-label" style="padding: 30px 0">
-                                                <label for="accuracy">Declaration on the accuracy of submission</label>
+                                                <label for="declare2">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
                                                 <span data-err-ind="accuracy" class="error-msg"></span>
                                             </div>
                                         </div>

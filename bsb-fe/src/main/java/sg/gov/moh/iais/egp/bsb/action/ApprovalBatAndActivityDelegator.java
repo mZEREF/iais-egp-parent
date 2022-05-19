@@ -58,6 +58,9 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(KEY_ROOT_NODE_GROUP);
         session.removeAttribute(KEY_PROCESS_TYPE);
+        session.removeAttribute(KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON);
+        session.removeAttribute(KEY_OPTIONS_AUTH_PERSONNEL);
+        session.removeAttribute(KEY_USER_ID_FACILITY_AUTH_MAP);
         AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
     }
 
@@ -84,6 +87,8 @@ public class ApprovalBatAndActivityDelegator {
         if (newApprovalApp) {
             ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, new ApprovalBatAndActivityDto());
         }
+
+        approvalBatAndActivityService.retrieveOrgAddressInfo(request);
     }
 
     public void preBegin(BaseProcessClass bpc){
@@ -453,7 +458,7 @@ public class ApprovalBatAndActivityDelegator {
 
                     // save docs
                     log.info("Save documents into file-repo");
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PREVIEW)).getValue();
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
                     List<NewFileSyncDto> newFilesToSync = approvalBatAndActivityService.saveNewUploadedDoc(primaryDocDto);
 
                     //TODO: save data

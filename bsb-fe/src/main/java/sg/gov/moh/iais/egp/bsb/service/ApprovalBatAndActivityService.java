@@ -1,5 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -19,12 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -37,9 +41,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 
@@ -49,16 +52,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 public class ApprovalBatAndActivityService {
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final DocSettingService docSettingService;
+    private final OrganizationInfoClient orgInfoClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
 
     @Autowired
     public ApprovalBatAndActivityService(ApprovalBatAndActivityClient approvalBatAndActivityClient, DocSettingService docSettingService,
-                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, OrganizationInfoClient orgInfoClient) {
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
         this.docSettingService = docSettingService;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.orgInfoClient = orgInfoClient;
     }
 
     public ApprovalBatAndActivityDto getEditDtoData(String appId) {
@@ -381,7 +386,7 @@ public class ApprovalBatAndActivityService {
                 ParamUtil.setRequestAttr(request, KEY_FAC_AUTHORISED_DTO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED)).getValue());
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
-                ParamUtil.setRequestAttr(request, KEY_APPROVAL_TO_ACTIVITY_DTO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY)).getValue());
+                ParamUtil.setRequestAttr(request, KEY_BAT_INFO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY)).getValue());
                 break;
             default:
                 log.info("no such processType {}", StringUtils.normalizeSpace(processType));

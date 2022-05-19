@@ -12,6 +12,7 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_APPROVAL_TO_ACTIVITY_DTO = "approvalToActivityDto";
     public static final String KEY_BAT_INFO = "batInfo";
     public static final String KEY_FAC_AUTHORISED_DTO = "facAuthorisedDto";
+    public static final String KEY_APPROVAL_DTO = "approvalDto";
 
 
     public static final String KEY_PROCESS_TYPE = "processType";
@@ -58,10 +59,16 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
+    public static final String KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON   = "authPersonnelDetailMapJson";
+
+    public static final String KEY_USER_ID_FACILITY_AUTH_MAP = "facilityAuthIdMap";
+    public static final String KEY_OPTIONS_AUTH_PERSONNEL = "authPersonnelOps";
 
     public static final String KEY_COUNTRY_OPTIONS = "countryOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
+
+
 
     //RFC
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)

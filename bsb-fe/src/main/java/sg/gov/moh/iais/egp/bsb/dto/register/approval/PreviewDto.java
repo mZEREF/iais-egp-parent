@@ -22,7 +22,6 @@ public class PreviewDto extends ValidatableNodeValue {
     //I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.
     private String declare2;
 
-    //private String processType;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
