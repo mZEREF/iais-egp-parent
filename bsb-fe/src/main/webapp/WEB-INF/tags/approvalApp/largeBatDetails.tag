@@ -134,6 +134,7 @@
                                                                             <label for="procurementMode--v--${status.index}">Mode of Procurement</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
+                                                                        <c:set var="detail" value="${info.lspDetails}"/>
                                                                         <div class="col-sm-6">
                                                                             <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
                                                                                 <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" data-custom-ind="batProcurementModeLocal" value="${masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">checked="checked"</c:if> />
@@ -156,7 +157,6 @@
 
 
                                                                         <%--@elvariable id="aptBlk" type="java.lang.String"--%>
-                                                                    <c:set var="detail" value="${info.lspDetails}"/>
                                                                     <div id="transferringFacilityDiv--v--${status.index}" <c:if test="${detail.procurementMode ne null and detail.procurementMode ne masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">style="display: none;"</c:if>>
                                                                         <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
                                                                         <div class="form-group ">
