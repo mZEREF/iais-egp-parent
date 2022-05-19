@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -73,6 +74,19 @@ public final class CellStyleHelper {
 
     public static XSSFCellStyle getTextStyle() {
         return textStyle;
+    }
+
+    public static XSSFCellStyle getXSSFCellStyle(XSSFRow sheetRow, boolean readonly, boolean hidden) {
+        XSSFWorkbook workbook = sheetRow.getSheet().getWorkbook();
+        XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+        xssfCellStyle.setLocked(readonly);
+        xssfCellStyle.setHidden(hidden);
+        xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        xssfCellStyle.setWrapText(true);
+        XSSFDataFormat format = workbook.createDataFormat();
+        xssfCellStyle.setDataFormat(format.getFormat("@"));
+        return xssfCellStyle;
     }
 
 }

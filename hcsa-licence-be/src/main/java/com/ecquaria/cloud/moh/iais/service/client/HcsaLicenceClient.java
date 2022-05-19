@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelati
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -284,4 +285,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/licence-change-tcu-date", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<LicPremisesQueryDto>> searchLicencesInChangeTCUDate(@RequestBody SearchParam searchParam);
+
+    @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
 }

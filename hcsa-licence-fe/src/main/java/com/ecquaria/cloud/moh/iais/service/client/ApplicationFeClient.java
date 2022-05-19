@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDra
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -391,5 +392,8 @@ public interface ApplicationFeClient {
 
     @PostMapping(value = "/iais-application/data-to-fe",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveFeData(@RequestBody ApplicationListFileDto applicationListFileDto);
+
+    @GetMapping(value = "/iais-application/monitoring-app-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto();
 
 }

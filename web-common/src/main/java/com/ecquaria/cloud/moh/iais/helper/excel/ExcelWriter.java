@@ -5,24 +5,31 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.sz.commons.util.DateUtil;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -162,7 +169,7 @@ public final class ExcelWriter {
         }
 
         if (headName){
-            setFieldName(sourceClz, sheet, startCellIndex);
+            setFieldName(sourceClz, sheet, startCellIndex, true);
         }
 
         parseCell(source, sourceClz, sheet, startCellIndex);
@@ -231,12 +238,16 @@ public final class ExcelWriter {
                             StringUtils.capitalize(field.getName())).invoke(t);
 
                     String str;
-                    if (objectType == Date.class){
+                    if (objectType == Date.class) {
                         //Set to text format to avoid errors caused by date modification in different systems
                         String format = annotation.format();
-                        str = DateUtil.formatDateTime((Date) val, format);
+                        if (Date.class.isAssignableFrom(field.getType())) {
+                            str = DateUtil.formatDateTime((Date) val, format);
+                        } else {
+                            str = getValue(val);
+                        }
                         cell.setCellStyle(CellStyleHelper.getTextStyle());
-                    }else {
+                    } else {
                         str = getValue(val);
                     }
                     cell.setCellValue(str);
@@ -271,14 +282,14 @@ public final class ExcelWriter {
 
 
 
-    private static void setFieldName(final Class<?> clz, final Sheet sheet, int startCellIndex) {
+    private static void setFieldName(final Class<?> clz, final Sheet sheet, int startCellIndex, boolean needSn) {
         Row sheetRow = sheet.createRow(startCellIndex);
-        Cell firstCell = sheetRow.createCell(0);
-        firstCell.setCellValue("SN");
-        firstCell.setCellStyle(CellStyleHelper.getLockStyle());
+        if (needSn) {
+            Cell firstCell = sheetRow.createCell(0);
+            firstCell.setCellValue("SN");
+            firstCell.setCellStyle(CellStyleHelper.getLockStyle());
+        }
         Field[] fields = clz.getDeclaredFields();
-
-
         List<Integer> autoSizeCell = IaisCommonUtils.genNewArrayList();
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelProperty.class)) {
@@ -305,5 +316,152 @@ public final class ExcelWriter {
                 sheet.autoSizeColumn(i);
             }
         }
+    }
+
+    public static File writerToExcel(ExcelSheetDto excelSheetDto, final File file, String fileName) throws IOException {
+        if (excelSheetDto == null) {
+            log.info("don't have source when writer to excel!!!!");
+            throw new IaisRuntimeException("Please check the export excel parameters.");
+        }
+        return writerToExcel(Collections.singletonList(excelSheetDto), file, fileName);
+    }
+
+    public static File writerToExcel(List<ExcelSheetDto> excelSheetDtos, final File file, String fileName) throws IOException {
+        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
+            log.info("don't have source when writer to excel!!!!");
+            throw new IaisRuntimeException("Please check the export excel parameters.");
+        }
+        boolean isNew = isNew(file);
+        final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
+        String path = postFileName;
+        File out = MiscUtil.generateFile(path);
+        try ( OutputStream outputStream = newOutputStream(out.toPath())) {
+            workbook = XSSFWorkbookFactory.createWorkbook();
+            startInternal(workbook);
+            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
+                XSSFSheet sheet;
+                if (isNew) {
+                    sheet = workbook.getSheet(excelSheetDto.getSheetName());
+                } else {
+                    sheet = workbook.getSheetAt(excelSheetDto.getSheetAt());
+                    if (!StringUtils.isEmpty(excelSheetDto.getSheetName())) {
+                        workbook.setSheetName(excelSheetDto.getSheetAt(), excelSheetDto.getSheetName());
+                    }
+                }
+                writeSheet(excelSheetDto, sheet);
+            }
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (workbook != null) {
+                workbook.close();
+            }
+        }
+        return out;
+    }
+
+    private static void writeSheet(ExcelSheetDto excelSheetDto, XSSFSheet sheet) {
+        Map<Integer, List<Integer>> unlockCellMap = excelSheetDto.getUnlockCellMap();
+        if (unlockCellMap != null && !unlockCellMap.isEmpty()) {
+            unlockCellByMap(sheet, unlockCellMap);
+        }
+        if (excelSheetDto.getDefaultRowHeight() != null) {
+            sheet.setDefaultRowHeight(excelSheetDto.getDefaultRowHeight());
+        }
+        if (excelSheetDto.getWidthMap() != null) {
+            for (Map.Entry<Integer, Integer> entry : excelSheetDto.getWidthMap().entrySet()) {
+                sheet.setColumnWidth(entry.getKey(), entry.getValue() * 256);
+            }
+        }
+        List<?> source = excelSheetDto.getSource();
+        Class<?> sourceClass = excelSheetDto.getSourceClass();
+        if (excelSheetDto.isNeedFiled() && excelSheetDto.getFiledRowIndexes() != null) {
+            for (int row : excelSheetDto.getFiledRowIndexes()) {
+                setFieldName(sourceClass, sheet, row, false);
+            }
+        }
+        createCell(source, sourceClass, sheet, excelSheetDto);
+
+        if (excelSheetDto.isBlock()) {
+            lockSheetWorkspace(sheet, excelSheetDto.getPwd());
+        }
+    }
+
+    private static void createCell(List<?> source, Class<?> sourceClass, XSSFSheet sheet, ExcelSheetDto excelSheetDto) {
+        try {
+            //sequence number
+            int cellIndex = excelSheetDto.getStartRowIndex();
+            short fontHeight = -1;
+            for (Object t : source) {
+                XSSFRow sheetRow = sheet.createRow(cellIndex);
+
+                cellIndex++;
+
+                int maxHeight = -1;
+                Field[] fields = sourceClass.getDeclaredFields();
+                for (Field field : fields) {
+                    if (field.isAnnotationPresent(ExcelProperty.class)) {
+                        ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+                        int index = annotation.cellIndex();
+                        XSSFCell cell = sheetRow.createCell(index);
+                        Class objectType = annotation.objectType();
+                        boolean readOnly = annotation.readOnly();
+                        boolean hidden = annotation.hidden();
+                        if (fontHeight == -1) {
+                            fontHeight = cell.getCellStyle().getFont().getFontHeight();
+                        }
+
+                        if (readOnly) {
+                            cell.setCellStyle(CellStyleHelper.getLockStyle());
+                        } else {
+                            cell.setCellStyle(CellStyleHelper.getUnlockStyle());
+                        }
+
+                        if (hidden) {
+                            sheet.setColumnHidden(index, true);
+                        }
+
+                        Object val = sourceClass.getDeclaredMethod("get" +
+                                StringUtils.capitalize(field.getName())).invoke(t);
+
+                        String str;
+                        if (objectType == Date.class) {
+                            //Set to text format to avoid errors caused by date modification in different systems
+                            String format = annotation.format();
+                            if (Date.class.isAssignableFrom(field.getType())) {
+                                str = DateUtil.formatDateTime((Date) val, format);
+                            } else {
+                                str = getValue(val);
+                            }
+                            cell.setCellStyle(CellStyleHelper.getXSSFCellStyle(sheetRow, readOnly, hidden));
+                        } else {
+                            str = getValue(val);
+                        }
+                        cell.setCellValue(str);
+                        if (!hidden && excelSheetDto.isChangeHeight()) {
+                            maxHeight = Math.max(maxHeight, getRowHeigt(fontHeight, sheet.getColumnWidth(index), str));
+                        }
+                    }
+                }
+                if (excelSheetDto.isChangeHeight()) {
+                    sheetRow.setHeight((short) maxHeight);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static int getRowHeigt(short fontHeight, int cellWidth, String cellContent) {
+        if (null == cellContent || "".equals(cellContent)) {
+            return 0;
+        }
+        int cellContentWidth = cellContent.getBytes().length * 2 * 256;
+        int stringNeedsRows = cellContentWidth / cellWidth;
+        if (stringNeedsRows < 1) {
+            stringNeedsRows = 1;
+        }
+        return (fontHeight + 50) * (stringNeedsRows + 1);
     }
 }
