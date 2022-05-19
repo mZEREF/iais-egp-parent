@@ -75,12 +75,35 @@ $(function () {
                 $("#invalidPostalCodeModal").modal('show');
             },
             success:function(data) {
-                $("#addressTypeT" + separator + idx).val(data.address_type);
                 $("#blockNoT" + separator + idx).val(data.block_no);
                 $("#floorNoT" + separator + idx).val(data.floor);
                 $("#unitNoT" + separator + idx).val(data.unit_no);
                 $("#streetNameT" + separator + idx).val(data.street);
                 $("#buildingNameT" + separator + idx).val(data.building);
+            }
+        });
+    });
+
+    $("#exportingRetrieveAddressBtn").click(function retrieveAddress() {
+        var idx = $(this).attr("data-current-idx");
+        var separator = $(this).attr("data-section-separator");
+        var postalCode = $("#postalCodeE" + separator + idx).val();
+        if (!postalCode) {
+            return false;
+        }
+        $.ajax({
+            type:"GET",
+            url:"/bsb-web/address-info/" + postalCode,
+            dataType: 'json',
+            error:function(){
+                $("#invalidPostalCodeModal").modal('show');
+            },
+            success:function(data) {
+                $("#blockNoE" + separator + idx).val(data.block_no);
+                $("#floorNoE" + separator + idx).val(data.floor);
+                $("#unitNoE" + separator + idx).val(data.unit_no);
+                $("#streetNameE" + separator + idx).val(data.street);
+                $("#buildingNameE" + separator + idx).val(data.building);
             }
         });
     });
@@ -94,10 +117,12 @@ $(function () {
             $("#aptMandatoryBlkT" + idx).show();
             $("#aptMandatoryFloorT" + idx).show();
             $("#aptMandatoryUnitT" + idx).show();
+            $("#aptMandatoryStreetT" + idx).hide();
         } else {
             $("#aptMandatoryBlkT" + idx).hide();
             $("#aptMandatoryFloorT" + idx).hide();
             $("#aptMandatoryUnitT" + idx).hide();
+            $("#aptMandatoryStreetT" + idx).show();
         }
     });
 
@@ -109,10 +134,12 @@ $(function () {
             $("#aptMandatoryBlkE" + idx).show();
             $("#aptMandatoryFloorE" + idx).show();
             $("#aptMandatoryUnitE" + idx).show();
+            $("#aptMandatoryStreetE" + idx).hide();
         } else {
             $("#aptMandatoryBlkE" + idx).hide();
             $("#aptMandatoryFloorE" + idx).hide();
             $("#aptMandatoryUnitE" + idx).hide();
+            $("#aptMandatoryStreetE" + idx).show();
         }
     });
 

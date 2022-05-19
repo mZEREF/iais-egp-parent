@@ -36,9 +36,12 @@
         <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
     </div>
 </div>
-<iais-bsb:single-constant constantName="ADDRESS_TYPE_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="aptBlk"/>
 
+<iais-bsb:single-constant constantName="ADDRESS_TYPE_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="aptBlk"/>
+<iais-bsb:single-constant constantName="ADDRESS_TYPE_WITHOUT_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="withoutAptBlk"/>
 <%--@elvariable id="aptBlk" type="java.lang.String"--%>
+<%--@elvariable id="withoutAptBlk" type="java.lang.String"--%>
+
 <div id="transferringFacilityDiv--v--${status.index}" <c:if test="${detail.procurementMode ne null and detail.procurementMode ne masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">style="display: none;"</c:if>>
     <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
     <div class="form-group ">
@@ -57,11 +60,11 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-5">
-            <input maxlength="6" type="text" autocomplete="off" name="postalCodeT--v--${status.index}" id="postalCodeT--v--${status.index}" value='<c:out value="${detail.postalCodeT}"/>'/>
+            <input maxlength="6" type="text" autocomplete="off" name="postalCodeT--v--${status.index}" id="postalCodeT--v--${status.index}" value='<c:out value="${detail.postalCodeT}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
             <span data-err-ind="postalCodeT--v--${status.index}" class="error-msg"></span>
         </div>
         <div class="col-sm-2">
-            <a id="localTransferRetrieveAddressBtn" href="javascript:void(0)" data-current-idx="${status.index}" data-section-separator="--v--">Retrieve your address </a>
+            <a id="localTransferRetrieveAddressBtn" href="javascript:void(0)" data-current-idx="${status.index}" data-section-separator="--v--">Retrieve your address</a>
         </div>
     </div>
     <div class="form-group ">
@@ -85,7 +88,7 @@
             <span id="aptMandatoryBlkT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="blockNoT--v--${status.index}" id="blockNoT--v--${status.index}" value='<c:out value="${detail.blockNoT}"/>'/>
+            <input maxlength="10" type="text" autocomplete="off" name="blockNoT--v--${status.index}" id="blockNoT--v--${status.index}" value='<c:out value="${detail.blockNoT}"/>'/>
             <span data-err-ind="blockNoT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -95,7 +98,7 @@
             <span id="aptMandatoryFloorT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input type="text" autocomplete="off" name="floorNoT--v--${status.index}" id="floorNoT--v--${status.index}" value='${detail.floorNoT}' maxlength="250"/>
+            <input type="text" autocomplete="off" name="floorNoT--v--${status.index}" id="floorNoT--v--${status.index}" value='${detail.floorNoT}' maxlength="3"/>
             <span data-err-ind="floorNoT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -105,17 +108,17 @@
             <span id="aptMandatoryUnitT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input type="text" autocomplete="off" name="unitNoT--v--${status.index}" id="unitNoT--v--${status.index}" value='${detail.unitNoT}' maxlength="250"/>
+            <input type="text" autocomplete="off" name="unitNoT--v--${status.index}" id="unitNoT--v--${status.index}" value='${detail.unitNoT}' maxlength="5"/>
             <span data-err-ind="unitNoT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="streetNameT--v--${status.index}">Street Name</label>
-            <span class="mandatory otherQualificationSpan">*</span>
+            <span id="aptMandatoryStreetT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="streetNameT--v--${status.index}" id="streetNameT--v--${status.index}" value='<c:out value="${detail.streetNameT}"/>'/>
+            <input maxlength="32" type="text" autocomplete="off" name="streetNameT--v--${status.index}" id="streetNameT--v--${status.index}" value='<c:out value="${detail.streetNameT}"/>'/>
             <span data-err-ind="streetNameT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -124,7 +127,7 @@
             <label for="buildingNameT--v--${status.index}">Building Name</label>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="buildingNameT--v--${status.index}" id="buildingNameT--v--${status.index}" value='<c:out value="${detail.buildingNameT}"/>'/>
+            <input maxlength="45" type="text" autocomplete="off" name="buildingNameT--v--${status.index}" id="buildingNameT--v--${status.index}" value='<c:out value="${detail.buildingNameT}"/>'/>
             <span data-err-ind="buildingNameT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -135,7 +138,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="contactPersonNameT--v--${status.index}" id="contactPersonNameT--v--${status.index}" value='<c:out value="${detail.contactPersonNameT}"/>'/>
+            <input maxlength="66" type="text" autocomplete="off" name="contactPersonNameT--v--${status.index}" id="contactPersonNameT--v--${status.index}" value='<c:out value="${detail.contactPersonNameT}"/>'/>
             <span data-err-ind="contactPersonNameT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -145,7 +148,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="emailAddressT--v--${status.index}" id="emailAddressT--v--${status.index}" value='<c:out value="${detail.emailAddressT}"/>'/>
+            <input maxlength="66" type="text" autocomplete="off" name="emailAddressT--v--${status.index}" id="emailAddressT--v--${status.index}" value='<c:out value="${detail.emailAddressT}"/>'/>
             <span data-err-ind="emailAddressT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -155,7 +158,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="contactNoT--v--${status.index}" id="contactNoT--v--${status.index}" value='<c:out value="${detail.contactNoT}"/>'/>
+            <input maxlength="8" type="text" autocomplete="off" name="contactNoT--v--${status.index}" id="contactNoT--v--${status.index}" value='<c:out value="${detail.contactNoT}"/>'/>
             <span data-err-ind="contactNoT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -172,9 +175,10 @@
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="courierServiceProviderNameT--v--${status.index}">Name of Courier Service Provider</label>
+            <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="courierServiceProviderNameT--v--${status.index}" id="courierServiceProviderNameT--v--${status.index}" value='<c:out value="${detail.courierServiceProviderNameT}"/>'/>
+            <input maxlength="100" type="text" autocomplete="off" name="courierServiceProviderNameT--v--${status.index}" id="courierServiceProviderNameT--v--${status.index}" value='<c:out value="${detail.courierServiceProviderNameT}"/>'/>
             <span data-err-ind="courierServiceProviderNameT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -189,7 +193,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <textarea maxLength="250" class="col-xs-12" name="remarksT--v--${status.index}" id="remarksT--v--${status.index}" rows="3"><c:out value="${detail.remarksT}"/></textarea>
+            <textarea maxLength="1000" class="col-xs-12" name="remarksT--v--${status.index}" id="remarksT--v--${status.index}" rows="3"><c:out value="${detail.remarksT}"/></textarea>
             <span data-err-ind="remarksT--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -211,9 +215,12 @@
             <label for="postalCodeE--v--${status.index}">Postal Code</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
-        <div class="col-sm-6">
-            <input maxlength="6" type="text" autocomplete="off" name="postalCodeE--v--${status.index}" id="postalCodeE--v--${status.index}" value='<c:out value="${detail.postalCodeE}"/>'/>
+        <div class="col-sm-5">
+            <input maxlength="6" type="text" autocomplete="off" name="postalCodeE--v--${status.index}" id="postalCodeE--v--${status.index}" value='<c:out value="${detail.postalCodeE}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
             <span data-err-ind="postalCodeE--v--${status.index}" class="error-msg"></span>
+        </div>
+        <div class="col-sm-2">
+            <a id="exportingRetrieveAddressBtn" href="javascript:void(0)" data-current-idx="${status.index}" data-section-separator="--v--">Retrieve your address</a>
         </div>
     </div>
     <div class="form-group ">
@@ -237,7 +244,7 @@
             <span id="aptMandatoryBlkE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="blockNoE--v--${status.index}" id="blockNoE--v--${status.index}" value='<c:out value="${detail.blockNoE}"/>'/>
+            <input maxlength="10" type="text" autocomplete="off" name="blockNoE--v--${status.index}" id="blockNoE--v--${status.index}" value='<c:out value="${detail.blockNoE}"/>'/>
             <span data-err-ind="blockNoE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -247,7 +254,7 @@
             <span id="aptMandatoryFloorE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input type="text" autocomplete="off" name="floorNoE--v--${status.index}" id="floorNoE--v--${status.index}" value='${detail.floorNoE}' maxlength="250"/>
+            <input type="text" autocomplete="off" name="floorNoE--v--${status.index}" id="floorNoE--v--${status.index}" value='${detail.floorNoE}' maxlength="3"/>
             <span data-err-ind="floorNoE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -257,17 +264,17 @@
             <span id="aptMandatoryUnitE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input type="text" autocomplete="off" name="unitNoE--v--${status.index}" id="unitNoE--v--${status.index}" value='${detail.unitNoE}' maxlength="250"/>
+            <input type="text" autocomplete="off" name="unitNoE--v--${status.index}" id="unitNoE--v--${status.index}" value='${detail.unitNoE}' maxlength="5"/>
             <span data-err-ind="unitNoE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="streetNameE--v--${status.index}">Street Name</label>
-            <span class="mandatory otherQualificationSpan">*</span>
+            <span id="aptMandatoryStreetE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="streetNameE--v--${status.index}" id="streetNameE--v--${status.index}" value='<c:out value="${detail.streetNameE}"/>'/>
+            <input maxlength="32" type="text" autocomplete="off" name="streetNameE--v--${status.index}" id="streetNameE--v--${status.index}" value='<c:out value="${detail.streetNameE}"/>'/>
             <span data-err-ind="streetNameE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -276,7 +283,7 @@
             <label for="buildingNameE--v--${status.index}">Building Name</label>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="buildingNameE--v--${status.index}" id="buildingNameE--v--${status.index}" value='<c:out value="${detail.buildingNameE}"/>'/>
+            <input maxlength="45" type="text" autocomplete="off" name="buildingNameE--v--${status.index}" id="buildingNameE--v--${status.index}" value='<c:out value="${detail.buildingNameE}"/>'/>
             <span data-err-ind="buildingNameE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -297,11 +304,21 @@
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
+            <label for="cityE--v--${status.index}">City</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6">
+            <input maxlength="32" type="text" autocomplete="off" name="cityE--v--${status.index}" id="cityE--v--${status.index}" value='<c:out value="${detail.cityE}"/>'/>
+            <span data-err-ind="cityE--v--${status.index}" class="error-msg"></span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
             <label for="stateE--v--${status.index}">State</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="stateE--v--${status.index}" id="stateE--v--${status.index}" value='<c:out value="${detail.stateE}"/>'/>
+            <input maxlength="32" type="text" autocomplete="off" name="stateE--v--${status.index}" id="stateE--v--${status.index}" value='<c:out value="${detail.stateE}"/>'/>
             <span data-err-ind="stateE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -312,7 +329,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="contactPersonNameE--v--${status.index}" id="contactPersonNameE--v--${status.index}" value='<c:out value="${detail.contactPersonNameE}"/>'/>
+            <input maxlength="66" type="text" autocomplete="off" name="contactPersonNameE--v--${status.index}" id="contactPersonNameE--v--${status.index}" value='<c:out value="${detail.contactPersonNameE}"/>'/>
             <span data-err-ind="contactPersonNameE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -322,7 +339,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="emailAddressE--v--${status.index}" id="emailAddressE--v--${status.index}" value='<c:out value="${detail.emailAddressE}"/>'/>
+            <input maxlength="66" type="text" autocomplete="off" name="emailAddressE--v--${status.index}" id="emailAddressE--v--${status.index}" value='<c:out value="${detail.emailAddressE}"/>'/>
             <span data-err-ind="emailAddressE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -332,7 +349,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="contactNoE--v--${status.index}" id="contactNoE--v--${status.index}" value='<c:out value="${detail.contactNoE}"/>'/>
+            <input maxlength="20" type="text" autocomplete="off" name="contactNoE--v--${status.index}" id="contactNoE--v--${status.index}" value='<c:out value="${detail.contactNoE}"/>'/>
             <span data-err-ind="contactNoE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -349,9 +366,10 @@
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="courierServiceProviderNameE--v--${status.index}">Name of Courier Service Provider</label>
+            <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <input maxlength="250" type="text" autocomplete="off" name="courierServiceProviderNameE--v--${status.index}" id="courierServiceProviderNameE--v--${status.index}" value='<c:out value="${detail.courierServiceProviderNameE}"/>'/>
+            <input maxlength="100" type="text" autocomplete="off" name="courierServiceProviderNameE--v--${status.index}" id="courierServiceProviderNameE--v--${status.index}" value='<c:out value="${detail.courierServiceProviderNameE}"/>'/>
             <span data-err-ind="courierServiceProviderNameE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
@@ -366,7 +384,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <textarea maxLength="250" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${detail.remarksE}"/></textarea>
+            <textarea maxLength="1000" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${detail.remarksE}"/></textarea>
             <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
         </div>
     </div>
