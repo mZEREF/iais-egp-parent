@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -214,4 +215,6 @@ public interface LicenceClient {
     FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(@PathVariable("licenceId") String licenceId,
             @RequestParam("checkSpec") Boolean checkSpec);
 
+    @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
 }

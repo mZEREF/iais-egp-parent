@@ -33,19 +33,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -870,14 +871,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId,String seqNum) {
+    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId, String seqNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
     @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
+    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId, String seqNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -1053,6 +1054,26 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
             List<String> excludeStatus) {
         return getFeignResponseEntity(type, appId, excludeStatus);
+    }
+
+    @Override
+    public FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile() {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
+        return getFeignResponseEntity(processFileTrackDto);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> saveFeData(ApplicationListFileDto applicationListFileDto) {
+        return getFeignResponseEntity(applicationListFileDto);
+    }
+
+    @Override
+    public FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto() {
+        return getFeignResponseEntity();
     }
 
 }
