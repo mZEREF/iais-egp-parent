@@ -125,18 +125,7 @@ public class ApprovalBatAndActivityDelegator {
     }
 
     public void preLargeBatDetails(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        NodeGroup approvalAppRoot = approvalBatAndActivityService.getApprovalActivityRoot(request, null);
-        String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT;
-        SimpleNode largeBatNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
-        ApprovalToLargeDto approvalToLargeDto = (ApprovalToLargeDto) largeBatNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalToLargeDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(approvalAppRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToLargeDto);
-        approvalBatAndActivityService.loadAllowedScheduleAndBatOptions(request);
+        approvalBatAndActivityService.preLargeBatDetails(bpc);
     }
 
     public void handleLargeBatDetails(BaseProcessClass bpc){
