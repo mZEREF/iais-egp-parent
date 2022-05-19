@@ -60,11 +60,19 @@
                 <span class="mandatory otherQualificationSpan">*</span>
               </div>
               <div class="col-sm-6" style="z-index: 20;">
-                <select name="batName--v--${status.index}"  class="batNameDropdown${status.index}" id="batName--v--${status.index}">
+                <select name="batName--v--${status.index}" class="batNameDropdown${status.index}" id="batName--v--${status.index}">
                   <c:set var="batNameOps" value="${scheduleBatMap.get(empty info.schedule ? firstScheduleOp : info.schedule)}"/>
-                  <c:forEach items="${batNameOps}" var="name">
-                    <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
-                  </c:forEach>
+                  <c:choose>
+                    <c:when test="${empty batNameOps}">
+                      <%-- Have to use if-else because opiton list contains 'Please select' (it will be used when switch schedule) --%>
+                      <option value="">Please Select</option>
+                    </c:when>
+                    <c:otherwise>
+                      <c:forEach items="${batNameOps}" var="name">
+                        <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
+                      </c:forEach>
+                    </c:otherwise>
+                  </c:choose>
                 </select>
                 <span data-err-ind="batName--v--${status.index}" class="error-msg"></span>
               </div>

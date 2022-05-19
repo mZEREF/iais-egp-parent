@@ -70,7 +70,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <select name="addressTypeT--v--${status.index}" class="addressTypeTDropdown${status.index}" id="addressTypeT--v--${status.index}" data-custom-ind="addressTypeT">
+            <select name="addressTypeT--v--${status.index}" id="addressTypeT--v--${status.index}" class="addressTypeTDropdown${status.index}" data-custom-ind="addressTypeT">
                 <option value="">Please Select</option>
                 <c:forEach items="${addressTypeOps}" var="name">
                     <option value="${name.value}" <c:if test="${detail.addressTypeT eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -222,7 +222,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <select name="addressTypeE--v--${status.index}" id="addressTypeE--v--${status.index}" data-custom-ind="addressTypeE">
+            <select name="addressTypeE--v--${status.index}" id="addressTypeE--v--${status.index}" class="addressTypeEDropdown${status.index}" data-custom-ind="addressTypeE">
                 <option value="">Please Select</option>
                 <c:forEach items="${addressTypeOps}" var="name">
                     <option value="${name.value}" <c:if test="${detail.addressTypeE eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -286,7 +286,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <select name="countryE--v--${status.index}" id="countryE--v--${status.index}" class="countryEDropdown${status.index}">
+            <select name="countryE--v--${status.index}" id="countryE--v--${status.index}" class="countryEDropdown${status.index}" class="countryEDropdown${status.index}">
                 <option value="">Please Select</option>
                 <c:forEach items="${nationalityOps}" var="na">
                     <option value="${na.value}" <c:if test="${detail.countryE eq na.value}">selected="selected"</c:if>>${na.text}</option>
