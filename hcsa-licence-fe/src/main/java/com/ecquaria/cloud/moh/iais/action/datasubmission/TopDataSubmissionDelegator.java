@@ -31,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -718,7 +719,7 @@ public class TopDataSubmissionDelegator {
      *
      * @param bpc
      */
-    public void doSubmission(BaseProcessClass bpc) {
+    public void doSubmission(BaseProcessClass bpc) throws ParseException {
         log.info(" ----- DoSubmission ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
@@ -749,8 +750,9 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
-            if(Formatter.compareDateByDay(String.valueOf(dataSubmissionDto.getSubmitDt()),terminationDto.getTopDate())>Integer.parseInt(day)){
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
                 terminationDto.setLateSubmit(true);
             }
         }catch (Exception e){

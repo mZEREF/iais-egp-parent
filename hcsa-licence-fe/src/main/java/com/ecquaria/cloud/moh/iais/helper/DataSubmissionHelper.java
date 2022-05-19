@@ -158,6 +158,7 @@ public final class DataSubmissionHelper {
         newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         newDto.setDraftId(currentSuper.getDraftId());
         newDto.setDraftNo(currentSuper.getDraftNo());
+        newDto.setPremises(currentSuper.getPremises());
         DataSubmissionDto dataSubmissionDto = DataSubmissionHelper.initDataSubmission(newDto, true);
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
