@@ -14,12 +14,13 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionSelfAssessmentService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +32,11 @@ import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ERROR_MESSAGE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_EDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_FILL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ACTIONS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CURRENT_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_EDITABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ENTRY_APP_ID;
@@ -46,19 +48,19 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KE
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.MASK_PARAM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.SEESION_FILES_MAP_AJAX;
 
-/**
- * Process: MohBsbSubmitSelfAssessment
- */
+
 @Slf4j
-@Delegator("bsbSubmitSelfAssessment")
-public class BsbSubmitSelfAssessmentDelegator {
+@Delegator("bsbRfiInspectionSelfAssessment")
+public class BsbRfiInspectionSelfAssessmentDelegator {
     private final InspectionClient inspectionClient;
     private final InspectionSelfAssessmentService inspectionSelfAssessmentService;
+    private final RfiService rfiService;
 
-    @Autowired
-    public BsbSubmitSelfAssessmentDelegator(InspectionClient inspectionClient, InspectionSelfAssessmentService inspectionSelfAssessmentService) {
+
+    public BsbRfiInspectionSelfAssessmentDelegator(InspectionClient inspectionClient, InspectionSelfAssessmentService inspectionSelfAssessmentService, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
         this.inspectionSelfAssessmentService = inspectionSelfAssessmentService;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -76,7 +78,7 @@ public class BsbSubmitSelfAssessmentDelegator {
 
         // get app ID from request parameter
         String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
+        String appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedAppId);
         if (appId == null || appId.equals(maskedAppId)) {
             throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
         }
@@ -87,39 +89,43 @@ public class BsbSubmitSelfAssessmentDelegator {
          * Currently, we only have one app's checklist to be filled, so this app will be the same as the app in next
          * page. */
         ParamUtil.setSessionAttr(request, KEY_ENTRY_APP_ID, appId);
-
+        ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
 
 
         // set audit trail info (We can set appNo here, may be added in future)
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT);
     }
 
-
     public void init(BaseProcessClass bpc) {
         inspectionSelfAssessmentService.init(bpc);
     }
-
 
     public void preLoad(BaseProcessClass bpc) {
         inspectionSelfAssessmentService.preLoad(bpc);
     }
 
-
     public void bindAction(BaseProcessClass bpc) {
         inspectionSelfAssessmentService.bindAction(bpc);
     }
 
-
-    /**For edit(RFI), view and print situation, we need to load the existing data first at here.
-     * We put the self-assessment data in session, so this method will be called once only.
-     * Later steps route back to the self-assessment page, it will not retrieve existing data again, instead, it
-     * retrieves data from session. */
     public void loadExistingData(BaseProcessClass bpc) {
         inspectionSelfAssessmentService.loadExistingData(bpc);
     }
 
-    public void prepareForSelfAssessment(BaseProcessClass bpc) throws JsonProcessingException {
+    public void prepareUpload(BaseProcessClass bpc) {
+        inspectionSelfAssessmentService.prepareUpload(bpc);
+    }
+
+    public void doUpload(BaseProcessClass bpc) {
+        inspectionSelfAssessmentService.doUpload(bpc);
+    }
+
+    public void prepareForSelfAssessmt(BaseProcessClass bpc) throws JsonProcessingException {
         inspectionSelfAssessmentService.prepareForSelfAssessment(bpc);
+    }
+
+    public void clearData(BaseProcessClass bpc) {
+        inspectionSelfAssessmentService.clearData(bpc);
     }
 
     public void save(BaseProcessClass bpc) throws JsonProcessingException {
@@ -163,32 +169,17 @@ public class BsbSubmitSelfAssessmentDelegator {
             SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
             answerRecordDto.setAnswer(answer);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
-            inspectionClient.submitSelfAssessment(answerRecordDto);
             ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
+
+            // save data
+            rfiService.saveInspectionSelfAssessment(request, answerRecordDto);
+            // acknowledge page need appId
+            String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+            ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
         }
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public void clearData(BaseProcessClass bpc) {
-        inspectionSelfAssessmentService.clearData(bpc);
     }
 
     public void print(BaseProcessClass bpc) throws JsonProcessingException {
         inspectionSelfAssessmentService.print(bpc);
-    }
-
-    /**
-     * Step: PrepareUpload
-     */
-    public void prepareUpload(BaseProcessClass bpc) {
-        inspectionSelfAssessmentService.prepareUpload(bpc);
-    }
-
-    /**
-     * Step: DoUpload
-     */
-    public void doUpload(BaseProcessClass bpc) {
-        inspectionSelfAssessmentService.doUpload(bpc);
     }
 }

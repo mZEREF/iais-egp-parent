@@ -3,7 +3,7 @@ package sg.gov.moh.iais.egp.bsb.constant.module;
 public class RfiConstants {
     private RfiConstants() {}
 
-    // * module name from be api RfiConstants *
+    // * module name from be api RfiConstants, please keep both sides the same *
     public static final String MODULE_NAME_FACILITY_REGISTRATION           = "Facility Registration";
     public static final String MODULE_NAME_INSPECTION_SELF_ASSESSMENT      = "Inspection Self-Assessment";
     public static final String MODULE_NAME_INSPECTION_REPORT               = "Inspection Report";
@@ -11,6 +11,7 @@ public class RfiConstants {
     public static final String MODULE_NAME_INSPECTION_FOLLOW_UP            = "Inspection Follow-Up";
 
     public static final String KEY_APP_ID                                  = "appId";
+    // mask appId key
     public static final String KEY_RFI_APP_ID                              = "rfiAppId";
 
     public static final String KEY_RFI_DISPLAY_DTO                         = "rfiDisplayDto";

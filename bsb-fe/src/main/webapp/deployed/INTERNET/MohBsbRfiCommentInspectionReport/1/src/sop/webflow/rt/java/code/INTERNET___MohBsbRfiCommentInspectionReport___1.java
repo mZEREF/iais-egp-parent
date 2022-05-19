@@ -14,8 +14,8 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___MohBsbCommentInspectionReport___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbCommentInspectionReport";
+public class INTERNET___MohBsbRfiCommentInspectionReport___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbRfiCommentInspectionReport";
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);

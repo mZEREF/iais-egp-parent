@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -9,58 +8,57 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
-import sg.gov.moh.iais.egp.bsb.client.RfiClient;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfi.ApplicationRfiIndicatorDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveInspectionReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
-import java.util.List;
-
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts.FUNCTION_INSPECTION_REPORT;
+import static com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts.MODULE_INSPECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_REPORT_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 
 
 @Slf4j
-@Delegator("bsbCommentInspectionReport")
-public class BsbCommentInspectionReport {
+@Delegator("bsbRfiCommentInspectionReport")
+public class BsbRfiCommentInspectionReportDelegator {
     private final InspectionClient inspectionClient;
-    private final RfiClient rfiClient;
+    private final RfiService rfiService;
 
     @Autowired
-    public BsbCommentInspectionReport(InspectionClient inspectionClient, RfiClient rfiClient) {
+    public BsbRfiCommentInspectionReportDelegator(InspectionClient inspectionClient, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
-        this.rfiClient = rfiClient;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
-        session.removeAttribute(RfiConstants.KEY_APP_ID);
+        session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_INSPECTION_REPORT_DTO);
-        session.removeAttribute(DocConstants.KEY_COMMON_DOC_DTO);
+        session.removeAttribute(KEY_COMMON_DOC_DTO);
 
         // get app ID from request parameter
-        String maskedAppId = ParamUtil.getString(request, RfiConstants.KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(RfiConstants.KEY_RFI_APP_ID, maskedAppId);
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        String appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedAppId);
         if (appId == null || appId.equals(maskedAppId)) {
             throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
         }
-        ParamUtil.setSessionAttr(request, RfiConstants.KEY_APP_ID, appId);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
+        ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_INSPECTION_REPORT);
     }
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, RfiConstants.KEY_APP_ID);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
         if (reportDto == null) {
             reportDto = inspectionClient.getInsReportDto(appId);
@@ -93,22 +91,10 @@ public class BsbCommentInspectionReport {
         // rfi sub-module only save data don't update application and create task (this is done in RFI)
         HttpServletRequest request = bpc.request;
         ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
-        String appId = (String) ParamUtil.getSessionAttr(request, RfiConstants.KEY_APP_ID);
-        // update this module rfi status
-        RfiDisplayDto rfiDisplayDto = (RfiDisplayDto) ParamUtil.getSessionAttr(request, RfiConstants.KEY_RFI_DISPLAY_DTO);
-        List<ApplicationRfiIndicatorDto> applicationRfiIndicatorDtoList = rfiDisplayDto.getApplicationRfiIndicatorDtoList();
-        for (ApplicationRfiIndicatorDto applicationRfiIndicatorDto : applicationRfiIndicatorDtoList) {
-            if (applicationRfiIndicatorDto.getModuleName().equals(RfiConstants.MODULE_NAME_INSPECTION_REPORT)) {
-                applicationRfiIndicatorDto.setStatus(true);
-            }
-        }
-        SaveInspectionReportDto saveInspectionReportDto = new SaveInspectionReportDto();
-        saveInspectionReportDto.setReportDto(reportDto);
-        saveInspectionReportDto.setRfiDisplayDto(rfiDisplayDto);
-        saveInspectionReportDto.setAppId(appId);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         // save data
-        rfiClient.saveInspectionReport(saveInspectionReportDto);
+        rfiService.saveInspectionReport(request, reportDto, appId);
         // acknowledge page need appId
-        ParamUtil.setRequestAttr(request, RfiConstants.KEY_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
     }
 }
