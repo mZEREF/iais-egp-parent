@@ -2,9 +2,7 @@
 <%@taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@taglib prefix="bat" tagdir="/WEB-INF/tags/common" %>
 
 <%@attribute name="processType" required="true" type="java.lang.String" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
@@ -59,7 +57,7 @@
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
                                             <%@include file="/WEB-INF/jsp/iais/approvalBatAndActivity/subStepNavTab.jsp"%>
-                                            <%@include file="atpBatInfo.tag"%>
+                                            <%@include file="batInfo.tag"%>
                                             <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
                                         </div>
                                     </div>

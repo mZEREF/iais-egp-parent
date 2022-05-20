@@ -3,37 +3,19 @@ package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
-import sg.gov.moh.iais.egp.bsb.dto.register.bat.ProcModeLSPDetails;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalToLargeDto extends ValidatableNodeValue {
-
-    @Data
-    @NoArgsConstructor
-    public static class BATInfo implements Serializable {
-        private String schedule;
-        private String batName;
-        private String estimatedMaximumVolume;
-        private String methodOrSystem;
-
-        private ProcModeLSPDetails lspDetails;
-    }
-
     private List<BATInfo> batInfos;
 
     @JsonIgnore
@@ -83,12 +65,7 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
 
     // ---------------------------- request -> object ----------------------------------------------
 
-    private static final String SEPARATOR                                     = "--v--";
     private static final String KEY_SECTION_IDXES                             = "sectionIdx";
-    private static final String KEY_PREFIX_SCHEDULE                           = "schedule";
-    private static final String KEY_PREFIX_BAT_NAME                           = "batName";
-    private static final String KEY_PREFIX_ESTIMATED_MAXIMUM_VOLUME           = "estimatedMaximumVolume";
-    private static final String KEY_PREFIX_METHOD_OR_SYSTEM                   = "methodOrSystem";
 
     public void reqObjMapping(HttpServletRequest request) {
         clearBatInfos();
@@ -96,13 +73,7 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {
             BATInfo info = new BATInfo();
-            info.setSchedule(ParamUtil.getString(request, KEY_PREFIX_SCHEDULE + SEPARATOR +idx));
-            info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +idx));
-            info.setEstimatedMaximumVolume(ParamUtil.getString(request, KEY_PREFIX_ESTIMATED_MAXIMUM_VOLUME + SEPARATOR +idx));
-            info.setMethodOrSystem(ParamUtil.getString(request, KEY_PREFIX_METHOD_OR_SYSTEM + SEPARATOR +idx));
-            ProcModeLSPDetails details = new ProcModeLSPDetails();
-            details.reqObjMapping(request,idx);
-            info.setLspDetails(details);
+            info.reqObjMapping(request, idx);
             addBatInfo(info);
         }
     }

@@ -8,8 +8,9 @@
 <%--@elvariable id="firstScheduleOp" type="java.lang.String"--%>
 <%--@elvariable id="scheduleBatMap" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>"--%>
 <%--@elvariable id="scheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-<fac:biologicalAgentToxin batInfo="${batInfo}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" activeNodeKey="${activeNodeKey}"
-                          activityTypes="${activityTypes}" firstScheduleOp="${firstScheduleOp}" scheduleBatMap="${scheduleBatMap}" scheduleOps="${scheduleOps}" editJudge="true">
+<fac:biologicalAgentToxin batInfos="${batInfo}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" activeNodeKey="${activeNodeKey}"
+                          activityTypes="${activityTypes}" firstScheduleOp="${firstScheduleOp}" scheduleBatMap="${scheduleBatMap}" scheduleOps="${scheduleOps}"
+                          editJudge="true" lspJudge="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq activeNodeKey}">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>
