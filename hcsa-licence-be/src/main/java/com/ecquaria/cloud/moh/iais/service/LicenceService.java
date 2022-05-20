@@ -36,7 +36,7 @@ public interface LicenceService {
     String getGroupLicenceNo(String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber);
     AppPremisesRecommendationDto getTcu(String appPremCorrecId);
     PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
-    KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
+    KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId,String nationality);
     LicenceDto getLicenceDto(String licenceId);
     LicenceDto getLicenceDtoByLicNo(String licNo);
     List<String> getLicenceOutDate(int outMonth);

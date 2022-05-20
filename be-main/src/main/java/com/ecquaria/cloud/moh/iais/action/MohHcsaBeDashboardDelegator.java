@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -21,20 +22,31 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -47,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -56,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -63,6 +77,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
+import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardSupportService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
@@ -73,6 +88,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainC
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
@@ -80,9 +96,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,6 +160,12 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private BeDashboardAjaxService beDashboardAjaxService;
+
+    @Autowired
+    private InspectionTaskMainClient inspectionTaskMainClient;
 
     /**
      * StartStep: hcsaBeDashboardStart
@@ -890,10 +914,10 @@ public class MohHcsaBeDashboardDelegator {
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
         //address for second search
         String hci_address = (String)ParamUtil.getSessionAttr(bpc.request, "dashHciAddress");
+        ArrayList<String> groupNos = IaisCommonUtils.genNewArrayList();
         //get result
         if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes(StandardCharsets.UTF_8))) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashComPoolQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -919,9 +943,13 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashComPoolQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashKpiPoolQuery> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -944,9 +972,13 @@ public class MohHcsaBeDashboardDelegator {
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             }
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashKpiPoolQuery dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashAssignMeQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -970,9 +1002,13 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashAssignMeQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashWorkTeamQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -996,9 +1032,13 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashWorkTeamOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashWorkTeamQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashReplyQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -1022,9 +1062,13 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashReplyOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashReplyQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashWaitApproveQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -1048,9 +1092,13 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashWaitApproveOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashWaitApproveQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes(StandardCharsets.UTF_8))) {
             SearchResult<DashRenewQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
@@ -1074,11 +1122,17 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashRenewOtherData(searchResult);
+            if (searchResult != null && searchResult.getRowCount() > 0) {
+                for (DashRenewQueryDto dcp : searchResult.getRows()) {
+                    groupNos.add(dcp.getAppGroupNo());
+                }
+            }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
         }
-
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        // For expand CR
+//        expandAppGroup(bpc.request, groupNos);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -1625,5 +1679,484 @@ public class MohHcsaBeDashboardDelegator {
             log.debug(StringUtil.changeForLog("do not have the applicaiton"));
         }
         log.info(StringUtil.changeForLog("the do routeToDMS end ...."));
+    }
+
+    private void expandAppGroup(HttpServletRequest request, ArrayList<String> groupNos) {
+        if (IaisCommonUtils.isEmpty(groupNos)) {
+            return;
+        }
+        SearchResult result = (SearchResult) ParamUtil.getSessionAttr(request, "dashSearchResult");
+        if (result == null || result.getRowCount() == 0) {
+            return;
+        }
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        Map<String, String> taskIdMap = IaisCommonUtils.genNewHashMap();
+        String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
+        String dashAppStatus = (String)ParamUtil.getSessionAttr(request, "dashAppStatus");
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        //address for second search
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "dashHciAddress");
+        String switchAction = request.getParameter("switchActionParam");
+        if (StringUtil.isEmpty(switchAction)) {
+            switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
+        }
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
+        //set dash support flag
+        map.put("dashSupportFlag", AppConsts.FALSE);
+        if (BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
+            map = beDashboardAjaxService.getCommonDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
+                    hcsaTaskAssignDto, hci_address);
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashComPoolAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
+            map = beDashboardAjaxService.getAssignMeDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, dashFilterAppNo, dashAppStatus,
+                    hcsaTaskAssignDto, hci_address);
+            //set dash support flag
+            if(loginContext != null && map != null) {
+                String curRole = loginContext.getCurRoleId();
+                if(!StringUtil.isEmpty(curRole)) {
+                    if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
+                            curRole.contains(RoleConsts.USER_ROLE_AO2) ||
+                            curRole.contains(RoleConsts.USER_ROLE_AO3)
+                    ) {
+                        map.put("dashSupportFlag", AppConsts.TRUE);
+                    }
+                }
+            }
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashAssignMeAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
+            map = beDashboardAjaxService.getReplyDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
+                    hcsaTaskAssignDto, hci_address);
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashReplyAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
+            map = beDashboardAjaxService.getKpiDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
+                    hcsaTaskAssignDto, hci_address);
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashKpiPoolAjaxQuery dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
+            map = beDashboardAjaxService.getRenewDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
+                    hcsaTaskAssignDto, hci_address);
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashRenewAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
+            map = beDashboardAjaxService.getWaitApproveDropResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashAppStatus,
+                    hcsaTaskAssignDto, hci_address);
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashWaitApproveAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
+            String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
+            map = beDashboardAjaxService.getWorkTeamDropdownResultOnce(groupNos, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo,
+                    dashCommonPoolStatus, dashAppStatus, hcsaTaskAssignDto, hci_address);
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null && ajaxResult.getRowCount() > 0) {
+                for (DashWorkTeamAjaxQueryDto dto : ajaxResult.getRows()) {
+                    taskIdMap.put(dto.getApplicationNo(), dto.getTaskId());
+                }
+            }
+        }
+        //Retrieve tasks
+        List<String> taskIds = IaisCommonUtils.genNewArrayList();
+        taskIds.addAll(taskIdMap.values());
+        List<TaskDto> taskDtoList = taskService.getTaskList(taskIds);
+        Map<String, TaskDto> taskMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> tskParamMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> slaParamMap = IaisCommonUtils.genNewHashMap();
+        for (TaskDto td : taskDtoList) {
+            taskMap.put(td.getId(), td);
+            tskParamMap.put(td.getApplicationNo(), td.getTaskKey());
+
+        }
+        Map<String, AppPremisesRoutingHistoryDto> hisMap = appPremisesRoutingHistoryMainClient
+                .getAppPremisesRoutingHistoriesSubStage(tskParamMap).getEntity();
+        for (TaskDto td : taskDtoList) {
+            String stage;
+            if (HcsaConsts.ROUTING_STAGE_INS.equals(td.getTaskKey())) {
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = hisMap.get(td.getApplicationNo());
+                stage = appPremisesRoutingHistoryDto.getSubStage();
+            } else {
+                stage = td.getTaskKey();
+            }
+            slaParamMap.put(td.getApplicationNo(), stage);
+        }
+        List<AppStageSlaTrackingDto> slaList = inspectionTaskMainClient.getSlaTrackByAppNoStageIds(slaParamMap).getEntity();
+        Map<String, AppStageSlaTrackingDto> slaTrackingMap = IaisCommonUtils.genNewHashMap();
+        for (AppStageSlaTrackingDto ass : slaList) {
+            slaTrackingMap.put(ass.getApplicationNo() + ass.getStageId(), ass);
+        }
+        if (BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
+            setDashComPoolUrl(map, loginContext, taskMap, hisMap, slaTrackingMap);
+        } else if (BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
+            setDashAssignMeUrl(map, request, loginContext, taskMap, hisMap, slaTrackingMap);
+        } else if (BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
+            setReplyPoolUrl(map);
+        } else if (BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
+            setDashKpiPoolUrl(map, request, loginContext, taskMap, hisMap, slaTrackingMap);
+        } else if (BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
+            setDashRenewPoolUrl(map, request, loginContext, taskMap, hisMap, slaTrackingMap);
+        } else if (BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
+            setDashWaitApproveUrl(map, request, loginContext, taskMap, hisMap, slaTrackingMap);
+        } else if (BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
+            setWorkTeamPoolUrl(map, taskMap, hisMap, slaTrackingMap);
+        }
+
+        ParamUtil.setRequestAttr(request, "expandAppDropdownMap", map);
+    }
+
+    private Map<String, Object> setDashComPoolUrl(Map<String, Object> map, LoginContext loginContext,
+                  Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                  Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Common Pool Current Role =====" + loginContext.getCurRoleId()));
+            roleId = loginContext.getCurRoleId();
+        }
+        List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+        if(map != null) {
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)) {
+                    Set<String> workGroupIds = IaisCommonUtils.genNewHashSet();
+                    if (loginContext != null && !IaisCommonUtils.isEmpty(loginContext.getWrkGrpIds())) {
+                        workGroupIds = loginContext.getWrkGrpIds();
+                    }
+                    for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos) {
+                        //task is current work
+                        TaskDto taskDto = taskMap.get(dashComPoolAjaxQueryDto.getTaskId());
+                        //set kpi color
+                        String color = getKpiColorByTask(taskDto, dashComPoolAjaxQueryDto, hisMap, kpiConfList, slaTrackingMap);
+                        dashComPoolAjaxQueryDto.setKpiColor(color);
+                        if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        } else if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
+                            //set mask task Id
+                            String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
+                            dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_COMMON_POOL_DO);
+                        } else {
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashAssignMeUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext,
+                       Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                       Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        if (map != null) {
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            if (ajaxResult != null) {
+                List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
+                if (!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
+                    List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+                    for (DashAssignMeAjaxQueryDto dashAssignMeAjaxQueryDto : dashAssignMeAjaxQueryDtos) {
+                        //task is current work
+                        if (!StringUtil.isEmpty(dashAssignMeAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskMap.get(dashAssignMeAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = getKpiColorByTask(taskDto, dashAssignMeAjaxQueryDto, hisMap, kpiConfList, slaTrackingMap);
+                            dashAssignMeAjaxQueryDto.setKpiColor(color);
+                            //set mask task Id
+                            String maskId = MaskUtil.maskValue("taskId", dashAssignMeAjaxQueryDto.getTaskId());
+                            dashAssignMeAjaxQueryDto.setTaskMaskId(maskId);
+                            dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                            String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                            dashAssignMeAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                        } else {
+                            dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setReplyPoolUrl(Map<String, Object> map) {
+        if(map != null) {
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)) {
+                    for(DashReplyAjaxQueryDto dashReplyAjaxQueryDto : dashReplyAjaxQueryDtos) {
+                        dashReplyAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashKpiPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext,
+                              Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                              Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        String userId = "";
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
+            roleId = loginContext.getCurRoleId();
+        }
+        if(map != null) {
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueries = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueries)) {
+                    List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+                    for(DashKpiPoolAjaxQuery dashKpiPoolAjaxQuery : dashKpiPoolAjaxQueries) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashKpiPoolAjaxQuery.getTaskId())) {
+                            TaskDto taskDto = taskMap.get(dashKpiPoolAjaxQuery.getTaskId());
+                            //set kpi color
+                            String color = getKpiColorByTask(taskDto, dashKpiPoolAjaxQuery, hisMap, kpiConfList, slaTrackingMap);
+                            dashKpiPoolAjaxQuery.setKpiColor(color);
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashKpiPoolAjaxQuery.getTaskId());
+                                dashKpiPoolAjaxQuery.setTaskMaskId(maskId);
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashKpiPoolAjaxQuery.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
+                        } else {
+                            dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashRenewPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext,
+                                Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                                Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        String userId = "";
+        String roleId = "";
+        if (loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
+            roleId = loginContext.getCurRoleId();
+        }
+        if (map != null) {
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)) {
+                    List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+                    for(DashRenewAjaxQueryDto dashRenewAjaxQueryDto : dashRenewAjaxQueryDtos) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashRenewAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskMap.get(dashRenewAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = getKpiColorByTask(taskDto, dashRenewAjaxQueryDto, hisMap, kpiConfList, slaTrackingMap);
+                            dashRenewAjaxQueryDto.setKpiColor(color);
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashRenewAjaxQueryDto.getTaskId());
+                                dashRenewAjaxQueryDto.setTaskMaskId(maskId);
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashRenewAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
+                        } else {
+                            dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashWaitApproveUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext,
+                          Map<String, TaskDto> taskMap, Map<String, AppPremisesRoutingHistoryDto> hisMap,
+                          Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        String userId = "";
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
+            roleId = loginContext.getCurRoleId();
+        }
+        if(map != null) {
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)) {
+                    List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+                    for(DashWaitApproveAjaxQueryDto dashWaitApproveAjaxQueryDto : dashWaitApproveAjaxQueryDtos) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashWaitApproveAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskMap.get(dashWaitApproveAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = getKpiColorByTask(taskDto, dashWaitApproveAjaxQueryDto, hisMap, kpiConfList, slaTrackingMap);
+                            dashWaitApproveAjaxQueryDto.setKpiColor(color);
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashWaitApproveAjaxQueryDto.getTaskId());
+                                dashWaitApproveAjaxQueryDto.setTaskMaskId(maskId);
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashWaitApproveAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
+                        } else {
+                            dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setWorkTeamPoolUrl(Map<String, Object> map, Map<String, TaskDto> taskMap,
+                   Map<String, AppPremisesRoutingHistoryDto> hisMap, Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        if(map != null) {
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)) {
+                    List<HcsaSvcKpiDto> kpiConfList = hcsaConfigMainClient.retrieveForDashboard().getEntity();
+                    for(DashWorkTeamAjaxQueryDto dashWorkTeamAjaxQueryDto : dashWorkTeamAjaxQueryDtos) {
+                        if(!StringUtil.isEmpty(dashWorkTeamAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskMap.get(dashWorkTeamAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = getKpiColorByTask(taskDto, dashWorkTeamAjaxQueryDto, hisMap, kpiConfList, slaTrackingMap);
+                            dashWorkTeamAjaxQueryDto.setKpiColor(color);
+                        }
+                        dashWorkTeamAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private String generateProcessUrl(String url, HttpServletRequest request, String taskMaskId) {
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(request.getServerName());
+        if (!url.startsWith("/")) {
+            sb.append('/');
+        }
+        sb.append(url);
+        if (url.indexOf('?') >= 0) {
+            sb.append('&');
+        } else {
+            sb.append('?');
+        }
+        sb.append("taskId=").append(taskMaskId);
+        return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
+    }
+
+    private String getKpiColorByTask(TaskDto taskDto, DashComAjaxQueryDto ajaxDto,
+                 Map<String, AppPremisesRoutingHistoryDto> hisMap, List<HcsaSvcKpiDto> kpiConfList,
+                 Map<String, AppStageSlaTrackingDto> slaTrackingMap) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        if (ajaxDto != null) {
+            String stage;
+            if (HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())) {
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = hisMap.get(taskDto.getApplicationNo());
+                stage = appPremisesRoutingHistoryDto.getSubStage();
+            } else {
+                stage = taskDto.getTaskKey();
+            }
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(ajaxDto.getServiceId());
+            HcsaSvcKpiDto hcsaSvcKpiDto = null;
+            for (HcsaSvcKpiDto hsd : kpiConfList) {
+                if (hsd.getServiceCode().equals(hcsaServiceDto.getSvcCode()) && hsd.getModule().equals(ajaxDto.getAppType())) {
+                    hcsaSvcKpiDto = hsd;
+                    break;
+                }
+            }
+            if (hcsaSvcKpiDto != null) {
+                //get current stage worked days
+                int days = 0;
+                if (!StringUtil.isEmpty(stage)) {
+                    AppStageSlaTrackingDto appStageSlaTrackingDto = slaTrackingMap.get(ajaxDto.getApplicationNo() + stage);
+                    if (appStageSlaTrackingDto != null) {
+                        days = appStageSlaTrackingDto.getKpiSlaDays();
+                    }
+                }
+                //get warning value
+                Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                int kpi = 0;
+                if (!StringUtil.isEmpty(stage)) {
+                    if (kpiMap != null && kpiMap.get(stage) != null) {
+                        kpi = kpiMap.get(stage);
+                    }
+                }
+                //get threshold value
+                int remThreshold = 0;
+                if (hcsaSvcKpiDto.getRemThreshold() != null) {
+                    remThreshold = hcsaSvcKpiDto.getRemThreshold();
+                }
+                //get color
+                colour = getColorByWorkAndKpiDay(kpi, days, remThreshold);
+            }
+        }
+        return colour;
+    }
+
+    private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        if(remThreshold != 0) {
+            if (days < remThreshold) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+            }
+            if (kpi != 0) {
+                if (remThreshold <= days && days <= kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+                } else if (days > kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                }
+            }
+        }
+        return colour;
     }
 }

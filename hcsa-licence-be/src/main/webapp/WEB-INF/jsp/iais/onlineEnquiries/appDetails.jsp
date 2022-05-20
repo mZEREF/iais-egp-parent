@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -14,6 +15,7 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <c:set var="serviceAccess" value="${ConfigHelper.getString('service.access.matrix.enable','0')}" />
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -25,6 +27,9 @@
                                     <br><br><br>
                                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                         <li class="active" role="presentation"><a href="#tabApplicationInfo" aria-controls="tabApplicationInfo" role="tab" data-toggle="tab">Application Info</a></li>
+                                        <li id="apptInspTabDocuments" class="complete"  style="${serviceAccess == 0 ?  'display:none;' : ''}" role="presentation"><a href="#tabDocuments"
+                                                                                                              aria-controls="tabDocuments" role="tab"
+                                                                                                              data-toggle="tab">Documents</a></li>
                                         <li class="complete" role="presentation"><a href="#tabKeyRoles" aria-controls="tabKeyRoles" role="tab"
                                                                                     data-toggle="tab">Key Roles</a></li>
                                         <li class="complete" role="presentation"><a href="#tabServiceRelated" aria-controls="tabServiceRelated" role="tab"
@@ -33,6 +38,8 @@
                                     <div class="tab-nav-mobile visible-xs visible-sm">
                                         <div class="swiper-wrapper" role="tablist">
                                             <div class="swiper-slide"><a href="#tabApplicationInfo" aria-controls="tabApplicationInfo" role="tab" data-toggle="tab">Application Info</a></div>
+                                            <div class="swiper-slide" style="${serviceAccess == 0 ?  'display:none;' : ''}"><a href="#tabDocuments" aria-controls="tabDocuments"
+                                                                         role="tab" data-toggle="tab">Documents</a></div>
                                             <div class="swiper-slide"><a href="#tabKeyRoles" aria-controls="tabKeyRoles" role="tab" data-toggle="tab">Key Roles</a></div>
                                             <div class="swiper-slide"><a href="#tabServiceRelated" aria-controls="tabServiceRelated" role="tab" data-toggle="tab">Service Related</a></div>
                                         </div>
@@ -140,7 +147,9 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        <div class="tab-pane" style="${serviceAccess == 0 ?  'display:none;' : ''}" id="tabDocuments" role="tabpanel">
+                                            <%@ include file="../inspectionncList/tabDocuments.jsp" %>
+                                        </div>
                                         <div class="tab-pane" id="tabKeyRoles" role="tabpanel">
                                             <div class="panel panel-default">
                                                 <!-- Default panel contents -->
@@ -325,6 +334,12 @@
                                                                             <td align="right">ID No</td>
                                                                             <td class="col-xs-6" style="padding-left: 15px;">${personnel.idNo}<c:if test="${empty personnel.idNo}">-</c:if></td>
                                                                         </tr>
+                                                                        <c:if test="${personnel.idType == 'IDTYPE003'}">
+                                                                            <tr>
+                                                                                <td align="right">Country of issuance</td>
+                                                                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.nationality}"/><c:if test="${empty personnel.nationality}">-</c:if></td>
+                                                                            </tr>
+                                                                        </c:if>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>

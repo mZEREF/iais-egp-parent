@@ -12,7 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -37,18 +41,16 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -100,6 +102,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto getTaskById(String taskId) {
         return taskOrganizationClient.getTaskById(taskId).getEntity();
+    }
+
+    @Override
+    public List<TaskDto> getTaskList(List<String> taskIds) {
+        return taskOrganizationClient.getTaskList(taskIds).getEntity();
     }
 
     @Override

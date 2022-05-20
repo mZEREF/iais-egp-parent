@@ -136,6 +136,10 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
+
+    // Nationality
+    public static final String CATE_ID_NATIONALITY = "21941117-A009-4E45-AD2F-22F233EAA28D";
+
     /**
      * @description: refresh the master codes into cache
      *
@@ -399,7 +403,7 @@ public final class MasterCodeUtil {
         RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.clear(cacheName);
         conMap.entrySet().forEach(ent ->
-            rch.set(cacheName, ent.getKey(), ent.getValue())
+            rch.set(cacheName, ent.getKey(), ent.getValue(), RedisCacheHelper.NOT_EXPIRE)
         );
     }
 

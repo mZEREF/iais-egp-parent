@@ -5,6 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * TaskOrganizationClient
@@ -37,6 +36,9 @@ public interface TaskOrganizationClient {
 
     @RequestMapping(path = "/iais-task/{taskId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TaskDto> getTaskById(@PathVariable(name="taskId") String taskId);
+
+    @PostMapping(value = "/taskList",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskList(@RequestBody List<String> taskIds);
 
     @RequestMapping(path = "/iais-workgroup/orguseraccount/{workGroupId}/{status}"
             ,method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

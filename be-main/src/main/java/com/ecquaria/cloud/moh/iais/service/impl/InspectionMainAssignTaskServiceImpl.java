@@ -121,6 +121,12 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     @Override
     public AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(String appCorrId) {
         AppGrpPremisesDto appGrpPremisesDto = inspectionTaskMainClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+
+        return getAppGrpPremisesDtoByAppCorrId(appGrpPremisesDto);
+    }
+
+    @Override
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(AppGrpPremisesDto appGrpPremisesDto) {
         if (StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
             appGrpPremisesDto.setHciName("");
         }
@@ -143,6 +149,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
             appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
         }
+
         return appGrpPremisesDto;
     }
 
@@ -178,7 +185,10 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                 Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
                 result = appPremisesAllUnitNoStrMap.get(appGrpPremisesDto.getId());
             } else {
-                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = applicationMainClient.getUnitNoAndFloorByPremisesId(appGrpPremisesDto.getId()).getEntity();
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+                if (IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
+                    appPremisesOperationalUnitDtos = applicationMainClient.getUnitNoAndFloorByPremisesId(appGrpPremisesDto.getId()).getEntity();
+                }
                 result = MiscUtil.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
                         appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode(), appPremisesOperationalUnitDtos);
             }

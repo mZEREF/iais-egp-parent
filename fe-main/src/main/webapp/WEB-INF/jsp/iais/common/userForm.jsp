@@ -25,7 +25,7 @@
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
                     <iais:value width="11">
-                        <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
+                        <iais:select name="idType" id="idType" filterValue="IDTYPE003" value="${inter_user_attr.idType}"
                                      codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
                         <span class="error-msg" name="errorMsg" id="error_idType"></span>
                     </iais:value>

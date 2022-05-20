@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -52,8 +53,8 @@ public interface LicenceInboxClient {
     @RequestMapping(path = "/hcsa-licence-rfc/assess-psn-param",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<PersonnlAssessQueryDto>> assessPsnDoQuery(@RequestBody SearchParam searchParam);
 
-    @GetMapping(path= "/hcsa-licence-transport/licence-active-num")
-    FeignResponseEntity<Integer> getLicActiveStatusNum(@RequestParam("licenseeId")String licenseeId);
+    @PostMapping(path= "/hcsa-licence-transport/licence-active-num", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getLicActiveStatusNum(@RequestBody InterMessageSearchDto interMessageSearchDto);
 
     @GetMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}")
     FeignResponseEntity<LicenceDto> getLicBylicNo();

@@ -90,7 +90,6 @@ public class IaisSubmissionDataDelegator {
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"canSubmit","N");
                 ParamUtil.setRequestAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
-                ParamUtil.setSessionAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
             }
         }
 

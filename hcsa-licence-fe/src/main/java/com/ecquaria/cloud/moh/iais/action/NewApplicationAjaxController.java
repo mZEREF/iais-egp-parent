@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
@@ -41,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
-import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -64,12 +62,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -362,8 +358,8 @@ public class NewApplicationAjaxController {
 
 
     @PostMapping(value = "/governance-officer-html")
-    public @ResponseBody
-    Map<String, String> genGovernanceOfficerHtmlList(HttpServletRequest request) {
+    @ResponseBody
+    public Map<String, String> genGovernanceOfficerHtmlList(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
         int canAddNumber = ParamUtil.getInt(request, "AddNumber");
@@ -373,60 +369,20 @@ public class NewApplicationAjaxController {
             String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
             //assign cgo select
             List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
-            Map<String, String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
-            cgoSelectAttr.put("class", "assignSel");
-            cgoSelectAttr.put("name", "assignSelect");
-            cgoSelectAttr.put("style", "display: none;");
-            String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null, null);
-
+            sql = sql.replace("(1)", generateDropDownHtml(cgoSelectList, "assignSelect", "assignSel", null));
             //salutation
-            List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-            Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-            salutationAttr.put("class", "salutationSel");
-            salutationAttr.put("name", "salutation");
-            salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-
+            sql = sql.replace("(2)",  generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation", "salutationSel"));
             //ID Type
-            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-            Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-            idTypeAttr.put("class", "idTypeSel");
-            idTypeAttr.put("name", "idType");
-            idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
-
+            sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType", "idTypeSel"));
             //Designation
-            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
-            Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
-            designationAttr.put("class", "designationSel");
-            designationAttr.put("name", "designation");
-            designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
-
+            sql = sql.replace("(4)", generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation", "designationSel"));
             //Professional Regn Type
-            List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-
-            Map<String, String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
-            proRegnTypeAttr.put("class", "professionTypeSel");
-            proRegnTypeAttr.put("name", "professionType");
-            proRegnTypeAttr.put("style", "display: none;");
-            String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION, null);
-
+            sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE, "professionType", "professionTypeSel"));
             //Specialty
             List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
-
-            Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-            specialtyAttr.put("name", "specialty");
-            specialtyAttr.put("class", "specialty");
-            specialtyAttr.put("style", "display: none;");
-            String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null, null);
-
-            sql = sql.replace("(1)", cgoSelectStr);
-            sql = sql.replace("(2)", salutationSelectStr);
-            sql = sql.replace("(3)", idTypeSelectStr);
-            sql = sql.replace("(4)", designationSelectStr);
-            sql = sql.replace("(5)", proRegnTypeSelectStr);
-            sql = sql.replace("(6)", specialtySelectStr);
+            sql = sql.replace("(6)", generateDropDownHtml(specialtyList, "specialty", null));
+            // Nationality
+            sql = sql.replace("(7)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
 
             log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
             resp.put("sucInfo", sql);
@@ -541,40 +497,11 @@ public class NewApplicationAjaxController {
         if (poMmaximumCount - hasNumber > 0) {
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
-            Map<String, String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
-            assignPrincipalOfficerAttr.put("name", "poSelect");
-            assignPrincipalOfficerAttr.put("class", "poSelect");
-            assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION, null);
-
-            //salutation
-            List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-            Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-            salutationAttr.put("class", "salutation");
-            salutationAttr.put("name", "salutation");
-            salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-
-            //ID Type
-            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-            Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-            idTypeAttr.put("class", "idType");
-            idTypeAttr.put("name", "idType");
-            idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
-
-            //Designation
-            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
-            Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
-            designationAttr.put("class", "designation");
-            designationAttr.put("name", "designation");
-            designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
-
-            sql = sql.replace("(1)", principalOfficerSelStr);
-            sql = sql.replace("(2)", salutationSelectStr);
-            sql = sql.replace("(3)", idTypeSelectStr);
-            sql = sql.replace("(4)", designationSelectStr);
+            sql = sql.replace("(1)", generateDropDownHtml(assignPrincipalOfficerSel, "poSelect", NewApplicationDelegator.FIRESTOPTION));
+            sql = sql.replace("(2)", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation"));
+            sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType"));
+            sql = sql.replace("(4)", generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation"));
+            sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
             sql = sql.replace("(poOfficerCount)", String.valueOf(hasNumber + 1));
             resp.put("sucInfo", sql);
             resp.put("res", "success");
@@ -584,7 +511,6 @@ public class NewApplicationAjaxController {
         }
         return resp;
     }
-
 
     @PostMapping(value = "/deputy-principal-officer-html")
     public @ResponseBody
@@ -609,38 +535,13 @@ public class NewApplicationAjaxController {
         if (dpoMmaximumCount - hasNumber > 0) {
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
-            Map<String, String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
-            assignPrincipalOfficerAttr.put("name", "deputyPoSelect");
-            assignPrincipalOfficerAttr.put("class", "deputyPoSelect");
-            assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION, null);
-            //salutation
-            List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-            Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-            salutationAttr.put("class", "deputySalutation");
-            salutationAttr.put("name", "deputySalutation");
-            salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-            //ID Type
-            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-            Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-            idTypeAttr.put("class", "deputyIdType");
-            idTypeAttr.put("name", "deputyIdType");
-            idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
-            //Designation
-            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
-            Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
-            designationAttr.put("class", "deputyDesignation");
-            designationAttr.put("name", "deputyDesignation");
-            designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
-
-            sql = sql.replace("(1)", salutationSelectStr);
-            sql = sql.replace("(2)", idTypeSelectStr);
-            sql = sql.replace("(3)", designationSelectStr);
-            sql = sql.replace("(4)", principalOfficerSelStr);
+            sql = sql.replace("(1)", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "deputySalutation"));
+            sql = sql.replace("(2)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "deputyIdType"));
+            sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "deputyDesignation"));
+            sql = sql.replace("(4)", generateDropDownHtml(assignPrincipalOfficerSel, "deputyPoSelect",
+                    NewApplicationDelegator.FIRESTOPTION));
+            sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "deputyNationality"));
             sql = sql.replace("(dpoOfficerCount)", String.valueOf(hasNumber + 1));
             log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
             resp.put("sucInfo", sql);
@@ -780,13 +681,15 @@ public class NewApplicationAjaxController {
     public @ResponseBody
     AppSvcPrincipalOfficersDto getPsnSelectInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String psnType = ParamUtil.getString(request, "psnType");
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
             return null;
         }
-        String psnKey = idType + "," + idNo;
+        String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
+        log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
         Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
         if (psn == null) {
@@ -835,6 +738,7 @@ public class NewApplicationAjaxController {
     @GetMapping(value = "/person-info/svc-code")
     public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String psnType = ParamUtil.getString(request, "psnType");
@@ -842,7 +746,8 @@ public class NewApplicationAjaxController {
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(svcCode)) {
             return null;
         }
-        String psnKey = idType + "," + idNo;
+        String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
+        log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
         Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
         AppSvcPrincipalOfficersDto person = null;
@@ -933,6 +838,7 @@ public class NewApplicationAjaxController {
     @GetMapping(value = "/person-info/individual-licesee")
     public @ResponseBody SubLicenseeDto getLiceseeDetail(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the getLiceseeDetail start ...."));
+        String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         // String svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
@@ -942,7 +848,7 @@ public class NewApplicationAjaxController {
         Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.LICENSEE_MAP);
         SubLicenseeDto person = Optional.ofNullable(psnMap)
-                .map(map -> map.get(NewApplicationHelper.getPersonKey(idType, idNo)))
+                .map(map -> map.get(NewApplicationHelper.getPersonKey(nationality, idType, idNo)))
                 .orElseGet(SubLicenseeDto::new);
         log.info(StringUtil.changeForLog("the getLiceseeDetail end .... " + JsonUtil.parseToJson(person)));
         return person;
@@ -971,38 +877,15 @@ public class NewApplicationAjaxController {
         if (mapMaximumCount - hasNumber > 0) {
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, true);
-            Map<String, String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
-            assignPrincipalOfficerAttr.put("name", "assignSel");
-            assignPrincipalOfficerAttr.put("class", "assignSel");
-            assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, null, null);
-            //salutation
-            List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-            Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-            salutationAttr.put("class", "salutation");
-            salutationAttr.put("name", "salutation");
-            salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-            //ID Type
-            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-            Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-            idTypeAttr.put("class", "idType");
-            idTypeAttr.put("name", "idType");
-            idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
             //pre mode
             List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList();
-            Map<String, String> medAlertAttr = IaisCommonUtils.genNewHashMap();
-            medAlertAttr.put("class", "description");
-            medAlertAttr.put("name", "description");
-            medAlertAttr.put("style", "display: none;");
-            String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertAttr, medAlertSelectList, null, null);
 
             sql = sql.replace("(0)", String.valueOf(hasNumber));
-            sql = sql.replace("(1)", principalOfficerSelStr);
-            sql = sql.replace("(2)", salutationSelectStr);
-            sql = sql.replace("(3)", idTypeSelectStr);
-            sql = sql.replace("(4)", medAlertSelectStr);
+            sql = sql.replace("(1)", generateDropDownHtml(assignPrincipalOfficerSel, "assignSel", null));
+            sql = sql.replace("(2)", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation"));
+            sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType"));
+            sql = sql.replace("(4)", generateDropDownHtml(medAlertSelectList, "description", null));
+            sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
             resp.put("sucInfo", sql);
             resp.put("res", "success");
         } else {
@@ -1013,22 +896,24 @@ public class NewApplicationAjaxController {
         return resp;
     }
 
-
     @PostMapping(value = "/user-account-info")
     public @ResponseBody
     AjaxResDto getUserAccountInfo(HttpServletRequest request) {
+        String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         List<FeUserDto> feUserDtos = (List<FeUserDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURR_ORG_USER_ACCOUNT);
         String resCode = "404";
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-        if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)) {
+        if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)
+                && (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))) {
             for (FeUserDto feUserDto : feUserDtos) {
                 String userIdType = feUserDto.getIdType();
                 if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
                     Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
                     if (psnMap != null) {
-                        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo));
+                        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(NewApplicationHelper.getPersonKey(nationality,
+                                idType, idNo));
 //                        if(!ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(appSvcPersonAndExtDto)){
 //                            log.info(StringUtil.changeForLog("can not loading this type data"));
 //                            continue;
@@ -1267,104 +1152,53 @@ public class NewApplicationAjaxController {
         return ajaxResDto;
     }
 
-    private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
-        if (options == null || options.isEmpty()) {
-            return "";
-        }
-        StringBuilder html = new StringBuilder();
-        if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
-        }
-        for (SelectOption option : options) {
-            String val = StringUtil.viewNonNullHtml(option.getValue());
-            String txt = StringUtil.escapeHtml(option.getText());
-            html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
-        }
-        return html.toString();
-    }
-
     @PostMapping(value = "/clinical-director-html")
     public @ResponseBody AjaxResDto generateClinicalDirectorHtml(HttpServletRequest request) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml start ...."));
-
         AjaxResDto ajaxResDto = new AjaxResDto();
         ajaxResDto.setResCode("200");
         int cdLength = ParamUtil.getInt(request,"cdLength");
-        // Assigned person dropdown list
-        Map<String, String> assignSelAttr = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
-        assignSelAttr.put("class", "assignSel");
-        assignSelAttr.put("name", "assignSel" + cdLength);
-        assignSelAttr.put("style", "display: none;");
-        String personalSelect = NewApplicationHelper.generateDropDownHtml(assignSelAttr, personOptions, null, null);
-        //proBoardSel
-        List<SelectOption> proBoardSel = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSION_BOARD);
-        Map<String, String> proBoardAttr = IaisCommonUtils.genNewHashMap();
-        proBoardAttr.put("class", "professionBoard");
-        proBoardAttr.put("name", "professionBoard"+cdLength);
-        proBoardAttr.put("style", "display: none;");
-        String proBoardSelectStr = NewApplicationHelper.generateDropDownHtml(proBoardAttr, proBoardSel, NewApplicationDelegator.FIRESTOPTION, null);
-
-        //salutation
-        List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-        salutationAttr.put("class", "salutation");
-        salutationAttr.put("name", "salutation"+cdLength);
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-
-        //ID Type
-        List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-        Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-        idTypeAttr.put("class", "idType");
-        idTypeAttr.put("name", "idType"+cdLength);
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
-
-        //Designation
-        List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
-        Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
-        designationAttr.put("class", "designation");
-        designationAttr.put("name", "designation"+cdLength);
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationOpList, NewApplicationDelegator.FIRESTOPTION, null);
-
         String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
-        //specialty
-        List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
-        Map<String, String> easMtsSpecialtyAttr = IaisCommonUtils.genNewHashMap();
-        easMtsSpecialtyAttr.put("class", "speciality");
-        easMtsSpecialtyAttr.put("name", "speciality"+cdLength);
-        easMtsSpecialtyAttr.put("style", "display: none;");
-        String easMtsSpecialtySelStr = NewApplicationHelper.generateDropDownHtml(easMtsSpecialtyAttr, easMtsSpecialtySelectList, null, null);
 
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("svcCode", currSvcCode);
+        paramMap.put("cdLength", cdLength + 1);
+        paramMap.put("cdSuffix", cdLength);
+        //proBoardSel
+        paramMap.put("proBoardSel", generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSION_BOARD, "professionBoard" + cdLength,
+                "professionBoard"));
+        //salutation
+        paramMap.put("salutationSel", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation" + cdLength, "salutation"));
+        //ID Type
+        paramMap.put("idTypeSel", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType" + cdLength, "idType"));
+        // Nationality
+        paramMap.put("nationality", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality" + cdLength, "nationality"));
+        //Designation
+        paramMap.put("designationSel",
+                generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation" + cdLength, "designation"));
+        /*
         String aclsOrBcls = "";
         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(currSvcCode)){
             aclsOrBcls = "ACLS";
         }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
             aclsOrBcls = "BCLS and AED";
         }
-        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
-        paramMap.put("svcCode",currSvcCode);
-        paramMap.put("cdLength",cdLength+1);
-        paramMap.put("cdSuffix",cdLength);
-        paramMap.put("proBoardSel",proBoardSelectStr);
-        paramMap.put("salutationSel",salutationSelectStr);
-        paramMap.put("idTypeSel",idTypeSelectStr);
-        paramMap.put("designationSel",designationSelectStr);
         paramMap.put("aclsOrBcls",aclsOrBcls);
-        paramMap.put("specialitySel",easMtsSpecialtySelStr);
-        paramMap.put("personalSelect",personalSelect);
+        */
+        //specialty
+        List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
+        paramMap.put("specialitySel", generateDropDownHtml(easMtsSpecialtySelectList, "speciality" + cdLength, "speciality", null));
+        // Assigned person dropdown list
+        List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
+        paramMap.put("personalSelect", generateDropDownHtml(personOptions, "assignSel" + cdLength, "assignSel", null));
         paramMap.put("singleName", HcsaConsts.CLINICAL_DIRECTOR);
 
-        String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml",paramMap);
+        String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml", paramMap);
         ajaxResDto.setResultJson(clinicalDirectorHtml);
 
         log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml end ...."));
         return ajaxResDto;
-
     }
-
 
     @PostMapping(value = "/search-charges-type")
     public @ResponseBody AjaxResDto searchChargesTypeByCategory(HttpServletRequest request){
@@ -1473,36 +1307,22 @@ public class NewApplicationAjaxController {
         ajaxResDto.setResCode("200");
         int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
 
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("keyAppointmentHolderLength", keyAppointmentHolderLength + 1);
+        paramMap.put("keyAppointmentHolderSuffix", keyAppointmentHolderLength);
         // Assigned person dropdown list
-        Map<String, String> assignSelAttr = IaisCommonUtils.genNewHashMap();
         List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
-        assignSelAttr.put("class", "assignSel");
-        assignSelAttr.put("name", "assignSel" + keyAppointmentHolderLength);
-        assignSelAttr.put("style", "display: none;");
-        String personalSelect = NewApplicationHelper.generateDropDownHtml(assignSelAttr, personOptions, null, null);
-
+        paramMap.put("personalSelect",
+                generateDropDownHtml(personOptions, "assignSel" + keyAppointmentHolderLength, "assignSel", null));
         //salutation
-        List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
-        salutationAttr.put("class", "salutation");
-        salutationAttr.put("name", "salutation" + keyAppointmentHolderLength);
-        salutationAttr.put("style", "display: none;");
-        String salutationSelect = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
-
+        paramMap.put("salutationSelect",
+                generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation" + keyAppointmentHolderLength, "salutation"));
         //ID Type
-        List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-        Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
-        idTypeAttr.put("class", "idType");
-        idTypeAttr.put("name", "idType" + keyAppointmentHolderLength);
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelect = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
-
-        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
-        paramMap.put("keyAppointmentHolderLength",keyAppointmentHolderLength + 1);
-        paramMap.put("keyAppointmentHolderSuffix",keyAppointmentHolderLength);
-        paramMap.put("personalSelect",personalSelect);
-        paramMap.put("salutationSelect",salutationSelect);
-        paramMap.put("idTypeSelect",idTypeSelect);
+        paramMap.put("idTypeSelect",
+                generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType" + keyAppointmentHolderLength, "idType"));
+        // Nationality
+        paramMap.put("nationality",
+                generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality" + keyAppointmentHolderLength, "nationality"));
 
         String keyAppointmentHolderHtml = SqlMap.INSTANCE.getSql("keyAppointmentHolder", "generateKeyAppointmentHolderHtml", paramMap);
 
@@ -1851,6 +1671,48 @@ public class NewApplicationAjaxController {
         html = html.replace("${"+premType+"PhEndMM}", onSitePhEndMM);
 
         return html;
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
+        if (options == null || options.isEmpty()) {
+            return "";
+        }
+        StringBuilder html = new StringBuilder();
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
+        }
+        for (SelectOption option : options) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(option.getText());
+            html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
+        }
+        return html.toString();
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String name, String firstOption) {
+        return generateDropDownHtml(options, name, name, firstOption);
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String name, String className, String firstOption) {
+        Map<String, String> attrs = IaisCommonUtils.genNewHashMap();
+        attrs.put("class", className);
+        attrs.put("name", name);
+        attrs.put("style", "display: none;");
+        return NewApplicationHelper.generateDropDownHtml(attrs, options, firstOption, null);
+    }
+
+    private String generateDropDownHtml(String cateId, String name) {
+        return generateDropDownHtml(cateId, name, name);
+    }
+
+    private String generateDropDownHtml(String cateId, String name, String className) {
+        List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCate(cateId);
+        Map<String, String> attrs = IaisCommonUtils.genNewHashMap();
+        attrs.put("class", className);
+        attrs.put("name", name);
+        attrs.put("style", "display: none;");
+        return NewApplicationHelper.generateDropDownHtml(attrs, list, NewApplicationDelegator.FIRESTOPTION, null,
+                !MasterCodeUtil.CATE_ID_NATIONALITY.equals(cateId));
     }
 
 }

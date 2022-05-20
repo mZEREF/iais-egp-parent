@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -58,8 +59,8 @@ public interface AppInboxClient {
     @GetMapping(value = "/iais-submission/submission-id")
     FeignResponseEntity<String> getSubmissionId();
 
-    @GetMapping(value = "/iais-submission/application-status-draft",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Integer> getAppDraftNum(@RequestParam(value = "licenseeId") String licenseeId);
+    @PostMapping(value = "/iais-submission/application-status-draft",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getAppDraftNum(@RequestBody InterMessageSearchDto interMessageSearchDto);
 
     @RequestMapping(path = "/iais-application/application-licenceId",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(@RequestParam(name = "licenceId")String licenceId);
