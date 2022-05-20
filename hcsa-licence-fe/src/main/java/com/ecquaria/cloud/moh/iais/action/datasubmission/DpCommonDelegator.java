@@ -3,12 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -21,14 +16,15 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Description DpCommonDelegator
@@ -370,8 +366,23 @@ public abstract class DpCommonDelegator {
             DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
             if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
                 errorMap.put("amendReason","GENERAL_ERR0006");
-            }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
-                errorMap.put("amendReasonOther","GENERAL_ERR0006");
+            }else if("DP_TP001".equals(dataSubmissionDto.getSubmissionType())){
+                if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                    errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                }
+            }else if("DP_TP002".equals(dataSubmissionDto.getSubmissionType())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                String drugType=drugSubmissionDto.getDrugType();
+                if("DPD001".equals(drugType)){
+                    if(isSdp(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                        errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                    }
+                }else if("DPD002".equals(drugType)){
+                    if(isSdd(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                        errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                    }
+                }
             }
         }
     }
@@ -381,10 +392,29 @@ public abstract class DpCommonDelegator {
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
             dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
-            if(isOthers(dataSubmissionDto.getAmendReason())){
-                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
-            }else {
-                dataSubmissionDto.setAmendReasonOther(null);
+            if("DP_TP001".equals(dataSubmissionDto.getSubmissionType())){
+                if(isOthers(dataSubmissionDto.getAmendReason())){
+                    dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                }else {
+                    dataSubmissionDto.setAmendReasonOther(null);
+                }
+            }else if("DP_TP002".equals(dataSubmissionDto.getSubmissionType())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                String drugType=drugSubmissionDto.getDrugType();
+                if("DPD001".equals(drugType)){
+                    if(isSdp(dataSubmissionDto.getAmendReason())){
+                        dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                    }else {
+                        dataSubmissionDto.setAmendReasonOther(null);
+                    }
+                }else if("DPD002".equals(drugType)){
+                    if(isSdd(dataSubmissionDto.getAmendReason())){
+                        dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                    }else {
+                        dataSubmissionDto.setAmendReasonOther(null);
+                    }
+                }
             }
         }
     }
@@ -433,6 +463,14 @@ public abstract class DpCommonDelegator {
     }
     protected boolean isOthers(String others){
         return StringUtil.isIn(others,DataSubmissionConsts.DP_PATIENT_INFO_AMEND_REASON_OTHERS);
+    }
+
+    protected boolean isSdp(String sdp){
+        return StringUtil.isIn(sdp,DataSubmissionConsts.DP_DRUG_PRESCRIBED_OTHERS);
+    }
+
+    protected boolean isSdd(String sdd){
+        return StringUtil.isIn(sdd,DataSubmissionConsts.DP_DRUG_DISPENSED_OTHERS);
     }
 
     protected boolean isRfc(HttpServletRequest request){

@@ -64,7 +64,7 @@
                     </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days</strong></label>
+                <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days<span class="mandatory">*</span></strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
                     <input maxLength="2" type="text" name="gestAgeBaseOnUltrDay" value="${familyPlanDto.gestAgeBaseOnUltrDay}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseOnUltrDay"></span>
@@ -112,7 +112,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topRiskCondition" value="${familyPlanDto.topRiskCondition}"/>
+                <iais:input maxLength="100" type="text" name="topRiskCondition" value="${familyPlanDto.topRiskCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -120,7 +120,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}"/>
+                <iais:input maxLength="100" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -128,7 +128,7 @@
         <iais:row>
             <iais:field width="5" value="Other Main Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
+                <iais:input maxLength="100" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -145,7 +145,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
+                <iais:input maxLength="100" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
             </iais:value>
         </iais:row>
     </div>

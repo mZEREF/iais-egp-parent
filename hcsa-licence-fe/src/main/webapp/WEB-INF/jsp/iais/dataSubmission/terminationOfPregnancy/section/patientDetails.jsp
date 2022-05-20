@@ -49,29 +49,25 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <label class="col-xs-5 col-md-4 control-label">Date Commenced Residence In Singapore
-                            <span id="commResidenceInSgDate" class="mandatory">
-                                <c:if test="${patientInformationDto.nationality!=null && patientInformationDto.nationality !='NAT0001'}">*</c:if>
-                            </span>
-                        </label>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="commResidenceInSgDate" id="commResidenceInSgDates" value="${patientInformationDto.commResidenceInSgDate}"/>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_commResidenceInSgDate"></span>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <label class="col-xs-5 col-md-4 control-label">Residence Status
-                            <span id="residenceStatus" class="mandatory">
-                                <c:if test="${patientInformationDto.nationality!=null && patientInformationDto.nationality !='NAT0001'}">*</c:if>
-                            </span>
-                        </label>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="residenceStatus" name="residenceStatus" firstOption="Please Select"
-                                         codeCategory="TOP_RESIDENCE_STATUS" id="residenceStatu" value="${patientInformationDto.residenceStatus}"/>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_residenceStatus"></span>
-                        </iais:value>
-                    </iais:row>
+                   <div id="residenceStatus" <c:if test="${patientInformationDto.nationality =='NAT0001'}">style="display: none"</c:if>>
+                       <iais:row>
+                           <iais:field width="5" value="Residence Status" mandatory="true"/>
+                           <iais:value width="7" cssClass="col-md-7">
+                               <iais:select cssClass="residenceStatus" name="residenceStatus" firstOption="Please Select"
+                                            codeCategory="TOP_RESIDENCE_STATUS" id="residenceStatu" value="${patientInformationDto.residenceStatus}"/>
+                               <span class="error-msg" name="iaisErrorMsg" id="error_residenceStatus"></span>
+                           </iais:value>
+                       </iais:row>
+                   </div>
+                   <div id="commResidenceInSgDate" <c:if test="${patientInformationDto.residenceStatus !='TOPRS002'}">style="display: none"</c:if>>
+                       <iais:row>
+                           <iais:field width="5" value="Date Commenced Residence In Singapore" mandatory="true"/>
+                           <iais:value width="7" cssClass="col-md-7">
+                               <iais:datePicker name="commResidenceInSgDate" id="commResidenceInSgDates" value="${patientInformationDto.commResidenceInSgDate}"/>
+                               <span class="error-msg" name="iaisErrorMsg" id="error_commResidenceInSgDate"></span>
+                           </iais:value>
+                       </iais:row>
+                   </div>
                     <iais:row>
                         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -243,22 +239,23 @@
         });
     });
     $(document).ready(function () {
-        $('#nationality').change(function () {
-
-            var nationality = $('#nationality').val();
-            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
-                $('#commResidenceInSgDate').text('*');
+        $('#residenceStatu').change(function () {
+            var residenceStatus = $('#residenceStatu').val();
+            if (residenceStatus == "TOPRS002") {
+                $('#commResidenceInSgDate').show();
             } else {
-                $('#commResidenceInSgDate').text('');
+                $('#commResidenceInSgDate').hide();
             }
         });
         $('#nationality').change(function () {
-
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
-                $('#residenceStatus').text('*');
+            if (nationality != "NAT0001") {
+                $('#residenceStatus').show();
             } else {
-                $('#residenceStatus').text('');
+                $('#residenceStatus').hide();
+                $('#commResidenceInSgDate').hide();
+                fillValue($('#residenceStatus'),null);
+                $('#commResidenceInSgDate').val(null);
             }
         });
     });
@@ -327,11 +324,15 @@
 
         fillValue($('#nationality'),data.selection.nationality);
         if(!isEmpty(data.selection.commResidenceInSgDate)){
+            $('#commResidenceInSgDate').show();
             $('#commResidenceInSgDates').val(data.selection.commResidenceInSgDate);
         }
         if(!isEmpty(data.selection.residenceStatus)){
-            console.log("residenceStatus!")
+            $('#residenceStatus').show();
             fillValue($('#residenceStatu'),data.selection.residenceStatus);
+        }
+        if(data.selection.nationality == "NAT0001"){
+            $('#residenceStatus').hide();
         }
         fillValue($('#ethnicGroups'),data.selection.ethnicGroup);
         if(!isEmpty(data.selection.otherEthnicGroup)){

@@ -5,7 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
-        <iais:field width="5" value="Counselling Given" mandatory="true"/>
+        <iais:field width="5" value="Whether Given Counselling" mandatory="true"/>
     <iais:value width="3" cssClass="col-md-3">
     <div class="form-check">
         <input class="form-check-input"
@@ -121,7 +121,7 @@
         <div id="numCounsellingGiven" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
             <iais:row>
                 <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
-                <iais:field width="5" id="counsellorIdTypeLabel" value="Pre-Termination Counsellor ID Type" mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
+                <iais:field width="5" id="counsellorIdTypeLabel" value="Counsellor ID Type" mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdType"></span>
@@ -129,20 +129,20 @@
             </iais:row>
             <iais:row>
                 <%--<c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="counsellor"/></c:set>--%>
-                <iais:field width="5" id="counsellorIdNoLabel" value="Pre-Termination Counsellor ID No." mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }"/>
+                <iais:field width="5" id="counsellorIdNoLabel" value="Counsellor ID No." mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${preTerminationDto.counsellorIdNo}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
                 </iais:value>
             </iais:row>
             <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counsellor Name
+                <label class="col-xs-5 col-md-4 control-label">Name of Counsellor
                     <span id="counsellorName" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
                     </span>
                 </label>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="66" type="text" name="counsellorName" value="${preTerminationDto.counsellorName}"/>
+                    <iais:input maxLength="100" type="text" name="counsellorName" value="${preTerminationDto.counsellorName}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
                 </iais:value>
             </iais:row>
@@ -154,7 +154,7 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counselling Date
+                <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
                     </span>
@@ -165,7 +165,7 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">Pre-Counselling Place
+                <label class="col-xs-5 col-md-4 control-label">Place Where Counselling Was Done
                     <span id="counsellingPlace" class="mandatory">
                 <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
             </span>
@@ -178,7 +178,7 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">First Pre-Counselling Result
+                <label class="col-xs-5 col-md-4 control-label">Result of First Counselling
                     <span id="counsellingResult" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
                     </span>
@@ -251,7 +251,7 @@
     <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
-            <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
+            <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Result of Second or Final Counselling" mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="secCounsellingResult" firstOption="Please Select" id="secCounsellingResult" codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT" value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_secCounsellingResult"></span>

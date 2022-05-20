@@ -257,6 +257,10 @@ public final class MasterCodeUtil {
 
     public static final String DP_PATIENT_INFO_AMENDMENT_REASON          ="DF3C1D7C-3B79-42DA-A7E7-FBFFD47BE9AA";
 
+    public static final String DP_DRUG_PRESCRIBED                        ="67AD2797-01C8-48CE-8C5E-185CB1C89122";
+
+    public static final String DP_DRUG_DISPENSED                         ="F78732FD-F763-465D-B845-987BC581DCCC";
+
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 
     /**

@@ -5,7 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
-        <iais:field width="5" value="Whether given Post-counselling" mandatory="true"/>
+        <iais:field width="5" value="Whether Given Counselling" mandatory="true"/>
         <iais:value width="3" cssClass="col-md-3">
             <div class="form-check">
                 <input class="form-check-input"
@@ -38,7 +38,7 @@
     </iais:row>
     <div id="counsellingRslts" <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Post-Counselling Result" mandatory="true"/>
+            <iais:field width="5" value="Result of Counselling" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="counsellingRslt" firstOption="Please Select" codeCategory="TOP_POST_COUNSELLING_RESULT"
                              value="${postTerminationDto.counsellingRslt}" cssClass="counsellingRslt" id="otherCounsellorIdTypeLabel"/>
@@ -57,7 +57,7 @@
     </div>
     <div id="ifCounsellingNotGivens" <c:if test="${postTerminationDto.givenPostCounselling !=false}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Reason If post-counselling was not given" mandatory="true"/>
+            <iais:field width="5" value="Reason for No Counselling" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" name="ifCounsellingNotGiven" value="${postTerminationDto.ifCounsellingNotGiven}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_ifCounsellingNotGiven"></span>
@@ -67,7 +67,7 @@
 <div id="numGivenPostCounselling" <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
     <iais:row>
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
-        <iais:field width="5" value="Post-Termination Counsellor ID Type"
+        <iais:field width="5" value="Counsellor ID Type"
                     mandatory="true" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
@@ -76,28 +76,36 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post-Termination Counsellor ID No." mandatory="true"/>
+        <iais:field width="5" value="Counsellor ID No." mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${postTerminationDto.counsellorIdNo}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post Termination Counsellor Name" mandatory="true"/>
+        <iais:field width="5" value="Name of Counsellor" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellorName" value="${postTerminationDto.counsellorName}" />
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>Date of Counselling
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post-Counselling Date" mandatory="true"/>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+        <iais:field width="5" value="Doctor's Professional Reign / MRC No." info="${toolMsg}" style="padding-right: 0px;"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${postTerminationDto.counsellingReignNo}"/>
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <iais:field width="5" value="Date of Counselling" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="counsellingDate" value="${postTerminationDto.counsellingDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Place of Post-Counselling" mandatory="true"/>
+        <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
+        <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE" value="${postTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
             <iais:select name="TopPlace" options="TopPlace"  value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>
