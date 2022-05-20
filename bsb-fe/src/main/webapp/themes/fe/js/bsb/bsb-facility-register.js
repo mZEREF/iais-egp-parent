@@ -109,10 +109,12 @@ $(function () {
             $("#aptMandatoryBlk").show();
             $("#aptMandatoryFloor").show();
             $("#aptMandatoryUnit").show();
+            $("#aptMandatoryStreet").hide();
         } else {
             $("#aptMandatoryBlk").hide();
             $("#aptMandatoryFloor").hide();
             $("#aptMandatoryUnit").hide();
+            $("#aptMandatoryStreet").show();
         }
     });
 

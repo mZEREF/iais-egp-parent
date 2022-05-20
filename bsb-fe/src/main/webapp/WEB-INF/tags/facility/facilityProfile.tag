@@ -117,7 +117,9 @@
                                         </div>
 
                                         <iais-bsb:single-constant constantName="ADDRESS_TYPE_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="aptBlk"/>
+                                        <iais-bsb:single-constant constantName="ADDRESS_TYPE_WITHOUT_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="withoutAptBlk"/>
                                         <%--@elvariable id="aptBlk" type="java.lang.String"--%>
+                                        <%--@elvariable id="withoutAptBlk" type="java.lang.String"--%>
                                         <div id="isSameAddrSection" <c:if test="${facProfile.sameAddress eq null}">style="display: none"</c:if>>
                                             <div id="isSameAddrSectionY" <c:if test="${facProfile.sameAddress ne 'Y'}">style="display: none"</c:if>>
                                                 <div class="form-group">
@@ -174,7 +176,7 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="streetNameY">Street Name</label>
-                                                        <span class="mandatory otherQualificationSpan">*</span>
+                                                        <span id="aptMandatorySameAddressStreet" class="mandatory otherQualificationSpan" <c:if test="${organizationAddress.addressType ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <label id="streetNameY" class="align-label-and-input">${organizationAddress.street}</label>
@@ -258,7 +260,7 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="streetNameN">Street Name</label>
-                                                        <span class="mandatory otherQualificationSpan">*</span>
+                                                        <span id="aptMandatoryStreet" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <input maxLength="32" type="text" autocomplete="off" name="streetName" id="streetNameN" value='<c:out value="${facProfile.streetName}"/>'/>
