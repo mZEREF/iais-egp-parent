@@ -58,7 +58,7 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title" >Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="downloadFile('new','${info.disPlayDto.maskedRepoId}')">Download</a></p>
+                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" onclick="downloadFile('new','${info.disPlayDto.maskedRepoId}')">Download</a></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">AFC</p>
@@ -104,7 +104,7 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="downloadFile('saved','${docInfo.maskedRepoId}')">Download</a></p>
+                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadFile('saved','${docInfo.maskedRepoId}')"><span style="font-size: 12px;color: #444444">Download</span></a></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">AFC</p>
@@ -137,7 +137,10 @@
   </div>
 </div>
 <br><br>
-<%@ include file="upload.jsp" %>
+<%--@elvariable id="canNotSaveNew" type="java.lang.Boolean"--%>
+<c:if test="${canNotSaveNew eq null or !canNotSaveNew}">
+  <%@ include file="upload.jsp" %>
+</c:if>
 <iais:action>
   <c:choose>
     <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
@@ -148,7 +151,9 @@
       <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     </c:otherwise>
   </c:choose>
-  <button type="button" name="saveReportBtn" id="saveReportBtn" style="float:right" class="btn btn-secondary">
-    SAVE
-  </button>
+  <c:if test="${canNotSaveNew eq null or !canNotSaveNew}">
+    <button type="button" name="saveReportBtn" id="saveReportBtn" style="float:right" class="btn btn-secondary">
+      SAVE
+    </button>
+  </c:if>
 </iais:action>

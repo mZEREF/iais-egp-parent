@@ -37,7 +37,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 @Slf4j
 @Delegator("insApplicantReportDelegator")
 public class InspectionApplicantReportDelegator {
-    private static final String PARAM_AFC_REPORT_APP_ID = "afcCertReportAppId";
+    private static final String PARAM_AFC_REPORT_APP_ID = "applicantCertReportAppId";
     private final InspectionAFCClient inspectionAFCClient;
     private final InsAFCReportService insAFCReportService;
     private final InspectionService inspectionService;

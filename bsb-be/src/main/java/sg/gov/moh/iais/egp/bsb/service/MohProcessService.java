@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.YES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
@@ -68,10 +69,12 @@ public class MohProcessService {
         String moduleType = AppViewService.judgeProcessAppModuleType(mohProcessDto.getSubmissionDetailsInfo().getApplicationSubType(), mohProcessDto.getSubmissionDetailsInfo().getApplicationType());
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
+        ParamUtil.setRequestAttr(request, "canNotSaveNew", true);
     }
 
     public void prepareSwitch(BaseProcessClass bpc, String moduleName){
         HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         mohProcessDto.reqObjMapping(request, moduleName);
         ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
@@ -84,6 +87,13 @@ public class MohProcessService {
             crudActionType = CRUD_ACTION_TYPE_PREPARE;
         } else {
             crudActionType = CRUD_ACTION_TYPE_PROCESS;
+        }
+        if (moduleName.equals(MODULE_NAME_DO_PROCESSING)) {
+            String canSubmit = processClient.judgeCanSubmitDOProcessingTask(appId);
+            if (canSubmit.equals(NO)) {
+                crudActionType = CRUD_ACTION_TYPE_PREPARE;
+            }
+            ParamUtil.setRequestAttr(request, "canSubmit", canSubmit);
         }
         ParamUtil.setRequestAttr(request, KEY_CRUD_ACTION_TYPE, crudActionType);
     }

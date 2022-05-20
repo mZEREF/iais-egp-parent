@@ -65,4 +65,7 @@ public interface ProcessClient {
 
     @PostMapping(value = "/bsb-moh-officer/hm-processing/moh-process-dto/approve-or-reject", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveHmProcessingApproveOrReject(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
+
+    @GetMapping(value = "/bsb-moh-officer/do-processing/judge", produces = MediaType.APPLICATION_JSON_VALUE)
+    String judgeCanSubmitDOProcessingTask(@RequestParam("appId") String appId);
 }

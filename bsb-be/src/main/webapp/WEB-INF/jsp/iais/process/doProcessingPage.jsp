@@ -108,9 +108,7 @@
                                                                     <div class="clear"></div>
                                                                 </div>
                                                             </div>
-                                                            <div style="text-align: right">
-                                                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
-                                                            </div>
+                                                            <%@include file="common/footer.jsp" %>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -125,6 +123,7 @@
                 </div>
             </div>
         </div>
+        <%@include file="judgeCanSubmit.jsp" %>
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
