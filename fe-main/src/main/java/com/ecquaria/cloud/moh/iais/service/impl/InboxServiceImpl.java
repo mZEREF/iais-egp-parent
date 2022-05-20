@@ -274,11 +274,13 @@ public class InboxServiceImpl implements InboxService {
         List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         if(!IaisCommonUtils.isEmpty(apps)){
             for (ApplicationDto app : apps) {
-                // 81903
-                if ((ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus())
-                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType()))
-                        || !finalStatusList.contains(app.getStatus())) {
+                if (!finalStatusList.contains(app.getStatus())) {
                     errorMap.put("errorMessage1", "This application is performing the renew process");
+                } else
+                // 81903
+                if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus())
+                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
+                    errorMap.put("errorMessage2", MessageUtil.getMessageDesc("INBOX_ACK013"));
                 }
             }
         }

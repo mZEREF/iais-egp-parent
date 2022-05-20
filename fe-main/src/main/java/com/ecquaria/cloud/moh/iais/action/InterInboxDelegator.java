@@ -730,7 +730,7 @@ public class InterInboxDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
             for (String licId:licIdValue) {
-                errorMap = inboxService.checkRenewalStatus(licId);
+                errorMap.putAll(inboxService.checkRenewalStatus(licId));
                 if(!(errorMap.isEmpty())){
                     String licenseNo = errorMap.get("errorMessage");
                     if(!StringUtil.isEmpty(licenseNo)){
