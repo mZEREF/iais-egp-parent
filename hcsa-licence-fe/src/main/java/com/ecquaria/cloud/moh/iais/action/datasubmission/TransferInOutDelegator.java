@@ -169,7 +169,9 @@ public class TransferInOutDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(transferInOutStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, transferInOutStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, transferInOutStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {

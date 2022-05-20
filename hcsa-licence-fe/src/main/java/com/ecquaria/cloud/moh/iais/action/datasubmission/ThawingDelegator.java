@@ -77,7 +77,9 @@ public class ThawingDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(thawingStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, thawingStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, thawingStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {

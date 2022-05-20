@@ -84,7 +84,9 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(arTreatmentSubsidiesStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto());
+            if(errorMap.isEmpty()){
+                valRFC(request, arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto());
+            }
         }
 
         if (!errorMap.isEmpty()) {
