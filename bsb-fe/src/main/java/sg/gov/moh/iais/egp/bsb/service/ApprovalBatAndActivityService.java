@@ -52,7 +52,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
@@ -105,6 +104,10 @@ public class ApprovalBatAndActivityService {
             }
         }
         ParamUtil.setRequestAttr(request, SELECTION_FACILITY_ID, facilityIdList);
+        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request,KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        if(approvalBatAndActivityDto != null){
+            ParamUtil.setSessionAttr(request,KEY_APPROVAL_SELECTION_DTO,approvalBatAndActivityDto.getApprovalSelectionDto());
+        }
     }
 
     public void handleApprovalSelection(BaseProcessClass bpc){
@@ -337,13 +340,9 @@ public class ApprovalBatAndActivityService {
 
         //view data
         ParamUtil.setRequestAttr(request,KEY_OPTIONS_AUTH_PERSONNEL,authPersonnelOps);
-        Map<String,FacilityAuthoriserDto> selectedPersonnelMap = facAuthorisedDto.getFacilityAuthorisedMap();
-        Set<String> authPersonnelIds = selectedPersonnelMap.keySet();
-        if(authPersonnelIds.isEmpty()){
-            authPersonnelIds = new HashSet<>(1);
-            authPersonnelIds.add("");
-        }
-        ParamUtil.setRequestAttr(request,"authPersonnelIds",authPersonnelIds);
+
+        List<FacilityAuthoriserDto> facAuthList = facAuthorisedDto.getFacAuthorisedDtoList();
+        ParamUtil.setRequestAttr(request,"authPersonnelList",facAuthList);
     }
 
     public void handleFacAuthorised(BaseProcessClass bpc){
@@ -455,6 +454,7 @@ public class ApprovalBatAndActivityService {
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
+
 
     public void actionFilter(BaseProcessClass bpc, String appType) {
         HttpServletRequest request = bpc.request;

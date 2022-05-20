@@ -61,6 +61,7 @@ public class MohOfficerInsApprovalLetterDelegator {
         session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
+        session.removeAttribute(KEY_INS_DTO_INS_LETTER);
         String appId = (String) ParamUtil.getSessionAttr(request,KEY_APP_ID);
         InsApprovalLetterInitDataDto initDataDto = inspectionClient.getInitInsApprovalLetterData(appId);
 
@@ -98,6 +99,10 @@ public class MohOfficerInsApprovalLetterDelegator {
 
     public void prePreviewApprovalLetter(BaseProcessClass bpc){
         //do noting now
+        HttpServletRequest request = bpc.request;
+        InsApprovalLetterDto letterDto = (InsApprovalLetterDto) ParamUtil.getSessionAttr(request,KEY_INS_DTO_INS_LETTER);
+        letterDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request,KEY_INS_DTO_INS_LETTER,letterDto);
     }
 
     public void bindAction(BaseProcessClass bpc) {

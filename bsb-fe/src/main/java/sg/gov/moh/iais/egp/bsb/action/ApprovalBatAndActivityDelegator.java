@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
-import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 
 import sop.webflow.rt.api.BaseProcessClass;
@@ -25,7 +25,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 
@@ -196,7 +198,27 @@ public class ApprovalBatAndActivityDelegator {
                     AppMainInfo appMainInfo = responseDto.getEntity();
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
-
+                    String processType = approvalSelectionDto.getProcessType();
+                    List<String> displayList;
+                    switch (processType){
+                        case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
+                            displayList = approvalBatAndActivityDto.getApprovalToPossessDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
+                           break;
+                        case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
+                            displayList = approvalBatAndActivityDto.getApprovalToLargeDto().getBatInfos().stream().map(ApprovalToLargeDto.BATInfo::getBatName).collect(Collectors.toList());
+                            break;
+                        case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
+                            displayList = new ArrayList<>();
+                            displayList.add(approvalBatAndActivityDto.getApprovalToSpecialDto().getBatName());
+                            break;
+                        case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
+                            displayList = approvalBatAndActivityDto.getApprovalToActivityDto().getFacActivityTypes();
+                            break;
+                        default:
+                            displayList = new ArrayList<>();
+                            break;
+                    }
+                    ParamUtil.setRequestAttr(request,"displayList",displayList);
                     try {
                         // delete docs
                         log.info("Delete already saved documents in file-repo");

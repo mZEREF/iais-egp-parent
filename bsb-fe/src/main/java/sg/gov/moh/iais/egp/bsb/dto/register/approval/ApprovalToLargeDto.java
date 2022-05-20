@@ -41,6 +41,7 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
 
     public ApprovalToLargeDto() {
         batInfos = new ArrayList<>();
+        batInfos.add(new BATInfo());
     }
 
 

@@ -1,7 +1,7 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 
-<appv:facAuthorised authPersonnelIds="${authPersonnelIds}" facilityAuthIdMap="${facilityAuthIdMap}" authPersonnelOps="${authPersonnelOps}">
+<appv:facAuthorised authPersonnelList="${authPersonnelList}" facilityAuthIdMap="${facilityAuthIdMap}" authPersonnelOps="${authPersonnelOps}">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>

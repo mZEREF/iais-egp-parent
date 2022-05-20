@@ -7,12 +7,14 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 
@@ -31,6 +33,7 @@ public class ApprovalBatAndActivityDto implements Serializable {
     private ApprovalToLargeDto approvalToLargeDto;
     private ApprovalToSpecialDto approvalToSpecialDto;
     private ApprovalToActivityDto approvalToActivityDto;
+    private FacAuthorisedDto facAuthorisedDto;
     private Collection<DocRecordInfo> docRecordInfos;
     private PreviewDto previewDto;
 
@@ -56,7 +59,12 @@ public class ApprovalBatAndActivityDto implements Serializable {
                 break;
             case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
                 SimpleNode specialBatNode = new SimpleNode(approvalToSpecialDto, NODE_NAME_SPECIAL_BAT, new Node[]{facProfileNode});
-                appInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_APP_INFO).dependNodes(new Node[0]).addNode(facProfileNode).addNode(specialBatNode).build();
+                SimpleNode facAuthorisedNode = new SimpleNode(facAuthorisedDto, NODE_NAME_FAC_AUTHORISED, new Node[]{facProfileNode, specialBatNode});
+                appInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_APP_INFO)
+                        .dependNodes(new Node[0]).addNode(facProfileNode)
+                        .addNode(specialBatNode)
+                        .addNode(facAuthorisedNode)
+                        .build();
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
                 SimpleNode facActivityNode = new SimpleNode(approvalToActivityDto, NODE_NAME_FAC_ACTIVITY, new Node[]{facProfileNode});
@@ -98,6 +106,8 @@ public class ApprovalBatAndActivityDto implements Serializable {
                 break;
             case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
                 approvalBatAndActivityDto.setApprovalToSpecialDto((ApprovalToSpecialDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT)).getValue());
+                FacAuthorisedDto facAuthorisedDto = (FacAuthorisedDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED)).getValue();
+                approvalBatAndActivityDto.setFacAuthorisedDto(facAuthorisedDto);
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
                 approvalBatAndActivityDto.setApprovalToActivityDto((ApprovalToActivityDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY)).getValue());
@@ -105,8 +115,8 @@ public class ApprovalBatAndActivityDto implements Serializable {
             default:
                 break;
         }
-       PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-        approvalBatAndActivityDto.docRecordInfos = primaryDocDto.getSavedDocMap().values();
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        approvalBatAndActivityDto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
         approvalBatAndActivityDto.setPreviewDto((PreviewDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PREVIEW)).getValue());
         return approvalBatAndActivityDto;
     }

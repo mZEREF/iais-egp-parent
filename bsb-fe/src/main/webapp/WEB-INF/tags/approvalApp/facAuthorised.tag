@@ -3,7 +3,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@attribute name="authPersonnelIds" required="true" type="java.util.HashSet<java.lang.String>" %>
+<%@attribute name="authPersonnelList" required="true" type="java.util.ArrayList<sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>" %>
 <%@attribute name="facilityAuthIdMap" required="true" type="java.util.HashMap<java.lang.String,sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>" %>
 <%@attribute name="authPersonnelOps" required="true" type="java.util.ArrayList<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
@@ -45,7 +45,7 @@
     <input type="hidden" id="section_repeat_header_title_prefix" value="Authorised Personnel " readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
     <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
-    <input type="hidden" name="sectionIdx" value="<%=sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil.indexes(authPersonnelIds.size())%>">
+    <input type="hidden" name="sectionIdx" value="<%=sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil.indexes(authPersonnelList.size())%>">
 
     <div class="main-content">
         <div class="container">
@@ -59,16 +59,13 @@
                                     <%@include file="/WEB-INF/jsp/iais/approvalBatAndActivity/subStepNavTab.jsp"%>
                                     <div class="form-horizontal">
                                         <div id="sectionGroup">
-                                            <%--@elvariable id="authPersonnelIds" type="java.util.HashSet<java.lang.String>"--%>
-                                            <c:forEach  var="personnel" items="${authPersonnelIds}" varStatus="status">
-                                                <%--@elvariable id="facilityAuthIdMap" type="java.util.HashMap<java.lang.String,sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>"--%>
-                                                <c:set var="auth" value="${facilityAuthIdMap.get(personnel)}" />
+                                            <c:forEach  var="auth" items="${authPersonnelList}" varStatus="status">
                                                 <%--@elvariable id="auth" type="sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto"--%>
                                                 <%--@elvariable id="authPersonnelOps" type="java.util.ArrayList<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                 <section id="facAuthorisedPersonnel--v--${status.index}">
                                                     <div class="form-group">
                                                         <c:choose>
-                                                            <c:when test="${authPersonnelIds.size() eq 1}">
+                                                            <c:when test="${authPersonnelList.size() eq 1}">
                                                                 <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Authorised Personnel<a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note: Please indicate the personnel who are identified to work with/handle the Second Schedule biological agent.</p>">i</a></h3>
                                                             </c:when>
                                                             <c:otherwise>
@@ -92,7 +89,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div id="authPersonnelInfo--v--${status.index}" <c:if test="${auth eq null}">style="display: none"</c:if>>
+                                                    <div id="authPersonnelInfo--v--${status.index}" <c:if test="${auth.idNumber eq null}">style="display: none"</c:if>>
                                                         <div class="form-group ">
                                                             <div class="col-sm-5 control-label">
                                                                 <label for="name--v--${status.index}">Name</label>

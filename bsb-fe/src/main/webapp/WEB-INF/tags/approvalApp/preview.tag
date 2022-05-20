@@ -499,9 +499,9 @@
                                             <div class="clear"></div>
                                         </div>
 
-                                        <c:forEach var="activity" items="${batInfo.workActivities}" varStatus="index">
+                                        <c:forEach var="activity" items="${batInfo.workActivities}" varStatus="status">
                                             <div class="form-group" style="margin-top: 10px">
-                                                <div class="col-10"><span style="font-size: 15px;font-weight: 700">Work Activity ${index+1}</span></div>
+                                                <div class="col-10"><span style="font-size: 15px;font-weight: 700">Work Activity ${status.index+1}</span></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
@@ -531,10 +531,10 @@
                                     </div>
 
                                     <%--@elvariable id="facAuthorised" type="sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto"--%>
-                                    <c:forEach var="facAuthorised" items="${facAuthorisedList}" varStatus="index">
+                                    <c:forEach var="facAuthorised" items="${facAuthorisedList}" varStatus="status">
                                         <div class="panel-main-content form-horizontal min-row">
                                             <div class="form-group" style="margin-top: 10px">
-                                                <div class="col-10"><strong>Authorised Personnel ${index+1}</strong></div>
+                                                <div class="col-10"><strong>Authorised Personnel ${status.index+1}</strong></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">

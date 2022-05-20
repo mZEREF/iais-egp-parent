@@ -21,7 +21,7 @@ public interface ApprovalBatAndActivityClient {
     @GetMapping(value = "/facility-info/approved-facility/basic", produces = MediaType.APPLICATION_JSON_VALUE)
     List<FacilityBasicInfo> getApprovedFacility();
 
-    @GetMapping(path = "/register/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "register/bat-and-activity-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalBatAndActivityDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);
 
     @GetMapping(path = "/bat-info/dropdown/schedule-bat/facId", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,7 +40,7 @@ public interface ApprovalBatAndActivityClient {
     ValidationResultDto validateApprovalToLargeDto(@RequestBody ApprovalToLargeDto dto);
 
     @PostMapping(path = "/register/bat-and-activity-approval/form-validation/facility-authoriser", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityAuthoriser(@RequestBody List<String> authPersonnelIds);
+    ValidationResultDto validateFacilityAuthoriser(@RequestBody FacAuthorisedDto dto);
 
     @PostMapping(path = "/register/bat-and-activity-approval/form-validation/preview-dto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreviewDto(@RequestBody PreviewDto previewDto);

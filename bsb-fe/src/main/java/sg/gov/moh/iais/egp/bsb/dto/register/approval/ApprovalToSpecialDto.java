@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -125,7 +126,6 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_START_DATE                         = "activityStartDate";
     private static final String KEY_PREFIX_END_DATE                           = "activityEndDate";
     private static final String KEY_PREFIX_ACTIVITY_REMARKS                   = "activityRemarks";
-    private static final String KEY_PREFIX_SCHEDULE                           = "schedule";
     private static final String KEY_PREFIX_BAT_NAME                           = "batName";
     private static final String KEY_PREFIX_PROJECT_NAME                       = "projectName";
     private static final String KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME        = "principalInvestigatorName";
@@ -142,7 +142,8 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
             activity.setActivityRemarks(ParamUtil.getString(request, KEY_PREFIX_ACTIVITY_REMARKS + SEPARATOR +idx));
             addWorkActivity(activity);
         }
-        setSchedule(ParamUtil.getString(request, KEY_PREFIX_SCHEDULE));
+        //only second schedule
+        setSchedule(MasterCodeConstants.SECOND_SCHEDULE);
         setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME));
         setProjectName(ParamUtil.getString(request, KEY_PREFIX_PROJECT_NAME));
         setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME));

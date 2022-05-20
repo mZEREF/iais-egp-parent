@@ -78,6 +78,7 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_COUNTRY_OPTIONS         = "countryOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
+    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
 
 
 
