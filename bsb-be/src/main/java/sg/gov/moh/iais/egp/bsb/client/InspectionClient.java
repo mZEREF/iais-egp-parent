@@ -67,8 +67,8 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/approval-letter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInsApprovalLetter(@RequestBody InsApprovalLetterDto dto);
 
-    @PostMapping(value = "/inspection/actual/certification/review/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionCertificationApprove(@RequestParam("appId") String appId,
+    @PostMapping(value = "/inspection/actual/certification/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionCertificationApprove(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody InsProcessDto processDto);
 
@@ -117,13 +117,13 @@ public interface InspectionClient {
     @PutMapping(value = "/inspection/chkListAnswerOfficer", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<TaskAssignDto>> getOfficerTaskList(@RequestParam("url") String url, @RequestParam("appId") String appId) ;
 
-    @PostMapping(value = "/inspection/actual/non-compliance/review/certification/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionDoCertificationToAO(@RequestParam("appId") String appId,
+    @PostMapping(value = "/inspection/actual/certification/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionDoCertificationToAO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/non-compliance/review/certification/to-do", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionAoCertificationToDO(@RequestParam("appId") String appId,
+    @PostMapping(value = "/inspection/actual/certification/to-do", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionAoCertificationToDO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
 

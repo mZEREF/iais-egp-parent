@@ -137,6 +137,9 @@
                                                             <div style="text-align: right">
                                                                 <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             </div>
+                                                            <div style="text-align: right">
+                                                                <span data-err-ind="chooseOne" class="error-msg"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

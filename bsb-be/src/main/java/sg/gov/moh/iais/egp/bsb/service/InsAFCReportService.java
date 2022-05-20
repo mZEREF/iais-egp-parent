@@ -95,17 +95,19 @@ public class InsAFCReportService {
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
-        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(0);
+
         Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
         if(!StringUtils.isEmpty(docDtoMap)){
-            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
         }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
             ReviewAFCReportDto displayDto = getDisplayDto(request);
             afcSaveDto.setAppId(displayDto.getAppId());
-            List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(commonDocDto);
+            saveNewUploadedDoc(commonDocDto);
             boolean uploadNewDoc = false;
             if (!CollectionUtils.isEmpty(commonDocDto.getSavedDocMap())) {
                 uploadNewDoc = true;
@@ -113,10 +115,11 @@ public class InsAFCReportService {
             }
             afcSaveDto.setUploadNewDoc(uploadNewDoc);
 
-            if (!CollectionUtils.isEmpty(certificationDocDisPlayDtos)){
-                afcSaveDto.setSavedCertDocDtoList(certificationDocDisPlayDtos);
+            if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
+                afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveDoInsAFCData(afcSaveDto);
+            ParamUtil.setSessionAttr(request, "ValidSave", "Y");
             if (responseDto.ok()) {
                 log.info("You have successfully submitted the data");
             } else {
@@ -134,27 +137,30 @@ public class InsAFCReportService {
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
-        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(0);
+
         Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
         if(!StringUtils.isEmpty(docDtoMap)){
-            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
         }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
             ReviewAFCReportDto displayDto = getDisplayDto(request);
             afcSaveDto.setAppId(displayDto.getAppId());
-            List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(commonDocDto);
+            saveNewUploadedDoc(commonDocDto);
             boolean uploadNewDoc = false;
             if (!CollectionUtils.isEmpty(commonDocDto.getSavedDocMap())) {
                 uploadNewDoc = true;
                 afcSaveDto.setNewCertDocDtoList(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
             }
             afcSaveDto.setUploadNewDoc(uploadNewDoc);
-            if (!CollectionUtils.isEmpty(certificationDocDisPlayDtos)){
-                afcSaveDto.setSavedCertDocDtoList(certificationDocDisPlayDtos);
+            if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
+                afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveAoCertificationData(afcSaveDto);
+            ParamUtil.setSessionAttr(request, "ValidSave", "Y");
             if (responseDto.ok()) {
                 log.info("You have successfully submitted the data");
             } else {
