@@ -23,7 +23,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_REPORT_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 
 
@@ -47,11 +47,15 @@ public class BsbRfiCommentInspectionReportDelegator {
         session.removeAttribute(KEY_COMMON_DOC_DTO);
 
         // get app ID from request parameter
-        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedAppId);
-        if (appId == null || appId.equals(maskedAppId)) {
-            throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+        String appId = "";
+        String maskedRfiAppId = ParamUtil.getString(request, KEY_RFI_APP_ID);
+        if (maskedRfiAppId != null) {
+            appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedRfiAppId);
+            if (appId == null || appId.equals(maskedRfiAppId)) {
+                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedRfiAppId));
+            }
         }
+
         ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
         AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_INSPECTION_REPORT);
     }

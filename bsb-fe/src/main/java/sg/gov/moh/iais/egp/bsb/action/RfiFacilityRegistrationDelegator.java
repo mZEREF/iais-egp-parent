@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 
 
 @Slf4j
@@ -54,7 +56,7 @@ public class RfiFacilityRegistrationDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String maskedAppId = request.getParameter(RfiConstants.KEY_APP_ID);
+        String maskedAppId = request.getParameter(KEY_APP_ID);
         boolean failRetrieveRfiData = true;
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
@@ -68,7 +70,7 @@ public class RfiFacilityRegistrationDelegator {
                     facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
                     facilityRegistrationService.retrieveOrgAddressInfo(request);
                 }
-                ParamUtil.setRequestAttr(request, RfiConstants.KEY_APP_ID, appId);
+                ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
             }
         }
         if (failRetrieveRfiData) {

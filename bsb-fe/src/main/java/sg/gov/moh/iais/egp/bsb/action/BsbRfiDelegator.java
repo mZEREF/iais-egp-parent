@@ -16,13 +16,18 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_ACTION_TYPE_PREPARE_RFI;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_ACTION_TYPE_PRE_ACKNOWLEDGE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_APPLICATION_RFI_INDICATOR_DTO_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CRUD_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPLAY_DTO;
 
 
 @Slf4j
 @Delegator(value = "bsbRfiDelegator")
 public class BsbRfiDelegator {
-
     private final RfiClient rfiClient;
 
     @Autowired

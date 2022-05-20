@@ -24,7 +24,7 @@
             </div>
             <div class="panel-collapse collapse in" id="collapse${section.section}" role="tabpanel">
                 <div class="panel-body">
-                    <table class="table">
+                    <table class="table" aria-describedby="">
                         <thead>
                         <tr>
                             <th scope="col" style="width: 15%">S/N</th>

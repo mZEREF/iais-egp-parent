@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/rfi/inspection/selfAssessment/uploadSelfAssessment.jsp"%>

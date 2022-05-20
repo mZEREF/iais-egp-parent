@@ -10,7 +10,6 @@ public class RfiConstants {
     public static final String MODULE_NAME_INSPECTION_NC                   = "Inspection Non-Compliance";
     public static final String MODULE_NAME_INSPECTION_FOLLOW_UP            = "Inspection Follow-Up";
 
-    public static final String KEY_APP_ID                                  = "appId";
     // mask appId key
     public static final String KEY_RFI_APP_ID                              = "rfiAppId";
 
@@ -20,4 +19,8 @@ public class RfiConstants {
     public static final String KEY_CRUD_ACTION_TYPE                        = "crud_action_type";
     public static final String KEY_ACTION_TYPE_PRE_ACKNOWLEDGE             = "preAcknowledge";
     public static final String KEY_ACTION_TYPE_PREPARE_RFI                 = "prepareRfi";
+
+    // judge this process is or is not rfi
+    public static final String KEY_CONFIRM_RFI                             = "confirmRfi";
+    public static final String KEY_CONFIRM_RFI_Y                           = "Y";
 }

@@ -3,10 +3,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.String"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%@page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+<%@page import="sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants" %>
 
 <style>
     .report-sub-title > h4 {
@@ -361,7 +360,7 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 ">
-                                            <a class="back" id="previous" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>"><em class="fa fa-angle-left"></em> Previous</a>
+                                            <a class="back" id="previous" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='${RfiConstants.KEY_RFI_APP_ID}' value='${appId}'/>"><em class="fa fa-angle-left"></em> Previous</a>
                                         </div>
                                         <div class="col-xs-12">
                                             <div class="button-group">
