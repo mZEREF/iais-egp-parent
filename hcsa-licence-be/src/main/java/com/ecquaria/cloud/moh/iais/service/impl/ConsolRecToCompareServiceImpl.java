@@ -347,32 +347,18 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         Date date = new Date();
                         String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
                         String inputFileName =  "CompareResults_"+dateStr;
-                        File path = MiscUtil.generateFile(inSharedPath );
-                        if (!path.exists()) {
-                            boolean succeeded = path.mkdirs();
-                            log.info(StringUtil.changeForLog(String.format("This directory [%s] is created successfully - %b ",
-                                    path.getAbsolutePath(), succeeded)));
-                        }
-                        log.info("Report root path =>>>> {}", path.getAbsolutePath());
-                        if (path.isDirectory()){
-                            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(sheetsDto);
-                            File configInfoTemplate = ResourceUtils.getFile(path.getAbsolutePath()+File.separator+inputFileName+".xlsx");
-                            configInfoTemplate.createNewFile();
-                            File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate);
-                            byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
-                            try (OutputStream fileOutputStream  = newOutputStream(writerToExcel.toPath());) {
-                                if(!writerToExcel.exists()){
-                                    boolean newFile = writerToExcel.createNewFile();
-                                    if(newFile){
-                                        log.info("***newFile createNewFile***");
-                                    }
-                                }
-                                fileOutputStream.write(bytes);
-                                flag=true;
-                            } catch (Exception e) {
-                                log.error(e.getMessage(),e);
-                                return null;
-                            }
+                        File path = MiscUtil.generateFile(inSharedPath+File.separator+inputFileName+".xlsx" );
+                        path.createNewFile();
+                        List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(sheetsDto);
+                        File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
+                        File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
+                        byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
+                        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
+                            fileOutputStream.write(bytes);
+                            flag=true;
+                        } catch (Exception e) {
+                            log.error(e.getMessage(),e);
+                            return null;
                         }
 
 
@@ -419,7 +405,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             userAccountExcelDtos.add(entry.getValue());
         }
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
-        int sheetAt = 1;
+        int sheetAt = 0;
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "app_group", groupExcelDtos,AppGroupExcelDto.class));
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "application", applicationExcelDtos,ApplicationExcelDto.class));
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "apft", appProcessFileTrackExcelDtos,AppProcessFileTrackExcelDto.class));
@@ -436,12 +422,11 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         excelSheetDto.setSheetName(sheetName);
         excelSheetDto.setBlock(false);
         excelSheetDto.setPwd(Formatter.formatDateTime(new Date(), "yyyyMMdd"));
-        excelSheetDto.setStartRowIndex(1);
+        excelSheetDto.setStartRowIndex(2);
         excelSheetDto.setSource(data);
         excelSheetDto.setSourceClass(sourceClass);
         excelSheetDto.setDefaultRowHeight((short) 600);
         excelSheetDto.setChangeHeight(false);
-        excelSheetDto.setNeedFiled(true);
         switch (sheetName){
             case "app_group":excelSheetDto.setWidthMap(getGrpWidthMap());break;
             case "application":excelSheetDto.setWidthMap(getAppWidthMap());break;
@@ -538,17 +523,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
 
         monitoringSheetsDto.setAppProcessFileTrackExcelDtoMap(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
-        for (Map.Entry<String, AppProcessFileTrackExcelDto> entry:monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
-        ) {
-            if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
-                AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
-                if(!excelDto.getStatus().equals("PFT005")){
-                    excelDto.setResult("Postive");
-                }else {
-                    excelDto.setResult("Negative");
-                }
-            }
-        }
+
         for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
         ) {
             if(monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
@@ -556,15 +531,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
                 excelDto.setStatusBe(entry.getValue().getStatusBe());
                 excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                excelDto.setResult("Negative");
-                if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())&&
-                        excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                        excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
-                    excelDto.setResult("Postive");
-                }
-
             }else {
-                entry.getValue().setResult("Negative");
                 monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
             }
         }
@@ -575,15 +542,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
                 excelDto.setStatusBe(entry.getValue().getStatusBe());
                 excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                excelDto.setResult("Negative");
-                if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())&&
-                        excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                        excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
-                    excelDto.setResult("Postive");
-                }
 
             }else {
-                entry.getValue().setResult("Negative");
                 monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
             }
         }
@@ -594,15 +554,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
                 excelDto.setStatusBe(entry.getValue().getStatusBe());
                 excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                excelDto.setResult("Negative");
-                if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())&&
-                        excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                        excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
-                    excelDto.setResult("Postive");
-                }
 
             }else {
-                entry.getValue().setResult("Negative");
                 monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
             }
         }
@@ -614,16 +567,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 excelDto.setStatusBe(entry.getValue().getStatusBe());
                 excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                 excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
-                excelDto.setResult("Negative");
-                if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
-                        excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                        excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())&&
-                        excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
-                    excelDto.setResult("Postive");
-                }
 
             }else {
-                entry.getValue().setResult("Negative");
                 monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
             }
         }
