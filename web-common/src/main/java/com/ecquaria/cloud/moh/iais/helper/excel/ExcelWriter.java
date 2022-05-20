@@ -318,24 +318,40 @@ public final class ExcelWriter {
         }
     }
 
-    public static File writerToExcel(ExcelSheetDto excelSheetDto, final File file) throws IOException {
+    public static File writerToExcel(ExcelSheetDto excelSheetDto, final File file, String fileName) throws IOException {
         if (excelSheetDto == null) {
             log.info("don't have source when writer to excel!!!!");
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
-        return writerToExcel(Collections.singletonList(excelSheetDto), file);
+        return writerToExcel(Collections.singletonList(excelSheetDto), file, fileName);
     }
 
-    public static File writerToExcel(List<ExcelSheetDto> excelSheetDtos, final File file) throws IOException {
+    public static File writerToExcel(List<ExcelSheetDto> excelSheetDtos, final File file, String fileName) throws IOException {
         if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
             log.info("don't have source when writer to excel!!!!");
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
-        try ( OutputStream outputStream = newOutputStream(file.toPath())) {
-            workbook = XSSFWorkbookFactory.createWorkbook();
+        boolean isNew = isNew(file);
+        final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
+        String path = postFileName;
+        File out = MiscUtil.generateFile(path);
+        try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
+            if (isNew) {
+                workbook = XSSFWorkbookFactory.createWorkbook();
+            } else {
+                workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+            }
             startInternal(workbook);
             for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
-                XSSFSheet sheet=workbook.createSheet(excelSheetDto.getSheetName());
+                XSSFSheet sheet;
+                if (isNew) {
+                    sheet = workbook.getSheet(excelSheetDto.getSheetName());
+                } else {
+                    sheet = workbook.getSheetAt(excelSheetDto.getSheetAt());
+                    if (!StringUtils.isEmpty(excelSheetDto.getSheetName())) {
+                        workbook.setSheetName(excelSheetDto.getSheetAt(), excelSheetDto.getSheetName());
+                    }
+                }
                 writeSheet(excelSheetDto, sheet);
             }
             workbook.write(outputStream);
@@ -346,7 +362,7 @@ public final class ExcelWriter {
                 workbook.close();
             }
         }
-        return file;
+        return out;
     }
 
     private static void writeSheet(ExcelSheetDto excelSheetDto, XSSFSheet sheet) {
