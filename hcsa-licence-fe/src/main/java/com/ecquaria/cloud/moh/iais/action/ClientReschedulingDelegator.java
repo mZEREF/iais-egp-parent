@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -26,6 +28,8 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -36,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +73,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("appRec.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SystemParamUtil.getDefaultPageSize()).build();
+            .sortField("appt.RECOM_IN_DATE").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(SystemParamUtil.getDefaultPageSize()).build();
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -86,10 +91,11 @@ public class ClientReschedulingDelegator {
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
-
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigClient;
 
     public void start(BaseProcessClass bpc)  {
-        rescheduleParameter.setSortField("appRec.RECOM_IN_DATE");
+        rescheduleParameter.setSortField("appt.RECOM_IN_DATE");
         rescheduleParameter.setPageNo(1);
         rescheduleParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         ParamUtil.setSessionAttr(bpc.request,"appIds",null);
@@ -100,6 +106,7 @@ public class ClientReschedulingDelegator {
         ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Scheduled Appointments");
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
         String licenseeId = loginContext.getLicenseeId();
         rescheduleParameter.setPageNo(0);
         SearchParam rescheduleParam = SearchResultHelper.getSearchParam(bpc.request, rescheduleParameter,true);
@@ -118,7 +125,10 @@ public class ClientReschedulingDelegator {
         dateRange =calendar.getTime();
         //rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(dateRange, SystemAdminBaseConstants.DATE_FORMAT)+"') )");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
+        HalpSearchResultHelper.setParamByFieldOrSearch(rescheduleParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"appt.code");
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
+        String repalceService = getRepalceService();
+        rescheduleParam.setMainSql(rescheduleParam.getMainSql().replace("repalceService",repalceService));
         String [] keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         Set<String> keys=IaisCommonUtils.genNewHashSet() ;
         if(keyIds!=null){
@@ -482,5 +492,19 @@ public class ClientReschedulingDelegator {
         ParamUtil.setSessionAttr(httpServletRequest, "apptViewDtosMap", (Serializable) apptViewDtos);
 
         return errMap;
+    }
+
+    public  String getRepalceService(){
+        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            return null;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" ( CASE app.service_id ");
+        for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
+            stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
+        }
+        stringBuilder.append("ELSE  'N/A' END )");
+        return  stringBuilder.toString();
     }
 }

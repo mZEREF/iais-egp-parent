@@ -37,11 +37,12 @@ public class SubLicenseeValidator implements CustomizeValidator {
 
         String idType = subLicenseeDto.getIdType();
         String idNumber = subLicenseeDto.getIdNumber();
+        String nationality = subLicenseeDto.getNationality();
         String licenseeType = subLicenseeDto.getLicenseeType();
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
             if (StringUtil.isEmpty(idNumber)) {
                 errorMap.put("idNumber", MANDATORY_MSG);
-            } else if (!validateIdNo(idType, idNumber)) {
+            } else if (!SgNoValidator.validateIdNo(idType, idNumber)) {
                 errorMap.put("idNumber", MessageUtil.getMessageDesc("RFC_ERR0012"));
             }
         }
@@ -64,6 +65,9 @@ public class SubLicenseeValidator implements CustomizeValidator {
             }
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType) && StringUtil.isEmpty(nationality)) {
+                errorMap.put("nationality", MANDATORY_MSG);
+            }
             String mobileNo = subLicenseeDto.getTelephoneNo();
             if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
                 errorMap.put("telephoneNo", telephoneNoErr);
@@ -98,8 +102,8 @@ public class SubLicenseeValidator implements CustomizeValidator {
                     ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
             Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                     NewApplicationDelegator.LICENSEE_MAP);
-            if (needVal && psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {
-                errorMap.put("idNumber", MessageUtil.replaceMessage("NEW_ERR0006", idNumber, "{ID No.}"));
+            if (needVal && psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(nationality, idType, idNumber)) != null) {
+                errorMap.put("idNumber", MessageUtil.replaceMessage("NEW_ERR0006", idNumber, "ID No."));
             }
         }
 

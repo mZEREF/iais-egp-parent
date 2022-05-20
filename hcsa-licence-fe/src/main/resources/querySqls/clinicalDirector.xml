@@ -125,7 +125,30 @@
                                 </div>
                             </div>
                             <div class="col-sm-4 col-xs-12">
-                                <input type="text" name="idNo${cdSuffix}" class="idNoVal idNo" maxlength="9" autocomplete="off">
+                                <input type="text" name="idNo${cdSuffix}" class="idNoVal idNo" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal nationalityDiv">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Country of issuance</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                ${nationality}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label  class="control-label control-set-font control-font-label"></label>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo"></span>
                             </div>
                         </div>
                     </div>

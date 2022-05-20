@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -28,7 +29,7 @@ public interface ValidateFlow {
     default void doValidateVehicles(Map<String, String> map, AppSubmissionDto appSubmissionDto) {}
 
     default void doValidateClincalDirector(Map<String, String> map, List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,
-            String serviceCode) {}
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, String serviceCode) {}
 
     default void doValidateCharges(Map<String, String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto) {}
 

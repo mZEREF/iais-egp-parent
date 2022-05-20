@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts" %>
 <div class="alert alert-info" role="alert"><strong>
     <h4>Supporting Document</h4>
 </strong></div>
@@ -17,8 +18,14 @@
                     <th scope="col" width="30%">Document</th>
                     <th scope="col" width="20%">File</th>
                     <th scope="col" width="10%">Size</th>
-                    <th scope="col" width="20%">Version</th>
-                    <th scope="col" width="10%">Submitted By</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                    >Version</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                    >Submitted By</th>
                     <th scope="col" width="10%">Date Submitted</th>
                 </tr>
                 </thead>
@@ -44,26 +51,26 @@
                     <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                                var="appSupDocDto">
                         <tr>
-                            <td width="30%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.file}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td >
                                 <p>
                                     <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.document, StandardCharsets.UTF_8.toString())}"
                                        title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span> </a>
                                     <a href="javascript:void(0);" onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
                                 </p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.size}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.version}"></c:out></p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
                             </td>
                         </tr>
@@ -84,10 +91,15 @@
                 <tr>
                     <th scope="col" width="30%">Document</th>
                     <th scope="col" width="20%">File</th>
-                    <th scope="col" width="10%">Size</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                    >Size</th>
                     <th scope="col" width="20%">Submitted By</th>
                     <th scope="col" width="10%">Date Submitted</th>
-                    <th scope="col" width="10%">Action</th>
+                    <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                        <th scope="col" width="10%">Action</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
@@ -105,7 +117,7 @@
                                        varStatus="status">
                                 <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                                 <tr>
-                                    <td width="30%">
+                                    <td >
                                         <p>
                                             <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
                                                 Letter Written to Licensee
@@ -115,7 +127,7 @@
                                             </c:if>
                                         </p>
                                     </td>
-                                    <td width="20%">
+                                    <td >
                                         <p>
                                             <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
                                                title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
@@ -124,16 +136,17 @@
                                             </a>
                                         </p>
                                     </td>
-                                    <td width="10%">
+                                    <td >
                                         <p><c:out value="${interalFile.docSize}"></c:out></p>
                                     </td>
-                                    <td width="20%">
+                                    <td >
                                         <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                     </td>
-                                    <td width="10%">
+                                    <td >
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
-                                    <td width="10%">
+                                <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                                    <td >
                                         <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
                                             <button type="button" class="btn btn-secondary-del btn-sm"
                                                     onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
@@ -141,6 +154,7 @@
                                                 Delete</button>
                                         </c:if>
                                     </td>
+                                </c:if>
                                 </tr>
                                 </c:if>
                             </c:forEach>
@@ -150,12 +164,15 @@
                 </tbody>
             </table>
             <%--upload file--%>
-            <iais:action>
-                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
-                    Upload Document
-                </button>
-            </iais:action>
+            <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                <iais:action>
+                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                    <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+                        Upload Document
+                    </button>
+                </iais:action>
+            </c:if>
+
         </div>
     </div>
 </div>

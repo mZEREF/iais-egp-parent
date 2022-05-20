@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -135,18 +136,18 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Integer licActiveStatusNum(String licenseeId) {
-        return licenceInboxClient.getLicActiveStatusNum(licenseeId).getEntity();
+    public Integer licActiveStatusNum(InterMessageSearchDto interMessageSearchDto) {
+        return licenceInboxClient.getLicActiveStatusNum(interMessageSearchDto).getEntity();
     }
 
     @Override
-    public Integer appDraftNum(String licenseeId) {
-        return appInboxClient.getAppDraftNum(licenseeId).getEntity();
+    public Integer appDraftNum(InterMessageSearchDto interMessageSearchDto) {
+        return appInboxClient.getAppDraftNum(interMessageSearchDto).getEntity();
     }
 
     @Override
-    public Integer unreadAndUnresponseNum(String userId) {
-        return inboxClient.searchUnreadAndUnresponseNum(userId).getEntity();
+    public Integer unreadAndUnresponseNum(InterMessageSearchDto interMessageSearchDto) {
+        return inboxClient.searchUnreadAndUnresponseNum(interMessageSearchDto).getEntity();
     }
 
     @Override
@@ -272,9 +273,12 @@ public class InboxServiceImpl implements InboxService {
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         if(!IaisCommonUtils.isEmpty(apps)){
-            for(ApplicationDto app : apps){
-                if(!finalStatusList.contains(app.getStatus())){
-                    errorMap.put("errorMessage1","This application is performing the renew process");
+            for (ApplicationDto app : apps) {
+                // 81903
+                if ((ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus())
+                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType()))
+                        || !finalStatusList.contains(app.getStatus())) {
+                    errorMap.put("errorMessage1", "This application is performing the renew process");
                 }
             }
         }

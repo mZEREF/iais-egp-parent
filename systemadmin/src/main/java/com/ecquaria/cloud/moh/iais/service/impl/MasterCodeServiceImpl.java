@@ -57,8 +57,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public void deleteMasterCodeById(String id) {
-        saMasterCodeClient.delMasterCode(id).getEntity();
+    public void deleteMasterCodeById(String id, int updateCount) {
+        saMasterCodeClient.delMasterCode(id, updateCount);
     }
 
     @Override

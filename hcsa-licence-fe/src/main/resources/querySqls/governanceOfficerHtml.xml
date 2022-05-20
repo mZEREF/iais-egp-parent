@@ -85,7 +85,25 @@
                                                     </div>
                                                     <div class="col-xs-12 col-sm-4 col-md-4">
                                                         <div class="">
-                                                            <input type="text" name="idNo" value="" maxlength="9" autocomplete="off">
+                                                            <input type="text" name="idNo" value="" maxlength="20" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1" class="nationalityDiv">
+                                        <td class="first last" style="width: 100%;">
+                                            <div class="control control-caption-horizontal">
+                                                <div class="form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">Country of issuance</label>
+                                                        <span class="mandatory">*</span>
+                                                        <span class="upload_controls"></span>
+                                                    </div>
+                                                    <div class="col-xs-5 col-sm-4 col-md-7">
+                                                        <div class="">
+                                                            (7)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -254,7 +272,7 @@
                                                     </div>
                                                     <div class="col-sm-4 col-xs-6 col-sm-3 col-md-7">
                                                         <div class="">
-                                                            <input type="text" name="emailAddress" value="" maxlength="66"
+                                                            <input type="text" name="emailAddress" value="" maxlength="320"
                                                                    autocomplete="off">
                                                         </div>
                                                     </div>

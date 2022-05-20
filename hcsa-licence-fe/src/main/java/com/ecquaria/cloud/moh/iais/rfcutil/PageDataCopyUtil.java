@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -335,34 +336,17 @@ public class PageDataCopyUtil {
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
         List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
-            AppSvcPrincipalOfficersDto svcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
-            svcPrincipalOfficersDto.setSalutation(appSvcPrincipalOfficersDto.getSalutation());
-            svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
-            svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
-            svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
-            svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
-            svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
-            svcPrincipalOfficersDto.setDescription(appSvcPrincipalOfficersDto.getDescription());
-            list.add(svcPrincipalOfficersDto);
+            list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
         }
-        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList)  {
         List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
-            AppSvcPrincipalOfficersDto svcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
-            svcPrincipalOfficersDto.setSalutation(appSvcPrincipalOfficersDto.getSalutation());
-            svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
-            svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
-            svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
-            svcPrincipalOfficersDto.setDesignation(appSvcPrincipalOfficersDto.getDesignation());
-            svcPrincipalOfficersDto.setOfficeTelNo(appSvcPrincipalOfficersDto.getOfficeTelNo());
-            svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
-            svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
-            list.add(svcPrincipalOfficersDto);
+            list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
         }
-        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
@@ -371,23 +355,9 @@ public class PageDataCopyUtil {
             return list;
         }
         for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
-            AppSvcPrincipalOfficersDto cgoDto=new AppSvcPrincipalOfficersDto();
-            cgoDto.setSalutation(appSvcCgoDto.getSalutation());
-            cgoDto.setName(appSvcCgoDto.getName());
-            cgoDto.setIdNo(appSvcCgoDto.getIdNo());
-            cgoDto.setIdType(appSvcCgoDto.getIdType());
-            cgoDto.setDesignation(appSvcCgoDto.getDesignation());
-            cgoDto.setProfessionType(appSvcCgoDto.getProfessionType());
-            cgoDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
-            cgoDto.setSpeciality(appSvcCgoDto.getSpeciality());
-            cgoDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
-            cgoDto.setMobileNo(appSvcCgoDto.getMobileNo());
-            cgoDto.setOtherQualification(appSvcCgoDto.getOtherQualification());
-            cgoDto.setQualification(appSvcCgoDto.getQualification());
-            cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
-            list.add(cgoDto);
+            list.add(copyKeyPersonnel(appSvcCgoDto));
         }
-        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
 
@@ -397,14 +367,9 @@ public class PageDataCopyUtil {
             return list;
         }
         for (AppSvcPrincipalOfficersDto appSvcKahDto : appSvcKahDtoList) {
-            AppSvcPrincipalOfficersDto kahDto = new AppSvcPrincipalOfficersDto();
-            kahDto.setSalutation(appSvcKahDto.getSalutation());
-            kahDto.setName(appSvcKahDto.getName());
-            kahDto.setIdNo(appSvcKahDto.getIdNo());
-            kahDto.setIdType(appSvcKahDto.getIdType());
-            list.add(kahDto);
+            list.add(copyKeyPersonnel(appSvcKahDto));
         }
-        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
 
@@ -420,20 +385,26 @@ public class PageDataCopyUtil {
         }
         return list;
     }
-    public static List<AppSvcDisciplineAllocationDto>  copyAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList){
-        if(appSvcDisciplineAllocationDtoList==null){
+
+    public static List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDto(
+            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList) {
+        if (appSvcDisciplineAllocationDtoList == null) {
             return new ArrayList<>();
         }
-        List<AppSvcDisciplineAllocationDto> list=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
-        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-            AppSvcDisciplineAllocationDto o=new AppSvcDisciplineAllocationDto();
+        List<AppSvcDisciplineAllocationDto> list = new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
+        for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+            AppSvcDisciplineAllocationDto o = new AppSvcDisciplineAllocationDto();
             o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
             o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
+            o.setCgoPerson(appSvcDisciplineAllocationDto.getCgoPerson());
             o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
+            o.setSectionLeaderName(appSvcDisciplineAllocationDto.getSectionLeaderName());
             list.add(o);
         }
+        list.sort(Comparator.comparing(AppSvcDisciplineAllocationDto::getPremiseVal)
+                .thenComparing(AppSvcDisciplineAllocationDto::getChkLstConfId));
         return list;
-    };
+    }
 
     public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList) {
         return copyAppSvcVehicleDto(appSvcVehicleDtoList, true);
@@ -503,34 +474,70 @@ public class PageDataCopyUtil {
     }
 
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos){
-
         if(appSvcClinicalDirectorDtos==null || appSvcClinicalDirectorDtos.isEmpty()){
             return new ArrayList<>(1);
         }
         List<AppSvcPrincipalOfficersDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
         appSvcClinicalDirectorDtos.forEach((v)->{
-            AppSvcPrincipalOfficersDto o=new AppSvcPrincipalOfficersDto();
-            o.setProfessionBoard(v.getProfessionBoard());
-            o.setProfRegNo(v.getProfRegNo());
-            o.setSalutation(v.getSalutation());
-            o.setName(v.getName());
-            o.setIdType(v.getIdType());
-            o.setIdNo(v.getIdNo());
-            o.setDesignation(v.getDesignation());
-            o.setSpeciality(v.getSpeciality());
-            o.setSpecialtyGetDate(v.getSpecialtyGetDate());
-            o.setTypeOfCurrRegi(v.getTypeOfCurrRegi());
-            o.setCurrRegiDate(v.getCurrRegiDate());
-            o.setPraCerEndDate(v.getPraCerEndDate());
-            o.setTypeOfRegister(v.getTypeOfRegister());
-            o.setRelevantExperience(v.getRelevantExperience());
-            o.setHoldCerByEMS(v.getHoldCerByEMS());
-            o.setAclsExpiryDate(v.getAclsExpiryDate());
-            o.setMobileNo(v.getMobileNo());
-            o.setEmailAddr(v.getEmailAddr());
-            list.add(o);
+            list.add(copyKeyPersonnel(v));
         });
-        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
+    }
+
+    public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person) {
+        return copyKeyPersonnel(person, 0);
+    }
+
+    /**
+     * Copy Key Personnel
+     *
+     * @param person
+     * @param status 0: all fields; 1: key fields; 2: special fields for affected person
+     * @return
+     */
+    public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person, int status) {
+        if (person == null) {
+            return null;
+        }
+        String psnType = person.getPsnType();
+        AppSvcPrincipalOfficersDto newPerson = new AppSvcPrincipalOfficersDto();
+        newPerson.setSalutation(person.getSalutation());
+        newPerson.setName(person.getName());
+        newPerson.setIdNo(person.getIdNo());
+        newPerson.setIdType(person.getIdType());
+        newPerson.setNationality(StringUtil.getNonNull(person.getNationality()));
+        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            newPerson.setDesignation(person.getDesignation());
+            newPerson.setOtherDesignation(StringUtil.getNonNull(person.getOtherDesignation()));
+            newPerson.setMobileNo(person.getMobileNo());
+            newPerson.setOfficeTelNo(StringUtil.getNonNull(person.getOfficeTelNo()));
+            newPerson.setEmailAddr(person.getEmailAddr());
+        }
+
+        if (status == 0) {
+            if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+                newPerson.setProfessionBoard(person.getProfessionBoard());
+                newPerson.setProfRegNo(person.getProfRegNo());
+                newPerson.setSpeciality(person.getSpeciality());
+                newPerson.setSpecialtyGetDate(person.getSpecialtyGetDate());
+                newPerson.setTypeOfCurrRegi(person.getTypeOfCurrRegi());
+                newPerson.setCurrRegiDate(person.getCurrRegiDate());
+                newPerson.setPraCerEndDate(person.getPraCerEndDate());
+                newPerson.setTypeOfRegister(person.getTypeOfRegister());
+                newPerson.setRelevantExperience(person.getRelevantExperience());
+                newPerson.setHoldCerByEMS(person.getHoldCerByEMS());
+                newPerson.setAclsExpiryDate(person.getAclsExpiryDate());
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+                newPerson.setProfessionType(person.getProfessionType());
+                newPerson.setProfRegNo(person.getProfRegNo());
+                newPerson.setSpeciality(person.getSpeciality());
+                newPerson.setSubSpeciality(person.getSubSpeciality());
+                newPerson.setQualification(person.getQualification());
+                newPerson.setOtherQualification(person.getOtherQualification());
+            }
+        }
+        newPerson.setAssignSelect(NewApplicationHelper.getPersonKey(newPerson));
+        return newPerson;
     }
 }

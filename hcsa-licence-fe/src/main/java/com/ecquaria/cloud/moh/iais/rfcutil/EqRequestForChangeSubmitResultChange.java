@@ -24,13 +24,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class EqRequestForChangeSubmitResultChange {
 
     public static boolean eqHciNameChange(AppGrpPremisesDto appGrpPremisesDto ,AppGrpPremisesDto oldAppGrpPremisesDto) {
@@ -49,18 +50,13 @@ public class EqRequestForChangeSubmitResultChange {
         return false;
     }
 
-    public static boolean eqDocChange(List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos, List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos){
-        if (dtoAppGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos == null || dtoAppGrpPrimaryDocDtos == null && oldAppGrpPrimaryDocDtos != null) {
-            return true;
-        } else if (dtoAppGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
-            List<AppGrpPrimaryDocDto> n=PageDataCopyUtil.copyGrpPrimaryDoc(dtoAppGrpPrimaryDocDtos);
-            List<AppGrpPrimaryDocDto> o=PageDataCopyUtil.copyGrpPrimaryDoc(oldAppGrpPrimaryDocDtos);
-            if (!n.equals(o)) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean eqDocChange(List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos,
+            List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos) {
+        dtoAppGrpPrimaryDocDtos = IaisCommonUtils.getList(dtoAppGrpPrimaryDocDtos);
+        oldAppGrpPrimaryDocDtos = IaisCommonUtils.getList(oldAppGrpPrimaryDocDtos);
+        List<AppGrpPrimaryDocDto> n = PageDataCopyUtil.copyGrpPrimaryDoc(dtoAppGrpPrimaryDocDtos);
+        List<AppGrpPrimaryDocDto> o = PageDataCopyUtil.copyGrpPrimaryDoc(oldAppGrpPrimaryDocDtos);
+        return !n.equals(o);
     }
 
     public static boolean isChangeGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList,
@@ -198,9 +194,8 @@ public class EqRequestForChangeSubmitResultChange {
         oldAppSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
         oldAppSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
 
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-        List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = oldAppSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-        boolean flag = eqAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList, oldAppSvcDisciplineAllocationDtoList);
+        // allocation
+        int flag = isChangeDisciplineAllocation(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = oldAppSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         boolean flag1 = eqAppSvcLaboratoryDisciplines(appSvcLaboratoryDisciplinesDtoList, oldAppSvcLaboratoryDisciplinesDtoList);
@@ -215,7 +210,7 @@ public class EqRequestForChangeSubmitResultChange {
         boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, changeList);
         boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
                 oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
-        if (flag1 && !flag) {
+        if (flag == 1) {
             changeList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
         }
         if (eqSvcDoc) {
@@ -229,7 +224,7 @@ public class EqRequestForChangeSubmitResultChange {
             personnelEditList.addAll(changeList);
             appEditSelectDto.setPersonnelEditList(personnelEditList);
         }
-        if (!flag || !flag1 || eqSvcDoc || eqAppSvcVehicle || eqAppSvcChargesPageDto || changePersonnel || eqAppSvcBusiness) {
+        if (flag != 0 || !flag1 || eqSvcDoc || eqAppSvcVehicle || eqAppSvcChargesPageDto || changePersonnel || eqAppSvcBusiness) {
             return true;
         }
         return false;
@@ -340,38 +335,49 @@ public class EqRequestForChangeSubmitResultChange {
         }
     }
 
-    private static boolean eqAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,
-            List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList) {
-        boolean flag;
+    /**
+     * 0: not changed
+     * 1: changed with related cgo and sl no changed
+     * 2: changed with related cgo no changed and sl changed
+     * 3: changed with related cgo changed and sl no changed
+     * 4: changed with cgo and sl both changed
+     *
+     * @param appSvcDisciplineAllocationDtoList
+     * @param oldAppSvcDisciplineAllocationDtoList
+     * @param cgoList
+     * @param slList
+     * @return
+     */
+    private static int isChangeDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,
+            List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<String> cgoList, List<String> slList) {
+        int flag = 0;
         if (appSvcDisciplineAllocationDtoList != null && oldAppSvcDisciplineAllocationDtoList != null) {
-            List<AppSvcDisciplineAllocationDto> list1 = MiscUtil.transferEntityDtos(appSvcDisciplineAllocationDtoList,
-                    AppSvcDisciplineAllocationDto.class);
-            List<AppSvcDisciplineAllocationDto> list2 = MiscUtil.transferEntityDtos(oldAppSvcDisciplineAllocationDtoList,
-                    AppSvcDisciplineAllocationDto.class);
-
-            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list1) {
-                String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
-                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
-                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
-                for (AppSvcDisciplineAllocationDto allocationDto : list2) {
-                    String idNo1 = allocationDto.getIdNo();
-                    String premiseVal1 = allocationDto.getPremiseVal();
-                    String chkLstConfId1 = allocationDto.getChkLstConfId();
-                    if (Objects.equals(idNo, idNo1)
-                            && Objects.equals(premiseVal, premiseVal1)
-                            && Objects.equals(chkLstConfId, chkLstConfId1)) {
-                        allocationDto.setCgoSelName(cgoSelName);
-                        allocationDto.setChkLstName(chkLstName);
-                        allocationDto.setSectionLeaderName(appSvcDisciplineAllocationDto.getSectionLeaderName());
-                    }
-                }
-            }
-            flag = list1.equals(list2);
-        } else {
-            flag = appSvcDisciplineAllocationDtoList != null ^ oldAppSvcDisciplineAllocationDtoList != null;
+            List<AppSvcDisciplineAllocationDto> list1 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList);
+            List<AppSvcDisciplineAllocationDto> list2 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(oldAppSvcDisciplineAllocationDtoList);
+            flag = list1.equals(list2) ? 0 : 1;
+        } else if (appSvcDisciplineAllocationDtoList != null ^ oldAppSvcDisciplineAllocationDtoList != null) {
+            flag = 1;
         }
+        if (appSvcDisciplineAllocationDtoList != null && flag != 0) {
+            boolean newCgo = false;
+            if (cgoList != null) {
+                newCgo = appSvcDisciplineAllocationDtoList.stream()
+                        .anyMatch(dto -> !cgoList.contains(dto.getCgoPerson()));
+            }
+            boolean newSL = false;
+            if (slList != null) {
+                newSL = appSvcDisciplineAllocationDtoList.stream()
+                        .anyMatch(dto -> !slList.contains(dto.getSectionLeaderName()));
+            }
+            if (newCgo && newSL) {
+                flag = 4;
+            } else if (newCgo) {
+                flag = 3;
+            } else if (newSL) {
+                flag = 2;
+            }
+        }
+        log.info(StringUtil.changeForLog("---Change Discipline Allocation Flag: " + flag + "---"));
         return flag;
     }
 
@@ -418,8 +424,8 @@ public class EqRequestForChangeSubmitResultChange {
 
     private static boolean eqKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList)  {
         if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcKeyAppointmentHolderDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyMedaler(oldAppSvcKeyAppointmentHolderDtoList);
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcKah(appSvcKeyAppointmentHolderDtoList);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcKah(oldAppSvcKeyAppointmentHolderDtoList);
             if (!n.equals(o)) {
                 return true;
             }
@@ -809,16 +815,16 @@ public class EqRequestForChangeSubmitResultChange {
 
         for (AppSvcPrincipalOfficersDto item : newAppSvcPrincipalOfficersDto) {
             if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                newPoIdNos.add(item.getIdNo());
+                newPoIdNos.add(NewApplicationHelper.getPersonKey(item));
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                newDpoIdNos.add(item.getIdNo());
+                newDpoIdNos.add(NewApplicationHelper.getPersonKey(item));
             }
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcPrincipalOfficersDto) {
             if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                oldPoIdNos.add(item.getIdNo());
+                oldPoIdNos.add(NewApplicationHelper.getPersonKey(item));
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                olddDpoIdNos.add(item.getIdNo());
+                olddDpoIdNos.add(NewApplicationHelper.getPersonKey(item));
             }
         }
         if (!newPoIdNos.equals(oldPoIdNos)) {
@@ -836,10 +842,10 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> newIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -851,10 +857,10 @@ public class EqRequestForChangeSubmitResultChange {
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcCdDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcCdDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -866,10 +872,10 @@ public class EqRequestForChangeSubmitResultChange {
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcMapDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcMapDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -914,10 +920,10 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> newKahIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldKahIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : kahList) {
-            newKahIdNos.add(item.getIdNo());
+            newKahIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldKahList) {
-            oldKahIdNos.add(item.getIdNo());
+            oldKahIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newKahIdNos.equals(oldKahIdNos)) {
             isAuto = false;
@@ -1006,27 +1012,49 @@ public class EqRequestForChangeSubmitResultChange {
         if (size != oldAppSvcRelatedInfoDtos.size()) {
             return true;
         }
+
         for (int i = 0; i < size; i++) {
-            List<AppSvcDisciplineAllocationDto> allocationDtoList = appSvcRelatedInfoDtos
-                    .get(i).getAppSvcDisciplineAllocationDtoList();
-            List<AppSvcDisciplineAllocationDto> oldAllocationDtoList = oldAppSvcRelatedInfoDtos
-                    .get(i).getAppSvcDisciplineAllocationDtoList();
-            Map<String, String> cgoMap = new HashMap<>();
-            Map<String, String> slMap = new HashMap<>();
-            if (oldAllocationDtoList != null) {
-                oldAllocationDtoList.forEach(dto -> {
-                    cgoMap.put(dto.getIdNo(), dto.getIdNo());
-                    slMap.put(dto.getSlIndex(), dto.getSectionLeaderName());
-                });
-            }
-            if (allocationDtoList != null) {
-                boolean changed = allocationDtoList.stream().anyMatch(dto -> cgoMap.get(dto.getIdNo()) == null
-                        || slMap.get(dto.getSlIndex()) == null);
-                if (changed) {
-                    return true;
-                }
+            int flag = isChangeDisciplineAllocation(appSvcRelatedInfoDtos.get(i), oldAppSvcRelatedInfoDtos.get(i));
+            if (flag != 0 && flag != 1) {
+                return true;
             }
         }
         return false;
     }
+
+    /**
+     * 0: not changed
+     * 1: changed with related cgo and sl no changed
+     * 2: changed with related cgo no changed and sl changed
+     * 3: changed with related cgo changed and sl no changed
+     * 4: changed with cgo and sl both changed
+     * 5: changed with svc info
+     *
+     * @param appSvcRelatedInfoDto
+     * @param oldAppSvcRelatedInfoDto
+     * @return
+     */
+    private static int isChangeDisciplineAllocation(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto) {
+        if (appSvcRelatedInfoDto == null && oldAppSvcRelatedInfoDto == null) {
+            return 0;
+        } else if (appSvcRelatedInfoDto == null ^ oldAppSvcRelatedInfoDto == null) {
+            return 5;
+        }
+        List<String> cgoList = null;
+        if (oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList() != null) {
+            cgoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList().stream()
+                    .map(dto -> NewApplicationHelper.getPersonKey(dto))
+                    .collect(Collectors.toList());
+        }
+        List<String> slList = null;
+        if (oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList() != null) {
+            slList = oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList().stream()
+                    .map(AppSvcPersonnelDto::getName)
+                    .collect(Collectors.toList());
+        }
+        return isChangeDisciplineAllocation(appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList(),
+                oldAppSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList(), cgoList, slList);
+    }
+
 }
