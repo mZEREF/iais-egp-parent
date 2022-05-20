@@ -14,10 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationG
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -136,5 +138,14 @@ public interface ApplicationService {
     Map<String, String> checkApplicationByAppGrpNo(String appGrpNo);
 
     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, String appType);
+
+    /**
+     * Check Data For Edit App
+     *
+     * @param check {@link HcsaAppConst#CHECKED_BTN}: validate data with error; {@link HcsaAppConst#CHECKED_BTN}: only check
+     * @param request
+     * @return
+     */
+    boolean checkDataForEditApp(int check, HttpServletRequest request);
 
 }

@@ -43,8 +43,6 @@ import java.util.List;
 @FeignClient(name = "hcsa-licence",configuration = FeignConfiguration.class,fallback = LicenceInFallback.class)
 public interface LicenceClient {
 
-    @GetMapping(value = "/hcsa-licence/licence-view-submission",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto> viewAppSubmissionDto(@RequestParam("licenceId") String licenceId);
     @GetMapping(path= "/hcsa-licence-rfc/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(@PathVariable(value = "licenceId") String licenceId);
 

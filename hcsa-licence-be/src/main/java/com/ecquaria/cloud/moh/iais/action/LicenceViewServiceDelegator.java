@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -136,6 +137,10 @@ public class LicenceViewServiceDelegator {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+    @Autowired
+    private LicCommService licCommService;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -415,7 +420,7 @@ public class LicenceViewServiceDelegator {
                 LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 request.setAttribute("oldLicenceDto", oldLicenceDto);
             }
-            AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(entity.getOriginLicenceId()).getEntity();
+            AppSubmissionDto appSubmission = licCommService.viewAppSubmissionDto(entity.getOriginLicenceId());
             if (appSubmission != null) {
                 if (hcsaServiceDto != null) {
                     appSubmission.getAppSvcRelatedInfoDtoList().get(0).setServiceCode(hcsaServiceDto.getSvcCode());

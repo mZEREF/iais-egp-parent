@@ -74,6 +74,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -408,7 +409,27 @@ public class HcsaApplicationDelegator {
         setVerifiedDropdownValue(bpc.request, applicationViewDto, taskDto);
         //set session
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        // for edit application
+        checkForEditingApplication(bpc.request);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
+    }
+
+    private void checkForEditingApplication(HttpServletRequest request) {
+        // check from editing application
+        String appError = ParamUtil.getString(request, HcsaAppConst.ERROR_APP);
+        if (StringUtil.isNotEmpty(appError)) {
+            ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, StringUtil.clarify(appError));
+        }
+        // show edit application
+        boolean showBtn = true;
+        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "nextStages");
+        if (nextStageList != null) {
+            showBtn = nextStageList.stream()
+                    .map(SelectOption::getValue)
+                    .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
+        }
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
+                && applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_BTN, request));
     }
 
     /**
@@ -3933,7 +3954,8 @@ public class HcsaApplicationDelegator {
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
                 || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
             if (rfiCount == 0) {
-                nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
+                        "Request For Information"));
             }
         }
 

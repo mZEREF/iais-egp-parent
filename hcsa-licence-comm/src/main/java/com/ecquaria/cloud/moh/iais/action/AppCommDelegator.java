@@ -3125,7 +3125,7 @@ public abstract class AppCommDelegator {
         }
         if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-            AppSubmissionDto oldDto = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
+            AppSubmissionDto oldDto = CopyUtil.copyMutableObject(oldAppSubmissionDto);
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
             AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
             if (appEditSelectDto.isLicenseeEdit()) {

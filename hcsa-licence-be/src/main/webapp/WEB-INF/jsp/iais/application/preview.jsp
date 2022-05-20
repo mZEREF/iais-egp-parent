@@ -168,10 +168,14 @@
         </div>
     </div>
 </div>
-
-<iais:confirm msg="${rfcInvalidLic}" callBack="$('#rfcInvalidLic').modal('hide');" popupOrder="rfcInvalidLic"
-              needCancel="false" needEscapHtml="false"/>
-<input type="hidden" value="${not empty rfcInvalidLic? '1' : ''}" id="showInvalidLic">
+<c:if test="${not empty appError}">
+    <iais:confirm msg="${appError}" callBack="$('#appErrorMdl').modal('hide');" popupOrder="appErrorMdl"
+                  needCancel="false" needFungDuoJi="false" needEscapHtml="false"/>
+</c:if>
+<c:if test="${not empty rfcInvalidLic}">
+<iais:confirm msg="${rfcInvalidLic}" callBack="$('#rfcInvalidLic').modal('hide');" popupOrder="rfcInvalidLicMdl"
+              needCancel="false" needFungDuoJi="false" needEscapHtml="false"/>
+</c:if>
 <iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
               needCancel="false" needEscapHtml="false"/>
 <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
@@ -186,12 +190,17 @@
 <input type="hidden" value="${showRfiWithdrawal}" id="showRfiWithdrawal">
 <script type="text/javascript">
     $(document).ready(function() {
+        var $appErrorMdl = $('#appErrorMdl');
+        if ($appErrorMdl.length > 0) {
+            $appErrorMdl.modal('show');
+        }
+        var $rfcInvalidLicMdl = $('#rfcInvalidLicMdl');
+        if($rfcInvalidLicMdl.length > 0) {
+            $rfcInvalidLicMdl.modal('show');
+        }
         //Binding method
         if(!isEmpty($('#showRfiWithdrawal').val())){
             $('#rfiWithdrawalMdl').modal('show');
-        }
-        if(!isEmpty($('#showInvalidLic').val())){
-            $('#rfcInvalidLic').modal('show');
         }
         if($('#showOtherErrorCheck').val()!=''){
             $('#showOtherError').modal('show');

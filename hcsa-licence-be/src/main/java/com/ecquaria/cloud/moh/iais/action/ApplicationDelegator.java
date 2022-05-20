@@ -94,43 +94,7 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     private boolean checkData(HttpServletRequest request) {
-        boolean isValid = true;
-        if (ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_TYPE) != null) {
-            return isValid;
-        }
-        String invalidRole = (String) ParamUtil.getRequestAttr(request, HcsaAppConst.ERROR_TYPE);
-        if (HcsaAppConst.ERROR_ROLE.equals(invalidRole)) {
-            isValid = false;
-        } else {
-            LoginContext loginContext = ApplicationHelper.getLoginContext(request);
-            if (loginContext == null || !StringUtil.isIn(loginContext.getCurRoleId(), new String[]{
-                    RoleConsts.USER_ROLE_ASO,
-                    RoleConsts.USER_ROLE_PSO,
-                    RoleConsts.USER_ROLE_INSPECTIOR})) {
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
-                isValid = false;
-            }
-        }
-        if (isValid) {
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto) request.getSession().getAttribute("applicationViewDto");
-            if (applicationViewDto == null) {
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
-                isValid = false;
-            } else {
-                Map<String, String> checkMap = checkNextStatusOnRfi(applicationViewDto.getApplicationGroupDto().getGroupNo(),
-                        applicationViewDto.getApplicationDto().getApplicationNo());
-                String appError = checkMap.get(HcsaAppConst.ERROR_APP);
-                if (!StringUtil.isEmpty(appError)) {
-                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
-                    isValid = false;
-                }
-            }
-        }
-        if (!isValid) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
-        }
-        log.info(StringUtil.changeForLog("Check Roles - isValid: " + isValid));
-        return isValid;
+        return applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_AND_MSG, request);
     }
 
     @Override
@@ -374,10 +338,15 @@ public class ApplicationDelegator extends AppCommDelegator {
                     .append(bpc.request.getServerName())
                     .append("main-web");
         } else {
-            super.prepareJump(bpc);
+            //super.prepareJump(bpc);
             url.append(InboxConst.URL_HTTPS)
                     .append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTRANET/ApplicationView/prepareData");
+            String appError = (String) ParamUtil.getRequestAttr(bpc.request, HcsaAppConst.ERROR_APP);
+            if (StringUtil.isNotEmpty(appError)) {
+                url.append("?").append(HcsaAppConst.ERROR_APP).append("=")
+                        .append(StringUtil.obscured(appError));
+            }
         }
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);

@@ -146,6 +146,12 @@ public final class HcsaAppConst {
     public static final String ERROR_TYPE                                   = "ERROR_TYPE";
     public static final String ERROR_ROLE                                   = "ERROR_ROLE";
 
+    public static final String CHECKED                                      = "CHECKED";
+    public static final int CHECKED_AND_MSG                                 = 0;
+    public static final int CHECKED_BTN                                     = 1;
+
+    public static final String SHOW_EDIT_BTN                                = "showEditBtn";
+
     public static final String ACTION_LICENSEE                              = "licensee";
     public static final String ACTION_PREMISES                              = "premises";
     public static final String ACTION_DOCUMENTS                             = "documents";
