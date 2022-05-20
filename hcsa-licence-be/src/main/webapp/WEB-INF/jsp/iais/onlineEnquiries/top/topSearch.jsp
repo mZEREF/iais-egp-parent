@@ -125,10 +125,7 @@
                         </div>
                     </div>
                     <br>
-
-                    <div class="col-xs-12 row">
                         <div class="components">
-
                             <iais:pagination param="topParam" result="topResult"/>
                             <div class="table-responsive">
                                 <div class="table-gp">
@@ -227,15 +224,11 @@
                                 </div>
 
                             </div>
-
                             <iais:action style="text-align:right;">
                                 <a class="btn btn-secondary"
                                    href="${pageContext.request.contextPath}/hcsa/enquiry/ar/TOP-SearchResults-DownloadS">Download</a>
                             </iais:action>
                         </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>

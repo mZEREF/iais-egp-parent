@@ -110,8 +110,6 @@
                         </div>
                     </div>
                     <br>
-
-                    <div class="col-xs-12">
                         <div class="components">
                             <h3>
                                 <span>Search Results</span>
@@ -208,10 +206,7 @@
                                 <a class="btn btn-secondary"
                                    href="${pageContext.request.contextPath}/hcsa/enquiry/ar/LDT-SearchResults-DownloadS">Download</a>
                             </iais:action>
-
                         </div>
-                    </div>
-
                 </div>
             </div>
         </div>

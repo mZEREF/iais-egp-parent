@@ -110,10 +110,7 @@
                         </div>
                     </div>
                     <br>
-
-                    <div class="col-xs-12 row">
                         <div class="components">
-
                             <iais:pagination param="drpParam" result="drpResult"/>
                             <div class="table-responsive">
                                 <div class="table-gp">
@@ -207,9 +204,6 @@
                                    href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DRP-SearchResults-DownloadS">Download</a>
                             </iais:action>
                         </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>

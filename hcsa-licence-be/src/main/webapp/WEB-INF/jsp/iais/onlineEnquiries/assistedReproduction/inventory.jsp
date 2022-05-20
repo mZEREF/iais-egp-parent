@@ -130,8 +130,6 @@
                     </div>
                 </div>
                 <br>
-
-                <div class="col-xs-12 row">
                     <div class="components">
 
                         <iais:pagination param="transactionParam" result="transactionResult"/>
@@ -272,8 +270,6 @@
 
                         </div>
                     </div>
-                </div>
-
 
             </div>
         </div>

@@ -29,8 +29,6 @@
                         <div class="bg-title col-xs-12 col-md-12">
                             <h2>Assisted Reproduction Enquiry</h2>
                         </div>
-
-
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
                                 <iais:field width="4" value="SEARCH BY" />
@@ -149,10 +147,8 @@
                     </div>
                     <br>
 
-
                     <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy =='1' }">
                         <div id="patientResultDisplay" >
-                            <div class="col-xs-12 row">
                                 <div class="components">
 
                                     <iais:pagination param="patientParam" result="patientResult"/>
@@ -253,16 +249,12 @@
                                            href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
                                     </iais:action>
                                 </div>
-                            </div>
                         </div>
                     </c:if>
 
-
                     <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy =='0' }">
                         <div id="submissionResultDisplay" >
-                            <div class="col-xs-12 row">
                                 <div class="components">
-
                                     <iais:pagination param="submissionParam" result="submissionResult"/>
                                     <div class="table-responsive">
                                         <div class="table-gp">
@@ -335,11 +327,8 @@
                                            href="${pageContext.request.contextPath}/hcsa/enquiry/ar/SubmissionID-SearchResults-Download">Download</a>
                                     </iais:action>
                                 </div>
-                            </div>
                         </div>
                     </c:if>
-
-
 
                 </div>
             </div>

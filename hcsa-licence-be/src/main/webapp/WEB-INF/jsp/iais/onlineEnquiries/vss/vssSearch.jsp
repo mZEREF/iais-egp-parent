@@ -123,10 +123,7 @@
                         </div>
                     </div>
                     <br>
-
-                    <div class="col-xs-12 row">
                         <div class="components">
-
                             <iais:pagination param="vssParam" result="vssResult"/>
                             <div class="table-responsive">
                                 <div class="table-gp">
@@ -231,9 +228,6 @@
                                    href="${pageContext.request.contextPath}/hcsa/enquiry/ar/VSS-SearchResults-DownloadS">Download</a>
                             </iais:action>
                         </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>
