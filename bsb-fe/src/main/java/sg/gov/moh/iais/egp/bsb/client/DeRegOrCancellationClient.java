@@ -13,7 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationFacilityDto;
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "deRegOrCancellation")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "deRegOrCancellation")
 public interface DeRegOrCancellationClient {
     /**************************DeRegistrationFacility**********************************/
 

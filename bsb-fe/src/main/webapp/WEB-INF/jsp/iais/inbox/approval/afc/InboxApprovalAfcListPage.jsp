@@ -170,20 +170,20 @@
                                                                     <option value="#" selected="selected">Select</option>
                                                                     <c:choose>
                                                                         <c:when test="${approval.status eq 'APPRSTA001' and approval.processType eq 'PROTYPE005'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRfcViewCertRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
+                                                                            <option value="/bsb-web/eservice/INTERNET/MohRfcViewCertRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
                                                                         </c:when>
                                                                     </c:choose>
                                                                     <c:choose>
                                                                         <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
+                                                                            <option value="/bsb-web/eservice/INTERNET/MohRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
                                                                         </c:when>
                                                                         <c:when test="${approval.status eq 'APPRSTA004' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohDelayRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
+                                                                            <option value="/bsb-web/eservice/INTERNET/MohDelayRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
                                                                         </c:when>
                                                                     </c:choose>
 
                                                                     <c:if test="${approval.processType eq 'PROTYPE005' and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">
-                                                                        <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationAFC?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">DeRegistration</option>
+                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantDeRegistrationAFC?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">DeRegistration</option>
                                                                     </c:if>
                                                                 </select>
                                                             </td>

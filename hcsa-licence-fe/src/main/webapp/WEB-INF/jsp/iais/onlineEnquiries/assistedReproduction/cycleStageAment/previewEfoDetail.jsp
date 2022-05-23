@@ -41,7 +41,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Is it Medically Indicated?" mandatory="false"/>
+                    <iais:field width="4" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG025')}" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
                             Yes</c:if>
@@ -58,19 +58,29 @@
                 <iais:row>
                     <iais:field width="4" value="Reason" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
+                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
+                            <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/></c:if>
+                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0 }">
+                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/></c:if>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <iais:code code="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.reason}"/>
+                        <c:if test="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.isMedicallyIndicated ==1 }">
+                            <iais:code code="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.reason}"/></c:if>
+                        <c:if test="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.isMedicallyIndicated ==0 }">
+                            <c:out value="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.reason}"/></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
+                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">
+                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
+                        </c:if>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.otherReason}"/>
+                        <c:if test="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.reason=='EFOR004'}">
+                            <c:out value="${arSuperDataSubmissionDtoVersion.efoCycleStageDto.otherReason}"/>
+                        </c:if>
                     </iais:value>
                 </iais:row>
             </div>

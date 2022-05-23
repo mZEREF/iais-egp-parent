@@ -15,6 +15,7 @@
 <%@attribute name="docTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
 <%@attribute name="dashboardFrag" fragment="true" %>
+<%@attribute name="innerNavTabFrag" fragment="true" %>
 <%@attribute name="innerFooterFrag" fragment="true" %>
 <%@attribute name="editJudge" type="java.lang.Boolean" %>
 
@@ -56,7 +57,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/InnerNavTab.jsp" %>
+                        <jsp:invoke fragment="innerNavTabFrag"/>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="PrimaryDocsPanel" role="tabpanel">

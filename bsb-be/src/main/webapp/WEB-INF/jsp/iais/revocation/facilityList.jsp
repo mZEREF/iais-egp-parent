@@ -144,13 +144,13 @@
                                                     <select id="appAction${status.index}" name="appAction${status.index}" class="appActionDropdown${status.index}" data-action-select="">
                                                         <option value="#" selected="selected">Select</option>
                                                         <c:if test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
-                                                            <option value="/bsb-be/eservice/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&from=fac">Revoke</option>
+                                                            <option value="/bsb-web/eservice/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&from=fac">Revoke</option>
                                                         </c:if>
                                                         <c:if test="${items.status eq 'APPRSTA001'}">
-                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitSuspension?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Suspend</option>
+                                                            <option value="/bsb-web/eservicecontinue/INTRANET/DOSubmitSuspension?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Suspend</option>
                                                         </c:if>
                                                         <c:if test="${items.status eq 'APPRSTA004'}">
-                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitReinstatement?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Reinstate</option>
+                                                            <option value="/bsb-web/eservicecontinue/INTRANET/DOSubmitReinstatement?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Reinstate</option>
                                                         </c:if>
                                                     </select>
                                                 </td>

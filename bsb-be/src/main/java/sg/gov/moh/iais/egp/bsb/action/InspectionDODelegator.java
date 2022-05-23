@@ -176,7 +176,7 @@ public class InspectionDODelegator {
     private void setCheckListUnFinishedTask(HttpServletRequest request,String appId){
         //get  commonDto draft
         List<String> ids=IaisCommonUtils.genNewArrayList();
-        List<TaskAssignDto> taskAssignDtoList=inspectionClient.getOfficerTaskList("/bsb-be/eservice/INTRANET/MohBsbInspectionDO",appId).getBody();
+        List<TaskAssignDto> taskAssignDtoList=inspectionClient.getOfficerTaskList("/bsb-web/eservice/INTRANET/MohBsbInspectionDO",appId).getBody();
         for (TaskAssignDto ta:taskAssignDtoList) {
             ids.add(ta.getUserId());
         }

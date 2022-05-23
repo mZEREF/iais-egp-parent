@@ -5,7 +5,7 @@
         <webui:setLayout name="iais-blank"/>
         <script>
             $(function () {
-                document.location ="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"
+                document.location ="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"
             })
         </script>
     </c:when>

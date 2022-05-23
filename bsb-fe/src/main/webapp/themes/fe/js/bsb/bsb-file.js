@@ -106,16 +106,16 @@ function reloadNewFile(id, type) {
 function downloadFile(cond, id) {
     var url;
     if (cond === 'saved') {
-        url = "/bsb-fe/ajax/doc/download/followup/repo/" + id;
+        url = "/bsb-web/ajax/doc/download/followup/repo/" + id;
     } else if (cond === 'new') {
-        url = "/bsb-fe/ajax/doc/download/followup/new/" + id;
+        url = "/bsb-web/ajax/doc/download/followup/new/" + id;
     }
 
     window.open(url);
 }
 
 function downloadSavedFile(id) {
-    var url = "/bsb-fe/ajax/doc/download/commonDoc/repo/" + id;
+    var url = "/bsb-web/ajax/doc/download/commonDoc/repo/" + id;
     window.open(url);
 }
 

@@ -12,7 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inbox.*;
 import java.util.List;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface BsbInboxClient {
     @GetMapping(value = "/fe-inbox/dashboard", produces = MediaType.APPLICATION_JSON_VALUE)
     InboxDashboardDto retrieveDashboardData();

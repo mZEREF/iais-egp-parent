@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,13 +40,13 @@ import sg.gov.moh.iais.egp.bsb.constant.AssessmentState;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.SelfAssChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,11 +67,17 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ERROR_MESSAGE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_BACK;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_PAGE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_DOWNLOAD;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_EDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_FILL;
@@ -81,7 +88,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.AC
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.FILE_ITEM_ERROR_MSGS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ACTIONS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ANSWER_MAP;
-import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CHKL_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CURRENT_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_DATA_DTO;
@@ -105,10 +111,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ST
 @Delegator("bsbSubmitSelfAssessment")
 public class BsbSubmitSelfAssessmentDelegator {
     private final InspectionClient inspectionClient;
+    private final RfiService rfiService;
 
     @Autowired
-    public BsbSubmitSelfAssessmentDelegator(InspectionClient inspectionClient) {
+    public BsbSubmitSelfAssessmentDelegator(InspectionClient inspectionClient, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -124,12 +132,19 @@ public class BsbSubmitSelfAssessmentDelegator {
         session.removeAttribute(KEY_SELF_ASSESSMENT_ANSWER_MAP);
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
 
+        String appId = "";
         // get app ID from request parameter
         String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
-        if (appId == null || appId.equals(maskedAppId)) {
-            throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+        if (maskedAppId != null) {
+            appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
+            if (appId == null || appId.equals(maskedAppId)) {
+                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+            }
         }
+
+        //if rfi module
+        rfiService.clearAndSetAppIdInSession(request);
+
         /* Here we don't use the same key to edit the checklist latter.
          * We don't use this to display the checklist form directly.
          * Because we keep the chance in the future: we may use a appId to show a list of app's checklist to be filled,
@@ -137,8 +152,6 @@ public class BsbSubmitSelfAssessmentDelegator {
          * Currently, we only have one app's checklist to be filled, so this app will be the same as the app in next
          * page. */
         ParamUtil.setSessionAttr(request, KEY_ENTRY_APP_ID, appId);
-
-
 
         // set audit trail info (We can set appNo here, may be added in future)
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT);
@@ -308,8 +321,15 @@ public class BsbSubmitSelfAssessmentDelegator {
             SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
             answerRecordDto.setAnswer(answer);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
-            inspectionClient.submitSelfAssessment(answerRecordDto);
             ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
+
+            String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
+            if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
+                //save rfi data
+                rfiService.saveInspectionSelfAssessment(request, answerRecordDto);
+            } else {
+                inspectionClient.submitSelfAssessment(answerRecordDto);
+            }
         }
     }
 
@@ -351,15 +371,14 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Step: PrepareUpload
-     * @param bpc
      */
     public void prepareUpload(BaseProcessClass bpc) {
         log.info("----- PrepareUpload -----");
         clearData(bpc);
         HttpServletRequest request = bpc.request;
         SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
-        if (answerRecordDto != null && !StringUtil.isEmpty(answerRecordDto.getApplicationId())
-                && !StringUtil.isEmpty(answerRecordDto.getChkLstConfigId())) {
+        if (answerRecordDto != null && StringUtils.hasLength(answerRecordDto.getApplicationId())
+                && StringUtils.hasLength(answerRecordDto.getChkLstConfigId())) {
             ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
             return;
         }
@@ -383,14 +402,13 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Step: DoUpload
-     * @param bpc
      */
     public void doUpload(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         log.info(StringUtil.changeForLog("The Action Type: " + actionType));
-        if (ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)) {
-            ParamUtil.setSessionAttr(request, ACTION_UPLOAD_TYPE, ModuleCommonConstants.KEY_NAV_BACK);
+        if (KEY_NAV_BACK.equals(actionType)) {
+            ParamUtil.setSessionAttr(request, ACTION_UPLOAD_TYPE, KEY_NAV_BACK);
             return;
         }
         SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
@@ -422,12 +440,12 @@ public class BsbSubmitSelfAssessmentDelegator {
                 ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_ERROR_MSGS, errorMsgs);
             }
         }
-        String nextType = ModuleCommonConstants.KEY_NAV_NEXT;
+        String nextType = KEY_NAV_NEXT;
         if (!errorMap.isEmpty() || IaisCommonUtils.isNotEmpty(errorMsgs)) {
             if (!errorMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, ValidationConstants.KEY_VALIDATION_ERRORS, JsonUtil.parseToJson(errorMap));
             }
-            nextType = ModuleCommonConstants.KEY_NAV_PAGE;
+            nextType = KEY_NAV_PAGE;
         } else {
             // save
             answerRecordDto.setAnswer(JsonUtil.parseToJson(answerDtos));
@@ -467,13 +485,13 @@ public class BsbSubmitSelfAssessmentDelegator {
             File file = fileInfo.getFile();
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, false);
             Map<String, List<SelfAssChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
-            if (data != null && !data.isEmpty()) {
+            if (!CollectionUtils.isEmpty(data)) {
                 for (Map.Entry<String, List<SelfAssChklItemExcelDto>> entry : data.entrySet()) {
                     List<ChklstItemAnswerDto> collect = entry.getValue().stream()
-                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()))
+                            .filter(dto -> StringUtils.hasLength(dto.getSnNo()))
                             .map(dto -> {
                                 String itemKey = dto.getItemKey();
-                                if (StringUtil.isEmpty(itemKey)) {
+                                if (!StringUtils.hasLength(itemKey)) {
                                     return new ChklstItemAnswerDto();
                                 }
                                 String[] keys = itemKey.split(KEY_SEPARATOR);
@@ -512,10 +530,6 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Download / export Template
-     *
-     * @param request
-     * @param response
-     * @throws Exception
      */
     @ResponseBody
     @GetMapping(value = "/self-assessment/exporting-template")
@@ -529,10 +543,6 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     /**
      * Download / export Data
-     *
-     * @param request
-     * @param response
-     * @throws Exception
      */
     @ResponseBody
     @GetMapping(value = "/self-assessment/exporting-data")

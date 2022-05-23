@@ -102,7 +102,7 @@
                   </div>
                   <br><br>
                   <iais:action >
-                    <a href="/bsb-be/eservicecontinue/INTRANET/MohBsbSupervisorAssignmentPool" class="back" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                    <a href="/bsb-web/eservicecontinue/INTRANET/MohBsbSupervisorAssignmentPool" class="back" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                     <c:if test="${multiAssignInsDto.canMultiAssign}">
                       <button id="submitBtn" class="btn btn-primary" style="float:right" type="button">Next</button>
                     </c:if>

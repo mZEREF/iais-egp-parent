@@ -12,7 +12,7 @@ $(function () {
 
     $("#AppPreInspRfiCheck").click(function () {
         if($(this).is(':checked')) {
-            var url = "/bsb-be/eservice/INTRANET/MohBsbPreInspection/1/PrepareApplicationRfi";
+            var url = "/bsb-web/eservice/INTRANET/MohBsbPreInspection/1/PrepareApplicationRfi";
             window.open(url,'_blank');
         }
     })

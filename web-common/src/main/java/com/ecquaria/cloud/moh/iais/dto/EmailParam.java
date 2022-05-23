@@ -36,4 +36,18 @@ public class EmailParam {
     private String recipientEmail;
     private String recipientName;
     private String serviceTypes;
+
+    public EmailParam() {
+    }
+
+    public EmailParam(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType, String refId, String subject, String serviceTypes) {
+        this.templateId = templateId;
+        this.templateContent = templateContent;
+        this.queryCode = queryCode;
+        this.reqRefNum = reqRefNum;
+        this.refIdType = refIdType;
+        this.refId = refId;
+        this.subject = subject;
+        this.serviceTypes = serviceTypes;
+    }
 }

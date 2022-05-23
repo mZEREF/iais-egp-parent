@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
@@ -66,8 +67,8 @@ public class InsAFCReportService {
             case APP_STATUS_PEND_AFC_REPORT_UPLOAD:
                 profile = ValidationConstants.PROFILE_AFC_ADMIN_FIRST_SUBMIT;
                 break;
-            case APP_STATUS_PEND_AFC_INPUT:
-            case APP_STATUS_PEND_APPLICANT_REPORT_REVIEW:
+            case APP_STATUS_PEND_DO_REPORT_REVIEW:
+            case APP_STATUS_PEND_AO_REPORT_REVIEW:
                 profile = ValidationConstants.PROFILE_AFC_REPORT_SUBMIT;
                 break;
             default:
@@ -88,26 +89,35 @@ public class InsAFCReportService {
     public void validateDo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindApplicantParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_DO);
+        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_DO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
+
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(!StringUtils.isEmpty(docDtoMap)){
+            List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
+        }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
             ReviewAFCReportDto displayDto = getDisplayDto(request);
             afcSaveDto.setAppId(displayDto.getAppId());
-            List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(commonDocDto);
+            saveNewUploadedDoc(commonDocDto);
             boolean uploadNewDoc = false;
             if (!CollectionUtils.isEmpty(commonDocDto.getSavedDocMap())) {
                 uploadNewDoc = true;
                 afcSaveDto.setNewCertDocDtoList(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
             }
             afcSaveDto.setUploadNewDoc(uploadNewDoc);
+
             if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
                 afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveDoInsAFCData(afcSaveDto);
+            ParamUtil.setSessionAttr(request, "ValidSave", "Y");
             if (responseDto.ok()) {
                 log.info("You have successfully submitted the data");
             } else {
@@ -117,19 +127,27 @@ public class InsAFCReportService {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
         }
     }
+
     public void validateAo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindApplicantParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_AO);
+        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_AO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
+
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(!StringUtils.isEmpty(docDtoMap)){
+            List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
+        }
         ValidationResultDto validationResultDto = inspectionAFCClient.validateAFCReportDto(dto);
         if (validationResultDto.isPass()) {
             AFCSaveDto afcSaveDto = new AFCSaveDto();
             ReviewAFCReportDto displayDto = getDisplayDto(request);
             afcSaveDto.setAppId(displayDto.getAppId());
-            List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(commonDocDto);
+            saveNewUploadedDoc(commonDocDto);
             boolean uploadNewDoc = false;
             if (!CollectionUtils.isEmpty(commonDocDto.getSavedDocMap())) {
                 uploadNewDoc = true;
@@ -140,6 +158,7 @@ public class InsAFCReportService {
                 afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
             }
             ResponseDto<String> responseDto = inspectionAFCClient.saveAoCertificationData(afcSaveDto);
+            ParamUtil.setSessionAttr(request, "ValidSave", "Y");
             if (responseDto.ok()) {
                 log.info("You have successfully submitted the data");
             } else {
@@ -150,7 +169,7 @@ public class InsAFCReportService {
         }
     }
     //get Do/Ao action data
-    public void bindApplicantParam(HttpServletRequest request, ReviewAFCReportDto dto, AFCCommonDocDto commonDocDto,String role) {
+    public void bindOfficerParam(HttpServletRequest request, ReviewAFCReportDto dto, AFCCommonDocDto commonDocDto,String role) {
         List<CertificationDocDisPlayDto> certificationDocDtos = dto.getCertificationDocDisPlayDtos();
         Map<String, CertificationDocDto> newDocMap = commonDocDto.getNewDocMap();
         //mark previous doc as final
@@ -158,11 +177,11 @@ public class InsAFCReportService {
         //mark new doc as final
         if (!CollectionUtils.isEmpty(newDocMap)) {
             List<CertificationDocDisPlayDto> dtoList = newDocMap.values().stream().map(CertificationDocDto::getDisPlayDto).collect(Collectors.toList());
-            List<String> maskedRepoIds = dtoList.stream().filter(docDto -> docDto.getRoundOfReview().equals(dto.getMaxRound())).map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
+            List<String> maskedRepoIds = dtoList.stream().map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                newDocMap.get(repoId).getDisPlayDto().setApplicantMarkFinal(checked);
+                newDocMap.get(repoId).getDisPlayDto().setMohMarkFinal(checked);
             }
         }
     }
@@ -176,11 +195,14 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                if (checked.equals(YES)){
+                if (!StringUtils.isEmpty(checked) && checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
-                docDtoMap.get(repoId).setAfcMarkFinal(checked);
+                if (role.equals(RoleConstants.ROLE_BSB_DO)||role.equals(RoleConstants.ROLE_BSB_AO)) {
+                    docDtoMap.get(repoId).setMohMarkFinal(checked);
+                }
             }
+            ParamUtil.setSessionAttr(request,PARAM_REPO_ID_DOC_MAP, (Serializable) docDtoMap);
         }
     }
 

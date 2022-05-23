@@ -33,32 +33,32 @@
           <c:forEach var="info" items="${newDocMap.values()}" varStatus="status">
             <tr id="${info.disPlayDto.maskedRepoId}FileTr">
               <td>
-                <p class="visible-xs visible-sm table-row-title">S/N</p>
-                <p style="text-align: center"><c:out value="${status.index+1}"/></p>
+                <p  class="visible-xs visible-sm table-row-title">S/N</p>
+                <p ><c:out value="${status.index+1}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Document Name</p>
-                <p style="text-align: center"><c:out value="${info.disPlayDto.docName}"/></p>
+                <p class="visible-xs visible-sm table-row-title" >Document Name</p>
+                <p ><c:out value="${info.disPlayDto.docName}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Document Type</p>
-                <p style="text-align: center"><iais:code code="${info.disPlayDto.docType}"/></p>
+                <p class="visible-xs visible-sm table-row-title" >Document Type</p>
+                <p ><iais:code code="${info.disPlayDto.docType}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Uploaded by</p>
-                <p style="text-align: center"><c:out value="${info.disPlayDto.userDisplayName}"/></p>
+                <p class="visible-xs visible-sm table-row-title" >Uploaded by</p>
+                <p ><c:out value="${info.disPlayDto.userDisplayName}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Upload Date</p>
-                <p style="text-align: center"><fmt:formatDate value="${info.disPlayDto.uploadDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                <p class="visible-xs visible-sm table-row-title" >Upload Date</p>
+                <p ><fmt:formatDate value="${info.disPlayDto.uploadDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Round of Review</p>
-                <p style="text-align: center"><c:out value="${reviewAFCReportDto.maxRound+1}"/></p>
+                <p class="visible-xs visible-sm table-row-title" >Round of Review</p>
+                <p ><c:out value="${reviewAFCReportDto.maxRound+1}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="downloadFile('new','${info.disPlayDto.maskedRepoId}')">Download</a></p>
+                <p class="visible-xs visible-sm table-row-title" >Actions</p>
+                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadFile('new','${info.disPlayDto.maskedRepoId}')"><span style="font-size: 12px;color: #444444c9">Download</span></a></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">AFC</p>
@@ -66,11 +66,11 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Applicant</p>
-                <p style="text-align: center"><input name="${info.disPlayDto.maskedRepoId}Applicant" type="checkbox" value="Y" <c:if test="${canActionRole ne Applicant}">disabled</c:if>/></p>
+                <p style="text-align: center"><input type="checkbox" disabled/></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">MOH</p>
-                <p style="text-align: center"><input type="checkbox" disabled/></p>
+                <p style="text-align: center"><input name="${info.disPlayDto.maskedRepoId}Applicant" type="checkbox" value="Y" <c:if test="${info.disPlayDto.mohMarkFinal eq 'Y'}">checked</c:if>/></p>
               </td>
             </tr>
           </c:forEach>
@@ -79,11 +79,11 @@
           <c:forEach var="docInfo" items="${reviewAFCReportDto.certificationDocDisPlayDtos}" varStatus="status">
             <tr id="${docInfo.maskedRepoId}FileTr">
               <td>
-                <p class="visible-xs visible-sm table-row-title">S/N</p>
+                <p class="visible-xs visible-sm table-row-title" style="text-align: center">S/N</p>
                 <p><c:out value="${status.index+1}"/></p>
               </td>
               <td>
-                <p class="visible-xs visible-sm table-row-title">Document Name</p>
+                <p class="visible-xs visible-sm table-row-title" style="text-align: center">Document Name</p>
                 <p><c:out value="${docInfo.docName}"/></p>
               </td>
               <td>
@@ -92,7 +92,7 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Uploaded by</p>
-                <p><c:out value="${docInfo.uploadBy}"/></p>
+                <p><c:out value="${docInfo.userDisplayName}"/></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Upload Date</p>
@@ -104,38 +104,27 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-sm" onclick="downloadFile('saved','${docInfo.maskedRepoId}')">Download</a></p>
+                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadFile('saved','${docInfo.maskedRepoId}')"><span style="font-size: 12px;color: #444444c9">Download</span></a></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">AFC</p>
-                <c:choose>
-                  <c:when test="${canActionRole eq 'AFC' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
-                    <p><input name="${docInfo.maskedRepoId}AFC" type="checkbox" value="Y"/></p>
-                  </c:when>
-                  <c:otherwise>
-                    <p><input type="checkbox" disabled/></p>
-                  </c:otherwise>
-                </c:choose>
+                <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.afcMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Applicant</p>
-                <c:choose>
-                  <c:when test="${canActionRole eq 'Applicant' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
-                    <p><input name="${docInfo.maskedRepoId}Applicant" type="checkbox" value="Y"/></p>
-                  </c:when>
-                  <c:otherwise>
-                    <p><input type="checkbox" disabled/></p>
-                  </c:otherwise>
-                </c:choose>
+                <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.applicantMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">MOH</p>
                 <c:choose>
                   <c:when test="${canActionRole eq 'BSB_DO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
-                    <p><input name="${docInfo.maskedRepoId}Applicant" type="checkbox" value="Y"/></p>
+                    <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_DO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if>  value="Y"/></p>
+                  </c:when>
+                  <c:when test="${canActionRole eq 'BSB_AO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
+                    <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_AO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> value="Y"/></p>
                   </c:when>
                   <c:otherwise>
-                    <p><input type="checkbox" disabled/></p>
+                    <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
                   </c:otherwise>
                 </c:choose>
               </td>
@@ -156,7 +145,7 @@
       <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     </c:when>
     <c:otherwise>
-      <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+      <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     </c:otherwise>
   </c:choose>
   <button type="button" name="saveReportBtn" id="saveReportBtn" style="float:right" class="btn btn-secondary">

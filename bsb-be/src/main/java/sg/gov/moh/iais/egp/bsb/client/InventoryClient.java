@@ -17,7 +17,7 @@ import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import java.util.List;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface InventoryClient {
     @GetMapping(path = "/facility-info/basics")
     List<FacilityBasicInfo> queryAllFacilityInfo();

@@ -46,8 +46,8 @@ public final class RevocationConstants {
     public static final String APP = "app";
     public static final String PARAM_REVOKE_DTO = "revokeDto";
 
-    public static final String TASK_LIST_URL = "/bsb-be/eservice/INTRANET/MohBsbTaskList";
-    public static final String APPROVAL_LIST_URL = "/bsb-be/eservice/INTRANET/FacilityList";
+    public static final String TASK_LIST_URL = "/bsb-web/eservice/INTRANET/MohBsbTaskList";
+    public static final String APPROVAL_LIST_URL = "/bsb-web/eservice/INTRANET/FacilityList";
 
     public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
 }

@@ -31,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -99,14 +100,31 @@ public class TopDataSubmissionDelegator {
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
-            if(crud_action_type==null){
-                DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
-                if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+            if (StringUtil.isEmpty(crud_action_type)){
+                crud_action_type="";
+            }
+            if(crud_action_type.equals("rfc")){
+                if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
+                    DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
+                    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                            .map(LoginContext::getOrgId).orElse("");
+                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
+                        ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+                    }
                 }
+            }
+            //draft
+            if (crud_action_type.equals("resume")) {
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                if (topSuperDataSubmissionDto == null) {
+                    log.warn("Can't resume data!");
+                    topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+                }
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+            } else if (crud_action_type.equals("delete")) {
+                topDataSubmissionService.deleteTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
         }
 
@@ -162,7 +180,7 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseList(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         if(currentSuper==null){
@@ -183,7 +201,7 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseLists(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         return selectOptions;
     }
@@ -191,7 +209,7 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseListsDrug(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,TOP_OTHERS));
         return selectOptions;
@@ -212,19 +230,21 @@ public class TopDataSubmissionDelegator {
         if (StringUtil.isEmpty(crud_action_type)){
             crud_action_type="";
         }
-        //draft
-        if (crud_action_type.equals("resume")) {
-            topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
-            if (topSuperDataSubmissionDto == null) {
-                log.warn("Can't resume data!");
-                topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+        if(DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            //draft
+            if (crud_action_type.equals("resume")) {
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
+                if (topSuperDataSubmissionDto == null) {
+                    log.warn("Can't resume data!");
+                    topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+                }
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+            } else if (crud_action_type.equals("delete")) {
+                topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getAppType());
+                topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             }
-            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
-        } else if (crud_action_type.equals("delete")) {
-            topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
-            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
-            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
@@ -414,7 +434,7 @@ public class TopDataSubmissionDelegator {
             errMap.putAll(result3.retrieveAll());
             ParamUtil.setRequestAttr(request, "preTermination", "false");
         }
-        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                 if (result4.isHasErrors()) {
@@ -439,7 +459,7 @@ public class TopDataSubmissionDelegator {
                 }
             }
         }
-        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
                 if (result5.isHasErrors()) {
@@ -616,7 +636,7 @@ public class TopDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+            if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
                 if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                     ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                     if (result != null) {
@@ -663,7 +683,7 @@ public class TopDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+            if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
                 if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                     ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                     if(result !=null){
@@ -699,7 +719,7 @@ public class TopDataSubmissionDelegator {
      *
      * @param bpc
      */
-    public void doSubmission(BaseProcessClass bpc) {
+    public void doSubmission(BaseProcessClass bpc) throws ParseException {
         log.info(" ----- DoSubmission ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
@@ -730,8 +750,9 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
-            if(Formatter.compareDateByDay(String.valueOf(dataSubmissionDto.getSubmitDt()),terminationDto.getTopDate())>Integer.parseInt(day)){
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
                 terminationDto.setLateSubmit(true);
             }
         }catch (Exception e){

@@ -21,5 +21,5 @@ function cancelJumpAfterReport() {
 }
 
 function jumpAfterReport() {
-    window.location.href = "/bsb-be/eservice/INTRANET/MohBsbTaskList";
+    window.location.href = "/bsb-web/eservice/INTRANET/MohBsbTaskList";
 }

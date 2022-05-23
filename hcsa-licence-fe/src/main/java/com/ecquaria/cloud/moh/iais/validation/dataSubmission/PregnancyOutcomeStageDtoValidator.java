@@ -64,14 +64,26 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
                 errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
-            if (MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow) && totalLiveBirth != 1) {
-                errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) must be 1.");
+            if(totalLiveBirth == 0){
+                errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("OAPPT_ERR005"));
+            }
+            if (MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow) && totalLiveBirth > 1) {
+                Map<String, String> params = IaisCommonUtils.genNewHashMap();
+                params.put("field1", "No. Live Birth (Total)");
+                params.put("field2", "1");
+                errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
             if (MASTER_FIRST_TWIN.equals(firstUltrasoundOrderShow) && totalLiveBirth > 2) {
-                errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) Cannot be greater 2.");
+                Map<String, String> params = IaisCommonUtils.genNewHashMap();
+                params.put("field1", "No. Live Birth (Total)");
+                params.put("field2", "2");
+                errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
             if (MASTER_FIRST_TRIPLET.equals(firstUltrasoundOrderShow) && totalLiveBirth > 3) {
-                errorMap.put("totalLiveBirthNum", "No. Live Birth (Total) Cannot be greater 3.");
+                Map<String, String> params = IaisCommonUtils.genNewHashMap();
+                params.put("field1", "No. Live Birth (Total)");
+                params.put("field2", "3");
+                errorMap.put("totalLiveBirthNum", MessageUtil.getMessageDesc("DS_ERR065", params));
             }
         }
         if (MASTER_OUTCOME_NO_LIVE.equals(pregnancyOutcome) || (MASTER_OUTCOME_LIVE.equals(pregnancyOutcome) && !MASTER_FIRST_SINGLETION.equals(firstUltrasoundOrderShow))) {
@@ -89,8 +101,11 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             errorMap.put("NICUCareBabyNum", MessageUtil.getMessageDesc("The filed cannot be greater than Total No. of Live Births"));
         }
         if (pregnancyOutcomeStageDto.getL2CareBabyNum() + pregnancyOutcomeStageDto.getL3CareBabyNum() > pregnancyOutcomeStageDto.getNicuCareBabyNum()) {
-            errorMap.put("l2CareBabyNum", MessageUtil.getMessageDesc("Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care cannot be greater than Total No. of Baby Admitted to NICU Care"));
-            errorMap.put("l3CareBabyNum", MessageUtil.getMessageDesc("Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care cannot be greater than Total No. of Baby Admitted to NICU Care"));
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field1", "Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care");
+            params.put("field2", "Total No. of Baby Admitted to NICU Care");
+            errorMap.put("l2CareBabyNum", MessageUtil.getMessageDesc("DS_ERR065", params));
+            errorMap.put("l3CareBabyNum", MessageUtil.getMessageDesc("DS_ERR065", params));
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getFemaleLiveBirthNum())) {
             errorMap.put("femaleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
@@ -119,7 +134,7 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         Date startDate = arDataSubmissionService.getCycleStartDate(cycle.getId());
         if (startDate != null && pregnancyOutcomeStageDto.getDeliveryDate() != null) {
             if (pregnancyOutcomeStageDto.getDeliveryDate().before(startDate)) {
-                errorMap.put("deliveryDate", "Cannot be earlier than cycle start date");
+                errorMap.put("deliveryDate", MessageUtil.getMessageDesc("DS_ERR066"));
             }
         }
         return errorMap;

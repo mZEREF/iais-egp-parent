@@ -2,8 +2,6 @@ package sg.gov.moh.iais.egp.bsb.dto.register.bat;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.Data;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,25 +10,29 @@ import java.util.List;
 
 @Data
 public class BATInfo implements Serializable {
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.schedule")
     private String schedule;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.name")
     private String batName;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.sample.addOrDelete")
     private List<String> sampleType;
 
     private List<String> workType;
 
     private String sampleWorkDetail;
 
+    private String estimatedMaximumVolume;
+
+    private String methodOrSystem;
 
     private ProcModeDetails details;
+
+    private ProcAlreadyInPossessionInfo inPossessionInfo;
+
 
     public BATInfo() {
         this.sampleType = new ArrayList<>();
         this.workType = new ArrayList<>();
+        details = new ProcModeDetails();
     }
 
     private static final String SEPARATOR                                     = "--v--";
@@ -39,6 +41,9 @@ public class BATInfo implements Serializable {
     private static final String KEY_PREFIX_SAMPLE_TYPE                        = "sampleType";
     private static final String KEY_PREFIX_WORK_TYPE                          = "workType";
     private static final String KEY_PREFIX_SAMPLE_WORK_DETAIL                 = "sampleWorkDetail";
+    private static final String KEY_PREFIX_ESTIMATED_MAX_VOL                  = "estimatedMaximumVolume";
+    private static final String KEY_PREFIX_METHOD_OR_SYSTEM_FOR_LSP           = "methodOrSystem";
+
     public void reqObjMapping(HttpServletRequest request,String idx){
         this.setSchedule(ParamUtil.getString(request, KEY_PREFIX_SCHEDULE + SEPARATOR +idx));
         this.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +idx));
@@ -54,11 +59,10 @@ public class BATInfo implements Serializable {
         } else {
             this.setWorkType(new ArrayList<>(0));
         }
-        this.setSampleWorkDetail(ParamUtil.getString(request, KEY_PREFIX_SAMPLE_WORK_DETAIL + SEPARATOR +idx));
-
-        ProcModeDetails procModeDetails = new ProcModeLSPDetails();
-        procModeDetails.reqObjMapping(request,idx);
-        this.setDetails(procModeDetails);
+        this.setSampleWorkDetail(ParamUtil.getString(request, KEY_PREFIX_SAMPLE_WORK_DETAIL + SEPARATOR + idx));
+        this.setEstimatedMaximumVolume(ParamUtil.getString(request, KEY_PREFIX_ESTIMATED_MAX_VOL + SEPARATOR + idx));
+        this.setMethodOrSystem(ParamUtil.getString(request, KEY_PREFIX_METHOD_OR_SYSTEM_FOR_LSP + SEPARATOR + idx));
+        this.details.reqObjMapping(request, idx);
     }
 
 }

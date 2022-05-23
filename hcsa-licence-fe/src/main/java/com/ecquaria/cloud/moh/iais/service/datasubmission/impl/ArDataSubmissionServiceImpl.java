@@ -825,21 +825,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                  if( StringUtil.isNotEmpty( dataSubmissionDraftDto.getLicenseeId())){
                      Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("ApplicantName","draftNumber","date","MOH_AGENCY_NAME"),Arrays.asList(licenseeService.getLicenseeDtoById(dataSubmissionDraftDto.getLicenseeId()).getName(),dataSubmissionDraftDto.getDraftNo(),expDateString,AppConsts.MOH_AGENCY_NAME));
                      try {
-                         EmailParam emailParam = new EmailParam();
-                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG);
-                         emailParam.setTemplateContent(map);
-                         emailParam.setQueryCode(dataSubmissionDraftDto.getDraftNo());
-                         emailParam.setReqRefNum(dataSubmissionDraftDto.getDraftNo());
-                         emailParam.setServiceTypes(dataSubmissionDraftDto.getDsType());
-                         emailParam.setRefId(dataSubmissionDraftDto.getLicenseeId());
-                         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                         emailParam.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map));
-                         notificationHelper.sendNotification(emailParam);
+                         notificationHelper.sendNotification(new EmailParam(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG,map,dataSubmissionDraftDto.getDraftNo(),dataSubmissionDraftDto.getDraftNo(),
+                                 NotificationHelper.MESSAGE_TYPE_NOTIFICATION,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),dataSubmissionDraftDto.getDsType()));
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send msg end ----------"));
-                         EmailParam emailParamEmail = MiscUtil.transferEntityDto(emailParam,EmailParam.class);
-                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL);
-                         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
-                         notificationHelper.sendNotification(emailParamEmail);
+                         notificationHelper.sendNotification(new EmailParam(MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL,map,dataSubmissionDraftDto.getDraftNo(),dataSubmissionDraftDto.getDraftNo(),
+                                 NotificationHelper.RECEIPT_TYPE_LICENSEE_ID ,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),dataSubmissionDraftDto.getDsType()));
                          draftNos.add(dataSubmissionDraftDto.getDraftNo());
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send email end ----------"));
                      } catch (IOException e) {

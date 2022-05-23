@@ -15,7 +15,7 @@ import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 import java.util.List;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface OnlineEnquiryClient {
 
     @GetMapping(path = "/facility-info/names")

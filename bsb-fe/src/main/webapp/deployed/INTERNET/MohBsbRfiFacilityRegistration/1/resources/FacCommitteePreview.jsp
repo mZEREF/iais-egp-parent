@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/requestForInformation/facRegistration/previewCommitteeInfo.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/rfi/facRegistration/previewCommitteeInfo.jsp"%>

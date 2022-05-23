@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
 import com.google.common.collect.Sets;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MasterCodeConstants {
@@ -222,15 +223,21 @@ public class MasterCodeConstants {
     public static final String APPROVAL_TYPE_POSSESS = "APPRTY001";
     public static final String APPROVAL_TYPE_LSP = "APPRTY002";
     public static final String APPROVAL_TYPE_SP_HANDLE = "APPRTY003";
-    public static final String APPROVAL_TYPE_FAC_REG = "APPRTY004";
-    public static final Set<String> APPLY_APPROVAL_TYPES;
+    public static final String APPROVAL_TYPE_HANDLE_FST_EXEMPTED = "APPRTY005";
+    public static final Set<String> BAT_MAIN_APPROVAL_TYPES;
+    public static final Set<String> BAT_APPROVAL_TYPES;
 
     static {
-        Set<String> applyApprovalTypes = Sets.newHashSetWithExpectedSize(3);
+        Set<String> applyApprovalTypes = Sets.newHashSetWithExpectedSize(4);
         applyApprovalTypes.add(APPROVAL_TYPE_POSSESS);
         applyApprovalTypes.add(APPROVAL_TYPE_LSP);
         applyApprovalTypes.add(APPROVAL_TYPE_SP_HANDLE);
-        APPLY_APPROVAL_TYPES = Collections.unmodifiableSet(applyApprovalTypes);
+        applyApprovalTypes.add(APPROVAL_TYPE_HANDLE_FST_EXEMPTED);
+        BAT_APPROVAL_TYPES = Collections.unmodifiableSet(applyApprovalTypes);
+
+        applyApprovalTypes = new HashSet<>(applyApprovalTypes);
+        applyApprovalTypes.remove(APPROVAL_TYPE_HANDLE_FST_EXEMPTED);
+        BAT_MAIN_APPROVAL_TYPES = Collections.unmodifiableSet(applyApprovalTypes);
     }
 
     public static final String APPROVAL_STATUS_ACTIVE = "APPRSTA001";

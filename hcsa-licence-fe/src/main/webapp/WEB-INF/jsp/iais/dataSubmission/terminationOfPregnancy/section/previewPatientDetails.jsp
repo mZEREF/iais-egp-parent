@@ -1,6 +1,6 @@
 <c:set var="headingSign" value="${patientInfor == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading <c:if test="${DeclarationsCheckBox != 'hide'}">${headingSign}</c:if>">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#patientDetails">
                 Patient Information
@@ -36,19 +36,22 @@
                         <iais:code code="${patientInformationDto.nationality}"/>
                     </iais:value>
                 </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Date Commenced Residence In Singapore"/>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${patientInformationDto.commResidenceInSgDate}"/>
-                        </iais:value>
-                    </iais:row>
+                <div <c:if test="${patientInformationDto.nationality =='NAT0001'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Residence Status"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${patientInformationDto.residenceStatus}"/>
                         </iais:value>
                     </iais:row>
-
+                </div>
+                <div id="commResidenceInSgDate" <c:if test="${patientInformationDto.residenceStatus !='TOPRS002'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Date Commenced Residence In Singapore"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${patientInformationDto.commResidenceInSgDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group" />
                     <iais:value width="7" display="true" cssClass="col-md-7">

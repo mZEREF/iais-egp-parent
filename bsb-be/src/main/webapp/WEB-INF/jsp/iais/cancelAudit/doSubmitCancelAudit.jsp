@@ -59,7 +59,7 @@
                             </iais:value>
                         </iais:row>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6"><a class="back" href="/bsb-be/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a></div>
+                            <div class="col-xs-12 col-sm-6"><a class="back" href="/bsb-web/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a></div>
                             <div style="text-align: right">
                                 <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                             </div>

@@ -92,7 +92,9 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
             if ("confirm".equals(crud_action_type)) {
                 errorMap = validationResult.retrieveAll();
                 verifyRfcCommon(bpc.request, errorMap);
-                valRFC(bpc.request, iuiTreatmentSubsidiesDto);
+                if(errorMap.isEmpty()){
+                    valRFC(bpc.request, iuiTreatmentSubsidiesDto);
+                }
             }
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

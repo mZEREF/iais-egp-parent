@@ -31,7 +31,11 @@ public interface DpDataSubmissionService {
     DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName,
             String hciCode);
 
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String svcName, String hciCode, String dataSubmissionId);
+
     void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+
+    void deleteDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String hciCode, String dataSubmissionId);
 
     ProfessionalResponseDto retrievePrsInfo(String doctorReignNo);
 

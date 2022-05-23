@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
@@ -36,7 +37,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 @Slf4j
 @Delegator("insApplicantReportDelegator")
 public class InspectionApplicantReportDelegator {
-    private static final String PARAM_AFC_REPORT_APP_ID = "afcCertReportAppId";
+    private static final String PARAM_AFC_REPORT_APP_ID = "applicantCertReportAppId";
     private final InspectionAFCClient inspectionAFCClient;
     private final InsAFCReportService insAFCReportService;
     private final InspectionService inspectionService;
@@ -73,17 +74,22 @@ public class InspectionApplicantReportDelegator {
                 ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, new ReviewAFCReportDto());
             }
         }
-        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = dto.getCertificationDocDisPlayDtos();
-        if(certificationDocDisPlayDtos==null){
-            certificationDocDisPlayDtos = new ArrayList<>(0);
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos;
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(StringUtils.isEmpty(docDtoMap)){
+            certificationDocDisPlayDtos = dto.getCertificationDocDisPlayDtos();
+            if(certificationDocDisPlayDtos==null){
+                certificationDocDisPlayDtos = new ArrayList<>(0);
+            }
+            for (int i=0; i<certificationDocDisPlayDtos.size();i++){
+                certificationDocDisPlayDtos.get(i).setMaskedRepoId(MaskUtil.maskValue("file",certificationDocDisPlayDtos.get(i).getRepoId()));
+            }
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
+            insAFCReportService.setSavedDocMap(dto, request);
+        }else {
+            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+            dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
         }
-        for (int i=0; i<certificationDocDisPlayDtos.size();i++){
-            certificationDocDisPlayDtos.get(i).setMaskedRepoId(MaskUtil.maskValue("file",certificationDocDisPlayDtos.get(i).getRepoId()));
-        }
-        dto.setCertificationDocDisPlayDtos(certificationDocDisPlayDtos);
-
-
-        insAFCReportService.setSavedDocMap(dto, request);
         ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setRequestAttr(request, KEY_DASHBOARD_MSG, KEY_AFC_DASHBOARD_MSG);
         ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_APPLICANT);
@@ -125,8 +131,13 @@ public class InspectionApplicantReportDelegator {
             afcSaveDto.setNewCertDocDtoList(new ArrayList<>(docDto.getSavedDocMap().values()));
         }
         afcSaveDto.setUploadNewDoc(uploadNewDoc);
-        if (!CollectionUtils.isEmpty(displayDto.getCertificationDocDisPlayDtos())){
-            afcSaveDto.setSavedCertDocDtoList(displayDto.getCertificationDocDisPlayDtos());
+        List<CertificationDocDisPlayDto> certificationDocDisPlayDtos = new ArrayList<>(0);
+        Map<String, CertificationDocDisPlayDto> docDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        if(!StringUtils.isEmpty(docDtoMap)){
+            certificationDocDisPlayDtos = new ArrayList<>(docDtoMap.values());
+        }
+        if (!CollectionUtils.isEmpty(certificationDocDisPlayDtos)){
+            afcSaveDto.setSavedCertDocDtoList(certificationDocDisPlayDtos);
         }
         ResponseDto<String> responseDto = inspectionAFCClient.saveApplicantCertificationData(afcSaveDto);
         if (responseDto.ok()) {

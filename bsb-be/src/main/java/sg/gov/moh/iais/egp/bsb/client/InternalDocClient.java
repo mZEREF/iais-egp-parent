@@ -13,7 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import java.util.List;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface InternalDocClient {
     @GetMapping(value = "/internal-doc/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<DocDisplayDto> getInternalDocForDisplay(@PathVariable("appId") String appId);

@@ -28,7 +28,7 @@
                         <label>Type:</label>
                     </div>
                     <div class="col-xs-9 col-md-4 col-lg-4">
-                        <iais:select name="typeDataSubmission" id ="typeDataSubmission" options="submissionTypes" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
+                        <iais:select multiSelect="true" name="typeDataSubmission" id ="typeDataSubmission" options="submissionTypes" multiValues="${typeSelectValues}"  cssClass="dataSubmissionType" needSort="true"/>
                     </div>
                 </iais:value>
         </div>
@@ -51,10 +51,10 @@
 
         <div class="row" style="margin-bottom: 1.5%">
             <iais:value>
-                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Business Name:</label>
+                <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Patient ID Number:</label>
                 <div class="col-xs-9 col-md-4 col-lg-4">
-                    <input id="businessNameDataSubmission" name="businessNameDataSubmission" type="text" maxlength="255"
-                           value="${param.businessNameDataSubmission}">
+                    <input id="patientIdNumberDataSubmission" name="patientIdNumberDataSubmission" type="text" maxlength="255"
+                           value="${param.patientIdNumberDataSubmission}">
                 </div>
                 <div class="col-xs-3 col-md-2 col-lg-2" style="margin-top: 1.5%">
                     <label>Submitted By:</label>
@@ -88,6 +88,15 @@
                     </div>
             </div>
 
+            <div class="row" style="margin-bottom: 1.5%">
+                <iais:value>
+                    <label class="col-xs-3 col-md-2 col-lg-2" style="text-align:left;margin-top: 1.5%">Business Name:</label>
+                    <div class="col-xs-9 col-md-4 col-lg-4">
+                        <input id="businessNameDataSubmission" name="businessNameDataSubmission" type="text" maxlength="255"
+                               value="${param.businessNameDataSubmission}">
+                    </div>
+                </iais:value>
+            </div>
             <div class="col-md-12">
                 <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearSearch()">Clear</button>
@@ -108,15 +117,13 @@
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="SUBMISSION_NO"
                                              value="Submission ID"  isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="Patient_Name"
-                                             value="Patient Name"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="Patient_Id_Number"
+                                             value="Patient ID Number"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="typeDesc" value="Type"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="statusDesc" value="Status"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="UPDATED_DT"
                                              value="Last Updated"  isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="SUBMIT_DT"
-                                             value="Submitted On" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="SUBMIT_BY"
                                              value="Submitted By"  isFE="true"/>
                     </tr>
@@ -152,8 +159,8 @@
                                         <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Patient Name</p>
-                                        <iais:code code="${inboxDataSubmissionQuery.patientName}"/>
+                                        <p class="visible-xs visible-sm table-row-title">Patient ID Number</p>
+                                        <iais:code code="${inboxDataSubmissionQuery.patientIdNumber}"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -174,11 +181,6 @@
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Submitted On</p>
-                                        <p><fmt:formatDate value="${inboxDataSubmissionQuery.submittedOn}"
-                                                           pattern="dd/MM/yyyy"/></p>
-                                    </td>
-                                    <td>
                                         <p class="visible-xs visible-sm table-row-title">Submitted By</p>
                                         <p style="margin-right: 26px;"><c:out value="${inboxDataSubmissionQuery.submittedBy}"/></p>
                                     </td>
@@ -192,7 +194,7 @@
                 <div  style="padding-bottom: 3%;width: 140%" class="text-left">
                       <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
                         <c:if test="${dataSubARTPrivilege == 1}">
-                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online enquiry</a>
+                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online Enquiry</a>
                         </c:if>
                         <c:if test="${dataSubLDTPrivilege == 1}">
                             <a  class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Online Enquiry</a>
@@ -204,7 +206,9 @@
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                         <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
                         <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                       <c:if test="${dataSubARTPrivilege == 1}">
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
+                       </c:if>
                 </div>
             </div>
 
@@ -232,10 +236,13 @@
 
     function doClearSearch(){
         $("#statusDataSubmission option:first").prop("selected", 'selected').val("");
-        $("#typeDataSubmission option:first").prop("selected", 'selected').val("");
         $("#submissionNoDataSubmission").val("");
         $("#clearBody .current").text("All");
+        $("#clearBody input[type='checkbox']").prop('checked', false);
+        $('#typeDataSubmission').val('');
+        $("#clearBody .multi-select-button").html("-- Select --");
         $("#patientNameDataSubmission").val("");
+        $("#patientIdNumberDataSubmission").val("");
         $("#submittedByDataSubmission").val("");
         $("#businessNameDataSubmission").val("");
         $("[name='lastDateStart']").val("");

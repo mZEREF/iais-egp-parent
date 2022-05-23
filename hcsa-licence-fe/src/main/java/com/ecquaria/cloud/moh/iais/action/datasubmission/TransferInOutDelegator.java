@@ -169,7 +169,9 @@ public class TransferInOutDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(transferInOutStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, transferInOutStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, transferInOutStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {
@@ -324,6 +326,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         msgParam.setReqRefNum(currentSubmissionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(receiveLicenseeId);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
         notificationHelper.sendNotification(msgParam);
 
         //send email

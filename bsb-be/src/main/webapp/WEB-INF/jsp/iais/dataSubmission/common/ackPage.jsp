@@ -19,7 +19,7 @@
                         </div>
                         <div style="text-align: left">
                             <span>
-                                <a href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                             </span>
                         </div>
                     </div>

@@ -34,11 +34,11 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-md-6 text-right">
-                <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBsbReportableEvents">START ANOTHER SUBMISSION</a>
-                <a class="btn btn-primary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">GO TO DASHBOARD</a>
+                <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbReportableEvents">START ANOTHER SUBMISSION</a>
+                <a class="btn btn-primary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">GO TO DASHBOARD</a>
             </div>
         </div>
     </div>

@@ -61,17 +61,17 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">UEN</label>
-                                        <div class="col-xs-6"><p>${compProfile.uen}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.uen}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Company Name</label>
-                                        <div class="col-xs-6"><p>${compProfile.compName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.compName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Postal Code</label>
-                                        <div class="col-xs-6"><p>${compProfile.postalCode}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.postalCode}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -81,22 +81,22 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Blk / House No.</label>
-                                        <div class="col-xs-6"><p>${compProfile.blockNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.blockNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Floor No.</label>
-                                        <div class="col-xs-6"><p>${compProfile.floor}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.floor}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Unit No.</label>
-                                        <div class="col-xs-6"><p>${compProfile.unitNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.unitNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Street Name</label>
-                                        <div class="col-xs-6"><p>${compProfile.street}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${compProfile.street}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -121,17 +121,17 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Facility Name</label>
-                                        <div class="col-xs-6"><p>${facProfile.facName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.facName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Is the Facility address the same as the company address?</label>
-                                        <div class="col-xs-6"><p>${facProfile.sameAddress}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.sameAddress}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Postal Code</label>
-                                        <div class="col-xs-6"><p>${facProfile.postalCode}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.postalCode}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -141,22 +141,22 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Block / House No.</label>
-                                        <div class="col-xs-6"><p>${facProfile.block}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.block}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Floor and Unit No.</label>
-                                        <div class="col-xs-6"><p>${facProfile.floor} - ${facProfile.unitNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.floor} - ${facProfile.unitNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Street Name</label>
-                                        <div class="col-xs-6"><p>${facProfile.streetName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.streetName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Is the facility a Protected Place?</label>
-                                        <div class="col-xs-6"><p>${facProfile.facilityProtected}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfile.facilityProtected}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Designation of Facility Operator</label>
-                                        <div class="col-xs-6"><p>${facOperator.facOperator}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.facOperator}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -185,12 +185,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Name</label>
-                                        <div class="col-xs-6"><p>${facOperator.designeeName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.designeeName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">ID No.</label>
-                                        <div class="col-xs-6"><p>${facOperator.idNumber}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.idNumber}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -200,22 +200,22 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Designation</label>
-                                        <div class="col-xs-6"><p>${facOperator.designation}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.designation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Contact No.</label>
-                                        <div class="col-xs-6"><p>${facOperator.contactNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.contactNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Email</label>
-                                        <div class="col-xs-6"><p>${facOperator.email}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.email}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Employment Start Date</label>
-                                        <div class="col-xs-6"><p>${facOperator.employmentStartDt}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facOperator.employmentStartDt}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -239,7 +239,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Name</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.name}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.name}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -249,27 +249,27 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">NRIC/FIN</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.idNumber}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.idNumber}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Designation</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.designation}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.designation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Contact No.</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.contactNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.contactNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Email Address</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.email}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.email}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Employment Start Date</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.employmentStartDt}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.mainAdmin.employmentStartDt}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -285,7 +285,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Name</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.name}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.name}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -295,27 +295,27 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">NRIC/FIN</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.idNumber}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.idNumber}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Designation</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.designation}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.designation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Contact No.</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.contactNo}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.contactNo}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Email Address</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.email}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.email}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Employment Start Date</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.employmentStartDt}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facAdminOfficer.alternativeAdmin.employmentStartDt}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -336,7 +336,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Name</label>
-                                            <div class="col-xs-6"><p>${facOfficer.name}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.name}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
@@ -346,27 +346,27 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">ID No.</label>
-                                            <div class="col-xs-6"><p>${facOfficer.idNumber}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.idNumber}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Designation</label>
-                                            <div class="col-xs-6"><p>${facOfficer.designation}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.designation}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Contact No.</label>
-                                            <div class="col-xs-6"><p>${facOfficer.contactNo}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.contactNo}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Email Address</label>
-                                            <div class="col-xs-6"><p>${facOfficer.email}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.email}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Employment Start Date</label>
-                                            <div class="col-xs-6"><p>${facOfficer.employmentStartDt}</p></div>
+                                            <div class="col-xs-6"><p><c:out value="${facOfficer.employmentStartDt}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                     </c:forEach>
@@ -409,6 +409,7 @@
                         <div class="panel-body">
                             <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div></c:if>
                             <c:forEach var="bat" items="${batList}">
+                                <c:set var="isLsp" value="${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq bat.activityType}"/>
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group" style="margin-top: 10px">
                                         <div class="col-10"><strong><iais:code code="${bat.activityType}"/></strong></div>
@@ -429,30 +430,44 @@
                                                 <div class="col-xs-6"><p><iais-bsb:bat-code code="${info.batName}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-xs-6 control-label">Types of samples that will be handled</label>
-                                                <div class="col-xs-6">
-                                                    <c:forEach var="oneSampleType" items="${info.sampleType}">
-                                                    <p><iais:code code="${oneSampleType}"/></p>
-                                                    </c:forEach>
+                                            <c:if test="${not isLsp}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Types of samples that will be handled</label>
+                                                    <div class="col-xs-6">
+                                                        <c:forEach var="oneSampleType" items="${info.sampleType}">
+                                                            <p><iais:code code="${oneSampleType}"/></p>
+                                                        </c:forEach>
+                                                    </div>
+                                                    <div class="clear"></div>
                                                 </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-xs-6 control-label">Type of work that will be carried out involving the ${fn:toLowerCase(BAorT)}</label>
-                                                <div class="col-xs-6">
-                                                    <c:forEach var="oneWorkType" items="${info.workType}">
-                                                        <p><iais:code code="${oneWorkType}"/></p>
-                                                    </c:forEach>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Type of work that will be carried out involving the ${fn:toLowerCase(BAorT)}</label>
+                                                    <div class="col-xs-6">
+                                                        <c:forEach var="oneWorkType" items="${info.workType}">
+                                                            <p><iais:code code="${oneWorkType}"/></p>
+                                                        </c:forEach>
+                                                    </div>
+                                                    <div class="clear"></div>
                                                 </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <c:if test='${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER) or info.workType.contains(masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT) or info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}'>
-                                            <div class="form-group">
-                                                <label class="col-xs-6 control-label">Details regarding the type of samples that will be handled and the intended work</label>
-                                                <div class="col-xs-6"><p>${info.sampleWorkDetail}</p></div>
-                                                <div class="clear"></div>
-                                            </div>
+                                                <c:if test='${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER) or info.workType.contains(masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT) or info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}'>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Details regarding the type of samples that will be handled and the intended work</label>
+                                                        <div class="col-xs-6"><p><c:out value="${info.sampleWorkDetail}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                </c:if>
+                                            </c:if>
+                                            <c:if test="${isLsp}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Estimated maximum volume (in litres) of production at any one time</label>
+                                                    <div class="col-xs-6"><p><c:out value="${info.estimatedMaximumVolume}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Method or system used for large scale production</label>
+                                                    <div class="col-xs-6"><p><c:out value="${info.methodOrSystem}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
                                             </c:if>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Mode of Procurement</label>
@@ -467,22 +482,22 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Block No.</label>
-                                                    <div class="col-xs-6"><p>${info.details.blockNoT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.blockNoT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                    <div class="col-xs-6"><p>${info.details.floorNoT}-${info.details.unitNoT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.floorNoT} - ${info.details.unitNoT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Street</label>
-                                                    <div class="col-xs-6"><p>${info.details.streetNameT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.streetNameT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Postal Code</label>
-                                                    <div class="col-xs-6"><p>${info.details.postalCodeT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.postalCodeT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
@@ -491,32 +506,32 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name</label>
-                                                    <div class="col-xs-6"><p>${info.details.contactPersonNameT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.contactPersonNameT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Email address</label>
-                                                    <div class="col-xs-6"><p>${info.details.emailAddressT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.emailAddressT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Contact No.</label>
-                                                    <div class="col-xs-6"><p>${info.details.contactNoT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.contactNoT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Expected Date of Transfer</label>
-                                                    <div class="col-xs-6"><p>${info.details.expectedDateT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.expectedDateT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                    <div class="col-xs-6"><p>${info.details.courierServiceProviderNameT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.courierServiceProviderNameT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Remarks</label>
-                                                    <div class="col-xs-6"><p>${info.details.remarksT}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.remarksT}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                             </div>
@@ -529,27 +544,27 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Facility Name</label>
-                                                    <div class="col-xs-6"><p>${info.details.facNameE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.facNameE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Block No.</label>
-                                                    <div class="col-xs-6"><p>${info.details.blockNoE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.blockNoE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                    <div class="col-xs-6"><p>${info.details.floorNoE}-${info.details.unitNoE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.floorNoE} - ${info.details.unitNoE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Street</label>
-                                                    <div class="col-xs-6"><p>${info.details.streetNameE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.streetNameE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Postal Code</label>
-                                                    <div class="col-xs-6"><p>${info.details.postalCodeE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.postalCodeE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
@@ -558,32 +573,32 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name</label>
-                                                    <div class="col-xs-6"><p>${info.details.contactPersonNameE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.contactPersonNameE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Email address</label>
-                                                    <div class="col-xs-6"><p>${info.details.emailAddressE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.emailAddressE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Contact No.</label>
-                                                    <div class="col-xs-6"><p>${info.details.contactNoE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.contactNoE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Expected Date of Export</label>
-                                                    <div class="col-xs-6"><p>${info.details.expectedDateE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.expectedDateE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                    <div class="col-xs-6"><p>${info.details.courierServiceProviderNameE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.courierServiceProviderNameE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-6 control-label">Remarks</label>
-                                                    <div class="col-xs-6"><p>${info.details.remarksE}</p></div>
+                                                    <div class="col-xs-6"><p><c:out value="${info.details.remarksE}"/></p></div>
                                                     <div class="clear"></div>
                                                 </div>
                                             </div>
@@ -687,7 +702,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label">Reasons for choosing this AFC</label>
-                                    <div class="col-xs-6"><p>${afc.selectReason}</p></div>
+                                    <div class="col-xs-6"><p><c:out value="${afc.selectReason}"/></p></div>
                                     <div class="clear"></div>
                                 </div>
                                 </c:if>

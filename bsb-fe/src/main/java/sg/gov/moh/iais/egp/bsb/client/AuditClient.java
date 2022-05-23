@@ -15,7 +15,7 @@ import sg.gov.moh.iais.egp.bsb.entity.*;
 import java.util.List;
 
 
-@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "audit")
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class, contextId = "audit")
 public interface AuditClient {
     @GetMapping(value = "/audit", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);

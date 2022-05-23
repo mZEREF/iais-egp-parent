@@ -13,7 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface WithdrawnClient {
     @PostMapping(path = "/withdraw-be/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateWithdrawnDto(@RequestBody AppSubmitWithdrawnDto dto);

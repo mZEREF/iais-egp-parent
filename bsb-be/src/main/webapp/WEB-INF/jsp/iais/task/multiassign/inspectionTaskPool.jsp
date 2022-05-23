@@ -119,7 +119,7 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <a href="/bsb-be/eservicecontinue/INTRANET/MultiAssignInspectionTask?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
+                                            <a href="/bsb-web/eservicecontinue/INTRANET/MultiAssignInspectionTask?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>

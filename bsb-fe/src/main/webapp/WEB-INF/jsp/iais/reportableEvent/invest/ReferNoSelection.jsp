@@ -47,7 +47,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 ">
-                                    <a class="back" id="homeBack" href="/bsb-fe/eservice/INTERNET/MohBsbReportableEvents"><em class="fa fa-angle-left"></em> Back</a>
+                                    <a class="back" id="homeBack" href="/bsb-web/eservice/INTERNET/MohBsbReportableEvents"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="button-group" style="float: right">

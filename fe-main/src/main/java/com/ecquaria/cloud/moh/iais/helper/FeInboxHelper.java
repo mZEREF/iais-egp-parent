@@ -21,6 +21,7 @@ public final class FeInboxHelper {
                                                                                DataSubmissionConsts.DS_STATUS_DRAFT,
                                                                                DataSubmissionConsts.DS_STATUS_AMENDED, DataSubmissionConsts.DS_STATUS_LOCKED,
                                                                                DataSubmissionConsts.DS_STATUS_UNLOCKED));
+    public final static List<String> dataSubmissionStatusesForArPrivate = Arrays.asList(DataSubmissionConsts.DS_STATUS_LOCKED,DataSubmissionConsts.DS_STATUS_UNLOCKED);
     public final static List<String> dataInboxNoNeedShowStatuses =  Collections.singletonList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
     public final  static Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
 
@@ -48,6 +49,15 @@ public final class FeInboxHelper {
             }
         }
         return selectOptions;
+    }
+
+    public static List<SelectOption> getInboxStatuses(List<String> privilegeIds){
+         for(String privilegeId : privilegeIds){
+             if(PrivilegeConsts.USER_PRIVILEGE_DS_AR.equalsIgnoreCase(privilegeId)){
+                 return dataSubmissionStatusOptions;
+             }
+         }
+         return dataSubmissionStatusOptions.stream().filter( s-> !StringUtil.isIn(s.getValue(),dataSubmissionStatusesForArPrivate)).collect(Collectors.toList());
     }
 
     public static List<SelectOption> getSubmissionTypes(List<String> privilegeIds){

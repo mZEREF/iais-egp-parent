@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 public class ProcModeDetails implements Serializable {
     private String procurementMode;
+
     private String facNameT;
     private String postalCodeT;
     private String addressTypeT;
@@ -35,6 +36,7 @@ public class ProcModeDetails implements Serializable {
     private String streetNameE;
     private String buildingNameE;
     private String countryE;
+    private String cityE;
     private String stateE;
 
     private String contactPersonNameE;
@@ -74,6 +76,7 @@ public class ProcModeDetails implements Serializable {
     private static final String KEY_PREFIX_EXPORTING_STREET_NAME                        = "streetNameE";
     private static final String KEY_PREFIX_EXPORTING_BUILDING_NAME                      = "buildingNameE";
     private static final String KEY_PREFIX_EXPORTING_COUNTRY                            = "countryE";
+    private static final String KEY_PREFIX_EXPORTING_CITY                               = "cityE";
     private static final String KEY_PREFIX_EXPORTING_STATE                              = "stateE";
     private static final String KEY_PREFIX_EXPORTING_CONTACT_PERSON_NAME                = "contactPersonNameE";
     private static final String KEY_PREFIX_EXPORTING_EMAIL_ADDRESS                      = "emailAddressE";
@@ -81,7 +84,7 @@ public class ProcModeDetails implements Serializable {
     private static final String KEY_PREFIX_EXPORTING_EXPECTED_DATE                      = "expectedDateE";
     private static final String KEY_PREFIX_EXPORTING_COURIER_SERVICE_PROVIDER_NAME      = "courierServiceProviderNameE";
     private static final String KEY_PREFIX_EXPORTING_REMARKS                            = "remarksE";
-    public void reqObjMapping(HttpServletRequest request,String idx){
+    public void reqObjMapping(HttpServletRequest request, String idx){
         this.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +idx));
         if (MasterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER.equals(this.getProcurementMode())) {
             this.setFacNameT(ParamUtil.getString(request,KEY_PREFIX_TRANSFERRING_FACILITY_NAME + SEPARATOR +idx));
@@ -108,6 +111,7 @@ public class ProcModeDetails implements Serializable {
             this.setStreetNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_STREET_NAME + SEPARATOR +idx));
             this.setBuildingNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_BUILDING_NAME + SEPARATOR +idx));
             this.setCountryE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_COUNTRY + SEPARATOR + idx));
+            this.setCityE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_CITY + SEPARATOR + idx));
             this.setStateE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_STATE + SEPARATOR + idx));
             this.setContactPersonNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_CONTACT_PERSON_NAME + SEPARATOR +idx));
             this.setEmailAddressE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_EMAIL_ADDRESS + SEPARATOR +idx));

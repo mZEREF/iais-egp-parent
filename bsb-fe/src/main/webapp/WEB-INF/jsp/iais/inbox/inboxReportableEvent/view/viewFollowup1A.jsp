@@ -47,7 +47,7 @@
                                                             <div id="previewIncidentInfo" class="panel-collapse collapse">
                                                                 <div class="panel-body">
                                                                     <c:if test="${view.followupStatus ne 'INCIDST003' && view.followupStatus ne 'INCIDST002'}">
-                                                                        <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/IncidentFollowup1AEdit?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
+                                                                        <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-web/eservice/INTERNET/IncidentFollowup1AEdit?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                     </c:if>
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
@@ -141,7 +141,7 @@
                                                                                     <c:forEach var="file" items="${savedFileList}">
                                                                                         <c:set var="tmpId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                                                                                         <div class="form-group">
-                                                                                            <a href="/bsb-fe/ajax/doc/download/reportableEvent/view/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${file.filename}</span></a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)
+                                                                                            <a href="/bsb-web/ajax/doc/download/reportableEvent/view/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${file.filename}</span></a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)
                                                                                             <div class="clear"></div>
                                                                                         </div>
                                                                                     </c:forEach>
@@ -162,7 +162,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
-                        <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em>
+                        <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em>
                             Previous</a>
                     </div>
                 </div>

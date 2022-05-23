@@ -3,6 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page import="sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -46,7 +47,7 @@
                                         <tr style="text-align: center">
                                             <td><c:out value="${status.index+1}"/></td>
                                             <td><c:out value="${dto.moduleName}"/></td>
-                                            <td><a class="btn btn-default btn-sm" href="${dto.internetProcessUrl}?appId=<iais:mask name='rfiAppId' value='${rfiDisplayDto.appId}'/>">Handle</a></td>
+                                            <td><a class="btn btn-default btn-sm" href="${dto.internetProcessUrl}?rfiAppId=<iais:mask name='${RfiConstants.KEY_RFI_APP_ID}' value='${rfiDisplayDto.appId}'/>">Handle</a></td>
                                             <td>
                                                 <c:if test="${dto.status eq false}">
                                                     <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
@@ -65,7 +66,7 @@
                     </div>
                     <div class="row" style="border-top: 1px solid #D1D1D1;margin-top: 100px;padding: 20px 0">
                         <div class="col-xs-12 col-sm-6 ">
-                            <a class="back" id="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
+                            <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group" style="float: right">

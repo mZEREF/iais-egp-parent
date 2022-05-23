@@ -76,7 +76,7 @@
             <div class="application-tab-footer" style="margin-left:0;margin-right:0">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 ">
-                        <a class="back" id="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                        <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <div class="button-group">

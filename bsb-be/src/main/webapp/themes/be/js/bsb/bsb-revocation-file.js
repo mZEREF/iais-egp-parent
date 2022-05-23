@@ -59,11 +59,11 @@ function reloadNewFile(id) {
 }
 
 function downloadSavedRevokeFile(id) {
-    var url = "/bsb-be/ajax/doc/download/revocation/repo/" + id;
+    var url = "/bsb-web/ajax/doc/download/revocation/repo/" + id;
     window.open(url);
 }
 
 function downloadNewRevokeFile(id) {
-    var url = "/bsb-be/ajax/doc/download/revocation/new/" + id;
+    var url = "/bsb-web/ajax/doc/download/revocation/new/" + id;
     window.open(url);
 }

@@ -17,7 +17,7 @@
 <%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
@@ -98,7 +98,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
+                                                                            <select name="processingDecision" class="ao-cert-decision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO008" <c:if test="${insDecision.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Internal Route Back to DO</option>
                                                                                 <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
@@ -119,9 +119,12 @@
                                                                     <div class="clear"></div>
                                                                 </div>
                                                             </div>
-                                                            <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
+                                                            <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <div style="text-align: right">
                                                                 <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
+                                                            </div>
+                                                            <div style="text-align: right">
+                                                                <span data-err-ind="chooseOne" class="error-msg"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -141,6 +144,3 @@
     </form>
     <%@include file="/WEB-INF/jsp/iais/doDocument/fileUploadModal.jsp"%>
 </div>
-<script>
-
-</script>

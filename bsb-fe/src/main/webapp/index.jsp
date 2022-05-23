@@ -1,4 +1,4 @@
 
 <%
-  response.sendRedirect("/bsb-fe/eservice/INTERNET/FE_Landing");
+  response.sendRedirect("/bsb-web/eservice/INTERNET/FE_Landing");
 %>

@@ -138,8 +138,6 @@
                     </div>
                 </div>
                 <br>
-
-                <div class="col-xs-12">
                     <div class="components">
                         <h3>
                             <span>Search Results</span>
@@ -238,8 +236,6 @@
                         </iais:action>
 
                     </div>
-                </div>
-
             </div>
         </div>
     </div>

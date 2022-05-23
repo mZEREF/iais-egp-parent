@@ -1,21 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = DpFeClientFallback.class)
 public interface DpFeClient {
@@ -42,6 +34,13 @@ public interface DpFeClient {
     FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
             @RequestParam("submissionType") String submissionType, @RequestParam("svcName") String svcName, @RequestParam("hciCode") String hciCode);
 
+    @GetMapping(value = "/data-submission/rfc-dp-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoRfcDraftByConds(@PathVariable("orgId") String orgId,
+                                                                                             @RequestParam("submissionType") String submissionType,
+                                                                                             @RequestParam("svcName") String svcName,
+                                                                                             @RequestParam("hciCode") String hciCode,
+                                                                                             @RequestParam("dataSubmissionId") String dataSubmissionId);
+
     @GetMapping(value = "/data-submission/pgt-stage/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PgtStageDto>> listPgtStageByPatientCode(@PathVariable("patientCode") String patientCode) ;
 
@@ -49,6 +48,12 @@ public interface DpFeClient {
     FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
             @RequestParam(name = "submissionType") String submissionType,
             @RequestParam(name = "hciCode") String hciCode);
+
+    @DeleteMapping(value = "/data-submission/rfc-draft-dp-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoRfcDraftByConds(@RequestParam(name = "orgId") String orgId,
+                                                                            @RequestParam(name = "submissionType") String submissionType,
+                                                                            @RequestParam(name = "hciCode") String hciCode,
+                                                                            @RequestParam(name = "dataSubmissionId") String dataSubmissionId);
 
     @DeleteMapping(value = "/data-submission/draft/{draftId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteDpSuperDataSubmissionDraftById(@PathVariable("draftId") String draftId);

@@ -23,28 +23,32 @@
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
             <!--todo: The facility value will be obtained from another method, and the JSP will be deleted -->
-            <div class="row">
-                <div class="form-group form-horizontal formgap">
-                    <div class="col-sm-4 control-label formtext ">
-                        <label for="facilityId" class="control-label control-set-font control-font-label">Facility Name</label>
-                        <span class="mandatory">*</span>
-                    </div>
-                    <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 30">
-                        <%--@elvariable id="approvalSelectionDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto"--%>
-                        <%--@elvariable id="selectionFacilityId" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                        <input type="hidden" id="facilityName" name="facilityName" value="${approvalSelectionDto.facilityName}">
-                        <select name="facilityId" id="facilityId" class="facilityIdDropdown">
-                            <option value="">Please Select</option>
-                            <c:forEach items="${selectionFacilityId}" var="facSelect">
-                                <c:set var="maskedFacilityId"><iais:mask name="facilityId" value="${facSelect.value}"/></c:set>
-                                <option value="${maskedFacilityId}" <c:if test="${approvalSelectionDto.facilityId eq facSelect.value}">selected="selected"</c:if>>${facSelect.text}</option>
-                            </c:forEach>
-                        </select>
-                        <span data-err-ind="facilityId" class="error-msg"></span>
+            <%--@elvariable id="isEnteredInbox" type="java.lang.Boolean"--%>
+            <c:if test="${!isEnteredInbox}">
+                <div class="row">
+                    <div class="form-group form-horizontal formgap">
+                        <div class="col-sm-4 control-label formtext ">
+                            <label for="facilityId" class="control-label control-set-font control-font-label">Facility Name</label>
+                            <span class="mandatory">*</span>
+                        </div>
+
+                        <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 30">
+                                <%--@elvariable id="approvalSelectionDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto"--%>
+                                <%--@elvariable id="selectionFacilityId" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                            <input type="hidden" id="facilityName" name="facilityName" value="${approvalSelectionDto.facilityName}">
+                            <select name="facilityId" id="facilityId" class="facilityIdDropdown">
+                                <option value="">Please Select</option>
+                                <c:forEach items="${selectionFacilityId}" var="facSelect">
+                                    <c:set var="maskedFacilityId"><iais:mask name="facilityId" value="${facSelect.value}"/></c:set>
+                                    <option value="${maskedFacilityId}" <c:if test="${approvalSelectionDto.facilityId eq facSelect.value}">selected="selected"</c:if>>${facSelect.text}</option>
+                                </c:forEach>
+                            </select>
+                            <span data-err-ind="facilityId" class="error-msg"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <br/>
+                <br/>
+            </c:if>
             <div class="col-xs-12 col-sm-12" style="padding-top: 30px">
                 <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Please select the type of approval</p>
                 <div class="form-check-gp">
@@ -69,6 +73,7 @@
                     </div>
                 </div>
             </div>
+            <span data-err-ind="approvalTypeSelection" class="error-msg"></span>
             <br/>
             <div class="row">
                 <div class="col-xs-12 col-md-3">

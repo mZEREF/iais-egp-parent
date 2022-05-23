@@ -1,6 +1,6 @@
 <c:set var="headingSign" value="${familyPlan == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading <c:if test="${DeclarationsCheckBox != 'hide'}">${headingSign}</c:if>">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#familyDetails">
                 Family Planning/Pregnancy

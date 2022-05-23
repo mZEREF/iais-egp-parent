@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.entity.InvestViewDto;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "incident")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "incident")
 public interface IncidentProcessClient {
     @PostMapping(path = "/incident-be/notification/do-process",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveDOProcess(@RequestBody ProcessingDto processingDto);

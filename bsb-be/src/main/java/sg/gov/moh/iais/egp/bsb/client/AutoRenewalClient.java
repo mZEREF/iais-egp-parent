@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface AutoRenewalClient {
     @GetMapping(value = "/autoRenewal/select/remindApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<ApprovalDto>>> approvalRenewal(@RequestBody Map<String, LocalDate> dateMap, @RequestParam("processType") String processType);

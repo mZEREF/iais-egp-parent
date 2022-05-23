@@ -63,9 +63,11 @@ public class OutcomeDelegator extends CommonDelegator{
             String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
 
             if ("confirm".equals(crud_action_type)) {
-            errorMap = validationResult.retrieveAll();
-            verifyRfcCommon(bpc.request, errorMap);
-            valRFC(bpc.request, outcomeStageDto);
+                errorMap = validationResult.retrieveAll();
+                verifyRfcCommon(bpc.request, errorMap);
+                if(errorMap.isEmpty()){
+                    valRFC(bpc.request, outcomeStageDto);
+                }
             }
 
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {

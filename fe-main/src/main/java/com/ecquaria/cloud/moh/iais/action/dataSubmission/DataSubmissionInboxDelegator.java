@@ -91,14 +91,15 @@ public class DataSubmissionInboxDelegator {
 
 	public void initData(HttpServletRequest request){
 		clearSession(request);
-		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
-		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
-		ParamUtil.setSessionAttr(request,SUBMISSION_TYPES,(Serializable) FeInboxHelper.getSubmissionTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
+		List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(privilegeIds));
+		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.getInboxStatuses(privilegeIds));
+		ParamUtil.setSessionAttr(request,SUBMISSION_TYPES,(Serializable) FeInboxHelper.getSubmissionTypes(privilegeIds));
 		ParamUtil.setSessionAttr(request,FE_USERS,(Serializable) orgUserManageService.getAccountByOrgId(AccessUtil.getLoginUser(request).getOrgId()).stream().map(u-> new SelectOption(u.getId(),u.getDisplayName())).collect(Collectors.toList()));
 	}
 
 	public void clearSession(HttpServletRequest request){
-		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT,DS_TYPES,FE_USERS);
+		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT,DS_TYPES,FE_USERS,"typeSelectValues");
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -163,8 +164,8 @@ public class DataSubmissionInboxDelegator {
 
 	private void setSearchParamOnlyForDsTab(SearchParam searchParam, List<SelectOption> selectOptions){
 		String sql = searchParam.getMainSql();
-		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"replaceSubByOne","dds.SUBMIT_BY","SUBMIT_BY",sql);
-		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"replaceSubByTwo","ddsd.CREATED_BY","SUBMIT_BY",sql);
+		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"{replaceSubByOne}","dds.SUBMIT_BY","SUBMIT_BY",sql);
+		sql = FeInboxHelper.getCaseWhenSql(selectOptions,"{replaceSubByTwo}","ddsd.CREATED_BY","SUBMIT_BY",sql);
 		searchParam.setMainSql(sql);
 	}
 
@@ -194,15 +195,17 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	private void setSearchParam(HttpServletRequest request)  {
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,true);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"businessName",inboxDataSubmissionQueryDto.getBusinessName(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submittedBy",inboxDataSubmissionQueryDto.getSubmittedBy(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"patientName",inboxDataSubmissionQueryDto.getPatientName(),true);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"patientIdNumber",inboxDataSubmissionQueryDto.getPatientIdNumber(),true);
 		//when status -> DS014 , status cannot be DS013,DS014.
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
-		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
+		HalpSearchResultHelper.setParamByField(searchParam,"type",ParamUtil.getListStrings(request,"typeDataSubmission"));
+		ParamUtil.setSessionAttr(request,"typeSelectValues",(Serializable) ParamUtil.getListStrings(request,"typeDataSubmission"));
 		setSearchParamDate(request,searchParam);
 	}
 

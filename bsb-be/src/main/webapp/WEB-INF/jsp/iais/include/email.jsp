@@ -23,7 +23,7 @@
     </iais:row>
 </iais:section>
 <p class="text-right text-center-mobile">
-    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
 
     <iais:action style="text-align:right;">
         <button id="previewEmail" type="button" class="btn btn-secondary">Preview</button>

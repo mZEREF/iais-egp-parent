@@ -33,7 +33,7 @@ function cancelJumpAfterDraft() {
     $('#afterSaveDraft').modal('hide');
 }
 function jumpAfterDraft() {
-    window.location.href = "/bsb-fe/eservice/INTERNET/MohBSBInboxApp";
+    window.location.href = "/bsb-web/eservice/INTERNET/MohBSBInboxApp";
 }
 
 

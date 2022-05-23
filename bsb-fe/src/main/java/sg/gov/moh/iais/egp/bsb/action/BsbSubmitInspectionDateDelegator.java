@@ -30,7 +30,7 @@ public class BsbSubmitInspectionDateDelegator {
     public static final String PARAM_SPECIFY_START_DATE = "specifyStartDate";
     public static final String PARAM_SPECIFY_END_DATE = "specifyEndDate";
     public static final String PARAM_BACK_URL = "backUrl";
-    public static final String PARAM_INBOX_URL = "/bsb-fe/eservice/INTERNET/MohBSBInboxMsg";
+    public static final String PARAM_INBOX_URL = "/bsb-web/eservice/INTERNET/MohBSBInboxMsg";
     public static final String PARAM_ACK_MSG = "ackMsg";
     public static final String PARAM_SUCCESS_MSG = "Your submission was successful.";
 

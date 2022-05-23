@@ -14,7 +14,7 @@ import java.util.List;
  * DATE:2021/9/16 14:01
  **/
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface BsbEmailClient {
     @GetMapping(path = "/fac_admin/{facId}")
     ResponseDto<List<FacilityAdmin>> queryEmailByFacId(@PathVariable("facId") String facId);

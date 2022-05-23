@@ -12,7 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 /**
  * @author Zhu Tangtang
  */
-@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "dataSubmission")
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class, contextId = "dataSubmission")
 public interface DataSubmissionClient {
     @GetMapping(value = "/facility-info/getFacList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacListDto> queryAllApprovalFacList();

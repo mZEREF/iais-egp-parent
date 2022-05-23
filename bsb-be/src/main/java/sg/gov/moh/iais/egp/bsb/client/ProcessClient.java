@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.*;
 
@@ -13,7 +14,7 @@ import sg.gov.moh.iais.egp.bsb.dto.process.*;
  * @author : LiRan
  * @date : 2021/8/20
  */
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface ProcessClient {
     @GetMapping(path = "/bsb-moh-officer/do-screening/moh-process-dto", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<MohProcessDto> getMohProcessDtoByAppId(@RequestParam("applicationId") String applicationId, @RequestParam("moduleName") String moduleName);
@@ -65,4 +66,14 @@ public interface ProcessClient {
 
     @PostMapping(value = "/bsb-moh-officer/hm-processing/moh-process-dto/approve-or-reject", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveHmProcessingApproveOrReject(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
+
+    @GetMapping(value = "/bsb-moh-officer/do-processing/judge", produces = MediaType.APPLICATION_JSON_VALUE)
+    String judgeCanSubmitDOProcessingTask(@RequestParam("appId") String appId);
+
+    //InspectionAFCController
+    @GetMapping(value = "/certification/afc/latest/inspectionAppId", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ReviewAFCReportDto> getLatestCertificationReportByInsAppId(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/certification/afc/latest/certificationAppId", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ReviewAFCReportDto> getLatestCertificationReportByCertAppId(@RequestParam("appId") String appId);
 }

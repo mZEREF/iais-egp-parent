@@ -177,7 +177,7 @@ $(function (){
         if(facName === ""){
             $("#activityType").html("<option value=\"\">Please select<\/option>");
         }else{
-            $.post('/bsb-fe/incident/activity.do',
+            $.post('/bsb-web/incident/activity.do',
                 {facName: facName},
                 function (data) {
                     var result = data.result;
@@ -517,7 +517,7 @@ function modifyClonedNode(node, idx, separator) {
 }
 
 function openIncident(maskedEditId){
-    window.open("/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
+    window.open("/bsb-web/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
 }
 
 //---------- END ----------

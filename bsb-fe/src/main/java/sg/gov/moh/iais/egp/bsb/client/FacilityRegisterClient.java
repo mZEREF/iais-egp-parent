@@ -16,9 +16,20 @@ import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
 
@@ -26,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
 public interface FacilityRegisterClient {
     @GetMapping(value = "/declaration/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<DeclarationItemMainInfo> getDeclarationConfigInfoById(@PathVariable("id") String id);
@@ -67,7 +78,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateUploadedDataFileMeta(@RequestBody DocMeta meta);
 
     @GetMapping(path = "/bat-info/dropdown/schedule-bat/activity", produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, List<BatCodeInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity);
+    Map<String, List<BatCodeInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity, @RequestParam(value = "approvalTypes") List<String> approvalTypes);
 
     @PostMapping(path = "/register/facility/form-validation/bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);

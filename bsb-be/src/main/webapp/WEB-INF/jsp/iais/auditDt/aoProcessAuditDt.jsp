@@ -171,7 +171,7 @@
                                                                             </iais:row>
                                                                         </div>
                                                                     </iais:section>
-                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                                                                     <div style="text-align: right">
                                                                         <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                     </div>

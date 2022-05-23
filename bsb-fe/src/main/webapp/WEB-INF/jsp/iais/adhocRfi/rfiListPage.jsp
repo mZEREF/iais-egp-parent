@@ -68,7 +68,7 @@
                                 </tbody>
                             </table>
                             <iais:action style="text-align:left;">
-                                <div align="left"><span><a  href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                                <div align="left"><span><a  href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                             </iais:action>
                         </div>
                     </div>

@@ -82,7 +82,9 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, oocyteRetrievalStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, oocyteRetrievalStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {

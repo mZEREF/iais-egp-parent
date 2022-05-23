@@ -52,6 +52,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
         if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+            arSuperDataSubmissionDto.getEfoCycleStageDto().setIsMedicallyIndicated(1);
             arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
         }
         Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
@@ -77,15 +78,21 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
+        String textReason = ParamUtil.getRequestString(request, "textReason");
         String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
-        Integer indicated =  ParamUtil.getInt(request, "indicatedRadio");
+        int indicated =  ParamUtil.getInt(request, "indicatedRadio");
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
-        efoCycleStageDto.setReason(reasonSelect);
-        if(othersReason!=null&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reasonSelect)){
-            efoCycleStageDto.setOtherReason(othersReason);
+        if(indicated==1){
+            efoCycleStageDto.setReason(reasonSelect);
+            if(othersReason!=null&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reasonSelect)){
+                efoCycleStageDto.setOtherReason(othersReason);
+            }
+        }
+        if(indicated==0){
+            efoCycleStageDto.setReason(textReason);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);

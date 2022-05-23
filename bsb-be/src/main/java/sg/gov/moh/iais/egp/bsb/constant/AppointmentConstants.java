@@ -31,7 +31,7 @@ public class AppointmentConstants {
     public static final String ERROR_MSG_COLLISION_DATE = "non-working day, please reselect another date";
 
     public static final String BACK_URL = "backUrl";
-    public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";
-    public static final String BACK_URL_RESCHEDULE_APPOINTMENT = "/bsb-be/eservicecontinue/INTRANET/BsbOfficerRescheduleApptList";
+    public static final String BACK_URL_TASK_LIST = "/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList";
+    public static final String BACK_URL_RESCHEDULE_APPOINTMENT = "/bsb-web/eservicecontinue/INTRANET/BsbOfficerRescheduleApptList";
 
 }

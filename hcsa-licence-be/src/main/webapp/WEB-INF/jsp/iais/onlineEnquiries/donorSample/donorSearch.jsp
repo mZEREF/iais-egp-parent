@@ -32,7 +32,6 @@
                             <h2>Assisted Reproduction Enquiry</h2>
                         </div>
 
-
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
                                 <iais:field width="4" value="SEARCH" />
@@ -151,9 +150,6 @@
 
                             </iais:row>
 
-
-
-
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
                                     <button type="button" class="btn btn-secondary"
@@ -167,8 +163,6 @@
                         </div>
                     </div>
                     <br>
-
-                    <div class="col-xs-12 row">
                         <div class="components">
 
                             <iais:pagination param="donorSampleParam" result="donorSampleResult"/>
@@ -261,9 +255,6 @@
                                    href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>
                             </iais:action>
                         </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>

@@ -85,7 +85,7 @@
                                                         <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED}" role="tab">Handling of Fifth Schedule Toxin for Exempted Purposes</a></li>
                                                     </c:if>
                                                 </ul>
-                                                <%@include file="../common/atpBatInfo.tag"%>
+                                                <%@include file="../bat/batInfo.tag"%>
                                             </div>
                                         </div>
                                     </div>

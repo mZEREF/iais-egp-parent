@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -247,6 +248,15 @@ public final class ExcelReader {
     }
 
     public static <T> Map<String, List<T>> readerToBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
+        Map<String, List<?>> map = readerToDiffBeans(file, excelSheetDtos);
+        Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
+        for (Map.Entry<String, List<?>> entry : map.entrySet()) {
+            data.put(entry.getKey(), entry.getValue().stream().map(obj -> (T)obj).collect(Collectors.toList()));
+        }
+        return data;
+    }
+
+    public static Map<String, List<?>> readerToDiffBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
         if (file == null || !file.exists()) {
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -254,7 +264,7 @@ public final class ExcelReader {
         if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
             throw new IaisRuntimeException("excel sheet dot error");
         }
-        Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
+        Map<String, List<?>> data = IaisCommonUtils.genNewHashMap();
         Workbook workBook = null;
         try (InputStream in = Files.newInputStream(file.toPath())) {
             workBook = new XSSFWorkbook(in);
@@ -271,7 +281,7 @@ public final class ExcelReader {
                     log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
                     continue;
                 }
-                List<T> ans = parseSheetToList(sheet, excelSheetDto);
+                List<?> ans = parseSheetToList(sheet, excelSheetDto);
                 data.put(excelSheetDto.getSheetName(), ans);
             }
             return data;

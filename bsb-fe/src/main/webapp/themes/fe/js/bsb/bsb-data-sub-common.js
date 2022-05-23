@@ -311,10 +311,10 @@ function genFileInfo(fileInputEl) {
 function downloadFile(cond, id) {
     var url;
     if (cond === 'new') {
-        url = "/bsb-fe/ajax/doc/download/dataSub/new/" + id;
+        url = "/bsb-web/ajax/doc/download/dataSub/new/" + id;
     }
     if (cond === 'saved') {
-        url = "/bsb-fe/ajax/doc/download/dataSub/repo/" + id;
+        url = "/bsb-web/ajax/doc/download/dataSub/repo/" + id;
     }
     window.open(url);
 }

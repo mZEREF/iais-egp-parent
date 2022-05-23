@@ -76,7 +76,7 @@ function appendInputVal(input, value, separator) {
 }
 
 function viewApplication(appId, appViewModuleType) {
-    var url = "/bsb-be/eservice/INTRANET/MohBeAppViewDetails?appId=" + appId + "&appViewModuleType=" + appViewModuleType;
+    var url = "/bsb-web/eservice/INTRANET/MohBeAppViewDetails?appId=" + appId + "&appViewModuleType=" + appViewModuleType;
     window.open(url);
 }
 

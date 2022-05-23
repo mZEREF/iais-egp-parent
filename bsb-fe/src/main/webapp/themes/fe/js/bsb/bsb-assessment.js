@@ -11,7 +11,7 @@ $(function () {
 
     $("button[data-custom-ind=printSelfAssessment]").click(function () {
         var appId = $(this).attr('value');
-        showPopupWindow('/bsb-fe/eservice/INTERNET/MohBsbSubmitSelfAssessment/1/BindAction?loadPopupPrint=Y&action_type=print&action_value=Print&action_additional=' + appId);
+        showPopupWindow('/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment/1/BindAction?loadPopupPrint=Y&action_type=print&action_value=Print&action_additional=' + appId);
     });
 
     $("button[data-custom-ind=uploadSelfAssessment]").click(function () {

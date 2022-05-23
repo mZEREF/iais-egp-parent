@@ -130,7 +130,9 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, embryoTransferStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, embryoTransferStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {

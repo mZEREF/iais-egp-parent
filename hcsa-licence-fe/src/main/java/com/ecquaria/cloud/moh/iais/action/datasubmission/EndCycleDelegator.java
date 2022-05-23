@@ -72,7 +72,9 @@ public class EndCycleDelegator extends CommonDelegator{
             if ("confirm".equals(crud_action_type)) {
                 errorMap = validationResult.retrieveAll();
                 verifyRfcCommon(bpc.request, errorMap);
-                valRFC(bpc.request, endCycleStageDto);
+                if(errorMap.isEmpty()){
+                    valRFC(bpc.request, endCycleStageDto);
+                }
             }
 
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {

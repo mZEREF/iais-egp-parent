@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.constant.module;
 
 public class ModuleCommonConstants {
     private ModuleCommonConstants() {}
+    public static final String KEY_APP_ID                           = "appId";
 
     public static final String KEY_ACTION_TYPE                      = "action_type";
     public static final String KEY_INDEED_ACTION_TYPE               = "indeed_action_type";

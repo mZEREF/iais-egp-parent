@@ -13,7 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.*;
 /**
  * @author Zhu Tangtang
  */
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class, contextId = "auditBE")
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class, contextId = "auditBE")
 public interface AuditClientBE {
 
     @GetMapping(value = "/bsb-audit/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)

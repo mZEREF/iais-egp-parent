@@ -116,10 +116,12 @@ $(function () {
             $("#aptMandatoryBlk").show();
             $("#aptMandatoryFloor").show();
             $("#aptMandatoryUnit").show();
+            $("#aptMandatoryStreet").hide();
         } else {
             $("#aptMandatoryBlk").hide();
             $("#aptMandatoryFloor").hide();
             $("#aptMandatoryUnit").hide();
+            $("#aptMandatoryStreet").show();
         }
     });
 
@@ -288,7 +290,7 @@ $(function () {
         }
         $.ajax({
             type:"GET",
-            url:"/bsb-fe/address-info/" + postalCode,
+            url:"/bsb-web/address-info/" + postalCode,
             dataType: 'json',
             error:function(){
                 $("#invalidPostalCodeModal").modal('show');

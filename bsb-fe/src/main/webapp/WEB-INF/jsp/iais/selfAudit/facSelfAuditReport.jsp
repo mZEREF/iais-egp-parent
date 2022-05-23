@@ -105,7 +105,7 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </iais:section>
-                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
                                                     <div align="right">
                                                         <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                     </div>

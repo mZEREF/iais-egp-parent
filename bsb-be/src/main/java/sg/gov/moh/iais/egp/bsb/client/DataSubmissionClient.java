@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.datasubmission.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.MohReviewDataSubmissionDto;
 
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-api", configuration = FeignConfiguration.class)
 public interface DataSubmissionClient {
     @GetMapping(path = "/data-submission-be/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<MohReviewDataSubmissionDto> getOfficerReviewDataByAppId(@PathVariable("appId") String applicationId);

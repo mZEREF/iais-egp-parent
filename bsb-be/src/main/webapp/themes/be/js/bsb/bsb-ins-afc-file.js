@@ -8,7 +8,6 @@ $(function () {
 
     $("#selectedFileInput").change(fileChange);
 });
-
 function closeUploadDoc() {
     $('#internalFileSelectErrorSpan').html('')
     $('#internalFileTypeErrorSpan').html('')
@@ -156,9 +155,9 @@ function appendInputValue(input, value) {
 function downloadFile(cond,id) {
     var url;
     if (cond === 'saved') {
-        url = "/bsb-be/ajax/doc/download/insAFC/repo/" + id;
+        url = "/bsb-web/ajax/doc/download/insAFC/repo/" + id;
     } else if (cond === 'new') {
-        url = "/bsb-be/ajax/doc/download/insAFC/new/" + id;
+        url = "/bsb-web/ajax/doc/download/insAFC/new/" + id;
     }
     window.open(url);
 }

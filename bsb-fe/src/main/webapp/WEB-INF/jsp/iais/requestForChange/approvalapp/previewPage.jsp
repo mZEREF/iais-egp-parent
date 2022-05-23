@@ -32,14 +32,14 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="../../mainAppCommon/approvalapp/InnerNavTab.jsp" %>
+                        <%@ include file="../../approvalBatAndActivity/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <approvalApp:preview approvalProfileList="${approvalProfileList}" approvalProfileListEditJudge="true" docEditJudge="true">
+                                    <approvalApp:preview batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}" facProfileDto="${approvalProfileList}" facProfileEditJudge="true" batListEditJudge="true" docEditJudge="true" processType="${processType}">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
-                                            <approvalApp:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
+                                            <approvalApp:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>
                                         </jsp:attribute>
                                     </approvalApp:preview>
                                 </div>

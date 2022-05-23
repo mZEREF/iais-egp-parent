@@ -217,36 +217,54 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
-            String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
-            if (docType != null && !docType.equals(inputName)) {
-                List<MultipartFile> files = mulReq.getFiles(inputName);
-                for (MultipartFile f : files) {
-                    if (log.isInfoEnabled()) {
-                        log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
-                    }
-                    if (f.isEmpty()) {
-                        log.warn("File is empty, ignore it");
-                    } else {
-                        NewDocInfo newDocInfo = new NewDocInfo();
-                        String tmpId = inputName + f.getSize() + System.nanoTime();
-                        newDocInfo.setTmpId(tmpId);
-                        newDocInfo.setDocType(docType);
-                        newDocInfo.setFilename(f.getOriginalFilename());
-                        newDocInfo.setSize(f.getSize());
-                        newDocInfo.setSubmitDate(currentDate);
-                        newDocInfo.setSubmitBy(loginContext.getUserId());
-                        byte[] bytes = new byte[0];
-                        try {
-                            bytes = f.getBytes();
-                        } catch (IOException e) {
-                            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                        }
-                        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                        newDocInfo.setMultipartFile(multipartFile);
-                        this.newDocMap.put(tmpId, newDocInfo);
-                    }
+            if (inputName.startsWith("others")) {
+                /* The document type dropdown name related with this file is docType+others+id. */
+                String docTypeElName = "docType" + inputName;
+                String docType = ParamUtil.getString(request, docTypeElName);
+                /* If we can not read the doc type, we just discard the file. This behaviour is easy to implement.
+                 * We use javascript to validate and alert user in order to simplify java logic. */
+                if (docType != null && !"".equals(docType)) {
+                    List<MultipartFile> files = mulReq.getFiles(inputName);
+                    saveNewUploadedFile(inputName, docType, files, currentDate, loginContext.getUserId());
+                }
+            } else {
+                /* The input name is a masked doc type, if it's invalid, we must discard it. */
+                String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
+                if (docType != null && !docType.equals(inputName)) {
+                    List<MultipartFile> files = mulReq.getFiles(inputName);
+                    saveNewUploadedFile(inputName, docType, files, currentDate, loginContext.getUserId());
                 }
             }
         }
     }
+
+    private void saveNewUploadedFile(String inputName, String docType, List<MultipartFile> files, Date submitDate, String submitUserId) {
+        for (MultipartFile f : files) {
+            if (log.isInfoEnabled()) {
+                log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+            }
+            if (f.isEmpty()) {
+                log.warn("File is empty, ignore it");
+            } else {
+                NewDocInfo newDocInfo = new NewDocInfo();
+                String tmpId = inputName + f.getSize() + System.nanoTime();
+                newDocInfo.setTmpId(tmpId);
+                newDocInfo.setDocType(docType);
+                newDocInfo.setFilename(f.getOriginalFilename());
+                newDocInfo.setSize(f.getSize());
+                newDocInfo.setSubmitDate(submitDate);
+                newDocInfo.setSubmitBy(submitUserId);
+                byte[] bytes = new byte[0];
+                try {
+                    bytes = f.getBytes();
+                } catch (IOException e) {
+                    log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
+                }
+                ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+                newDocInfo.setMultipartFile(multipartFile);
+                this.newDocMap.put(tmpId, newDocInfo);
+            }
+        }
+    }
+
 }

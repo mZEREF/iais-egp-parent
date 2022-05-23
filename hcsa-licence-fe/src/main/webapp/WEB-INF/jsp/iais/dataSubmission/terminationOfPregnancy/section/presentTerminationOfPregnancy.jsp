@@ -23,7 +23,7 @@
     </div>
     <div id="otherSpTypes" <c:if test="${terminationDto.spType!='TOPTSP003' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003')}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Type of Surgical Procedure - others" mandatory="true"/>
+            <iais:field width="5" value="Other Type of Surgical Procedure" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherSpType" id="otherSpType" value="${terminationDto.otherSpType}" />
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherSpType"></span>
@@ -60,7 +60,7 @@
     </div>
     <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD005' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002')}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Type of Drug (Others)" mandatory="true"/>
+            <iais:field width="5" value="Other Type of Drug" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherDrugType" id="otherDrugType" value="${terminationDto.otherDrugType}" />
             </iais:value>
@@ -115,7 +115,7 @@
     </iais:row>
     <div id="performedOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Is Termination of Pregnancy by Surgery performed in own premises?" mandatory="true"/>
+            <iais:field width="5" value="Is Surgical Termination of Pregnancy Performed in Own Premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
                 <div class="form-check">
                     <input class="form-check-input"
@@ -150,7 +150,7 @@
 <div id="topPlacelaceLabel" <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
         <div id="topPlaceYes" <c:if test="${terminationDto.performedOwn == null || terminationDto.performedOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topPlace">
-                <iais:field width="5" value="Place of Termination of Pregnancy by Surgery" mandatory="true"/>
+                <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
                     ${'unknown'}
                 </iais:value>
@@ -158,7 +158,7 @@
         </div>
         <div id="topPlaceNo" <c:if test="${terminationDto.performedOwn == null || terminationDto.performedOwn == true}">style="display: none"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Place of Termination of Pregnancy by Surgery" mandatory="true"/>
+                <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="topPlace" options="TopPlace"  value="${terminationDto.topPlace}" cssClass="topPlace"/>
                 </iais:value>
@@ -168,7 +168,7 @@
     </div>
     <div id="pregnancyOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Is Drug prescribed for Termination of Pregnancy in own premises?" mandatory="true"/>
+            <iais:field width="5" value="Is Drug for Termination of Pregnancy Prescribed in Own Premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
                 <div class="form-check">
                     <input class="form-check-input"
@@ -203,7 +203,7 @@
     <div id="prescribeTopPlaceLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <div id="prescribeTopPlace" <c:if test="${terminationDto.pregnancyOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topPlace">
-                <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy" mandatory="true"/>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
                     ${'unknown'}
                 </iais:value>
@@ -211,7 +211,7 @@
         </div>
         <div id="prescribeTopPlaces" <c:if test="${terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true}">style="display: none"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy" mandatory="true"/>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="prescribeTopPlace" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
                                  cssClass="prescribeTopPlace"/>
@@ -222,7 +222,7 @@
     </div>
     <div id="takenOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Is Termination of Pregnancy Drug used in own premises?" mandatory="true"/>
+            <iais:field width="5" value="Is Drug for Termination of Pregnancy Taken in Own Premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
                 <div class="form-check">
                     <input class="form-check-input"
@@ -257,7 +257,8 @@
     <div id="takenOwnLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <div id="topDrugPlace" <c:if test="${terminationDto.takenOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topDrugPlace">
-                <iais:field width="5" value="Place of Drug used  for Termination of Pregnancy" mandatory="true"/>
+                <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true" info="${toolMsg}"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
                     ${'unknown'}
                 </iais:value>
@@ -265,7 +266,8 @@
         </div>
         <div id="topDrugPlaces" <c:if test="${terminationDto.takenOwn == null || terminationDto.takenOwn == true}">style="display: none"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Place of Drug used  for Termination of Pregnancy" mandatory="true"/>
+                <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true" info="${toolMsg}"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.topDrugPlace}"
                                  cssClass="topDrugPlace"/>

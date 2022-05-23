@@ -3,10 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -223,11 +220,29 @@ public abstract class DpCommonDelegator {
         }
         String stage = dataSubmissionDto.getCycleStage();
         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-        if(cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP)){
+        if(cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED) || cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED)){
             PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
             cycle.setPatientCode(patientDto.getPatientCode());
         }
         cycle.setStatus(status);
+        DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+        if(drugPrescribedDispensedDto != null){
+            DrugSubmissionDto drugSubmissionDto = drugPrescribedDispensedDto.getDrugSubmission();
+            if(drugSubmissionDto != null){
+               String drupType = drugSubmissionDto.getDrugType();
+               log.info(StringUtil.changeForLog("The drupType is -->:"+drupType));
+               if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drupType)){
+                   cycleType =DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED;
+               }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drupType)){
+                   cycleType =DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED;
+               }
+            }else{
+                log.info(StringUtil.changeForLog("The drugSubmissionDto is null ..."));
+            }
+        }else{
+            log.info(StringUtil.changeForLog("The drugPrescribedDispensedDto is null ..."));
+        }
+        cycle.setCycleType(cycleType);
         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
                 + " - Status: " + status + " -----"));
 
@@ -351,8 +366,23 @@ public abstract class DpCommonDelegator {
             DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
             if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
                 errorMap.put("amendReason","GENERAL_ERR0006");
-            }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
-                errorMap.put("amendReasonOther","GENERAL_ERR0006");
+            }else if("DP_TP001".equals(dataSubmissionDto.getSubmissionType())){
+                if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                    errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                }
+            }else if("DP_TP002".equals(dataSubmissionDto.getSubmissionType())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                String drugType=drugSubmissionDto.getDrugType();
+                if("DPD001".equals(drugType)){
+                    if(isSdp(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                        errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                    }
+                }else if("DPD002".equals(drugType)){
+                    if(isSdd(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                        errorMap.put("amendReasonOther","GENERAL_ERR0006");
+                    }
+                }
             }
         }
     }
@@ -362,10 +392,29 @@ public abstract class DpCommonDelegator {
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
             dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
-            if(isOthers(dataSubmissionDto.getAmendReason())){
-                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
-            }else {
-                dataSubmissionDto.setAmendReasonOther(null);
+            if("DP_TP001".equals(dataSubmissionDto.getSubmissionType())){
+                if(isOthers(dataSubmissionDto.getAmendReason())){
+                    dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                }else {
+                    dataSubmissionDto.setAmendReasonOther(null);
+                }
+            }else if("DP_TP002".equals(dataSubmissionDto.getSubmissionType())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                String drugType=drugSubmissionDto.getDrugType();
+                if("DPD001".equals(drugType)){
+                    if(isSdp(dataSubmissionDto.getAmendReason())){
+                        dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                    }else {
+                        dataSubmissionDto.setAmendReasonOther(null);
+                    }
+                }else if("DPD002".equals(drugType)){
+                    if(isSdd(dataSubmissionDto.getAmendReason())){
+                        dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+                    }else {
+                        dataSubmissionDto.setAmendReasonOther(null);
+                    }
+                }
             }
         }
     }
@@ -413,8 +462,17 @@ public abstract class DpCommonDelegator {
         return true;
     }
     protected boolean isOthers(String others){
-        return StringUtil.isIn(others,DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS);
+        return StringUtil.isIn(others,DataSubmissionConsts.DP_PATIENT_INFO_AMEND_REASON_OTHERS);
     }
+
+    protected boolean isSdp(String sdp){
+        return StringUtil.isIn(sdp,DataSubmissionConsts.DP_DRUG_PRESCRIBED_OTHERS);
+    }
+
+    protected boolean isSdd(String sdd){
+        return StringUtil.isIn(sdd,DataSubmissionConsts.DP_DRUG_DISPENSED_OTHERS);
+    }
+
     protected boolean isRfc(HttpServletRequest request){
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
         return dpSuperDataSubmissionDto != null && dpSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType());

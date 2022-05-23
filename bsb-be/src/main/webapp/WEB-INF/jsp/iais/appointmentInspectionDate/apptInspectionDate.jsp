@@ -131,7 +131,7 @@
                                 </div>
                               </c:if>
                               <iais:action>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                                 <button id="apptSpecInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <button id="disApptSpecInspDate" class="btn btn-primary disabled" style="float:right" type="button">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
@@ -141,7 +141,7 @@
                             </c:if>
                             <c:if test="${'SUCCESS' ne apptInspectionDateDto.actionButtonFlag}">
                               <iais:action>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                               </iais:action>
                             </c:if>
                             <button id="skipInsFlow" class="btn btn-md" style="float:right" type="button" onclick="javascript:skipInspection()">Skip Inspection</button>

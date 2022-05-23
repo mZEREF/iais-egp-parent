@@ -6,9 +6,9 @@
     </div>
     <div class="col-xs-12 col-sm-8 col-md-10">
         <div class="button-group">
-            <c:if test="${dpSuperDataSubmissionDto.appType ne 'DSTY_005'}">
+            <%--<c:if test="${dpSuperDataSubmissionDto.appType ne 'DSTY_005'}">--%>
                 <a class="btn btn-secondary premiseSaveDraft" id="saveDraftBtn" >Save as Draft</a>
-            </c:if>
+            <%--</c:if>--%>
             <a class="btn btn-primary next premiseId" id="nextBtn" >Preview</a></div>
         </div>
     </div>

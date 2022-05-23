@@ -80,7 +80,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" href="/bsb-be/eservice/INTRANET/AuditListCreationList"><em class="fa fa-angle-left"></em>Back</a>
+                                <a class="back" href="/bsb-web/eservice/INTRANET/AuditListCreationList"><em class="fa fa-angle-left"></em>Back</a>
                             </div>
                             <div style="text-align: right">
                                 <button name="submitBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>

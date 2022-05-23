@@ -1,3 +1,3 @@
 <%
-  response.sendRedirect("/bsb-be/eservice/INTRANET/MohBsbIntraLogin");
+  response.sendRedirect("/bsb-web/eservice/INTRANET/MohBsbIntraLogin");
 %>

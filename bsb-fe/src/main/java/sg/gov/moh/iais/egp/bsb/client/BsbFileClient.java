@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface BsbFileClient {
     @PostMapping(value = "/file-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveFiles(@RequestBody FileRepoSyncDto fileRepoSyncDto);

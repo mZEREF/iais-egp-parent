@@ -49,7 +49,7 @@ function apptInspectionDateGetDate() {
         dismissWaiting();
     } else {
         $.post(
-            '/bsb-be/online-appt/insp.date',
+            '/bsb-web/online-appt/insp.date',
             function (data) {
                 dismissWaiting();
                 var ajaxFlag = data.buttonFlag;
@@ -95,7 +95,7 @@ function apptInspectionDateSpecific() {
 }
 
 function downloadSupportDocument(appId, repoId, docName) {
-    var url = "/bsb-be/ajax/doc/download/appointment/fac/repo/" + repoId;
+    var url = "/bsb-web/ajax/doc/download/appointment/fac/repo/" + repoId;
     window.open(url);
 }
 

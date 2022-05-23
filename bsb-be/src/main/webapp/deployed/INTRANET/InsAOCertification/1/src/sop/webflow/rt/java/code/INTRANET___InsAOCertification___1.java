@@ -49,7 +49,7 @@ public class INTRANET___InsAOCertification___1 extends BaseProcessClass {
 	}
 
 	public void routeBack_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "routeBack", this);
+		EngineHelper.delegate(DELEGATOR, "routeBackToDO", this);
 	}
 
 }

@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.FollowupViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
@@ -33,6 +36,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 
@@ -155,6 +159,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/appointment/fac/repo/{id}")
     public void downloadAppointmentFacFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::appointmentGetSavedFile);
+    }
+
+    @GetMapping("/insAFC/new/{id}")
+    public void downloadNewInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCNewFile);
+    }
+
+    @GetMapping("/insAFC/repo/{id}")
+    public void downloadSavedInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCSavedFile);
     }
 
     /** Download saved files directly from file-repo
@@ -282,5 +296,20 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, dto.getDocName(), null, content);
+    }
+
+    private MultipartFile getInsAFCNewFile(HttpServletRequest request, String id) {
+        AFCCommonDocDto dto = (AFCCommonDocDto) ParamUtil.getSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO);
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getInsAFCSavedFile(HttpServletRequest request, String id){
+        Map<String, CertificationDocDisPlayDto> repoIdDocDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        CertificationDocDisPlayDto info = repoIdDocDtoMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getDocName(), null, content);
     }
 }

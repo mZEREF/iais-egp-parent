@@ -25,7 +25,7 @@
                 </div>
                 <div style="text-align: left">
                     <span>
-                        <a href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                        <a href="/bsb-web/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
                     </span>
                 </div>
             </div>

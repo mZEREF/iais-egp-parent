@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
-                        <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em>
+                        <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em>
                             Back</a>
                     </div>
                 </div>

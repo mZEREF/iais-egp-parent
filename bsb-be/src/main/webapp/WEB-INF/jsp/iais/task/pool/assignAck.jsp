@@ -23,7 +23,7 @@
                                 <h2>${assignResult}</h2>
                             </div>
                         </div>
-                        <div  style="text-align:left"><span><a href="/bsb-be/eservice/INTRANET/MohBsbTaskCommonPool"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                        <div  style="text-align:left"><span><a href="/bsb-web/eservice/INTRANET/MohBsbTaskCommonPool"><em class="fa fa-angle-left"></em> Back</a></span></div>
                     </div>
                 </div>
             </div>

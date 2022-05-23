@@ -1,18 +1,17 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,34 +27,40 @@ public class EfoDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(httpServletRequest);
+        EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
+        Date sDate = efoCycleStageDto.getStartDate();
+        String reason = efoCycleStageDto.getReason();
+        String othersReason = efoCycleStageDto.getOtherReason();
 
-        String dateStarted = ParamUtil.getRequestString(httpServletRequest, "efoDateStarted");
-        String reason = ParamUtil.getRequestString(httpServletRequest, "reasonSelect");
-        if (!StringUtil.isEmpty(dateStarted) ) {
+
+        if (!StringUtil.isEmpty(sDate) ) {
             Date today = new Date();
-            Date sDate;
-            try {
-                sDate = Formatter.parseDateTime(dateStarted, AppConsts.DEFAULT_DATE_FORMAT);
-            } catch (ParseException e) {
-                log.error(e.getMessage(), e);
-                sDate = new Date();
-            }
             if( sDate.after(today)) {
                 errorMap.put("startDate", MessageUtil.replaceMessage("DS_ERR001","Date Started", "field"));
             }
         }
-
-        if (!StringUtil.isEmpty(reason)&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reason)) {
-            String othersReason = ParamUtil.getRequestString(httpServletRequest, "othersReason");
-            if (StringUtil.isEmpty(othersReason)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Reason", "field");
-                errorMap.put("othersReason", errMsg);
-            }else if(othersReason.length()>100){
+        if(efoCycleStageDto.getIsMedicallyIndicated()==1){
+            if (!StringUtil.isEmpty(reason)&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reason)) {
+                if (StringUtil.isEmpty(othersReason)) {
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Reason", "field");
+                    errorMap.put("othersReason", errMsg);
+                }else if(othersReason.length()>100){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","100");
+                    repMap.put("fieldNo","Others Reason");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMap.put("othersReason", errMsg);
+                }
+            }
+        }
+        if(efoCycleStageDto.getIsMedicallyIndicated()==0){
+            if(!StringUtil.isEmpty(reason)&&reason.length()>66){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","100");
-                repMap.put("fieldNo","Others Reason");
+                repMap.put("number","66");
+                repMap.put("fieldNo","Reason");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-                errorMap.put("othersReason", errMsg);
+                errorMap.put("reason", errMsg);
             }
         }
         return errorMap;

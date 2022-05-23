@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div style="float:left">
-                                    <a class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                    <a class="back" id="back" href="/bsb-web/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                             </div>
                         </div>

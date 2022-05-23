@@ -20,7 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import java.util.List;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface BsbTaskClient {
     @GetMapping(value = "/task", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<TaskListSearchResultDto> getTaskList(@SpringQueryMap TaskListSearchDto dto);

@@ -164,6 +164,6 @@
 
     <%@include file="submissionDoc.jsp" %>
     <div class="col-xs-12">
-        <a class="back" href="/bsb-fe/eservice/INTERNET/DataSubInbox"><em class="fa fa-angle-left"></em> Back</a>
+        <a class="back" href="/bsb-web/eservice/INTERNET/DataSubInbox"><em class="fa fa-angle-left"></em> Back</a>
     </div>
 </div>

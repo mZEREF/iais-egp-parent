@@ -65,7 +65,7 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-web/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
                     <a style="float: right" class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>
                     <span data-err-ind="upload" class="error-msg"></span>
             </iais:action>

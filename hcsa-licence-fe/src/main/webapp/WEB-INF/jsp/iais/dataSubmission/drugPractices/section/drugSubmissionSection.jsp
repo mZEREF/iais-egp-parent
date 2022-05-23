@@ -63,6 +63,31 @@
                         ${drugSubmission.doctorName}
                     </iais:value>
                 </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                        ${drugSubmission.specialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Sub-Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                        ${drugSubmission.subSpecialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                        ${drugSubmission.qualification}
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Other-Qualification" />
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="50" type="text" id ="otherQualification" name="otherQualification"
+                                    value="${drugSubmission.otherQualification}" />
+                    </iais:value>
+                </iais:row>
               <div class="drugType">
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
@@ -72,7 +97,7 @@
                     </iais:value>
                 </iais:row>
                 </div>
-                <div  id="prescriptionDate" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
+                <div  id="prescriptionDate" >
                 <iais:row>
                     <iais:field width="5" value="Date of Prescription" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -91,7 +116,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date of Dispensing" mandatory="true"/>
+                        <iais:field width="5" value="Start Date of Dispensing" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker name="dispensingDate" value="${drugSubmission.dispensingDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_dispensingDate"></span>
@@ -108,22 +133,64 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Start Date" mandatory="true"/>
+                    <iais:field width="5" value="Prescribing Duration Start Date" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:datePicker name="startDate" value="${drugSubmission.startDate}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="End Date" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker name="endDate" value="${drugSubmission.endDate}"/>
-                    </iais:value>
-                </iais:row>
+                <div  id="ddEndDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="End Date of Dispensing" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker name="endDate" value="${drugSubmission.endDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Diagnosis" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="50" type="text" name="diagnosis" value="${drugSubmission.diagnosis}"/>
+                        <textarea rows="" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                        <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
+                    </iais:value>
+                </iais:row>
+                <div id="urineTest">
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Type" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select cssClass="urineTestType" id = "urineTestType" name="urineTestType"
+                                         firstOption="Please Select" codeCategory="DP_URINETESTTYPE" value="${drugSubmission.urineTestType}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Urine Test Result" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select cssClass="urineTestResult" id = "urineTestResult" name="urineTestResult"
+                                         firstOption="Please Select" codeCategory="DP_URINETESTRESULT" value="${drugSubmission.urineTestResult}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div id="nurse">
+                    <iais:row>
+                        <iais:field width="5" value="Nurse/Pharmacist’s Registration No." />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="256" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
+                                        value="${drugSubmission.nurseRegistrationNo}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Nurse/Pharmacist’s Name" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="512" type="text" id ="nurseName" name="nurseName"
+                                        value="${drugSubmission.nurseName}" />
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <iais:row>
+                    <iais:field width="5" value="Fields are provided in my comments" />
+                    <iais:value width="7" cssClass="col-md-7">
+                        <textarea rows="" cols="62" name="providedComments">${drugSubmission.providedComments}</textarea>
+                        <span id="error_providedComments" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
             </div>
@@ -135,7 +202,10 @@
     <input type="hidden" name="prsFlag" value="${prsFlag}"/>
 </div>
 <div class="doctorNameSelectionHidden">
-<input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+    <input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+    <input type="hidden" name="specialty" id="specialtyHidden" value="${drugSubmission.specialty}">
+    <input type="hidden" name="subSpecialty" id="subSpecialtyHidden" value="${drugSubmission.subSpecialty}">
+    <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
 
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
@@ -160,21 +230,7 @@
 <script>
     $(document).ready(function() {
         $('#drugType').change(function () {
-            var drugtype= $('#drugType option:selected').val();
-            if(drugtype == "DPD001"){
-                $('#prescriptionDate').show();
-                unDisableContent('div.medication');
-                fillValue($('#medication'),null);
-            }else {
-                $('#prescriptionDate').hide();
-            }
-            if(drugtype == "DPD002"){
-                $('#dispensingDate').show();
-                $('#prescriptionSubmissionId').val('');
-                $('#error_prescriptionSubmissionId').html('');
-            }else {
-                $('#dispensingDate').hide();
-            }
+            drugTypeChange();
         });
         $('#medication').change(function (){
             changeStrength();
@@ -182,6 +238,7 @@
         $('#prescriptionSubmissionId').change(function(){
             checkPrescriptionSubmissionId();
         });
+
         changeStrength();
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
@@ -189,6 +246,25 @@
         checkPrescriptionSubmissionId();
 
     });
+
+    function drugTypeChange(){
+        var drugtype= $('#drugType option:selected').val();
+        if(drugtype == "DPD001"){
+            $('#dispensingDate').hide();
+            $('#ddEndDate').hide();
+            unDisableContent('div.medication');
+            fillValue($('#medication'),null);
+        } else if(drugtype == "DPD002"){
+            $('#dispensingDate').show();
+            $('#ddEndDate').show();
+            $('#prescriptionSubmissionId').val('');
+            $('#error_prescriptionSubmissionId').html('');
+        }else{
+            $('#dispensingDate').hide();
+            $('#ddEndDate').hide();
+        }
+        changeStrength();
+    }
 
     function checkPrescriptionSubmissionId(){
         var prescriptionSubmissionId = $('#prescriptionSubmissionId').val();
@@ -206,6 +282,7 @@
                     if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
                         $("#error_prescriptionSubmissionId").html('');
                         $("#medication").val(data.resultJson);
+                        changeStrength();
                         disableContent('div.medication');
                     }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
                         $("#error_prescriptionSubmissionId").html(data.resultJson + '');
@@ -227,29 +304,25 @@
         var medication= $('#medication').val();
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').hide();
+            $('#nurse').show();
         }else if('MED002' == medication){
             $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').show();
+            $('#nurse').hide();
         }else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').hide();
+            $('#nurse').hide();
         }
     }
-
-    $(document).ready(function() {
-        console.log("showValidatePT!")
+    function ifClickValidateButton(){
         if ("1" == $('#showValidatePT').val()) {
             $('#validatePT').modal('show');
-        } else if ("1" == $('#showValidatePT').val()) {
-            $('#noFoundDiv').modal('show');
-        } /*else if ("1" == $('#showValidatePT').val()) {
-            $('#validateVD').modal('show');
-        }*/
-    });
-    $(document).ready(function() {
-        console.log("showValidatePT!")
-       if ("0" == $('#showValidatePT').val()) {
+        } else if ("1" == $('#showValidateVD').val()) {
             $('#validateVD').modal('show');
         }
-    });
+    }
 
     function retrieveValidateDrug() {
         showWaiting();
@@ -294,6 +367,9 @@
         console.log("clearDockerSelection!")
         clearErrorMsg();
         $('#names').find('p').text('');
+        $('#specialty').find('p').text('');
+        $('#subSpecialty').find('p').text('');
+        $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
 
@@ -364,5 +440,14 @@
         const name = data.name;
         $('#names').find('p').text(name);
         $('#doctorNameHidden').val(name);
+
+        $('#specialty').find('p').text(data.specialty);
+        $('#specialtyHidden').val(data.specialty);
+
+        $('#subSpecialty').find('p').text(data.subspecialty);
+        $('#subSpecialtyHidden').val(data.subspecialty);
+
+        $('#qualification').find('p').text(data.qualification);
+        $('#qualificationHidden').val(data.qualification);
     }
 </script>

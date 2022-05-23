@@ -295,15 +295,19 @@
     <sql key = "dataSubmissionQuery" remarks = "Query data Submission Inter-Inbox Data by condition">
         <![CDATA[
             SELECT DISTINCT t1.*,t2.BUSINESS_NAME FROM (select * FROM (
-            SELECT dds.ID ID,dds.CYCLE_ID CYCLE_ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],
+              SELECT  db.*,pai.Patient_Name,pai.ID_NUMBER Patient_Id_Number FROM  (SELECT dds.ID ID,dds.CYCLE_ID CYCLE_ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],
             CASE WHEN dds.LOCK_STATUS >0  THEN 'DS013'
-            ELSE dds.STATUS  END  STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId,dc.STATUS group_status,dds.LOCK_STATUS LOCK_STATUS,replaceSubByOne, null Patient_Name FROM  ds_cycle dc
+            ELSE dds.STATUS  END  STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId,dc.STATUS group_status,dds.LOCK_STATUS LOCK_STATUS,CASE WHEN dc.PATIENT_CODE is null THEN dds.ID ELSE dc.PATIENT_CODE end keyId,null ORGANIZATION_ID,'' ID_TYPE,''  ID_NUMBER,{replaceSubByOne}  FROM  ds_cycle dc
            left join  ds_data_submission dds
-           on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS not in ('DS002','DS012')
-           UNION
-           SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId,
-           'DS001' group_status, 0  LOCK_STATUS,replaceSubByTwo, null Patient_Name
-           FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
+           on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS not in ('DS002','DS012')) db  LEFT  JOIN (Select pai.PATIENT_CODE keyId,pai.ID_NUMBER ID_NUMBER,pai.NAME PATIENT_NAME,pai.ID_TYPE ID_TYPE,pai.CEN_ORGANIZATION_ID CEN_ORGANIZATION_ID FROM ds_patient_information pai left join ds_data_submission dds  on  pai.SUBMISSION_ID = dds.ID WHERE dds.STATUS NOT IN ('DS002','DS012')
+            UNION SELECT topa.SUBMISSION_ID keyId,topa.PATIENT_ID_NO ID_NUMBER,topa.PATIENT_NAME PATIENT_NAME,topa.PATIENT_ID_TYPE ID_TYPE,topa.CEN_ORGANIZATION_ID CEN_ORGANIZATION_ID FROM ds_top_patient topa left join ds_data_submission dds  on  topa.SUBMISSION_ID = dds.ID WHERE dds.STATUS NOT IN ('DS002','DS012'))  pai  ON
+            db.keyId = pai.keyId
+         UNION
+         SELECT db.*,pai.Patient_Name,pai.ID_NUMBER Patient_Id_Number FROM (SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId,
+           'DS001' group_status, 0  LOCK_STATUS,null keyId,ddsd.ORGANIZATION_ID ORGANIZATION_ID,ddsd.ID_TYPE ID_TYPE,ddsd.ID_NUMBER ID_NUMBER,{replaceSubByTwo}
+           FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010') db LEFT  JOIN (Select pai.PATIENT_CODE keyId,pai.ID_NUMBER ID_NUMBER,pai.NAME PATIENT_NAME,pai.ID_TYPE ID_TYPE,pai.CEN_ORGANIZATION_ID CEN_ORGANIZATION_ID FROM ds_patient_information pai left join ds_data_submission dds  on  pai.SUBMISSION_ID = dds.ID WHERE dds.STATUS NOT IN ('DS002','DS012')
+            UNION SELECT topa.SUBMISSION_ID keyId,topa.PATIENT_ID_NO ID_NUMBER,topa.PATIENT_NAME PATIENT_NAME,topa.PATIENT_ID_TYPE ID_TYPE,topa.CEN_ORGANIZATION_ID CEN_ORGANIZATION_ID FROM ds_top_patient topa left join ds_data_submission dds  on  topa.SUBMISSION_ID = dds.ID WHERE dds.STATUS NOT IN ('DS002','DS012'))  pai  ON
+         db.ORGANIZATION_ID =pai.CEN_ORGANIZATION_ID AND  db.ID_TYPE = pai.ID_TYPE AND db.ID_NUMBER = pai.ID_NUMBER
            ) t1 where t1.SVC_NAME IS NULL OR t1.SVC_NAME != '') t1
            <#if fromCenter?? && !fromCenter>
           left join (
@@ -318,7 +322,7 @@
                left join (select HCI_CODE,CENTER_NAME BUSINESS_NAME,LICENSEE_ID licenseeId,CENTER_TYPE from  ds_center dsc WHERE dsc.STATUS = 'CMSTAT001') t2 on t1.dclicenseeId = t2.licenseeId AND t2.HCI_CODE = t1.HCI_CODE AND t2.CENTER_TYPE = t1.DS_TYPE
            </#if>
           WHERE 1=1
-          <#if type??> and t1.[type] = :type </#if>
+          <#if type??> and t1.[type] IN ${type} </#if>
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
           <#if status ?? &&  status != 'DS014' > and t1.STATUS = :status</#if>
           <#if status ?? &&  status == 'DS014' > and t1.STATUS not in ('DS013',:status)</#if>
@@ -329,6 +333,7 @@
             <#if submittedBy??> AND CHARINDEX(:submittedBy, t1.SUBMIT_BY) >0 </#if>
            <#if businessName??> AND CHARINDEX(:businessName, t2.BUSINESS_NAME) >0 </#if>
             <#if patientName??> AND CHARINDEX(:patientName, t1.Patient_Name) >0 </#if>
+              <#if patientIdNumber??> AND CHARINDEX(:patientIdNumber, t1.Patient_Id_Number) >0 </#if>
         ]]>
     </sql>
 </sqls>

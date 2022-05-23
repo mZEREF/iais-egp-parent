@@ -51,7 +51,7 @@ function stChange(obj){
         bat.html("<option value=\"\">Please select<\/option>");
         bat.next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>");
     } else {
-        $.post('/bsb-fe/bio-info/bio.do',
+        $.post('/bsb-web/bio-info/bio.do',
             {schedule: scheduleType},
             function (data) {
                 var result = data.result;

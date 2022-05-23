@@ -4,31 +4,52 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
-import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_EXPAND_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_APP_DT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_APP_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.MODULE_NAME_NEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_AUTHORISER_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_COMMITTEE_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 
 
 @Slf4j
@@ -37,59 +58,45 @@ public class RfiFacilityRegistrationDelegator {
     private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
+    private final RfiService rfiService;
 
     @Autowired
     public RfiFacilityRegistrationDelegator(FileRepoClient fileRepoClient,
-                                            FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
+                                            FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, RfiService rfiService) {
         this.fileRepoClient = fileRepoClient;
         this.facRegClient = facRegClient;
         this.facilityRegistrationService = facilityRegistrationService;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        // clear sessions
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String maskedAppId = request.getParameter(RfiConstants.KEY_APP_ID);
         boolean failRetrieveRfiData = true;
-        if (StringUtils.hasLength(maskedAppId)) {
-            if (log.isInfoEnabled()) {
-                log.info("masked application ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
-            }
-            String appId = MaskUtil.unMaskValue(RfiConstants.KEY_RFI_APP_ID, maskedAppId);
-            if (appId != null) {
-                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
-                if (resultDto.ok()) {
-                    failRetrieveRfiData = false;
-                    facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
-                    facilityRegistrationService.retrieveOrgAddressInfo(request);
-                }
-                ParamUtil.setRequestAttr(request, RfiConstants.KEY_APP_ID, appId);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        if (appId != null) {
+            ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
+            if (resultDto.ok()) {
+                failRetrieveRfiData = false;
+                facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
+                facilityRegistrationService.retrieveOrgAddressInfo(request);
             }
         }
         if (failRetrieveRfiData) {
             throw new IaisRuntimeException("Fail to retrieve rfi data");
         }
 
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
-
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
         SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
-
-        boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
-        ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
-        boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
-        ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
-
-        ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
-        ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
-
-        Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
-        facilityRegistrationService.jump(request, facRegRoot, KEY_NAV_NEXT);
+        facilityRegistrationService.handleServiceSelectionNextValidated(request, facRegRoot, selectionDto, KEY_NAV_NEXT);
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
@@ -227,7 +234,9 @@ public class RfiFacilityRegistrationDelegator {
                     // save data
                     log.info("Save facility registration data");
                     FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
-                    ResponseDto<AppMainInfo> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
+
+                    // save rfi data
+                    ResponseDto<AppMainInfo> responseDto = rfiService.saveFacilityRegistration(request, finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());

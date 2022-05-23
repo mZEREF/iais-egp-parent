@@ -1,14 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * @Description DpFeClientFallback
@@ -65,6 +62,11 @@ public class DpFeClientFallback implements DpFeClient {
     }
 
     @Override
+    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String type, String svcName, String hciCode, String dataSubmissionId) {
+        return getFeignResponseEntity(orgId, type, svcName, hciCode, dataSubmissionId);
+    }
+
+    @Override
     public FeignResponseEntity<List<PgtStageDto>> listPgtStageByPatientCode(String patientCode) {
         return getFeignResponseEntity(patientCode);
     }
@@ -73,6 +75,12 @@ public class DpFeClientFallback implements DpFeClient {
     public FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
         return getFeignResponseEntity(orgId, type, hciCode);
     }
+
+    @Override
+    public FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String hciCode, String dataSubmissionId) {
+        return getFeignResponseEntity(orgId, submissionType, hciCode,dataSubmissionId);
+    }
+
     @Override
     public FeignResponseEntity<DrugPrescribedDispensedDto> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
         return getFeignResponseEntity(submissionNo);

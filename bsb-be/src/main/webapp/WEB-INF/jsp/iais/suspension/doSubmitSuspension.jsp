@@ -191,7 +191,7 @@
                                                                 </iais:section>
                                                                         <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                                                                 <div style="text-align: right">
-                                                                    <a href="/bsb-be/eservice/INTRANET/MohBsbTaskList" class="btn btn-secondary">Cancel</a>
+                                                                    <a href="/bsb-web/eservice/INTRANET/MohBsbTaskList" class="btn btn-secondary">Cancel</a>
                                                                     <c:if test="${suspensionReinstatementDto.approvalProcessType eq 'PROTYPE005'}">
                                                                         <button id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                                     </c:if>

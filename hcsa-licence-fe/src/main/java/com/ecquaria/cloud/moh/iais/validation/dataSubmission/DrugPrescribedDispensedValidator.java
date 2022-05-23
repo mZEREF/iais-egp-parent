@@ -14,16 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * DrugPrescribedDispensedValidator
@@ -61,8 +59,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
         }
         if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
-            errorMap.put("showValidatePT", AppConsts.NO);
-            ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.NO);
+            errorMap.put("showValidateVD", AppConsts.YES);
+            ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
         }
         //validate the Submission
         result = WebValidationHelper.validateProperty(drugSubmission, profile);
@@ -92,52 +90,51 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         String endDate = drugSubmission.getEndDate();
         List<DrugMedicationDto> preDrugMedicationDtos = IaisCommonUtils.genNewArrayList();
 
-        if (StringUtil.isEmpty(prescriptionDate)&& "DPD001".equals(drugType)) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Date of Prescription", "field");
-            errorMap.put("prescriptionDate", errMsg);
-        }
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
-            if (StringUtil.isEmpty(dispensingDate)  ) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Date of Dispensing", "field");
-                errorMap.put("dispensingDate", errMsg);
-
+            result = WebValidationHelper.validateProperty(drugSubmission, "DISPENSED");
+            if (result != null) {
+                errorMap.putAll(result.retrieveAll());
             }
-
-           if(StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId())){
-                errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0006");
-            }else {
-               DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
-                       getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
-               if(drugPrescribedDispensedDto != null){
-                   preDrugMedicationDtos =  drugPrescribedDispensedDto.getDrugMedicationDtos();
-               }
-               if(IaisCommonUtils.isEmpty(preDrugMedicationDtos)){
-                   errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
-               }else{
-                   drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
-               }
+            if (StringUtil.isNotEmpty(drugSubmission.getPrescriptionSubmissionId())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
+                        getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
+                if(drugPrescribedDispensedDto != null){
+                    preDrugMedicationDtos =  drugPrescribedDispensedDto.getDrugMedicationDtos();
+                }
+                if(IaisCommonUtils.isEmpty(preDrugMedicationDtos)){
+                    errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+                }else{
+                    drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
+                }
             }
-
         }
         //validate the medication
         result = WebValidationHelper.validateProperty(drugSubmission, "medication");
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
+        if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())){
+            result = WebValidationHelper.validateProperty(drugSubmission, "UT");
+        }else if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
+            result = WebValidationHelper.validateProperty(drugSubmission, "NURSE");
+        }
+        if (result != null) {
+            errorMap.putAll(result.retrieveAll());
+        }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {
-                if(Formatter.compareDateByDay(prescriptionDate,startDate)>=0){
-                    errorMap.put("startDate", "Must be later than Date of Prescription.");
+                if(Formatter.compareDateByDay(prescriptionDate,startDate)>0){
+                    errorMap.put("startDate", "Must be later than or equal to Date of Prescription.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
         }
 
-        if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)){
+        if(!StringUtil.isEmpty(dispensingDate) && !StringUtil.isEmpty(endDate)){
             try {
-                if(Formatter.compareDateByDay(endDate,startDate)<0){
-                    errorMap.put("endDate", "Must be later than date of Start Date.");
+                if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
+                    errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

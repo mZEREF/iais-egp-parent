@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/requestForInformation/facRegistration/approvedFacilityCertifier.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/rfi/facRegistration/approvedFacilityCertifier.jsp"%>

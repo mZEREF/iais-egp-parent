@@ -214,6 +214,8 @@ public final class MasterCodeUtil {
     public static final String DP_MEDICATION                        ="8B29293A-DDF6-460A-AE10-731196AFBB47";
     public static final String DP_FREQUENCY                         ="2C288EBF-12D5-4D5F-9A1A-EAC6EEBDE127";
 
+    public static final String DP_URINETESTTYPE                     ="11864921-52D6-EC11-BE6C-000C29FAAE4D";
+    public static final String DP_URINETESTRESULT                   ="2419FC5C-52D6-EC11-BE6C-000C29FAAE4D";
 
     public static final  String DONOR_RELATION_TO_PATIENT           ="9C2B3AFF-55A8-445B-A759-0B806FEB3317";
 
@@ -252,6 +254,12 @@ public final class MasterCodeUtil {
     public static final String TOP_POST_COUNSELLING_RESULT               ="5E2DFDEF-DA59-4F61-AF3E-43FCA7D5CEB5";
 
     public static final String LDT_AMENDMENT_REASON                      = "B6F2B5FA-689E-4505-97EC-8C1479D19351";
+
+    public static final String DP_PATIENT_INFO_AMENDMENT_REASON          ="DF3C1D7C-3B79-42DA-A7E7-FBFFD47BE9AA";
+
+    public static final String DP_DRUG_PRESCRIBED                        ="67AD2797-01C8-48CE-8C5E-185CB1C89122";
+
+    public static final String DP_DRUG_DISPENSED                         ="F78732FD-F763-465D-B845-987BC581DCCC";
 
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 

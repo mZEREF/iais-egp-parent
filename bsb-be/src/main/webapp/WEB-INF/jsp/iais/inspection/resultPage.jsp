@@ -22,7 +22,7 @@
                                 <h2>${resultMsg}</h2>
                             </div>
                         </div>
-                        <div  style="text-align:left"><span><a href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                        <div  style="text-align:left"><span><a href="/bsb-web/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a></span></div>
                     </div>
                 </div>
             </div>

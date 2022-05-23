@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
@@ -134,7 +135,7 @@ public class InsAFCReportService {
         //mark new doc as final
         if (!CollectionUtils.isEmpty(newDocMap)) {
             List<CertificationDocDisPlayDto> dtoList = newDocMap.values().stream().map(CertificationDocDto::getDisPlayDto).collect(Collectors.toList());
-            List<String> maskedRepoIds = dtoList.stream().filter(docDto -> docDto.getRoundOfReview().equals(dto.getMaxRound())).map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
+            List<String> maskedRepoIds = dtoList.stream().map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + RoleConstants.ROLE_APPLICANT);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
@@ -152,7 +153,7 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                if (checked.equals(YES)){
+                if (!StringUtils.isEmpty(checked)&&checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
                 if (role.equals(RoleConstants.ROLE_APPLICANT)) {
@@ -162,6 +163,7 @@ public class InsAFCReportService {
                     docDtoMap.get(repoId).setAfcMarkFinal(checked);
                 }
             }
+            ParamUtil.setSessionAttr(request,PARAM_REPO_ID_DOC_MAP, (Serializable) docDtoMap);
         }
     }
 

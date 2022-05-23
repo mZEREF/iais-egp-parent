@@ -1,5 +1,6 @@
 <%
-    sg.gov.moh.iais.egp.bsb.common.node.NodeGroup facRegRoot = (sg.gov.moh.iais.egp.bsb.common.node.NodeGroup) request.getSession().getAttribute("facRegRoot");
+    javax.servlet.http.HttpServletRequest request1 = ((org.springframework.web.context.request.ServletRequestAttributes) org.springframework.web.context.request.RequestContextHolder.getRequestAttributes()).getRequest();
+    sg.gov.moh.iais.egp.bsb.common.node.NodeGroup facRegRoot = (sg.gov.moh.iais.egp.bsb.common.node.NodeGroup) request1.getSession().getAttribute("facRegRoot");
 %>
 <ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li role="presentation" class="<%=sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService.computeTabClassnameForJsp(facRegRoot, sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_COMPANY_INFO)%>">

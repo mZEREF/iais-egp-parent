@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
+@FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface SuspensionClient {
     @GetMapping(path = "/suspension/init-data/{approvalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<SuspensionReinstatementDto> getSuspensionDataByApprovalId(@PathVariable("approvalId") String approvalId);

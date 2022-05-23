@@ -42,7 +42,19 @@ import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -51,9 +63,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
@@ -167,41 +181,7 @@ public class FacilityRegistrationService {
             if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
                 boolean currentLetGo = facSelectionNode.doValidation();
                 if (currentLetGo) {
-                    Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
-
-                    boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
-                    ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
-                    boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
-                    ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
-                    boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
-                    ParamUtil.setSessionAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
-                    boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
-                    ParamUtil.setSessionAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
-                    boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
-                    ParamUtil.setSessionAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
-
-                    // change root node group
-                    changeRootNodeGroup(facRegRoot, selectionDto.getFacClassification(), selectionDto.getActivityTypes());
-
-                    // change BAT node group
-                    if (isUcf) {
-                        NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
-                        changeBatNodeGroup(batGroup, selectionDto);
-                    }
-
-                    // set selected value in the dashboard, it will also be used by latter logic and page
-                    ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
-                    ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
-
-                    // update impacted supporting document node
-                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    primaryDocDto.setFacClassification(selectionDto.getFacClassification());
-                    primaryDocDto.setActivityTypes(selectionDto.getActivityTypes());
-                    Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
-
-                    // jump
-                    jump(request, facRegRoot, actionValue);
+                    handleServiceSelectionNextValidated(request, facRegRoot, selectionDto, actionValue);
                 } else {
                     ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_FAC_SELECTION);
@@ -215,6 +195,44 @@ public class FacilityRegistrationService {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
+    public void handleServiceSelectionNextValidated(HttpServletRequest request, NodeGroup facRegRoot, FacilitySelectionDto selectionDto, String actionValue) {
+        Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
+
+        boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
+        boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
+        boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+        ParamUtil.setSessionAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
+        boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
+        ParamUtil.setSessionAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
+        boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+        ParamUtil.setSessionAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
+
+        // change root node group
+        changeRootNodeGroup(facRegRoot, selectionDto.getFacClassification(), selectionDto.getActivityTypes());
+
+        // change BAT node group
+        if (isUcf) {
+            NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
+            changeBatNodeGroup(batGroup, selectionDto);
+        }
+
+        // set selected value in the dashboard, it will also be used by latter logic and page
+        ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
+        ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
+
+        // update impacted supporting document node
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        primaryDocDto.setFacClassification(selectionDto.getFacClassification());
+        primaryDocDto.setActivityTypes(selectionDto.getActivityTypes());
+        Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
+
+        // jump
+        jump(request, facRegRoot, actionValue);
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
@@ -578,10 +596,10 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         ParamUtil.setRequestAttr(request, "activityTypes", selectionDto.getActivityTypes());
 
-        Map<String, List<BatCodeInfo>> scheduleBatMap = facRegClient.queryScheduleBasedBatBasicInfo(batDto.getActivityType());
+        Map<String, List<BatCodeInfo>> scheduleBatMap = facRegClient.queryScheduleBasedBatBasicInfo(batDto.getActivityType(), Arrays.asList(MasterCodeConstants.APPROVAL_TYPE_POSSESS, MasterCodeConstants.APPROVAL_TYPE_LSP, MasterCodeConstants.APPROVAL_TYPE_HANDLE_FST_EXEMPTED));
         List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
-        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, Optional.of(scheduleTypeOps).filter(l -> !l.isEmpty()).map(l -> l.get(0)).map(SelectOption::getValue).orElse(null));
 
         // convert BatBasicInfo to SelectOption object
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());

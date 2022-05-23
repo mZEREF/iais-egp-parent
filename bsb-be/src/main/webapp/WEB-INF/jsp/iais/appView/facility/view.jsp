@@ -28,7 +28,7 @@
                     <c:forEach var="file" items="${savedFileList}">
                         <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                         <div class="form-group">
-                            <div class="col-10"><p><a href="/bsb-be/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                            <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                             <div class="clear"></div>
                         </div>
                     </c:forEach>

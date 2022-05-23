@@ -3,10 +3,9 @@
 <%--@elvariable id="organizationAddress" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo"--%>
 <fac:companyInfo organizationAddress="${organizationAddress}">
     <jsp:attribute name="specialJsFrag">
-        <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
+<iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>
-        <script type="text/javascript" src="${webroot}/js/bsb/bsb-facility-register.js"></script>
-    </jsp:attribute>
+        <script type="text/javascript" src="${webroot}/js/bsb/bsb-approval-bat-and-activity.js"></script>    </jsp:attribute>
     <jsp:attribute name="dashboardFrag">
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
