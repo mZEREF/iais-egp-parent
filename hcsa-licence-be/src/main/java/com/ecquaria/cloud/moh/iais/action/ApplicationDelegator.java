@@ -5,7 +5,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -21,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -370,7 +368,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     protected Map<String, String> checkNextStatusOnRfi(String appGrpNo, String appNo) {
         log.info(StringUtil.changeForLog("App Grp No: " + appGrpNo + " - App No: " + appNo));
         Map<String, String> map = applicationService.checkApplicationByAppGrpNo(appGrpNo);
-        map.put(HcsaAppConst.MAP_KEY_STATUS, ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
+        map.put(HcsaAppConst.STATUS_GRP, ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
+        map.put(HcsaAppConst.STATUS_APP, map.get(appNo));
         log.info(StringUtil.changeForLog("NextStatusOnRfi: " + map));
         return map;
     }

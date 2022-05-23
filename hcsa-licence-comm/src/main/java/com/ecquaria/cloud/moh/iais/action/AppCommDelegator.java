@@ -1840,7 +1840,8 @@ public abstract class AppCommDelegator {
             return;
         }
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        appSubmissionRequestInformationDto.setRfiStatus(checkMap.get(HcsaAppConst.MAP_KEY_STATUS));
+        appSubmissionRequestInformationDto.setAppGrpStatus(checkMap.get(HcsaAppConst.STATUS_GRP));
+        appSubmissionRequestInformationDto.setRfiStatus(checkMap.get(HcsaAppConst.STATUS_APP));
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;

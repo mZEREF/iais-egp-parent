@@ -1316,14 +1316,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(appGrpNo)) {
-            errorMap.put(HcsaAppConst.ERROR_APP, "Can't find the related application!");
-            return errorMap;
+            result.put(HcsaAppConst.ERROR_APP, "Can't find the related application!");
+            return result;
         }
         Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
+        result.putAll(map);
         if (AppConsts.YES.equals(map.get("isRfi"))) {
-            errorMap.put(HcsaAppConst.ERROR_APP, "There is a related application is in doing RFI, please wait for it.");
+            result.put(HcsaAppConst.ERROR_APP, "There is a related application is in doing RFI, please wait for it.");
         } else  {
             String appGrpStatus = map.get("appGrpStatus");
             if (StringUtil.isIn(appGrpStatus, new String[]{
@@ -1334,13 +1335,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD,
                     ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE})) {
-                errorMap.put(HcsaAppConst.ERROR_APP, "There is a related application is waiting for synchronization, please wait and " +
+                result.put(HcsaAppConst.ERROR_APP, "There is a related application is waiting for synchronization, please wait and " +
                         "and try it later.");
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
-                errorMap.put(HcsaAppConst.ERROR_APP, "The application can't be edited.");
+                result.put(HcsaAppConst.ERROR_APP, "The application can't be edited.");
             }
         }
-        return errorMap;
+        return result;
     }
 
     @Override

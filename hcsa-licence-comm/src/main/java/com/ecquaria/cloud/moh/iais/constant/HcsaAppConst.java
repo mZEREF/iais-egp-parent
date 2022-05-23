@@ -140,7 +140,8 @@ public final class HcsaAppConst {
     public static final String ACK_STATUS_ERROR                             = "error";
     public static final String COND_TYPE_RFI                                = "isrfiSuccess";
 
-    public static final String MAP_KEY_STATUS                               = "status";
+    public static final String STATUS_APP                                   = "STATUS_APP";
+    public static final String STATUS_GRP                                   = "STATUS_GRP";
     public static final String ERROR_APP                                    = "appError";
 
     public static final String ERROR_TYPE                                   = "ERROR_TYPE";

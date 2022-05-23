@@ -1329,7 +1329,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
         }
         log.info(StringUtil.changeForLog("NextStatusOnRfi: " + status));
-        map.put(HcsaAppConst.MAP_KEY_STATUS, status);
+        map.put(HcsaAppConst.STATUS_APP, status);
         return map;
     }
 
