@@ -204,6 +204,9 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppSubmissionServiceImpl",
                     "updateInboxMsgStatus");
+        } else if (EventBusConsts.OPERATION_APP_SUBMIT_BE.equals(operation)) {
+            log.info("-------do BE request information call back ----");
+            IaisEGPHelper.invokeBeanMethod("com.ecquaria.cloud.moh.iais.service.ApplicationService", "updateTasks", eventRefNum);
         }
     }
 

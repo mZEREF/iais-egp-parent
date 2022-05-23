@@ -1347,13 +1347,29 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
-        appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
+        // for call back - EventbusCallBackDelegate#callback -> ${link this#updateTasks}
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
         eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFI Application",
                 appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
         return appSubmissionRequestInformationDto.getAppSubmissionDto();
+    }
+
+    @Override
+    public void updateTasks(String appGrpNo) {
+        log.info(StringUtil.changeForLog("App Group Id: " + appGrpNo));
+        if (StringUtil.isEmpty(appGrpNo)) {
+            log.info(StringUtil.changeForLog("No app premise correlations found!"));
+            return;
+        }
+        List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationByAppGroupId(appGrpNo);
+        if (appPremisesCorrelations == null || appPremisesCorrelations.isEmpty()) {
+            log.info(StringUtil.changeForLog("No app premise correlations found!"));
+            return;
+        }
+        taskOrganizationClient.updateTasks(appPremisesCorrelations);
     }
 
     /**

@@ -139,6 +139,8 @@ public interface ApplicationService {
 
     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, String appType);
 
+    void updateTasks(String appGrpNo);
+
     /**
      * Check Data For Edit App
      *
