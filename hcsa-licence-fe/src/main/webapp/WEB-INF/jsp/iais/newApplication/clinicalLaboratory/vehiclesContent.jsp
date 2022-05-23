@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
@@ -39,7 +41,7 @@
             <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
 
             <div class="col-md-12 col-xs-12">
-                <p style="font-weight: 600;font-size: 2.2rem"></p>
+                <p class="svc-title"></p>
             </div>
             <br/>
             <iais:row>

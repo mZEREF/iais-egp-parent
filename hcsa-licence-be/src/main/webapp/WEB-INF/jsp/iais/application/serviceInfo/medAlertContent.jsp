@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <style>
     .cursorPointer{
         cursor: pointer;
@@ -9,7 +9,7 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
     <div class="col-xs-12">
-        <p style="font-weight: 600;font-size: 2.2rem">MedAlert Person</p>
+        <p class="svc-title">MedAlert Person</p>
         <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
         <hr>
         <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>

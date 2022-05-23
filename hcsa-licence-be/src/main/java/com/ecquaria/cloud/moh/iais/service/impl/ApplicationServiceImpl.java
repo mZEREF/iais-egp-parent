@@ -1395,7 +1395,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             if (applicationViewDto == null) {
                 ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
                 isValid = false;
-            } else if (!StringUtil.isIn(applicationViewDto.getApplicationType(), new String[]{
+            } else if (!StringUtil.isIn(applicationViewDto.getApplicationDto().getApplicationType(), new String[]{
                     ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                     ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
                     ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {

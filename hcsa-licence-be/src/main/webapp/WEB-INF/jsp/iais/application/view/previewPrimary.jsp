@@ -21,7 +21,7 @@
             <div class="elemClass-1561088919456">
                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                     <div class="control-set-font control-font-header section-header">
-                        <label style="font-size: 2.2rem">Uploaded Documents</label>
+                        <label class="svc-title">Uploaded Documents</label>
 
                     </div>
                     <div class="pop-up">

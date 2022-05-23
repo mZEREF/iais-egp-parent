@@ -1,6 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${currStepName}</label>
+    <label class="svc-title">${currStepName}</label>
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">

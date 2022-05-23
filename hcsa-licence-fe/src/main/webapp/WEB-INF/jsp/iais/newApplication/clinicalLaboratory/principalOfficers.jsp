@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
@@ -333,7 +335,7 @@
                                 </c:choose>
                                 <c:if test="${!isClickEditDpo}">
                                     <c:set var="showPreview" value="true"/>
-                                    <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                                    <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit && DeputyPrincipalOfficersMandatory > 0}"/>
                                     <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                                         <c:choose>
                                             <c:when test="${canEditDpoEdit}">
@@ -388,9 +390,7 @@
                         <div class="panel-main-content">
                             <h2>Nominee</h2>
                             <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
-                            <div class="dpo-content">
-                            </div>
-                            <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController || canEditDpoEdit}" />
                             <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
                                 <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
@@ -414,7 +414,7 @@
                                             <div class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-6 control-label formtext col-md-8">
-                                                        <div class="cgo-header" style="font-size: 18px;">
+                                                        <div class="cgo-header font-18">
                                                             <strong>Nominee <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
                                                         </div>
                                                     </div>
@@ -448,7 +448,7 @@
                                             <span id="error_conflictError${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                         <div class="row">
-                                            <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
+                                            <div class="control control-caption-horizontal deputyPoSelectDiv <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                                                         Assign a Nominee
@@ -956,6 +956,12 @@
                 $contentEle.find('input[type="text"]').css('color','');
                 */
             } else {
+                var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
+                if (!$deputyPoSelectDiv.hasClass('hidden')) {
+                    $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('color','');
+                }
                 //add one
                 $('#addDpoBtn').trigger('click');
                 //close dropdown

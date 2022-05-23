@@ -110,6 +110,9 @@ public class ApplicationDelegator extends AppCommDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(appNo);
+        if (appSubmissionDto.getAppEditSelectDto() == null) {
+            appSubmissionDto.setAppEditSelectDto(applicationViewDto.getAppEditSelectDto());
+        }
         appSubmissionDto.setAmountStr("N/A");
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
                 appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
@@ -375,8 +378,9 @@ public class ApplicationDelegator extends AppCommDelegator {
     @Override
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
-        //return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
-        return appSubmissionRequestInformationDto.getAppSubmissionDto();
+        log.info("----Submit Request In formation-----");
+        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
+        // return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override

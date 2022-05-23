@@ -1,6 +1,6 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <webui:setLayout name="iais-intranet"/>
 

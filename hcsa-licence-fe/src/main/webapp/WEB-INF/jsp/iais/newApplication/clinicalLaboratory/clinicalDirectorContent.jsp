@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <style>
     input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
         color:#999999 !important;
@@ -49,7 +51,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${currStepName}"/></p>
+                        <p class="svc-title"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>

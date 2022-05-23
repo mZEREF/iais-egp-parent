@@ -1086,28 +1086,29 @@ public final class AppValidatorHelper {
         boolean empty = StringUtil.isEmpty(floorNo);
         boolean empty1 = StringUtil.isEmpty(blkNo);
         boolean empty2 = StringUtil.isEmpty(unitNo);
-        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-            if (empty) {
-                addrTypeFlag = false;
-                errorMap.put(floorNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
-            } else if (floorNo.length() > 3) {
-                String general_err0041 = repLength("Floor No.", "3");
-                errorMap.put(floorNoKey, general_err0041);
-            }
-            if (empty1) {
-                addrTypeFlag = false;
-                errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-            } else if (blkNo.length() > 10) {
-                String general_err0041 = repLength("Block / House No.", "10");
-                errorMap.put(blkNoKey, general_err0041);
-            }
-            if (empty2) {
-                addrTypeFlag = false;
-                errorMap.put(unitNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
-            } else if (unitNo.length() > 5) {
-                String general_err0041 = repLength("Unit No.", "5");
-                errorMap.put(unitNoKey, general_err0041);
-            }
+        boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
+        if ((isAptBlkType || !empty2) && empty) {
+            addrTypeFlag = false;
+            errorMap.put(floorNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+        }
+        if (!empty && floorNo.length() > 3) {
+            String general_err0041 = repLength("Floor No.", "3");
+            errorMap.put(floorNoKey, general_err0041);
+        }
+        if (isAptBlkType && empty1) {
+            addrTypeFlag = false;
+            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+        } else if (blkNo.length() > 10) {
+            String general_err0041 = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, general_err0041);
+        }
+        if ((isAptBlkType || !empty) && empty2) {
+            addrTypeFlag = false;
+            errorMap.put(unitNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+        }
+        if (!empty2 && unitNo.length() > 5) {
+            String general_err0041 = repLength("Unit No.", "5");
+            errorMap.put(unitNoKey, general_err0041);
         }
         if (!empty && !empty1 && !empty2) {
             StringBuilder sb = new StringBuilder();

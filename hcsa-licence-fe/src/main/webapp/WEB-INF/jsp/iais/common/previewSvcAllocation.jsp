@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
     <c:if test="${stepSchem.stepCode == 'SVST001'}">
         <c:set var="svcScopePageName" value="${stepSchem.stepName}"/>
@@ -5,7 +7,7 @@
 </c:forEach>
 <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${currStepName}</label>
+    <label class="svc-title">${currStepName}</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

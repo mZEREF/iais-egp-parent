@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
@@ -956,10 +956,11 @@
                 $contentEle.find('input[type="text"]').css('color','');
                 */
             } else {
-                if (!$('div.deputyPoSelectDiv').hasClass('hidden')) {
-                    $('div.deputyPoSelectDiv').find('div.nice-select').removeClass('disabled');
-                    $('div.deputyPoSelectDiv').find('input[type="text"]').css('border-color','');
-                    $('div.deputyPoSelectDiv').find('input[type="text"]').css('color','');
+                var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
+                if (!$deputyPoSelectDiv.hasClass('hidden')) {
+                    $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('color','');
                 }
                 //add one
                 $('#addDpoBtn').trigger('click');

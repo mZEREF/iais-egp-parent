@@ -1464,16 +1464,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     ApplicationHelper.setPreviewPo(appSvcRelatedInfoDtos.get(0), bpc.request);
                 }
             }
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
             boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
                     .map(SubLicenseeDto::getLicenseeType)
                     .filter(licenseeType -> StringUtil.isEmpty(licenseeType)
                             || OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
                     .isPresent();
             appEditSelectDto.setLicenseeEdit(licenseeEdit);
-            appEditSelectDto.setPremisesEdit(true);
-            appEditSelectDto.setDocEdit(true);
-            appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
     }

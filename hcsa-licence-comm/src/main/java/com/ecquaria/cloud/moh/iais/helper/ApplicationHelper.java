@@ -4206,4 +4206,21 @@ public final class ApplicationHelper {
         }
         return newAppSvcChckListDtos;
     }
+
+    public static AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        if (canEdit) {
+            appEditSelectDto.setLicenseeEdit(canEdit);
+            appEditSelectDto.setPremisesEdit(canEdit);
+            appEditSelectDto.setPremisesListEdit(canEdit);
+            appEditSelectDto.setDocEdit(canEdit);
+            appEditSelectDto.setMedAlertEdit(canEdit);
+            appEditSelectDto.setServiceEdit(canEdit);
+            appEditSelectDto.setPoEdit(canEdit);
+            appEditSelectDto.setDpoEdit(canEdit);
+        }
+        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return appEditSelectDto;
+    }
 }

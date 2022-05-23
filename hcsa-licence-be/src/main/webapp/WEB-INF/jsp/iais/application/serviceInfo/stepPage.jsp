@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <%
     //handle to the Engine APIs
@@ -48,7 +48,7 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST001'}">
                                                             <div class="laboratory-disciplines">
-                                                                <p style="font-weight: 600;font-size: 2.2rem">${currStepName}</p>
+                                                                <p class="svc-title">${currStepName}</p>
                                                                 <c:choose>
                                                                     <c:when test="${'RDS' ==currentSvcCode}">
                                                                         <p><iais:message key="NEW_ACK027"/></p>

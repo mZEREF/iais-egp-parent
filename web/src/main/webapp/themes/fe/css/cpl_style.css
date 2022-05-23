@@ -5946,7 +5946,24 @@ ul.v-numberlist li::before {
     margin-top: 10px;
 }
 
+.border-top-solid {
+    border-top: 1px solid #BABABA;
+}
 
+.svc-title {
+    font-weight: 600;
+    font-size: 2.2rem;
+}
 
+.font-22 {
+    font-size: 22px;
+}
 
+.font-16 {
+    font-size: 16px;
+}
+
+.font-18 {
+    font-size: 18px;
+}
 

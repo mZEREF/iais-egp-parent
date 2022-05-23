@@ -355,7 +355,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 if (!appEditSelectDtosByAppIds.isEmpty()) {
                     appEditSelectDto = appEditSelectDtosByAppIds.get(0);
                 } else {
-                    appEditSelectDto = createAppEditSelectDto(false);
+                    appEditSelectDto = ApplicationHelper.createAppEditSelectDto(false);
                 }
                 Optional<String> licenseeType = Optional.ofNullable(applicationViewDto.getSubLicenseeDto())
                         .map(SubLicenseeDto::getLicenseeType)
@@ -369,7 +369,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
                         appEditSelectDto = appEditSelectDtos.get(0);
                     } else {
-                        appEditSelectDto = createAppEditSelectDto(true);
+                        appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
                     }
                 }
                 //appEditSelectDto = createAppEditSelectDto(true);
@@ -380,24 +380,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     appEditSelectDto.setLicenseeEdit(false);
                 }
             } else {
-                appEditSelectDto = createAppEditSelectDto(false);
+                appEditSelectDto = ApplicationHelper.createAppEditSelectDto(false);
             }
             applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         }
-    }
-
-    private AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setLicenseeEdit(canEdit);
-        appEditSelectDto.setPremisesEdit(canEdit);
-        appEditSelectDto.setDocEdit(canEdit);
-        appEditSelectDto.setMedAlertEdit(canEdit);
-        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appEditSelectDto.setServiceEdit(canEdit);
-        appEditSelectDto.setPoEdit(canEdit);
-        appEditSelectDto.setDpoEdit(canEdit);
-        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        return appEditSelectDto;
     }
 
     private void setTcuDate(String appCorId,ApplicationViewDto applicationViewDto){

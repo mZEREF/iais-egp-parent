@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
 
@@ -15,7 +15,7 @@
         <div class="row control control-caption-horizontal">
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
-                    <div style="font-weight: 600;font-size: 2.2rem">
+                    <div class="svc-title">
                         <c:out value="${currStepName}"/>
                     </div>
                 </label>
