@@ -194,6 +194,7 @@
             }
         }else{
             var length = tinymce_getContentLength();
+            var length = $('.tox-statusbar__wordcount').text().split(" ")[0];
             if(length > 8000){
                 $('#support').modal('show');
             }else {
@@ -224,7 +225,7 @@
                 ' bold italic backcolor | alignleft aligncenter ' +
                 ' alignright alignjustify | bullist numlist outdent indent |' +
                 ' removeformat | help',
-            max_chars: 8000,
+            max_chars: 80000,
             setup: function (ed) {
                 var content;
                 var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
