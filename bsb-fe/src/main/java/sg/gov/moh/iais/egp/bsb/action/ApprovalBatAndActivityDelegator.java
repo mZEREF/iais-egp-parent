@@ -16,7 +16,10 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 
@@ -205,7 +208,7 @@ public class ApprovalBatAndActivityDelegator {
                             displayList = approvalBatAndActivityDto.getApprovalToPossessDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
                            break;
                         case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
-                            displayList = approvalBatAndActivityDto.getApprovalToLargeDto().getBatInfos().stream().map(ApprovalToLargeDto.BATInfo::getBatName).collect(Collectors.toList());
+                            displayList = approvalBatAndActivityDto.getApprovalToLargeDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
                             break;
                         case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
                             displayList = new ArrayList<>();
