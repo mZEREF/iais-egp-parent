@@ -97,7 +97,7 @@
                     </iais:value>
                 </iais:row>
                 </div>
-                <div  id="prescriptionDate" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
+                <div  id="prescriptionDate" >
                 <iais:row>
                     <iais:field width="5" value="Date of Prescription" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -116,7 +116,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date of Dispensing" mandatory="true"/>
+                        <iais:field width="5" value="Start Date of Dispensing" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker name="dispensingDate" value="${drugSubmission.dispensingDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_dispensingDate"></span>
@@ -139,12 +139,14 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="End Date of Dispensing" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker name="endDate" value="${drugSubmission.endDate}"/>
-                    </iais:value>
-                </iais:row>
+                <div  id="ddEndDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="End Date of Dispensing" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker name="endDate" value="${drugSubmission.endDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Diagnosis" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -228,22 +230,7 @@
 <script>
     $(document).ready(function() {
         $('#drugType').change(function () {
-            var drugtype= $('#drugType option:selected').val();
-            if(drugtype == "DPD001"){
-                $('#prescriptionDate').show();
-                unDisableContent('div.medication');
-                fillValue($('#medication'),null);
-            }else {
-                $('#prescriptionDate').hide();
-            }
-            if(drugtype == "DPD002"){
-                $('#dispensingDate').show();
-                $('#prescriptionSubmissionId').val('');
-                $('#error_prescriptionSubmissionId').html('');
-            }else {
-                $('#dispensingDate').hide();
-            }
-            changeStrength();
+            drugTypeChange();
         });
         $('#medication').change(function (){
             changeStrength();
@@ -251,6 +238,7 @@
         $('#prescriptionSubmissionId').change(function(){
             checkPrescriptionSubmissionId();
         });
+
         changeStrength();
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
@@ -258,6 +246,25 @@
         checkPrescriptionSubmissionId();
 
     });
+
+    function drugTypeChange(){
+        var drugtype= $('#drugType option:selected').val();
+        if(drugtype == "DPD001"){
+            $('#dispensingDate').hide();
+            $('#ddEndDate').hide();
+            unDisableContent('div.medication');
+            fillValue($('#medication'),null);
+        } else if(drugtype == "DPD002"){
+            $('#dispensingDate').show();
+            $('#ddEndDate').show();
+            $('#prescriptionSubmissionId').val('');
+            $('#error_prescriptionSubmissionId').html('');
+        }else{
+            $('#dispensingDate').hide();
+            $('#ddEndDate').hide();
+        }
+        changeStrength();
+    }
 
     function checkPrescriptionSubmissionId(){
         var prescriptionSubmissionId = $('#prescriptionSubmissionId').val();
@@ -309,15 +316,13 @@
             $('#nurse').hide();
         }
     }
-
-    $(document).ready(function() {
-        console.log("showValidatePT!")
+    function ifClickValidateButton(){
         if ("1" == $('#showValidatePT').val()) {
             $('#validatePT').modal('show');
-        }else if ("0" == $('#showValidatePT').val()) {
+        } else if ("1" == $('#showValidateVD').val()) {
             $('#validateVD').modal('show');
         }
-    });
+    }
 
     function retrieveValidateDrug() {
         showWaiting();

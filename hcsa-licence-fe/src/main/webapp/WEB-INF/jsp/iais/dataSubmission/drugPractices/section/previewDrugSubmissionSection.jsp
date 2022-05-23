@@ -77,7 +77,7 @@
                         <iais:code code="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
-                <div class="" <c:if test="${drugSubmission.drugType != 'DPD001'}">style="display: none;"</c:if>>
+                <div class="">
                     <iais:row>
                         <iais:field width="5" value="Date of Prescription" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
@@ -93,7 +93,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date of Dispensing" />
+                        <iais:field width="5" value="Start Date of Dispensing" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${drugSubmission.dispensingDate}"/>
                         </iais:value>
