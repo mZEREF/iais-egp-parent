@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,9 @@ public class DpPatientInfoValidator implements CustomizeValidator {
         if(StringUtil.isNotEmpty(patientDto.getEthnicGroup())){
             if("ECGP004".equals(patientDto.getEthnicGroup()) && StringUtil.isEmpty(patientDto.getEthnicGroupOther())){
                 errorMap.put("ethnicGroupOther", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(patientDto.getEthnicGroupOther())&&patientDto.getEthnicGroupOther().length()>20){
+                String general_err0041 = NewApplicationHelper.repLength("Other Ethnic Group", "20");
+                errorMap.put("ethnicGroupOther", general_err0041);
             }
         }
         if(!StringUtil.isEmpty(patientDto.getAddrType())){

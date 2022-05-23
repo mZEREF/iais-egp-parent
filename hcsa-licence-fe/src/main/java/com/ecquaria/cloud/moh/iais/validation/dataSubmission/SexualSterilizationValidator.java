@@ -45,7 +45,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(sexualSterilizationDto.getOperationDate() != null){
             try {
                 if(Formatter.compareDateByDay(sexualSterilizationDto.getOperationDate(),guardianAppliedPartDto.getCourtOrderIssueDate())<0){
-                    erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation");
+                    erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

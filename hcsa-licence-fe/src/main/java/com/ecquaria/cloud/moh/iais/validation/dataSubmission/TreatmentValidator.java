@@ -56,14 +56,11 @@ public class TreatmentValidator implements CustomizeValidator {
             }
 
         }
-        if(!StringUtil.isEmpty(livingChildrenNo) && !StringUtil.isNumber(livingChildrenNo)){
-            errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
-        }
 
         if(StringUtil.isNotEmpty(lastChildBirthday)){
             try {
                 if(CommonValidator.isDate(lastChildBirthday) && Formatter.compareDateByDay(lastChildBirthday) >=0){
-                    errorMap.put("lastChildBirthday","Must be earlier then current date");
+                    errorMap.put("lastChildBirthday","Must be earlier then current date.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

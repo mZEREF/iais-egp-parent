@@ -266,12 +266,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    treatmentDto.setHeadStatus(true);
-                    vssTreatmentDto.setTreatmentDto(treatmentDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
 
@@ -319,12 +313,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    guardianAppliedPartDto.setHeadStatus(true);
-                    vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
         if(!errMap.isEmpty()){
@@ -378,12 +366,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    sexualSterilizationDto.setHeadStatus(true);
-                    vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
         if(!errMap.isEmpty()){

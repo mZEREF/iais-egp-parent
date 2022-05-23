@@ -14,7 +14,6 @@
 <webui:setLayout name="iais-internet"/>
 
 <%@ include file="common/vssHeader.jsp" %>
-
 <c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
 <c:set var="headingSign" value="completed"/>
 <%--<c:set var="headingSign" value="${headingStatus = 1 ? 'completed' : 'incompleted' }"/>--%>

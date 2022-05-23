@@ -120,6 +120,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     log.warn("Can't resume data!");
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
                 }
+                DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
             } else if ("delete".equals(actionValue)) {
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
@@ -160,9 +161,13 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }
         }
         currentDpDataSubmission.setDrugPrescribedDispensedDto(drugPrescribedDispensed);
+        String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if ("resume".equals(actionValue)||"delete".equals(actionValue)) {
+            crud_action_type ="page";
+        }
         String profile ="DRP";
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(drugPrescribedDispensed, profile);
             errorMap = validationResult.retrieveAll();
@@ -177,6 +182,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
     }
 
     @Override

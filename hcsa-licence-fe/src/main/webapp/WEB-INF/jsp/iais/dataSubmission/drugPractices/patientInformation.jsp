@@ -24,3 +24,8 @@
         </div>
     </div>
 </form>
+<c:if test="${hasDraft && dpSuperDataSubmissionDto.submissionType eq 'DP_TP001'}">
+    <iais:confirm msg="DS_MSG001" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('confirm', 'delete')" />
+</c:if>

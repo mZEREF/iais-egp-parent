@@ -266,15 +266,17 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(dpSuper));
             dpSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DataSubmissionDto dataSubmissionDto = dpSuper.getDataSubmissionDto();
             if(dataSubmissionDto ==null){
                 dataSubmissionDto = new DataSubmissionDto();
             }
-            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+            if (dataSubmissionDto != null) {
+                dataSubmissionDto.setDeclaration(null);
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
             }
+
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
         return uri;
