@@ -17,13 +17,7 @@ deployments:
       - system-admin-web=hub.ecquaria.com:8152/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}
       - main-web=hub.ecquaria.com:8152/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}
       - web=hub.ecquaria.com:8152/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
-  - type: wait_for_healthcheck
-    stack_name: be-iais-app
-    timeout_seconds: 300
-  - type: image_tag
-    stack_name: bsb-be-egp
-    services:
       - bsb-web=hub.ecquaria.com:8152/docker-mohiais-egp/bsb-be:${TagName}-${BUILD_NUMBER}
   - type: wait_for_healthcheck
-    stack_name: bsb-be-egp
+    stack_name: be-iais-app
     timeout_seconds: 300
