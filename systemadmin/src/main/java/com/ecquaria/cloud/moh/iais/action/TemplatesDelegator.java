@@ -30,7 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -185,6 +188,7 @@ public class TemplatesDelegator {
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         Integer contentSize = ParamUtil.getInt(request,SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
+        String delivery = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_DELIVERY_MODE);
         if (!SystemAdminBaseConstants.EDIT_ACTION.equals(type)){
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;
@@ -201,11 +205,6 @@ public class TemplatesDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        //bug fix 81768
-        if(StringUtil.isNotEmpty(msgTemplateDto.getMessageContent())){
-            StringTokenizer st = new StringTokenizer(msgTemplateDto.getMessageContent());
-            contentSize = st.countTokens();
-        }
         if (contentSize < 2 || contentSize > 8000) {
             validationResult.setHasErrors(true);
         }
@@ -219,7 +218,8 @@ public class TemplatesDelegator {
             }
             if (contentSize > 8000) {
                 errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
-            } else if (contentSize < 2) {
+            }
+            if (contentSize < 2) {
                 errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
             }
             Boolean needRecipient = (Boolean) ParamUtil.getSessionAttr(request,"needRecipient");
