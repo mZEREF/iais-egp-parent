@@ -103,7 +103,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             crud_action_type="";
         }
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
-            if (crud_action_type.equals("")) {
+            if (crud_action_type.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
                 String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                         .map(LoginContext::getOrgId).orElse("");
