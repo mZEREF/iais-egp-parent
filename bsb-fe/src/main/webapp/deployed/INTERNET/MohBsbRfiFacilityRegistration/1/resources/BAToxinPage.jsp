@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/requestForInformation/facRegistration/biologicalAgentToxin.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/rfi/facRegistration/biologicalAgentToxin.jsp"%>

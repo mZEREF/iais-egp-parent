@@ -1,5 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -15,6 +17,10 @@ import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveSelfAssessmentDto;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPLAY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.MODULE_NAME_INSPECTION_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.MODULE_NAME_INSPECTION_SELF_ASSESSMENT;
@@ -26,6 +32,27 @@ public class RfiService {
 
     public RfiService(RfiClient rfiClient) {
         this.rfiClient = rfiClient;
+    }
+
+    /**
+     * rfi start method clear app id, and un mask app id
+     */
+    public void clearAndSetAppIdInSession(HttpServletRequest request) {
+        // clear app id
+        request.getSession().removeAttribute(KEY_APP_ID);
+        // rfi inspection self-assessment need
+        request.getSession().removeAttribute(KEY_CONFIRM_RFI);
+        // get app id
+        String maskedRfiAppId = ParamUtil.getString(request, KEY_RFI_APP_ID);
+        if (maskedRfiAppId != null) {
+            String appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedRfiAppId);
+            if (appId == null || appId.equals(maskedRfiAppId)) {
+                throw new IllegalArgumentException("Invalid masked rfi app ID:" + LogUtil.escapeCrlf(maskedRfiAppId));
+            }
+            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+            // rfi inspection self-assessment need
+            ParamUtil.setSessionAttr(request, KEY_CONFIRM_RFI, KEY_CONFIRM_RFI_Y);
+        }
     }
 
     public void saveInspectionReport(HttpServletRequest request, ReportDto reportDto, String appId) {

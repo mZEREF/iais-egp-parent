@@ -78,7 +78,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_DOWNLOAD;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_EDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.ACTION_FILL;
@@ -132,7 +131,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         session.removeAttribute(KEY_SELF_ASSESSMENT_CHK_LST);
         session.removeAttribute(KEY_SELF_ASSESSMENT_ANSWER_MAP);
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
-        session.removeAttribute(KEY_CONFIRM_RFI);
 
         String appId = "";
         // get app ID from request parameter
@@ -144,15 +142,8 @@ public class BsbSubmitSelfAssessmentDelegator {
             }
         }
 
-        // rfi
-        String maskRfiAppId = ParamUtil.getString(request, KEY_RFI_APP_ID);
-        if (maskRfiAppId != null) {
-            appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskRfiAppId);
-            if (appId == null || appId.equals(maskRfiAppId)) {
-                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
-            }
-            ParamUtil.setSessionAttr(request, KEY_CONFIRM_RFI, KEY_CONFIRM_RFI_Y);
-        }
+        //if rfi module
+        rfiService.clearAndSetAppIdInSession(request);
 
         /* Here we don't use the same key to edit the checklist latter.
          * We don't use this to display the checklist form directly.
@@ -185,11 +176,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         } else {
             log.error("Fail to get pre assessment info");
             throw new IaisRuntimeException(LogUtil.escapeCrlf(responseDto.getErrorDesc()));
-        }
-
-        String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
-        if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
-            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
         }
     }
 
@@ -337,13 +323,10 @@ public class BsbSubmitSelfAssessmentDelegator {
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
             ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
 
-            String appId = (String) ParamUtil.getSessionAttr(request, KEY_ENTRY_APP_ID);
             String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
             if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
                 //save rfi data
                 rfiService.saveInspectionSelfAssessment(request, answerRecordDto);
-                // rfi ack need appId
-                ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
             } else {
                 inspectionClient.submitSelfAssessment(answerRecordDto);
             }
@@ -471,13 +454,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         ParamUtil.setRequestAttr(bpc.request, ACTION_UPLOAD_TYPE, nextType);
         ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.replaceMessage("GENERAL_ERR0058",
                 "Self Assessment Checklist", "data"));
-
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_ENTRY_APP_ID);
-        // rfi ack need appId
-        String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
-        if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
-            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
-        }
     }
 
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
