@@ -257,7 +257,10 @@ public class ApprovalBatAndActivityService {
             } else {
                 jumpHandler(request, approvalAppRoot, currentNodePath, facProfileNode);
             }
-        } else {
+        }else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        }  else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
