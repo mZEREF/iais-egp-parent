@@ -2,7 +2,7 @@
 <c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
 <c:set var="headingSign" value="${termination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading <c:if test="${DeclarationsCheckBox != 'hide'}">${headingSign}</c:if>">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#terminationDetails">
                 Termination Of Pregnancy

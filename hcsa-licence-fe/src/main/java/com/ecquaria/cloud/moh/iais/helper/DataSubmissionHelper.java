@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -207,6 +208,7 @@ public final class DataSubmissionHelper {
     }
 
     public static void setCurrentTopDataSubmission(TopSuperDataSubmissionDto topSuperDataSubmissionDto, HttpServletRequest request) {
+        DataSubmissionHelper.setTopPremisesMap(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
     }
 
@@ -962,6 +964,18 @@ public final class DataSubmissionHelper {
             String licenseeId = loginContext != null ? loginContext.getLicenseeId() : null;
             premisesMap = SpringContextHelper.getContext().getBean(ArDataSubmissionService.class).getArCenterPremises(licenseeId);
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP, (Serializable) premisesMap);
+        }
+        return premisesMap;
+    }
+
+    public static Map<String, PremisesDto> setTopPremisesMap(HttpServletRequest request) {
+        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.TOP_PREMISES_MAP);
+        if (IaisCommonUtils.isEmpty(premisesMap)) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId = loginContext != null ? loginContext.getLicenseeId() : null;
+            premisesMap = SpringContextHelper.getContext().getBean(TopDataSubmissionService.class).getTopCenterPremises(licenseeId);
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_PREMISES_MAP, (Serializable) premisesMap);
         }
         return premisesMap;
     }

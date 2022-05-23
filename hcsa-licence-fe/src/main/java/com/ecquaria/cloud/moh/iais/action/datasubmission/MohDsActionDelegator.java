@@ -134,6 +134,7 @@ public class MohDsActionDelegator {
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
