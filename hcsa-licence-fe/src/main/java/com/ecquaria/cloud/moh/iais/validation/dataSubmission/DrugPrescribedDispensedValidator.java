@@ -126,9 +126,11 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         }
         if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())){
             result = WebValidationHelper.validateProperty(drugSubmission, "UT");
-            if (result != null) {
-                errorMap.putAll(result.retrieveAll());
-            }
+        }else if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
+            result = WebValidationHelper.validateProperty(drugSubmission, "NURSE");
+        }
+        if (result != null) {
+            errorMap.putAll(result.retrieveAll());
         }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {

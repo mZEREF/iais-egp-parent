@@ -63,6 +63,31 @@
                         ${drugSubmission.doctorName}
                     </iais:value>
                 </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                        ${drugSubmission.specialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Sub-Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                        ${drugSubmission.subSpecialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                        ${drugSubmission.qualification}
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Other-Qualification" />
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="50" type="text" id ="otherQualification" name="otherQualification"
+                                    value="${drugSubmission.otherQualification}" />
+                    </iais:value>
+                </iais:row>
               <div class="drugType">
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
@@ -143,6 +168,29 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <div id="nurse">
+                    <iais:row>
+                        <iais:field width="5" value="Nurse/Pharmacist’s Registration No." />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="256" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
+                                        value="${drugSubmission.nurseRegistrationNo}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Nurse/Pharmacist’s Name" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="512" type="text" id ="nurseName" name="nurseName"
+                                        value="${drugSubmission.nurseName}" />
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <iais:row>
+                    <iais:field width="5" value="Fields are provided in my comments" />
+                    <iais:value width="7" cssClass="col-md-7">
+                        <textarea rows="" cols="62" name="providedComments">${drugSubmission.providedComments}</textarea>
+                        <span id="error_providedComments" name="iaisErrorMsg" class="error-msg"></span>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
@@ -152,7 +200,10 @@
     <input type="hidden" name="prsFlag" value="${prsFlag}"/>
 </div>
 <div class="doctorNameSelectionHidden">
-<input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+    <input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+    <input type="hidden" name="specialty" id="specialtyHidden" value="${drugSubmission.specialty}">
+    <input type="hidden" name="subSpecialty" id="subSpecialtyHidden" value="${drugSubmission.subSpecialty}">
+    <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
 
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
@@ -247,12 +298,15 @@
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
+            $('#nurse').show();
         }else if('MED002' == medication){
             $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').show();
+            $('#nurse').hide();
         }else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
+            $('#nurse').hide();
         }
     }
 
@@ -316,6 +370,9 @@
         console.log("clearDockerSelection!")
         clearErrorMsg();
         $('#names').find('p').text('');
+        $('#specialty').find('p').text('');
+        $('#subSpecialty').find('p').text('');
+        $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
 
@@ -386,5 +443,14 @@
         const name = data.name;
         $('#names').find('p').text(name);
         $('#doctorNameHidden').val(name);
+
+        $('#specialty').find('p').text(data.specialty);
+        $('#specialtyHidden').val(data.specialty);
+
+        $('#subSpecialty').find('p').text(data.subspecialty);
+        $('#subSpecialtyHidden').val(data.subspecialty);
+
+        $('#qualification').find('p').text(data.qualification);
+        $('#qualificationHidden').val(data.qualification);
     }
 </script>
