@@ -314,15 +314,7 @@
         console.log("showValidatePT!")
         if ("1" == $('#showValidatePT').val()) {
             $('#validatePT').modal('show');
-        } else if ("1" == $('#showValidatePT').val()) {
-            $('#noFoundDiv').modal('show');
-        } /*else if ("1" == $('#showValidatePT').val()) {
-            $('#validateVD').modal('show');
-        }*/
-    });
-    $(document).ready(function() {
-        console.log("showValidatePT!")
-       if ("0" == $('#showValidatePT').val()) {
+        }else if ("0" == $('#showValidatePT').val()) {
             $('#validateVD').modal('show');
         }
     });
