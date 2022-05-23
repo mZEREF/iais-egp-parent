@@ -135,7 +135,7 @@ public class InsAFCReportService {
         //mark new doc as final
         if (!CollectionUtils.isEmpty(newDocMap)) {
             List<CertificationDocDisPlayDto> dtoList = newDocMap.values().stream().map(CertificationDocDto::getDisPlayDto).collect(Collectors.toList());
-            List<String> maskedRepoIds = dtoList.stream().filter(docDto -> docDto.getRoundOfReview().equals(dto.getMaxRound())).map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
+            List<String> maskedRepoIds = dtoList.stream().map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + RoleConstants.ROLE_APPLICANT);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);

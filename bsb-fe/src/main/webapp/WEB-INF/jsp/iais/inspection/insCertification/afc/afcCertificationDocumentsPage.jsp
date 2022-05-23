@@ -66,7 +66,7 @@
                 </td>
                 <td>
                   <p class="visible-xs visible-sm table-row-title">Applicant</p>
-                  <p style="text-align: center"><input name="${info.disPlayDto.maskedRepoId}Applicant" type="checkbox" value="Y" <c:if test="${canActionRole ne Applicant}">disabled</c:if>/></p>
+                  <p style="text-align: center"><input name="${info.disPlayDto.maskedRepoId}Applicant" type="checkbox" value="Y" <c:if test="${canActionRole ne 'Applicant'}">disabled</c:if> <c:if test="${info.disPlayDto.applicantMarkFinal eq 'Y'}">checked</c:if>/></p>
                 </td>
                 <td>
                   <p class="visible-xs visible-sm table-row-title">MOH</p>
@@ -92,7 +92,7 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Uploaded by</p>
-                <p><c:out value="${docInfo.uploadBy}"/></p>
+                <p><c:out value="${docInfo.userDisplayName}"/></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Upload Date</p>

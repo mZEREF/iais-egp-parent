@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -91,7 +89,7 @@ public class InsAFCReportService {
     public void validateDo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindApplicantParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_DO);
+        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_DO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
@@ -133,7 +131,7 @@ public class InsAFCReportService {
     public void validateAo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindApplicantParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_AO);
+        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_AO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
@@ -171,7 +169,7 @@ public class InsAFCReportService {
         }
     }
     //get Do/Ao action data
-    public void bindApplicantParam(HttpServletRequest request, ReviewAFCReportDto dto, AFCCommonDocDto commonDocDto,String role) {
+    public void bindOfficerParam(HttpServletRequest request, ReviewAFCReportDto dto, AFCCommonDocDto commonDocDto,String role) {
         List<CertificationDocDisPlayDto> certificationDocDtos = dto.getCertificationDocDisPlayDtos();
         Map<String, CertificationDocDto> newDocMap = commonDocDto.getNewDocMap();
         //mark previous doc as final
@@ -179,7 +177,7 @@ public class InsAFCReportService {
         //mark new doc as final
         if (!CollectionUtils.isEmpty(newDocMap)) {
             List<CertificationDocDisPlayDto> dtoList = newDocMap.values().stream().map(CertificationDocDto::getDisPlayDto).collect(Collectors.toList());
-            List<String> maskedRepoIds = dtoList.stream().filter(docDto -> docDto.getRoundOfReview().equals(dto.getMaxRound())).map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
+            List<String> maskedRepoIds = dtoList.stream().map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
@@ -197,7 +195,7 @@ public class InsAFCReportService {
             for (String maskedRepoId : maskedRepoIds) {
                 String checked = ParamUtil.getString(request, maskedRepoId + role);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-                if (!StringUtils.isEmpty(checked)&& checked.equals(YES)){
+                if (!StringUtils.isEmpty(checked) && checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
                 if (role.equals(RoleConstants.ROLE_BSB_DO)||role.equals(RoleConstants.ROLE_BSB_AO)) {

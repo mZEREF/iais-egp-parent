@@ -96,3 +96,8 @@ function downloadSupportDocument(appId, repoId, docName) {
     var url = "/bsb-web/ajax/doc/download/applicationDoc/" + repoId;
     window.open(url);
 }
+
+function downloadAFCCertificationFile(id) {
+    var url = "/bsb-web/ajax/doc/download/insAFC/repo/" + id;
+    window.open(url);
+}

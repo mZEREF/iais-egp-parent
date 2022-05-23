@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%--@elvariable id="commonDocDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto"--%>
 <%--@elvariable id="reviewAFCReportDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto"--%>
 <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
@@ -28,56 +29,10 @@
         </tr>
         </thead>
         <tbody id="tbodyFileListId">
-        <c:if test="${commonDocDto.newDocMap ne null}">
-          <c:set var="newDocMap" value="${commonDocDto.newDocMap}"/>
-          <c:forEach var="info" items="${newDocMap.values()}" varStatus="status">
-            <tr id="${info.disPlayDto.maskedRepoId}FileTr">
-              <td>
-                <p  class="visible-xs visible-sm table-row-title">S/N</p>
-                <p ><c:out value="${status.index+1}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Document Name</p>
-                <p ><c:out value="${info.disPlayDto.docName}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Document Type</p>
-                <p ><iais:code code="${info.disPlayDto.docType}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Uploaded by</p>
-                <p ><c:out value="${info.disPlayDto.userDisplayName}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Upload Date</p>
-                <p ><fmt:formatDate value="${info.disPlayDto.uploadDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Round of Review</p>
-                <p ><c:out value="${reviewAFCReportDto.maxRound+1}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" >Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadFile('new','${info.disPlayDto.maskedRepoId}')"><span style="font-size: 12px;color: #444444c9">Download</span></a></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">AFC</p>
-                <p style="text-align: center"><input type="checkbox" disabled/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Applicant</p>
-                <p style="text-align: center"><input type="checkbox" disabled/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">MOH</p>
-                <p style="text-align: center"><input name="${info.disPlayDto.maskedRepoId}Applicant" type="checkbox" value="Y" <c:if test="${info.disPlayDto.mohMarkFinal eq 'Y'}">checked</c:if>/></p>
-              </td>
-            </tr>
-          </c:forEach>
-        </c:if>
         <c:if test="${reviewAFCReportDto.certificationDocDisPlayDtos ne null}">
           <c:forEach var="docInfo" items="${reviewAFCReportDto.certificationDocDisPlayDtos}" varStatus="status">
-            <tr id="${docInfo.maskedRepoId}FileTr">
+            <c:set var="newMaskedRepoId" value="${MaskUtil.maskValue('file', docInfo.repoId)}"/>
+            <tr>
               <td>
                 <p class="visible-xs visible-sm table-row-title" style="text-align: center">S/N</p>
                 <p><c:out value="${status.index+1}"/></p>
@@ -104,7 +59,7 @@
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadFile('saved','${docInfo.maskedRepoId}')"><span style="font-size: 12px;color: #444444c9">Download</span></a></p>
+                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadAFCCertificationFile(${newMaskedRepoId})"><span style="font-size: 12px;color: #444444">Download</span></a></p>
               </td>
               <td>
                 <p class="visible-xs visible-sm table-row-title">AFC</p>
@@ -137,7 +92,6 @@
   </div>
 </div>
 <br><br>
-<%@ include file="upload.jsp" %>
 <iais:action>
   <c:choose>
     <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
@@ -148,7 +102,4 @@
       <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     </c:otherwise>
   </c:choose>
-  <button type="button" name="saveReportBtn" id="saveReportBtn" style="float:right" class="btn btn-secondary">
-    SAVE
-  </button>
 </iais:action>

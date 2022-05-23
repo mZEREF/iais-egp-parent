@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -33,6 +34,9 @@
                                             <li id="facilityDetails" role="presentation">
                                                 <a href="#tabFacilityDetails" id="doFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
                                             </li>
+                                            <li id="InsCertReport" role="presentation">
+                                                <a href="#tabInsCertReport" id="doInsCertReport" aria-controls="tabInsCertReport" role="tab" data-toggle="tab">Inspection/Certification Report</a>
+                                            </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
                                             </li>
@@ -49,6 +53,9 @@
                                                     <a href="#tabFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
                                                 </div>
                                                 <div class="swiper-slide">
+                                                    <a href="#tabInsCertReport" aria-controls="tabInsCertReport" role="tab" data-toggle="tab">Inspection/Certification Report</a>
+                                                </div>
+                                                <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
                                                 </div>
                                             </div>
@@ -62,6 +69,38 @@
                                             </div>
                                             <div class="tab-pane" id="tabFacilityDetails" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
+                                            </div>
+                                            <div class="tab-pane" id="tabInsCertReport" role="tabpanel">
+                                                <div class="col-xs-12">
+                                                    <div class="tab-gp dashboard-tab">
+                                                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                                            <li id="InspectionReport" role="presentation" class="active">
+                                                                <a href="#tabInspectionReport" id="doInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">Inspection Report</a>
+                                                            </li>
+                                                            <li id="CertificationReport" role="presentation">
+                                                                <a href="#tabCertificationReport" id="doCertificationReport" aria-controls="tabCertificationReport" role="tab" data-toggle="tab">Certification Documents</a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="tab-nav-mobile visible-xs visible-sm">
+                                                            <div class="swiper-wrapper" role="tablist">
+                                                                <div class="swiper-slide active">
+                                                                    <a href="#tabInspectionReport" aria-controls="tabInspectionReport" role="tab" data-toggle="tab">Inspection Report</a>
+                                                                </div>
+                                                                <div class="swiper-slide">
+                                                                    <a href="#tabCertificationReport" aria-controls="tabCertificationReport" role="tab" data-toggle="tab">Certification Documents</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" id="tabInspectionReport" role="tabpanel">
+                                                                <%@include file="/WEB-INF/jsp/iais/inspection/report/inspectionReport.jsp"%>
+                                                            </div>
+                                                            <div class="tab-pane" id="tabCertificationReport" role="tabpanel">
+                                                                <%@include file="common/certificationDocumentsPage.jsp"%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>

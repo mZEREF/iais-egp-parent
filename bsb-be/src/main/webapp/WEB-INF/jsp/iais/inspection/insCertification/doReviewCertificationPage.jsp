@@ -98,7 +98,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
+                                                                            <select name="processingDecision" class="ao-cert-decision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO030" <c:if test="${insDecision.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Route to AO</option>
                                                                             </select>
