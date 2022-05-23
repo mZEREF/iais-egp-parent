@@ -2,7 +2,7 @@
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 <%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto"--%>
 <%--@elvariable id="afcOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-<fac:approvedFacilityCertifier afc="${afc}" afcOps="${afcOps}">
+<fac:approvedFacilityCertifier afc="${afc}" afcOps="${afcOps}" editJudge="true">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>

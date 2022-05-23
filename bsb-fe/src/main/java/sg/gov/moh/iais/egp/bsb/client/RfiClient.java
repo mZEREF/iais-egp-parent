@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveFacilityRegistrationDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveInspectionFollowUpDto;
@@ -21,7 +22,7 @@ public interface RfiClient {
     void saveRfi(@RequestParam("rfiId") String rfiId);
 
     @PostMapping(value = "/rfi/facility-registration", produces = MediaType.APPLICATION_JSON_VALUE)
-    void saveFacilityRegistration(@RequestBody SaveFacilityRegistrationDto saveFacilityRegistrationDto);
+    ResponseDto<AppMainInfo> saveFacilityRegistration(@RequestBody SaveFacilityRegistrationDto saveFacilityRegistrationDto);
 
     @PostMapping(value = "/rfi/inspection/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     void saveInspectionSelfAssessment(@RequestBody SaveSelfAssessmentDto saveSelfAssessmentDto);

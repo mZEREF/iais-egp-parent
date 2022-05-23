@@ -7,10 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.RfiClient;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.ApplicationRfiIndicatorDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveFacilityRegistrationDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveInspectionReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.save.SaveSelfAssessmentDto;
 
@@ -22,6 +26,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_R
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPLAY_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.MODULE_NAME_FACILITY_REGISTRATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.MODULE_NAME_INSPECTION_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.MODULE_NAME_INSPECTION_SELF_ASSESSMENT;
 
@@ -55,21 +60,29 @@ public class RfiService {
         }
     }
 
+    public ResponseDto<AppMainInfo> saveFacilityRegistration(HttpServletRequest request, FacilityRegisterDto facilityRegisterDto) {
+        RfiDisplayDto rfiDisplayDto = updateRfiDisplayDto(request, MODULE_NAME_FACILITY_REGISTRATION);
+        SaveFacilityRegistrationDto dto = new SaveFacilityRegistrationDto();
+        dto.setRfiDisplayDto(rfiDisplayDto);
+        dto.setFacilityRegisterDto(facilityRegisterDto);
+        return rfiClient.saveFacilityRegistration(dto);
+    }
+
     public void saveInspectionReport(HttpServletRequest request, ReportDto reportDto, String appId) {
         RfiDisplayDto rfiDisplayDto = updateRfiDisplayDto(request, MODULE_NAME_INSPECTION_REPORT);
-        SaveInspectionReportDto saveInspectionReportDto = new SaveInspectionReportDto();
-        saveInspectionReportDto.setReportDto(reportDto);
-        saveInspectionReportDto.setRfiDisplayDto(rfiDisplayDto);
-        saveInspectionReportDto.setAppId(appId);
-        rfiClient.saveInspectionReport(saveInspectionReportDto);
+        SaveInspectionReportDto dto = new SaveInspectionReportDto();
+        dto.setReportDto(reportDto);
+        dto.setRfiDisplayDto(rfiDisplayDto);
+        dto.setAppId(appId);
+        rfiClient.saveInspectionReport(dto);
     }
 
     public void saveInspectionSelfAssessment(HttpServletRequest request, SelfAssessmtChklDto selfAssessmtChklDto) {
         RfiDisplayDto rfiDisplayDto = updateRfiDisplayDto(request, MODULE_NAME_INSPECTION_SELF_ASSESSMENT);
-        SaveSelfAssessmentDto saveSelfAssessmentDto = new SaveSelfAssessmentDto();
-        saveSelfAssessmentDto.setSelfAssessmtChklDto(selfAssessmtChklDto);
-        saveSelfAssessmentDto.setRfiDisplayDto(rfiDisplayDto);
-        rfiClient.saveInspectionSelfAssessment(saveSelfAssessmentDto);
+        SaveSelfAssessmentDto dto = new SaveSelfAssessmentDto();
+        dto.setSelfAssessmtChklDto(selfAssessmtChklDto);
+        dto.setRfiDisplayDto(rfiDisplayDto);
+        rfiClient.saveInspectionSelfAssessment(dto);
     }
 
     /**
