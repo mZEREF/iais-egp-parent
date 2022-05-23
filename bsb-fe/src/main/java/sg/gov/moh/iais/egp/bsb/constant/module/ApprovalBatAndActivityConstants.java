@@ -13,6 +13,7 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_BAT_INFO = "batInfo";
     public static final String KEY_FAC_AUTHORISED_DTO = "facAuthorisedDto";
     public static final String KEY_APPROVAL_DTO = "approvalDto";
+    public static final String KEY_FACILITY_ID = "facId";
 
 
     public static final String KEY_PROCESS_TYPE = "processType";

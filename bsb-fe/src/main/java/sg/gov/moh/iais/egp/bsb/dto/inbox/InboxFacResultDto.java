@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class InboxFacResultDto {
+    private String facilityId;
     private String facilityNo;
     private String facilityName;
     private String facilityClassification;

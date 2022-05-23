@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
@@ -58,6 +59,7 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON);
         session.removeAttribute(KEY_OPTIONS_AUTH_PERSONNEL);
         session.removeAttribute(KEY_USER_ID_FACILITY_AUTH_MAP);
+        session.removeAttribute(KEY_FACILITY_ID);
         AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
     }
 
@@ -206,7 +208,7 @@ public class ApprovalBatAndActivityDelegator {
                     switch (processType){
                         case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
                             displayList = approvalBatAndActivityDto.getApprovalToPossessDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
-                           break;
+                            break;
                         case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
                             displayList = approvalBatAndActivityDto.getApprovalToLargeDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
                             break;

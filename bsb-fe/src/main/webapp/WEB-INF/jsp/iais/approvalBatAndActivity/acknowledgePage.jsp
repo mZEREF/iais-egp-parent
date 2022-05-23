@@ -25,11 +25,20 @@
             <br/>
             <p style="font-size: 20px"><strong>Your submission is successful.</strong></p>
             <br/>
-            <div class="row" style="width: 600px">
+            <div class="row" style="width: 700px">
                 <div class="col-md-5"><iais:code code="${processType}"/> -</div>
                 <div class="col-md-7">
                     <c:forEach var="item" items="${displayList}">
-                        <div class="row"><iais-bsb:bat-code code="${item}"/></div>
+                        <div class="row">
+                            <c:choose>
+                                <c:when test="${processType eq 'PROTYPE012'}">
+                                    <iais:code code="${item}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <iais-bsb:bat-code code="${item}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                     </c:forEach>
                 </div>
             </div>

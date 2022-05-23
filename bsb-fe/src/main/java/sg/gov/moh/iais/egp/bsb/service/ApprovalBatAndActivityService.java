@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +30,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -52,7 +54,55 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_BAT_AND_ACTIVITY_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_SELECTION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_TO_ACTIVITY_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_BAT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DEST_NODE_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DOC_SETTINGS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DOC_TYPES_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FACILITY_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_AUTHORISED_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_PROFILE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_INDEED_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_BACK;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_ADDRESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_AUTH_PERSONNEL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_DOC_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_NATIONALITY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_SCHEDULE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ORG_ADDRESS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OTHER_DOC_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SCHEDULE_BAT_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SCHEDULE_BAT_MAP_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SCHEDULE_FIRST_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_USER_ID_FACILITY_AUTH_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APPROVAL_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APP_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_BEGIN;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_COMPANY_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_ACTIVITY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_AUTHORISED;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_LARGE_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_POSSESS_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_SPECIAL_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.SELECTION_FACILITY_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 
@@ -96,18 +146,33 @@ public class ApprovalBatAndActivityService {
     public void preApprovalSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         //TODO: The facility value will be obtained from another method, and the method will be deleted
-        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getApprovedFacility();
-        List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
-        if (!CollectionUtils.isEmpty(facilityBasicInfoList)) {
-            for (FacilityBasicInfo fac : facilityBasicInfoList) {
-                facilityIdList.add(new SelectOption(fac.getId(), fac.getName()));
+        boolean isEnteredInbox = false;
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        String maskedFacId = request.getParameter(ApprovalBatAndActivityConstants.KEY_FACILITY_ID);
+        if(org.springframework.util.StringUtils.hasLength(maskedFacId) || approvalSelectionDto.isEnteredInbox()){
+            String facId = MaskUtil.unMaskValue("applyApprovalfacId",maskedFacId);
+            if(org.springframework.util.StringUtils.hasLength(facId) && !maskedFacId.equals(facId)){
+                ParamUtil.setSessionAttr(request,KEY_FACILITY_ID,facId);
+                isEnteredInbox = true;
+            }else if (org.springframework.util.StringUtils.hasLength(approvalSelectionDto.getFacilityId())){
+                isEnteredInbox = true;
+            }else{
+                throw new IllegalArgumentException("invalid masked facility id");
             }
         }
-        ParamUtil.setRequestAttr(request, SELECTION_FACILITY_ID, facilityIdList);
-        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request,KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
-        if(approvalBatAndActivityDto != null){
-            ParamUtil.setSessionAttr(request,KEY_APPROVAL_SELECTION_DTO,approvalBatAndActivityDto.getApprovalSelectionDto());
+        if(!isEnteredInbox){
+            List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getApprovedFacility();
+            List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
+            if (!CollectionUtils.isEmpty(facilityBasicInfoList)) {
+                for (FacilityBasicInfo fac : facilityBasicInfoList) {
+                    facilityIdList.add(new SelectOption(fac.getId(), fac.getName()));
+                }
+            }
+            ParamUtil.setRequestAttr(request, SELECTION_FACILITY_ID, facilityIdList);
         }
+        ParamUtil.setRequestAttr(request,"isEnteredInbox",isEnteredInbox);
+        approvalSelectionDto.setEnteredInbox(isEnteredInbox);
+        ParamUtil.setSessionAttr(request,KEY_APPROVAL_SELECTION_DTO,approvalSelectionDto);
     }
 
     public void handleApprovalSelection(BaseProcessClass bpc){
@@ -648,8 +713,8 @@ public class ApprovalBatAndActivityService {
      * @return the class name
      */
     public static String computeTabClassname(NodeGroup group, String name) {
-        Assert.notNull(group, ERR_MSG_NULL_GROUP);
-        Assert.notNull(name, ERR_MSG_NULL_NAME);
+        Assert.notNull(group, ApprovalBatAndActivityConstants.ERR_MSG_NULL_GROUP);
+        Assert.notNull(name, ApprovalBatAndActivityConstants.ERR_MSG_NULL_NAME);
         String className;
         if (name.equals(group.getActiveNodeKey())) {
             className = "active";
@@ -675,8 +740,8 @@ public class ApprovalBatAndActivityService {
      * @param group the node group of the approvalAppRoot
      */
     public static boolean ifNodeSelected(NodeGroup group, String name) {
-        Assert.notNull(group, ERR_MSG_NULL_GROUP);
-        Assert.notNull(name, ERR_MSG_NULL_NAME);
+        Assert.notNull(group, ApprovalBatAndActivityConstants.ERR_MSG_NULL_GROUP);
+        Assert.notNull(name, ApprovalBatAndActivityConstants.ERR_MSG_NULL_NAME);
         return name.equals(group.getActiveNodeKey());
     }
 
@@ -694,8 +759,8 @@ public class ApprovalBatAndActivityService {
      * @param group the node group contains the sub steps
      */
     public static String computeStepClassname(NodeGroup group, String name) {
-        Assert.notNull(group, ERR_MSG_NULL_GROUP);
-        Assert.notNull(name, ERR_MSG_NULL_NAME);
+        Assert.notNull(group, ApprovalBatAndActivityConstants.ERR_MSG_NULL_GROUP);
+        Assert.notNull(name, ApprovalBatAndActivityConstants.ERR_MSG_NULL_NAME);
         return group.getNode(name).isValidated() || name.equals(group.getActiveNodeKey()) ? "active" : "disabled";
     }
 
@@ -741,7 +806,7 @@ public class ApprovalBatAndActivityService {
             case KEY_NAV_NEXT:
                 destNode = Nodes.getNextNodePath(approvalAppRoot);
                 break;
-            case KEY_NAV_BACK:
+            case ApprovalBatAndActivityConstants.KEY_NAV_BACK:
                 destNode = Nodes.getPreviousNodePath(approvalAppRoot);
                 break;
             default:
@@ -855,7 +920,7 @@ public class ApprovalBatAndActivityService {
         Map<String, List<BatCodeInfo>> scheduleBatMap = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(approvalSelectionDto.getFacilityId(),getApprovalTypeByProcessType(approvalSelectionDto.getProcessType()));
         List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
-        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, Optional.of(scheduleTypeOps).filter(l -> !l.isEmpty()).map(l -> l.get(0)).map(SelectOption::getValue).orElse(null));
 
         // convert BatBasicInfo to SelectOption object
         SelectOption pleaseSelect = new SelectOption("", "Please Select");

@@ -271,7 +271,7 @@
                                                 <div class="clear"></div>
                                             </div>
                                             <c:forEach var="info" items="${batInfo.batInfos}">
-                                                <%--@elvariable id="info" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto.BATInfo" --%>
+                                                <%--@elvariable id="info" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo" --%>
                                                 <c:set var="BAorT" value='${masterCodeConstants.FIFTH_SCHEDULE eq info.schedule ? "Toxin" : "Biological Agent"}'/>
                                                 <div>
                                                     <c:if test="${masterCodeConstants.FIFTH_SCHEDULE ne info.schedule}">
@@ -296,12 +296,13 @@
                                                         <div class="col-xs-6"><c:out value="${info.methodOrSystem}"/></div>
                                                         <div class="clear"></div>
                                                     </div>
+                                                    <c:set var="detail" value="${info.details}"/>
                                                     <div class="form-group">
                                                         <label class="col-xs-6 control-label">Mode of Procurement</label>
-                                                        <div class="col-xs-6"><p><iais:code code="${info.lspDetails.procurementMode}"/></p></div>
+                                                        <div class="col-xs-6"><p><iais:code code="${detail.procurementMode}"/></p></div>
                                                         <div class="clear"></div>
                                                     </div>
-                                                    <c:if test="${'BMOP001' eq info.lspDetails.procurementMode}">
+                                                    <c:if test="${'BMOP001' eq detail.procurementMode}">
                                                         <div id="transferringFacilityDetailsInfo">
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label" style="font-weight: bold">Details of Transferring Facility</label>
@@ -309,22 +310,22 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Block No.</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.blockNoT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.blockNoT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.floorNoT}-${info.lspDetails.unitNoT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.floorNoT}-${detail.unitNoT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Street</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.streetNameT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.streetNameT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Postal Code</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.postalCodeT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.postalCodeT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
@@ -333,37 +334,37 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Name</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.contactPersonNameT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.contactPersonNameT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Email address</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.emailAddressT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.emailAddressT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Contact No.</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.contactNoT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.contactNoT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Expected Date of Transfer</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.expectedDateT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.expectedDateT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.courierServiceProviderNameT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.courierServiceProviderNameT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Remarks</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.remarksT}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.remarksT}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                         </div>
                                                     </c:if>
-                                                    <c:if test="${'BMOP002' eq info.lspDetails.procurementMode}">
+                                                    <c:if test="${'BMOP002' eq detail.procurementMode}">
                                                         <div id="exportingFacilityDetailsInfo">
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label" style="font-weight: bold">Details of Exporting Facility</label>
@@ -371,27 +372,27 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Facility Name</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.facNameE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.facNameE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Block No.</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.blockNoE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.blockNoE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.floorNoE}-${info.lspDetails.unitNoE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.floorNoE}-${detail.unitNoE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Street</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.streetNameE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.streetNameE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Postal Code</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.postalCodeE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.postalCodeE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
@@ -400,37 +401,38 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Name</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.contactPersonNameE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.contactPersonNameE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Email address</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.emailAddressE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.emailAddressE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Contact No.</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.contactNoE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.contactNoE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Expected Date of Export</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.expectedDateE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.expectedDateE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.courierServiceProviderNameE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.courierServiceProviderNameE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Remarks</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.remarksE}</p></div>
+                                                                <div class="col-xs-6"><p>${detail.remarksE}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                         </div>
                                                     </c:if>
-                                                    <c:if test="${'BMOP003' eq info.lspDetails.procurementMode}">
+                                                    <c:set var="possess" value="${info.inPossessionInfo}"/>
+                                                    <c:if test="${'BMOP003' eq detail.procurementMode}">
                                                         <div id="exportingFacilityDetailsInfo">
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label" style="font-weight: bold">Details of Source Facility</label>
@@ -438,27 +440,27 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Facility Name</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.facNameS}</p></div>
+                                                                <div class="col-xs-6"><p>${possess.facNameS}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Block No.</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.blockNoS}</p></div>
+                                                                <div class="col-xs-6"><p>${possess.blockNoS}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.floorNoS}-${info.lspDetails.unitNoS}</p></div>
+                                                                <div class="col-xs-6"><p>${possess.floorNoS}-${possess.unitNoS}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Street Name</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.streetNameS}</p></div>
+                                                                <div class="col-xs-6"><p>${possess.streetNameS}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Postal Code</label>
-                                                                <div class="col-xs-6"><p>${info.lspDetails.postalCodeS}</p></div>
+                                                                <div class="col-xs-6"><p>${possess.postalCodeS}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                         </div>
