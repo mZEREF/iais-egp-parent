@@ -17,13 +17,7 @@ deployments:
       - main-web=hub.ecquaria.com:8152/docker-mohiais-egp/fe-main:${TagName}-${BUILD_NUMBER}
       - egov-app=hub.ecquaria.com:8152/docker-mohiais-egp/egov-app:${TagName}-${BUILD_NUMBER}
       - web=hub.ecquaria.com:8152/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
-  - type: wait_for_healthcheck
-    stack_name: fe-iais-app
-    timeout_seconds: 300
-  - type: image_tag
-    stack_name: bsb-fe-egp
-    services:
       - bsb-web=hub.ecquaria.com:8152/docker-mohiais-egp/bsb-fe:${TagName}-${BUILD_NUMBER}
   - type: wait_for_healthcheck
-    stack_name: bsb-fe-egp
+    stack_name: fe-iais-app
     timeout_seconds: 300
