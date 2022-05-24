@@ -104,6 +104,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if ("resume".equals(actionValue)||"delete".equals(actionValue)) {
             crud_action_type ="page";
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("confirm".equals(crud_action_type)) {
@@ -121,7 +122,6 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
     }
 
     protected void valRFC(HttpServletRequest request, PatientDto patientDto) {

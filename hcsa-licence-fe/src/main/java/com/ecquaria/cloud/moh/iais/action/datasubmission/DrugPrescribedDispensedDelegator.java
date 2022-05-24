@@ -165,6 +165,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if ("resume".equals(actionValue)||"delete".equals(actionValue)) {
             crud_action_type ="page";
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
         }
         String profile ="DRP";
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -182,7 +183,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
     }
 
     @Override
