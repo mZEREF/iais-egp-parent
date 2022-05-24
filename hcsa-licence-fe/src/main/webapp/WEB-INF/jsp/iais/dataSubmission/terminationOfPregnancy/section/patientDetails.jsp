@@ -380,7 +380,7 @@
                 /*$(this).val(preValue);*/
                 /*$('#childrenNum').val(null);*/
                 clearErrorMsg();
-                $("#childrenNumMsg").text('cannot enter more than 10.');
+                $("#childrenNumMsg").text('Entered number is more than 10.');
                 /*$('#childrenNum').trigger('keyup');*/
                 $('#numMax').hide();
             }
