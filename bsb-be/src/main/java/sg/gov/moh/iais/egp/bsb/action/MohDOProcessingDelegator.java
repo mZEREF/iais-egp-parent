@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.service.MohProcessService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -17,7 +15,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_AFC_REPORT_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
 
@@ -45,13 +42,6 @@ public class MohDOProcessingDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        String appId = (String) ParamUtil.getSessionAttr(bpc.request, PARAM_NAME_APP_ID);
-        ResponseDto<ReviewAFCReportDto> responseDto = processClient.getLatestCertificationReportByInsAppId(appId);
-        if (responseDto.ok()) {
-            ParamUtil.setSessionAttr(bpc.request, KEY_REVIEW_AFC_REPORT_DTO, responseDto.getEntity());
-        } else {
-            ParamUtil.setSessionAttr(bpc.request, KEY_REVIEW_AFC_REPORT_DTO, new ReviewAFCReportDto());
-        }
         mohProcessService.prepareData(bpc, MODULE_NAME_DO_PROCESSING);
     }
 

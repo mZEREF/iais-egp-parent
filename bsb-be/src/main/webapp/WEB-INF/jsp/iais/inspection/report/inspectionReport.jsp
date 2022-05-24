@@ -271,7 +271,7 @@
                     </tr>
                     </thead>
                     <tr>
-                        <td class="col-4">Deficiency <c:if test="${canNotSaveNew eq null or !canNotSaveNew}"><span style="color: red">*</span></c:if></td>
+                        <td class="col-4">Deficiency <span style="color: red">*</span></td>
                         <td>
                             <div>
                                 <label>
@@ -291,7 +291,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="outcome"></label>Outcome <c:if test="${canNotSaveNew eq null or !canNotSaveNew}"><span style="color: red">*</span></c:if></td>
+                        <td><label for="outcome"></label>Outcome <span style="color: red">*</span></td>
                         <td>
                             <select name="outcome" id="outcome" class="outcomeDropdown" data-type="reportInput" disabled="disabled">
                                 <option value="">Please Select</option>
@@ -310,7 +310,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Facility Validity Date <c:if test="${canNotSaveNew eq null or !canNotSaveNew}"><span style="color: red">*</span></c:if>/td>
+                        <td>Facility Validity Date <span style="color: red">*</span>/td>
                         <td>
                             <input type="text" autocomplete="off" name="facilityValidityDate" id="facilityValidityDate" data-date-start-date="01/01/1900" value="<c:out value="${reportDto.facilityValidityDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control" data-type="reportInput" disabled="disabled"/>
                             <span data-err-ind="facilityValidityDate" class="error-msg"></span>
@@ -323,9 +323,6 @@
 </div>
 <div style="text-align: right">
     <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
-    <%--@elvariable id="canNotSaveNew" type="java.lang.Boolean"--%>
-    <c:if test="${canNotSaveNew eq null or !canNotSaveNew}">
-        <button name="saveReportBtn" id="saveReportBtn" type="button" class="btn btn-default">Save</button>
-    </c:if>
+    <button name="saveReportBtn" id="saveReportBtn" type="button" class="btn btn-default">Save</button>
 </div>
 <%@include file="jumpAfterReport.jsp"%>
