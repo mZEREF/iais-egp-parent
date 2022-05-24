@@ -510,7 +510,7 @@
       if (w1 == w2) {
         $target.find("div.disciplinary-record").children("div").css("margin-left", "-50%");
       } else {
-        $target.find("div.disciplinary-record").children("div").css("margin-left", "-29%");
+        $target.find("div.disciplinary-record").children("div").css("margin-left", "1.5%");
       }
       $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
     }
@@ -519,6 +519,7 @@
       var $target = $(obj).closest('td');
       var h = $target.css('height');
       $target.find("div.disciplinary-record").children("div").css("margin-top", h);
+      $target.find("div.disciplinary-record").children("div").css("margin-left", "50%");
       $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
     }
 
