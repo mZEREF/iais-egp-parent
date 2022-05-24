@@ -48,16 +48,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-<<<<<<< HEAD
-=======
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
->>>>>>> fbcf5145d6... ConsolRecToCompare
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
 /**
  * ApplicationClientFallback
@@ -1049,12 +1044,18 @@ public class ApplicationClientFallback implements ApplicationClient{
 
     @Override
     public FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(String appGrpNo) {
-        return IaisEGPHelper.getFeignResponseEntity(appGrpNo);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 
     @Override
     public FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto() {
-        return IaisEGPHelper.getFeignResponseEntity();
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 
 }
