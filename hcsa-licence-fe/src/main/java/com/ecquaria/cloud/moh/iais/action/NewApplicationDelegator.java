@@ -372,7 +372,7 @@ public class NewApplicationDelegator {
             String assignSelect = subLicenseeDto.getAssignSelect();
             if ((StringUtil.isEmpty(assignSelect) || IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSelect))
                     && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
-                String assigned = NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
+                String assigned = NewApplicationHelper.getAssignSelect(licenseeMap.keySet(), subLicenseeDto.getNationality(),
                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
                 if (StringUtil.isEmpty(assignSelect) || !"-1".equals(assigned) && !IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
                         assigned)) {
@@ -468,13 +468,15 @@ public class NewApplicationDelegator {
             if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
                 if (old != null) {
+                    // RFC/Renew can't edit these fields
                     dto.setIdType(old.getIdType());
                     dto.setIdNumber(StringUtil.toUpperCase(old.getIdNumber()));
                     dto.setLicenseeName(old.getLicenseeName());
                     dto.setLicenseeType(old.getLicenseeType());
+                    dto.setNationality(old.getNationality());
                 }
                 if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(dto.getLicenseeType())) {
-                    dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getIdType(), dto.getIdNumber()));
+                    dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNumber()));
                 } else {
                     dto.setAssignSelect(NewApplicationConstant.NEW_PSN);
                 }
@@ -533,6 +535,7 @@ public class NewApplicationDelegator {
         String buildingName = ParamUtil.getString(request, "buildingName");
         String telephoneNo = ParamUtil.getString(request, "telephoneNo");
         String emailAddr = ParamUtil.getString(request, "emailAddr");
+        String nationality = ParamUtil.getString(request, "nationality");
 
         SubLicenseeDto dto = new SubLicenseeDto();
         dto.setIdType(idType);
@@ -547,6 +550,7 @@ public class NewApplicationDelegator {
         dto.setBuildingName(buildingName);
         dto.setTelephoneNo(telephoneNo);
         dto.setEmailAddr(emailAddr);
+        dto.setNationality(nationality);
         return dto;
     }
 
@@ -1732,6 +1736,8 @@ public class NewApplicationDelegator {
                  */
 
                 if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                    String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+                    ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
                     AppCessLicDto appCessLicDto = new AppCessLicDto();
                     String originLicenceId = applicationDto.getOriginLicenceId();
                     LicenceDto licenceDto = licenceClient.getLicDtoById(originLicenceId).getEntity();
@@ -2744,17 +2750,18 @@ public class NewApplicationDelegator {
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
-            autoGroupNo = getRfcGroupNo(autoGroupNo);
-
             String licenseeId = NewApplicationHelper.getLicenseeId(bpc.request);
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,
                     appSubmissionDto, oldAppSubmissionDto, rfcSplitFlag ? 0 : 1);
-            boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo, null,
-                    NewApplicationConstant.SECTION_SVCINFO, bpc.request);
-            if (!isValid) {
-                return;
+            if (personAppSubmissionList != null && !personAppSubmissionList.isEmpty()) {
+                autoGroupNo = getRfcGroupNo(autoGroupNo);
+                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo,
+                        null, NewApplicationConstant.SECTION_SVCINFO, bpc.request);
+                if (!isValid) {
+                    return;
+                }
+                NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             }
-            NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
 
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();

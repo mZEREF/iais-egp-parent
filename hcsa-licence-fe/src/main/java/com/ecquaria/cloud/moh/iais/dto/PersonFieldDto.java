@@ -16,7 +16,8 @@ public class PersonFieldDto implements Serializable {
     private String name;
     private String salutation;
     private String idType;
-    private String  idNo;
+    private String idNo;
+    private String nationality;
     private String designation;
     private String mobileNo;
     private String officeTelNo;

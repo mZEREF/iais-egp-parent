@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorr
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -227,6 +229,9 @@ public class HalpAssessmentGuideDelegator {
         SearchParam renewLicSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         String licenseeId = getLicenseeId(bpc.request);
         renewLicSearchParam.addFilter("licenseeId", licenseeId, true);
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(renewLicSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicSearchResult = requestForChangeService.searchPreInfo(renewLicSearchParam);
         if (!StringUtil.isEmpty(renewLicSearchResult)) {
@@ -517,10 +522,13 @@ public class HalpAssessmentGuideDelegator {
                                 chkBase.add(appSvcRelatedInfoDto.getServiceId());
                             }
                         }
+                        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
                         List<String> allBaseId = IaisCommonUtils.genNewArrayList();
                         List<HcsaServiceDto> hcsaServiceDtoList = assessmentGuideService.getServicesInActive();
                         List<HcsaServiceDto> allbaseService = hcsaServiceDtoList.stream()
-                                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                                .collect(Collectors.toList());
                         for(HcsaServiceDto hcsaServiceDto:allbaseService){
                             allBaseId.add(hcsaServiceDto.getId());
                         }
@@ -820,10 +828,16 @@ public class HalpAssessmentGuideDelegator {
             log.debug("can not find hcsa service list in service menu delegator!");
             return;
         }
+        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
+
         List<HcsaServiceDto> allbaseService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
         List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
         //sort
         allbaseService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
         allspecifiedService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
@@ -1217,12 +1231,15 @@ public class HalpAssessmentGuideDelegator {
         log.info(StringUtil.changeForLog("do choose svc end ..."));
     }
 
-    private List<HcsaServiceDto> getAllBaseService(BaseProcessClass bpc){
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,BASE_SERVICE_ATTR);
-        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+    private List<HcsaServiceDto> getAllBaseService(BaseProcessClass bpc) {
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR);
+        if (IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            return IaisCommonUtils.genNewArrayList();
         }
-        return hcsaServiceDtos;
+        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
+        return hcsaServiceDtos.stream()
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
     }
 
     private Map<String,List<String>> baseRelSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
@@ -1469,6 +1486,9 @@ public class HalpAssessmentGuideDelegator {
     public void renewLicUpdate(BaseProcessClass bpc) {
         SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         renewLicUpdateSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(renewLicUpdateSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicUpdateSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicUpdateSearchResult = requestForChangeService.searchPreInfo(renewLicUpdateSearchParam);
         if (!StringUtil.isEmpty(renewLicUpdateSearchResult)) {
@@ -1698,6 +1718,9 @@ public class HalpAssessmentGuideDelegator {
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (amendHCISearchResult != null && amendHCISearchResult.getRowCount() > 0) {
@@ -1716,6 +1739,9 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         SearchParam amendDetailsRemoveSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsRemoveSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsRemoveSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsRemoveSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsRemoveSearchResult = requestForChangeService.searchPreInfo(amendDetailsRemoveSearchParam);
         if (!StringUtil.isEmpty(amendDetailsRemoveSearchResult)) {
@@ -1729,6 +1755,9 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",SelfPremisesListQueryDto.class.getName(),"LICENCE_ID",SearchParam.DESCENDING,false);
         amendHCISearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendHCISearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);
         if (!StringUtil.isEmpty(amendHCISearchResult)) {
@@ -1772,6 +1801,9 @@ public class HalpAssessmentGuideDelegator {
         SearchParam amendUpdateVehiclesSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendUpdateVehiclesSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         amendUpdateVehiclesSearchParam.addFilter("premisesType", ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendUpdateVehiclesSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendUpdateVehiclesSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendUpdateVehiclesSearchResult = requestForChangeService.searchPreInfo(amendUpdateVehiclesSearchParam);
         if (amendUpdateVehiclesSearchResult != null && amendUpdateVehiclesSearchResult.getRowCount() > 0) {
@@ -1790,6 +1822,9 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
@@ -1815,6 +1850,9 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
@@ -1845,6 +1883,9 @@ public class HalpAssessmentGuideDelegator {
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         String idNo = ParamUtil.getString(bpc.request,"personnelOptions");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         if (idNo != null && !"Please Select".equals(idNo)){
             List<String> idNos = IaisCommonUtils.genNewArrayList();
             String id = idNo.split(",")[1];
@@ -1876,6 +1917,9 @@ public class HalpAssessmentGuideDelegator {
                 SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
                 amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
                 amendDetailsSearchParam.addFilter("idNo",idNos,true);
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+                HalpSearchResultHelper.setLicParamByField(amendDetailsSearchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
                 QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
                 SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
                 if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
@@ -1895,6 +1939,9 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         ceaseLicenceParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setLicParamByField(ceaseLicenceParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
         SearchResult<SelfPremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
         if (!StringUtil.isEmpty(ceaseLicenceResult)) {
@@ -1992,6 +2039,9 @@ public class HalpAssessmentGuideDelegator {
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
         withdrawAppParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setParamByFieldOrSearch(withdrawAppParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"code");
         QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
         String repalceService = getRepalceService();
         withdrawAppParam.setMainSql(withdrawAppParam.getMainSql().replace("repalceService",repalceService));
@@ -2043,6 +2093,8 @@ public class HalpAssessmentGuideDelegator {
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         inParams.add(ApplicationConsts.APPLICATION_STATUS_DRAFT);
         SqlHelper.builderInSql(draftAppSearchParam, "B.status", "appStatus", inParams);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        HalpSearchResultHelper.setAppParamByField(draftAppSearchParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
         String repalceService = getRepalceService();
         draftAppSearchParam.setMainSql(draftAppSearchParam.getMainSql().replace("repalceService",repalceService));

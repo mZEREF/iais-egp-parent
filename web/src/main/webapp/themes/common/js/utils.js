@@ -46,11 +46,18 @@ function formatHTMLEnCode(s1){
     return s1;
 }
 
-function clearErrorMsg(){
-    $("#iaisErrorFlag").val("");
-    $("span[name='iaisErrorMsg']").each(function(){
-        $(this).html("");
-    });
+function clearErrorMsg(targetTag) {
+    if (isEmpty(targetTag) || $(targetTag).length == 0) {
+        $("#iaisErrorFlag").val("");
+        $("span[name='iaisErrorMsg']").each(function () {
+            $(this).html("");
+        });
+    } else {
+        $("#iaisErrorFlag").val("");
+        $(targetTag).find("span[name='iaisErrorMsg']").each(function () {
+            $(this).html("");
+        });
+    }
 }
 
 function doValidationParse(data){

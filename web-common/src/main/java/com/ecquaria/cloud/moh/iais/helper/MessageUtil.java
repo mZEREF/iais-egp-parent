@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -66,7 +67,7 @@ public class MessageUtil {
         return temp.format(msg);
     }
 
-    public static String getMessageDesc(String key, List<String> keys,List values) {
+    public static String getMessageDesc(String key, List<String> keys,List<Serializable> values) {
         Map arguments = IaisCommonUtils.genNewHashMap();
         for (int i = 0; i < keys.size(); i++) {
             arguments.put(keys.get(i),values.get(i));

@@ -80,7 +80,7 @@
         </div>
         <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
             <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
-            <%@include file="cgoView.jsp"%>
+            <%@include file="../appeal/cgoView.jsp"%>
 
         </div>
         <div class="col-xs-12 col-md-10" style="margin-left: 2%">

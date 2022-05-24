@@ -50,7 +50,7 @@
 
     <sql key = "dashAssignMeAjax"  remarks = "Task Assign to me Ajax">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE, T5.TASK_ID FROM
+            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE, T5.TASK_ID, T5.LICENCE_ID AS ORIGIN_LICENCE_ID, T5.APP_TYPE FROM
             (SELECT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS,T1.VERSION, T3.HCI_CODE,T2.ID,T4.GROUP_NO,T1.APP_TYPE,T3.HCI_NAME,T4.SUBMIT_DT,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE, T3.ID as APP_PREM_ID, T7.ID AS TASK_ID,
                 CONCAT(T3.BLK_NO ,
@@ -84,6 +84,7 @@
                 and T1.STATUS != 'APST009' AND T1.STATUS != 'APST045'
                 <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
+                <#if groupNoIn??> and ${groupNoIn}</#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 <#if dashUserId??> and T7.user_id = :dashUserId </#if>
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
@@ -150,11 +151,11 @@
 
     <sql key = "dashCommonTaskAjax"  remarks = "get Application By App Group in Common Pool">
         <![CDATA[
-            SELECT T5.ID, MAX(T5.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T5.APPLICATION_NO) AS APPLICATION_NO,
-                          MAX(T5.SERVICE_ID) AS SERVICE_ID, MAX(T5.STATUS) AS STATUS, MAX(T5.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T5.ID, T5.APP_PREM_ID AS APP_PREM_ID, T7.ID AS TASK_ID, T5.APPLICATION_NO AS APPLICATION_NO, T5.APP_TYPE,
+                          T5.SERVICE_ID AS SERVICE_ID, T5.STATUS AS STATUS, T5.HCI_CODE AS HCI_CODE, T5.ORIGIN_LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM
                 (
-                    SELECT T2.ID, T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_NAME, T3.HCI_CODE, T4.GROUP_NO, T1.APP_TYPE,
+                    SELECT T2.ID, T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_NAME, T3.HCI_CODE, T4.GROUP_NO, T1.APP_TYPE,T1.ORIGIN_LICENCE_ID,
                         CONCAT(T3.BLK_NO,
                         case T3.STREET_NAME
                           when null then null
@@ -191,6 +192,7 @@
             <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+            <#if groupNoIn??> and ${groupNoIn}</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
@@ -198,7 +200,6 @@
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            GROUP BY T5.ID
         ]]>
     </sql>
 
@@ -224,8 +225,8 @@
 
     <sql key = "dashKpiTaskAjax"  remarks = "get Application By App Group in Kpi Pool">
         <![CDATA[
-            SELECT T1.ID, MAX(T1.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T1.APPLICATION_NO) AS APPLICATION_NO,
-                          MAX(T1.SERVICE_ID) AS SERVICE_ID, MAX(T1.STATUS) AS STATUS, MAX(T1.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T1.ID, T1.APP_PREM_ID AS APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO AS APPLICATION_NO,T1.APP_TYPE,
+                          T1.SERVICE_ID AS SERVICE_ID, T1.STATUS AS STATUS, T1.HCI_CODE AS HCI_CODE, T1.ORIGIN_LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM APP_EXCEEDING_DAY_VIEW T1
             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
@@ -233,6 +234,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
+            <#if groupNoIn??> and ${groupNoIn}</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
@@ -241,7 +243,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            GROUP BY T1.ID
         ]]>
     </sql>
 
@@ -266,8 +267,8 @@
 
     <sql key = "dashWaitApproveAjax"  remarks = "get Application By App Group in Wait Approve Pool">
         <![CDATA[
-            SELECT T7.ID, MAX(T7.APP_PREM_ID) AS APP_PREM_ID, MAX(T1.ID) AS TASK_ID, MAX(T7.APPLICATION_NO) AS APPLICATION_NO,
-                              MAX(T7.SERVICE_ID) AS SERVICE_ID, MAX(T7.STATUS) AS STATUS, MAX(T7.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T7.ID, T7.APP_PREM_ID AS APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO AS APPLICATION_NO,T7.APP_TYPE,
+                              T7.SERVICE_ID AS SERVICE_ID, T7.STATUS AS STATUS, T7.HCI_CODE AS HCI_CODE, T7.LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM TASK_WAITING_APPROVAL_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID
                       and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
@@ -277,6 +278,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
+            <#if groupNoIn??> and ${groupNoIn}</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
@@ -284,7 +286,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            GROUP BY T7.ID
         ]]>
     </sql>
 
@@ -308,8 +309,8 @@
 
     <sql key = "dashAppReplyAjax"  remarks = "get Application By App Group in Applicant's Reply Pool">
         <![CDATA[
-            SELECT T7.ID, MAX(T7.APP_PREM_ID) AS APP_PREM_ID, MAX(T1.ID) AS TASK_ID, MAX(T7.APPLICATION_NO) AS APPLICATION_NO,
-                      MAX(T7.SERVICE_ID) AS SERVICE_ID, MAX(T7.STATUS) AS STATUS, MAX(T7.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T7.ID, T7.APP_PREM_ID AS APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO AS APPLICATION_NO, T7.APP_TYPE,
+                      T7.SERVICE_ID AS SERVICE_ID, T7.STATUS AS STATUS, T7.HCI_CODE AS HCI_CODE, T7.LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM TASK_WAITING_APPLICANT_REPLY_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
@@ -317,6 +318,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
+            <#if groupNoIn??> and ${groupNoIn}</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
@@ -325,7 +327,6 @@
             <#if application_status??> and T7.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            GROUP BY T7.ID
         ]]>
     </sql>
 
@@ -351,8 +352,8 @@
 
     <sql key = "dashAppRenewAjax"  remarks = "get Application By Near Renewal Licence Expire Day">
         <![CDATA[
-            SELECT T1.ID, MAX(T1.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T1.APPLICATION_NO) AS APPLICATION_NO,
-                      MAX(T1.SERVICE_ID) AS SERVICE_ID, MAX(T1.STATUS) AS STATUS, MAX(T1.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T1.ID, T1.APP_PREM_ID AS APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO AS APPLICATION_NO,T1.APP_TYPE,
+                      T1.SERVICE_ID AS SERVICE_ID, T1.STATUS AS STATUS, T1.HCI_CODE AS HCI_CODE, T1.LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM TASK_RENEWAL_EXPIRY_APP_VIEW T1
             LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
                       and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
@@ -362,6 +363,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
+            <#if groupNoIn??> and ${groupNoIn}</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
@@ -370,7 +372,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            GROUP BY T1.ID
         ]]>
     </sql>
 
@@ -428,11 +429,11 @@
 
     <sql key = "dashSupervisorAjax"  remarks = "get Application By App Group in Supervisor Pool">
         <![CDATA[
-            SELECT T5.ID, MAX(T5.APP_PREM_ID) AS APP_PREM_ID, MAX(T5.TASK_ID) AS TASK_ID, MAX(T5.APPLICATION_NO) AS APPLICATION_NO,
-                      MAX(T5.SERVICE_ID) AS SERVICE_ID, MAX(T5.STATUS) AS STATUS, MAX(T5.HCI_CODE) AS HCI_CODE
+            SELECT DISTINCT T5.ID, T5.APP_PREM_ID AS APP_PREM_ID, T5.TASK_ID AS TASK_ID, T5.APPLICATION_NO AS APPLICATION_NO, T5.APP_TYPE,
+                      T5.SERVICE_ID AS SERVICE_ID, T5.STATUS AS STATUS, T5.HCI_CODE AS HCI_CODE, T5.LICENCE_ID AS ORIGIN_LICENCE_ID
             FROM
             (SELECT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS, T3.HCI_CODE, T2.ID, T4.GROUP_NO, T1.APP_TYPE, T3.HCI_NAME, T4.SUBMIT_DT,
-                T3.ID as APP_PREM_ID, T7.ID AS TASK_ID,
+                T3.ID as APP_PREM_ID, T7.ID AS TASK_ID, T1.APP_TYPE,
                 CONCAT(T3.BLK_NO ,
                     case T3.STREET_NAME
                       when null then null
@@ -465,6 +466,7 @@
                 <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 <#if workGroup_list??> and ${workGroup_list} </#if>
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
+                <#if groupNoIn??> and ${groupNoIn}</#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 <#if dashCommonPoolStatus??> and T7.USER_ID is NULL</#if>
                 <#if dashUserId??> and T4.ID = :dashUserId </#if>
@@ -478,7 +480,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            GROUP BY T5.ID
         ]]>
     </sql>
 

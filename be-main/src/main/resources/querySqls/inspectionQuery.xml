@@ -118,7 +118,7 @@
     <sql key="AppByGroupAjax"  remarks="query App items">
         <![CDATA[
           SELECT DISTINCT T5.APPLICATION_ID,T5.APPLICATION_NO, T5.SERVICE_ID, T5.LICENCE_ID, T5.STATUS, T5.HCI_CODE, T5.ID,T5.address,T5.VERSION,T5.HCI_NAME,
-           T5.BLK_NO, T5.FLOOR_NO, T5.UNIT_NO, T5.STREET_NAME, T5.BUILDING_NAME, T5.POSTAL_CODE FROM
+           T5.BLK_NO, T5.FLOOR_NO, T5.UNIT_NO, T5.STREET_NAME, T5.BUILDING_NAME, T5.POSTAL_CODE, T5.ORIGIN_LICENCE_ID, T5.APP_TYPE FROM
            (SELECT DISTINCT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS,T1.VERSION, T3.HCI_CODE,T2.ID,T4.GROUP_NO,T1.APP_TYPE,T3.HCI_NAME,T4.SUBMIT_DT,
            T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE,T2.ID as corrid,
            CONCAT(T3.BLK_NO ,
@@ -152,6 +152,7 @@
                 <#if userId??> and T7.user_id = :userId </#if>
                 <#if roleId??> and T7.role_id = :roleId </#if>
                 <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+                <#if groupNoIn??> and ${groupNoIn}</#if>
                 <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0</#if>
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
                 <#if application_status??> and T5.STATUS IN ${application_status}</#if>

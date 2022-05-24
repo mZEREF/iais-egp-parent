@@ -16,6 +16,7 @@
             where  (lic.STATUS ='LICEST001' or lic.STATUS ='LICEST007')
              and lic.ID not in (select l.ORIGIN_LICENCE_ID from hcsal.dbo.licence l  where l.ORIGIN_LICENCE_ID is not null)
             <#if org_id??>and gai.ORGANIZATION_ID = :org_id</#if>
+            <#if serviceTypesShow??> AND lic.SVC_NAME in ${serviceTypesShow}</#if>
             ) gaiView
             where gaiView.STATUS = 'CMSTAT001'
 

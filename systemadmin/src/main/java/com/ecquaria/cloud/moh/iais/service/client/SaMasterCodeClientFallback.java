@@ -61,7 +61,7 @@ public class SaMasterCodeClientFallback implements SaMasterCodeClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> delMasterCode(String did) {
+    public FeignResponseEntity<Void> delMasterCode(String did, int updateCount) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

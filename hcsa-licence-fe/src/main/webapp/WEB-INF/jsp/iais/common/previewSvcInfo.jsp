@@ -1,3 +1,9 @@
+<style type="text/css">
+    table {
+        table-layout: fixed;
+        word-break: break-all;
+    }
+</style>
 <c:forEach items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
     <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}" scope="request"/>
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST001'}">

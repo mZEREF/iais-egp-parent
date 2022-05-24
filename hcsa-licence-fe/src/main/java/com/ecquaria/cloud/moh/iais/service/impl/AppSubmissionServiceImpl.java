@@ -79,7 +79,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -810,7 +809,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         String propertyName = "save";
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())){
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())){
             propertyName = "soloSave";
         }
         ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, propertyName);
@@ -869,12 +868,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, String> cgoMap = new HashMap<>();
         Map<String, String> slMap = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            String idNo = daList.get(i).getIdNo();
-            if (StringUtil.isEmpty(idNo)) {
+            String cgoPerson = daList.get(i).getCgoPerson();
+            if (StringUtil.isEmpty(cgoPerson)) {
                 map.put("disciplineAllocation" + i,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officers", "field"));
             } else {
-                cgoMap.put(idNo, idNo);
+                cgoMap.put(cgoPerson, cgoPerson);
             }
             String indexNo = daList.get(i).getSlIndex();
             if (StringUtil.isEmpty(indexNo)) {
@@ -892,7 +891,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 int objSize = appSvcCgoList.size();
                 if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
                     String result = currentSvcDto.getAppSvcCgoDtoList().stream()
-                            .filter(appSvcCgoDto -> !cgoMap.containsKey(appSvcCgoDto.getIdNo()))
+                            .filter(appSvcCgoDto -> !cgoMap.containsKey(NewApplicationHelper.getPersonKey(appSvcCgoDto)))
                             .map(AppSvcPrincipalOfficersDto::getName)
                             .filter(Objects::nonNull)
                             .reduce((x, y) -> x + ", " + y)
@@ -2627,7 +2626,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
-                validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
+                validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), licPersonMap, currSvcCode);
                 if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
@@ -2652,7 +2651,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
                 doAppSvcCgoDto(currentSvcAllPsnConfig, govenMap, appSvcCgoDtoList);
-                if (govenMap.isEmpty() && licPersonMap != null) {
+                if (govenMap.isEmpty()) {
                     govenMap.putAll(NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
                             dto.getServiceCode()));
                 }
@@ -3078,10 +3077,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);
                                 }
                                 //set selCgoName
-                                String idNo = allocation.getIdNo();
-                                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)){
-                                    for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtoList){
-                                        if(idNo.equals(appSvcCgoDto.getIdNo())){
+                                String cgoPerson = allocation.getCgoPerson();
+                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(cgoPerson)) {
+                                    for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                                        if (Objects.equals(cgoPerson, NewApplicationHelper.getPersonKey(appSvcCgoDto))) {
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
                                             break;
@@ -3328,34 +3327,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "CGO can't be null");
                         return;
                     }
-                }
-            }
-            return;
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            String assignSelect = list.get(i).getAssignSelect();
-            if ("".equals(assignSelect) || assignSelect == null) {
-                map.put("cgoassignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoassignSelect","field"));
-            }
-            String idType = list.get(i).getIdType();
-            if (StringUtil.isEmpty(idType)) {
-                map.put("cgotype" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgotype","field"));
-            }
-            String mobileNo = list.get(i).getMobileNo();
-            if (StringUtil.isEmpty(mobileNo)) {
-                map.put("cgomobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgomobileNo","field"));
-            } else {
-                if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                    map.put("cgomobileNo" + i, "GENERAL_ERR0007");
-                }
-            }
-            String emailAddr = list.get(i).getEmailAddr();
-            if (StringUtil.isEmpty(emailAddr)) {
-                map.put("cgoemailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoemailAddr","field"));
-            } else {
-                if (!ValidationUtils.isEmail(emailAddr)) {
-                    map.put("cgoemailAddr" + i, "GENERAL_ERR0014");
                 }
             }
         }

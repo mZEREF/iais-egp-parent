@@ -64,6 +64,9 @@ public interface HcsaConfigMainClient {
     @GetMapping(value = "/kpi-reminder/result-service-and-module")
     FeignResponseEntity<HcsaSvcKpiDto> searchKpiResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
 
+    @GetMapping(value = "/kpi-reminder/dashboard-result")
+    FeignResponseEntity<List<HcsaSvcKpiDto>> retrieveForDashboard();
+
     @PostMapping(path = "/iais-hcsa-fee/returnable-fee",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> returnFee(@RequestBody List<ApplicationDto> applicationDtos);
 

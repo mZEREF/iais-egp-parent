@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -105,15 +106,18 @@ public class AccessUtil {
             loginContext.setLoginId(user.getId());
             loginContext.setUserDomain(orgUser.getUserDomain());
             loginContext.setUserName(user.getDisplayName());
-            List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
+            List<OrgUserRoleDto> userRoles = client.retrieveUserRolesWithMatrix(orgUser.getId()).getEntity();
             loginContext.setOrgId(orgUser.getOrgId());
 
             if (userRoles != null && !userRoles.isEmpty()) {
-                loginContext.getRoleIds().addAll(userRoles);
-                if(RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0)) && userRoles.size() > 1){
-                    loginContext.setCurRoleId(userRoles.get(1));
-                }else{
-                    loginContext.setCurRoleId(userRoles.get(0));
+                for (OrgUserRoleDto our : userRoles) {
+                    loginContext.getRoleIds().add(our.getRoleName());
+                    loginContext.getRoleMatrixes().put(our.getRoleName(), our.getMatrixDtos());
+                }
+                if (RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0).getRoleName()) && userRoles.size() > 1) {
+                    loginContext.setCurRoleId(userRoles.get(1).getRoleName());
+                } else {
+                    loginContext.setCurRoleId(userRoles.get(0).getRoleName());
                 }
             }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sqls catalog="governanceOfficer">
-    <sql key="generateGovernanceOfficerHtml" cached="no" remarks="generate Governance Officer Html">
+<sqls catalog="appealGovernanceOfficer">
+    <sql key="appealGenerateGovernanceOfficerHtml" cached="no" remarks="generate Governance Officer Html">
         <![CDATA[
             <div class="cgo-content">
                 <table class="assignContent control-grid" style="width:100%;">
@@ -19,16 +19,14 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-4 text-right">
-                                        <div class="">
-                                            <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
-                                        </div>
+
                                     </div>
                                     <div class="col-sm-5 control-label formtext ">
                                         <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                         <span class="mandatory">*</span>
                                         <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                         <div class="">
                                             (1)
                                         </div>
@@ -58,7 +56,7 @@
                                                     </div>
                                                     <div class="col-xs-12 col-sm-6 col-md-4">
                                                         <div class="">
-                                                            <input class="field-name" type="text" name="name" value="" maxlength="66"
+                                                            <input class="field-name" type="text" name="name" value="" maxlength="110"
                                                                    autocomplete="off">
                                                         </div>
                                                     </div>
@@ -229,7 +227,7 @@
                                                 <div class="form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
                                                         <label class="control-label control-set-font control-font-label">Other Qualification</label>
-                                                        <span class="mandatory otherQualificationSpan"></span>
+                                                        <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                                         <div class="">

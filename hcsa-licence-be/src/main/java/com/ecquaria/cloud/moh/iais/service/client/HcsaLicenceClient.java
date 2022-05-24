@@ -76,9 +76,10 @@ public interface HcsaLicenceClient {
     @GetMapping(path = "/hcsa-licence/getActiveHCICode",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity< List<String>> getActiveHCICode();
 
-    @RequestMapping(path = "/hcsa-key-personnel/latestVersion/{idNo}/{orgId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<KeyPersonnelDto> getLatestVersionKeyPersonnelByidNoAndOrgId(@PathVariable(name = "idNo") String idNo,
-                                                                           @PathVariable(name = "orgId") String orgId);
+    @RequestMapping(path = "/hcsa-key-personnel/latestVersion",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<KeyPersonnelDto> getLatestVersionKeyPersonnelByidNoAndOrgId(@RequestParam("idNo") String idNo,
+                                                                           @RequestParam("orgId") String orgId,
+                                                                                    @RequestParam("nationality") String nationality);
     @RequestMapping(value = "/hcsa-licence-fe-date",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
     FeignResponseEntity<Map<String, List<LicenceDto>>> licenceRenwal(@RequestBody List<Integer>  days);

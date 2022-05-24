@@ -287,10 +287,15 @@ public class ServiceMenuDelegator {
             log.debug("can not find hcsa service list in service menu delegator!");
             return;
         }
+        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
         List<HcsaServiceDto> allbaseService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
         List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
-                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
         //sort
         allbaseService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
         allspecifiedService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
@@ -303,7 +308,7 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("prepare choose svc end ..."));
     }
 
-    public void preChooseBaseSvc(BaseProcessClass bpc) throws Exception {
+    public void preChooseBaseSvc(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("prepare choose base svc start ..."));
         boolean noExistBaseLic = false;
         //specSvcCode,baseSvcDtoList
@@ -948,10 +953,13 @@ public class ServiceMenuDelegator {
                                 chkBase.add(appSvcRelatedInfoDto.getServiceId());
                             }
                         }
+                        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
                         List<String> allBaseId = IaisCommonUtils.genNewArrayList();
                         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getServicesInActive();
                         List<HcsaServiceDto> allbaseService = hcsaServiceDtoList.stream()
-                                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
+                                .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
+                                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                                .collect(Collectors.toList());
                         for(HcsaServiceDto hcsaServiceDto:allbaseService){
                             allBaseId.add(hcsaServiceDto.getId());
                         }
@@ -1522,20 +1530,15 @@ public class ServiceMenuDelegator {
         return  hcsaServiceDtos;
     }
 
-    private List<HcsaServiceDto> getAllBaseService(BaseProcessClass bpc){
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,BASE_SERVICE_ATTR);
-        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+    private List<HcsaServiceDto> getAllBaseService(BaseProcessClass bpc) {
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR);
+        if (IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+           return IaisCommonUtils.genNewArrayList();
         }
-        return hcsaServiceDtos;
-    }
-
-    private List<HcsaServiceDto> getAllSpeService(BaseProcessClass bpc){
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,SPECIFIED_SERVICE_ATTR);
-        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-        }
-        return hcsaServiceDtos;
+        List<String> accessSvcCodes = HcsaServiceCacheHelper.getAccessSvcCodes(bpc.request);
+        return hcsaServiceDtos.stream()
+                .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
+                .collect(Collectors.toList());
     }
 
     //from internet

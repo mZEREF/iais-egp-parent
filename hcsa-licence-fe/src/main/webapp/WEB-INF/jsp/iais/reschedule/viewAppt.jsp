@@ -35,9 +35,9 @@
                                 <th scope="col" class="form-check" >
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" ></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="T3.BLK_NO" value="Mode of Service Delivery"  isFE="true"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="BLK_NO" value="Mode of Service Delivery"  isFE="true"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Service(s)" ></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="appRec.RECOM_IN_DATE" isFE="true"  value="Date and Time of Inspection"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE" isFE="true"  value="Date and Time of Inspection"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>

@@ -103,6 +103,7 @@
             disableContent('div.licensee-detail');
             $('.retrieveAddr').addClass('hidden');
         }
+        //toggleIdType('#idType', '.nationalityDiv');
     }
 
     function checkLicenseeType() {
@@ -144,6 +145,7 @@
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         }
+        toggleIdType('#idType', '.nationalityDiv');
     }
 
     function editContent() {
@@ -211,16 +213,18 @@
         } else {
             $content.show();
             var arr = assignSelVal.split(',');
-            var idType = arr[0];
-            var idNo = arr[1];
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
             $('.retrieveAddr').hide();
-            loadSelectLicensee($content, idType, idNo, fillLicensee);
+            loadSelectLicensee($content, nationality, idType, idNo, fillLicensee);
         }
     }
 
-    var loadSelectLicensee = function ($target, idType, idNo, callback) {
+    var loadSelectLicensee = function ($target, nationality, idType, idNo, callback) {
         showWaiting();
         var jsonData = {
+            'nationality':nationality,
             'idType':idType,
             'idNo':idNo
         };
