@@ -35,6 +35,12 @@ public class TreatmentValidator implements CustomizeValidator {
                 errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
             }
         }
+        String educationLevel = treatmentDto.getEducationLevel();
+        if(!StringUtil.isEmpty(educationLevel) && educationLevel.equals("VSSEL006")){
+            if(StringUtil.isEmpty(treatmentDto.getOtherEducationLevel())){
+                errorMap.put("otherEducationLevel", "GENERAL_ERR0006");
+            }
+        }
        String occupation = treatmentDto.getOccupation();
         if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP011")){
             if(StringUtil.isEmpty(treatmentDto.getOtherOccupation())){

@@ -108,7 +108,7 @@
         <div class="">
             <div class="document-upload-gp">
                 <div class="document-upload-list">
-                    <h3>Court Order Document</h3>
+                    <h3>Court Order Document <span class="mandatory">&nbsp;*</span></h3>
                             <div class="file-upload-gp">
                                 <div name="selectedVssFileShowId" id="selectedVssFileShowId">
                                     <c:forEach items="${vssFiles}" var="vssFile"
@@ -139,6 +139,7 @@
                                                                                         onclick="clearFlagValueFEFile()">Upload</a>
                             </div>
                     <span id="error_selectedVssFileError" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_vssFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
         </div>

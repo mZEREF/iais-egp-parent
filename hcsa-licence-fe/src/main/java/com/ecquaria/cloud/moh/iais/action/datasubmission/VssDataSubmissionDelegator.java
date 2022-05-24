@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -18,10 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
@@ -324,6 +322,16 @@ public class VssDataSubmissionDelegator {
 
     private void prepareTfsspParticulars(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        String[] sterilizationMd;
+        if(treatmentDto.getGender().equals(DataSubmissionConsts.GENDER_MALE)){
+            sterilizationMd=new String[]{DataSubmissionConsts.METHOD_OF_STERILIZATION_OCCLUSION_REMOVAL};
+        }else {
+            sterilizationMd=new String[]{"VSMOS001","VSMOS002","VSMOS003","VSMOS004"};
+        }
+        List<SelectOption> sterilizationLists= MasterCodeUtil.retrieveOptionsByCodes(sterilizationMd);
+        ParamUtil.setSessionAttr(request, "sterilizationLists", (Serializable) sterilizationLists);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE,ACTION_TYPE_CONFIRM);
     }
@@ -336,16 +344,16 @@ public class VssDataSubmissionDelegator {
         String doctorReignNo = ParamUtil.getString(request,"doctorReignNo");
         String doctorName = ParamUtil.getString(request,"doctorName");
         String sterilizationMethod = ParamUtil.getString(request,"sterilizationMethod");
+        String hecReviewedHospital = ParamUtil.getString(request,"hecReviewedHospital");
         String operationDate = ParamUtil.getString(request,"operationDate");
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
-        String disinfectionPlace = ParamUtil.getString(request,"disinfectionPlace");
-        String otherSterilizationMethod =  ParamUtil.getString(request,"otherSterilizationMethod");
-        sexualSterilizationDto.setDisinfectionPlace(disinfectionPlace);
+        String sterilizationHospital = ParamUtil.getString(request,"sterilizationHospital");
+        sexualSterilizationDto.setSterilizationHospital(sterilizationHospital);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
-        sexualSterilizationDto.setOtherSterilizationMethod(otherSterilizationMethod);
+        sexualSterilizationDto.setHecReviewedHospital(hecReviewedHospital);
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }

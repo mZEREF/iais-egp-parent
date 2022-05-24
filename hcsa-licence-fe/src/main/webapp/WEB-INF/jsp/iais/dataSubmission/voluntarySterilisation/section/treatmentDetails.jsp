@@ -85,9 +85,17 @@
         <iais:field width="5" value="Education Level" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="educationLevel" firstOption="Please Select" codeCategory="VSS_EDUCATION_LEVEL"
+                         onchange ="toggleOnSelect(this, 'VSSEL006', 'educationLevelOthers')"
                          value="${treatmentDto.educationLevel}"/>
         </iais:value>
     </iais:row>
+        <iais:row id="educationLevelOthers" style="${treatmentDto.educationLevel eq 'VSSEL006' ? '' : 'display: none'}">
+            <iais:field width="5" value="Other Education Level" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="200" type="text" name="otherEducationLevel" value="${treatmentDto.otherEducationLevel}"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_otherEducationLevel"></span>
+            </iais:value>
+        </iais:row>
     <iais:row>
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
