@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -24,20 +23,20 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "changeTcuDateDelegator")
 @Slf4j
@@ -198,7 +197,7 @@ public class ChangeTcuDateDelegator {
                 }
             }
             if (StringUtil.isNotEmpty(newTcuDateRemark) && newTcuDateRemark.length() > 300) {
-                errMap.put(keyNewTcuDateRemarks + i, AppValidatorHelper.repLength("Remarks", "300"));
+                errMap.put(keyNewTcuDateRemarks + i, repLength("Remarks", "300"));
             }
         }
         return errMap;
@@ -288,4 +287,59 @@ public class ChangeTcuDateDelegator {
         return filterParam;
     }
 
+    private String repLength(String... ars) {
+        int length = ars.length;
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        if (length == 0) {
+            repLength(general_err0041);
+        } else if (length == 1) {
+            String field = ars[0].replace("{field}", "field");
+            field = field.replace("{maxlength}", "100");
+            return field;
+        } else if (length == 2) {
+            Iterator<String> iterator = Arrays.stream(ars).iterator();
+            if (iterator.hasNext()) {
+                general_err0041 = general_err0041.replace("{field}", iterator.next());
+            }
+            if (iterator.hasNext()) {
+                general_err0041 = general_err0041.replace("{maxlength}", iterator.next());
+            }
+
+            return general_err0041;
+        } else if (length == 3) {
+            Iterator<String> iterator = Arrays.stream(ars).iterator();
+            String ars0 = iterator.hasNext() ? iterator.next() : "";
+            String ars1 = iterator.hasNext() ? iterator.next() : "";
+            String messageDesc = MessageUtil.getMessageDesc(ars0);
+            messageDesc = messageDesc.replace("{field}", ars0);
+            messageDesc = messageDesc.replace("{maxlength}", ars1);
+            return messageDesc;
+        } else if (length == 4) {
+            Iterator<String> iterator = Arrays.stream(ars).iterator();
+            String ars0 = iterator.hasNext() ? iterator.next() : "";
+            String ars1 = iterator.hasNext() ? iterator.next() : "";
+            String ars2 = iterator.hasNext() ? iterator.next() : "";
+            String ars3 = iterator.hasNext() ? iterator.next() : "";
+            general_err0041 = general_err0041.replace(ars0, ars1);
+            general_err0041 = general_err0041.replace(ars2, ars3);
+            return general_err0041;
+        } else if (length == 5) {
+            Iterator<String> iterator = Arrays.stream(ars).iterator();
+            String ars0 = iterator.hasNext() ? iterator.next() : "";
+            String messageDesc = MessageUtil.getMessageDesc(ars0);
+            if (messageDesc != null) {
+                String ars1 = iterator.hasNext() ? iterator.next() : "";
+                String ars2 = iterator.hasNext() ? iterator.next() : "";
+                String ars3 = iterator.hasNext() ? iterator.next() : "";
+                String ars4 = iterator.hasNext() ? iterator.next() : "";
+                messageDesc = messageDesc.replace(ars1, ars2);
+                messageDesc = messageDesc.replace(ars3, ars4);
+            }
+            return messageDesc;
+        } else {
+            return general_err0041;
+        }
+
+        return general_err0041;
+    }
 }
