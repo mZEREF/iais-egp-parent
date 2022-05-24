@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -87,5 +92,20 @@ public class DpAjaxController {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
         return appSubmissionService.retrievePrsInfo(professionRegoNo);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/startdispensing-date")
+    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws ParseException {
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto=DataSubmissionHelper.getCurrentDpDataSubmission(request);
+        DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+        dataSubmissionDto.setSubmitDt(new Date());
+        String dispensingDate = ParamUtil.getString(request, "dispensingDate");
+        String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
+        if(Formatter.compareDateByDay(submitDt,dispensingDate)>2){
+            result.put("showDate", Boolean.TRUE);
+        }
+        return result;
     }
 }

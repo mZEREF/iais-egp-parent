@@ -269,7 +269,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <span style="font-size: 2rem;" id="prsErrorMsg">
-                                    <iais:message key="The patient age to the date of counselling is within the range of <=16 or >=65. Please check that the details have been accurately entered." escape="false" />
+                                    <iais:message key="The patient age to the date of counselling is within the range of <=10 or >=65. Please check that the details have been accurately entered." escape="false" />
                                 </span>
                             </div>
                         </div>

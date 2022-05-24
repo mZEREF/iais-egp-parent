@@ -86,7 +86,7 @@
                         <iais:row>
                             <iais:field width="5" value="Batch No." mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="3" type="text" name="batchNo${index}" value="${drugMedicationDto.batchNo}"/>
+                                <iais:input maxLength="20" type="text" name="batchNo${index}" value="${drugMedicationDto.batchNo}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_batchNo"${index}></span>
                             </iais:value>
                         </iais:row>

@@ -118,7 +118,7 @@
                     <iais:row>
                         <iais:field width="5" value="Start Date of Dispensing" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="dispensingDate" value="${drugSubmission.dispensingDate}"/>
+                            <iais:datePicker name="dispensingDate" id="startDispensingDate" value="${drugSubmission.dispensingDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_dispensingDate"></span>
                         </iais:value>
                     </iais:row>
@@ -172,14 +172,14 @@
                 </div>
                 <div id="nurse">
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist’s Registration No." />
+                        <iais:field width="5" value="Nurse/Pharmacist's Registration No." />
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="256" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
                                         value="${drugSubmission.nurseRegistrationNo}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist’s Name" />
+                        <iais:field width="5" value="Nurse/Pharmacist's Name" />
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="512" type="text" id ="nurseName" name="nurseName"
                                         value="${drugSubmission.nurseName}" />
@@ -227,6 +227,24 @@
     </div>
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
+<div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="startDateErrorMsg">
+                            <iais:message key="The current date of submission is more than two days from the start date of dispensing. For future submissions, please ensure that data is submitted promptly within two days after the start date of dispensing" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         $('#drugType').change(function () {
@@ -449,5 +467,28 @@
 
         $('#qualification').find('p').text(data.qualification);
         $('#qualificationHidden').val(data.qualification);
+    }
+
+    //Prompt 2 days after the assignment start date
+    $("#startDispensingDate").on('blur, change', function () {
+        showWaiting();
+        var dispensingDate=$('#startDispensingDate').val();
+        var url = $('#_contextPath').val() + '/dp/startdispensing-date';
+        var options = {
+            dispensingDate: dispensingDate,
+            url: url
+        }
+        callCommonAjax(options, checkBirthDateCallback);
+    });
+
+    function checkBirthDateCallback(data) {
+        if (isEmpty(data) || isEmpty(data.showDate) || !data.showDate) {
+            return;
+        }
+        $('#START_DATE_OF_DISPENSING').modal('show');
+    }
+
+    function cancel() {
+        $('#START_DATE_OF_DISPENSING').modal('hide');
     }
 </script>
