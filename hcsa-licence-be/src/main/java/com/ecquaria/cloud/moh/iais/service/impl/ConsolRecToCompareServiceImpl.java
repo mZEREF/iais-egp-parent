@@ -66,9 +66,10 @@ import static java.nio.file.Files.newOutputStream;
 public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    @Value("${iais.sharedfolder.application.in}")
+    @Value("${iais.sharedfolder.datacompair.in}")
     private String inSharedPath;
-
+    @Value("${iais.sharedfolder.datacompair.rslt}")
+    private String rsltSharedPath;
     @Autowired
     private ApplicationClient applicationClient;
 
@@ -82,6 +83,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     public void initPath() {
         File compress = MiscUtil.generateFile(sharedPath+File.separator+ AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
         File backups=MiscUtil.generateFile(inSharedPath);
+        File rslt=MiscUtil.generateFile(rsltSharedPath);
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
         File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
@@ -90,7 +92,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(!backups.exists()){
             backups.mkdirs();
         }
-
+        if(!rslt.exists()){
+            rslt.mkdirs();
+        }
         if(!compress.exists()){
             compress.mkdirs();
         }
@@ -347,7 +351,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                         Date date = new Date();
                         String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
                         String inputFileName =  "CompareResults_"+dateStr;
-                        File path = MiscUtil.generateFile(inSharedPath+File.separator+inputFileName+".xlsx" );
+                        File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
                         path.createNewFile();
                         List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(sheetsDto);
                         File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
