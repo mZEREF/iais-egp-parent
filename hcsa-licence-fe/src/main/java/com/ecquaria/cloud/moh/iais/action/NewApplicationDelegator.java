@@ -1886,10 +1886,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
         super.prepareJump(bpc);
     }
 
-    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
-        return ApplicationHelper.getAppSubmissionDto(request);
-    }
-
     private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(
                 bpc.request, HcsaAppConst.PERSONSELECTMAP);
