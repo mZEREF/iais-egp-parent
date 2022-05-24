@@ -61,13 +61,13 @@
                             <iais:row>
                                 <iais:field width="4" value="Submission ID"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="submissionNo"  name="submissionNo" value="${dsEnquiryTopFilterDto.submissionNo}" >
+                                    <input type="text" maxlength="100" id="submissionNo"  name="submissionNo" value="${dsEnquiryTopFilterDto.submissionNo}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="patientName"  name="patientName" value="${dsEnquiryTopFilterDto.patientName}" >
+                                    <input type="text" maxlength="100" id="patientName"  name="patientName" value="${dsEnquiryTopFilterDto.patientName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>

@@ -610,7 +610,7 @@ public class OnlineDsAjaxController {
             queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
+                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "VoluntarySterilisation_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
