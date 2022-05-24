@@ -108,13 +108,11 @@ public class ApplicationDelegator extends AppCommDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(appNo);
-        if (appSubmissionDto.getAppEditSelectDto() == null) {
-            appSubmissionDto.setAppEditSelectDto(applicationViewDto.getAppEditSelectDto());
-        }
         appSubmissionDto.setAmountStr("N/A");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
+        if (isRenewalOrRfc) {
             RfcHelper.svcDocToPresmise(appSubmissionDto);
         }
         svcRelatedInfoRFI(appSubmissionDto, appNo);
@@ -135,19 +133,16 @@ public class ApplicationDelegator extends AppCommDelegator {
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
-        String appType = appSubmissionDto.getAppType();
-        boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
         appSubmissionDto.setNeedEditController(true);
-        AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if (appEditSelectDto == null) {
-            appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+            appSubmissionDto.setAppEditSelectDto(applicationViewDto.getAppEditSelectDto());
         }
         if (appEditSelectDto == null) {
             appEditSelectDto = new AppEditSelectDto();
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
-        if (isRenewalOrRfc) {
+        if (isRenewalOrRfc && StringUtil.isEmpty(appSubmissionDto.getLicenceNo())) {
             // set the required information
             String licenceId = appSubmissionDto.getLicenceId();
             LicenceDto licenceById = licCommService.getActiveLicenceById(licenceId);

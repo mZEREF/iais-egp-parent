@@ -64,7 +64,6 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -96,7 +95,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * ApplicationServiceImpl
@@ -113,9 +111,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private EmailClient emailClient;
@@ -247,7 +242,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
-        return appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
+        return applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
     }
 
     @Override
@@ -1349,22 +1344,29 @@ public class ApplicationServiceImpl implements ApplicationService {
             String appType) {
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         // for call back - EventbusCallBackDelegate#callback -> ${link this#updateTasks}
-        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionDto.getAppGrpId());
         eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
-                appSubmissionRequestInformationDto.getEventRefNo(), appSubmissionDto.getRfiAppNo(),
-                appSubmissionDto.getAppGrpId());
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit BE RFI Application",
+                appSubmissionDto.getRfiAppNo());
         return appSubmissionDto;
     }
 
+    /**
+     * The call back of Submitting BE RFI
+     *
+     * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
+     *
+     * @param appGrpId
+     */
     @Override
-    public void updateTasks(String appGrpNo) {
-        log.info(StringUtil.changeForLog("App Group Id: " + appGrpNo));
-        if (StringUtil.isEmpty(appGrpNo)) {
+    public void updateTasks(String appGrpId) {
+        log.info(StringUtil.changeForLog("App Group Id: " + appGrpId));
+        if (StringUtil.isEmpty(appGrpId)) {
             log.info(StringUtil.changeForLog("No app premise correlations found!"));
             return;
         }
-        List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationByAppGroupId(appGrpNo);
+        List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationByAppGroupId(appGrpId);
         if (appPremisesCorrelations == null || appPremisesCorrelations.isEmpty()) {
             log.info(StringUtil.changeForLog("No app premise correlations found!"));
             return;
@@ -1373,6 +1375,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     /**
+     * Check Data For Edit App
      *
      * @param check {@link HcsaAppConst#CHECKED_AND_MSG}: validate data with error {@link HcsaAppConst#CHECKED_BTN}: only check
      * @param request

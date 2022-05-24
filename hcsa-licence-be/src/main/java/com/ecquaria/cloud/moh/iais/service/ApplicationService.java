@@ -139,6 +139,13 @@ public interface ApplicationService {
 
     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, String appType);
 
+    /**
+     * The call back of Submitting BE RFI
+     *
+     * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
+     *
+     * @param appGrpNo
+     */
     void updateTasks(String appGrpNo);
 
     /**
