@@ -173,14 +173,7 @@ public class TemplatesDelegator {
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
             ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             ParamUtil.setSessionAttr(bpc.request, "deliveryModeSelect", (Serializable) deliveryModeSelectList);
-            String errMsg = "";
-            if (MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)){
-                errMsg = MessageUtil.getMessageDesc("EMM_ERR013");
-            }else{
-                errMsg = MessageUtil.replaceMessage("EMM_ERR005","8000","num");
-            }
-            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",errMsg);
-
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
         }
     }
 
@@ -244,7 +237,7 @@ public class TemplatesDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
 
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
-            return;
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg",MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode()) ? MessageUtil.getMessageDesc("EMM_ERR013") : MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
         } else {
             templatesService.updateMsgTemplate(msgTemplateDto);
             templatesService.syncTemplateFe(msgTemplateDto);
