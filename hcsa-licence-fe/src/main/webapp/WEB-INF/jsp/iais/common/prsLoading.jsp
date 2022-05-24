@@ -24,7 +24,7 @@
         showWaiting();
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
-        var licPerson = $loadingContent.find('input.licPerson').val();
+        var licPerson = $loadingContent.find('input[name="licPerson"]').val();
         var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
         console.log("isNeedControlName: " + needControlName + " assignSelectVal:" + assignSelectVal + " licPerson:" + licPerson + " appType:" + appType);
         var emptyData = {};
@@ -53,7 +53,9 @@
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
-                    inputCancelReadonly($loadingContent.find('.field-name'));
+                    if(needControlName){
+                        inputCancelReadonly($loadingContent.find('.field-name'));
+                    }
                 } else if('-2' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
@@ -68,7 +70,9 @@
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
-                    inputCancelReadonly($loadingContent.find('.field-name'));
+                    if(needControlName){
+                        inputCancelReadonly($loadingContent.find('.field-name'));
+                    }
                 } else if ('401' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');

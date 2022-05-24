@@ -5,7 +5,7 @@
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table aria-describedby="" class="control-grid columns1 table.assignContent" style="width: 100%;">
+      <table aria-describedby="" class="control-grid columns1 assignContent" style="width: 100%;">
         <thead style="display: none">
         <tr><th scope="col"></th></tr>
         </thead>
@@ -397,7 +397,7 @@
 </div>
 <%@include file="../common/prsLoading.jsp"%>
 <script>
-    var init;
+
     $(document).ready(function () {
         $('.hideen-div').addClass('hidden');
         //coverage  cpl_custom_form_script init css
@@ -421,7 +421,7 @@
         $('#control--runtime--0').children().remove("hr")
         psnSelect();
         $('.assignSel').trigger('change');
-        init = 1;
+
         if($('.designationSel').val()=='DES999'){
             $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
         }else {
@@ -437,68 +437,37 @@
       $('select.assignSel').change(function () {
         var $parentEle = $(this).closest('td.first');
         var $CurrentPsnEle = $(this).closest('table.assignContent');
-        if(init == 1){
-          clearPrsInfo($CurrentPsnEle);
-        }
+
+        clearPrsInfo($CurrentPsnEle);
+
         if ('newOfficer' == $(this).val()) {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
           unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
-          if (1 == init) {
-            var emptyData = {};
-            $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
-            fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
-            showSpecialty();
-            $CurrentPsnEle.find('input[name="licPerson"]').val('0');
-            $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
-          }
+          var emptyData = {};
+          $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
+          fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
+          showSpecialty();
+          $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+          $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+
         } else if ('-1' == $(this).val()) {
           $parentEle.find('> .profile-info-gp').removeClass('hidden');
           $parentEle.find('> .new-officer-form').addClass('hidden');
-          if (1 == init) {
-            var emptyData = {};
-            $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
-            fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
-            showSpecialty();
-            $CurrentPsnEle.find('input[name="licPerson"]').val('0');
-            $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
-          }
+          var emptyData = {};
+          $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
+          fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
+          showSpecialty();
+          $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+          $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         } else {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
-          if (1 == init) {
-            var arr = $(this).val().split(',');
-            var nationality = arr[0];
-            var idType = arr[1];
-            var idNo = arr[2];
-            loadSelectPsn($CurrentPsnEle, nationality, idType, idNo, 'CGO');
-          }else {
-            var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
-            //add disabled not add input disabled style
-            personDisable($cgoPsnEle,'','Y');
-            $cgoPsnEle.find('div.designationSel').removeClass('disabled');
-            $cgoPsnEle.find('div.professionTypeSel').removeClass('disabled');
-            $cgoPsnEle.find('div.specialty').removeClass('disabled');
-
-            $cgoPsnEle.find('input[name="professionRegoNo"]').prop('disabled',false);
-            $cgoPsnEle.find('input[name="specialtyOther"]').prop('disabled',false);
-            $cgoPsnEle.find('input[name="qualification"]').prop('disabled',false);
-            $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
-            $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
-            $cgoPsnEle.find('input[name="description"]').prop('disabled',false);
-
-
-            //for disabled add style
-            $cgoPsnEle.find('input[type="text"]').each(function () {
-              if($(this).prop('disabled')){
-                $(this).css('border-color','#ededed');
-                $(this).css('color','#999');
-              }else{
-                $(this).css('border-color','');
-                $(this).css('color','');
-              }
-            });
-          }
+          var arr = $(this).val().split(',');
+          var nationality = arr[0];
+          var idType = arr[1];
+          var idNo = arr[2];
+          loadSelectPsn($CurrentPsnEle, nationality, idType, idNo, 'CGO');
         }
       });
     }
@@ -637,20 +606,19 @@
         }
     });
     var profRegNoBlur = function () {
-        $('input[name="professionRegoNo"]').blur(function(){
-            var prgNo = $(this).val();
-            var $currContent = $(this).closest('.new-officer-form');
-            var $prsLoadingContent = $(this).closest('table.assignContent');
-            var specialty = $prsLoadingContent.find('label.specialty-label').html();
-            //prs loading
-            if(init == 1){
-                prdLoading($prsLoadingContent,prgNo);
-            }
-            //add Remark For Subspecialty
-            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
-                $currContent.find('span.otherQualificationSpan').html('*');
-            }
-        });
+      $('input[name="professionRegoNo"]').unbind('blur');
+      $('input[name="professionRegoNo"]').blur(function(event, action){
+        var prgNo = $(this).val();
+        var $currContent = $(this).closest('.new-officer-form');
+        var $prsLoadingContent = $(this).closest('table.assignContent');
+        var specialty = $prsLoadingContent.find('label.specialty-label').html();
+        //prs loading
+        prdLoading($prsLoadingContent, prgNo, action, null);
+        //add Remark For Subspecialty
+        if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+          $currContent.find('span.otherQualificationSpan').html('*');
+        }
+      });
     };
 
     var clearPrsInfo = function ($loadingContent) {
@@ -808,8 +776,8 @@
         if('CGO' == psnType){
           unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
         }
-        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
-        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
       }
       //reload data by prs again
       if('CGO' == psnType) {
