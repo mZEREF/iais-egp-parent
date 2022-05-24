@@ -41,7 +41,7 @@
             <%@include file="../declarations/crimAndPassApp.jsp"%>
             <%@include file="../declarations/generalAccuracy.jsp"%>
           </c:if>
-              <c:set var="rfc_from_renew" value="${AppSubmissionDto.appGroupAppType == 'APTY005' && (not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
+          <c:set var="rfc_from_renew" value="${AppSubmissionDto.appGroupAppType == 'APTY005' && (not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
           <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange' && rfc_from_renew != 'Y'}">
             <c:set var="pageShowFileDtos" value="${selectedRFCFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
             <c:set var="sec" value="RFC" scope="request"/>
@@ -64,21 +64,21 @@
               </c:if>
           </c:if>
 
-              <c:if test="${AppSubmissionDto.appType == 'APTY005' && rfc_from_renew == 'Y'}">
-                <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
-                <c:set var="sec" value="RENEW" scope="request"/>
-                <%@include file="../declarations/preliminaryQuestion.jsp"%>
-                <c:if test="${viewPrint != 'Y'}">
-                  <%@include file="../declarations/proofOfAuthorisationDocument.jsp"%>
-                </c:if>
-                <c:if test="${viewPrint == 'Y'}">
-                  <%@include file="../declarations/proofOfAuthorisationDocumentView.jsp"%>
-                </c:if>
-                <%@include file="../declarations/bankruptcy.jsp"%>
-                <%@include file="../declarations/competencies.jsp"%>
-                <%@include file="../declarations/crimAndPassApp.jsp"%>
-                <%@include file="../declarations/generalAccuracy.jsp"%>
-              </c:if>
+          <c:if test="${AppSubmissionDto.appType == 'APTY005' && rfc_from_renew == 'Y'}">
+            <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+            <c:set var="sec" value="RENEW" scope="request"/>
+            <%@include file="../declarations/preliminaryQuestion.jsp"%>
+            <c:if test="${viewPrint != 'Y'}">
+              <%@include file="../declarations/proofOfAuthorisationDocument.jsp"%>
+            </c:if>
+            <c:if test="${viewPrint == 'Y'}">
+              <%@include file="../declarations/proofOfAuthorisationDocumentView.jsp"%>
+            </c:if>
+            <%@include file="../declarations/bankruptcy.jsp"%>
+            <%@include file="../declarations/competencies.jsp"%>
+            <%@include file="../declarations/crimAndPassApp.jsp"%>
+            <%@include file="../declarations/generalAccuracy.jsp"%>
+          </c:if>
           <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
             <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>
             <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>

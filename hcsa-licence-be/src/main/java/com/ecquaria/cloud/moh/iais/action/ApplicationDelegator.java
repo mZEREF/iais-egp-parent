@@ -157,7 +157,9 @@ public class ApplicationDelegator extends AppCommDelegator {
                 log.warn(StringUtil.changeForLog("##### No Active Licence for this ID: " + licenceId));
             }
         }
-        ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+        // BE init
+        appSubmissionDto.setUserAgreement(true);
+        // Tab tooltip
         HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
         coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
         coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
@@ -280,7 +282,7 @@ public class ApplicationDelegator extends AppCommDelegator {
      */
     public void controlSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do controlSwitch start ...."));
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String crudType = "loading";
         String crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ISVALID);
         if (StringUtil.isEmpty(crudActionValue)) {

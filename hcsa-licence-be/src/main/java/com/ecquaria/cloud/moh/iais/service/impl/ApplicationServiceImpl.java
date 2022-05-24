@@ -104,7 +104,7 @@ import java.util.UUID;
  * @author suocheng
  * @date 11/28/2019
  */
-@Service
+@Service("applicationService")
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -318,7 +318,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos) {
-        return  applicationClient.getRequestInformationSubmitDto(applicationDtos).getEntity();
+        return applicationClient.getRequestInformationSubmitDto(applicationDtos).getEntity();
     }
 
     @Override
@@ -1347,14 +1347,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
+        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         // for call back - EventbusCallBackDelegate#callback -> ${link this#updateTasks}
-        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
-        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
-                generateIdClient.getSeqId().getEntity(),
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
-                appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFI Application",
-                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
-        return appSubmissionRequestInformationDto.getAppSubmissionDto();
+                appSubmissionRequestInformationDto.getEventRefNo(), appSubmissionDto.getRfiAppNo(),
+                appSubmissionDto.getAppGrpId());
+        return appSubmissionDto;
     }
 
     @Override

@@ -3276,7 +3276,7 @@ public abstract class AppCommDelegator {
         return true;
     }
 
-    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
+    protected static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
         return ApplicationHelper.getAppSubmissionDto(request);
     }
 
