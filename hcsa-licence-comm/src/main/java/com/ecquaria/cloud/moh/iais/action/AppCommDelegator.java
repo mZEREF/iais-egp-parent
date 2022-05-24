@@ -231,16 +231,20 @@ public abstract class AppCommDelegator {
 
     protected void handlePremises(AppSubmissionDto appSubmissionDto, String appNo) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        AppGrpPremisesEntityDto actualPrem = appCommService.getPremisesByAppNo(appNo);
-        String rfiPremHci = ApplicationHelper.getPremisesKey(actualPrem);
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+            //filter other premise info
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                    && appGrpPremisesDtos.size() > 1) {
+                List<AppGrpPremisesDto> newAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
+                filtrationAppGrpPremisesDtos(appNo, appSubmissionDto, newAppGrpPremisesDtoList);
+                appGrpPremisesDtos = newAppGrpPremisesDtoList;
+                appSubmissionDto.setAppGrpPrimaryDocDtos(
+                        filterPrimaryDocs(appSubmissionDto.getAppGrpPrimaryDocDtos(), newAppGrpPremisesDtoList));
+            }
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 appGrpPremisesDto.setFromDB(true);
                 appGrpPremisesDto.setExistingData(AppConsts.NO);
-                String premHci = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
-                if (rfiPremHci.equals(premHci)) {
-                    appGrpPremisesDto.setRfiCanEdit(true);
-                }
+                appGrpPremisesDto.setRfiCanEdit(true);
                 //clear ph id
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
@@ -261,15 +265,6 @@ public abstract class AppCommDelegator {
             }
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
         }
-        //filter other premise info
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(
-                appSubmissionDto.getAppType()) && appGrpPremisesDtos.size() > 1) {
-            List<AppGrpPremisesDto> newAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-            filtrationAppGrpPremisesDtos(appNo, appSubmissionDto, actualPrem, newAppGrpPremisesDtoList);
-            appSubmissionDto.setAppGrpPremisesDtoList(newAppGrpPremisesDtoList);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(
-                    filterPrimaryDocs(appSubmissionDto.getAppGrpPrimaryDocDtos(), newAppGrpPremisesDtoList));
-        }
     }
 
     protected List<AppGrpPrimaryDocDto> filterPrimaryDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,
@@ -284,28 +279,46 @@ public abstract class AppCommDelegator {
     }
 
     protected void filtrationAppGrpPremisesDtos(String appNo, AppSubmissionDto appSubmissionDto,
-            AppGrpPremisesEntityDto actualPrem, List<AppGrpPremisesDto> newPremisesDtos) {
-        if (actualPrem == null) {
-            actualPrem = appCommService.getPremisesByAppNo(appNo);
+            List<AppGrpPremisesDto> newPremisesDtos) {
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if (appGrpPremisesDtoList == null) {
+            return;
         }
-        if (actualPrem != null) {
-            boolean addPremisesSuccess = false;
-            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                if (appGrpPremisesDto.getId().equalsIgnoreCase(actualPrem.getId())) {
-                    addPremisesSuccess = true;
-                    addAppGrpPremisesDto(appGrpPremisesDto, newPremisesDtos);
-                    break;
-                }
+        boolean addPremisesSuccess = false;
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (appSvcRelatedInfoDtoList != null) {
+            Optional<AppGrpPremisesDto> any = appGrpPremisesDtoList.stream()
+                    .filter(appGrpPremisesDto -> appSvcRelatedInfoDtoList.stream()
+                            .anyMatch(dto -> Objects.equals(dto.getAlignPremisesId(), appGrpPremisesDto.getId())
+                                    && Objects.equals(dto.getAppNo(), appNo)))
+                    .findAny();
+            if (any.isPresent()) {
+                addPremisesSuccess = true;
+                addAppGrpPremisesDto(any.get(), newPremisesDtos);
             }
-            if (!addPremisesSuccess) {
-                String premKey = ApplicationHelper.getPremisesKey(actualPrem);
-                for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    if (premKey.equals(ApplicationHelper.getPremisesKey(appGrpPremisesDto))) {
-                        addAppGrpPremisesDto(appGrpPremisesDto, newPremisesDtos);
-                        break;
+        }
+        if (!addPremisesSuccess) {
+            AppGrpPremisesEntityDto actualPrem = appCommService.getPremisesByAppNo(appNo);
+            if (actualPrem != null) {
+                String actualId = actualPrem.getId();
+                Optional<AppGrpPremisesDto> any = appGrpPremisesDtoList.stream()
+                        .filter(appGrpPremisesDto -> Objects.equals(appGrpPremisesDto.getId(), actualId))
+                        .findAny();
+                if (any.isPresent()) {
+                    addPremisesSuccess = true;
+                    addAppGrpPremisesDto(any.get(), newPremisesDtos);
+                } else {
+                    String premKey = ApplicationHelper.getPremisesKey(actualPrem);
+                    any = appGrpPremisesDtoList.stream()
+                            .filter(appGrpPremisesDto -> Objects.equals(ApplicationHelper.getPremisesKey(appGrpPremisesDto), premKey))
+                            .findAny();
+                    if (any.isPresent()) {
+                        addPremisesSuccess = true;
+                        addAppGrpPremisesDto(any.get(), newPremisesDtos);
                     }
                 }
             }
+            log.info(StringUtil.changeForLog("Add Premises Success --> " + addPremisesSuccess));
         }
     }
 

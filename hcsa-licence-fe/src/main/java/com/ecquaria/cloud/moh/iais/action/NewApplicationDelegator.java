@@ -1142,7 +1142,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
                 log.info(StringUtil.changeForLog("InboxToView AppNo -->" + applicationDto.getApplicationNo()));
                 List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
-                filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, null, newPremisesDtos);
+                filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, newPremisesDtos);
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = filterPrimaryDocs(appSubmissionDto.getAppGrpPrimaryDocDtos(),
                         newPremisesDtos);

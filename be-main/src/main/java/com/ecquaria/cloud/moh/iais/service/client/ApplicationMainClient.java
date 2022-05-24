@@ -87,7 +87,7 @@ public interface ApplicationMainClient {
     @GetMapping(value = "/iais-licence-view/appSubmissionDto/{appId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionByAppId(@PathVariable("appId") String appId);
 
-    @GetMapping(value = "/iais-application-be/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-app-common/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 
     @GetMapping(value = "/iais-licence-view/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)

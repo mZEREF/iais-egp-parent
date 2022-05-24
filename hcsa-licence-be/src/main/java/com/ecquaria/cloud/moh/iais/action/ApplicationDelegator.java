@@ -375,8 +375,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
         log.info("----Submit Request In formation-----");
-        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
-        // return appSubmissionRequestInformationDto.getAppSubmissionDto();
+//        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
+         return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override
