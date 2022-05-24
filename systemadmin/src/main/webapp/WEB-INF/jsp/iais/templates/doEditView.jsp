@@ -193,7 +193,10 @@
                 submit("edit");
             }
         }else{
-            var length = tinymce_getContentLength();
+            var lists = $('.tox-statusbar__wordcount').text().split(" ");
+            if(lists[1] == 'characters'){
+                $('.tox-statusbar__wordcount').click();
+            }
             var length = $('.tox-statusbar__wordcount').text().split(" ")[0];
             if(length > 8000){
                 $('#support').modal('show');
