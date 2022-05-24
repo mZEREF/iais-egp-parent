@@ -104,7 +104,7 @@ import java.util.UUID;
  * @author suocheng
  * @date 11/28/2019
  */
-@Service("applicationService")
+@Service("applicationServiceImpl")
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 

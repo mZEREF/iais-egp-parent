@@ -206,7 +206,7 @@ public class EventbusCallBackDelegate {
                     "updateInboxMsgStatus");
         } else if (EventBusConsts.OPERATION_APP_SUBMIT_BE.equals(operation)) {
             log.info("-------do BE request information call back ----");
-            IaisEGPHelper.invokeBeanMethod("applicationService", "updateTasks", eventRefNum);
+            IaisEGPHelper.invokeBeanMethod("applicationServiceImpl", "updateTasks", eventRefNum);
         }
     }
 
