@@ -50,7 +50,7 @@ import static java.nio.file.Files.newOutputStream;
 public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    @Value("${iais.sharedfolder.application.out}")
+    @Value("${iais.sharedfolder.datacompair.out}")
     private String sharedOutPath;
 
     @Autowired
