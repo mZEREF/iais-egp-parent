@@ -422,7 +422,7 @@ def sonarqube(){
     stage('SonarQube Analysis'){
         withSonarQubeEnv(credentialsId: SONARQUBE_CREDENTIALS_ID){
             docker
-                .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
+                .image('hub.ecquaria.com/maven:3.6.3-openjdk-11')
                 .inside(getDockerArgs()){
                     withCredentials(NEXUS_CREDENTIALS) {
                         sh """
