@@ -42,6 +42,8 @@ public class ChangeTCUDateController {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE);
         searchParam.setPageNo(0);
         searchParam.setPageSize(Integer.MAX_VALUE);
+        // complete remarks
+        searchParam.addFilter("down_flag", "1", true);
 
         QueryHelp.setMainSql("changeTCUDate", "listLicenceInfo", searchParam);
 

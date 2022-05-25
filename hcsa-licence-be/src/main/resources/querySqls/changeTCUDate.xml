@@ -33,6 +33,7 @@
                 l.SVC_NAME AS SVC_NAME,
                 lp.TCU_DATE AS TCU_DATE,
                 (case
+                    <#if down_flag??>when :down_flag > 0 then lp.TCU_DATE_REMARKS</#if>
                     when LEN(lp.TCU_DATE_REMARKS) > 50 then CONCAT(subString(lp.TCU_DATE_REMARKS, 1, 50), '...')
                     else lp.TCU_DATE_REMARKS
                 END) AS TCU_DATE_REMARKS
