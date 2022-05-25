@@ -172,6 +172,7 @@ public class ChangeTcuDateDelegator {
         if (IaisCommonUtils.isNotEmpty(licPremisesDtos)) {
             for (int i = 0; i < size; i++) {
                 LicPremisesDto licPremisesDto = licPremisesDtos.get(i);
+                licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.YES));
                 licPremisesDto.setTcuDate(IaisEGPHelper.parseToDate(newTcuDates.get(i), AppConsts.DEFAULT_DATE_FORMAT));
                 licPremisesDto.setTcuDateRemarks(newTcuDateRemarks.get(i));
             }

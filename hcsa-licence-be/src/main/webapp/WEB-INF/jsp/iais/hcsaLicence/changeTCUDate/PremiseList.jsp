@@ -126,7 +126,7 @@
                                                          value="Service Name"/>
                                     <iais:sortableHeader style="width:5%" needSort="true" field="tcu_date"
                                                          value="TCU Date"/>
-                                    <iais:sortableHeader style="width:5%" needSort="true" field="remarks"
+                                    <iais:sortableHeader style="width:5%" needSort="true" field="TCU_DATE_REMARKS"
                                                          value="Remarks"/>
                                 </tr>
                                 </thead>
