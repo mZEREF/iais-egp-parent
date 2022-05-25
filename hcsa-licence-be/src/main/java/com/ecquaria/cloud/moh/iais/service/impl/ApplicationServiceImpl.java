@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -1313,13 +1314,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(appGrpNo)) {
-            result.put(HcsaAppConst.ERROR_APP, "Can't find the related application!");
+            // Can't find the related application.
+            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
             return result;
         }
         Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
         result.putAll(map);
         if (AppConsts.YES.equals(map.get("isRfi"))) {
-            result.put(HcsaAppConst.ERROR_APP, "There is a related application is in doing RFI, please wait for it.");
+            // "There is a related application is in doing RFI, please wait for it."
+            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR014"));
         } else  {
             String appGrpStatus = map.get("appGrpStatus");
             if (StringUtil.isIn(appGrpStatus, new String[]{
@@ -1330,10 +1333,12 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_FIRST,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
-                result.put(HcsaAppConst.ERROR_APP, "There is a related application is waiting for synchronization, please wait and " +
-                        "and try it later.");
+                // "There is a related application is waiting for synchronization, please wait and try it later."
+                result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR015"));
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
-                result.put(HcsaAppConst.ERROR_APP, "The application can't be edited.");
+                // "The application can't be edited."
+                result.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
+                        "edited", "action"));
             }
         }
         return result;
@@ -1420,7 +1425,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
                     ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
                 isValid = false;
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, "Invalid Application Type.");
+                // "Invalid Application Type."
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                        "Application Type", "data"));
             } else if (!checkBtn) {
                 Map<String, String> checkMap = checkApplicationByAppGrpNo(applicationViewDto.getApplicationGroupDto().getGroupNo());
                 String appError = checkMap.get(HcsaAppConst.ERROR_APP);

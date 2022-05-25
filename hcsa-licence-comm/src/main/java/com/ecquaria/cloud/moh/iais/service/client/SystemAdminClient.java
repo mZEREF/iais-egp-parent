@@ -57,6 +57,6 @@ public interface SystemAdminClient {
      * @param postalCode
      * @return
      */
-    @GetMapping(value = "/postal-code", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api-postcodes/postal-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode);
 }

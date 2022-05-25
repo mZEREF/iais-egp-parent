@@ -151,8 +151,7 @@ public class AppCommServiceImpl implements AppCommService {
             try {
                 FeignResponseEntity<List> entity = null;
                 if (ApplicationHelper.isFrontend()) {
-                    entity = IaisEGPHelper.invokeBeanMethod("com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient",
-                            "getProfessionalDetail", professionalParameterDto);
+                    entity = IaisEGPHelper.invokeBeanMethod("feEicGatewayClient", "getProfessionalDetail", professionalParameterDto);
                 } else if (ApplicationHelper.isBackend()) {
                     entity = IaisEGPHelper.invokeBeanMethod("com.ecquaria.cloud.moh.iais.service.client.ApplicationClient",
                             "getProfessionalDetail", professionalParameterDto);

@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
@@ -385,9 +386,9 @@ public class ApplicationDelegator extends AppCommDelegator {
     @Override
     public void prepareAckPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
-        // TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        // ParamUtil.setRequestAttr(bpc.request, "taskId", MaskUtil.maskValue("taskId", taskDto.getId()));
-        ParamUtil.setRequestAttr(bpc.request, "ackMsg", "You have successfully submitted application.");
+        // "You have successfully submitted application."
+        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.replaceMessage("GENERAL_ERR0058",
+                "application", "data"));
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 

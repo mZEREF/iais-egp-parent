@@ -307,8 +307,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         }
         PostCodeDto postCodeDto = null;
         if (ApplicationHelper.isFrontend()) {
-            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient",
-                    "getPostalCode", postalCode);
+            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("feEicGatewayClient","getPostalCode", postalCode);
         } else if (ApplicationHelper.isBackend()) {
             postCodeDto = systemAdminClient.getPostCodeByCode(postalCode).getEntity();
         }

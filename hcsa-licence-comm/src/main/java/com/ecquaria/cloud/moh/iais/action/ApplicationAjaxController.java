@@ -102,7 +102,7 @@ public class ApplicationAjaxController {
         try {
             postCodeDto = configCommService.getPostCodeByCode(postalCode);
         } catch (Exception e) {
-            log.debug(StringUtil.changeForLog("api exception"));
+            log.error(StringUtil.changeForLog("api exception - " + e.getMessage()), e);
         }
 
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
