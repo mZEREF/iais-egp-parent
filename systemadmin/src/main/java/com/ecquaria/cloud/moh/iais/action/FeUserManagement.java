@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -17,12 +16,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.FeUserConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -317,6 +314,16 @@ public class FeUserManagement {
                         useId = userAttr.getId();
                     }
 
+                    if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(role)){
+                        addOrgUserByRoleName(orgUserRoleDtoList,RoleConsts.USER_ROLE_ORG_ADMIN,att,useId);
+                    }
+
+                    if(StringUtil.isNotEmpty(userAttr.getRoles())){
+                        List<String> roleList = Arrays.asList(userAttr.getRoles().split("#"));
+                        roleList.stream().forEach( r ->{
+                            addOrgUserByRoleName(orgUserRoleDtoList,r,att,useId);
+                        });
+                    }
                     intranetUserService.assignRole(orgUserRoleDtoList);
                     syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
