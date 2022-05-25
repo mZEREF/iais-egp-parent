@@ -15,11 +15,6 @@ $(function () {
             $("#selectMohUserDiv").hide();
         }
     })
-    $("#submitBtn").click(function () {
-        showWaiting();
-        $("input[type='radio']").removeAttr("disabled");
-        $('#mainForm').submit();
-    })
     var facilityActivityNoRadioObj = $("input[data-radio-type='facilityActivityNo']");
     var activityRadioNoList = facilityActivityNoRadioObj.valueOf();
     $.each(activityRadioNoList, function (n, value){
@@ -47,7 +42,28 @@ $(function () {
         $("input[data-bat-activityId='"+radioName+"']").click();
         addRadioDisable(radioName);
     })
+    $("#submitBtn").click(function () {
+        showWaiting();
+        $("input[type='radio']").removeAttr("disabled");
 
+        var decisionVal = $("#processingDecision").val();
+        if (decisionVal === "MOHPRO001") {
+            var countApproved = 0;
+            $.each(activityRadioYesList, function (n, value){
+                if (value.checked === true){
+                    countApproved ++;
+                }
+            })
+            if (countApproved <= 0) {
+                $("#errorApprovalNone").show();
+                dismissWaiting();
+            } else {
+                $('#mainForm').submit();
+            }
+        } else {
+            $('#mainForm').submit();
+        }
+    })
 })
 function validate(){
     var ifProcess = $("#ifProcess").val();

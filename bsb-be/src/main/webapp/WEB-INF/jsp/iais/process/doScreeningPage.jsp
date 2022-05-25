@@ -156,6 +156,9 @@
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
+                                                                <div id="errorApprovalNone" style="display: none">
+                                                                    <span class="error-msg">Please approve at least one Facility Activity</span>
+                                                                </div>
                                                             </div>
 
                                                             <%@include file="common/footer.jsp" %>
