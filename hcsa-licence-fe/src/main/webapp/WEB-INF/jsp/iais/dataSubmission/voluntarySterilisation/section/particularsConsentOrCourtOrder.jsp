@@ -111,7 +111,7 @@
                     <h3>Court Order Document <span class="mandatory">&nbsp;*</span></h3>
                             <div class="file-upload-gp">
                                 <div name="selectedVssFileShowId" id="selectedVssFileShowId">
-                                    <c:forEach items="${vssFiles}" var="vssFile"
+                                    <c:forEach items="${guardianAppliedPartDto.vssDocumentDto}" var="vssFile"
                                                varStatus="ind">
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
