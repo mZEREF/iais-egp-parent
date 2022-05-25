@@ -32,14 +32,15 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * FeAdminManageDelegate
@@ -194,12 +195,7 @@ public class FeAdminManageDelegate {
                 }
                 feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
                 feUserDto.setIdentityNo(idNo);
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
-                if(feUserDto.isCorpPass()){
-                    feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-                }else{
-                    feUserDto.setUserId(idNo);
-                }
+            }
                 feUserDto.setId(id);
                 feUserDto.setRoles(roles);
                 feUserDto.setOfficeTelNo(officeNo);
@@ -260,7 +256,7 @@ public class FeAdminManageDelegate {
                         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
                     }
                 }
-            }
+
         } else {
             repalceFeUserDtoByMyinfo(request);
         }
