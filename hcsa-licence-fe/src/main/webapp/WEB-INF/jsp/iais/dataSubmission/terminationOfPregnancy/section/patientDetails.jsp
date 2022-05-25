@@ -158,6 +158,7 @@
                     </iais:row>
                 </div>
 <input type="hidden" id="genderCount" value="${genderCount}"/>
+<input type="hidden" id="counselling" value="${counselling}"/>
 <script>
     $(document).ready(function () {
         var childrenNum = $('#childrenNum').val();
@@ -388,4 +389,17 @@
             return true;
         });
     });
+
+    $(document).ready(function() {
+        $("#patientName").blur(autoCompleteValue());
+    });
+
+    function autoCompleteValue(){
+        var data = $("#counselling").val();
+        alert(data);
+        var availableTags = data.split("|");
+        $("#patientName").autocomplete({
+            source: availableTags,autoFocus:true
+        });
+    }
 </script>

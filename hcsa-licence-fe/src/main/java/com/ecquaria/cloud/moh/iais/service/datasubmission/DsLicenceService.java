@@ -21,4 +21,6 @@ public interface DsLicenceService {
     List<PremisesDto> getLdtCenterPremiseList(String orgId);
 
     PremisesDto getArPremisesDto(String orgId, String hciCode);
+
+    String getCounselling();
 }

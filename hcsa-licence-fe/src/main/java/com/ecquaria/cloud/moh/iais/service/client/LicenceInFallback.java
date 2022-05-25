@@ -5,8 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CounsellingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -25,15 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 @Slf4j
@@ -535,5 +532,10 @@ public class LicenceInFallback implements LicenceClient {
     @Override
     public FeignResponseEntity<DsCenterDto> getArCenter(String orgId, String hciCode) {
         return  getFeignResponseEntity(orgId, hciCode);
+    }
+
+    @Override
+    public FeignResponseEntity<List<CounsellingDto>> getCounsellingDtos() {
+        return  getFeignResponseEntity();
     }
 }
