@@ -24,7 +24,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CRUD_ACTI
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPLAY_DTO;
 
-
+/**
+ * RFI can be dealt with in three cases.
+ * 1. Process is simple with New and RFI, RFI judgment is added to the same process and page.
+ * (eg: BsbSubmitSelfAssessmentDelegator)
+ * 2. Process is complex with New and RFI, RFI has a separate process and page.
+ * (eg: RfiFacilityRegistrationDelegator)
+ * 3. Process only has RFI and no New, RFI has a separate process and page.
+ * (eg: BsbRfiCommentInspectionReportDelegator)
+ */
 @Slf4j
 @Delegator(value = "bsbRfiDelegator")
 public class BsbRfiDelegator {

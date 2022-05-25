@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_IN
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_APP_ID;
 
 
 @Slf4j
@@ -42,21 +39,10 @@ public class BsbRfiCommentInspectionReportDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
-        session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_INSPECTION_REPORT_DTO);
         session.removeAttribute(KEY_COMMON_DOC_DTO);
-
-        // get app ID from request parameter
-        String appId = "";
-        String maskedRfiAppId = ParamUtil.getString(request, KEY_RFI_APP_ID);
-        if (maskedRfiAppId != null) {
-            appId = MaskUtil.unMaskValue(KEY_RFI_APP_ID, maskedRfiAppId);
-            if (appId == null || appId.equals(maskedRfiAppId)) {
-                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedRfiAppId));
-            }
-        }
-
-        ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+        session.removeAttribute(KEY_APP_ID);
+        rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_INSPECTION_REPORT);
     }
 

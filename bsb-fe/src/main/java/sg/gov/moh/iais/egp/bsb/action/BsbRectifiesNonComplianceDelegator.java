@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsRectificationDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 
 /**
  * @author YiMing
@@ -37,10 +39,12 @@ public class BsbRectifiesNonComplianceDelegator {
     private static final String MASK_PARAM_APP_ID = "ncAppId";
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
+    private final RfiService rfiService;
 
-    public BsbRectifiesNonComplianceDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
+    public BsbRectifiesNonComplianceDelegator(InspectionClient inspectionClient, InspectionService inspectionService, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc){
@@ -49,19 +53,25 @@ public class BsbRectifiesNonComplianceDelegator {
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DATA_MAP);
         request.getSession().removeAttribute(KEY_NCS_RECTIFICATION_DISPLAY_DATA);
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
+
+        //search NCs list info
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        if (maskedAppId != null) {
+            String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
+            if (appId == null || appId.equals(maskedAppId)) {
+                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+            }
+            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+        }
+        // if rfi module
+        rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction("Applicant rectifies NCs", "Applicant rectifies NCs");
     }
 
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         //get application id
-        //search NCs list info
-        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
-        if (appId == null || appId.equals(maskedAppId)) {
-            throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
-        }
-        ParamUtil.setSessionAttr(request,KEY_APP_ID,appId);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         InsRectificationDisplayDto displayDto = inspectionClient.getNonComplianceFindingFormDtoByAppId(appId).getEntity();
         //save basic info such as appId and config id
         if(displayDto != null){

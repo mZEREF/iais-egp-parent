@@ -1,5 +1,4 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -25,7 +24,7 @@
             <div class="text-right text-center-mobile">
                 <%--@elvariable id="confirmRfi" type="java.lang.String"--%>
                 <c:if test="${confirmRfi ne null && confirmRfi eq 'Y'}">
-                    <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='${RfiConstants.KEY_RFI_APP_ID}' value='${appId}'/>">Return To RFI List</a>
+                    <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>">Return To RFI List</a>
                 </c:if>
                     <a id="back" class="btn btn-primary" href="javascript:void(0)">Done</a>
             </div>
