@@ -106,6 +106,10 @@ public class TopAjaxController {
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        return appSubmissionService.retrievePrsInfo(professionRegoNo);
+        ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
+        if(StringUtil.isEmpty(professionalResponseDto.getName())){
+
+        }
+        return professionalResponseDto;
     }
 }
