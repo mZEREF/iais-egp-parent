@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
@@ -34,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -178,7 +181,7 @@ public class InspectionAoCertificationDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
-        ValidationResultDto validationProcessDto = inspectionClient.validateAoCertification(processDto);
+        ValidationResultDto validationProcessDto = inspectionClient.validateDoCertification(processDto);
         String validateResult;
         if (validationProcessDto.isPass()) {
             if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(processDto.getDecision())) {
@@ -195,6 +198,17 @@ public class InspectionAoCertificationDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationProcessDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_PROCESSING);
             validateResult = "back";
+        }
+        String valid = (String) ParamUtil.getSessionAttr(request,"ValidSave");
+        if(StringUtils.isEmpty(valid)){
+            validateResult = "back";
+            Map<String, String> errMap = validationProcessDto.getErrorMap();
+            if(CollectionUtils.isEmpty(errMap)){
+                errMap = Maps.newHashMapWithExpectedSize(1);
+            }
+            errMap.put("chooseOne","Must execute one of the following: Upload a new file or mark the previous file as final");
+            validationProcessDto.setErrorMap((HashMap<String, String>) errMap);
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationProcessDto.toErrorMsg());
         }
         log.info("Officer submit decision [{}] for review inspection report, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
