@@ -220,10 +220,8 @@ public abstract class DpCommonDelegator {
         }
         String stage = dataSubmissionDto.getCycleStage();
         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-        if(cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED) || cycleType.equals(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED)){
-            PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
-            cycle.setPatientCode(patientDto.getPatientCode());
-        }
+        PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
+        cycle.setPatientCode(patientDto.getPatientCode());
         cycle.setStatus(status);
         DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
         if(drugPrescribedDispensedDto != null){
