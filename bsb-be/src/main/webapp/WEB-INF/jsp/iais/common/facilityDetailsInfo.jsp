@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:set var="batApprovalTypes" value="${[MasterCodeConstants.APPROVAL_TYPE_POSSESS, MasterCodeConstants.APPROVAL_TYPE_LSP, MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE]}"/>
+                <c:set var="batApprovalTypes" value="${[MasterCodeConstants.APPROVAL_TYPE_POSSESS, MasterCodeConstants.APPROVAL_TYPE_LSP, MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE, MasterCodeConstants.APPROVAL_TYPE_HANDLE_FST_EXEMPTED]}"/>
                 <c:forEach var="approvalType" items="${batApprovalTypes}">
                     <%--@elvariable id="batMap" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityBiologicalAgentInfo>>"--%>
                     <c:set var="batList" value="${batMap.get(approvalType)}"/>
@@ -92,6 +92,9 @@
                                     </c:when>
                                     <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE}">
                                         <h4>Recommendation for Special Approval to Handle</h4>
+                                    </c:when>
+                                    <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_HANDLE_FST_EXEMPTED}">
+                                        <h4>Recommendation for Handling of Fifth Schedule Toxin for Exempted Purpose</h4>
                                     </c:when>
                                 </c:choose>
                             </strong>
