@@ -139,7 +139,7 @@
                                                                         </div>
                                                                         <div class="col-sm-6">
                                                                             <input type="text" autocomplete="off" name="activityEndDate--v--${status.index}" id="activityEndDate--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${activity.activityEndDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
-                                                                            <span data-err-ind="endDate--v--${status.index}" class="error-msg"></span>
+                                                                            <span data-err-ind="activityEndDate--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group ">

@@ -26,16 +26,6 @@ public class INTERNET___MohApprovalBatAndActivity___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
-	public void preBegin_OnStepProcess_0() throws Exception {
-	// 		PreBegin->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preBegin", this);
-	}
-
-	public void handleBegin_OnStepProcess_0() throws Exception {
-	// 		HandleBegin->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleBegin", this);
-	}
-
 	public void preApprovalSelection_OnStepProcess_0() throws Exception {
 	// 		PreApprovalSelection->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "preApprovalSelection", this);

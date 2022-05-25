@@ -147,10 +147,19 @@ public class ApprovalBatAndActivityService {
         HttpServletRequest request = bpc.request;
         //TODO: The facility value will be obtained from another method, and the method will be deleted
         boolean isEnteredInbox = false;
-        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        ApprovalSelectionDto approvalSelectionDto;
+        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request,KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        //enter from save as draft
+        if(approvalBatAndActivityDto != null && approvalBatAndActivityDto.getApprovalSelectionDto() != null){
+            approvalSelectionDto = approvalBatAndActivityDto.getApprovalSelectionDto();
+        }else{
+            //get from session
+            approvalSelectionDto = getApprovalSelectionDto(request);
+        }
+        //come from inbox facility tab
         String maskedFacId = request.getParameter(ApprovalBatAndActivityConstants.KEY_FACILITY_ID);
         if(org.springframework.util.StringUtils.hasLength(maskedFacId) || approvalSelectionDto.isEnteredInbox()){
-            String facId = MaskUtil.unMaskValue("applyApprovalfacId",maskedFacId);
+            String facId = MaskUtil.unMaskValue("applyApprovalFacId",maskedFacId);
             if(org.springframework.util.StringUtils.hasLength(facId) && !maskedFacId.equals(facId)){
                 ParamUtil.setSessionAttr(request,KEY_FACILITY_ID,facId);
                 isEnteredInbox = true;
