@@ -290,23 +290,10 @@ public class ApplicationDelegator extends AppCommDelegator {
                 crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             }
         }
-        /*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        if ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && !isRfi) {
-            String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
-            if ("rfcSaveDraft".equals(crud_action_additional)) {
-                crudActionValue = "saveDraft";
-            }
-        }*/
         if ("ack".equals(crudActionValue)) {
             crudType = crudActionValue;
         } else if ("doSubmit".equals(crudActionValue)) {
             crudType = HcsaAppConst.ACTION_RFI;
-       /* } else if ("back".equals(crudActionValue)) {
-            String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-            if (StringUtil.isEmpty(action)) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
-            }*/
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             // 72106
             String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -380,7 +367,6 @@ public class ApplicationDelegator extends AppCommDelegator {
             String appType) {
         log.info("----Submit Request In formation-----");
         return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
-        //  return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override
