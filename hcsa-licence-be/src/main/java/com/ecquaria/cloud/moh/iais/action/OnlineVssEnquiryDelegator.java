@@ -219,8 +219,8 @@ public class OnlineVssEnquiryDelegator {
             }
         }
         if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto()!=null){
-            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace())){
-                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setDisinfectionPlace(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()).getPremiseLabel());
+            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital())){
+                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSterilizationHospital(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()).getPremiseLabel());
             }
         }
 

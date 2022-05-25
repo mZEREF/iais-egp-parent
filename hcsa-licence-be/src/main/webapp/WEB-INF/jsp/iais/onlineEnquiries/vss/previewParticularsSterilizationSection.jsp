@@ -26,7 +26,7 @@
                 <iais:row>
                     <iais:field width="6" value="Hospital/Clinic where the sterilization was performed" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${sexualSterilizationDto.disinfectionPlace}"/>
+                        <c:out value="${sexualSterilizationDto.sterilizationHospital}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
