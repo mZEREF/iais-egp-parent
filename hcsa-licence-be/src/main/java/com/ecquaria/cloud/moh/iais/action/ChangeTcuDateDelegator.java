@@ -118,7 +118,7 @@ public class ChangeTcuDateDelegator {
         if (ACTION_CHANGE_TCU_DATE.equals(action)) {
             String[] checkBoxItemIds = ParamUtil.getStrings(request, PARAM_CHKL_ITEM_CHECKBOX);
             if (checkBoxItemIds == null || checkBoxItemIds.length == 0) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premiseItems", "please select item!"));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premiseItems", MessageUtil.getMessageDesc("GENERAL_ERR0057")));
                 action = ACTION_PREMISE_LIST;
             } else {
                 SearchResult<LicPremisesQueryDto> searchResult = (SearchResult<LicPremisesQueryDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE);

@@ -150,8 +150,9 @@
                                                 <td align="left"><c:out value="${licencePremise.hciCode}"/></td>
                                                 <td align="left"><c:out value="${licencePremise.address}"/></td>
                                                 <td align="left"><c:out value="${licencePremise.serviceName}"/></td>
-                                                <td align="left"><fmt:formatDate
-                                                        value="${licencePremise.tcuDate}"/></td>
+                                                <td align="left">
+                                                    <fmt:formatDate value="${licencePremise.tcuDate}" pattern='dd/MM/yyyy'/>
+                                                </td>
                                                 <td align="left"><c:out value="${licencePremise.tcuDateRemarks}"/></td>
                                             </tr>
                                         </c:forEach>
