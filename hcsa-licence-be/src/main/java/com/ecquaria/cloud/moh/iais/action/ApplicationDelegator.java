@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
@@ -134,14 +135,16 @@ public class ApplicationDelegator extends AppCommDelegator {
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
         appSubmissionDto.setNeedEditController(true);
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-        if (appEditSelectDto == null) {
-            appSubmissionDto.setAppEditSelectDto(applicationViewDto.getAppEditSelectDto());
-        }
-        if (appEditSelectDto == null) {
-            appEditSelectDto = new AppEditSelectDto();
+        // App Edit Selecti Dto (RFI)
+        AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+        if (appEditSelectDto != null) {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
+        if (appEditSelectDto == null && appSubmissionDto.getAppEditSelectDto() == null) {
+            appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        }
+        log.info(StringUtil.changeForLog("App Edit Selecti Dto (RFI): " + JsonUtil.parseToJson(appEditSelectDto)));
         if (isRenewalOrRfc && StringUtil.isEmpty(appSubmissionDto.getLicenceNo())) {
             // set the required information
             String licenceId = appSubmissionDto.getLicenceId();
@@ -375,8 +378,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             String appType) {
         log.info("----Submit Request In formation-----");
-//        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
-         return appSubmissionRequestInformationDto.getAppSubmissionDto();
+        return applicationService.submitRequestInformation(appSubmissionRequestInformationDto, appType);
+        //  return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override

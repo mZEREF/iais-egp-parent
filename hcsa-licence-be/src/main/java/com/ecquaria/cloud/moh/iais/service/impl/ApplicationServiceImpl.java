@@ -1323,13 +1323,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         } else  {
             String appGrpStatus = map.get("appGrpStatus");
             if (StringUtil.isIn(appGrpStatus, new String[]{
+                    ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE,
                     ApplicationConsts.APPLICATION_SUCCESS_ZIP,
                     ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_FIRST,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
-                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD,
-                    ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE})) {
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
                 result.put(HcsaAppConst.ERROR_APP, "There is a related application is waiting for synchronization, please wait and " +
                         "and try it later.");
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
