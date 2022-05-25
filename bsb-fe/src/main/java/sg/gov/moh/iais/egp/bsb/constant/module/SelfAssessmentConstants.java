@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 public class SelfAssessmentConstants {
     private SelfAssessmentConstants() {}
 
-    public static final String KEY_ENTRY_APP_ID = "entryAppId";
     public static final String MASK_PARAM = "selfAssessAppId";
 
     public static final String KEY_DATA_DTO = "dataDto";

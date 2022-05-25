@@ -43,8 +43,6 @@ public class RfiService {
      * rfi start method clear app id, and un mask app id
      */
     public void clearAndSetAppIdInSession(HttpServletRequest request) {
-        // clear app id
-        request.getSession().removeAttribute(KEY_APP_ID);
         // rfi inspection self-assessment need
         request.getSession().removeAttribute(KEY_CONFIRM_RFI);
         // get app id

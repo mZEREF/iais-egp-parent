@@ -92,7 +92,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KE
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CURRENT_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_DATA_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_EDITABLE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ENTRY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_REMARKS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_SELF_ASSESSMENT_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_SELF_ASSESSMENT_CHK_LST;
@@ -123,7 +122,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         HttpServletRequest request = bpc.request;
         // clear sessions
         HttpSession session = request.getSession();
-        session.removeAttribute(KEY_ENTRY_APP_ID);
+        session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_ACTIONS);
         session.removeAttribute(KEY_CURRENT_ACTION);
         session.removeAttribute(KEY_EDITABLE);
@@ -132,27 +131,18 @@ public class BsbSubmitSelfAssessmentDelegator {
         session.removeAttribute(KEY_SELF_ASSESSMENT_ANSWER_MAP);
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
 
-        String appId = "";
         // get app ID from request parameter
         String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
         if (maskedAppId != null) {
-            appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
+            String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
             if (appId == null || appId.equals(maskedAppId)) {
                 throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
             }
+            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
         }
 
-        //if rfi module
+        // if rfi module
         rfiService.clearAndSetAppIdInSession(request);
-
-        /* Here we don't use the same key to edit the checklist latter.
-         * We don't use this to display the checklist form directly.
-         * Because we keep the chance in the future: we may use a appId to show a list of app's checklist to be filled,
-         * and then select one of them to fill in according to each appId.
-         * Currently, we only have one app's checklist to be filled, so this app will be the same as the app in next
-         * page. */
-        ParamUtil.setSessionAttr(request, KEY_ENTRY_APP_ID, appId);
-
         // set audit trail info (We can set appNo here, may be added in future)
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT);
     }
@@ -165,7 +155,7 @@ public class BsbSubmitSelfAssessmentDelegator {
 
     public void preLoad(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_ENTRY_APP_ID);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         // use appId to get facility and activity data, and assessment action state
         ResponseDto<PreAssessmentDto> responseDto = inspectionClient.getAssessmentState(appId);
         if (responseDto.ok()) {
