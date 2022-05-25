@@ -101,7 +101,7 @@ public class ChangeTcuDateDelegator {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("changeTCUDate", "listLicenceInfo", searchParam);
         SearchResult<LicPremisesQueryDto> searchResult = licenceService.searchLicencesInChangeTCUDate(searchParam);
-        ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE, searchParam);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE, searchParam);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE, searchResult);
 
         LicPremisesQueryDto filterParam = (LicPremisesQueryDto) ParamUtil.getSessionAttr(request, keyFilterParam);
