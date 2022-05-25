@@ -146,6 +146,7 @@
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
+                                                            <span data-err-ind="commitReport" class="error-msg" ></span>
                                                         </div>
                                                         <div style="text-align: right">
                                                             <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
