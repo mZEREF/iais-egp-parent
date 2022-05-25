@@ -35,6 +35,7 @@ public class ModuleCommonConstants {
 
 
     // processing show data constants
+    public static final String KEY_BAT_INFO_MAP                     = "batMap";
     public static final String KEY_SUBMISSION_DETAILS_INFO          = "submissionDetailsInfo";
     public static final String KEY_FACILITY_DETAILS_INFO            = "facilityDetailsInfo";
     public static final String KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP = "docDisplayDtoRepoIdNameMap";

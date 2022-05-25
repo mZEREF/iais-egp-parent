@@ -8,15 +8,20 @@ import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.process.*;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityBiologicalAgentInfo;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.YES;
@@ -26,10 +31,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 
-/**
- * @author : LiRan
- * @date : 2022/1/26
- */
+
 @Service
 @Slf4j
 public class MohProcessService {
@@ -60,6 +62,18 @@ public class MohProcessService {
         // show data
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, mohProcessDto.getSubmissionDetailsInfo());
         ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, mohProcessDto.getFacilityDetailsInfo());
+
+        // show BAT info
+        List<FacilityBiologicalAgentInfo> batInfoList = Optional.of(mohProcessDto)
+                .map(MohProcessDto::getFacilityDetailsInfo)
+                .map(FacilityDetailsInfo::getFacilityBiologicalAgentInfoList)
+                .orElse(null);
+        if (batInfoList != null && !batInfoList.isEmpty()) {
+            Map<String, List<FacilityBiologicalAgentInfo>> batMap = CollectionUtils.groupCollectionToMap(batInfoList, FacilityBiologicalAgentInfo::getApproveType);
+            ParamUtil.setRequestAttr(request, KEY_BAT_INFO_MAP, batMap);
+        }
+
+
         // show applicant support doc
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, mohProcessDto.getSupportDocDisplayDtoList());
         // provide for download support doc
