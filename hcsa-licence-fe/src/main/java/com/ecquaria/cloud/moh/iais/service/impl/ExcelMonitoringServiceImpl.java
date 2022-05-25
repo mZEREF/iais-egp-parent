@@ -95,7 +95,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
             log.error(e.getMessage(),e);
             return null;
         }
-        return uuId;
+        return uuId.toUpperCase();
     }
 
     @Override
