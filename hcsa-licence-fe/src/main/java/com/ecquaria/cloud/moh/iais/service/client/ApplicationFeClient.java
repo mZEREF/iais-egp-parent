@@ -63,6 +63,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = ApplicationFeClientFallback.class)
 public interface ApplicationFeClient {
+    @PutMapping(path="/fe-application-group-status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
+
     @GetMapping(value = "/iais-application/correlation/application-number",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(@RequestParam("appNo") String appNo);
 
