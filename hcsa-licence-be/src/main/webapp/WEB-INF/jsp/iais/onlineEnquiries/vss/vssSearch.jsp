@@ -67,7 +67,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="100" id="patientName"  name="patientName" value="${dsEnquiryVssFilterDto.patientName}" >
+                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="${dsEnquiryVssFilterDto.patientName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
