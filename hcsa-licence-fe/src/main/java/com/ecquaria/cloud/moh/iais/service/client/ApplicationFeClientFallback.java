@@ -62,6 +62,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

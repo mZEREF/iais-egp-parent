@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * PaymentAppGrpClient
  *
@@ -21,6 +23,6 @@ public interface PaymentAppGrpClient {
     FeignResponseEntity<String> doPaymentUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
     @PutMapping(value = "/iais-application/app-grp-by-no",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> paymentUpDateByGrpNo(@RequestBody String groupNo);
-    @PutMapping(path="/iais-application/app-grp", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
+    @PutMapping(path="/fe-application-group-status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
 }

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -268,6 +269,11 @@ public class PaymentStripeProxy extends PaymentProxy {
 				applicationGroupDto.setPaymentDt(new Date());
 				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
 				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+			}else {
+				List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+				applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+				groupDtoList.add(applicationGroupDto);
+				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().updateFeApplicationGroupStatus(groupDtoList);
 			}
 
 		}

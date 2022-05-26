@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -332,6 +333,11 @@ public class PaymentNetsProxy extends PaymentProxy {
 				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_NETS);
 
 				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+			}else {
+				List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+				applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+				groupDtoList.add(applicationGroupDto);
+				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().updateFeApplicationGroupStatus(groupDtoList);
 			}
 		}
 		try {

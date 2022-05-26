@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
@@ -59,6 +60,22 @@ public class ClientCheckNotResultPaymentJob {
                 }
                 if(appGrp.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                     serviceConfigService.updatePaymentStatus(appGrp);
+                }else {
+                    boolean hasPaying=false;
+                    if(paymentRequestDtos!=null){
+                        for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                        ) {
+                            if("paying".equals(paymentRequestDto.getStatus())){
+                                hasPaying=true;break;
+                            }
+                        }
+                    }
+                    if(!hasPaying){
+                        List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+                        appGrp.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                        groupDtoList.add(appGrp);
+                        applicationFeClient.updateFeApplicationGroupStatus(groupDtoList);
+                    }
                 }
 
             }catch (Exception e){
