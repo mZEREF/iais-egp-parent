@@ -1,30 +1,26 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.NewAdhocRfiDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.ViewAdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocrfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocrfi.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocrfi.NewAdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocrfi.ViewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
@@ -35,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
 
 @Slf4j
 @Delegator("bsbAdhocRfiDelegator")
@@ -109,7 +104,7 @@ public class BsbAdhocRfiDelegator {
         if(isValidate !=null && !isValidate.equals("true")){
             viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
         }
-        if(!StringUtil.isEmpty(viewAdhocRfiDto.getDueDate())){
+        if(!StringUtils.isEmpty(viewAdhocRfiDto.getDueDate())){
             viewAdhocRfiDto.setDueDateShow(viewAdhocRfiDto.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
         ParamUtil.setSessionAttr(request, "viewReqInfo", viewAdhocRfiDto);
@@ -132,7 +127,7 @@ public class BsbAdhocRfiDelegator {
         ViewAdhocRfiDto viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
         String date = ParamUtil.getString(request,"dueDate");
         String status = ParamUtil.getString(request,"status");
-        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+        if(!StringUtils.isEmpty(date)&&CommonValidator.isDate(date)){
             viewAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             viewAdhocRfiDto.setDueDateShow(date);
         }
@@ -197,7 +192,7 @@ public class BsbAdhocRfiDelegator {
         if(isValidate !=null && !isValidate.equals("true")){
             newAdhocRfiDto = (NewAdhocRfiDto) ParamUtil.getRequestAttr(request,"newReqInfo");
         }
-        if(!StringUtil.isEmpty(newAdhocRfiDto.getDueDate())){
+        if(!StringUtils.isEmpty(newAdhocRfiDto.getDueDate())){
             newAdhocRfiDto.setDueDateShow(newAdhocRfiDto.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
         String[] status=new String[]{"RFIST001"};
@@ -220,19 +215,19 @@ public class BsbAdhocRfiDelegator {
         String information = ParamUtil.getString(request,"informationTitle");
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
-        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+        if(!StringUtils.isEmpty(date)&&CommonValidator.isDate(date)){
             newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             newAdhocRfiDto.setDueDateShow(date);
         }
         newAdhocRfiDto.setStatus(status);
         newAdhocRfiDto.setSupportingDocRequired("documents".equals(doc));
         newAdhocRfiDto.setInformationRequired("information".equals(info));
-        if(!StringUtil.isEmpty(info)&&"information".equals(info)){
+        if(!StringUtils.isEmpty(info)&&"information".equals(info)){
             newAdhocRfiDto.setTitleOfInformationRequired(information);
         }else {
             newAdhocRfiDto.setTitleOfInformationRequired(null);
         }
-        if(!StringUtil.isEmpty(doc)&&"documents".equals(doc)){
+        if(!StringUtils.isEmpty(doc)&&"documents".equals(doc)){
             newAdhocRfiDto.setTitleOfSupportingDocRequired(documentsTitle);
         }else {
             newAdhocRfiDto.setTitleOfSupportingDocRequired(null);

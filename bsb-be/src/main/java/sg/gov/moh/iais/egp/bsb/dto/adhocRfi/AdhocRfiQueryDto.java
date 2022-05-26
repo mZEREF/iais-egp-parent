@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
+package sg.gov.moh.iais.egp.bsb.dto.adhocrfi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -8,9 +8,6 @@ import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
 
-/**
- * @author Ren Fanghao
- */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
