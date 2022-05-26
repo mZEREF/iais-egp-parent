@@ -839,6 +839,21 @@ public class FacilityRegistrationService {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
+
+            boolean containsImport = false;
+            for (BiologicalAgentToxinDto batDto : batList) {
+                for (BATInfo batInfo : batDto.getBatInfos()) {
+                    if (MasterCodeConstants.PROCUREMENT_MODE_IMPORT.equals(batInfo.getDetails().getProcurementMode())) {
+                        containsImport = true;
+                        break;
+                    }
+                }
+                if (containsImport) {
+                    break ;
+                }
+            }
+            ParamUtil.setRequestAttr(request, KEY_BAT_CONTAINS_IMPORT, containsImport);
+            previewSubmitDto.setBatContainsImport(containsImport);
         }
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();

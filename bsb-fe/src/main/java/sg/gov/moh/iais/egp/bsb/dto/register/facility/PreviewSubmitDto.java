@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 public class PreviewSubmitDto extends ValidatableNodeValue {
     private String remarks;
     private String regulationDeclare;
+    private String importDeclare;
     private String accuracyDeclare;
+
+    private boolean batContainsImport;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -57,6 +60,22 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
         this.regulationDeclare = regulationDeclare;
     }
 
+    public boolean isBatContainsImport() {
+        return batContainsImport;
+    }
+
+    public void setBatContainsImport(boolean batContainsImport) {
+        this.batContainsImport = batContainsImport;
+    }
+
+    public String getImportDeclare() {
+        return importDeclare;
+    }
+
+    public void setImportDeclare(String importDeclare) {
+        this.importDeclare = importDeclare;
+    }
+
     public String getAccuracyDeclare() {
         return accuracyDeclare;
     }
@@ -68,6 +87,7 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
     //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_REMARKS = "remarks";
     private static final String KEY_REGULATION_DECLARE = "regulationDeclare";
+    private static final String KEY_IMPORT_DECLARE = "importDeclare";
     private static final String KEY_ACCURACY_DECLARE = "accuracyDeclare";
 
     public void reqObjMapping(HttpServletRequest request) {
@@ -77,6 +97,14 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
             setRegulationDeclare("Y");
         } else {
             setRegulationDeclare("");
+        }
+        if (batContainsImport) {
+            String[] importDeclareCheckBoxValues = ParamUtil.getStrings(request, KEY_IMPORT_DECLARE);
+            if (importDeclareCheckBoxValues != null && importDeclareCheckBoxValues.length > 0) {
+                setImportDeclare("Y");
+            } else {
+                setImportDeclare("");
+            }
         }
         String[] accuracyDeclareCheckBoxValues = ParamUtil.getStrings(request, KEY_ACCURACY_DECLARE);
         if (accuracyDeclareCheckBoxValues != null && accuracyDeclareCheckBoxValues.length > 0) {

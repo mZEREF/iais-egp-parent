@@ -61,6 +61,7 @@ public class FacRegisterConstants {
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
     public static final String KEY_BAT_LIST                = "batList";
+    public static final String KEY_BAT_CONTAINS_IMPORT     = "batContainsImport";
 
     public static final String KEY_DOC_SETTINGS            = "docSettings";
     public static final String KEY_OTHER_DOC_TYPES         = "otherDocTypes";
