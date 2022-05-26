@@ -151,7 +151,7 @@ public class ChangeTcuDateDelegator {
             List<String> newTcuDates = IaisCommonUtils.genNewArrayList(size);
             List<String> newTcuDateRemarks = IaisCommonUtils.genNewArrayList(size);
 
-            Map<String, String> errMap = validate(request, size, newTcuDates, newTcuDateRemarks);
+            Map<String, String> errMap = validateChangeTCUDate(request, size, newTcuDates, newTcuDateRemarks);
 
             ParamUtil.setRequestAttr(request, keyNewTcuDateDates, newTcuDates);
             ParamUtil.setRequestAttr(request, keyNewTcuDateRemarks, newTcuDateRemarks);
@@ -180,7 +180,7 @@ public class ChangeTcuDateDelegator {
         }
     }
 
-    private Map<String, String> validate(HttpServletRequest request, int size, List<String> newTcuDates, List<String> newTcuDateRemarks) {
+    private Map<String, String> validateChangeTCUDate(HttpServletRequest request, int size, List<String> newTcuDates, List<String> newTcuDateRemarks) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
         for (int i = 0; i < size; i++) {
@@ -220,13 +220,22 @@ public class ChangeTcuDateDelegator {
         HttpServletRequest request = bpc.request;
         LicPremisesQueryDto filterParam = getFilterParamFromPage(request);
         String tcuDateFromStr = ParamUtil.getString(request, keyTcuDateFrom);
-        String tcuDateFrom = Formatter.formatDateTime(Formatter.parseDate(tcuDateFromStr),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date fromDate = Formatter.parseDate(tcuDateFromStr);
+        String tcuDateFrom = Formatter.formatDateTime(fromDate, SystemAdminBaseConstants.DATE_FORMAT);
         String tcuDateToStr = ParamUtil.getString(request, keyTcuDateTo);
-        String tcuDateTo = Formatter.formatDateTime(Formatter.parseDate(tcuDateToStr),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date toDate = Formatter.parseDate(tcuDateToStr);
+        String tcuDateTo = Formatter.formatDateTime(toDate, SystemAdminBaseConstants.DATE_FORMAT);
         ParamUtil.setSessionAttr(request, keyTcuDateFrom, tcuDateFromStr);
         ParamUtil.setSessionAttr(request, keyTcuDateTo, tcuDateToStr);
+
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        validateSearch(filterParam, tcuDateFromStr, fromDate, tcuDateToStr, toDate, errMap);
+        if (!errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            return;
+        }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         if (StringUtil.isNotEmpty(filterParam.getLicenceNo())) {
@@ -260,8 +269,14 @@ public class ChangeTcuDateDelegator {
         if (StringUtil.isNotEmpty(tcuDateTo)) {
             searchParam.addFilter("date_to", tcuDateTo, true);
         }
+    }
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+    private void validateSearch(LicPremisesQueryDto filterParam, String tcuDateFromStr, Date fromDate, String tcuDateToStr, Date toDate, Map<String, String> errMap) {
+        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr)) {
+            if (fromDate.after(toDate)) {
+                errMap.put("tcuDateFrom", "AUDIT_ERR010");
+            }
+        }
     }
 
     public void sort(BaseProcessClass bpc) {
