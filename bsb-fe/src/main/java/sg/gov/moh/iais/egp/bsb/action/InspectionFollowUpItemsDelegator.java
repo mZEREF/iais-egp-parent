@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
@@ -21,7 +19,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpSaveDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
-import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,26 +28,32 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ACK_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_FOLLOW_UP_VIEW_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RECTIFY_SAVED_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
 
 @Slf4j
 @Delegator("followUpItemsDelegator")
 public class InspectionFollowUpItemsDelegator {
     private static final String PARAM_FOLLOW_UP_APP_ID = "followUpAppId";
-    private static final String PARAM_FOLLOW_UP_APP_NO = "followUpAppNo";
     private static final String PARAM_PREPARE = "prepare";
     private static final String PARAM_NEXT = "next";
 
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
-    private final ProcessHistoryService processHistoryService;
+    private final RfiService rfiService;
 
     @Autowired
-    public InspectionFollowUpItemsDelegator(InspectionClient inspectionClient, InspectionService inspectionService, ProcessHistoryService processHistoryService) {
+    public InspectionFollowUpItemsDelegator(InspectionClient inspectionClient, InspectionService inspectionService, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
-        this.processHistoryService = processHistoryService;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -58,36 +62,38 @@ public class InspectionFollowUpItemsDelegator {
         session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_FOLLOW_UP_VIEW_DTO);
         session.removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
+
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        if (maskedAppId != null) {
+            String appId = MaskUtil.unMaskValue(PARAM_FOLLOW_UP_APP_ID, maskedAppId);
+            if (appId == null || appId.equals(maskedAppId)) {
+                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+            }
+            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+        }
+
+        // if rfi module
+        rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Applicant send follow-up items");
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FollowUpViewDto dto = getDisplayDto(request);
-        if (!StringUtils.hasLength(dto.getAppId())) {
-            String maskedAppId = request.getParameter(PARAM_FOLLOW_UP_APP_ID);
-            String maskedAppNo = request.getParameter(PARAM_FOLLOW_UP_APP_NO);
-            String applicationId = MaskUtil.unMaskValue(PARAM_FOLLOW_UP_APP_ID, maskedAppId);
-            String applicationNo = MaskUtil.unMaskValue(PARAM_FOLLOW_UP_APP_NO, maskedAppNo);
-            if (maskedAppId == null || applicationId == null || maskedAppId.equals(applicationId)) {
-                throw new IaisRuntimeException("Invalid Application ID");
-            }
-            if (maskedAppNo == null || applicationNo == null || maskedAppNo.equals(applicationNo)) {
-                throw new IaisRuntimeException("Invalid Application NO.");
-            }
+        //get application id
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        FollowUpViewDto dto = (FollowUpViewDto) ParamUtil.getSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO);
+        if (dto == null) {
             //search inspection follow-up items finding list
-            ResponseDto<FollowUpViewDto> responseDto = inspectionClient.getFollowUpShowDtoByAppId(applicationId);
+            ResponseDto<FollowUpViewDto> responseDto = inspectionClient.getFollowUpShowDtoByAppId(appId);
             if (responseDto.ok()) {
                 dto = responseDto.getEntity();
-                //data->session
-                ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
-                //show routingHistory list
-                processHistoryService.getAndSetHistoryInRequest(applicationNo, new ArrayList<>(RoleConstants.MOH_OFFICER), request);
             } else {
-                log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
-                ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, new RectifyFindingFormDto());
+                log.warn("get followUpViewDto API doesn't return ok, the response is {}", responseDto);
+                dto = new FollowUpViewDto();
             }
         }
+        ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
+        ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, dto.getProcessHistoryDtoList());
     }
 
     public void validate(BaseProcessClass bpc) {
@@ -107,7 +113,7 @@ public class InspectionFollowUpItemsDelegator {
         }else {
             actionType = PARAM_NEXT;
         }
-        ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE, actionType);
+        ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, actionType);
         ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
         ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, docDto);
     }
@@ -127,7 +133,16 @@ public class InspectionFollowUpItemsDelegator {
         if (!docDto.getSavedDocMap().isEmpty()) {
             followUpSaveDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
         }
-        ResponseDto<String> responseDto = inspectionClient.saveFollowUpData(followUpSaveDto);
+        //judge is rfi
+        ResponseDto<String> responseDto;
+        String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
+        if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
+            //save rfi data
+            responseDto = rfiService.saveInspectionFollowUp(request, followUpSaveDto);
+        } else {
+            responseDto = inspectionClient.saveFollowUpData(followUpSaveDto);
+        }
+
         if (responseDto.ok()) {
             ParamUtil.setRequestAttr(request,KEY_ACK_MSG,"You have successfully submitted the data");
         } else {

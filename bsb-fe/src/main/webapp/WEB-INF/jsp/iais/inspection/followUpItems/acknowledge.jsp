@@ -25,6 +25,10 @@
                 <div class="col-xs-12 col-md-2"></div>
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
+                        <%--@elvariable id="confirmRfi" type="java.lang.String"--%>
+                        <c:if test="${confirmRfi ne null && confirmRfi eq 'Y'}">
+                            <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>">Return To RFI List</a>
+                        </c:if>
                         <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">Back</a>
                     </div>
                 </div>

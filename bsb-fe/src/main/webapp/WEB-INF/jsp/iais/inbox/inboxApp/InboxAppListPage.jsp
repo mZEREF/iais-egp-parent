@@ -228,7 +228,7 @@
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbRectifiesNCs?appId=<iais:mask name='ncAppId' value='${app.id}'/>">Submit non-compliance action</option>
                                                                             </c:if>
                                                                             <c:if test="${app.appType eq MasterCodeConstants.APP_TYPE_NEW and app.status eq MasterCodeConstants.APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
+                                                                                <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Submit follow-up action</option>
                                                                             </c:if>
                                                                             <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>

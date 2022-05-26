@@ -27,7 +27,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPL
 /**
  * RFI can be dealt with in three cases.
  * 1. Process is simple with New and RFI, RFI judgment is added to the same process and page.
- * (eg: BsbSubmitSelfAssessmentDelegator)
+ * (eg: BsbSubmitSelfAssessmentDelegator, BsbRectifiesNonComplianceDelegator, InspectionFollowUpItemsDelegator)
  * 2. Process is complex with New and RFI, RFI has a separate process and page.
  * (eg: RfiFacilityRegistrationDelegator)
  * 3. Process only has RFI and no New, RFI has a separate process and page.

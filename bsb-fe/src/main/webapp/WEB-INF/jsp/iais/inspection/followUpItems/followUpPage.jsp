@@ -85,11 +85,27 @@
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 ">
-                                    <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
+                                    <c:choose>
+                                        <%--@elvariable id="confirmRfi" type="java.lang.String"--%>
+                                        <c:when test="${confirmRfi ne null && confirmRfi eq 'Y'}">
+                                            <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>"><em class="fa fa-angle-left"></em> Previous</a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a class="back" id="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="button-group">
-                                        <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
+                                        <c:choose>
+                                            <%--@elvariable id="confirmRfi" type="java.lang.String"--%>
+                                            <c:when test="${confirmRfi ne null && confirmRfi eq 'Y'}">
+                                                <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${appId}'/>">CANCEL</a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
+                                            </c:otherwise>
+                                        </c:choose>
                                         <a class="btn btn-secondary" id="draftBtn">SAVE AS DRAFT</a>
                                         <a class="btn btn-primary" id="saveBtn">SUBMIT</a>
                                     </div>

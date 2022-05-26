@@ -34,5 +34,5 @@ public interface RfiClient {
     void saveInspectionNC(@RequestBody SaveInspectionNCDto saveInspectionNCDto);
 
     @PostMapping(value = "/rfi/inspection/follow-up", produces = MediaType.APPLICATION_JSON_VALUE)
-    void saveInspectionFollowUp(@RequestBody SaveInspectionFollowUpDto saveInspectionFollowUpDto);
+    ResponseDto<String> saveInspectionFollowUp(@RequestBody SaveInspectionFollowUpDto saveInspectionFollowUpDto);
 }
