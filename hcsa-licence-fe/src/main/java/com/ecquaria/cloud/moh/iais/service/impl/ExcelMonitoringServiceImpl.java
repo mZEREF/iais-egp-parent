@@ -75,7 +75,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
     @Override
     public String saveFile(MonitoringSheetsDto parse) {
         String str = JsonUtil.parseToJson(parse);
-        String uuId= UUID.randomUUID().toString();
+        String uuId= UUID.randomUUID().toString().toUpperCase();
         String s = "";
         try{
             s = FileUtil.genMd5FileChecksum(str.getBytes(StandardCharsets.UTF_8));
@@ -95,7 +95,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
             log.error(e.getMessage(),e);
             return null;
         }
-        return uuId.toUpperCase();
+        return uuId;
     }
 
     @Override
