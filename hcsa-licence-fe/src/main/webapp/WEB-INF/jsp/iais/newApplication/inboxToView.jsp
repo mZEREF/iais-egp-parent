@@ -28,14 +28,10 @@
             </div>
         </div>
     </div>
-</c:if>
-<c:if test="${applicationDto.applicationType == 'APTY008'}">
     <jsp:include page="/WEB-INF/jsp/iais/newApplication/cessationViewApp.jsp" />
 </c:if>
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <%@ include file="./inboxView/dashboard.jsp" %>
-</c:if>
-<c:if test="${applicationDto.applicationType != 'APTY008'}">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="crud_action_type_tab" value="">
