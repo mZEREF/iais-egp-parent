@@ -376,7 +376,7 @@ public class AppealServiceImpl implements AppealService {
             String serviceName = appSubmissionDto.getServiceName();
             request.getSession().setAttribute("serviceName", serviceName);
             HcsaServiceDto serviceDto= HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-            ParamUtil.setSessionAttr(request, HcsaAppConst.CURRENTSVCCODE,serviceDto.getSvcCode());
+            ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE,serviceDto.getSvcCode());
             String amountStr = appSubmissionDto.getAmountStr();
             try {
                 AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
