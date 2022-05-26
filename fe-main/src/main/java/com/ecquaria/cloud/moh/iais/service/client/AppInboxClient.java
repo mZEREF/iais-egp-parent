@@ -107,6 +107,9 @@ public interface AppInboxClient {
     @GetMapping(value = "/iais-application/application/grp/{groupId}")
     FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(@PathVariable(name = "groupId")String groupId);
 
+    @PostMapping(value = "/iais-application/appGrps-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> getApplicationGroupsByIds(@RequestBody List<String> appGrpIds);
+
     @GetMapping(value = "/iais-application/applicationdto-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "appId") String appId);
