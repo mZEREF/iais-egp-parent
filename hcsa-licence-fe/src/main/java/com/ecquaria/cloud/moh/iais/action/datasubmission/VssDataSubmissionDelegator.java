@@ -91,6 +91,11 @@ public class VssDataSubmissionDelegator {
         log.info(" ----- PrepareSwitch ------ ");
         DsConfigHelper.initVssConfig(bpc.request);
         String actionType = getActionType(bpc.request);
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType)) {
+            actionType=DsConfigHelper.VSS_STEP_TREATMENT;
+            DsConfigHelper.setActiveConfig(actionType, bpc.request);
+        }
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
@@ -249,7 +254,7 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isNotEmpty(treatmentDto.getEthnicGroup()) && !treatmentDto.getEthnicGroup().equals("ECGP004")) {
             treatmentDto.setOtherEthnicGroup(null);
         }
-        if (StringUtil.isNotEmpty(treatmentDto.getOccupation()) && !treatmentDto.getOccupation().equals("VSSOP011")) {
+        if (StringUtil.isNotEmpty(treatmentDto.getOccupation()) && !treatmentDto.getOccupation().equals("VSSOP012")) {
             treatmentDto.setOtherOccupation(null);
         }
         if (StringUtil.isNotEmpty(treatmentDto.getSterilizationReason()) && !treatmentDto.getSterilizationReason().equals("VSSRFS009")) {

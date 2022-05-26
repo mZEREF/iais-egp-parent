@@ -1,5 +1,8 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="sexualSterilizationDto" value="${vssTreatmentDto.sexualSterilizationDto}" />
+<div id="flagDocMessage" hidden><iais:message key="GENERAL_ERR0042"/> </div>
+<div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
+<div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
 <div class="form-horizontal treatmentDetails">
    <%-- <iais:row>
         <iais:value width="6" cssClass="col-md-6">
@@ -16,14 +19,24 @@
     </iais:row>--%>
     <iais:row>
         <iais:field width="5" value="Doctor Professional Registration No." mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="doctorReignNo" value="${sexualSterilizationDto.doctorReignNo}" />
+        <iais:value width="4" cssClass="col-md-4">
+            <iais:input maxLength="20" type="text" name="doctorReignNo"
+                        onchange="clearDockerSelection()"
+                        value="${sexualSterilizationDto.doctorReignNo}" />
+            <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
+        </iais:value>
+        <iais:value width="3" cssClass="col-md-3" display="true">
+            <a class="ValidateDoctor" onclick="validateDoctors()">
+                Validate Doctor
+            </a>
+
         </iais:value>
     </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Name of Doctor who performed the sterilization" />
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input type="text" name="doctorName" value="${sexualSterilizationDto.doctorName}" />
+
+    <iais:row id="doctorname">
+        <iais:field width="5" value="Name of Doctor who performed the sterilization"/>
+        <iais:value width="7" cssClass="col-md-7" display="true" id="names">
+            ${sexualSterilizationDto.doctorName}
         </iais:value>
     </iais:row>
     <iais:row>
@@ -91,6 +104,30 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewDate"></span>
         </iais:value>
     </iais:row>
+
+</div>
+
+<div class="doctorNameSelectionHidden">
+    <input type="hidden" name="doctorName" id="doctorNameHidden" value=" ${sexualSterilizationDto.doctorName}">
+</div>
+
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+            <span style="font-size: 2rem;" id="prsErrorMsg">
+              <iais:message key="GENERAL_ERR0057" escape="false" />
+            </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
     $(document).ready(function() {
@@ -104,4 +141,71 @@
             }
         });
     });
+    var clearPrsInfo = function () {
+        $('#names').find('p').text('');
+    };
+
+    function loadingSp(data) {
+        const name = data.name;
+        $('#names').find('p').text(name);
+        $('#doctorNameHidden').val(name);
+    }
+
+    function clearDockerSelection(){
+        console.log("clearDockerSelection!")
+        clearErrorMsg();
+        $('#names').find('p').text('');
+        clearFields('.doctorNameSelectionHidden');
+    }
+
+    function validateDoctors() {
+        console.log('loading info ...');
+        showWaiting();
+        var prgNo =  $('input[name="doctorReignNo"]').val();
+        console.log('1');
+        if(prgNo == "" || prgNo == null || prgNo == undefined){
+            clearPrsInfo();
+            dismissWaiting();
+            clearErrorMsg();
+            $('#doctorRegnNoMsg').text('This is a mandatory field.');
+            return;
+        }
+        var no = $('input[name="doctorReignNo"]').val();
+        var jsonData = {
+            'prgNo': no
+        };
+        console.log('2');
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/vss/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                console.log('3');
+                if (isEmpty(data)) {
+                    console.log("The return data is null");
+                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+                    $('#prsErrorMsg').val($('#flagDocMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else if (data.hasException) {
+                    $('#prsErrorMsg').val($('#flagInvaMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else if ('401' == data.statusCode) {
+                    $('#prsErrorMsg').val($('#flagPrnMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else {
+                    loadingSp(data);
+                }
+                dismissWaiting();
+            },
+            'error': function () {
+                console.log('error');
+                clearPrsInfo;
+                dismissWaiting();
+            },
+        });
+    }
 </script>

@@ -51,7 +51,7 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
+            <iais:input maxLength="100" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianRelationship"></span>
         </iais:value>
     </iais:row>
@@ -93,7 +93,7 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
+            <iais:input maxLength="100" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartRelationship"></span>
         </iais:value>
     </iais:row>

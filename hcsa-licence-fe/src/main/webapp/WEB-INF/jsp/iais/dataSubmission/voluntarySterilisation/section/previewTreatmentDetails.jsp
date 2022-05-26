@@ -83,7 +83,7 @@
                         <iais:code code="${treatmentDto.occupation}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row style="${treatmentDto.occupation eq 'VSSOP011' ? '' : 'display: none'}" >
+                <iais:row style="${treatmentDto.occupation eq 'VSSOP012' ? '' : 'display: none'}" >
                     <iais:field width="6" value="Other Occupation" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${treatmentDto.otherOccupation}"/>

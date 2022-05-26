@@ -100,11 +100,11 @@
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="occupation" firstOption="Please Select" codeCategory="VSS_OCCUPATION"
-                         onchange ="toggleOnSelect(this, 'VSSOP011', 'occupationOthers')"
+                         onchange ="toggleOnSelect(this, 'VSSOP012', 'occupationOthers')"
                          value="${treatmentDto.occupation}"/>
         </iais:value>
     </iais:row>
-    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP011' ? '' : 'display: none'}">
+    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP012' ? '' : 'display: none'}">
         <iais:field width="5" value="Other Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="otherOccupation" value="${treatmentDto.otherOccupation}"/>
