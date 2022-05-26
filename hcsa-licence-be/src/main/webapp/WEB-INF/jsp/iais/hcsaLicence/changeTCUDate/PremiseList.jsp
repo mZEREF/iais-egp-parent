@@ -135,7 +135,8 @@
                                     <c:when test="${empty licencePremiseResult.rows}">
                                         <tr>
                                             <td colspan="7">
-                                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                                                <%--@elvariable id="emptyRowMessage" type="java.lang.String"--%>
+                                                <iais:message key="${emptyRowMessage}" escape="true"/>
                                             </td>
                                         </tr>
                                     </c:when>
