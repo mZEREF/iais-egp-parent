@@ -285,7 +285,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="64" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${notSameAddrDto.building}"/>'/>
+                                                        <input maxLength="45" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${notSameAddrDto.building}"/>'/>
                                                         <span data-err-ind="buildingName" class="error-msg"></span>
                                                     </div>
                                                 </div>
