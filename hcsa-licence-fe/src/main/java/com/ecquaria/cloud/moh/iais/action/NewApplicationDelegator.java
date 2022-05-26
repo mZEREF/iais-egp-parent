@@ -363,7 +363,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
             appSubmissionDto = new AppSubmissionDto();
-            appSubmissionDto.setLicenceId(ApplicationHelper.getLicenseeId(request));
+            appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             String premisesId = "";

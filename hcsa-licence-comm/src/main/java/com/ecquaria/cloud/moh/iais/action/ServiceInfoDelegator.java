@@ -1364,6 +1364,7 @@ public class ServiceInfoDelegator {
         if (isGetDataFromPage /*|| svcScopeEdit || cgoChange*/) {
             List<AppSvcPersonnelDto> appSvcSectionLeaderList =
                     IaisCommonUtils.getList(currentSvcRelatedDto.getAppSvcSectionLeaderList());
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.getList(currentSvcRelatedDto.getAppSvcCgoDtoList());
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             svcScopeAlignMap = ApplicationHelper.getScopeAlignMap(currentSvcId, bpc.request);
             List<AppSvcDisciplineAllocationDto> daList = IaisCommonUtils.genNewArrayList();
@@ -1398,7 +1399,14 @@ public class ServiceInfoDelegator {
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
                                 String cgoPerson = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName);
                                 appSvcDisciplineAllocationDto.setCgoPerson(cgoPerson);
+                                String cgoName = appSvcCgoDtoList.stream()
+                                        .filter(dto -> Objects.equals(cgoPerson, ApplicationHelper.getPersonKey(dto)))
+                                        .map(AppSvcPrincipalOfficersDto::getName)
+                                        .filter(Objects::nonNull)
+                                        .findAny()
+                                        .orElse(null);
                                 String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName);
+                                appSvcDisciplineAllocationDto.setCgoSelName(cgoName);
                                 appSvcDisciplineAllocationDto.setSlIndex(slIndex);
                                 String sectionLeaderName = appSvcSectionLeaderList.stream()
                                         .filter(dto -> Objects.equals(slIndex, dto.getIndexNo()))
@@ -1410,8 +1418,7 @@ public class ServiceInfoDelegator {
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if (targetChkDto != null && HcsaAppConst.SERVICE_SCOPE_LAB_OTHERS.equals(
                                         svcScopeConfigDto.getName())) {
-                                    targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(
-                                            appSvcDisciplineAllocationDto);
+                                    targetAllocationDto = CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
 
                                 }
                             }

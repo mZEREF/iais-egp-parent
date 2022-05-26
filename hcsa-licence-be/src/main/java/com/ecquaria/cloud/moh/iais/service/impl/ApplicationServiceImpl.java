@@ -1382,7 +1382,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     /**
      * Check Data For Edit App
      *
-     * @param check {@link HcsaAppConst#CHECKED_AND_MSG}: validate data with error {@link HcsaAppConst#CHECKED_BTN}: only check
+     * @param check {@inheritDoc}
      * @param request
      * @return
      */
