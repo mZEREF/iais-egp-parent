@@ -193,13 +193,24 @@
                                                 </div>
                                             </div>
                                             <div id="isSameAddrSectionN" <c:if test="${facProfile.sameAddress ne 'N'}">style="display: none"</c:if>>
+                                                <%
+                                                    sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto profileDto = (sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto) request.getAttribute("facProfile");
+                                                    // rather than use profile DTO, use an address DTO should be better
+                                                    sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto notSameAddressDto;
+                                                    if (!"N".equals(profileDto.getSameAddress())) {
+                                                        notSameAddressDto = new sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto();
+                                                    } else {
+                                                        notSameAddressDto = profileDto;
+                                                    }
+                                                    request.setAttribute("notSameAddrDto", notSameAddressDto);
+                                                %>
                                                 <div class="form-group">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="postalCodeN">Postal Code</label>
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-5">
-                                                        <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCodeN" value='<c:out value="${facProfile.postalCode}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
+                                                        <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCodeN" value='<c:out value="${notSameAddrDto.postalCode}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
                                                         <span data-err-ind="postalCode" class="error-msg"></span>
                                                     </div>
                                                     <div class="col-sm-2">
@@ -216,7 +227,7 @@
                                                         <select name="addressType" class="addressTypeDropdown" id="addressType">
                                                             <option value="">Please Select</option>
                                                             <c:forEach var="type" items="${addressTypeOps}">
-                                                                <option value="${type.value}" <c:if test="${type.value eq facProfile.addressType}">selected="selected"</c:if> >${type.text}</option>
+                                                                <option value="${type.value}" <c:if test="${type.value eq notSameAddrDto.addressType}">selected="selected"</c:if> >${type.text}</option>
                                                             </c:forEach>
                                                         </select>
                                                         <span data-err-ind="addressType" class="error-msg"></span>
@@ -227,10 +238,10 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="blockN">Block / House No.</label>
-                                                        <span id="aptMandatoryBlk" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
+                                                        <span id="aptMandatoryBlk" class="mandatory otherQualificationSpan" <c:if test="${notSameAddrDto.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="10" type="text" autocomplete="off" name="block" id="blockN" value='<c:out value="${facProfile.block}"/>'/>
+                                                        <input maxLength="10" type="text" autocomplete="off" name="block" id="blockN" value='<c:out value="${notSameAddrDto.block}"/>'/>
                                                         <span data-err-ind="block" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -238,10 +249,10 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="floorN">Floor No.</label>
-                                                        <span id="aptMandatoryFloor" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
+                                                        <span id="aptMandatoryFloor" class="mandatory otherQualificationSpan" <c:if test="${notSameAddrDto.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="3" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${facProfile.floor}"/>'/>
+                                                        <input maxLength="3" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${notSameAddrDto.floor}"/>'/>
                                                         <span data-err-ind="floor" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -249,10 +260,10 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="unitNoN">Unit No.</label>
-                                                        <span id="aptMandatoryUnit" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
+                                                        <span id="aptMandatoryUnit" class="mandatory otherQualificationSpan" <c:if test="${notSameAddrDto.addressType ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="5" type="text" autocomplete="off" name="unitNo" id="unitNoN" value='<c:out value="${facProfile.unitNo}"/>'/>
+                                                        <input maxLength="5" type="text" autocomplete="off" name="unitNo" id="unitNoN" value='<c:out value="${notSameAddrDto.unitNo}"/>'/>
                                                         <span data-err-ind="unitNo" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -260,10 +271,10 @@
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="streetNameN">Street Name</label>
-                                                        <span id="aptMandatoryStreet" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
+                                                        <span id="aptMandatoryStreet" class="mandatory otherQualificationSpan" <c:if test="${notSameAddrDto.addressType ne withoutAptBlk}">style="display:none;"</c:if>>*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="32" type="text" autocomplete="off" name="streetName" id="streetNameN" value='<c:out value="${facProfile.streetName}"/>'/>
+                                                        <input maxLength="32" type="text" autocomplete="off" name="streetName" id="streetNameN" value='<c:out value="${notSameAddrDto.streetName}"/>'/>
                                                         <span data-err-ind="streetName" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -274,7 +285,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input maxLength="64" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.building}"/>'/>
+                                                        <input maxLength="64" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${notSameAddrDto.building}"/>'/>
                                                         <span data-err-ind="buildingName" class="error-msg"></span>
                                                     </div>
                                                 </div>
