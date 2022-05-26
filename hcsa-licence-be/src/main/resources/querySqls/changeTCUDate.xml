@@ -53,6 +53,20 @@
             <#if svc_name??>AND :svc_name = l.SVC_NAME</#if>
             <#if date_from??>AND lp.TCU_DATE >= CONVERT(date,:date_from)</#if>
             <#if date_to??>AND lp.TCU_DATE <= CONVERT(date,:date_to)</#if>
+            <#if psn_name?? || psn_type??>
+            AND EXISTS (
+            SELECT
+                lkp.ID
+            FROM
+                hcsal.dbo.lic_key_personnel lkp
+            join hcsal.dbo.key_personnel kp on
+                lkp.PERSON_ID = kp.ID
+            WHERE
+                lkp.LICENCE_ID = l.ID
+                <#if psn_type??>AND :psn_type = lkp.PSN_TYPE</#if>
+                <#if psn_name??>AND charindex(:psn_name,kp.NAME) > 0</#if>
+            )
+            </#if>
         ]]>
     </sql>
 

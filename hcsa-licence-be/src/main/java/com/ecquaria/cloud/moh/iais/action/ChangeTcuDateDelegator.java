@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -45,6 +46,9 @@ public class ChangeTcuDateDelegator {
     private final String keyFilterParam = "filterParam";
     private final String keyTcuDateFrom = "tcuDateFrom";
     private final String keyTcuDateTo = "tcuDateTo";
+    private final String keyPsnTypeOptions = "psnTypeOptions";
+    private final String keyPsnName = "psn_name";
+    private final String keyPsnType = "psn_type";
     private final String PARAM_CHKL_ITEM_CHECKBOX = "itemCheckbox";
 
     private final String keyNewTcuDateDates = "newTcuDate";
@@ -81,10 +85,17 @@ public class ChangeTcuDateDelegator {
         session.removeAttribute(keyFilterParam);
         session.removeAttribute(keyTcuDateFrom);
         session.removeAttribute(keyTcuDateTo);
+        session.removeAttribute(keyPsnName);
+        session.removeAttribute(keyPsnType);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CHANGE_TCU_DATE);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.KEY_SVC_TYPE_OPTIONS, (Serializable) requestForInformationService.getLicSvcTypeOption());
         ParamUtil.setSessionAttr(bpc.request, keyEmptyMessage, "GENERAL_ACK018");
+        List<SelectOption> persionTypeOptions = IaisCommonUtils.genNewArrayList();
+        persionTypeOptions.add(new SelectOption("CGO","CGO"));
+        persionTypeOptions.add(new SelectOption("KAH","KAH"));
+        persionTypeOptions.add(new SelectOption("PO","PO"));
+        ParamUtil.setSessionAttr(bpc.request, keyPsnTypeOptions, (Serializable) persionTypeOptions);
     }
 
     public void preSwitch(BaseProcessClass bpc) {
@@ -227,8 +238,12 @@ public class ChangeTcuDateDelegator {
         String tcuDateToStr = ParamUtil.getString(request, keyTcuDateTo);
         Date toDate = Formatter.parseDate(tcuDateToStr);
         String tcuDateTo = Formatter.formatDateTime(toDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String psnName = ParamUtil.getString(request, keyPsnName);
+        String psnType = ParamUtil.getString(request, keyPsnType);
         ParamUtil.setSessionAttr(request, keyTcuDateFrom, tcuDateFromStr);
         ParamUtil.setSessionAttr(request, keyTcuDateTo, tcuDateToStr);
+        ParamUtil.setSessionAttr(request, keyPsnName, psnName);
+        ParamUtil.setSessionAttr(request, keyPsnType, psnType);
 
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
 
@@ -270,6 +285,14 @@ public class ChangeTcuDateDelegator {
 
         if (StringUtil.isNotEmpty(tcuDateTo)) {
             searchParam.addFilter("date_to", tcuDateTo, true);
+        }
+
+        if (StringUtil.isNotEmpty(psnName)) {
+            searchParam.addFilter("psn_name", psnName, true);
+        }
+
+        if (StringUtil.isNotEmpty(psnType)) {
+            searchParam.addFilter("psn_type", psnType, true);
         }
     }
 
