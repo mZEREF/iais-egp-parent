@@ -188,7 +188,7 @@
                 ${patientInformationDto.patientAge}
         </iais:value>
         </iais:row>
-            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
+            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -371,7 +371,7 @@
         var patientAge = $('#patientAge').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16) {
+            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='') {
                 $('#preCounsNoCondReasons').hide();
             }else {
                 console.log("1");

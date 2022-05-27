@@ -89,17 +89,18 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true){
-            if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
-                if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
-                    if(patientInformationDto.getPatientAge()<16){
-                        if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
-                            errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
+                if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
+                    if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
+                        if(patientInformationDto.getPatientAge()<16){
+                            if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
+                                errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+                            }
                         }
                     }
                 }
             }
         }
-
         return errorMap;
     }
 }
