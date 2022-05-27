@@ -95,7 +95,7 @@ public class TopAjaxController {
             return result;
         }
         int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        if(age<=16 || age>=65){
+        if(age<=10 || age>=65){
             result.put("showAge", Boolean.TRUE);
         }
         return result;
