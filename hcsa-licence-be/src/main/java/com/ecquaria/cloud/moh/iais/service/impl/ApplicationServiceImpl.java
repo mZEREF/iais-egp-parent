@@ -50,10 +50,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -85,7 +83,6 @@ import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -1380,69 +1377,39 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     /**
-     * Check Data For Edit App
+     * {@inheritDoc}
      *
      * @param check {@inheritDoc}
-     * @param request
+     * @param curRoleId {@inheritDoc}
+     * @param appType {@inheritDoc}
+     * @param appGrpNo {@inheritDoc}
      * @return
      */
     @Override
-    public boolean checkDataForEditApp(int check, HttpServletRequest request) {
-        boolean isValid = true;
-        boolean checkBtn = check == HcsaAppConst.CHECKED_BTN;
-        if (!checkBtn) {
-            if (ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_TYPE) != null) {
-                return isValid;
-            } else {
-                Object checked = ParamUtil.getRequestAttr(request, HcsaAppConst.CHECKED);
-                if (StringUtil.isDigit(checked) && check == Integer.parseInt(checked.toString())) {
-                    return isValid;
-                }
-            }
-        }
-        String invalidRole = (String) ParamUtil.getRequestAttr(request, HcsaAppConst.ERROR_TYPE);
-        if (HcsaAppConst.ERROR_ROLE.equals(invalidRole)) {
-            isValid = false;
-        } else {
-            LoginContext loginContext = ApplicationHelper.getLoginContext(request);
-            if (loginContext == null || !StringUtil.isIn(loginContext.getCurRoleId(), new String[]{
+    public Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo) {
+        //boolean checkBtn = check == HcsaAppConst.CHECKED_BTN_SHOW;
+        Map<String, String> map = new HashMap<>();
+        if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
+            if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
                     RoleConsts.USER_ROLE_ASO,
                     RoleConsts.USER_ROLE_PSO,
                     RoleConsts.USER_ROLE_INSPECTIOR})) {
-                if (!checkBtn) {
-                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
-                }
-                isValid = false;
+                map.put(HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
             }
         }
-        if (isValid) {
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto) request.getSession().getAttribute("applicationViewDto");
-            if (applicationViewDto == null) {
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
-                isValid = false;
-            } else if (!StringUtil.isIn(applicationViewDto.getApplicationDto().getApplicationType(), new String[]{
-                    ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
-                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                    ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
-                isValid = false;
-                // "Invalid Application Type."
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060",
-                        "Application Type", "data"));
-            } else if (!checkBtn) {
-                Map<String, String> checkMap = checkApplicationByAppGrpNo(applicationViewDto.getApplicationGroupDto().getGroupNo());
-                String appError = checkMap.get(HcsaAppConst.ERROR_APP);
-                if (!StringUtil.isEmpty(appError)) {
-                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
-                    isValid = false;
-                }
-            }
+        if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(appType, new String[]{
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
+            // "Invalid Application Type."
+            map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060","Application Type", "data"));
         }
-        if (!isValid && !checkBtn) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
+        if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
+            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
+            map.putAll(checkMap);
         }
-        ParamUtil.setRequestAttr(request, HcsaAppConst.CHECKED, check);
-        log.info(StringUtil.changeForLog("Check[ " + check + " ] - isValid: " + isValid));
-        return isValid;
+        log.info(StringUtil.changeForLog("Check[ " + check + " ] : " + map));
+        return map;
     }
 
 }

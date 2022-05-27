@@ -148,8 +148,9 @@ public final class HcsaAppConst {
     public static final String ERROR_ROLE                                   = "ERROR_ROLE";
 
     public static final String CHECKED                                      = "CHECKED";
-    public static final int CHECKED_AND_MSG                                 = 0;
-    public static final int CHECKED_BTN                                     = 1;
+    public static final int CHECKED_ALL                                     = 0;
+    public static final int CHECKED_BTN_SHOW                                = 1;
+    public static final int CHECKED_BTN_APR                                 = 2;
 
     public static final String SHOW_EDIT_BTN                                = "showEditBtn";
 

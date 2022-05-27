@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -62,7 +63,7 @@ public class ApplicationDelegator extends AppCommDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE, null);
-        if (!checkData(bpc.request)) {
+        if (!checkData(HcsaAppConst.CHECKED_ALL, bpc.request)) {
             return;
         }
         HcsaServiceCacheHelper.flushServiceMapping();
@@ -93,8 +94,73 @@ public class ApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
-    private boolean checkData(HttpServletRequest request) {
-        return applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_AND_MSG, request);
+    /**
+     * Check Data For Edit App
+     *
+     * @param check   {@link HcsaAppConst#CHECKED_ALL}: do all check; {@link HcsaAppConst#CHECKED_BTN_SHOW}: check for
+     *                showing "Edit Application" button; {@link HcsaAppConst#CHECKED_BTN_APR}: check for approval button
+     * @param request
+     * @return
+     */
+    public boolean checkData(int check, HttpServletRequest request) {
+        boolean isValid = true;
+        if (check == HcsaAppConst.CHECKED_ALL) {
+            if (ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_TYPE) != null) {
+                return isValid;
+            } else {
+                Object checked = ParamUtil.getRequestAttr(request, HcsaAppConst.CHECKED);
+                if (StringUtil.isDigit(checked) && check == Integer.parseInt(checked.toString())) {
+                    return isValid;
+                }
+            }
+        }
+        String curRoleId = null;
+        if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
+            String invalidRole = (String) ParamUtil.getRequestAttr(request, HcsaAppConst.ERROR_TYPE);
+            if (HcsaAppConst.ERROR_ROLE.equals(invalidRole)) {
+                isValid = false;
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+            } else {
+                LoginContext loginContext = ApplicationHelper.getLoginContext(request);
+                if (loginContext == null) {
+                    isValid = false;
+                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+                } else {
+                    curRoleId = loginContext.getCurRoleId();
+                }
+            }
+        }
+        String appType = null;
+        String appGrpNo = null;
+        if (isValid) {
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) request.getSession().getAttribute("applicationViewDto");
+            if (applicationViewDto == null) {
+                isValid = false;
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+            } else {
+                appType = applicationViewDto.getApplicationDto().getApplicationType();
+                appGrpNo = applicationViewDto.getApplicationGroupDto().getGroupNo();
+            }
+        }
+        if (isValid) {
+            Map<String, String> map = applicationService.checkDataForEditApp(check, curRoleId, appType, appGrpNo);
+            String error = map.get(HcsaAppConst.ERROR_TYPE);
+            if (StringUtil.isNotEmpty(error)) {
+                isValid = false;
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, error);
+            }
+            String appError = map.get(HcsaAppConst.ERROR_APP);
+            if (StringUtil.isNotEmpty(error)) {
+                isValid = false;
+                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
+            }
+        }
+        if (!isValid && check == HcsaAppConst.CHECKED_ALL) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_JUMP);
+        }
+        ParamUtil.setRequestAttr(request, HcsaAppConst.CHECKED, check);
+        log.info(StringUtil.changeForLog("Check[ " + check + " ] - isValid: " + isValid));
+        return isValid;
     }
 
     @Override
@@ -181,7 +247,7 @@ public class ApplicationDelegator extends AppCommDelegator {
      */
     @Override
     public void prepare(BaseProcessClass bpc) {
-        checkData(bpc.request);
+        checkData(HcsaAppConst.CHECKED_ALL, bpc.request);
         super.prepare(bpc);
     }
 

@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +140,7 @@ public interface ApplicationService {
 
     /**
      * The call back of Submitting BE RFI
-     *
+     * <p>
      * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
      *
      * @param appGrpNo
@@ -149,12 +148,15 @@ public interface ApplicationService {
     void updateTasks(String appGrpNo);
 
     /**
-     * Check Data For Edit App
+     * Check Data For Edit Application
      *
-     * @param check {@link HcsaAppConst#CHECKED_BTN}: validate data with error; {@link HcsaAppConst#CHECKED_BTN}: only check
-     * @param request
+     * @param check     {@link HcsaAppConst#CHECKED_ALL}: do all check; {@link HcsaAppConst#CHECKED_BTN_SHOW}: check for
+     *                  showing "Edit Application" button; {@link HcsaAppConst#CHECKED_BTN_APR}: check for approval button
+     * @param curRoleId
+     * @param appType
+     * @param appGrpNo
      * @return
      */
-    boolean checkDataForEditApp(int check, HttpServletRequest request);
+    Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo);
 
 }

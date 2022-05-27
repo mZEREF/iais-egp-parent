@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -429,7 +430,7 @@ public class HcsaApplicationDelegator {
                     .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
         }
         ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
-                && applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_BTN, request));
+                && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
     }
 
     /**
