@@ -34,7 +34,7 @@
         </iais:row>
         </div>
     <iais:row>
-        <iais:field width="5" value="No. of Previous Termination of Pregnancy" mandatory="true"/>
+        <iais:field width="5" value="No. of Previous Termination(s) of Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="2" type="text" name="previousTopNumber" value="${familyPlanDto.previousTopNumber}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_previousTopNumber"></span>
