@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleEnv--v--${status.index}" <c:if test="${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL)}">checked="checked"</c:if> value="${masterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL}"/>
-                                            <label for="sampleEnv--v--${status.index}" class="form-check-label"><span class="check-square"></span>Environmental samples containing biological agent or toxin</label>
+                                            <label for="sampleEnv--v--${status.index}" class="form-check-label"><span class="check-square"></span>Environmental sample containing biological agent or toxin</label>
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleFood--v--${status.index}" <c:if test="${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_FOOD)}">checked="checked"</c:if> value="${masterCodeConstants.SAMPLE_NATURE_FOOD}"/>
@@ -117,7 +117,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleOthers--v--${status.index}" data-custom-ind="batOthersSampleType" <c:if test="${info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER)}">checked="checked"</c:if> value="${masterCodeConstants.SAMPLE_NATURE_OTHER}"/>
-                                            <label for="sampleOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details</label>
+                                            <label for="sampleOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify.</label>
                                         </div>
                                     </div>
                                     <span data-err-ind="sampleType--v--${status.index}" class="error-msg"></span>
@@ -151,7 +151,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" data-custom-ind="batOthersWorkType" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_OTHERS}"/>
-                                            <label for="workOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details.</label>
+                                            <label for="workOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify.</label>
                                         </div>
                                     </div>
                                     <span data-err-ind="workType--v--${status.index}" class="error-msg"></span>
