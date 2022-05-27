@@ -70,6 +70,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
@@ -150,6 +151,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private CessationClient cessationClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private LicCommService licCommService;
+
     private static final Set<String> appReportStatuses = ImmutableSet.of(
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
             ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED
@@ -175,7 +179,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public void setLicInfo(HttpServletRequest request) {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
-        AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(licenceId).getEntity();
+        AppSubmissionDto appSubmission = licCommService.viewAppSubmissionDto(licenceId);
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList=IaisCommonUtils.genNewArrayList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmission.getAppSvcRelatedInfoDtoList()
         ) {

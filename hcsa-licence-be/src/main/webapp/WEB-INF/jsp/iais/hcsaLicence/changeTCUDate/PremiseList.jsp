@@ -10,6 +10,8 @@
 <%--@elvariable id="filterParam" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto"--%>
 <%--@elvariable id="tcuDateFrom" type="java.lang.String"--%>
 <%--@elvariable id="tcuDateTo" type="java.lang.String"--%>
+<%--@elvariable id="psn_name" type="java.lang.String"--%>
+<%--@elvariable id="psn_type" type="java.lang.String"--%>
 <%--@elvariable id="licencePremiseResult" type="com.ecquaria.cloud.moh.iais.common.dto.SearchResult<com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto>"--%>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -45,7 +47,7 @@
                             <iais:row>
                                 <iais:field value="HCI Code"/>
                                 <iais:value width="18">
-                                    <iais:input maxLength="20" type="text" name="hciCode"
+                                    <iais:input maxLength="7" type="text" name="hciCode"
                                                 value="${filterParam.hciCode}"/>
                                 </iais:value>
                             </iais:row>
@@ -53,7 +55,7 @@
                             <iais:row>
                                 <iais:field value="Business Name"/>
                                 <iais:value width="18">
-                                    <iais:input maxLength="24" type="text" name="businessName"
+                                    <iais:input maxLength="100" type="text" name="businessName"
                                                 value="${filterParam.businessName}"/>
                                 </iais:value>
                             </iais:row>
@@ -61,7 +63,7 @@
                             <iais:row>
                                 <iais:field value="HCI Postal Code"/>
                                 <iais:value width="18">
-                                    <iais:input maxLength="20" type="text" name="postalCode"
+                                    <iais:input maxLength="6" type="text" name="postalCode"
                                                 value="${filterParam.postalCode}"/>
                                 </iais:value>
                             </iais:row>
@@ -86,6 +88,23 @@
                                 <iais:field value="TCU Date To"/>
                                 <iais:value width="18">
                                     <iais:datePicker id="fromDate" name="tcuDateTo" value="${tcuDateTo}"/>
+                                </iais:value>
+                            </iais:row>
+
+                            <iais:row>
+                                <iais:field value="Personnel Name"/>
+                                <iais:value width="18">
+                                    <iais:input maxLength="66" type="text" name="psn_name"
+                                                value="${psn_name}"/>
+                                </iais:value>
+                            </iais:row>
+
+                            <iais:row>
+                                <iais:field value="Personnel Role"/>
+                                <iais:value width="18">
+                                    <iais:select name="psn_type" options="psnTypeOptions"
+                                                 firstOption="Please Select"
+                                                 value="${psn_type}" needSort="true"/>
                                 </iais:value>
                             </iais:row>
 
@@ -126,7 +145,7 @@
                                                          value="Service Name"/>
                                     <iais:sortableHeader style="width:5%" needSort="true" field="tcu_date"
                                                          value="TCU Date"/>
-                                    <iais:sortableHeader style="width:5%" needSort="true" field="remarks"
+                                    <iais:sortableHeader style="width:5%" needSort="true" field="TCU_DATE_REMARKS"
                                                          value="Remarks"/>
                                 </tr>
                                 </thead>
@@ -135,7 +154,8 @@
                                     <c:when test="${empty licencePremiseResult.rows}">
                                         <tr>
                                             <td colspan="7">
-                                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                                                <%--@elvariable id="emptyRowMessage" type="java.lang.String"--%>
+                                                <iais:message key="${emptyRowMessage}" escape="true"/>
                                             </td>
                                         </tr>
                                     </c:when>
@@ -150,8 +170,9 @@
                                                 <td align="left"><c:out value="${licencePremise.hciCode}"/></td>
                                                 <td align="left"><c:out value="${licencePremise.address}"/></td>
                                                 <td align="left"><c:out value="${licencePremise.serviceName}"/></td>
-                                                <td align="left"><fmt:formatDate
-                                                        value="${licencePremise.tcuDate}"/></td>
+                                                <td align="left">
+                                                    <fmt:formatDate value="${licencePremise.tcuDate}" pattern='dd/MM/yyyy'/>
+                                                </td>
                                                 <td align="left"><c:out value="${licencePremise.tcuDateRemarks}"/></td>
                                             </tr>
                                         </c:forEach>

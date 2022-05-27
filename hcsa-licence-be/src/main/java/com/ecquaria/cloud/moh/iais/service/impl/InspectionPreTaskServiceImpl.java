@@ -695,39 +695,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto) {
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appType = applicationDto.getApplicationType();
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-            appEditSelectDto.setLicenseeEdit(true);
-            appEditSelectDto.setServiceEdit(true);
-            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appEditSelectDto.setPoEdit(true);
-            appEditSelectDto.setDocEdit(true);
-            appEditSelectDto.setMedAlertEdit(true);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setApplicationId(applicationDto.getId());
-            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        }  else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            String applicationNo = applicationDto.getApplicationNo();
-            List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
-            List<String> list = IaisCommonUtils.genNewArrayList();
-            if (applicationDtosByApplicationNo != null) {
-                for (ApplicationDto applicationDto1 : applicationDtosByApplicationNo) {
-                    list.add(applicationDto1.getId());
-                }
-            }
-            List<AppEditSelectDto> appEditSelectDtosByAppIds = applicationService.getAppEditSelectDtosByAppIds(list);
-            if (!appEditSelectDtosByAppIds.isEmpty()) {
-                applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
-            }
-        }
-        return applicationViewDto;
-    }
-
-    @Override
     public int preInspRfiTogether(ApplicationDto applicationDto) {
         if(applicationDto != null) {
             if(!StringUtil.isEmpty(applicationDto.getAppGrpId())) {

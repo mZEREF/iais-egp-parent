@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 /**
  * PaymentAppGrpClientFallBack
  *
@@ -28,10 +30,12 @@ public class PaymentAppGrpClientFallBack implements PaymentAppGrpClient{
     }
 
     @Override
-    public FeignResponseEntity<String> doUpDate(ApplicationGroupDto applicationGroupDto) {
+    public FeignResponseEntity<List<ApplicationGroupDto>> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
+
 }

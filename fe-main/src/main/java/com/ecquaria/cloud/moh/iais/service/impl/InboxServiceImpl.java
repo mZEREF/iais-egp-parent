@@ -272,15 +272,34 @@ public class InboxServiceImpl implements InboxService {
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
-        if(!IaisCommonUtils.isEmpty(apps)){
+        boolean hasError = false;
+        if(!IaisCommonUtils.isEmpty(apps)) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
             for (ApplicationDto app : apps) {
-                if (!finalStatusList.contains(app.getStatus())) {
+                String status = app.getStatus();
+                if (!finalStatusList.contains(status)) {
                     errorMap.put("errorMessage1", "This application is performing the renew process");
-                } else
+                    hasError = true;
+                }
                 // 81903
-                if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus())
+                if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
                         && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
                     errorMap.put("errorMessage2", MessageUtil.getMessageDesc("INBOX_ACK013"));
+                    hasError = true;
+                }
+                if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
+                    appGrpIds.add(app.getAppGrpId());
+                }
+            }
+            if (!hasError && !appGrpIds.isEmpty()) {
+                List<ApplicationGroupDto> appGrpDtos = appInboxClient.getApplicationGroupsByIds(appGrpIds).getEntity();
+                if (!IaisCommonUtils.isEmpty(appGrpDtos)) {
+                    boolean matched = appGrpDtos.stream()
+                            .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
+                    if (matched) {
+                        // GENERAL_ERR0062 - There is a related pending payment application.
+                        errorMap.put("errorMessage2", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
+                    }
                 }
             }
         }
@@ -392,12 +411,34 @@ public class InboxServiceImpl implements InboxService {
         if(isActive){
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
-            if(!IaisCommonUtils.isEmpty(apps)){
-                for(ApplicationDto applicationDto:apps){
-                    if(!finalStatusList.contains(applicationDto.getStatus())){
+            boolean hasError = false;
+            if (!IaisCommonUtils.isEmpty(apps)) {
+                List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+                for (ApplicationDto app : apps) {
+                    String status = app.getStatus();
+                    if(!finalStatusList.contains(status)){
                         String message = MessageUtil.getMessageDesc("RFC_ERR011");
                         errorMap.put("errorMessage",message);
-                        break;
+                        hasError = true;
+                    }
+                    if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
+                            && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
+                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
+                        hasError = true;
+                    }
+                    if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
+                        appGrpIds.add(app.getAppGrpId());
+                    }
+                }
+                if (!hasError && !appGrpIds.isEmpty()) {
+                    List<ApplicationGroupDto> appGrpDtos = appInboxClient.getApplicationGroupsByIds(appGrpIds).getEntity();
+                    if (!IaisCommonUtils.isEmpty(appGrpDtos)) {
+                        boolean matched = appGrpDtos.stream()
+                                .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
+                        if (matched) {
+                            // GENERAL_ERR0062 - There is a related pending payment application.
+                            errorMap.put("errorMessage", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
+                        }
                     }
                 }
             }

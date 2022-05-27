@@ -455,7 +455,7 @@
                         <iais:field value="Email" mandatory="true" width="4"/>
                         <iais:value width="5" cssClass="col-md-5">
                             <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="onSiteEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_onSiteEmail${status.index}"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_email${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -1598,7 +1598,7 @@
                                                 <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
                                             </iais:value>
                                         </div>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_OffFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>

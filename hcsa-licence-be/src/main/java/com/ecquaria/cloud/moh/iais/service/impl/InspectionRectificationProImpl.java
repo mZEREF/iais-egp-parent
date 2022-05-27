@@ -390,11 +390,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     }
 
     @Override
-    public byte[] downloadFile(String fileRepoId) {
-        return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
-    }
-
-    @Override
     public AppPremPreInspectionNcDto getAppPremPreInspectionNcDtoByCorrId(String refNo) {
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(refNo).getEntity();
         return appPremPreInspectionNcDto;

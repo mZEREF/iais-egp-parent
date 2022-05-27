@@ -1,0 +1,1242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="premises">
+    <sql key="premisesHtml" cached="no" remarks="">
+        <![CDATA[
+    <div class="row premContent underLine" id="mainPrem">
+    <input type="hidden" name="chooseExistData" value="0"/>
+    <input type="hidden" name="isPartEdit" value=""/>
+    <input class="premValue" type="hidden" name="premValue" value="${premVal}"/>
+    <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value=""/>
+    <input class="phLength" type="hidden" name="phLength" value="1"/>
+    <input type="hidden" name="rfiCanEdit" value="true"/>
+    <input class="opLength" type="hidden" name="opLength" value="0"/>
+    <input class="retrieveflag" type="hidden" name="retrieveflag" value="0"/>
+    <input class="weeklyLength" type="hidden" name="weeklyLength" value="1"/>
+    <input class="phLength" type="hidden" name="phLength" value="1"/>
+    <input class="eventLength" type="hidden" name="eventLength" value="1"/>
+    <input hidden class="premiseIndex" value="${premVal}">
+    <div class="col-xs-12">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-12 col-md-6">
+                    <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${premNo}</strong>
+                </div>
+                <div class="col-xs-12 col-md-4 text-right">
+                    <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-group premisesTypeDiv" id="premisesType">
+                <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your mode of service delivery ? <span
+                        class="mandatory">*</span></label>
+                <input class="premTypeValue" type="hidden" name="premType" value="">
+                ${premTypeInfo}
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4"></div>
+                <div class="col-xs-6 col-md-5">
+                    <span class="error-msg"></span>
+                </div>
+            </div>
+            <div class="form-group onSiteSelect hidden">
+                <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
+                        class="mandatory">*</span></label>
+                <div class=" col-xs-11 col-sm-7 col-md-5">
+                    ${onSiteSelectStr}
+                    <span class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-group conveyanceSelect hidden">
+                <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
+                        class="mandatory">*</span></label>
+                <div class=" col-xs-11 col-sm-7 col-md-5">
+                    ${conveyanceSelectStr}
+                    <span class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-group offSiteSelect hidden">
+                <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
+                        class="mandatory">*</span></label>
+                <div class=" col-xs-11 col-sm-7 col-md-5">
+                    ${offSiteSelectStr}
+                    <span class="error-msg"></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <div class="new-premise-form-on-site hidden">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety & Shelter Bureau Ref.
+                        No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title=""
+                               data-original-title="<p>(fireTooltip)</p>">i</a></label>
+                    <div class="col-xs-9 col-sm-5 col-md-5">
+                        <input id="scdfRefNo" maxlength="66" name="onSiteScdfRefNo" type="text" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
+                        <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate"
+                               name="${premVal}onSiteFireSafetyCertIssuedDate" id="" data-date-start-date="01/01/1900"
+                               placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate"
+                                                                             name="iaisErrorMsg"
+                                                                             class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10">
+                        <input type="text" id="sitePremiseName" name="onSiteHciName" maxlength="100" autocomplete="off">
+                        <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group postalCodeDiv">
+                    <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
+                    <div class=" col-md-5">
+                        <input type="text" name="onSitePostalCode" class="postalCode" maxlength="6"
+                               autocomplete="off"><span id="error_onSitePostalCode" name="iaisErrorMsg"
+                                                        class="error-msg"></span>
+                        <span id="error_postalCode0" class="error-msg" name="iaisErrorMsg"></span>
+                    </div>
+                    <div class="col-xs-7 col-sm-6 col-md-3">
+                        <p><a class="retrieveAddr" id="onSite" href="javascript:void(0);">Retrieve your address</a></p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Address Type <span
+                            class="mandatory">*</span></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                        ${onSiteAddressTypeStr}
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Block / House No. </label>
+                    <div class="col-sm-4 col-md-5 col-xs-7">
+                        <input type="text" id="siteBlkNo" name="onSiteBlkNo" class="siteBlkNo" maxlength="10"
+                               autocomplete="off">
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Floor / Unit No. </label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <div class="row">
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteFloorNo" name="onSiteFloorNo" value="" maxlength="3"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteUnitNo" name="onSiteUnitNo" value="" maxlength="5"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="operationDivGroup">
+                    <div class="form-group addOpDiv">
+                        <label class="col-xs-12 col-md-4 control-label"></label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10">
+                        <input type="text" id="siteStreetName" name="onSiteStreetName" class="siteStreetName"
+                               maxlength="32" autocomplete="off">
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Building Name</label>
+                    <div class="col-sm-7 col-md-5 col-xs-10 ">
+                        <input type="text" id="siteBuildingName" name="onSiteBuildingName" class="siteBuildingName"
+                               maxlength="66" autocomplete="off">
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email <span class="mandatory">*</span></label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="onSiteEmail" name="onSiteEmail"
+                               class="onSiteEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Office Telephone No. <span
+                            class="mandatory">*</span></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                        <input type="text" name="onSiteOffTelNo" maxlength="8" autocomplete="off">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo(00)"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group other-lic-content co-location-div">
+                    <label class="col-xs-12 col-md-4 control-label">Are you co-locating with<br/> another
+                        licensee? <span class="mandatory">*</span></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-6" style="margin-left:-1%;">
+                        <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value=""/>
+                        <div class="form-check col-sm-3">
+                            <input class="form-check-input other-lic co-location" type="radio" name="otherLicence${premVal}" value="1"
+                                   aria-invalid="false">
+                            <label class="form-check-label"><span class="check-circle"></span>Yes</label>
+                        </div>
+                        <div class="form-check col-sm-3">
+                            <input class="form-check-input other-lic co-location" type="radio" name="otherLicence${premVal}" value="0"
+                                   aria-invalid="false">
+                            <label class="form-check-label"><span class="check-circle"></span>No</label>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12 col-xs-12">
+                        <label class="control-label">Operating Hours</label>
+                    </div>
+                    <div class="col-md-4 col-xs-4 hidden-xs hidden-sm">
+                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">Start</label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">End</label>
+                    </div>
+                    <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
+                        <label class="control-label">24 Hours</label>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="weeklyContent">
+                    <div class="form-group weeklyDiv">
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                    </div>
+                                    ${onSiteWeeklySelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSiteWeeklyStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSiteWeeklyStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyStart00"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSiteWeeklyEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSiteWeeklyEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyEnd00"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0onSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group addWeeklyDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="pubHolDayContent">
+                    <div class="form-group pubHolidayDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Public Holiday</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    ${onSitePhSelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSitePhStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSitePhStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSitePhEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${onSitePhEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0onSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addPhDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="eventContent">
+                    <div class="form-group eventDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Event</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                        <input maxLength="100" type="text" name="${premVal}onSiteEvent0" class="onSiteEvent" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control onSiteEventStart" name="${premVal}onSiteEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control onSiteEventEnd" name="${premVal}onSiteEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-2 col-xs-2">
+                                <div class="row">
+                                    <div class="col-md-6 text-center col-xs-6">
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addEventDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="new-premise-form-conv hidden">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10 col-md-5">
+                        <input type="text" name="conveyanceHciName" class="hciName" maxlength="100" autocomplete="off"><span id="error_conveyanceHciName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Vehicle No. <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10">
+                        <input type="text" id="vehicleNo" name="conveyanceVehicleNo" value="" maxlength="10"
+                               autocomplete="off">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_conveyanceVehicleNo(00)"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group postalCodeDiv">
+                    <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
+                    <div class="col-sm-4 col-md-5 col-xs-5">
+                        <input type="text" id="conveyancePostalCode" name="conveyancePostalCode" class="postalCode"
+                               maxlength="6" autocomplete="off">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode(00)"></span>
+                    </div>
+                    <div class="col-xs-7 col-sm-6 col-md-3">
+                        <p><a class="retrieveAddr" id="conveyance" href="javascript:void(0);">Retrieve your address</a></p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <span class="postalCodeMsg error-msg"></span>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Address Type <span
+                            class="mandatory">*</span></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                        ${conveyanceAddressTypeStr}
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Block / House No. </label>
+                    <div class="col-sm-4 col-md-5 col-xs-7">
+                        <input type="text" id="conveyanceBlkNo" name="conveyanceBlkNo" class="conveyanceBlkNo"
+                               maxlength="10" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Floor / Unit No. </label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <div class="row">
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteFloorNo" name="conveyanceFloorNo" value="" maxlength="3"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteUnitNo" name="conveyanceUnitNo" value="" maxlength="5"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="operationDivGroup">
+                    <div class="form-group addOpDiv">
+                        <label class="col-xs-12 col-md-4 control-label"></label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10">
+                        <input type="text" id="conveyanceStreetName" name="conveyanceStreetName"
+                               class="conveyanceStreetName" maxlength="32" autocomplete="off">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Building Name </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="conveyanceBuildingName" name="conveyanceBuildingName"
+                               class="conveyanceBuildingName" maxlength="66" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email <span class="mandatory">*</span></label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="conveyanceEmail" name="conveyanceEmail"
+                               class="conveyanceEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12 col-xs-12">
+                        <label class="control-label">Operating Hours</label>
+                    </div>
+                    <div class="col-md-4 col-xs-4 hidden-xs hidden-sm">
+                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">Start</label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">End</label>
+                    </div>
+                    <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
+                        <label class="control-label">24 Hours</label>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="weeklyContent">
+                    <div class="form-group weeklyDiv">
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                    </div>
+                                    ${conveyanceWeeklySelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyanceWeeklyStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyanceWeeklyStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyanceWeeklyEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyanceWeeklyEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0conveyanceWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group addWeeklyDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="pubHolDayContent">
+                    <div class="form-group pubHolidayDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Public Holiday</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    ${conveyancePhSelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyancePhStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyancePhStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyancePhEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${conveyancePhEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0conveyancePhAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addPhDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="eventContent">
+                    <div class="form-group eventDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Event</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                        <input maxLength="100" type="text" name="${premVal}conveyanceEvent0" class="conveyanceEvent" maxlength="null" autocomplete="off"><span id="error_0conveyanceEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control conveyanceEventStart" name="${premVal}conveyanceEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0conveyanceEventStart0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control conveyanceEventEnd" name="${premVal}conveyanceEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0conveyanceEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-2 col-xs-2">
+                                <div class="row">
+                                    <div class="col-md-6 text-center col-xs-6">
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addEventDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="new-premise-form-off-site hidden">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10 col-md-5">
+                        <input type="text" name="offSiteHciName" class="hciName" maxlength="100" autocomplete="off"><span id="error_offSiteHciName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group postalCodeDiv">
+                    <label class="col-xs-12 col-md-4 control-label">Postal Code <span
+                            class="mandatory">*</span></label>
+                    <div class="col-sm-4 col-md-5 col-xs-5">
+                        <input type="text" id="offSitePostalCode" name="offSitePostalCode"
+                               class="postalCode" maxlength="6" autocomplete="off">
+                    </div>
+                    <div class="col-xs-7 col-sm-6 col-md-3">
+                        <p><a class="retrieveAddr" id="offSite" href="javascript:void(0);">Retrieve your address</a></p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <span class="postalCodeMsg error-msg"></span>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Address Type <span
+                            class="mandatory">*</span></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                        ${offSiteAddressTypeStr}
+                        <span class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Block / House No. </label>
+                    <div class="col-sm-4 col-xs-7 col-md-5">
+                        <input type="text" id="offSiteBlkNo" name="offSiteBlkNo" class="offSiteBlkNo"
+                               maxlength="10" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Floor / Unit No. </label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <div class="row">
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteFloorNo" name="offSiteFloorNo" value="" maxlength="3"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" id="siteUnitNo" name="offSiteUnitNo" value="" maxlength="5"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="operationDivGroup">
+                    <div class="form-group addOpDiv">
+                        <label class="col-xs-12 col-md-4 control-label"></label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-10 col-md-4 control-label">Street Name <span
+                            class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-5 col-xs-10">
+                        <input type="text" id="offSiteStreetName" name="offSiteStreetName"
+                               class="offSiteStreetName" maxlength="32" autocomplete="off">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Building Name </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="offSiteBuildingName" name="offSiteBuildingName"
+                               class="offSiteBuildingName" maxlength="66" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email <span class="mandatory">*</span></label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="offSiteEmail" name="offSiteEmail"
+                               class="offSiteEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12 col-xs-12">
+                        <label class="control-label">Operating Hours</label>
+                    </div>
+                    <div class="col-md-4 col-xs-4 hidden-xs hidden-sm">
+                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">Start</label>
+                    </div>
+                    <div class="col-md-3 col-xs-3 hidden-xs hidden-sm input-padding">
+                        <label class="control-label">End</label>
+                    </div>
+                    <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
+                        <label class="control-label">All day</label>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="weeklyContent">
+                    <div class="form-group weeklyDiv">
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                    </div>
+                                    ${offSiteWeeklySelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSiteWeeklyStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSiteWeeklyStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSiteWeeklyEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSiteWeeklyEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-xs-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0offSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group addWeeklyDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="pubHolDayContent">
+                    <div class="form-group pubHolidayDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Public Holiday</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                <div class="row d-flex">
+                                    ${offSitePhSelect}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 start-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSitePhStartHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSitePhStartMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3 end-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSitePhEndHH}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (HH)
+                                    </div>
+                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                        ${offSitePhEndMM}
+                                    </div>
+                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                        (MM)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 all-day-div">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                        <input class="form-check-input allDay" name="0offSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
+                                    </div>
+                                    <div class="col-md-5 col-xs-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addPhDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div></div>
+                </div>
+
+                <div class="eventContent">
+                    <div class="form-group eventDiv">
+                        <div class="col-md-12 col-xs-12">
+                            <label class="control-label">Event</label>
+                        </div>
+                        <div>
+                            <div class="col-md-4 col-xs-4">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                        <input maxLength="100" type="text" name="${premVal}offSiteEvent0" class="offSiteEvent" maxlength="null" autocomplete="off"><span id="error_0offSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control offSiteEventStart" name="${premVal}offSiteEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0offSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-3 col-xs-3">
+                                <input type="text" autocomplete="off" class="date_picker form-control offSiteEventEnd" name="${premVal}offSiteEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0offSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-2 col-xs-12">
+                                <div class="row">
+                                    <div class="col-md-6 text-center col-xs-6">
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="form-group addEventDiv">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
+                        </div>
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
+
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+        </div>]]>
+    </sql>
+    <!--now dont used -->
+    <sql key="premises-ph" cached="no" remarks="">
+        <![CDATA[
+            <div class="pubHolidayContent">
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                        (phSelect)
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-3">
+                        <div class="form-check removePhBtn">
+                          <div class="fa fa-times-circle del-size-36 text-danger"></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div></div>
+                     <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">
+                        Public Holiday Operating Hours (Start)
+                    </label>
+                    <div class="col-xs-9 col-sm-5 col-md-6">
+                        <div class="col-md-3" style="padding-left: unset">
+                            (phStartHour)
+                        </div>
+                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                        <div class="col-md-3" style="padding-left: unset">
+                            (phStartMin)
+                        </div>
+                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">
+                        Public Holiday Operating Hours (End)
+                    </label>
+                    <div class="col-xs-9 col-sm-5 col-md-6">
+                        <div class="col-md-3" style="padding-left: unset">
+                            (phEndHour)
+                        </div>
+                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                        <div class="col-md-3" style="padding-left: unset">
+                            (phEndMin)
+                        </div>
+                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                    </div>
+                </div>
+            </div>
+         ]]>
+    </sql>
+    <sql key="premises-operational" cached="no" remarks="">
+        <![CDATA[
+            <div class="operationDiv">
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label"></label>
+                    <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                        <div class="row">
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" name="${premIndex}${premType}FloorNo${opCount}" class="floorNo" value="" maxlength="3" autocomplete="off">
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <div class=" col-xs-12 col-md-5 ">
+                                <input type="text" name="${premIndex}${premType}UnitNo${opCount}" class="unitNo" value="" maxlength="5" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    </div>
+                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                    </div>
+                <div class="clear"></div></div>
+            </div>
+        ]]>
+    </sql>
+    <sql key="weekly" cached="no" remarks="">
+        <![CDATA[
+            <div class="form-group ${divClass}">
+                <div>
+                    <div class="col-md-12 col-xs-12">
+                        <label class="control-label">${fieldName}</label>
+                    </div>
+                    <div class="col-md-4 col-xs-4 multi-sel-padding">
+                        <div class="row d-flex">
+                            ${multipleDropDown}
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-3 start-div">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">Start</label>
+                            </div>
+                            <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                ${startHH}
+                            </div>
+                            <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                (HH)
+                            </div>
+                            <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                ${startMM}
+                            </div>
+                            <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                (MM)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-3 end-div">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">End</label>
+                            </div>
+                            <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                ${endHH}
+                            </div>
+                            <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                (HH)
+                            </div>
+                            <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                ${endMM}
+                            </div>
+                            <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                (MM)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-xs-2 all-day-div">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">24 Hours</label>
+                            </div>
+                            <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                <input class="form-check-input allDay" name="${allDayName}" type="checkbox" aria-invalid="false" value="true">
+                            </div>
+                            <div class="col-md-5 col-xs-5">
+                                <div class="fa fa-times-circle del-size-36 text-danger ${delClass}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        ]]>
+    </sql>
+
+    <sql key="event" cached="no">
+        <![CDATA[
+        <div class="form-group eventDiv">
+            <div class="col-md-12 col-xs-12">
+                <label class="control-label">Event</label>
+            </div>
+            <div>
+                <div class="col-md-4 col-xs-4">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
+                            <input type="text" maxLength="100" name="${premIndex}${premType}Event${eventCount}" class="Event" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-3">
+                    <input type="text" autocomplete="off" class="date_picker form-control EventStart" name="${premIndex}${premType}EventStart${eventCount}"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="col-md-3 col-xs-3">
+                    <input type="text" autocomplete="off" class="date_picker form-control EventEnd" name="${premIndex}${premType}EventEnd${eventCount}" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <div class="row">
+                        <div class="col-md-6 text-center col-xs-6">
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+         ]]>
+    </sql>
+</sqls>

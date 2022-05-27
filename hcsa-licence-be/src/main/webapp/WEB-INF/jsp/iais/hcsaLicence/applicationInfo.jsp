@@ -49,6 +49,13 @@
                 View Application
             </button>
         </a>
+        <c:if test="${showEditBtn}">
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohApplication" target="_self" onclick="javascript:showWaiting();">
+                <button type="button" class="btn btn-primary">
+                    Edit Application
+                </button>
+            </a>
+        </c:if>
         <c:if test="${'APST004' eq applicationViewDto.applicationDto.status}">
             <c:if test="${not empty commonDto}">
                 <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
@@ -124,7 +131,16 @@
     <div align="left">
         <a class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
     </div>
+    <c:if test="${not empty appError}">
+    <iais:confirm msg="${appError}" callBack="$('#appErrorMdl').modal('hide');" popupOrder="appErrorMdl" needCancel="false" needFungDuoJi="false"/>
+    </c:if>
     <script type="text/javascript">
+        $(function(){
+            var $appErrorMdl = $('#appErrorMdl');
+            if ($appErrorMdl.length > 0) {
+                $appErrorMdl.modal('show');
+            }
+        });
         function doOpenApp() {
             window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
         }

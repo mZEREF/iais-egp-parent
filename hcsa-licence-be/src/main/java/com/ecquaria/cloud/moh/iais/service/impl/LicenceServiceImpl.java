@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -97,6 +98,8 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class LicenceServiceImpl implements LicenceService {
+    @Autowired
+    private LicCommService licCommService;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -1119,7 +1122,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
-        return hcsaLicenceClient.getLicBaseSpecifiedCorrelationDtos(svcType,originLicenceId).getEntity();
+        return licCommService.getLicBaseSpecifiedCorrelationDtos(svcType,originLicenceId);
     }
     @Override
     public  void changePostInsForTodoAudit( ApplicationViewDto applicationViewDto ){

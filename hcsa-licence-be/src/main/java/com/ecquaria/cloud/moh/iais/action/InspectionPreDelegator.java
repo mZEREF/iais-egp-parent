@@ -153,8 +153,6 @@ public class InspectionPreDelegator {
         if(applicationViewDto == null) {
             //get application info show
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
-            //set Application RFI Info
-            applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
         }
         if(applicationViewDto != null) {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

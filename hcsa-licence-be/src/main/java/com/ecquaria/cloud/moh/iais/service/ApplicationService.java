@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
@@ -12,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationG
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -19,6 +22,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationService
@@ -129,4 +133,30 @@ public interface ApplicationService {
       * @Descripation: setAppGrpMiscInactive
       */
     BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
+
+    Map<String, String> checkApplicationByAppGrpNo(String appGrpNo);
+
+    AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, String appType);
+
+    /**
+     * The call back of Submitting BE RFI
+     * <p>
+     * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
+     *
+     * @param appGrpNo
+     */
+    void updateTasks(String appGrpNo);
+
+    /**
+     * Check Data For Edit Application
+     *
+     * @param check     {@link HcsaAppConst#CHECKED_ALL}: do all check; {@link HcsaAppConst#CHECKED_BTN_SHOW}: check for
+     *                  showing "Edit Application" button; {@link HcsaAppConst#CHECKED_BTN_APR}: check for approval button
+     * @param curRoleId
+     * @param appType
+     * @param appGrpNo
+     * @return
+     */
+    Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo);
+
 }

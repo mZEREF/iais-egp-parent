@@ -156,8 +156,12 @@ public interface ApplicationClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "id") String id);
 
-    @PutMapping(path = "/iais-application/status")
-    FeignResponseEntity<Void> updateStatus(@RequestParam("status") String status);
+    @RequestMapping(value = "/iais-application-be/status",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
+    FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
+
+    @GetMapping(value = "/iais-application-be/check-pend-to-fe-grps", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> checkPendToFeAppGrps();
 
     @PostMapping (path = "/iais-broadcast/RequestInformationSubmitDtos",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(@RequestBody List<ApplicationDto> applicationDtos);
@@ -329,7 +333,7 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-cessation/application-premises-misc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <AppPremiseMiscDto> getAppPremisesMisc(@RequestParam("correId") String correId);
 
-    @GetMapping(value = "/iais-application-be/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-app-common/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 
     @PostMapping(value = "/iais-application-be/submission-post",consumes = MediaType.APPLICATION_JSON_VALUE)

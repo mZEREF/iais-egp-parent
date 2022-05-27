@@ -25,15 +25,16 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -80,6 +81,9 @@ public class WithdrawalDelegator {
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
 
+    @Autowired
+    private AppCommService appCommService;
+
     private String wdIsValid = IaisEGPConstant.YES;
 
     public void start(BaseProcessClass bpc){
@@ -105,7 +109,7 @@ public class WithdrawalDelegator {
         ApplicationDto entity=null;
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
-            entity = applicationFeClient.getApplicationDtoByAppNo(withdrawAppNo).getEntity();
+            entity = appCommService.getApplicationDtoByAppNo(withdrawAppNo);
         }
         String rfiWithdrawAppNo = ParamUtil.getMaskedString(bpc.request,"rfiWithdrawAppNo");
         if(entity!=null){
@@ -481,7 +485,7 @@ public class WithdrawalDelegator {
                     }
                 }
                 String appNo = withdrawAppNos[i];
-                ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+                ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
                 String appId = applicationDto.getId();
                 Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedWdFile");
                 Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");
@@ -533,7 +537,7 @@ public class WithdrawalDelegator {
                                 AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
                                 String e = str.substring(str.lastIndexOf('e') + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
-                                String fileMd5 = SingeFileUtil.getInstance().getFileMd5(file);
+                                String fileMd5 = FileUtils.getFileMd5(file);
                                 premisesSpecialDocDto.setMd5Code(fileMd5);
                                 premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());

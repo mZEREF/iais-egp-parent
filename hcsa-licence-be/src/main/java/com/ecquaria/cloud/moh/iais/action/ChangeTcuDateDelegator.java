@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -23,20 +25,20 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Delegator(value = "changeTcuDateDelegator")
 @Slf4j
@@ -44,10 +46,14 @@ public class ChangeTcuDateDelegator {
     private final String keyFilterParam = "filterParam";
     private final String keyTcuDateFrom = "tcuDateFrom";
     private final String keyTcuDateTo = "tcuDateTo";
+    private final String keyPsnTypeOptions = "psnTypeOptions";
+    private final String keyPsnName = "psn_name";
+    private final String keyPsnType = "psn_type";
     private final String PARAM_CHKL_ITEM_CHECKBOX = "itemCheckbox";
 
     private final String keyNewTcuDateDates = "newTcuDate";
     private final String keyNewTcuDateRemarks = "newTcuDateRemarks";
+    private final String keyEmptyMessage = "emptyRowMessage";
 
     private final String ACTION_PREMISE_LIST = "premiseList";
     private final String ACTION_CHANGE_PAGE = "changePage";
@@ -79,9 +85,17 @@ public class ChangeTcuDateDelegator {
         session.removeAttribute(keyFilterParam);
         session.removeAttribute(keyTcuDateFrom);
         session.removeAttribute(keyTcuDateTo);
+        session.removeAttribute(keyPsnName);
+        session.removeAttribute(keyPsnType);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CHANGE_TCU_DATE);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.KEY_SVC_TYPE_OPTIONS, (Serializable) requestForInformationService.getLicSvcTypeOption());
+        ParamUtil.setSessionAttr(bpc.request, keyEmptyMessage, "GENERAL_ACK018");
+        List<SelectOption> persionTypeOptions = IaisCommonUtils.genNewArrayList();
+        persionTypeOptions.add(new SelectOption("CGO","CGO"));
+        persionTypeOptions.add(new SelectOption("KAH","KAH"));
+        persionTypeOptions.add(new SelectOption("PO","PO"));
+        ParamUtil.setSessionAttr(bpc.request, keyPsnTypeOptions, (Serializable) persionTypeOptions);
     }
 
     public void preSwitch(BaseProcessClass bpc) {
@@ -100,7 +114,7 @@ public class ChangeTcuDateDelegator {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("changeTCUDate", "listLicenceInfo", searchParam);
         SearchResult<LicPremisesQueryDto> searchResult = licenceService.searchLicencesInChangeTCUDate(searchParam);
-        ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE, searchParam);
+        ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PARAM_CHANGE_TUC_DATE, searchParam);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE, searchResult);
 
         LicPremisesQueryDto filterParam = (LicPremisesQueryDto) ParamUtil.getSessionAttr(request, keyFilterParam);
@@ -117,7 +131,7 @@ public class ChangeTcuDateDelegator {
         if (ACTION_CHANGE_TCU_DATE.equals(action)) {
             String[] checkBoxItemIds = ParamUtil.getStrings(request, PARAM_CHKL_ITEM_CHECKBOX);
             if (checkBoxItemIds == null || checkBoxItemIds.length == 0) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premiseItems", "please select item!"));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premiseItems", MessageUtil.getMessageDesc("GENERAL_ERR0057")));
                 action = ACTION_PREMISE_LIST;
             } else {
                 SearchResult<LicPremisesQueryDto> searchResult = (SearchResult<LicPremisesQueryDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE);
@@ -150,7 +164,7 @@ public class ChangeTcuDateDelegator {
             List<String> newTcuDates = IaisCommonUtils.genNewArrayList(size);
             List<String> newTcuDateRemarks = IaisCommonUtils.genNewArrayList(size);
 
-            Map<String, String> errMap = validate(request, size, newTcuDates, newTcuDateRemarks);
+            Map<String, String> errMap = validateChangeTCUDate(request, size, newTcuDates, newTcuDateRemarks);
 
             ParamUtil.setRequestAttr(request, keyNewTcuDateDates, newTcuDates);
             ParamUtil.setRequestAttr(request, keyNewTcuDateRemarks, newTcuDateRemarks);
@@ -171,6 +185,7 @@ public class ChangeTcuDateDelegator {
         if (IaisCommonUtils.isNotEmpty(licPremisesDtos)) {
             for (int i = 0; i < size; i++) {
                 LicPremisesDto licPremisesDto = licPremisesDtos.get(i);
+                licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.YES));
                 licPremisesDto.setTcuDate(IaisEGPHelper.parseToDate(newTcuDates.get(i), AppConsts.DEFAULT_DATE_FORMAT));
                 licPremisesDto.setTcuDateRemarks(newTcuDateRemarks.get(i));
             }
@@ -178,7 +193,7 @@ public class ChangeTcuDateDelegator {
         }
     }
 
-    private Map<String, String> validate(HttpServletRequest request, int size, List<String> newTcuDates, List<String> newTcuDateRemarks) {
+    private Map<String, String> validateChangeTCUDate(HttpServletRequest request, int size, List<String> newTcuDates, List<String> newTcuDateRemarks) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
         for (int i = 0; i < size; i++) {
@@ -197,7 +212,7 @@ public class ChangeTcuDateDelegator {
                 }
             }
             if (StringUtil.isNotEmpty(newTcuDateRemark) && newTcuDateRemark.length() > 300) {
-                errMap.put(keyNewTcuDateRemarks + i, repLength("Remarks", "300"));
+                errMap.put(keyNewTcuDateRemarks + i, AppValidatorHelper.repLength("Remarks", "300"));
             }
         }
         return errMap;
@@ -218,13 +233,26 @@ public class ChangeTcuDateDelegator {
         HttpServletRequest request = bpc.request;
         LicPremisesQueryDto filterParam = getFilterParamFromPage(request);
         String tcuDateFromStr = ParamUtil.getString(request, keyTcuDateFrom);
-        String tcuDateFrom = Formatter.formatDateTime(Formatter.parseDate(tcuDateFromStr),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date fromDate = Formatter.parseDate(tcuDateFromStr);
+        String tcuDateFrom = Formatter.formatDateTime(fromDate, SystemAdminBaseConstants.DATE_FORMAT);
         String tcuDateToStr = ParamUtil.getString(request, keyTcuDateTo);
-        String tcuDateTo = Formatter.formatDateTime(Formatter.parseDate(tcuDateToStr),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date toDate = Formatter.parseDate(tcuDateToStr);
+        String tcuDateTo = Formatter.formatDateTime(toDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String psnName = ParamUtil.getString(request, keyPsnName);
+        String psnType = ParamUtil.getString(request, keyPsnType);
         ParamUtil.setSessionAttr(request, keyTcuDateFrom, tcuDateFromStr);
         ParamUtil.setSessionAttr(request, keyTcuDateTo, tcuDateToStr);
+        ParamUtil.setSessionAttr(request, keyPsnName, psnName);
+        ParamUtil.setSessionAttr(request, keyPsnType, psnType);
+
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+
+        ParamUtil.setSessionAttr(request,keyEmptyMessage,"GENERAL_ACK018");
+        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr)) {
+            if (fromDate.after(toDate)) {
+                ParamUtil.setSessionAttr(request,keyEmptyMessage,"AUDIT_ERR010");
+            }
+        }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         if (StringUtil.isNotEmpty(filterParam.getLicenceNo())) {
@@ -259,7 +287,13 @@ public class ChangeTcuDateDelegator {
             searchParam.addFilter("date_to", tcuDateTo, true);
         }
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        if (StringUtil.isNotEmpty(psnName)) {
+            searchParam.addFilter("psn_name", psnName, true);
+        }
+
+        if (StringUtil.isNotEmpty(psnType)) {
+            searchParam.addFilter("psn_type", psnType, true);
+        }
     }
 
     public void sort(BaseProcessClass bpc) {
@@ -287,59 +321,4 @@ public class ChangeTcuDateDelegator {
         return filterParam;
     }
 
-    private String repLength(String... ars) {
-        int length = ars.length;
-        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
-        if (length == 0) {
-            repLength(general_err0041);
-        } else if (length == 1) {
-            String field = ars[0].replace("{field}", "field");
-            field = field.replace("{maxlength}", "100");
-            return field;
-        } else if (length == 2) {
-            Iterator<String> iterator = Arrays.stream(ars).iterator();
-            if (iterator.hasNext()) {
-                general_err0041 = general_err0041.replace("{field}", iterator.next());
-            }
-            if (iterator.hasNext()) {
-                general_err0041 = general_err0041.replace("{maxlength}", iterator.next());
-            }
-
-            return general_err0041;
-        } else if (length == 3) {
-            Iterator<String> iterator = Arrays.stream(ars).iterator();
-            String ars0 = iterator.hasNext() ? iterator.next() : "";
-            String ars1 = iterator.hasNext() ? iterator.next() : "";
-            String messageDesc = MessageUtil.getMessageDesc(ars0);
-            messageDesc = messageDesc.replace("{field}", ars0);
-            messageDesc = messageDesc.replace("{maxlength}", ars1);
-            return messageDesc;
-        } else if (length == 4) {
-            Iterator<String> iterator = Arrays.stream(ars).iterator();
-            String ars0 = iterator.hasNext() ? iterator.next() : "";
-            String ars1 = iterator.hasNext() ? iterator.next() : "";
-            String ars2 = iterator.hasNext() ? iterator.next() : "";
-            String ars3 = iterator.hasNext() ? iterator.next() : "";
-            general_err0041 = general_err0041.replace(ars0, ars1);
-            general_err0041 = general_err0041.replace(ars2, ars3);
-            return general_err0041;
-        } else if (length == 5) {
-            Iterator<String> iterator = Arrays.stream(ars).iterator();
-            String ars0 = iterator.hasNext() ? iterator.next() : "";
-            String messageDesc = MessageUtil.getMessageDesc(ars0);
-            if (messageDesc != null) {
-                String ars1 = iterator.hasNext() ? iterator.next() : "";
-                String ars2 = iterator.hasNext() ? iterator.next() : "";
-                String ars3 = iterator.hasNext() ? iterator.next() : "";
-                String ars4 = iterator.hasNext() ? iterator.next() : "";
-                messageDesc = messageDesc.replace(ars1, ars2);
-                messageDesc = messageDesc.replace(ars3, ars4);
-            }
-            return messageDesc;
-        } else {
-            return general_err0041;
-        }
-
-        return general_err0041;
-    }
 }

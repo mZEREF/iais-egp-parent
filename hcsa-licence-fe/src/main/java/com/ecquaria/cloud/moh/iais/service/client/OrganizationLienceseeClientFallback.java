@@ -6,12 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 /**
  * OrganizationLienceseeClientFallback
@@ -19,8 +19,7 @@ import org.springframework.http.HttpHeaders;
  * @author caijing
  * @date 2020/1/15
  */
-public class OrganizationLienceseeClientFallback
-        implements OrganizationLienceseeClient{
+public class OrganizationLienceseeClientFallback implements OrganizationLienceseeClient{
     @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByUen(String uenNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -126,14 +125,6 @@ public class OrganizationLienceseeClientFallback
 
     @Override
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String user_id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

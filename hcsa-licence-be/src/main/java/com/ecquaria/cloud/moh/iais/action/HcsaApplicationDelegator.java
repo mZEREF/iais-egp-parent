@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -21,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -75,6 +75,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -90,7 +91,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SelectHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.method.RfiCanCheck;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -222,11 +222,9 @@ public class HcsaApplicationDelegator {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
-
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
-    @Autowired
-    private RfiCanCheck rfiCanCheck;
+
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -386,43 +384,6 @@ public class HcsaApplicationDelegator {
             setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        if (applicationDto != null) {
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())|| ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
-                //RFC
-                String applicationNo = applicationDto.getApplicationNo();
-                List<AppEditSelectDto> appEditSelectDtosByAppIds = rfiCanCheck.getAppEditSelectDtoSForRfi(applicationNo);
-                if (!appEditSelectDtosByAppIds.isEmpty()) {
-                    applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
-                }
-            } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-                if (!StringUtil.isEmpty(applicationDto.getId())) {
-                    List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_NEW);
-                    if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
-                        applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
-                    } else {
-                        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                        appEditSelectDto.setLicenseeEdit(true);
-                        appEditSelectDto.setPremisesEdit(true);
-                        appEditSelectDto.setDocEdit(true);
-                        appEditSelectDto.setServiceEdit(true);
-                        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-                    }
-                }
-
-            } else {
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setPremisesEdit(true);
-                appEditSelectDto.setDocEdit(true);
-                appEditSelectDto.setMedAlertEdit(true);
-                appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                appEditSelectDto.setServiceEdit(true);
-                appEditSelectDto.setPoEdit(true);
-                appEditSelectDto.setDpoEdit(true);
-                applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-            }
-        }
         bpc.request.getSession().removeAttribute("appEditSelectDto");
         bpc.request.getSession().removeAttribute("pageAppEditSelectDto");
         String roleId = taskDto.getRoleId();
@@ -439,18 +400,29 @@ public class HcsaApplicationDelegator {
         setVerifiedDropdownValue(bpc.request, applicationViewDto, taskDto);
         //set session
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        // for edit application
+        checkForEditingApplication(bpc.request);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
-
-    private void dealWithDoc(ApplicationViewDto applicationViewDto){
-        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
-        if(appSupDocDtoList!=null){
-            for(AppSupDocDto v : appSupDocDtoList){
-
-            }
+    private void checkForEditingApplication(HttpServletRequest request) {
+        // check from editing application
+        String appError = ParamUtil.getString(request, HcsaAppConst.ERROR_APP);
+        if (StringUtil.isNotEmpty(appError)) {
+            ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, StringUtil.clarify(appError));
         }
+        // show edit application
+        boolean showBtn = true;
+        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "nextStages");
+        if (nextStageList != null) {
+            showBtn = nextStageList.stream()
+                    .map(SelectOption::getValue)
+                    .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
+        }
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
+                && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
     }
+
     /**
      * StartStep: chooseStage
      *
@@ -755,6 +727,12 @@ public class HcsaApplicationDelegator {
                 }
             } else {
                 log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:" + applicationViewDto.getApplicationGroupDto().getGroupNo()));
+            }
+            //Check for BE update
+            Map<String, String> rslt = applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_BTN_APR, null,
+                    applicationViewDto.getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
+            if (IaisCommonUtils.isNotEmpty(rslt)) {
+                errMap.put("nextStage", rslt.get(HcsaAppConst.ERROR_APP));
             }
         }
         log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
@@ -3973,7 +3951,8 @@ public class HcsaApplicationDelegator {
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
                 || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
             if (rfiCount == 0) {
-                nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
+                        "Request For Information"));
             }
         }
 

@@ -13,7 +13,7 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <h2>TCU Date(s) has been updated successfully</h2>
+            <h2><iais:message key="AUDIT_ACK005" /></h2>
           </div>
         </div>
         <div align="left"><span><a href="/hcsa-licence-web/eservicecontinue/INTRANET/MohChangeTCUDate/1/PremiseList"><em class="fa fa-angle-left"></em> Back</a></span></div>

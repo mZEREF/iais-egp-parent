@@ -6,8 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -28,8 +28,6 @@ public class AppealPrintDelegator {
 
     @Autowired
     CessationApplicationFeDelegator cessationApplicationFeDelegator;
-
-
 
     public void prepareData(BaseProcessClass bpc){
         log.info("------>prepareData start<------");
@@ -84,8 +82,7 @@ public class AppealPrintDelegator {
                         Long size=length/1024;
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();

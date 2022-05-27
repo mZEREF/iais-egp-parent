@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -48,14 +47,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
+import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -63,17 +64,18 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +97,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKMESSAGE;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.OLDAPPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.REQUESTINFORMATIONCONFIG;
+import static com.ecquaria.cloud.moh.iais.constant.RfcConst.PREMISESLISTQUERYDTO;
+import static com.ecquaria.cloud.moh.iais.constant.RfcConst.SWITCH_VALUE;
 
 /****
  *
@@ -131,14 +139,15 @@ public class RequestForChangeMenuDelegator {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private AppCommService appCommService;
     /**
      * @param bpc
      * @Decription start
      */
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do start start ...."));
-        appSubmissionService.clearSession(bpc.request);
+        DealSessionUtil.clearSession(bpc.request);
         removeSession(bpc);
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         HcsaServiceCacheHelper.flushServiceMapping();
@@ -169,7 +178,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void personnleListStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do personnleListStart start ...."));
-        appSubmissionService.clearSession(bpc.request);
+        DealSessionUtil.clearSession(bpc.request);
         removeSession(bpc);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PERSONAL_LIST);
@@ -189,7 +198,7 @@ public class RequestForChangeMenuDelegator {
                 action = "prePremisesList";
             }
         }
-        Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
         if (rfi != null) {
             action = "prePremisesEdit";
             if ("prePremisesList".equals(action)) {
@@ -207,12 +216,12 @@ public class RequestForChangeMenuDelegator {
      */
     public void controlSwitch(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the controlSwitch start ...."));
-        String switchValue = (String) ParamUtil.getRequestAttr(bpc.request, RfcConst.SWITCH_VALUE);
+        String switchValue = (String) ParamUtil.getRequestAttr(bpc.request, SWITCH_VALUE);
         if (StringUtil.isEmpty(switchValue)) {
             switchValue = "loading";
         }
         if ("doSubmit".equals(switchValue)) {
-            Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+            Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
             if (rfi != null) {
                 switchValue = "doRfi";
             }
@@ -316,9 +325,9 @@ public class RequestForChangeMenuDelegator {
      */
     public void preparePremisesEdit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
-        NewApplicationHelper.setTimeList(bpc.request);
+        ApplicationHelper.setTimeList(bpc.request);
 
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesEdit(true);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -329,11 +338,11 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setLicenseeId(licenseeId);
             }
         }
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, PREMISESLISTQUERYDTO);
 
         List<AppGrpPremisesDto> reloadPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = null;
-        Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
         if (appSubmissionDto != null) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if (rfi == null) {
@@ -368,16 +377,16 @@ public class RequestForChangeMenuDelegator {
         if (appGrpPremisesDto != null || rfi != null) {
             log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:" + licenseeId));
             //premise select
-            NewApplicationHelper.setPremSelect(bpc.request);
+            ApplicationHelper.setPremSelect(bpc.request);
             if (rfi == null) {
                 //when rfc/renew check is select existing premises
-                String oldPremSel = NewApplicationHelper.getPremisesKey(premisesListQueryDto);
+                String oldPremSel = ApplicationHelper.getPremisesKey(premisesListQueryDto);
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
                 if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
                     for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                        NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                        ApplicationHelper.setWrkTime(appGrpPremisesDto1);
                     }
                 }
             }
@@ -400,7 +409,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
-        /*boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        /*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         if(isRfi&&appSubmissionDto!= null&&appSubmissionDto.getAppGrpPremisesDtoList()!=null){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto v : appGrpPremisesDtoList){
@@ -417,12 +426,12 @@ public class RequestForChangeMenuDelegator {
             }
 
         }else if (appSubmissionDto != null) {
-            boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            boolean eqHciCode = RfcHelper.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
             appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
             bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         }*/
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Mode of Service Delivery Amendment");
         ParamUtil.setRequestAttr(bpc.request, "premisesList", AppConsts.YES);
@@ -459,7 +468,8 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = null;
         String status = "";
         if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
-            List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
+            List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request,
+                    RfcConst.PREMISESLISTDTOS);
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
@@ -480,7 +490,7 @@ public class RequestForChangeMenuDelegator {
                     if (!IaisCommonUtils.isEmpty(names)) {
                         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
                         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                        NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                        ApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     }
                     status = premisesListQueryDto.getLicenceStatus();
                 }
@@ -496,9 +506,9 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
         }
 
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
-        NewApplicationHelper.setOldAppSubmissionDto((AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto), bpc.request);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO, premisesListQueryDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ApplicationHelper.setOldAppSubmissionDto((AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto), bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, PREMISESLISTQUERYDTO, premisesListQueryDto);
 
         //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, crudActionType);
         log.debug(StringUtil.changeForLog("the do doPremisesList end ...."));
@@ -515,8 +525,8 @@ public class RequestForChangeMenuDelegator {
         if ("back".equals(action)) {
             return;
         }
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = NewApplicationDelegator.genAppGrpPremisesDtoList(bpc.request);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         List<LicenceDto> licenceDtoList = (List<LicenceDto>)bpc.getSession().getAttribute("licenceDtoList");
         if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
@@ -524,11 +534,11 @@ public class RequestForChangeMenuDelegator {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
 
-        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, null,
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, null,
                 isRfi, true);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
@@ -562,8 +572,8 @@ public class RequestForChangeMenuDelegator {
             return;
         }
 
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "doSubmit");
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, SWITCH_VALUE, "doSubmit");
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         //test
         //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
         log.debug(StringUtil.changeForLog("the do doPremisesEdit end ...."));
@@ -675,7 +685,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
@@ -716,17 +726,17 @@ public class RequestForChangeMenuDelegator {
                 return;
             }
         }
-        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
+        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtosByLicenceIds(licenceIds);
         // validate the related app submissions
         Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
         for (AppSubmissionDto dto : appSubmissionDtos) {
-            List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+            List<String> errorList = AppValidatorHelper.doPreviewSubmitValidate(null, dto, false);
             if (!errorList.isEmpty()) {
                 errorListMap.put(dto, errorList);
             }
         }
         if (!errorListMap.isEmpty()) {
-            bpc.request.setAttribute(RfcConst.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+            bpc.request.setAttribute(RfcConst.SHOW_OTHER_ERROR, AppValidatorHelper.getErrorMsg(errorListMap));
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
             return;
         }
@@ -740,10 +750,10 @@ public class RequestForChangeMenuDelegator {
         }
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
+            appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
                     appEditSelectDto, null);
             if ("replace".equals(editSelect)) {
-                replacePersonnelDate(appSubmissionDto, newPerson, NewApplicationHelper.getPersonKey(oldPersonnelDto.getNationality(),
+                replacePersonnelDate(appSubmissionDto, newPerson, ApplicationHelper.getPersonKey(oldPersonnelDto.getNationality(),
                         personnelEditDto.getIdType(),oldPersonnelDto.getIdNo()));
             } else {
                 setPersonnelDate(appSubmissionDto, personnelEditDto);
@@ -763,11 +773,11 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the paymentSwitch start ...."));
         String switchVal = ParamUtil.getString(bpc.request,"psnSwitch");
         if("back".equals(switchVal)){
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO,appSubmissionDto);
         }else {
             List<AppSubmissionDto> appSubmissionDtos=( List<AppSubmissionDto>)bpc.request.getSession().getAttribute("appSubmissionDtos");
             if(appSubmissionDtos!=null){
@@ -884,7 +894,7 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("psnName1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
             // check person key
-            NewApplicationHelper.validateId(nationality1, idType1, idNo1, "nationality1", "idType1", "idNo1", errMap);
+            AppValidatorHelper.validateId(nationality1, idType1, idNo1, "nationality1", "idType1", "idNo1", errMap);
 
             if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
@@ -957,8 +967,8 @@ public class RequestForChangeMenuDelegator {
                 String nationality = split[0];
                 String idType = split[1];
                 String idNo = split[2];
-                String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
-                Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+                String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
+                Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
                 AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
 
                 newPerson.setIdNo(psn.getIdNo());
@@ -1001,7 +1011,7 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("idNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
                 }
                 // check person key
-                NewApplicationHelper.validateId(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo(), "nationality2",
+                AppValidatorHelper.validateId(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo(), "nationality2",
                         "idType2", "idNo2", errMap);
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
@@ -1086,35 +1096,13 @@ public class RequestForChangeMenuDelegator {
                     idNos.add(idNo);
                     String name = dto.getName();
                     String idType = dto.getIdType();
-                    SelectOption s = new SelectOption(NewApplicationHelper.getPersonKey(dto.getNationality(), idType, idNo),
-                            NewApplicationHelper.getPersonView(idType, idNo, name));
+                    SelectOption s = new SelectOption(ApplicationHelper.getPersonKey(dto.getNationality(), idType, idNo),
+                            ApplicationHelper.getPersonView(idType, idNo, name));
                     selectOptions.add(s);
                 }
             }
         }
         return selectOptions;
-    }
-
-    private void setLicseeAndPsnDropDown(BaseProcessClass bpc) {
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-            //exchange order
-            Map<String, AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request, licPersonList);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP, (Serializable) licPersonMap);
-            Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "PersonSelectMap");
-            if (personMap != null) {
-                licPersonMap.forEach((k, v) -> {
-                    personMap.put(k, v);
-                });
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-            } else {
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) licPersonMap);
-            }
-        } else {
-            log.info(StringUtil.changeForLog("user info is empty....."));
-        }
     }
 
     private List<SelectOption> getPsnType() {
@@ -1129,7 +1117,7 @@ public class RequestForChangeMenuDelegator {
     }
 
     public void doPersonnelList(BaseProcessClass bpc) {
-        setLicseeAndPsnDropDown(bpc);
+        DealSessionUtil.setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(bpc.request), null, bpc.request);
         log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
         String actionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
@@ -1168,14 +1156,14 @@ public class RequestForChangeMenuDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        String emailAddr = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+        String emailAddr = ApplicationHelper.emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddr);
         ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", "N/A");
         ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         ParamUtil.setSessionAttr(bpc.request, "dAmount", "$0");
         ParamUtil.setSessionAttr(bpc.request, "payMethod", "N/A");
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+        ParamUtil.setSessionAttr(bpc.request, SWITCH_VALUE, "ack");
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
@@ -1201,7 +1189,7 @@ public class RequestForChangeMenuDelegator {
                 if (appGrpSet.contains(appGrpNo)) {
                     continue;
                 }
-                List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+                List<ApplicationDto> entity = appCommService.getApplicationsByGroupNo(appGrpNo);
                 if (entity != null && !entity.isEmpty()) {
                     for (ApplicationDto applicationDto : entity) {
                         applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
@@ -1240,14 +1228,14 @@ public class RequestForChangeMenuDelegator {
             log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+        String emailAddress = ApplicationHelper.emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
     public void selectLicence(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do selectLicence start ...."));
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, PREMISESLISTQUERYDTO);
         String premisesId = premisesListQueryDto.getPremisesId();
         List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByPremisesId(premisesId);
         bpc.request.setAttribute("licenceDtoList", licenceDtoList);
@@ -1260,7 +1248,7 @@ public class RequestForChangeMenuDelegator {
             log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-        String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+        String emailAddress = ApplicationHelper.emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
     }
 
@@ -1283,22 +1271,22 @@ public class RequestForChangeMenuDelegator {
             }
         }
         bpc.request.getSession().setAttribute("dAmount", Formatter.formatterMoney(dAmount));
-//        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+//        boolean isGiroAcc = appSubmissionService.isGiroAccount(ApplicationHelper.getLicenseeId(appSubmissionDtos));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String orgId = "";
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
         }
-        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if(mainSubmisDto != null){
             boolean isGiroAcc = false;
-            List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, mainSubmisDto);
+            List<SelectOption> giroAccSel = ApplicationHelper.getGiroAccOptions(appSubmissionDtos, mainSubmisDto);
             if (!IaisCommonUtils.isEmpty(giroAccSel)) {
                 isGiroAcc = true;
                 ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
             }
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
-            ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
         }
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
@@ -1392,7 +1380,7 @@ public class RequestForChangeMenuDelegator {
             serviceConfigService.updatePaymentStatus(appGrp);
 //            serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            ParamUtil.setRequestAttr(bpc.request, SWITCH_VALUE, "ack");
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             //todo change
             StringBuilder url = new StringBuilder();
@@ -1486,7 +1474,7 @@ public class RequestForChangeMenuDelegator {
         String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
         ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, switchValue);
+        ParamUtil.setRequestAttr(bpc.request, SWITCH_VALUE, switchValue);
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
 
@@ -1503,16 +1491,16 @@ public class RequestForChangeMenuDelegator {
 
     public void doSubmit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+        ParamUtil.setRequestAttr(bpc.request, SWITCH_VALUE, "loading");
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
         AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, PREMISESLISTQUERYDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
         for(AppGrpPremisesDto v : appGrpPremisesDtoList1){
             v.setLicenceDtos(selectLicence);
         }
-        boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean eqHciCode = RfcHelper.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
         bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
         if (selectLicence != null) {
@@ -1546,7 +1534,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
 
-        boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList1,
+        boolean eqGrpPremises = RfcHelper.isChangeGrpPremises(appGrpPremisesDtoList1,
                 oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
@@ -1557,7 +1545,7 @@ public class RequestForChangeMenuDelegator {
         if (!StringUtil.isEmpty(licenceId)) {
             List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-                ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+                ParamUtil.setRequestAttr(bpc.request, SWITCH_VALUE, "ack");
                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
                 return;
             }
@@ -1577,7 +1565,7 @@ public class RequestForChangeMenuDelegator {
         //amount
         boolean eqHciNameChange = !compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         boolean changeInLocation = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto,
+        boolean eqAddFloorNo = RfcHelper.isChangeFloorUnit(appSubmissionDto,
                 oldAppSubmissionDtoappSubmissionDto);
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
@@ -1588,9 +1576,9 @@ public class RequestForChangeMenuDelegator {
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
-        NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
 
-        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
@@ -1599,12 +1587,12 @@ public class RequestForChangeMenuDelegator {
         }
         Map<String, String> errorMap = null;
         if (selectLicence != null) {
-            errorMap = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),
+            errorMap = appCommService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),
                     total, null, appGroupNo, appEditSelectDto, appSubmissionDtos);
             log.info(StringUtil.changeForLog("The affected data is valid - " + errorMap));
         }
         if (errorMap != null && !errorMap.isEmpty()) {
-            NewApplicationHelper.setErrorRequest(errorMap, true, bpc.request);
+            AppValidatorHelper.setErrorRequest(errorMap, true, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
         }
@@ -1654,7 +1642,7 @@ public class RequestForChangeMenuDelegator {
     public void doRequestForInformationSubmit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setDocEdit(false);
@@ -1670,7 +1658,7 @@ public class RequestForChangeMenuDelegator {
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
        /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
         ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "The request for information save success");
@@ -1681,7 +1669,7 @@ public class RequestForChangeMenuDelegator {
     public void doPayValidate(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("do doPayValidate start ..."));
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         appSubmissionDto.setPaymentMethod(payMethod);
         String giroAccNum = "";
@@ -1703,15 +1691,15 @@ public class RequestForChangeMenuDelegator {
                 }
                 if(!errorMap.isEmpty()){
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
-                    NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                    AppValidatorHelper.setAudiErrMap(ApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 }
                 if(!errorMap.isEmpty()){
                     boolean isRfi = false;
-                    NewApplicationHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
+                    AppValidatorHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
-                    ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+                    ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                     return;
                 }
             }
@@ -1736,7 +1724,7 @@ public class RequestForChangeMenuDelegator {
             String eqHciCode = bpc.request.getParameter("eqHciCode");
             bpc.request.setAttribute("eqHciCode",eqHciCode);
         }
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));
     }
 
@@ -1908,7 +1896,7 @@ public class RequestForChangeMenuDelegator {
         if (targetReletedInfo == null || newPerson == null || psnType == null) {
             return;
         }
-        String newKey = NewApplicationHelper.getPersonKey(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo());
+        String newKey = ApplicationHelper.getPersonKey(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo());
         boolean changePersonnel = !Objects.equals(personKey, newKey);
         List<AppSvcPrincipalOfficersDto> targetList = null;
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
@@ -1925,7 +1913,7 @@ public class RequestForChangeMenuDelegator {
         }
         if (!IaisCommonUtils.isEmpty(targetList)) {
             for (AppSvcPrincipalOfficersDto target : targetList) {
-                if (Objects.equals(NewApplicationHelper.getPersonKey(target), personKey)) {
+                if (Objects.equals(ApplicationHelper.getPersonKey(target), personKey)) {
                     if (changePersonnel) {
                         target.setIdNo(newPerson.getIdNo());
                         target.setIdType(newPerson.getIdType());
@@ -1957,24 +1945,24 @@ public class RequestForChangeMenuDelegator {
 
             if (appSubmissionDto != null) {
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
-                List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
+                //List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
                 appSubmissionDto.setNeedEditController(true);
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                    ApplicationHelper.setWrkTime(appGrpPremisesDto1);
                 }
-                if (appSubmissionDtoByGroupNo != null) {
+//                if (appSubmissionDtoByGroupNo != null) {
               /*  for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
                     appSubmissionDto1.setNeedEditController(true);
                     for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto1.getAppGrpPremisesDtoList()) {
-                        NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                        ApplicationHelper.setWrkTime(appGrpPremisesDto1);
                     }
                 }*/
-                }
+//                }
 
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, RfcConst.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, "test");
+                ParamUtil.setSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, "test");
             }
 
 

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author weilu
@@ -114,6 +116,12 @@ public class PaymentServiceImpl implements PaymentService {
         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
             paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
+        if(paymentRequestDto.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
+            List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            groupDtoList.add(applicationGroupDto);
+            paymentAppGrpClient.updateFeApplicationGroupStatus(groupDtoList);
         }
         paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.saveHcsaPayment(paymentDto);
@@ -205,6 +213,12 @@ public class PaymentServiceImpl implements PaymentService {
         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
             paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
+        if(paymentRequestDto.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
+            List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            groupDtoList.add(applicationGroupDto);
+            paymentAppGrpClient.updateFeApplicationGroupStatus(groupDtoList);
         }
         paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.updatePaymentResquset(paymentRequestDto);

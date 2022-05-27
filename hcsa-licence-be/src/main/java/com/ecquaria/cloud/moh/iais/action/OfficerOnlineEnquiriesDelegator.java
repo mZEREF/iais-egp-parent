@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -78,8 +79,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
     @Autowired
     RequestForInformationService requestForInformationService;
-    @Autowired
-    HcsaConfigClient hcsaConfigClient;
+//    @Autowired
+//    HcsaConfigClient hcsaConfigClient;
+    ConfigCommService configCommService;
     @Autowired
     OrganizationClient organizationClient;
     @Autowired
@@ -573,7 +575,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
-                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList(serviceLicenceType)).getEntity();
+                    List<HcsaServiceDto> svcDto = configCommService.getHcsaServiceByNames(Collections.singletonList(serviceLicenceType));
                     //filters.put("svc_id",svcDto.getId());
                     for (HcsaServiceDto r:svcDto
                     ) {
@@ -1066,7 +1068,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
-                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name"))).getEntity();
+                    List<HcsaServiceDto> svcDto = configCommService.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name")));
                     //filters.put("svc_id",svcDto.getId());
                     for (HcsaServiceDto r:svcDto
                     ) {
@@ -1272,7 +1274,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
-                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name"))).getEntity();
+                    List<HcsaServiceDto> svcDto = configCommService.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name")));
                     //filters.put("svc_id",svcDto.getId());
                     for (HcsaServiceDto r:svcDto
                     ) {
@@ -1519,7 +1521,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
-                    List<HcsaServiceDto> svcDto = hcsaConfigClient.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name"))).getEntity();
+                    List<HcsaServiceDto> svcDto = configCommService.getHcsaServiceByNames(Collections.singletonList((String) parm.getFilters().get("svc_name")));
                     //filters.put("svc_id",svcDto.getId());
                     for (HcsaServiceDto r:svcDto
                     ) {
@@ -1683,7 +1685,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         log.debug("============> End of the query!");
         List<ReqForInfoSearchListDto> queryList=IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
+        List<HcsaServiceDto> entity = configCommService.allHcsaService();
         Map<String,String> mapIdSvcName=IaisCommonUtils.genNewHashMap();
         for (HcsaServiceDto svc:entity
         ) {

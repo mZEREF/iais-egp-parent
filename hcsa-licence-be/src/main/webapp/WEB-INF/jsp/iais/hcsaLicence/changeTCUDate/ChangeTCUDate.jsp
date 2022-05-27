@@ -37,7 +37,7 @@
                                     <iais:sortableHeader style="width:5%" needSort="false" field="svc_name"
                                                          value="Service Name"/>
                                     <iais:sortableHeader style="width:5%" needSort="false" field="tcu_date"
-                                                         value="TCU Date"/>
+                                                         value="Previous TCU Date"/>
                                     <iais:sortableHeader style="width:10%" needSort="false" field="new_tcu_date"
                                                          value="New TCU Date"/>
                                     <iais:sortableHeader style="width:15%" needSort="false" field="remarks"
@@ -53,8 +53,9 @@
                                         <td align="left"><c:out value="${licencePremise.hciCode}"/></td>
                                         <td align="left"><c:out value="${licencePremise.address}"/></td>
                                         <td align="left"><c:out value="${licencePremise.serviceName}"/></td>
-                                        <td align="left"><fmt:formatDate
-                                                value="${licencePremise.tcuDate}"/></td>
+                                        <td align="left">
+                                            <fmt:formatDate value="${licencePremise.tcuDate}" pattern='dd/MM/yyyy'/>
+                                        </td>
                                         <td align="left">
                                             <iais:datePicker id="newTcuDate${status.index}"
                                                              name="newTcuDate${status.index}"
@@ -69,7 +70,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-md-12">
+                        <div>
                             <a style="float:left;color:#2199E8;" class="back" onclick="back();"><em
                                     class="fa fa-angle-left"></em> Back</a>
 

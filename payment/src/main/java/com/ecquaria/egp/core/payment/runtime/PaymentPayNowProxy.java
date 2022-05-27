@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -253,13 +254,20 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 
 		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
-		if(applicationGroupDto!=null&&status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
-			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-			applicationGroupDto.setPmtRefNo(refNo);
-			applicationGroupDto.setPaymentDt(new Date());
-			applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW);
-			PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
-
+		if(applicationGroupDto!=null){
+			if(status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+				applicationGroupDto.setPmtRefNo(refNo);
+				applicationGroupDto.setPaymentDt(new Date());
+				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW);
+				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+			}
+			else {
+				List<ApplicationGroupDto> groupDtoList= IaisCommonUtils.genNewArrayList();
+				applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+				groupDtoList.add(applicationGroupDto);
+				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().updateFeApplicationGroupStatus(groupDtoList);
+			}
 		}
 
 		try {

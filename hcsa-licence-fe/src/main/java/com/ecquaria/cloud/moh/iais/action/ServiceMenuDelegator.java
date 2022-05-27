@@ -25,18 +25,20 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -107,7 +109,7 @@ public class ServiceMenuDelegator {
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
     private static final String LIC_ALIGN_SEARCH_RESULT = "licAlignSearchResult";
 
-    public static final String DRAFT_NUMBER = NewApplicationDelegator.DRAFT_NUMBER;
+    public static final String DRAFT_NUMBER = HcsaAppConst.DRAFT_NUMBER;
 
     List<HcsaServiceDto> allbaseService;
     //List<HcsaServiceDto> allspecifiedService;
@@ -123,6 +125,9 @@ public class ServiceMenuDelegator {
     private RequestForChangeService requestForChangeService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private AppCommService appCommService;
+
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
         ParamUtil.setSessionAttr(bpc.request, "licence", null);
@@ -131,7 +136,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request,DRAFT_NUMBER,null);
-        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SELECT_DRAFT_NO,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SELECT_DRAFT_NO,null);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,null);
         ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,null);
         ParamUtil.setSessionAttr(bpc.request,APP_ALIGN_LIC, null);
@@ -360,13 +365,13 @@ public class ServiceMenuDelegator {
         Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(allChkSvcIdList);
         log.debug("premises Type size {}",premisesTypeList.size());
         List<AppAlignLicQueryDto> appAlignLicQueryDtos = appSubmissionService.getAppAlignLicQueryDto(licenseeId,svcNameList,transferToList(premisesTypeList));
-        List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId,pendAndLicPremSvc);
+        List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId,pendAndLicPremSvc);
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
         for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
             boolean pendPremOrExistLic = false;
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appAlignLicQueryDto,PremisesDto.class);
-            List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(premisesDto);
+            List<String> premisesHciList = ApplicationHelper.genPremisesHciList(premisesDto);
             for(String premisesHci:premisesHciList){
                 if(pendAndLicPremHci.contains(premisesHci)){
                     pendPremOrExistLic = true;
@@ -819,7 +824,7 @@ public class ServiceMenuDelegator {
                         String hciCode = ParamUtil.getMaskedString(bpc.request,premIndexNo+"-hciCode");
                         AppAlignLicQueryDto appAlignLicQueryDto = getAppAlignLicQueryDto(baseLicMap,baseServiceDto.getSvcName(),hciCode);
                         if(appAlignLicQueryDto != null){
-                            String premHci = NewApplicationHelper.getPremisesHci(appAlignLicQueryDto);
+                            String premHci = ApplicationHelper.getPremisesHci(appAlignLicQueryDto);
                             premHcis.add(premHci);
                             appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                             appSvcRelatedInfoDto.setServiceId(speServiceDto.getId());
@@ -848,7 +853,7 @@ public class ServiceMenuDelegator {
 
 
             //sort
-            appSvcRelatedInfoDtos = NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+            appSvcRelatedInfoDtos = ApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
             ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, (Serializable) baseReloadDtoMap);
         }
@@ -1069,7 +1074,7 @@ public class ServiceMenuDelegator {
         if(appSelectSvcDto.isChooseBaseSvc()){
             appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
             List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
-            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
+            appSvcRelatedInfoDtos = ApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
@@ -1131,8 +1136,8 @@ public class ServiceMenuDelegator {
                 appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
             }
             //add other service
-            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,false);
-            appSvcRelatedInfoDtos = NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+            appSvcRelatedInfoDtos = ApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,false);
+            appSvcRelatedInfoDtos = ApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
             List<String> speSvcIds = IaisCommonUtils.genNewArrayList();
             String alignFlag = String.valueOf(System.currentTimeMillis());
@@ -1231,7 +1236,7 @@ public class ServiceMenuDelegator {
     private void checkAction(String type, HttpServletRequest request) {
         getDraft(request);
         String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-        String attribute = (String) request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+        String attribute = (String) request.getAttribute(HcsaAppConst.SELECT_DRAFT_NO);
         if ("continue".equals(crud_action_value)) {
             if (!StringUtil.isEmpty(type)) {
                 String draftNo  = request.getParameter("draftNo");
@@ -1296,7 +1301,7 @@ public class ServiceMenuDelegator {
             String entity = applicationFeClient.selectDarft(map).getEntity();
             String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
             request.setAttribute("new_ack001",new_ack001);
-            request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
+            request.setAttribute(HcsaAppConst.SELECT_DRAFT_NO, entity);
         }
     }
 
@@ -1578,7 +1583,7 @@ public class ServiceMenuDelegator {
             List<AppAlignLicQueryDto> appAlignLicQueryDtos = baseSvcPremMap.get(svcName);
             if(!IaisCommonUtils.isEmpty(appAlignLicQueryDtos)){
                 for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
-                    premHcis.add(NewApplicationHelper.getPremisesHci(appAlignLicQueryDto));
+                    premHcis.add(ApplicationHelper.getPremisesHci(appAlignLicQueryDto));
                 }
             }
         }
@@ -1673,10 +1678,10 @@ public class ServiceMenuDelegator {
                     hcsaServiceDtos.add(svcDto);
                 }
             }
-            List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
+            List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
             for(MenuLicenceDto menuLicenceDto:menuLicenceDtos){
                 PremisesDto premisesDto = MiscUtil.transferEntityDto(menuLicenceDto,PremisesDto.class);
-                List<String> premisesHciList = NewApplicationHelper.genPremisesHciList(premisesDto);
+                List<String> premisesHciList = ApplicationHelper.genPremisesHciList(premisesDto);
                 boolean pendPremOrExistLic = false;
                 for(String premisesHci:premisesHciList){
                     if(pendAndLicPremHci.contains(premisesHci)){

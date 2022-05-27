@@ -37,7 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
@@ -87,7 +87,7 @@ public class ClientReschedulingDelegator {
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
@@ -125,7 +125,8 @@ public class ClientReschedulingDelegator {
         dateRange =calendar.getTime();
         //rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(dateRange, SystemAdminBaseConstants.DATE_FORMAT)+"') )");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
-        HalpSearchResultHelper.setParamByFieldOrSearch(rescheduleParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"appt.code");
+        HalpSearchResultHelper.setParamByFieldOrSearch(rescheduleParam,"appServicesShow",
+                HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"appt.code");
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
         String repalceService = getRepalceService();
         rescheduleParam.setMainSql(rescheduleParam.getMainSql().replace("repalceService",repalceService));
@@ -340,7 +341,7 @@ public class ClientReschedulingDelegator {
             msgParam.setTemplateContent(emailMap);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_MSG);
 
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+            HcsaServiceDto svcDto = configCommClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
             msgParam.setSvcCodeList(svcCode);

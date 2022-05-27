@@ -350,24 +350,24 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
 }
 
 function ajaxCallSelectCheckbox(){
-        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
-        if (this.checked) {
-            destUrl += '?action=checked'
-          }else{
-            destUrl += '?action=unchecked'
-          }
-        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
-        $.ajax({
-                'url': destUrl,
-                'type': 'GET',
-                'traditional':true,
-                'async': true,
-                'success': function (data) {
-                },
-                'error': function () {
-                }
-        });
-    }
+    let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+    if (this.checked) {
+        destUrl += '?action=checked'
+      }else{
+        destUrl += '?action=unchecked'
+      }
+    destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+    $.ajax({
+            'url': destUrl,
+            'type': 'GET',
+            'traditional':true,
+            'async': true,
+            'success': function (data) {
+            },
+            'error': function () {
+            }
+    });
+}
 
 //This is All Just For Logging:
 var debugFile = true;//true: add debug logs when cloning
@@ -405,15 +405,87 @@ function fileChanged(event) {
     //What ever else you want to do when File Chooser Changed
 }
 
-function toggleOnSelect(sel, val, elem) {
-    if (isEmpty(sel)) {
+function getJqueryNode(elem) {
+    if (isEmpty(elem)) {
         return;
     }
-    if ($('#' + sel).val() == val) {
-        $('#' + elem).show();
+    var $target = $(elem);
+    if ($target.length == 0 && Object.prototype.toString.call(elem) === "[object String]") {
+        if (elem.indexOf('#') != 0) {
+            $target = $('#' + elem);
+        }
+        if ($target.length == 0 && elem.indexOf('.') != 0) {
+            $target = $('.' + sel);
+        }
+    }
+    if ($target.length == 0) {
+        return null;
+    }
+    return $target;
+}
+
+function toggleOnSelect(sel, val, elem) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    if ($selector.val() == val) {
+        $target.show();
+        $target.removeClass('hidden');
     } else {
-        $('#' + elem).hide();
-        clearFields('#' + elem);
+        $target.hide();
+        $target.addClass('hidden');
+        clearFields($target);
+    }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            $(ele).niceSelect("update");
+        }
+    });
+}
+
+function toggleOnCheck(sel, elem, hide) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    if ($selector.is(':checked')) {
+        if (hide) {
+            $target.hide();
+            $target.addClass('hidden');
+            clearFields($target);
+        } else {
+            $target.show();
+            $target.removeClass('hidden');
+        }
+    } else {
+        if (hide) {
+            $target.show();
+            $target.removeClass('hidden');
+        } else {
+            $target.hide();
+            $target.addClass('hidden');
+            clearFields($target);
+        }
+    }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            $(ele).niceSelect("update");
+        }
+    });
+}
+
+function checkMantory(sel, targetLabel, val) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(targetLabel);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    $target.find('.mandatory').remove();
+    if (isEmpty(val) && val != '' && $selector.is(':checked') || val == $selector.val()) {
+        $target.append('<span class="mandatory">*</span>');
     }
 }
 
@@ -422,15 +494,15 @@ function isEmpty(str) {
 }
 
 function clearFields(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
         $selector.find("span[name='iaisErrorMsg']").each(function () {
             $(this).html("");
         });
-        $selector = $(targetSelector).find(':input[class!="not-clear"]');
+        $selector = $selector.find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {
         return;
@@ -453,11 +525,8 @@ function clearFields(targetSelector) {
 }
 
 function fillValue(targetSelector, data, includeHidden){
-    if (isEmpty(targetSelector)) {
-        return;
-    }
-    var $selector = $(targetSelector);
-    if ($selector.length <= 0) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
     console.info("data - " + data);
@@ -520,18 +589,18 @@ function fillValue(targetSelector, data, includeHidden){
 }
 
 function disableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
     }
     $selector.each(function(i, ele) {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -545,18 +614,18 @@ function disableContent(targetSelector) {
 }
 
 function unDisableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function() {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+    $selector.each(function(i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -570,15 +639,18 @@ function unDisableContent(targetSelector) {
 }
 
 function refreshIndex(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $target = getJqueryNode(targetSelector);
+    if (isEmpty($target)) {
         return;
     }
-    if ($(targetSelector).length == 0) {
-        return;
-    }
-    $(targetSelector).each(function (k,v) {
+    $target.each(function (k,v) {
         var $ele = $(v);
-        var $selector = $ele.find(':input');
+        var $selector;
+        if ($ele.is(':input')) {
+            $selector = $ele;
+        } else {
+            $selector = $ele.find(':input')
+        }
         if ($selector.length == 0) {
             return;
         }
@@ -610,4 +682,62 @@ function refreshIndex(targetSelector) {
             }
         });
     });
+}
+
+function callCommonAjax(options, callback) {
+    if (isEmpty(options)) {
+        options = {};
+    }
+    var url = '';
+    if (!isEmpty(options.url)) {
+        url = options.url;
+    }
+    var type = 'POST';
+    if (!isEmpty(options.type)) {
+        type = options.type;
+    }
+    var async = true;
+    if (!isEmpty(options.async)) {
+        async = options.async;
+    }
+    var data = options.data;
+    if (isEmpty(data)) {
+        data = options;
+    }
+    console.log(url);
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        data: data,
+        async: async,
+        type: type,
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            } else if (!isEmpty(callback)) {
+                callFunc(callback, data);
+            }
+            dismissWaiting();
+        },
+        error: function (data) {
+            console.log("err");
+            console.log(data);
+            dismissWaiting();
+        }
+    });
+}
+
+function callFunc(func) {
+    try {
+        this[func].apply(this, Array.prototype.slice.call(arguments, 1));
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function getContextPath() {
+    var pathName = document.location.pathname;
+    var index = pathName.substr(1).indexOf("/");
+    var result = pathName.substr(0,index+1);
+    return result;
 }

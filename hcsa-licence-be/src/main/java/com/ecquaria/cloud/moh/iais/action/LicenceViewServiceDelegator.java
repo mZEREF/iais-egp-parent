@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -60,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -135,6 +137,10 @@ public class LicenceViewServiceDelegator {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+    @Autowired
+    private LicCommService licCommService;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -196,23 +202,6 @@ public class LicenceViewServiceDelegator {
         AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if (appEditSelectDto == null) {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-        }
-        if (appSubmissionDto != null && appEditSelectDto != null && appEditSelectDto.isLicenseeEdit()) {
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
-                        .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
-                if (licenseeType.isPresent()) {
-                    appEditSelectDto.setLicenseeEdit(false);
-                }
-            } else {
-                Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
-                        .map(SubLicenseeDto::getLicenseeType)
-                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
-                if (!licenseeType.isPresent()) {
-                    appEditSelectDto.setLicenseeEdit(false);
-                }
-            }
         }
         AppEditSelectDto rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");
         String isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
@@ -425,7 +414,7 @@ public class LicenceViewServiceDelegator {
                 LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 request.setAttribute("oldLicenceDto", oldLicenceDto);
             }
-            AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(entity.getOriginLicenceId()).getEntity();
+            AppSubmissionDto appSubmission = licCommService.viewAppSubmissionDto(entity.getOriginLicenceId());
             if (appSubmission != null) {
                 if (hcsaServiceDto != null) {
                     appSubmission.getAppSvcRelatedInfoDtoList().get(0).setServiceCode(hcsaServiceDto.getSvcCode());
@@ -1097,7 +1086,7 @@ public class LicenceViewServiceDelegator {
                                 appSvcDisciplineAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(allocation);
                                 //set chkName
                                 String chkName = appSvcChckListDto.getChkName();
-                                if (ApplicationHelper.PLEASEINDICATE.equals(chkName)) {
+                                if (HcsaAppConst.PLEASEINDICATE.equals(chkName)) {
                                     appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
                                 } else {
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);
@@ -1375,14 +1364,14 @@ public class LicenceViewServiceDelegator {
         oldAppSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(olAppSvcPrincipalOfficersDtoList);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
         // Svc Personnel
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = ApplicationHelper.getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
-        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = ApplicationHelper.getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         appSvcPersonnelDtoList(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcPersonnelDtoList(oldAppSvcPersonnelDtoList);
         appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);
         // section leader
-        List<AppSvcPersonnelDto> appSvcSectionLeaderList = ApplicationHelper.getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
-        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = ApplicationHelper.getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        List<AppSvcPersonnelDto> appSvcSectionLeaderList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
         appSvcPersonnelDtoList(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
         oldAppSvcRelatedInfoDto.setAppSvcSectionLeaderList(oldAppSvcSectionLeaderList);
         appSvcRelatedInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
@@ -1404,16 +1393,16 @@ public class LicenceViewServiceDelegator {
                     oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(), map);
         }
         //new service for cr
-        List<AppSvcVehicleDto> appSvcVehicleDtoList = ApplicationHelper.getList(appSvcRelatedInfoDto.getAppSvcVehicleDtoList());
-        List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = ApplicationHelper.getList(oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
+        List<AppSvcVehicleDto> appSvcVehicleDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcVehicleDtoList());
+        List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
         dealVehicle(appSvcVehicleDtoList, oldAppSvcVehicleDtoList);
         appSvcRelatedInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcVehicleDtoList(oldAppSvcVehicleDtoList);
         // CD
         List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList =
-                ApplicationHelper.getList(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
+                IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
         List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList =
-                ApplicationHelper.getList(oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
+                IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
         dealClinicalDirector(appSvcClinicalDirectorDtoList, oldAppSvcClinicalDirectorDtoList);
         appSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(oldAppSvcClinicalDirectorDtoList);
@@ -1431,9 +1420,9 @@ public class LicenceViewServiceDelegator {
         oldAppSvcRelatedInfoDto.setAppSvcChargesPageDto(oldAppSvcChargesPageDto);
         // KAH
         List<AppSvcPrincipalOfficersDto> kahList =
-                ApplicationHelper.getList(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
+                IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
         List<AppSvcPrincipalOfficersDto> oldKahList =
-                ApplicationHelper.getList(oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
+                IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
         dealClinicalDirector(kahList, oldKahList);
         appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(kahList);
         oldAppSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(oldKahList);
@@ -1515,7 +1504,7 @@ public class LicenceViewServiceDelegator {
 
     private List<AppPremisesOperationalUnitDto> getOperationalUnitDtos(AppGrpPremisesDto appGrpPremisesDto) {
         List<AppPremisesOperationalUnitDto> operationalUnitDtos =
-                ApplicationHelper.getList(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
+                IaisCommonUtils.getList(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
         AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
         currDto.setFloorNo(appGrpPremisesDto.getFloorNo());
         currDto.setUnitNo(appGrpPremisesDto.getUnitNo());
@@ -1524,8 +1513,8 @@ public class LicenceViewServiceDelegator {
     }
 
     private void dealCharges(AppSvcChargesPageDto appSvcChargesPageDto, AppSvcChargesPageDto oldAppSvcChargesPageDto) {
-        List<AppSvcChargesDto> chargesDtos = ApplicationHelper.getList(appSvcChargesPageDto.getGeneralChargesDtos());
-        List<AppSvcChargesDto> oldChargesDtos = ApplicationHelper.getList(oldAppSvcChargesPageDto.getGeneralChargesDtos());
+        List<AppSvcChargesDto> chargesDtos = IaisCommonUtils.getList(appSvcChargesPageDto.getGeneralChargesDtos());
+        List<AppSvcChargesDto> oldChargesDtos = IaisCommonUtils.getList(oldAppSvcChargesPageDto.getGeneralChargesDtos());
         int maxSize = Math.max(chargesDtos.size(), oldChargesDtos.size());
         for (int i = 0, len = maxSize - chargesDtos.size(); i < len; i++) {
             chargesDtos.add(new AppSvcChargesDto());
@@ -1535,8 +1524,8 @@ public class LicenceViewServiceDelegator {
         }
         appSvcChargesPageDto.setGeneralChargesDtos(chargesDtos);
         oldAppSvcChargesPageDto.setGeneralChargesDtos(oldChargesDtos);
-        List<AppSvcChargesDto> otherChargesDtos = ApplicationHelper.getList(appSvcChargesPageDto.getOtherChargesDtos());
-        List<AppSvcChargesDto> oldOtherChargesDtos = ApplicationHelper.getList(oldAppSvcChargesPageDto.getOtherChargesDtos());
+        List<AppSvcChargesDto> otherChargesDtos = IaisCommonUtils.getList(appSvcChargesPageDto.getOtherChargesDtos());
+        List<AppSvcChargesDto> oldOtherChargesDtos = IaisCommonUtils.getList(oldAppSvcChargesPageDto.getOtherChargesDtos());
         maxSize = Math.max(otherChargesDtos.size(), oldOtherChargesDtos.size());
         for (int i = 0, len = maxSize - otherChargesDtos.size(); i < len; i++) {
             otherChargesDtos.add(new AppSvcChargesDto());

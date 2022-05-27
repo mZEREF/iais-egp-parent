@@ -75,7 +75,8 @@ public class ViewGIROArrangementsDelegator {
             giroAccountParameter.setSortField(sortFieldName);
             //giroAccountParameter.setPageNo(1);
         }
-        HalpSearchResultHelper.setLicParamByField(giroAccountParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
+        HalpSearchResultHelper.setLicParamByField(giroAccountParam,"serviceTypesShow",
+                HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
         QueryHelp.setMainSql("giroPayee","searchByGiroAcctInfo",giroAccountParam);
         SearchResult<GiroAccountInfoQueryDto> giroAccountResult = licenceClient.searchGiroInfoByParam(giroAccountParam).getEntity();
         if(giroAccountResult.getRowCount()!=0){

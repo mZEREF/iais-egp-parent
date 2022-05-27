@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -41,15 +42,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,6 +49,14 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author Shicheng
@@ -235,28 +235,6 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             }
         }
         return iDto;
-    }
-
-    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
-    public @ResponseBody
-    void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if (StringUtil.isEmpty(fileRepoId)) {
-            log.debug(StringUtil.changeForLog("file-repo-popup id is empty"));
-            return;
-        }
-        byte[] fileData = inspectionRectificationProService.downloadFile(fileRepoId);
-        response.setContentType("application/OCTET-STREAM");
-        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-        response.addHeader("Content-Length", "" + fileData.length);
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
     }
 
     /**

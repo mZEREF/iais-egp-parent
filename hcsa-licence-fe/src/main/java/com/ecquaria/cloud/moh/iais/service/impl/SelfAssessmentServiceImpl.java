@@ -35,7 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -67,7 +67,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private ApplicationFeClient applicationFeClient;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
 
     @Autowired
     private FeEicGatewayClient gatewayClient;
@@ -104,7 +104,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
 
         //common data
-        ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
+        ChecklistConfigDto common = configCommClient.getMaxVersionCommonConfig().getEntity();
         LinkedHashMap<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
         SelfAssessmentConfig commonConfig = new SelfAssessmentConfig();
         commonConfig.setConfigId(common.getId());
@@ -121,7 +121,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String svcName = hcsaServiceDto.getSvcName();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
-            ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            ChecklistConfigDto serviceConfig = configCommClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
             List<AppPremisesCorrelationDto> correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto correlation : correlationList) {
                 String corrId = correlation.getId();
@@ -153,7 +153,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
                     List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
                     for(String subTypeName : serviceSubtypeName){
-                        ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
+                        ChecklistConfigDto subTypeConfig = configCommClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
                         if (Optional.ofNullable(subTypeConfig).isPresent()){
                             svcConfig.setHasSubtype(true);
                             Map<String, List<PremCheckItem>> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
@@ -184,7 +184,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             boolean isSubService = premise.isSubsumedType();
             if (!isSubService){
                 String subTypeId = premise.getScopeName();
-                HcsaServiceSubTypeDto subType = appConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
+                HcsaServiceSubTypeDto subType = configCommClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
                 String subTypeName = subType.getSubtypeName();
                 serviceSubtypeName.add(subTypeName);
             }

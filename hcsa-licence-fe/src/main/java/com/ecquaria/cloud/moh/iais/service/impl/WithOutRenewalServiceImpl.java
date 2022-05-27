@@ -1,20 +1,21 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.submission.client.App;
-import com.google.inject.internal.cglib.reflect.$FastConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
 
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+
     @Autowired
-    private RequestForChangeService requestForChangeService;
+    private LicCommService commService;
 
     @Override
     public WithOutRenewalDto getRenewalViewByLicNo(String licenceNo) {
@@ -37,7 +39,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Override
     public List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds) {
-        List<AppSubmissionDto> entity = licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+        List<AppSubmissionDto> entity = commService.getAppSubmissionDtosByLicenceIds(licenceIds);
         if (!IaisCommonUtils.isEmpty(entity)) {
             for (AppSubmissionDto appSubmissionDto : entity) {
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
@@ -227,7 +229,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         List<String> newFileReportIds = IaisCommonUtils.genNewArrayList();
         List<String> oldFileReportIds = IaisCommonUtils.genNewArrayList();
-        requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
+        RfcHelper.svcDocToPresmise(oldAppSubmissionDto);
 
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();

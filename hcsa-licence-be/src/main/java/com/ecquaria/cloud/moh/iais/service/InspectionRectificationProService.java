@@ -82,15 +82,6 @@ public interface InspectionRectificationProService {
 
     /**
      * @author: shicheng
-     * @Date 2020/2/26
-     * @Param: fileRepoId
-     * @return: byte[]
-     * @Descripation: downloadFile
-     */
-    byte[] downloadFile(String fileRepoId);
-
-    /**
-     * @author: shicheng
      * @Date 2020/3/1
      * @Param: refNo
      * @return: AppPremPreInspectionNcDto

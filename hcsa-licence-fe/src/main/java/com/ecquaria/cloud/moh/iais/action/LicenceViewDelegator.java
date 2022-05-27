@@ -22,11 +22,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -56,6 +58,7 @@ public class LicenceViewDelegator {
     private ServiceConfigService serviceConfigService;
     @Autowired
     RequestForChangeService requestForChangeService;
+
     /**
      * StartStep: doStart
      *
@@ -64,11 +67,11 @@ public class LicenceViewDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, null);
         String appeal = bpc.request.getParameter("appeal");
         bpc.request.setAttribute("appeal",appeal);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
     }
@@ -102,10 +105,10 @@ public class LicenceViewDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
-                        NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                        ApplicationHelper.setWrkTime(appGrpPremisesDto);
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                         //set ph name
-                        NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
+                        ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                     }
                 }
                 if(appSvcRelatedInfoDto != null){
@@ -120,31 +123,31 @@ public class LicenceViewDelegator {
                         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(hcsaServiceDto.getId());
                         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                         //set primary doc info
-                        requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                        RfcHelper.svcDocToPresmise(appSubmissionDto);
                         //set doc info
                         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
                             primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-                            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
+                            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                         }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
-                        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
+                        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                        ApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //primary doc add align for dup for prem
-                        NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                        ApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
                         //set primary doc title
-                        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+                        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
                         appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
                         //set dupForPsn attr
-                        NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
+                        ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
-                        NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
+                        ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set svc doc title
-                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
+                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                         appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
                         //set service scope info
@@ -161,9 +164,9 @@ public class LicenceViewDelegator {
                             }
                         }
                         List<HcsaSvcSubtypeOrSubsumedDto> oldHcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.getSvcSubtypeOrSubsumedByIdList(svcScopeIdList);
-                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,oldHcsaSvcSubtypeOrSubsumedDtos);
+                        ApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,oldHcsaSvcSubtypeOrSubsumedDtos);
                         //set po dpo
-                        NewApplicationHelper.setPreviewPo(appSvcRelatedInfoDto,bpc.request);
+                        ApplicationHelper.setPreviewPo(appSvcRelatedInfoDto,bpc.request);
                         appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
@@ -183,13 +186,14 @@ public class LicenceViewDelegator {
                             //692590
                             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         }
-                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,licAlignAppSvcId);
+                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap=
+                                ApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, licAlignAppSvcId);
                         ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                     }else{
                         log.info(StringUtil.changeForLog("current svc name:"+appSvcRelatedInfoDto.getServiceName()+" can not found hcsaServiceDto"));
                     }
                 }
-                ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }

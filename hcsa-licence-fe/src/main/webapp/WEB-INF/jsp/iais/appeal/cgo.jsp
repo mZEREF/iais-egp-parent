@@ -633,29 +633,11 @@
     function initNationality(parent, idTypeTag, nationalityDiv) {
       $(parent).find(idTypeTag).on('change', function () {
         var $content = $(this).closest(parent.replace(':last', ''));
-        toggleIdType(this, $content.find(nationalityDiv));
+        toggleOnSelect(this, 'IDTYPE003', $content.find(nationalityDiv));
       });
       $(parent).each(function (index, ele) {
-        toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
+        toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
       });
-    }
-
-    function toggleIdType(sel, elem) {
-      if (isEmpty(sel) || isEmpty(elem)) {
-        return;
-      }
-      var $sel = $(sel);
-      var $elem = $(elem);
-      if ($sel.length == 0 || $elem.length == 0) {
-        return;
-      }
-      console.log($sel.val());
-      if ($sel.val() == 'IDTYPE003') {
-        $elem.removeClass('hidden');
-      } else {
-        $elem.addClass('hidden');
-        clearFields($elem);
-      }
     }
 
     function unDisabledPartPage($Ele){
@@ -689,7 +671,7 @@
       $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
       <!-- Nationality -->
       fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
-      toggleIdType($CurrentPsnEle.find('select[name="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
+      toggleOnSelect($CurrentPsnEle.find('select[name="idType"]'), 'IDTYPE003', $CurrentPsnEle.find('.nationalityDiv'));
 
       $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
       $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);

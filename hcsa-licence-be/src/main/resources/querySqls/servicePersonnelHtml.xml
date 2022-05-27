@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="servicePersonnel">
+    <sql key="NuclearMedicineImaging" cached="no" remarks="generate Nuclear Medicine – Imaging Html">
+        <![CDATA[
+            <table class="personnel-content">
+                <input type="hidden" name="indexNo" value=""/>
+                <tbody>
+                <tr height="1" class="personnel-header">
+                    <td class="" style="width: 100%;">
+                        <div  class="personnel-header control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-8 control-label formtext ">
+                                    <div class="cgo-header">
+                                        <strong>Service Personnel <label class="assign-psn-item">(0)</label></strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 col-md-4 text-right">
+                                    <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeSpBtn cursorPointer"></em></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr height="1">
+                    <td class="" style="">
+                        <input type="hidden" name="isPartEdit" value="0"/>
+                        <div id="control--runtime--2" class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal personnel-sel">
+                                <div class="col-sm-5 control-label formtext ">
+                                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Select Service Personnel </label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                </div>
+                                <div class="col-sm-5 col-md-7">
+                                    <div class="">
+                                        (1)
+                                        <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="new-svc-personnel-form">
+                            <table class="control-grid" style="width:100%;">
+                                <tbody>
+                                <tr height="1" class="">
+                                    <td class="" style="">
+                                        <div class="personnel-name hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 control-label formtext ">
+                                                    <label class="control-label control-set-font control-font-label">Name </label>
+                                                    <span class="mandatory">*</span>
+                                                    <span class="upload_controls"></span>
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    <input type="text" name="name" maxlength="66" autocomplete="off"><span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="1" class="">
+                                    <td class="" style="">
+                                        <div class="personnel-designation hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 control-label formtext ">
+                                                    <label class="control-label control-set-font control-font-label">Designation </label>
+                                                    <span class="mandatory">*</span>
+                                                    <span class="upload_controls"></span>
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    (2)
+                                                    <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="1" class="otherDesignationDiv hidden">
+                                    <td class="" style="width: 100%;">
+                                        <div  class="personnel-designation hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 col-md-5">
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    <input type="text" class="otherDesignation" name="otherDesignation" maxlength="100" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="1" class="">
+                                    <td class="" style="">
+                                        <div class="personnel-qualification hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 control-label formtext ">
+                                                    <label class="control-label control-set-font control-font-label">Qualification </label>
+                                                    <span class="mandatory">*</span>
+                                                    <span class="upload_controls"></span>
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    <input type="text" name="qualification" maxlength="100" autocomplete="off"><span id="error_qualification" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="1" class="">
+                                    <td class="" style="">
+                                        <div class="personnel-regnNo hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 control-label formtext ">
+                                                    <label class="control-label control-set-font control-font-label">Professional Regn. No. </label>
+                                                    <span class="mandatory">*</span>
+                                                    <span class="upload_controls"></span>
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    <input type="text" name="regnNo" maxlength="20" autocomplete="off" onblur="aaa(this)"><span id="error_regnNo" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="1" class="">
+                                    <td class="" style="">
+                                        <div class="personnel-wrkExpYear hidden control-caption-horizontal">
+                                            <div class=" form-group form-horizontal formgap">
+                                                <div class="col-sm-5 control-label formtext ">
+                                                    <label class="control-label control-set-font control-font-label">Relevant working experience (Years) </label>
+                                                    <span class="mandatory">*</span>
+                                                    <span class="upload_controls"></span>
+                                                </div>
+                                                <div class="col-sm-5 col-md-7">
+                                                    <input type="text" name="wrkExpYear" maxlength="2" autocomplete="off"><span id="error_wrkExpYear" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        ]]>
+    </sql>
+</sqls>

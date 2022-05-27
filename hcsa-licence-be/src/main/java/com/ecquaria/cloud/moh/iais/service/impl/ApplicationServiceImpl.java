@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -20,6 +21,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -37,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -46,23 +48,24 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -97,7 +100,7 @@ import java.util.Optional;
  * @author suocheng
  * @date 11/28/2019
  */
-@Service
+@Service("applicationServiceImpl")
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -106,9 +109,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private EmailClient emailClient;
@@ -153,6 +153,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -237,7 +240,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
-        return appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
+        return applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
     }
 
     @Override
@@ -308,7 +311,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos) {
-        return  applicationClient.getRequestInformationSubmitDto(applicationDtos).getEntity();
+        return applicationClient.getRequestInformationSubmitDto(applicationDtos).getEntity();
     }
 
     @Override
@@ -1303,4 +1306,117 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info(StringUtil.changeForLog("The containStatus is end ..."));
         return result;
     }
+
+    @Override
+    public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(appGrpNo)) {
+            // Can't find the related application.
+            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
+            return result;
+        }
+        Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
+        result.putAll(map);
+        if (AppConsts.YES.equals(map.get("isRfi"))) {
+            // "There is a related application is in doing RFI, please wait for it."
+            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR014"));
+        } else  {
+            String appGrpStatus = map.get("appGrpStatus");
+            if (StringUtil.isIn(appGrpStatus, new String[]{
+                    ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE,
+                    ApplicationConsts.APPLICATION_SUCCESS_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_FIRST,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
+                    ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
+                // "There is a related application is waiting for synchronization, please wait and try it later."
+                result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR015"));
+            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
+                // "The application can't be edited."
+                result.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
+                        "edited", "action"));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            String appType) {
+        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
+        // for call back - EventbusCallBackDelegate#callback -> ${link this#updateTasks}
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionDto.getAppGrpId());
+        eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit BE RFI Application",
+                appSubmissionDto.getRfiAppNo());
+        return appSubmissionDto;
+    }
+
+    /**
+     * The call back of Submitting BE RFI
+     *
+     * {@link com.ecquaria.cloud.moh.iais.action.EventbusCallBackDelegate#callback}
+     *
+     * @param appGrpId
+     */
+    @Override
+    public void updateTasks(String appGrpId) {
+        log.info(StringUtil.changeForLog("App Group Id: " + appGrpId));
+        if (StringUtil.isEmpty(appGrpId)) {
+            log.info(StringUtil.changeForLog("No app premise correlations found!"));
+            return;
+        }
+        List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationByAppGroupId(appGrpId);
+        if (appPremisesCorrelations == null || appPremisesCorrelations.isEmpty()) {
+            log.info(StringUtil.changeForLog("No app premise correlations found!"));
+            return;
+        }
+        taskOrganizationClient.updateTasks(appPremisesCorrelations);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param check {@inheritDoc}
+     * @param curRoleId {@inheritDoc}
+     * @param appType {@inheritDoc}
+     * @param appGrpNo {@inheritDoc}
+     * @return
+     */
+    @Override
+    public Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo) {
+        //boolean checkBtn = check == HcsaAppConst.CHECKED_BTN_SHOW;
+        Map<String, String> map = new HashMap<>();
+        if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
+            if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
+                    RoleConsts.USER_ROLE_ASO,
+                    RoleConsts.USER_ROLE_PSO,
+                    RoleConsts.USER_ROLE_INSPECTIOR})) {
+                map.put(HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
+            }
+        }
+        if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(appType, new String[]{
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
+            // "Invalid Application Type."
+            map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060","Application Type", "data"));
+        }
+        if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
+            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
+            if (check == HcsaAppConst.CHECKED_BTN_APR) {
+                String appError = checkMap.get(HcsaAppConst.ERROR_APP);
+                if (StringUtil.isNotEmpty(appError)) {
+                    map.put(HcsaAppConst.ERROR_APP, appError);
+                }
+            } else {
+                map.putAll(checkMap);
+            }
+        }
+        log.info(StringUtil.changeForLog("Check[ " + check + " ] : " + map));
+        return map;
+    }
+
 }

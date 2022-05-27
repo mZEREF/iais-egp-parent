@@ -708,29 +708,7 @@ public class RequestForInformationDelegator {
             }
         }
 
-
         return errMap;
-    }
-
-    @GetMapping(value = "/file-repo")
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        log.debug(StringUtil.changeForLog("file-repo start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if(StringUtil.isEmpty(fileRepoId)){
-            log.debug(StringUtil.changeForLog("file-repo id is empty"));
-            return;
-        }
-        byte[] fileData =requestForInformationService.downloadFile(fileRepoId);
-        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-        response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("application/x-octet-stream");
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-        log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
     @GetMapping(value = "/new-rfi-html")
