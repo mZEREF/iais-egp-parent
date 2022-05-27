@@ -141,16 +141,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * HcsaApplicationDelegator
@@ -737,6 +727,12 @@ public class HcsaApplicationDelegator {
                 }
             } else {
                 log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:" + applicationViewDto.getApplicationGroupDto().getGroupNo()));
+            }
+            //Check for BE update
+            Map<String, String> rslt = applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_BTN_APR, null,
+                    applicationViewDto.getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
+            if (IaisCommonUtils.isNotEmpty(rslt)) {
+                errMap.put("nextStage", rslt.get(HcsaAppConst.ERROR_APP));
             }
         }
         log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
