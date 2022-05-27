@@ -54,7 +54,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if(!"NAT0001".equals(patientInformationDto.getNationality()) && StringUtil.isEmpty(patientInformationDto.getResidenceStatus())){
             errorMap.put("residenceStatus", "GENERAL_ERR0006");
         }
-        if(!"NAT0001".equals(patientInformationDto.getNationality()) && "TOPRS002".equals(patientInformationDto.getResidenceStatus()) && StringUtil.isEmpty(patientInformationDto.getCommResidenceInSgDate())){
+        if(!"NAT0001".equals(patientInformationDto.getNationality()) && "TOPRS005".equals(patientInformationDto.getResidenceStatus()) && StringUtil.isEmpty(patientInformationDto.getCommResidenceInSgDate())){
             errorMap.put("commResidenceInSgDate", "GENERAL_ERR0006");
         }
         if("ECGP004".equals(patientInformationDto.getEthnicGroup())){
