@@ -107,6 +107,10 @@ public class FacRegisterConstants {
     public static final String ERR_MSG_INVALID_ACTIVITY    = "Invalid facility activity type";
     public static final String ERR_MSG_RF_INVALID_ACTIVITY = "Registered Facility is only allowed to select one activity";
 
+    public static final String ELIGIBLE_DRAFT_REGISTER_DTO = "eligibleDraftRegisterDto";
+    public static final String ACTION_LOAD_DRAFT = "action_load_draft";
+    public static final String HAVE_SUITABLE_DRAFT_DATA = "haveSuitableDraftData";
+
     //view application special constant
     public static final String KEY_APP_ID                 = "appId";
     public static final String KEY_MASKED_EDIT_APP_ID     = "maskedEditId";

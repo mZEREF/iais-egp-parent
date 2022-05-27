@@ -27,6 +27,7 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input type="hidden" name="action_load_draft" value="">
 
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8" style="margin-top: -45px">
@@ -160,5 +161,6 @@
                 </div>
             </div>
         </div>
+        <%@include file="judgeResumeFromDraft.jsp"%>
     </div>
 </form>
