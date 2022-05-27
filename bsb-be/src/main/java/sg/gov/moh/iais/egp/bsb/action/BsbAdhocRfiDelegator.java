@@ -23,6 +23,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -57,14 +58,12 @@ public class BsbAdhocRfiDelegator {
     public void doStart(BaseProcessClass bpc){
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>bsbAdhocRfiDelegator");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_NEW_REQ_INFO, null);
-        ParamUtil.setSessionAttr(request, KEY_VIEW_REQ_INFO, null);
-        // TODO:
-//        String approvalId=ParamUtil.getMaskedString(request,KEY_APPROVAL_ID);
-        String approvalId = "EEC63C08-C4DC-EC11-BE76-000C298D317C";
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ADHOC_LIST_SEARCH_DTO);
+        session.removeAttribute(KEY_NEW_REQ_INFO);
+        session.removeAttribute(KEY_VIEW_REQ_INFO);
+        String approvalId = ParamUtil.getMaskedString(request,KEY_APPROVAL_ID);
         ParamUtil.setSessionAttr(request, KEY_APPROVAL_ID, approvalId);
-
     }
     /**
      * preAdhocRfi
