@@ -74,15 +74,17 @@
                                                 <span data-err-ind="remarks" class="error-msg"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group " style="z-index: 10">
-                                            <div class="col-xs-1" style="padding: 20px 0 20px 30px;">
-                                                <input type="checkbox" name="regulationDeclare" id="regulationDeclare" value="Y" <c:if test="${previewSubmit.regulationDeclare eq 'Y'}">checked="checked"</c:if> />
+                                        <c:if test="${isUncertifiedFacility || isSPFifthRegisteredFacility}">
+                                            <div class="form-group " style="z-index: 10">
+                                                <div class="col-xs-1" style="padding: 20px 0 20px 30px;">
+                                                    <input type="checkbox" name="regulationDeclare" id="regulationDeclare" value="Y" <c:if test="${previewSubmit.regulationDeclare eq 'Y'}">checked="checked"</c:if> />
+                                                </div>
+                                                <div class="col-xs-10 control-label">
+                                                    <label for="regulationDeclare" style="display: block;">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                                                    <span data-err-ind="regulationDeclare" class="error-msg"></span>
+                                                </div>
                                             </div>
-                                            <div class="col-xs-10 control-label">
-                                                <label for="regulationDeclare" style="display: block;">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
-                                                <span data-err-ind="regulationDeclare" class="error-msg"></span>
-                                            </div>
-                                        </div>
+                                        </c:if>
                                         <c:if test="${batContainsImport}">
                                         <div class="form-group " style="z-index: 10">
                                             <div class="col-xs-1" style="padding: 8px 0 20px 30px;">
