@@ -321,20 +321,15 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(topSuper));
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            topSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DsConfigHelper.clearTopSession(request);
-            DataSubmissionDto dataSubmissionDto = topSuper.getDataSubmissionDto();
-            if(dataSubmissionDto ==null){
-                dataSubmissionDto = new DataSubmissionDto();
-            }
-            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+
+            if (topSuper.getDataSubmissionDto() != null) {
+                DataSubmissionDto dataSubmissionDto = topSuper.getDataSubmissionDto();
+                dataSubmissionDto.setDeclaration(null);
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
             }
-        }
-        String declaration=null;
-        if(!StringUtil.isEmpty(topSuper.getDataSubmissionDto().getDeclaration())){
-            topSuper.getDataSubmissionDto().setDeclaration(declaration);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
