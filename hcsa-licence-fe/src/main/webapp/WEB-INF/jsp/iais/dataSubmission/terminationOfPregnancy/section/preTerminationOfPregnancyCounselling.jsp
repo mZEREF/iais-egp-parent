@@ -147,8 +147,8 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG014" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:field width="5" value="Doctor's Professional Reign / MRC No." info="${toolMsg}" style="padding-right: 0px;"/>
+                <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+                <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
                 </iais:value>
@@ -280,31 +280,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="hpbConsult" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body" >
-                        <div class="row">
-                            <div class="col-md-12">
-                                <span style="font-size: 2rem;" id="ages">
-                                    <iais:message key="please go to HPB for consultation." escape="false" />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <script>
     $(document).ready(function () {
-        var patientAge = $('#patientAge').val();
-        if(patientAge<16){
-            $('#hpbConsult').modal('show');
-        }
-
         $('#counsellingNo').change(function () {
             counsellingNo();
         });

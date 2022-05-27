@@ -90,8 +90,8 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <c:set var="toolMsg"><iais:message key="DS_MSG014" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-        <iais:field width="5" value="Doctor's Professional Reign / MRC No." info="${toolMsg}" style="padding-right: 0px;"/>
+        <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+        <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${postTerminationDto.counsellingReignNo}"/>
         </iais:value>
