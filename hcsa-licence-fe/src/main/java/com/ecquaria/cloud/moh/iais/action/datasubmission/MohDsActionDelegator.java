@@ -258,6 +258,11 @@ public class MohDsActionDelegator {
                         professionalResponseDto=new ProfessionalResponseDto();
                     }
                     dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
+                    DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                    drugSubmissionDto.setDoctorInformations("true");
+                }
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareDrugPrecribed?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSovenorInventory";

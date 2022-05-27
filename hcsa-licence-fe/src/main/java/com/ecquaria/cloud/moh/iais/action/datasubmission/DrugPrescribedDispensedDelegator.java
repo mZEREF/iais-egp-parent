@@ -139,6 +139,10 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         DpSuperDataSubmissionDto currentDpDataSubmission= DataSubmissionHelper.getCurrentDpDataSubmission(request);
+        DoctorInformationDto doctorInformationDto=currentDpDataSubmission.getDoctorInformationDto();
+        if(doctorInformationDto==null){
+            doctorInformationDto=new DoctorInformationDto();
+        }
         DrugPrescribedDispensedDto drugPrescribedDispensed=currentDpDataSubmission.getDrugPrescribedDispensedDto();
         if(drugPrescribedDispensed == null) {
             drugPrescribedDispensed = new DrugPrescribedDispensedDto();
@@ -147,9 +151,23 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if (drugSubmission == null) {
             drugSubmission = new DrugSubmissionDto();
         }
-        String doctorName = ParamUtil.getString(bpc.request, "names");
         ControllerHelper.get(request, drugSubmission);
-        drugSubmission.setDoctorName(doctorName);
+        if("true".equals(drugSubmission.getDoctorInformations())){
+            String dName = ParamUtil.getString(bpc.request, "dName");
+            String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
+            String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
+            String dQualification = ParamUtil.getString(bpc.request, "dQualification");
+            doctorInformationDto.setName(dName);
+            doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
+            doctorInformationDto.setSubSpeciality(dSubSpeciality);
+            doctorInformationDto.setSpeciality(dSpeciality);
+            doctorInformationDto.setQualification(dQualification);
+            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
+            currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+        }else {
+            String doctorName = ParamUtil.getString(bpc.request, "names");
+            drugSubmission.setDoctorName(doctorName);
+        }
         drugPrescribedDispensed.setDrugSubmission(drugSubmission);
         List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request);
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
@@ -172,6 +190,18 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(drugPrescribedDispensed, profile);
             errorMap = validationResult.retrieveAll();
+            if(StringUtil.isEmpty(doctorInformationDto.getName())){
+                errorMap.put("dName", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
+                errorMap.put("dSpeciality", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
+                errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
+                errorMap.put("dQualification", "GENERAL_ERR0006");
+            }
             verifyRfcCommon(request, errorMap);
             if (errorMap.isEmpty()) {
                 valRFC(request,drugPrescribedDispensed);

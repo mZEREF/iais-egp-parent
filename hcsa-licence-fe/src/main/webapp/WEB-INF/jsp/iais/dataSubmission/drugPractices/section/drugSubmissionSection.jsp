@@ -3,6 +3,7 @@
 <div id="flagDocMessage" hidden><iais:message key="GENERAL_ERR0042"/> </div>
 <div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
 <div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
+<c:set var="doctorInformationDto" value="${dpSuperDataSubmissionDto.doctorInformationDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -57,30 +58,62 @@
                         </a>
                     </iais:value>
                 </iais:row>
-                <iais:row id="doctorname">
-                    <iais:field width="5" value="Doctor's Name"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" id="names">
-                        ${drugSubmission.doctorName}
-                    </iais:value>
-                </iais:row>
-                <iais:row >
-                    <iais:field width="5" value="Specialty"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
-                        ${drugSubmission.specialty}
-                    </iais:value>
-                </iais:row>
-                <iais:row >
-                    <iais:field width="5" value="Sub-Specialty"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
-                        ${drugSubmission.subSpecialty}
-                    </iais:value>
-                </iais:row>
-                <iais:row >
-                    <iais:field width="5" value="Qualification"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
-                        ${drugSubmission.qualification}
-                    </iais:value>
-                </iais:row>
+                <div id="doctorInformation" <c:if test="${drugSubmission.doctorInformations eq 'true'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Doctor's Name"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" id="names">
+                            ${drugSubmission.doctorName}
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                            ${drugSubmission.specialty}
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                            ${drugSubmission.subSpecialty}
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                            ${drugSubmission.qualification}
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Doctor's Name" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:input maxLength="16" type="text" name="dName" value="${doctorInformationDto.name}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:input maxLength="16" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:input maxLength="16" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <iais:input maxLength="16" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Other-Qualification" />
                     <iais:value width="7" cssClass="col-md-7">
@@ -207,7 +240,7 @@
     <input type="hidden" name="subSpecialty" id="subSpecialtyHidden" value="${drugSubmission.subSpecialty}">
     <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
-
+<input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -337,7 +370,8 @@
     function ifClickValidateButton(){
         if ("1" == $('#showValidatePT').val()) {
             $('#validatePT').modal('show');
-        } else if ("1" == $('#showValidateVD').val()) {
+        }
+        if ("1" == $('#showValidateVD').val()) {
             $('#validateVD').modal('show');
         }
     }
@@ -421,21 +455,25 @@
             'type': 'GET',
             'success': function (data) {
                 console.log('3');
-                if (isEmpty(data)) {
+                if (isEmpty(data) || isEmpty(data.selection)) {
+                    $('#doctorInformations').val(true);
                     console.log("The return data is null");
-                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+                    $('#doctorInformationText').show();
+                    $('#doctorInformation').hide();
+                } else if('-1' == data.selection.statusCode || '-2' == data.statusCode) {
                     $('#prsErrorMsg').val($('#flagDocMessage').html());
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo();
-                } else if (data.hasException) {
+                } else if (data.selection.hasException) {
                     $('#prsErrorMsg').val($('#flagInvaMessage').html());
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo();
-                } else if ('401' == data.statusCode) {
+                } else if ('401' == data.selection.statusCode) {
                     $('#prsErrorMsg').val($('#flagPrnMessage').html());
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo();
                 } else {
+                    $('#doctorInformations').val(false);
                     loadingSp(data);
                 }
                 dismissWaiting();
@@ -455,18 +493,20 @@
         $('#names').find('p').text('');
     };
     function loadingSp(data) {
-        const name = data.name;
+        $('#doctorInformationText').hide();
+        $('#doctorInformation').show();
+        const name = data.selection.name;
         $('#names').find('p').text(name);
         $('#doctorNameHidden').val(name);
 
-        $('#specialty').find('p').text(data.specialty);
-        $('#specialtyHidden').val(data.specialty);
+        $('#specialty').find('p').text(data.selection.specialty);
+        $('#specialtyHidden').val(data.selection.specialty);
 
-        $('#subSpecialty').find('p').text(data.subspecialty);
-        $('#subSpecialtyHidden').val(data.subspecialty);
+        $('#subSpecialty').find('p').text(data.selection.subspecialty);
+        $('#subSpecialtyHidden').val(data.selection.subspecialty);
 
-        $('#qualification').find('p').text(data.qualification);
-        $('#qualificationHidden').val(data.qualification);
+        $('#qualification').find('p').text(data.selection.qualification);
+        $('#qualificationHidden').val(data.selection.qualification);
     }
 
     //Prompt 2 days after the assignment start date

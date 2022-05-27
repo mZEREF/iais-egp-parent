@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,12 +15,13 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DrugPrescribedDispensedValidator
@@ -68,8 +68,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             errorMap.putAll(result.retrieveAll());
         }
 
-        String doctorReignNo=drugSubmission.getDoctorReignNo();
-        if(!StringUtil.isEmpty(doctorReignNo)){
+        /*String doctorReignNo=drugSubmission.getDoctorReignNo();*/
+        /*if(!StringUtil.isEmpty(doctorReignNo)){
             ProfessionalResponseDto professionalResponseDto = dpDataSubmissionService.retrievePrsInfo(doctorReignNo);
             if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
                 log.debug(StringUtil.changeForLog("prs svc down ..."));
@@ -82,7 +82,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     errorMap.put("doctorReignNo", "GENERAL_ERR0042");
                 }
             }
-        }
+        }*/
         String prescriptionDate = drugSubmission.getPrescriptionDate();
         String dispensingDate = drugSubmission.getDispensingDate();
         String drugType = drugSubmission.getDrugType();

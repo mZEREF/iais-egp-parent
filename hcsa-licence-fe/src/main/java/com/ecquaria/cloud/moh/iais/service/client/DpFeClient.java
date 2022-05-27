@@ -72,4 +72,7 @@ public interface DpFeClient {
     @GetMapping(value = "/data-submission/DrugMedicationDtos/Dispensed", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(@RequestParam(name = "pSubmissionNo") String pSubmissionNo,
                                                                                                 @RequestParam(name = "dSubmissionNo") String dSubmissionNo);
+
+    @GetMapping(value = "/data-submission/dp-doctor-information/{doctorReignNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(@PathVariable("doctorReignNo") String doctorReignNo);
 }
