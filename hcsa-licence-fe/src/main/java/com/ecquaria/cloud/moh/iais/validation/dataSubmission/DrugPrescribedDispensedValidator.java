@@ -185,7 +185,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }else if(Integer.parseInt(drugMedicationDto.getQuantity())<m){
                 errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
             }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
-               if((preDrugMedicationMap != null) && drugMedicationMap != null){
+               if(drugMedicationMap != null && preDrugMedicationMap != null){
                    Integer preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
                    Integer nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
