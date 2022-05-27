@@ -17,6 +17,7 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
     private String importDeclare;
     private String accuracyDeclare;
 
+    private boolean containsBat;
     private boolean batContainsImport;
 
     @JsonIgnore
@@ -58,6 +59,14 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
 
     public void setRegulationDeclare(String regulationDeclare) {
         this.regulationDeclare = regulationDeclare;
+    }
+
+    public boolean isContainsBat() {
+        return containsBat;
+    }
+
+    public void setContainsBat(boolean containsBat) {
+        this.containsBat = containsBat;
     }
 
     public boolean isBatContainsImport() {
