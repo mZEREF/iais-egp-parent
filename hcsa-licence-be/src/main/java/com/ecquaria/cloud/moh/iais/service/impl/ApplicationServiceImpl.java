@@ -1406,7 +1406,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
             Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
-            map.putAll(checkMap);
+            if (check == HcsaAppConst.CHECKED_BTN_APR) {
+                String appError = checkMap.get(HcsaAppConst.ERROR_APP);
+                if (StringUtil.isNotEmpty(appError)) {
+                    map.put(HcsaAppConst.ERROR_APP, appError);
+                }
+            } else {
+                map.putAll(checkMap);
+            }
         }
         log.info(StringUtil.changeForLog("Check[ " + check + " ] : " + map));
         return map;
