@@ -49,7 +49,7 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                         </iais:value>
                     </iais:row>
-                   <div id="residenceStatus" <c:if test="${patientInformationDto.nationality =='NAT0001'}">style="display: none"</c:if>>
+                   <div id="residenceStatus" <c:if test="${patientInformationDto.nationality =='NAT0001' || patientInformationDto.nationality ==null}">style="display: none"</c:if>>
                        <iais:row>
                            <iais:field width="5" value="Residence Status" mandatory="true"/>
                            <iais:value width="7" cssClass="col-md-7">
@@ -250,7 +250,7 @@
         });
         $('#nationality').change(function () {
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#residenceStatus').show();
             } else {
                 $('#residenceStatus').hide();
