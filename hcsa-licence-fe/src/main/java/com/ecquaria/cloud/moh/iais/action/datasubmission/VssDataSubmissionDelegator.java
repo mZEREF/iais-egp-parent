@@ -573,14 +573,6 @@ public class VssDataSubmissionDelegator {
      */
     public void doRfc(BaseProcessClass bpc) {
         log.info(" ----- DoRfc ------ ");
-        if(isRfc(bpc.request)){
-            VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getOldVssSuperDataSubmissionDto(bpc.request);
-            VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
-            if(vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getVssTreatmentDto()!= null && vssTreatmentDto.equals(vssSuperDataSubmissionDto.getVssTreatmentDto())){
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
-            }
-        }
     }
 
     /**
