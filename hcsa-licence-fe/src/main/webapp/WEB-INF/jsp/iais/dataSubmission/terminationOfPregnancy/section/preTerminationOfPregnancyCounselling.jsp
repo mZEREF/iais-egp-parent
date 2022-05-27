@@ -147,13 +147,6 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
-                </iais:value>
-            </iais:row>
-            <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
@@ -258,6 +251,13 @@
             </iais:value>
         </iais:row>
     </div>
+        <iais:row>
+            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+            <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+        </iais:value>
+        </iais:row>
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>

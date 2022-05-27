@@ -77,12 +77,6 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Doctor's Professional Reign / MCR No."/>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${preTerminationDto.counsellingReignNo}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
                         <iais:field width="5" value="Date of Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
@@ -101,6 +95,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Doctor's Professional Reign / MCR No."/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${preTerminationDto.counsellingReignNo}"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient Age (Years)"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="age">
