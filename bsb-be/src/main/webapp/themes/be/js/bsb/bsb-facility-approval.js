@@ -23,16 +23,10 @@ $(function (){
 
     $("#submitBtn").click(function () {
         showWaiting();
+        $("input[data-radio-type='facilityAgentRadio']").each(function (){
+            $(this).removeAttr("disabled");
+        })
         $("input[name='action_type']").val("submit");
         $('#mainForm').submit();
     })
 })
-
-
-function removeRadioDisable(radioName){
-    $("input[data-bat-activityId='"+radioName+"']").removeAttr("disabled");
-}
-
-function addRadioDisable(radioName){
-    $("input[data-bat-activityId='"+radioName+"']").attr("disabled",true);
-}
