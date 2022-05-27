@@ -1,7 +1,8 @@
 <%@taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@taglib prefix="bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="bat" tagdir="/WEB-INF/tags/bat" %>
 
 
@@ -25,7 +26,7 @@
 <input type="hidden" name="sectionIdx" value="<%=sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil.indexes(batInfos.size())%>">
 
 
-<iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
+<bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <c:set var="BAorT" value='${masterCodeConstants.FIFTH_SCHEDULE eq firstScheduleOp ? "Toxin" : "Biological Agent"}'/>
 <c:set var="lBAorT" value="${fn:toLowerCase(BAorT)}"/>
@@ -141,7 +142,7 @@
                                             <label for="workMolecular--v--${status.index}" class="form-check-label"><span class="check-square"></span>Molecular test</label>
                                         </div>
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_ANIMAL_STUDIES)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_ANIMAL_STUDIES}"/>
+                                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" data-custom-ind="batAnimalWorkType" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_ANIMAL_STUDIES)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_ANIMAL_STUDIES}"/>
                                             <label for="workAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal studies (specify the type of animal under details)</label>
                                         </div>
                                         <div class="form-check">
@@ -156,7 +157,7 @@
                                     <span data-err-ind="workType--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
-                            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER) && !info.workType.contains(masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT) && !info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}">style="display: none"</c:if>>
+                            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains(masterCodeConstants.SAMPLE_NATURE_OTHER) and not bsb:collectionContainsAny(info.workType, [masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT, masterCodeConstants.WORK_TYPE_ANIMAL_STUDIES, masterCodeConstants.WORK_TYPE_OTHERS])}">style="display: none"</c:if>>
                                 <div class="col-sm-5 control-label">
                                     <label for="sampleWorkDetail--v--${status.index}">Details regarding the type of sample that will be handled and the intended work <span class="mandatory otherQualificationSpan">*</span></label>
                                 </div>

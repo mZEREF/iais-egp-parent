@@ -1,38 +1,28 @@
 $(function () {
+    var detailRelatedIdsPrefix = ["sampleOthers", "workBiomanufacturing", "workAnimal", "workOthers"];
+    var detailDivIdPrefix = "sampleWorkDetailDiv";
     $("input[data-custom-ind=batOthersSampleType]").change(function () {
         var id = $(this).attr("id");
         var idx = id.substring('sampleOthers'.length, id.length);
-        if ($(this).is(":checked")) {
-            $("#sampleWorkDetailDiv" + idx).show();
-        } else {
-            if(!$("#workOthers" + idx).is(":checked") && !$("#workBiomanufacturing" + idx).is(":checked")) {
-                $("#sampleWorkDetailDiv" + idx).hide();
-            }
-        }
+        showOrHideDetailsDiv(detailDivIdPrefix, detailRelatedIdsPrefix, idx);
     });
 
     $("input[data-custom-ind=batOthersWorkType]").change(function () {
         var id = $(this).attr("id");
         var idx = id.substring('workOthers'.length, id.length);
-        if ($(this).is(":checked")) {
-            $("#sampleWorkDetailDiv" + idx).show();
-        } else {
-            if(!$("#sampleOthers" + idx).is(":checked") && !$("#workBiomanufacturing" + idx).is(":checked")) {
-                $("#sampleWorkDetailDiv" + idx).hide();
-            }
-        }
+        showOrHideDetailsDiv(detailDivIdPrefix, detailRelatedIdsPrefix, idx);
+    });
+
+    $("input[data-custom-ind=batAnimalWorkType]").change(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('workAnimal'.length, id.length);
+        showOrHideDetailsDiv(detailDivIdPrefix, detailRelatedIdsPrefix, idx);
     });
 
     $("input[data-custom-ind=batBmfWorkType]").change(function () {
         var id = $(this).attr("id");
         var idx = id.substring('workBiomanufacturing'.length, id.length);
-        if ($(this).is(":checked")) {
-            $("#sampleWorkDetailDiv" + idx).show();
-        } else {
-            if(!$("#sampleOthers" + idx).is(":checked") && !$("#workOthers" + idx).is(":checked")) {
-                $("#sampleWorkDetailDiv" + idx).hide();
-            }
-        }
+        showOrHideDetailsDiv(detailDivIdPrefix, detailRelatedIdsPrefix, idx);
     });
 
 
@@ -158,4 +148,21 @@ $(function () {
 function computeBatDropdownIdByScheduleDropdownId(scheduleDropdownId) {
     var idx = scheduleDropdownId.substring("schedule".length, scheduleDropdownId.length);
     return "batName" + idx;
+}
+
+
+function showOrHideDetailsDiv(detailIdPrefix, checkboxIdsPrefix, idx) {
+    var show = false;
+    var idPrefix;
+    for (idPrefix of checkboxIdsPrefix) {
+        if ($("#" + idPrefix + idx).is(":checked")) {
+            show = true;
+            break;
+        }
+    }
+    if (show) {
+        $("#" + detailIdPrefix + idx).show();
+    } else {
+        $("#" + detailIdPrefix + idx).hide();
+    }
 }

@@ -173,4 +173,24 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+
+    <function>
+        <description>Check if a collection contains any element in another</description>
+        <name>collectionContainsAny</name>
+        <function-class>sg.gov.moh.iais.egp.common.function.UtilFunctions</function-class>
+        <function-signature>boolean collectionContainsAny(java.util.Collection, java.util.Collection)</function-signature>
+        <example>
+            ${bsb:collectionContainsAny(collection, collection)}
+        </example>
+    </function>
+
+    <function>
+        <description>Check if a collection contains any element in the array</description>
+        <name>collectionContainsAnyInArray</name>
+        <function-class>sg.gov.moh.iais.egp.common.function.UtilFunctions</function-class>
+        <function-signature>boolean collectionContainsAny(java.util.Collection, java.lang.Object[])</function-signature>
+        <example>
+            ${bsb:collectionContainsAny(collection, array)}
+        </example>
+    </function>
 </taglib>
