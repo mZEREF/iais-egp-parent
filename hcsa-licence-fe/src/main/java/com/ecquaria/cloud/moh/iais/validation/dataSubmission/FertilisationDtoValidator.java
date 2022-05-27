@@ -119,8 +119,8 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         }
         if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) &&StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
             if(StringUtil.isNumber(fertilisationDto.getExtractedSpermVialsNum())&&StringUtil.isNumber(fertilisationDto.getUsedSpermVialsNum())){
-                Integer extractedSpermVialsNum = Integer.parseInt(fertilisationDto.getExtractedSpermVialsNum());
-                Integer usedSpermVialsNum =Integer.parseInt(fertilisationDto.getUsedSpermVialsNum());
+                Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
+                Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
                 if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
                     if(extractedSpermVialsNum != null) {
                         int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
