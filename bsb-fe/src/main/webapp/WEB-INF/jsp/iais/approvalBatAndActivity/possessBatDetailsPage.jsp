@@ -22,5 +22,8 @@
     <jsp:attribute name="innerFooterFrag">
         <%@include file="InnerFooter.jsp" %>
     </jsp:attribute>
+    <jsp:attribute name="titleFrag">
+        <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Details of Biological Agent</p>
+    </jsp:attribute>
 </bat:possessBatDetails>
 

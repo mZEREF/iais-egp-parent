@@ -115,11 +115,11 @@
                                         <div class="col-md-3">
                                             <div class="row">
                                                 <label>
-                                                    <input type="radio" name="${batInfo.id}" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
+                                                    <input type="radio" name="${batInfo.id}" data-radio-type="facilityAgentRadio" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
                                                 </label>
                                                 <span class="check-circle">Yes</span>
                                                 <label>
-                                                    <input type="radio" name="${batInfo.id}" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or batInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
+                                                    <input type="radio" name="${batInfo.id}" data-radio-type="facilityAgentRadio" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or batInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
                                                 </label>
                                                 <span class="check-circle">No</span>
                                             </div>

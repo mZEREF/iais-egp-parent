@@ -20,6 +20,8 @@
 
 <%@attribute name="editJudge" type="java.lang.Boolean" %>
 
+<%@attribute name="titleFrag" fragment="true" %>
+
 <input type="hidden" name="sectionIdx" value="<%=sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil.indexes(batInfos.size())%>">
 
 
@@ -30,6 +32,7 @@
     <div role="tabpanel">
         <div class="form-horizontal">
             <div id="sectionGroup">
+                <jsp:invoke fragment="titleFrag"/>
                 <c:forEach var="info" items="${batInfos}" varStatus="status">
                     <section id="batInfoSection--v--${status.index}">
                         <div class="form-group ">
