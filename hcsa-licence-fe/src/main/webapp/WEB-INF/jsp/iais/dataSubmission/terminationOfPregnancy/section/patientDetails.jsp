@@ -173,6 +173,7 @@
                 $('#otherEthnicGroups').show();
             } else {
                 $('#otherEthnicGroups').hide();
+                $('#otherEthnicGroup').val(null);
             }
         });
     });
@@ -187,7 +188,7 @@
                 $('#occupations').hide();
                 $('#otherOccupations').hide();
                 fillValue($('#occupations'),null);
-                $('#otherOccupations').val(null);
+                $('#otherOccupation').val(null);
             }
         });
     });
