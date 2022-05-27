@@ -28,6 +28,7 @@
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <c:set var="BAorT" value='${masterCodeConstants.FIFTH_SCHEDULE eq firstScheduleOp ? "Toxin" : "Biological Agent"}'/>
+<c:set var="lBAorT" value="${fn:toLowerCase(BAorT)}"/>
 <div class="tab-content">
     <div role="tabpanel">
         <div class="form-horizontal">
@@ -129,7 +130,7 @@
                                     <div class="self-assessment-checkbox-gp">
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workCultureIsolation--v--${status.index}" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT}"/>
-                                            <label for="workCultureIsolation--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culturing/isolation of biological agent</label>
+                                            <label for="workCultureIsolation--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culturing/isolation of ${lBAorT}</label>
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workSerological--v--${status.index}" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST}"/>
@@ -145,7 +146,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" data-custom-ind="batBmfWorkType" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT}"/>
-                                            <label for="workBiomanufacturing--v--${status.index}" class="form-check-label"><span class="check-square"></span>Biomanufacturing involving biological agent. Please specify expected maximum handling volume under details</label>
+                                            <label for="workBiomanufacturing--v--${status.index}" class="form-check-label"><span class="check-square"></span>Biomanufacturing involving ${lBAorT}. Please specify expected maximum handling volume under details</label>
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" data-custom-ind="batOthersWorkType" <c:if test="${info.workType.contains(masterCodeConstants.WORK_TYPE_OTHERS)}">checked="checked"</c:if> value="${masterCodeConstants.WORK_TYPE_OTHERS}"/>
