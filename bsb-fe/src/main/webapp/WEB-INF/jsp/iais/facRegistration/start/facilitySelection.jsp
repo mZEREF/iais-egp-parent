@@ -20,7 +20,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="dashboard4Select.jsp"%>
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -68,7 +68,7 @@
                             <span data-err-ind="facClassification" class="error-msg" style="padding-left: 1.25rem;"></span>
                         </div>
 
-                        <p id="activityTypeP" class="assessment-title" style="padding-left: 1.25rem; <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">display: none;</c:if>">Activity Type</p>
+                        <p id="activityTypeP" class="assessment-title" style="padding-left: 1.25rem; <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">display: none;</c:if>">Facility Activity Type <span id="facActivityMandatory" class="mandatory otherQualificationSpan" <c:if test="${MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(serviceSelection.facClassification)}">style="display:none;"</c:if>>*</span></p>
                         <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_BSL3}">style="display: none"</c:if>>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
