@@ -2,7 +2,7 @@
 <sqls catalog="applicationPersonnelQuery">
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-            SELECT DISTINCT T1.OTHER_DESIGNATION, T1.ID,T1.NAME,T1.ID_NO,T1.EMAIL_ADDR,T1.MOBILE_NO,T1.DESIGNATION,T1.SALUTATION,T1.ID_TYPE,T1.OFFICE_TEL_NO
+            SELECT DISTINCT T1.NATIONALITY, T1.OTHER_DESIGNATION, T1.ID,T1.NAME,T1.ID_NO,T1.EMAIL_ADDR,T1.MOBILE_NO,T1.DESIGNATION,T1.SALUTATION,T1.ID_TYPE,T1.OFFICE_TEL_NO
             from key_personnel as T1
             join lic_key_personnel T2 on T1.ID  = T2.PERSON_ID
             join licence T3 on t2.LICENCE_ID = t3.ID

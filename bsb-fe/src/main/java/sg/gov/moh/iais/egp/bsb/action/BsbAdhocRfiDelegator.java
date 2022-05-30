@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
@@ -41,29 +41,33 @@ import java.util.Map;
 
 /**
  * BsbAdhocRfiDelegator
- *
  * @author junyu
  * @date 2022/4/15
  */
 @Slf4j
-@Delegator("bsbAdhicRfiDelegator")
+@Delegator("bsbAdhocRfiDelegator")
 public class BsbAdhocRfiDelegator {
-
-
     private static final String KEY_ADHOC_RFI_LIST = "reqForInfoSearchList";
-    public static final String KEY_ADHOC_LIST_SEARCH_DTO = "adhocSearchDto";
-    public static final String KEY_ADHOC_PAGE_INFO = "pageInfo";
-    @Autowired
-    private  AdhocRfiClient adhocRfiClient;
-    @Autowired
-    private OrgUserManageService orgUserManageService;
-    @Autowired
-    private  FileRepoClient fileRepoClient;
+    private static final String KEY_ADHOC_LIST_SEARCH_DTO = "adhocSearchDto";
+    private static final String KEY_ADHOC_PAGE_INFO = "pageInfo";
+    private static final String KEY_USER_REPLY = "userReply";
+    private static final String FILE_UPLOAD_ERROR = "fileUploadError";
+    private static final String ADHOC_REQ_FOR_INFO_DTO = "adhocReqForInfoDto";
+
+    private final AdhocRfiClient adhocRfiClient;
+    private final OrgUserManageService orgUserManageService;
+    private final FileRepoClient fileRepoClient;
+
+    public BsbAdhocRfiDelegator(AdhocRfiClient adhocRfiClient, OrgUserManageService orgUserManageService, FileRepoClient fileRepoClient) {
+        this.adhocRfiClient = adhocRfiClient;
+        this.orgUserManageService = orgUserManageService;
+        this.fileRepoClient = fileRepoClient;
+    }
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-        String approvalNo=ParamUtil.getMaskedString(request,"approvalNo");
+        String approvalNo = ParamUtil.getMaskedString(request,"approvalNo");
         AdhocRfiQueryDto dto = new AdhocRfiQueryDto();
         dto.defaultPaging();
         dto.setApprovalNo(approvalNo);
@@ -76,7 +80,7 @@ public class BsbAdhocRfiDelegator {
     public void preRfiList(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
-        request.removeAttribute("adhocReqForInfoDto");
+        request.removeAttribute(ADHOC_REQ_FOR_INFO_DTO);
         AdhocRfiQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
         ResponseDto<AdhocRfiQueryResultDto> resultDto = adhocRfiClient.queryAdhocRfi(searchDto);
@@ -100,13 +104,13 @@ public class BsbAdhocRfiDelegator {
 
     public void preAdhocRfiDetail(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AdhocRfiViewDto adhocRfiViewDto= (AdhocRfiViewDto) ParamUtil.getSessionAttr(request,"adhocReqForInfoDto");
+        AdhocRfiViewDto adhocRfiViewDto= (AdhocRfiViewDto) ParamUtil.getSessionAttr(request,ADHOC_REQ_FOR_INFO_DTO);
         try {
             if(adhocRfiViewDto==null){
                 adhocRfiViewDto=new AdhocRfiViewDto();
             }
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            if(!StringUtil.isEmpty(id)){
+            if(!StringUtils.isEmpty(id)){
                 List<AdhocRfiDto> reqForInfos = (List<AdhocRfiDto>) ParamUtil.getSessionAttr(request, KEY_ADHOC_RFI_LIST);
                 for (AdhocRfiDto rfi:reqForInfos
                      ) {
@@ -120,7 +124,7 @@ public class BsbAdhocRfiDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        ParamUtil.setSessionAttr(request,"adhocReqForInfoDto",  adhocRfiViewDto);
+        ParamUtil.setSessionAttr(request,ADHOC_REQ_FOR_INFO_DTO,  adhocRfiViewDto);
 
 
     }
@@ -141,26 +145,26 @@ public class BsbAdhocRfiDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
 
-        AdhocRfiViewDto adhocRfiViewDto=(AdhocRfiViewDto) ParamUtil.getSessionAttr(bpc.request,"adhocReqForInfoDto");
+        AdhocRfiViewDto adhocRfiViewDto=(AdhocRfiViewDto) ParamUtil.getSessionAttr(bpc.request,ADHOC_REQ_FOR_INFO_DTO);
         
         AdhocRfiDto adhocRfiDto=adhocRfiViewDto.getAdhocRfiDto();
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(adhocRfiDto.getInformationRequired()){
-            String userReply=mulReq.getParameter("userReply");
+        if(adhocRfiDto.getInformationRequired() == Boolean.TRUE){
+            String userReply=mulReq.getParameter(KEY_USER_REPLY);
             adhocRfiDto.setSuppliedInformation(userReply);
-            if(StringUtil.isEmpty(userReply)){
-                errorMap.put("userReply", MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
+            if(StringUtils.isEmpty(userReply)){
+                errorMap.put(KEY_USER_REPLY, MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
             }else if(userReply.length()>1000){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","1000");
                 repMap.put("fieldNo","Information");
-                errorMap.put("userReply",MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                errorMap.put(KEY_USER_REPLY,MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
 
             }
         }
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(adhocRfiDto.getSupportingDocRequired()){
+        if(adhocRfiDto.getSupportingDocRequired() == Boolean.TRUE){
             List<MultipartFile> mulReqFile= mulReq.getFiles("upload");
             adhocRfiViewDto.setApplicationDocDtos(IaisCommonUtils.genNewArrayList());
             if(IaisCommonUtils.isNotEmpty(mulReqFile)){
@@ -180,7 +184,7 @@ public class BsbAdhocRfiDelegator {
             }
 
         }
-        ParamUtil.setSessionAttr(bpc.request,"adhocReqForInfoDto",adhocRfiViewDto);
+        ParamUtil.setSessionAttr(bpc.request,ADHOC_REQ_FOR_INFO_DTO,adhocRfiViewDto);
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -189,13 +193,11 @@ public class BsbAdhocRfiDelegator {
             return;
         }
         adhocRfiDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
-        AdhocRfiViewDto adhocRfiViewDto1=adhocRfiClient.saveAdhocRfi(adhocRfiViewDto).getEntity();
-
+        adhocRfiClient.saveAdhocRfi(adhocRfiViewDto);
     }
 
     public void backList(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-
+        // do nothing now
     }
 
     private AdhocRfiQueryDto getSearchDto(HttpServletRequest request) {
@@ -216,20 +218,20 @@ public class BsbAdhocRfiDelegator {
         if (file != null){
             String originalFileName = file.getOriginalFilename();
             if (!FileUtils.isExcel(originalFileName)){
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", "CHKL_ERR040"));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(FILE_UPLOAD_ERROR, "CHKL_ERR040"));
                 return true;
             }
         }
 
         if (file == null || file.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", "GENERAL_ERR0020"));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(FILE_UPLOAD_ERROR, "GENERAL_ERR0020"));
             return true;
         }
 
         if (FileUtils.outFileSize(file.getSize())){
             int maxSize = SystemParamUtil.getFileMaxLimit();
             String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", replaceMsg));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(FILE_UPLOAD_ERROR, replaceMsg));
             return true;
         }
 

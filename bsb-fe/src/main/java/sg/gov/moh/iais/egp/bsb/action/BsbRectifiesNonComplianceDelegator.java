@@ -8,14 +8,12 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.*;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsRectificationDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,27 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ALL_ITEM_RECTIFY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ITEM_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_MASKED_ITEM_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_NCS_RECTIFICATION_DISPLAY_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_NEW_SAVED_DOCUMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RECTIFY_ITEM_SAVE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RECTIFY_SAVED_DATA_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RECTIFY_SAVED_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SAVED_DOCUMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_INDEED_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_BACK;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_PREPARE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_NAV_RECTIFY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SAVE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_CONFIRM_RFI_Y;
 
 /**
  * @author YiMing
@@ -37,10 +55,12 @@ public class BsbRectifiesNonComplianceDelegator {
     private static final String MASK_PARAM_APP_ID = "ncAppId";
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
+    private final RfiService rfiService;
 
-    public BsbRectifiesNonComplianceDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
+    public BsbRectifiesNonComplianceDelegator(InspectionClient inspectionClient, InspectionService inspectionService, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
+        this.rfiService = rfiService;
     }
 
     public void start(BaseProcessClass bpc){
@@ -49,19 +69,25 @@ public class BsbRectifiesNonComplianceDelegator {
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DATA_MAP);
         request.getSession().removeAttribute(KEY_NCS_RECTIFICATION_DISPLAY_DATA);
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
+
+        //search NCs list info
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        if (maskedAppId != null) {
+            String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
+            if (appId == null || appId.equals(maskedAppId)) {
+                throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
+            }
+            ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
+        }
+        // if rfi module
+        rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction("Applicant rectifies NCs", "Applicant rectifies NCs");
     }
 
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         //get application id
-        //search NCs list info
-        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
-        if (appId == null || appId.equals(maskedAppId)) {
-            throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
-        }
-        ParamUtil.setSessionAttr(request,KEY_APP_ID,appId);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         InsRectificationDisplayDto displayDto = inspectionClient.getNonComplianceFindingFormDtoByAppId(appId).getEntity();
         //save basic info such as appId and config id
         if(displayDto != null){
@@ -86,7 +112,7 @@ public class BsbRectifiesNonComplianceDelegator {
         boolean isAllRectified = true;
         Map<String,String> itemRectifyMap = inspectionService.getItemRectifyMap(request);
         for (Map.Entry<String, String> entry : itemRectifyMap.entrySet()) {
-            if (MasterCodeConstants.NO.equals(entry.getValue())) {
+            if (NO.equals(entry.getValue())) {
                 isAllRectified = false;
                 break;
             }
@@ -124,7 +150,14 @@ public class BsbRectifiesNonComplianceDelegator {
             savedDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
             savedDto.setToBeDeletedDocIds(docDto.getToBeDeletedDocIds());
         }
-        inspectionClient.saveInsNonComplianceReport(savedDto);
+        //judge is rfi
+        String confirmRfi = (String) ParamUtil.getSessionAttr(request, KEY_CONFIRM_RFI);
+        if (confirmRfi != null && confirmRfi.equals(KEY_CONFIRM_RFI_Y)) {
+            //save rfi data
+            rfiService.saveInspectionNC(request, savedDto);
+        } else {
+            inspectionClient.saveInsNonComplianceReport(savedDto);
+        }
         //save all info into database
         try {
             // delete docs
@@ -167,12 +200,12 @@ public class BsbRectifiesNonComplianceDelegator {
     public void handleRectifyPage(BaseProcessClass bpc){
         //request mapping item doc and item remarks info
         HttpServletRequest request = bpc.request;
-        String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
-        if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if(KEY_SAVE.equals(actionType)){
             RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
             String itemValue = (String) ParamUtil.getSessionAttr(request,KEY_ITEM_VALUE);
             Assert.hasLength(itemValue,"item value -sectionId +'--v--'+configId is null");
-            docDto.reqObjMapping(request, DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE,itemValue);
+            docDto.reqObjMapping(request, DOC_TYPE_INSPECTION_NON_COMPLIANCE, itemValue);
             Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
             inspectionService.putItemDataNeedSave(request,itemValue,savedDtoMap);
             log.info(LogUtil.escapeCrlf(docDto.toString()));
@@ -184,16 +217,16 @@ public class BsbRectifiesNonComplianceDelegator {
     }
 
     private void actionJumpHandler(HttpServletRequest request){
-        String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         Assert.hasLength(actionType,"action_type is null");
-        if(ModuleCommonConstants.KEY_NAV_RECTIFY.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_RECTIFY);
-        }else if(ModuleCommonConstants.KEY_SUBMIT.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_SUBMIT);
-        }else if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_PREPARE);
-        }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_PREPARE);
+        if(KEY_NAV_RECTIFY.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, KEY_NAV_RECTIFY);
+        }else if(KEY_SUBMIT.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, KEY_SUBMIT);
+        }else if(KEY_SAVE.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, KEY_NAV_PREPARE);
+        }else if(KEY_NAV_BACK.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, KEY_NAV_PREPARE);
         }
     }
 

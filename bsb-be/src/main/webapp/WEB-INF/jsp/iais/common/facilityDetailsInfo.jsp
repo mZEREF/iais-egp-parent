@@ -76,42 +76,60 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${facilityDetailsInfo.facilityBiologicalAgentInfoList ne null && facilityDetailsInfo.facilityBiologicalAgentInfoList.size() > 0}">
-                    <div class="alert alert-info" role="alert">
-                        <strong>
-                            <h4>Recommendation for Approval to Possess</h4>
-                        </strong>
-                    </div>
-                    <div class="panel-collapse">
-                        <div class="panel-body">
-                            <div class="row" style="font-weight: 700;text-align: center">
-                                <div class="col-md-1">S/N</div>
-                                <div class="col-md-3">Schedule</div>
-                                <div class="col-md-5">Name of Biological Agent/Toxin</div>
-                                <div class="col-md-3">Approve</div>
-                            </div>
-                            <c:forEach var="facilityBiologicalAgentInfo" items="${facilityDetailsInfo.facilityBiologicalAgentInfoList}" varStatus="status">
-                                <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
-                                    <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
-                                    <div class="col-md-3"><iais:code code="${facilityBiologicalAgentInfo.schedule}"/></div>
-                                    <div class="col-md-5"><c:out value="${facilityBiologicalAgentInfo.batName}"/></div>
-                                    <div class="col-md-3">
-                                        <div class="row">
-                                            <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
-                                            </label>
-                                            <span class="check-circle">Yes</span>
-                                            <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
-                                            </label>
-                                            <span class="check-circle">No</span>
+                <c:set var="batApprovalTypes" value="${[MasterCodeConstants.APPROVAL_TYPE_POSSESS, MasterCodeConstants.APPROVAL_TYPE_LSP, MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE, MasterCodeConstants.APPROVAL_TYPE_HANDLE_FST_EXEMPTED]}"/>
+                <c:forEach var="approvalType" items="${batApprovalTypes}">
+                    <%--@elvariable id="batMap" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityBiologicalAgentInfo>>"--%>
+                    <c:set var="batList" value="${batMap.get(approvalType)}"/>
+                    <c:if test="${batList ne null && batList.size() > 0}">
+                        <div class="alert alert-info" role="alert">
+                            <strong>
+                                <c:choose>
+                                    <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_POSSESS}">
+                                        <h4>Recommendation for Approval to Possess</h4>
+                                    </c:when>
+                                    <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_LSP}">
+                                        <h4>Recommendation for Approval to Large Scale Produce</h4>
+                                    </c:when>
+                                    <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE}">
+                                        <h4>Recommendation for Special Approval to Handle</h4>
+                                    </c:when>
+                                    <c:when test="${approvalType eq MasterCodeConstants.APPROVAL_TYPE_HANDLE_FST_EXEMPTED}">
+                                        <h4>Recommendation for Handling of Fifth Schedule Toxin for Exempted Purpose</h4>
+                                    </c:when>
+                                </c:choose>
+                            </strong>
+                        </div>
+                        <div class="panel-collapse">
+                            <div class="panel-body">
+                                <div class="row" style="font-weight: 700;text-align: center">
+                                    <div class="col-md-1">S/N</div>
+                                    <div class="col-md-3">Schedule</div>
+                                    <div class="col-md-5">Name of Biological Agent/Toxin</div>
+                                    <div class="col-md-3">Approve</div>
+                                </div>
+                                <c:forEach var="batInfo" items="${batList}" varStatus="status">
+                                    <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
+                                        <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
+                                        <div class="col-md-3"><iais:code code="${batInfo.schedule}"/></div>
+                                        <div class="col-md-5"><c:out value="${batInfo.batName}"/></div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <label>
+                                                    <input type="radio" name="${batInfo.id}" data-radio-type="facilityAgentRadio" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
+                                                </label>
+                                                <span class="check-circle">Yes</span>
+                                                <label>
+                                                    <input type="radio" name="${batInfo.id}" data-radio-type="facilityAgentRadio" data-bat-activityId="${batInfo.facilityActivityId}" <c:if test="${batInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or batInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
+                                                </label>
+                                                <span class="check-circle">No</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </c:forEach>
+                                </c:forEach>
+                            </div>
                         </div>
-                    </div>
-                </c:if>
+                    </c:if>
+                </c:forEach>
             </div>
         </div>
     </div>

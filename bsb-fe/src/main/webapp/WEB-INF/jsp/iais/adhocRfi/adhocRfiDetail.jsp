@@ -111,7 +111,7 @@
 
                                         </c:if>
                                         <iais:action>
-                                            <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a>
+                                            <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Previous</a>
                                             <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSubmit()">Submit</button>
                                         </iais:action>
                                     </iais:section>

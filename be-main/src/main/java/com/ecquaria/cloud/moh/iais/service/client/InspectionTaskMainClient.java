@@ -27,6 +27,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjax
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +38,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * @author Shicheng
@@ -130,4 +130,10 @@ public interface InspectionTaskMainClient {
 
     @PostMapping(value = "/iais-inspection/dash-work-team/drop")
     FeignResponseEntity<SearchResult<DashWorkTeamAjaxQueryDto>> searchDashWorkTeamDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-apppremisescorrelation-be/AppPremisesCorrelations",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, AppGrpPremisesDto>> getGroupAppsByNos(@RequestBody List<String> appGropIds);
+
+    @PostMapping(value = "/application-be/app-stage-saldays")
+    FeignResponseEntity<List<AppStageSlaTrackingDto>> getSlaTrackByAppNoStageIds(@RequestBody Map<String, String> params);
 }

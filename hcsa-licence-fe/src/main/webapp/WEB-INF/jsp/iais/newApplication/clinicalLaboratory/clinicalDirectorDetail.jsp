@@ -158,7 +158,32 @@
                     </div>
                 </div>
                 <div class="col-sm-4 col-xs-12">
-                    <iais:input cssClass="idNo" maxLength="9" type="text" name="idNo${index}" value="${clinicalDirectorDto.idNo}"></iais:input>
+                    <iais:input cssClass="idNo" maxLength="20" type="text" name="idNo${index}"
+                                value="${clinicalDirectorDto.idNo}"></iais:input>
+                </div>
+            </div>
+        </div>
+
+        <div class="row control control-caption-horizontal nationalityDiv">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                    <label  class="control-label control-set-font control-font-label">Country of issuance</label>
+                    <span class="mandatory">*</span>
+                </div>
+                <div class="col-md-7 col-xs-12">
+                    <iais:select firstOption="Please Select" name="nationality${index}" codeCategory="CATE_ID_NATIONALITY"
+                                 cssClass="nationality" value="${clinicalDirectorDto.nationality}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row control control-caption-horizontal">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                    <label  class="control-label control-set-font control-font-label"></label>
+                </div>
+                <div class="col-md-7 col-xs-12">
+                    <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${index}"></span>
                 </div>
             </div>
         </div>

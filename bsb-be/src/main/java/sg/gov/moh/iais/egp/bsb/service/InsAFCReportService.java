@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
@@ -29,23 +28,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.ValidationConstants.KEY_VALIDATION_ERRORS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_AFC_REPORT_DTO;
 
-/**
- * @author tangtang
- * @date 2022/4/29 17:27
- */
 @Service
 @Slf4j
 public class InsAFCReportService {
     private final InspectionAFCClient inspectionAFCClient;
     private final FileRepoClient fileRepoClient;
-    private final InspectionService inspectionService;
-    private final BsbFileClient bsbFileClient;
 
-    public InsAFCReportService(InspectionAFCClient inspectionAFCClient,BsbFileClient bsbFileClient, InspectionService inspectionService, FileRepoClient fileRepoClient) {
+    public InsAFCReportService(InspectionAFCClient inspectionAFCClient, FileRepoClient fileRepoClient) {
         this.inspectionAFCClient = inspectionAFCClient;
         this.fileRepoClient = fileRepoClient;
-        this.inspectionService = inspectionService;
-        this.bsbFileClient = bsbFileClient;
     }
 
     public AFCCommonDocDto getAFCCommonDocDto(HttpServletRequest request) {

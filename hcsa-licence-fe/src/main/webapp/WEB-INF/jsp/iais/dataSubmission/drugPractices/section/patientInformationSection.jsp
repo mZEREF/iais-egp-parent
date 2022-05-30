@@ -145,7 +145,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row id="ethnicOtherss" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
-                    <iais:field value="Ethnic Group (Others)" width="5"  mandatory="true"/>
+                    <iais:field value="Other Ethnic Group" width="5"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="20" type="text" name="ethnicGroupOther" id="ethnicGroupOther" value="${patientDto.ethnicGroupOther}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_ethnicGroupOther"></span>

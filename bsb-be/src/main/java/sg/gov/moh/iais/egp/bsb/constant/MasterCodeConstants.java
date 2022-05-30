@@ -328,7 +328,7 @@ public class MasterCodeConstants {
     public static final String VALUE_DEFICIENCY_MINOR = "BSBIRD002";
     public static final String VALUE_DEFICIENCY_NIL = "BSBIRD003";
     // Inspection report Outcome
-    public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
+    public static final String VALUE_OUTCOME_PASS = "BSBIRFO001";
     public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
     public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
 

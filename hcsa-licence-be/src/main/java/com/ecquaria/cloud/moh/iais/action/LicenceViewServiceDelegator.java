@@ -70,12 +70,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
@@ -97,6 +91,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceViewServiceDelegator
@@ -181,9 +180,6 @@ public class LicenceViewServiceDelegator {
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
-        if(applicationViewDto==null||ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-            return;
-        }
 
         // Get AppSubmissionDto
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
@@ -193,6 +189,15 @@ public class LicenceViewServiceDelegator {
             appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
+        if(applicationViewDto==null||ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+            if ("Y".equals(prsFlag)) {
+                disciplinaryRecord(appSubmissionDto, bpc.request);
+            }
+            if ("Y".equals(herimsFlag)) {
+                herimsRecod(appSubmissionDto, bpc.request);
+            }
+            return;
+        }
         // set App Edit Select Dto
         AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if (appEditSelectDto == null) {
@@ -1104,10 +1109,10 @@ public class LicenceViewServiceDelegator {
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);
                                 }
                                 //set selCgoName
-                                String idNo = allocation.getIdNo();
-                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)) {
+                                String cgoPerson = allocation.getCgoPerson();
+                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(cgoPerson)) {
                                     for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
-                                        if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                                        if (Objects.equals(cgoPerson, ApplicationHelper.getPersonKey(appSvcCgoDto))) {
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
                                             break;
@@ -1952,6 +1957,7 @@ public class LicenceViewServiceDelegator {
                         appSvcDisciplineAllocationDto);
                 appSvcDisciplineAllocationDto1.setCheck(false);
                 appSvcDisciplineAllocationDto1.setIdNo(null);
+                appSvcDisciplineAllocationDto1.setCgoPerson(null);
                 appSvcDisciplineAllocationDto1.setCgoSelName(null);
                 appSvcDisciplineAllocationDto1.setSlIndex(null);
                 appSvcDisciplineAllocationDto1.setSectionLeaderName(null);

@@ -34,7 +34,7 @@
         </iais:row>
         </div>
     <iais:row>
-        <iais:field width="5" value="No. of Previous Termination of Pregnancy" mandatory="true"/>
+        <iais:field width="5" value="No. of Previous Termination(s) of Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="2" type="text" name="previousTopNumber" value="${familyPlanDto.previousTopNumber}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_previousTopNumber"></span>
@@ -126,7 +126,7 @@
     </div>
     <div id="otherMainTopReason" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP011'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Other Main Reason for Termination of Pregnancy" mandatory="true"/>
+            <iais:field width="5" value="Other Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
             </iais:value>

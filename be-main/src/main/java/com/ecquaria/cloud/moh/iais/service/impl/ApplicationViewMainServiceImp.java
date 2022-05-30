@@ -500,7 +500,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 String reason = premiseMiscDto.getReason();
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
-                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    HcsaServiceDto serviceByServiceName=HcsaServiceCacheHelper.getServiceById(serviceId);
                     AppSvcPrincipalOfficersDto appSvcCgoDto = inspectionTaskMainClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     appSvcCgoDto.setAssignSelect("newOfficer");
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
@@ -511,8 +511,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                     SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
                     cgoSelectList.add(sp1);
                     List<SelectOption> idTypeSelOp = getIdTypeSelOp();
-                    if (serviceName != null) {
-                        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                    if (serviceByServiceName != null) {
                         List<SelectOption> list = genSpecialtySelectList(serviceByServiceName.getSvcCode());
                         applicationViewDto.setSpecialtySelectList(list);
                     }

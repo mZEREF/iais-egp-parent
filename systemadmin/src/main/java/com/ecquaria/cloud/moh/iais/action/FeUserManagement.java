@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -17,17 +16,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.FeUserConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -66,6 +64,8 @@ public class FeUserManagement {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         getSearchParam(bpc.request,true);
         ParamUtil.clearSession(bpc.request, FeUserConstants.SESSION_USER_DTO,FeUserConstants.SESSION_USER_UEN_NAME);
+        ParamUtil.setSessionAttr(bpc.request,"uenNo",null);
+        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",(Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions());
     }
 
     public void prepare(BaseProcessClass bpc){
@@ -221,6 +221,24 @@ public class FeUserManagement {
             userAttr.setStatus(active);
             userAttr.setRoles(roles);
             userAttr.setAccountActivateDatetime(new Date());
+            List<OrgUserRoleDto> orgUserRoleDtoList = IaisCommonUtils.genNewArrayList();
+            OrgUserRoleDto orgUserRoleDtoAdmin = new OrgUserRoleDto();
+            OrgUserRoleDto orgUserRoleDtoUser = new OrgUserRoleDto();
+            orgUserRoleDtoAdmin.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            userAttr.setSelectServices(ParamUtil.getStringsToString(bpc.request,"service"));
+            orgUserRoleDtoUser.setSelectServices(userAttr.getSelectServices());
+            if("admin".equals(role)){
+                orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
+                orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
+                orgUserRoleDtoList.add(orgUserRoleDtoAdmin);
+                orgUserRoleDtoList.add(orgUserRoleDtoUser);
+                userAttr.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
+            }else{
+                orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
+                orgUserRoleDtoList.add(orgUserRoleDtoUser);
+                userAttr.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
+            }
 
             OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
@@ -295,8 +313,6 @@ public class FeUserManagement {
                         userAttr.setId(orgUserDto.getId());
                         useId = userAttr.getId();
                     }
-
-                    List<OrgUserRoleDto> orgUserRoleDtoList = IaisCommonUtils.genNewArrayList();
 
                     if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(role)){
                         addOrgUserByRoleName(orgUserRoleDtoList,RoleConsts.USER_ROLE_ORG_ADMIN,att,useId);

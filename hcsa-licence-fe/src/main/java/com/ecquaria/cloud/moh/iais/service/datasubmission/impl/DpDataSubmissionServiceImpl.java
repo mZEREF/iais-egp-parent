@@ -3,10 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -211,6 +208,14 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return null;
         }
         return dpFeClient.getDrugMedicationDtoBySubmissionNoForDispensed(submissionNo,rfcSubmissionNo).getEntity();
+    }
+
+    @Override
+    public DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo) {
+        if (StringUtil.isEmpty(doctorReignNo) ) {
+            return null;
+        }
+        return dpFeClient.getDoctorInformationDtoByConds(doctorReignNo).getEntity();
     }
 
 

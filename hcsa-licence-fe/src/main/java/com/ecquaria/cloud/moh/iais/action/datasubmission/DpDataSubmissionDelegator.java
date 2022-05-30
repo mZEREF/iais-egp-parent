@@ -4,7 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -22,6 +22,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -210,6 +211,19 @@ public class DpDataSubmissionDelegator {
      */
     public void preparePatientInfo(BaseProcessClass bpc) {
         log.info("----- PreparePatientInfo -----");
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto= DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        dpSuperDataSubmissionDto = dpSuperDataSubmissionDto == null ? new DpSuperDataSubmissionDto() : dpSuperDataSubmissionDto;
+
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
+                DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                        .map(LoginContext::getOrgId).orElse("");
+                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
+                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
+                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+                }
+        }
+        DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
     }
 
     /**

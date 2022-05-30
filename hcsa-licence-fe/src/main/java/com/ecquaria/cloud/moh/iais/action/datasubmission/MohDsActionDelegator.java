@@ -258,6 +258,11 @@ public class MohDsActionDelegator {
                         professionalResponseDto=new ProfessionalResponseDto();
                     }
                     dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
+                    DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                    drugSubmissionDto.setDoctorInformations("true");
+                }
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareDrugPrecribed?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSovenorInventory";
@@ -266,15 +271,17 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(dpSuper));
             dpSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DataSubmissionDto dataSubmissionDto = dpSuper.getDataSubmissionDto();
             if(dataSubmissionDto ==null){
                 dataSubmissionDto = new DataSubmissionDto();
             }
-            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+            if (dataSubmissionDto != null) {
+                dataSubmissionDto.setDeclaration(null);
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
             }
+
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
         return uri;
@@ -319,20 +326,15 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(topSuper));
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            topSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DsConfigHelper.clearTopSession(request);
-            DataSubmissionDto dataSubmissionDto = topSuper.getDataSubmissionDto();
-            if(dataSubmissionDto ==null){
-                dataSubmissionDto = new DataSubmissionDto();
-            }
-            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+
+            if (topSuper.getDataSubmissionDto() != null) {
+                DataSubmissionDto dataSubmissionDto = topSuper.getDataSubmissionDto();
+                dataSubmissionDto.setDeclaration(null);
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
             }
-        }
-        String declaration=null;
-        if(!StringUtil.isEmpty(topSuper.getDataSubmissionDto().getDeclaration())){
-            topSuper.getDataSubmissionDto().setDeclaration(declaration);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;

@@ -4,8 +4,9 @@
 
     <sql remarks="Query" key="queryApptGrpPremises">
         <![CDATA[
-                SELECT distinct
-                app.id,app.application_no,app.app_type,app.status,app.service_id,app.IS_FAST_TRACKING,
+        SELECT distinct * FROM (SELECT
+                app.id,app.application_no,app.app_type,app.status,app.service_id,repalceService as code,
+                app.IS_FAST_TRACKING,
                 T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
                 T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,T3.ID APP_GRP_PREM_ID,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
@@ -58,6 +59,9 @@
             AND appRec.RECOM_IN_DATE is not null
             AND insAppt.RESCHEDULE_COUNT is not null
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
+        ) AS appt
+                WHERE 1=1
+            <#if appServicesShow??> AND ${appServicesShow} </#if>
             ]]>
     </sql>
 </sqls>

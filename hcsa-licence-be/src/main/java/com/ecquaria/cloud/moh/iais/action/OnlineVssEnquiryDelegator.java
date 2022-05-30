@@ -129,7 +129,10 @@ public class OnlineVssEnquiryDelegator {
         filterDto.setMaritalStatus(maritalStatus);
         String sterilisationReason=ParamUtil.getString(request,"sterilisationReason");
         filterDto.setSterilisationReason(sterilisationReason);
-       
+        Date birthDateFrom= Formatter.parseDate(ParamUtil.getString(request, "birthDateFrom"));
+        filterDto.setBirthDateFrom(birthDateFrom);
+        Date birthDateTo= Formatter.parseDate(ParamUtil.getString(request, "birthDateTo"));
+        filterDto.setBirthDateTo(birthDateTo);
         Date submissionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "submissionDateFrom"));
         filterDto.setSubmissionDateFrom(submissionDateFrom);
         Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
@@ -173,7 +176,17 @@ public class OnlineVssEnquiryDelegator {
                     SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
             filter.put("submissionDateTo", submissionDateTo);
         }
-       
+        if(filterDto.getBirthDateFrom()!=null){
+            String birthDateFrom = Formatter.formatDateTime(filterDto.getBirthDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("birthDateFrom", birthDateFrom);
+        }
+
+        if(filterDto.getBirthDateTo()!=null){
+            String birthDateTo = Formatter.formatDateTime(filterDto.getBirthDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+            filter.put("birthDateTo", birthDateTo);
+        }
         filterParameter.setFilters(filter);
 
     }
@@ -206,8 +219,8 @@ public class OnlineVssEnquiryDelegator {
             }
         }
         if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto()!=null){
-            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace())){
-                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setDisinfectionPlace(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDisinfectionPlace()).getPremiseLabel());
+            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital())){
+                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSterilizationHospital(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()).getPremiseLabel());
             }
         }
 

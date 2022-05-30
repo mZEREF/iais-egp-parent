@@ -22,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +73,9 @@ public class RfiFacilityRegistrationDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         // clear sessions
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ROOT_NODE_GROUP);
+        session.removeAttribute(KEY_APP_ID);
         rfiService.clearAndSetAppIdInSession(request);
         AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }

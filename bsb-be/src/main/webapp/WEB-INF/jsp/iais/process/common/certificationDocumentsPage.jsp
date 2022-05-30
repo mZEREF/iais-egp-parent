@@ -1,7 +1,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%--@elvariable id="commonDocDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto"--%>
 <%--@elvariable id="reviewAFCReportDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto"--%>
 <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
+<%--@elvariable id="canActionRole" type="java.lang.String"--%>
 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
 <h3>List of Documents uploaded</h3>
 <div class="row">
@@ -28,65 +30,76 @@
           <iais:sortableHeader needSort="false" field="" value="MOH" isFE="true"/>
         </tr>
         </thead>
-        <tbody id="tbodyFileListId">
-        <c:if test="${reviewAFCReportDto.certificationDocDisPlayDtos ne null}">
-          <c:forEach var="docInfo" items="${reviewAFCReportDto.certificationDocDisPlayDtos}" varStatus="status">
-            <c:set var="newMaskedRepoId" value="${MaskUtil.maskValue('file', docInfo.repoId)}"/>
+
+        <c:choose>
+          <c:when test="${empty reviewAFCReportDto.certificationDocDisPlayDtos}">
+            <%--        <iais:message key="GENERAL_ACK018" escape="true"/>--%>
             <tr>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" style="text-align: center">S/N</p>
-                <p><c:out value="${status.index+1}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title" style="text-align: center">Document Name</p>
-                <p><c:out value="${docInfo.docName}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Document Type</p>
-                <p><iais:code code="${docInfo.docType}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Uploaded by</p>
-                <p><c:out value="${docInfo.userDisplayName}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Upload Date</p>
-                <p><fmt:formatDate value="${docInfo.uploadDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Round of Review</p>
-                <p><c:out value="${docInfo.roundOfReview}"/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Actions</p>
-                <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick="downloadAFCCertificationFile(${newMaskedRepoId})"><span style="font-size: 12px;color: #444444">Download</span></a></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">AFC</p>
-                <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.afcMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">Applicant</p>
-                <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.applicantMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
-              </td>
-              <td>
-                <p class="visible-xs visible-sm table-row-title">MOH</p>
-                <c:choose>
-                  <c:when test="${canActionRole eq 'BSB_DO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
-                    <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_DO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if>  value="Y"/></p>
-                  </c:when>
-                  <c:when test="${canActionRole eq 'BSB_AO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
-                    <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_AO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> value="Y"/></p>
-                  </c:when>
-                  <c:otherwise>
-                    <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
-                  </c:otherwise>
-                </c:choose>
+              <td colspan="10">
+                No certification by MOH-AFC
               </td>
             </tr>
-          </c:forEach>
-        </c:if>
-        </tbody>
+          </c:when>
+          <c:otherwise>
+          <tbody id="tbodyFileListId">
+            <c:forEach var="docInfo" items="${reviewAFCReportDto.certificationDocDisPlayDtos}" varStatus="status">
+              <c:set var="newMaskedRepoId" value="${MaskUtil.maskValue('file', docInfo.repoId)}"/>
+              <tr>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title" style="text-align: center">S/N</p>
+                  <p><c:out value="${status.index+1}"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title" style="text-align: center">Document Name</p>
+                  <p><c:out value="${docInfo.docName}"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Document Type</p>
+                  <p><iais:code code="${docInfo.docType}"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Uploaded by</p>
+                  <p><c:out value="${docInfo.userDisplayName}"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Upload Date</p>
+                  <p><fmt:formatDate value="${docInfo.uploadDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Round of Review</p>
+                  <p><c:out value="${docInfo.roundOfReview}"/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Actions</p>
+                  <p><a href="javascript:void(0)" class="btn btn-secondary btn-xs" style="padding: 5px;" onclick='downloadAFCCertificationFile("${newMaskedRepoId}")'><span style="font-size: 12px;color: #444444d6">Download</span></a></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">AFC</p>
+                  <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.afcMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">Applicant</p>
+                  <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.applicantMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
+                </td>
+                <td>
+                  <p class="visible-xs visible-sm table-row-title">MOH</p>
+                  <c:choose>
+                    <c:when test="${canActionRole eq 'BSB_DO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
+                      <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_DO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if>  value="Y"/></p>
+                    </c:when>
+                    <c:when test="${canActionRole eq 'BSB_AO' and docInfo.roundOfReview == reviewAFCReportDto.maxRound}">
+                      <p style="text-align: center"><input name="${docInfo.maskedRepoId}BSB_AO" type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> value="Y"/></p>
+                    </c:when>
+                    <c:otherwise>
+                      <p style="text-align: center"><input type="checkbox" <c:if test="${docInfo.mohMarkFinal eq 'Y'}">checked</c:if> disabled/></p>
+                    </c:otherwise>
+                  </c:choose>
+                </td>
+              </tr>
+            </c:forEach>
+          </tbody>
+          </c:otherwise>
+        </c:choose>
       </table>
     </div>
   </div>

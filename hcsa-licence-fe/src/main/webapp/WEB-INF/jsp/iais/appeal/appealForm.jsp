@@ -20,6 +20,8 @@
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
     <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+    <input type="hidden" name="applicationType" value="APTY002"/>
+
     <div id="div_print">
       <div class="form-group">
         <div class="col-xs-12 col-md-9" style="margin-left: 2%">
@@ -154,7 +156,9 @@
           <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
             <div class="text-right text-center-mobile">
               <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
-              <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
+              <c:if test="${empty rfiApplication}">
+                <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
+              </c:if>
               <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>
             </div>
           </div>
@@ -222,12 +226,16 @@ $('#submit').click(function () {
     }
   var error = $('#error_litterFile_Show').html();
   if(error == undefined || error == ""){
-      Utils.submit('mainForm','submit','submit','','');
+    $('input[type="text"]').removeClass('disabled');
+    $('input[type="text"]').prop('disabled',false);
+    Utils.submit('mainForm','submit','submit','','');
    /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
   }
 });
   $("#print-review").click(function () {
-      Utils.submit('mainForm','print','print','','');
+    $('input[type="text"]').removeClass('disabled');
+    $('input[type="text"]').prop('disabled',false);
+    Utils.submit('mainForm','print','print','','');
   });
   var debug = true;//true: add debug logs when cloning
   var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
@@ -327,6 +335,8 @@ function clearFileFunction(){
 }
 
 $('#save').click(function () {
+  $('input[type="text"]').removeClass('disabled');
+  $('input[type="text"]').prop('disabled',false);
     Utils.submit('mainForm','save','save','','');
    /* SOP.Crud.cfxSubmit("mainForm", "save","save","");*/
 });

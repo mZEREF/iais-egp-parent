@@ -1,7 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -11,12 +15,15 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +41,10 @@ public class DpAjaxController {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private DpDataSubmissionService dpDataSubmissionService;
+
 
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
@@ -83,9 +94,32 @@ public class DpAjaxController {
     }*/
    @GetMapping(value = "/prg-input-info")
     public @ResponseBody
-   ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
+    Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        return appSubmissionService.retrievePrsInfo(professionRegoNo);
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
+        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
+        if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+            DoctorInformationDto doctorInformationDto=dpDataSubmissionService.getDoctorInformationDtoByConds(professionRegoNo);
+            result.put("selection", doctorInformationDto);
+            return result;
+        }
+        result.put("selection", professionalResponseDto);
+        return result;
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/startdispensing-date")
+    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws ParseException {
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto=DataSubmissionHelper.getCurrentDpDataSubmission(request);
+        DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+        dataSubmissionDto.setSubmitDt(new Date());
+        String dispensingDate = ParamUtil.getString(request, "dispensingDate");
+        String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
+        if(Formatter.compareDateByDay(submitDt,dispensingDate)>2){
+            result.put("showDate", Boolean.TRUE);
+        }
+        return result;
     }
 }

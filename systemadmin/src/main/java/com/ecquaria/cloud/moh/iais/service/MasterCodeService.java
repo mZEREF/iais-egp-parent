@@ -13,7 +13,7 @@ import java.util.List;
 public interface MasterCodeService {
     SearchResult<MasterCodeQueryDto> doQuery(SearchParam param);
     List<MasterCodeToExcelDto> findAllMasterCode();
-    void deleteMasterCodeById(String id);
+    void deleteMasterCodeById(String id, int updateCount);
     List<String> suggestCodeDescription(String masterCode);
     String findCodeKeyByDescription(String description);
     MasterCodeDto saveMasterCode(MasterCodeDto masterCode);

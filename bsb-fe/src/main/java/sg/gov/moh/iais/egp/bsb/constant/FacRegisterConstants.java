@@ -61,6 +61,7 @@ public class FacRegisterConstants {
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
     public static final String KEY_BAT_LIST                = "batList";
+    public static final String KEY_BAT_CONTAINS_IMPORT     = "batContainsImport";
 
     public static final String KEY_DOC_SETTINGS            = "docSettings";
     public static final String KEY_OTHER_DOC_TYPES         = "otherDocTypes";
@@ -105,6 +106,10 @@ public class FacRegisterConstants {
     public static final String ERR_MSG_INVALID_CLASSIFICATION   = "Invalid facility classification";
     public static final String ERR_MSG_INVALID_ACTIVITY    = "Invalid facility activity type";
     public static final String ERR_MSG_RF_INVALID_ACTIVITY = "Registered Facility is only allowed to select one activity";
+
+    public static final String ELIGIBLE_DRAFT_REGISTER_DTO = "eligibleDraftRegisterDto";
+    public static final String ACTION_LOAD_DRAFT = "action_load_draft";
+    public static final String HAVE_SUITABLE_DRAFT_DATA = "haveSuitableDraftData";
 
     //view application special constant
     public static final String KEY_APP_ID                 = "appId";

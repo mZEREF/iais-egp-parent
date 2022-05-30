@@ -109,7 +109,7 @@
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
-            <label for="streetNameT--v--${status.index}">Street Name <span id="aptMandatoryStreetT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeE ne withoutAptBlk}">style="display:none;"</c:if>>*</span></label>
+            <label for="streetNameT--v--${status.index}">Street Name <span id="aptMandatoryStreetT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${detail.addressTypeT ne withoutAptBlk}">style="display:none;"</c:if>>*</span></label>
         </div>
         <div class="col-sm-6">
             <input maxlength="32" type="text" autocomplete="off" name="streetNameT--v--${status.index}" id="streetNameT--v--${status.index}" value='<c:out value="${detail.streetNameT}"/>'/>

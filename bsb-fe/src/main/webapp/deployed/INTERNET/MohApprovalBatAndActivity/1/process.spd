@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApprovalBatAndActivity" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohApprovalBatAndActivity" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="-240" y="24">
+  <StartStep defClass="" executor="" icon="" name="Start" x="-240" y="70">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Init" x="-168" y="24">
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="-160" y="110">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreBegin" x="-72" y="21">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preBegin_OnStepProcess_0" name="preBegin_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreApprovalSelection" x="-108" y="108">
@@ -84,13 +77,6 @@
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prePreview_OnStepProcess_0" name="prePreview_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="HandleBegin" x="264" y="36">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="handleBegin_OnStepProcess_0" name="handleBegin_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="HandleApprovalSelection" x="224" y="119">
@@ -200,12 +186,6 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BeginPage" stageIndicator="" x="84" y="24">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
-  </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ApprovalSelectionPage" stageIndicator="" x="48" y="108">
    <OnPageLoad />
    <OnPageSubmit />
@@ -282,19 +262,7 @@
  <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(-220,44)(-148,44)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBegin" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
-   <position>{(-148,44)(-52,41)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/BeginPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreBegin" style="oblique">
-   <position>{(-52,41)(104,44)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleBegin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BeginPage" style="oblique">
-   <position>{(104,44)(284,56)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBegin" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
-   <position>{(-232,380)(-52,41)}</position>
+   <position>{(-220,90)(-140,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreApprovalSelection" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
    <position>{(-232,380)(-88,128)}</position>
@@ -304,9 +272,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/HandleApprovalSelection" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ApprovalSelectionPage" style="oblique">
    <position>{(68,128)(244,139)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleBegin" style="oblique">
-   <position>{(284,56)(428,356)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleApprovalSelection" style="oblique">
    <position>{(244,139)(428,356)}</position>
@@ -443,12 +408,14 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleCompanyInfo" style="oblique">
    <position>{(248,212)(428,356)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreApprovalSelection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(-140,130)(-88,128)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="PageJumpSwitch" x="-252" y="360">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/PreBegin" value="&quot;begin&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreApprovalSelection" value="&quot;approvalSelection&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreFacProfile" value="&quot;appInfo_facProfile&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PrePossessBatDetails" value="&quot;appInfo_possessBat&quot;" />
@@ -476,3 +443,4 @@
  <StageIndicator />
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

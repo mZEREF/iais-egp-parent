@@ -219,4 +219,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-licensee/licensee-fromSingpass")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoFromSingpass();
+
+    @GetMapping(value = "/iais-workgroup/wrkgroups/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getWorkGrpsByUserId(@PathVariable(name = "userId") String userId);
 }

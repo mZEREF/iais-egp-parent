@@ -1,7 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -93,7 +92,7 @@
                                                         </div>
                                                         <div class="tab-content">
                                                             <div class="tab-pane active" id="tabInspectionReport" role="tabpanel">
-                                                                <%@include file="/WEB-INF/jsp/iais/inspection/report/inspectionReport.jsp"%>
+                                                                <%@include file="common/inspectionReport.jsp"%>
                                                             </div>
                                                             <div class="tab-pane" id="tabCertificationReport" role="tabpanel">
                                                                 <%@include file="common/certificationDocumentsPage.jsp"%>

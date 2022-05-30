@@ -28,6 +28,7 @@
             <#if interService??> AND CHARINDEX(:interService, inbox.service_codes) >0 </#if>
             <#if interServiceDsShow??> AND inbox.service_codes in ${interServiceDsShow} </#if>
             <#if interServiceHcsaShow??> AND inbox.service_codes not in ${interServiceHcsaShow} </#if>
+            <#if hcsaServicesShow??> AND ${hcsaServicesShow} </#if>
         ]]>
     </sql>
 
@@ -56,6 +57,8 @@
                                     'APST020','APST022')
             <#if licenseeId??> AND wapp.licensee_id = :licenseeId</#if>
             <#if createDtStart??> AND wapp.created_dt > :createDtStart</#if>
+            <#if appServicesShow??> AND ${appServicesShow} </#if>
+
         ]]>
     </sql>
 
@@ -114,6 +117,7 @@
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
+             <#if appServicesShow??> AND ${appServicesShow} </#if>
             ) a
         ]]>
     </sql>
@@ -171,6 +175,7 @@
             <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
             <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
             <#if licNo??> AND CHARINDEX(:licNo, lic.licence_no) >0 </#if>
+            <#if serviceTypesShow??> AND lic.svc_name in ${serviceTypesShow}</#if>
         ]]>
     </sql>
 
@@ -221,9 +226,12 @@
                           when null then null
                           when '' then null
                           else ', '+p.POSTAL_CODE end ))
-	               as address,p.ORGANIZATION_ID FROM
-                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
-                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
+	               as address,p.ORGANIZATION_ID
+	               FROM licence as li
+                   join lic_premises lp on li.ID = lp.LICENCE_ID
+                   join premises p on lp.PREMISES_ID = p.ID
+                   WHERE 1 = 1
+                   <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
                     and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS')
                     <#if premisesType??> and p.PREMISES_TYPE =:premisesType </#if>
                     and li.STATUS ='LICEST001' and p.ID in (
@@ -231,6 +239,7 @@
                    lic_premises as li WHERE li.LICENCE_ID in
                    (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001'
                     <#if licenseeId??> and b.LICENSEE_ID =:licenseeId </#if>)GROUP by li.LICENCE_ID)
+                    <#if serviceTypesShow??> AND li.svc_name in ${serviceTypesShow}</#if>
 
             ]]>
     </sql>
@@ -243,6 +252,7 @@
                 AND t3.STATUS = 'LICEST001'
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			    <#if idNo??> AND T1.ID_NO =:idNo</#if>
+			    <#if serviceTypesShow??> AND T3.svc_name in ${serviceTypesShow}</#if>
         ]]>
     </sql>
     <sql key="getLicenceBySerName" remarks="getLicenceBySerName">

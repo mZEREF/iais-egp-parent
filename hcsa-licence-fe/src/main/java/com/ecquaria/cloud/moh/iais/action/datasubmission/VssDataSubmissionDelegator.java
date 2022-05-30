@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -18,10 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
@@ -93,6 +91,11 @@ public class VssDataSubmissionDelegator {
         log.info(" ----- PrepareSwitch ------ ");
         DsConfigHelper.initVssConfig(bpc.request);
         String actionType = getActionType(bpc.request);
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType)) {
+            actionType=DsConfigHelper.VSS_STEP_TREATMENT;
+            DsConfigHelper.setActiveConfig(actionType, bpc.request);
+        }
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
@@ -251,7 +254,7 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isNotEmpty(treatmentDto.getEthnicGroup()) && !treatmentDto.getEthnicGroup().equals("ECGP004")) {
             treatmentDto.setOtherEthnicGroup(null);
         }
-        if (StringUtil.isNotEmpty(treatmentDto.getOccupation()) && !treatmentDto.getOccupation().equals("VSSOP011")) {
+        if (StringUtil.isNotEmpty(treatmentDto.getOccupation()) && !treatmentDto.getOccupation().equals("VSSOP012")) {
             treatmentDto.setOtherOccupation(null);
         }
         if (StringUtil.isNotEmpty(treatmentDto.getSterilizationReason()) && !treatmentDto.getSterilizationReason().equals("VSSRFS009")) {
@@ -266,12 +269,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    treatmentDto.setHeadStatus(true);
-                    vssTreatmentDto.setTreatmentDto(treatmentDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
 
@@ -319,12 +316,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    guardianAppliedPartDto.setHeadStatus(true);
-                    vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
         if(!errMap.isEmpty()){
@@ -336,6 +327,16 @@ public class VssDataSubmissionDelegator {
 
     private void prepareTfsspParticulars(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        String[] sterilizationMd;
+        if(treatmentDto.getGender().equals(DataSubmissionConsts.GENDER_MALE)){
+            sterilizationMd=new String[]{DataSubmissionConsts.METHOD_OF_STERILIZATION_OCCLUSION_REMOVAL};
+        }else {
+            sterilizationMd=new String[]{"VSMOS001","VSMOS002","VSMOS003","VSMOS004"};
+        }
+        List<SelectOption> sterilizationLists= MasterCodeUtil.retrieveOptionsByCodes(sterilizationMd);
+        ParamUtil.setSessionAttr(request, "sterilizationLists", (Serializable) sterilizationLists);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE,ACTION_TYPE_CONFIRM);
     }
@@ -348,16 +349,16 @@ public class VssDataSubmissionDelegator {
         String doctorReignNo = ParamUtil.getString(request,"doctorReignNo");
         String doctorName = ParamUtil.getString(request,"doctorName");
         String sterilizationMethod = ParamUtil.getString(request,"sterilizationMethod");
+        String hecReviewedHospital = ParamUtil.getString(request,"hecReviewedHospital");
         String operationDate = ParamUtil.getString(request,"operationDate");
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
-        String disinfectionPlace = ParamUtil.getString(request,"disinfectionPlace");
-        String otherSterilizationMethod =  ParamUtil.getString(request,"otherSterilizationMethod");
-        sexualSterilizationDto.setDisinfectionPlace(disinfectionPlace);
+        String sterilizationHospital = ParamUtil.getString(request,"sterilizationHospital");
+        sexualSterilizationDto.setSterilizationHospital(sterilizationHospital);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
-        sexualSterilizationDto.setOtherSterilizationMethod(otherSterilizationMethod);
+        sexualSterilizationDto.setHecReviewedHospital(hecReviewedHospital);
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }
@@ -378,12 +379,6 @@ public class VssDataSubmissionDelegator {
             ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
-                if(errMap.isEmpty()){
-                    sexualSterilizationDto.setHeadStatus(true);
-                    vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
-                    vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-                    ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                }
             }
         }
         if(!errMap.isEmpty()){
@@ -578,14 +573,6 @@ public class VssDataSubmissionDelegator {
      */
     public void doRfc(BaseProcessClass bpc) {
         log.info(" ----- DoRfc ------ ");
-        if(isRfc(bpc.request)){
-            VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getOldVssSuperDataSubmissionDto(bpc.request);
-            VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
-            if(vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getVssTreatmentDto()!= null && vssTreatmentDto.equals(vssSuperDataSubmissionDto.getVssTreatmentDto())){
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
-            }
-        }
     }
 
     /**

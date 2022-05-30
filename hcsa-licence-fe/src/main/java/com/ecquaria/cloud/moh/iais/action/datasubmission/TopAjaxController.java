@@ -95,7 +95,7 @@ public class TopAjaxController {
             return result;
         }
         int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        if(age<=16 || age>=65){
+        if(age<=10 || age>=65){
             result.put("showAge", Boolean.TRUE);
         }
         return result;
@@ -106,6 +106,10 @@ public class TopAjaxController {
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        return appSubmissionService.retrievePrsInfo(professionRegoNo);
+        ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
+        if(StringUtil.isEmpty(professionalResponseDto.getName())){
+
+        }
+        return professionalResponseDto;
     }
 }

@@ -18,7 +18,14 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -60,6 +67,7 @@ public class FacilityRegistrationDelegator {
         session.removeAttribute(KEY_IS_PV_RF);
         session.removeAttribute(KEY_SELECTED_CLASSIFICATION);
         session.removeAttribute(KEY_SELECTED_ACTIVITIES);
+        session.removeAttribute(ELIGIBLE_DRAFT_REGISTER_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }
 
@@ -112,7 +120,7 @@ public class FacilityRegistrationDelegator {
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
-        facilityRegistrationService.handleServiceSelection(bpc);
+        facilityRegistrationService.handleNewFacilityServiceSelection(bpc);
     }
 
     public void preFacProfile(BaseProcessClass bpc) {

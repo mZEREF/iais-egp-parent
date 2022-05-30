@@ -39,6 +39,7 @@
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>"--%>
 <%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
 <%--@elvariable id="previewSubmit" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto"--%>
+<%--@elvariable id="batContainsImport" type="java.lang.Boolean"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -73,21 +74,34 @@
                                                 <span data-err-ind="remarks" class="error-msg"></span>
                                             </div>
                                         </div>
+                                        <c:if test="${isUncertifiedFacility || isSPFifthRegisteredFacility}">
+                                            <div class="form-group " style="z-index: 10">
+                                                <div class="col-xs-1" style="padding: 20px 0 20px 30px;">
+                                                    <input type="checkbox" name="regulationDeclare" id="regulationDeclare" value="Y" <c:if test="${previewSubmit.regulationDeclare eq 'Y'}">checked="checked"</c:if> />
+                                                </div>
+                                                <div class="col-xs-10 control-label">
+                                                    <label for="regulationDeclare" style="display: block;">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                                                    <span data-err-ind="regulationDeclare" class="error-msg"></span>
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${batContainsImport}">
                                         <div class="form-group " style="z-index: 10">
-                                            <div class="col-xs-1" style="padding: 20px 0 20px 30px;">
-                                                <input type="checkbox" name="regulationDeclare" id="regulationDeclare" value="Y" <c:if test="${previewSubmit.regulationDeclare eq 'Y'}">checked="checked"</c:if> />
+                                            <div class="col-xs-1" style="padding: 8px 0 20px 30px;">
+                                                <input type="checkbox" name="importDeclare" id="importDeclare" value="Y" <c:if test="${previewSubmit.importDeclare eq 'Y'}">checked="checked"</c:if> />
                                             </div>
                                             <div class="col-xs-10 control-label">
-                                                <label for="regulationDeclare">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
-                                                <span data-err-ind="regulationDeclare" class="error-msg"></span>
+                                                <label for="importDeclare" style="display: block;">I will ensure that a valid import permit is secured prior to the importation of the biological agent/toxin.</label>
+                                                <span data-err-ind="importDeclare" class="error-msg"></span>
                                             </div>
                                         </div>
+                                        </c:if>
                                         <div class="form-group " style="z-index: 10">
                                             <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
                                                 <input type="checkbox" name="accuracyDeclare" id="accuracyDeclare" value="Y" <c:if test="${previewSubmit.accuracyDeclare eq 'Y'}">checked="checked"</c:if> />
                                             </div>
                                             <div class="col-xs-10 control-label">
-                                                <label for="accuracyDeclare">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
+                                                <label for="accuracyDeclare" style="display: block;">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
                                                 <span data-err-ind="accuracyDeclare" class="error-msg"></span>
                                             </div>
                                         </div>

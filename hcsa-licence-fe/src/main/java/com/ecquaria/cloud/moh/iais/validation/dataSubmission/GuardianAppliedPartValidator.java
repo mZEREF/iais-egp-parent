@@ -53,6 +53,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
                    log.error(e.getMessage(),e);
                }
            }
+
         }
         if(treatmentDto.getSterilizationReason().equals(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartName())){
@@ -81,6 +82,9 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
+            }
+            if(guardianAppliedPartDto.getVssDocumentDto().size()==0){
+                errMap.put("vssFileError", "GENERAL_ERR0006");
             }
         }
 

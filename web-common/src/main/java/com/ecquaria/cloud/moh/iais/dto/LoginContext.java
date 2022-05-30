@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ public class LoginContext implements Serializable {
     @Setter private String userName;
     @Setter private String nricNum;
     private ArrayList<String> roleIds;
+    private HashMap<String, List<UserRoleAccessMatrixDto>> roleMatrixes;
     @Setter private String curRoleId;
     // BE User Info
     private Set<String> wrkGrpIds;
@@ -42,5 +45,6 @@ public class LoginContext implements Serializable {
     public LoginContext() {
         wrkGrpIds = IaisCommonUtils.genNewHashSet();
         roleIds = IaisCommonUtils.genNewArrayList();
+        roleMatrixes = IaisCommonUtils.genNewHashMap();
     }
 }

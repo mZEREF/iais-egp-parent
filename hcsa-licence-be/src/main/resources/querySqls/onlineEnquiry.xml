@@ -1121,6 +1121,8 @@
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
+            <#if birthDateFrom??> AND dvt.PATIENT_BIRTHDAY >= convert(date,:birthDateFrom)</#if>
+            <#if birthDateTo??> AND dvt.PATIENT_BIRTHDAY <= convert(datetime,:birthDateTo)</#if>
             <#if submissionNo??> AND  charindex(:submissionNo, dds.SUBMISSION_NO) >0</#if>
             <#if patientName??> AND  charindex(:patientName, dvt.PATIENT_NAME) >0</#if>
             <#if maritalStatus??> AND  charindex(:maritalStatus, dvt.MARITAL_STATUS) >0</#if>

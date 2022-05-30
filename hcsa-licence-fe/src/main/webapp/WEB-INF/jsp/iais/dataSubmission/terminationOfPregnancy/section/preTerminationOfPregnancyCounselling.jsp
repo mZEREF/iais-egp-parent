@@ -147,13 +147,6 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG014" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:field width="5" value="Doctor's Professional Reign / MRC No." info="${toolMsg}" style="padding-right: 0px;"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
-                </iais:value>
-            </iais:row>
-            <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
@@ -195,7 +188,7 @@
                 ${patientInformationDto.patientAge}
         </iais:value>
         </iais:row>
-            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
+            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -258,6 +251,13 @@
             </iais:value>
         </iais:row>
     </div>
+        <iais:row>
+            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+            <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+        </iais:value>
+        </iais:row>
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>
@@ -269,25 +269,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <span style="font-size: 2rem;" id="prsErrorMsg">
-                                    <iais:message key="The patient age to the date of counselling is within the range of <=16 or >=65. Please check that the details have been accurately entered." escape="false" />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="hpbConsult" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body" >
-                        <div class="row">
-                            <div class="col-md-12">
-                                <span style="font-size: 2rem;" id="ages">
-                                    <iais:message key="please go to HPB for consultation." escape="false" />
+                                    <iais:message key="The patient age to the date of counselling is within the range of <=10 or >=65. Please check that the details have been accurately entered." escape="false" />
                                 </span>
                             </div>
                         </div>
@@ -300,11 +282,6 @@
         </div>
         <script>
     $(document).ready(function () {
-        var patientAge = $('#patientAge').val();
-        if(patientAge<16){
-            $('#hpbConsult').modal('show');
-        }
-
         $('#counsellingNo').change(function () {
             counsellingNo();
         });
@@ -394,7 +371,7 @@
         var patientAge = $('#patientAge').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16) {
+            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='') {
                 $('#preCounsNoCondReasons').hide();
             }else {
                 console.log("1");

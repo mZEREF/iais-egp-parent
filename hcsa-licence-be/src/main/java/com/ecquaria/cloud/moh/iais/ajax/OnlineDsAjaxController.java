@@ -610,7 +610,7 @@ public class OnlineDsAjaxController {
             queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
+                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "VoluntarySterilisation_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
@@ -643,13 +643,36 @@ public class OnlineDsAjaxController {
 
         if (!Objects.isNull(results)){
             List<DsDrpEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+            for (DsDrpEnquiryResultsDto drp:queryList
+                 ) {
+                if(StringUtil.isNotEmpty(drp.getCdPatientCode())){
+                    SearchParam searchParamAjax = new SearchParam(DsDrpEnquiryAjaxResultsDto.class.getName());
+                    searchParamAjax.setPageSize(Integer.MAX_VALUE);
+                    searchParamAjax.setPageNo(0);
+                    searchParamAjax.setSort("SUBMIT_DT", SearchParam.DESCENDING);
+                    searchParamAjax.addFilter("patientCode", drp.getPatientCode(), true);
+                    //search
+                    QueryHelp.setMainSql("onlineEnquiry", "searchByDrpAjax", searchParamAjax);
+                    SearchResult<DsDrpEnquiryAjaxResultsDto> searchResultAjax = assistedReproductionService.searchDrpAjaxByParam(searchParamAjax);
+                    List<DsDrpEnquiryAjaxResultsDto> queryListAjax = null;
+                    if (!Objects.isNull(searchResultAjax)){
+                        queryListAjax = searchResultAjax.getRows();
+                        queryListAjax.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+                        queryListAjax.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
+                        queryListAjax.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
+                        queryListAjax.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+                        drp.setAjaxResultsDto(queryListAjax);
+                    }
+                }
+
+                drp.setSubmitDtStr(Formatter.formatDateTime(drp.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));
+                drp.setPatientBirthdayStr(Formatter.formatDateTime(drp.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT));
+                drp.setPatientIdType(MasterCodeUtil.getCodeDesc(drp.getPatientIdType()));
+            }
 
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, DsDrpEnquiryResultsDto.class, "Drug_Practices_SearchResults_Download");
+                file = ExcelWriter.writerToExcelSubHead(queryList, DsDrpEnquiryResultsDto.class, DsDrpEnquiryAjaxResultsDto.class, "Drug_Practices_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

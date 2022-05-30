@@ -51,7 +51,7 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
+            <iais:input maxLength="100" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianRelationship"></span>
         </iais:value>
     </iais:row>
@@ -93,7 +93,7 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
+            <iais:input maxLength="100" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartRelationship"></span>
         </iais:value>
     </iais:row>
@@ -108,10 +108,10 @@
         <div class="">
             <div class="document-upload-gp">
                 <div class="document-upload-list">
-                    <h3>Court Order Document</h3>
+                    <h3>Court Order Document <span class="mandatory">&nbsp;*</span></h3>
                             <div class="file-upload-gp">
                                 <div name="selectedVssFileShowId" id="selectedVssFileShowId">
-                                    <c:forEach items="${vssFiles}" var="vssFile"
+                                    <c:forEach items="${guardianAppliedPartDto.vssDocumentDto}" var="vssFile"
                                                varStatus="ind">
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
@@ -139,6 +139,7 @@
                                                                                         onclick="clearFlagValueFEFile()">Upload</a>
                             </div>
                     <span id="error_selectedVssFileError" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_vssFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
         </div>

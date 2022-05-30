@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohBsbAdhocRFI___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbAdhicRfiDelegator";
+	private static final String DELEGATOR ="bsbAdhocRfiDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);// 		start->OnStepProcess

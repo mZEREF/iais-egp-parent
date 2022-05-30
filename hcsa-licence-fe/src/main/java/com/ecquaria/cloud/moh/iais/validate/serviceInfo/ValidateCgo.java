@@ -108,8 +108,8 @@ public class ValidateCgo implements ValidateServiceInfo {
         if(StringUtil.isEmpty(name)){
             map.put("name"+index,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
         }else {
-            if(name.length()>66){
-                String general_err0041 = NewApplicationHelper.repLength("Name","66");
+            if(name.length()>110){
+                String general_err0041 = NewApplicationHelper.repLength("Name","110");
                 map.put("name" + index, general_err0041);
             }
         }

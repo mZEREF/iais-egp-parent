@@ -27,6 +27,7 @@ public interface InspectionMainAssignTaskService {
      * @Descripation: get Application Group Premises By Application Id
      */
     AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(String applicationId);
+    AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(AppGrpPremisesDto appGrpPremisesDto);
 
     /**
      * @author: shicheng

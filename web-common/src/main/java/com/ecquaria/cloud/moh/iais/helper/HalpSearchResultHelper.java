@@ -4,6 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
@@ -17,6 +20,15 @@ import com.ecquaria.cloud.privilege.Privilege;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 public class HalpSearchResultHelper {
 
@@ -44,6 +56,8 @@ public class HalpSearchResultHelper {
     public static SearchParam getSearchParam(HttpServletRequest request,String searchClassName,boolean isNew) {
         int defaultPageSize = SystemParamUtil.getDefaultPageSize();
         SearchParam searchParam = null;
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
         switch (searchClassName) {
             case "inboxMsg":
                 searchParam = (SearchParam) ParamUtil.getSessionAttr(request, InboxConst.INBOX_PARAM);
@@ -53,6 +67,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
                     initMsgControlSearchParam(searchParam,request);
+                    setMsgParamByField(searchParam,"hcsaServicesShow",HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
                 break;
@@ -63,6 +78,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(defaultPageSize);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
+                    setAppParamByField(searchParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, searchParam);
                 }
                 break;
@@ -73,12 +89,44 @@ public class HalpSearchResultHelper {
                     searchParam.setSort("START_DATE", SearchParam.DESCENDING);
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(defaultPageSize);
+                    setLicParamByField(searchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, searchParam);
                 }
                 break;
         }
         return searchParam;
     }
+    public static void setMsgParamByField(SearchParam searchParam, String key, List<String> values){
+            setParamByFieldOrSearch(searchParam,key,values,"inbox.service_codes");
+    }
+    public static void setAppParamByField(SearchParam searchParam, String key, List<String> values){
+        setParamByFieldOrSearch(searchParam,key,values,"B.code");
+    }
+    public static void setLicParamByField(SearchParam searchParam,String key,List<String> values){
+         if(IaisCommonUtils.isEmpty(values)){
+             searchParam.addParam(key," ('None data') ");
+             return;
+         }
+        setParamByField(searchParam,key,values);
+    }
+
+    public static void setParamByFieldOrSearch(SearchParam searchParam,String key,List<String> values,String compareField){
+        if(IaisCommonUtils.isNotEmpty(values)){
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; i < values.size(); i++) {
+                if(i>0){
+                    sb.append(" or ");
+                }
+                sb.append(" CHARINDEX(").append(':').append(key).append(i).append(',').append(compareField).append(") >0");
+                searchParam.addFilter(key + i, values.get(i));
+            }
+            sb.append(')');
+            searchParam.addParam(key,sb.toString());
+        }else {
+            searchParam.addParam(key," 1 = 2 ");
+        }
+    }
+
 
     public static void doSort(HttpServletRequest request,SearchParam searchParam){
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
@@ -173,7 +221,7 @@ public class HalpSearchResultHelper {
         if(IaisCommonUtils.isNotEmpty(values)){
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < values.size(); i++) {
-                sb.append(":").append(key)
+                sb.append(':').append(key)
                         .append(i)
                         .append(',');
                 searchParam.addFilter(key + i, values.get(i));

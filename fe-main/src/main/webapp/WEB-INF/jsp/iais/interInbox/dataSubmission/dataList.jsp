@@ -105,6 +105,8 @@
             </div>
         </div>
         <br> <br>
+        <c:if test="${submissionTypes.size() > 13}"><br><br></c:if>
+
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
 

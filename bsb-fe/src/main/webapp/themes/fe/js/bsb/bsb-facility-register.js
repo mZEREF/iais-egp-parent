@@ -24,6 +24,7 @@ $(function () {
     var ufActivityTypesDiv = $("#ufTypes");
     var lspfActivityTypesDiv = $("#lspfTypes");
     var rfActivityTypesDiv = $("#rfTypes");
+    var facActivityMandatory = $("#facActivityMandatory");
     $("#bsl3Radio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
@@ -33,6 +34,7 @@ $(function () {
         ufActivityTypesDiv.hide();
         lspfActivityTypesDiv.hide();
         rfActivityTypesDiv.hide();
+        facActivityMandatory.hide();
     });
     $("#bsl4Radio").change(function () {
         activityTypeP.show();
@@ -43,6 +45,7 @@ $(function () {
         ufActivityTypesDiv.hide();
         lspfActivityTypesDiv.hide();
         rfActivityTypesDiv.hide();
+        facActivityMandatory.hide();
     });
     $("#ufRadio").change(function () {
         activityTypeP.show();
@@ -52,6 +55,7 @@ $(function () {
         ufActivityTypesDiv.show();
         lspfActivityTypesDiv.hide();
         rfActivityTypesDiv.hide();
+        facActivityMandatory.show();
     });
     $("#lspfRadio").change(function () {
         activityTypeP.show();
@@ -61,6 +65,7 @@ $(function () {
         ufActivityTypesDiv.hide();
         lspfActivityTypesDiv.show();
         rfActivityTypesDiv.hide();
+        facActivityMandatory.show();
     });
     $("#rfRadio").change(function () {
         activityTypeP.show();
@@ -70,6 +75,7 @@ $(function () {
         ufActivityTypesDiv.hide();
         lspfActivityTypesDiv.hide();
         rfActivityTypesDiv.show();
+        facActivityMandatory.show();
     });
 
     $("#facType").change(function () {
@@ -300,6 +306,35 @@ $(function () {
     });
 });
 
+function cancelLoadDraftData() {
+    $('#haveData').modal('hide');
+    showWaiting();
+    $("input[name='action_type']").val("jump");
+    $("input[name='action_value']").val("next");
+    $("input[name='action_load_draft']").val("N");
+    $("#mainForm").submit();
+}
+function loadDraftData() {
+    $('#haveData').modal('hide');
+    showWaiting();
+    $("input[name='action_type']").val("jump");
+    $("input[name='action_value']").val("next");
+    $("input[name='action_load_draft']").val("Y");
+    $("#mainForm").submit();
+}
+
+$(function (){
+    $("#continueB").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val("next");
+        $("#mainForm").submit();
+    });
+
+    if ($("#haveSuitableDraftData").val() === 'true') {
+        $('#haveData').modal('show');
+    }
+});
 
 /* num is the amount */
 function newSectionHeader(num, idx, titlePrefix) {

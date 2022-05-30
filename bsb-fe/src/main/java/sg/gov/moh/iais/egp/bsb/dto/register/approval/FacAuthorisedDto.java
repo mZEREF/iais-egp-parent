@@ -69,11 +69,14 @@ public class FacAuthorisedDto extends ValidatableNodeValue {
         Map<String, FacilityAuthoriserDto> facilityAuthDtoMap = (Map<String, FacilityAuthoriserDto>) ParamUtil.getSessionAttr(request,KEY_USER_ID_FACILITY_AUTH_MAP);
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {
-         String personnelId = ParamUtil.getString(request,KEY_FACILITY_AUTHORISED_PERSONNEL+SEPARATOR+idx);
-         if(StringUtils.hasLength(personnelId)){
-            FacilityAuthoriserDto facilityAuthoriserDto = facilityAuthDtoMap.get(personnelId);
+            String personnelId = ParamUtil.getString(request,KEY_FACILITY_AUTHORISED_PERSONNEL+SEPARATOR+idx);
+            FacilityAuthoriserDto facilityAuthoriserDto;
+            if(StringUtils.hasLength(personnelId)){
+                facilityAuthoriserDto = facilityAuthDtoMap.get(personnelId);
+            }else{
+                facilityAuthoriserDto = new FacilityAuthoriserDto();
+            }
             this.facAuthorisedDtoList.add(facilityAuthoriserDto);
-         }
         }
     }
 }

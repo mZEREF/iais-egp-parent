@@ -35,8 +35,14 @@ public class TreatmentValidator implements CustomizeValidator {
                 errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
             }
         }
+        String educationLevel = treatmentDto.getEducationLevel();
+        if(!StringUtil.isEmpty(educationLevel) && educationLevel.equals("VSSEL006")){
+            if(StringUtil.isEmpty(treatmentDto.getOtherEducationLevel())){
+                errorMap.put("otherEducationLevel", "GENERAL_ERR0006");
+            }
+        }
        String occupation = treatmentDto.getOccupation();
-        if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP011")){
+        if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP012")){
             if(StringUtil.isEmpty(treatmentDto.getOtherOccupation())){
                 errorMap.put("otherOccupation", "GENERAL_ERR0006");
             }
@@ -56,14 +62,11 @@ public class TreatmentValidator implements CustomizeValidator {
             }
 
         }
-        if(!StringUtil.isEmpty(livingChildrenNo) && !StringUtil.isNumber(livingChildrenNo)){
-            errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
-        }
 
         if(StringUtil.isNotEmpty(lastChildBirthday)){
             try {
                 if(CommonValidator.isDate(lastChildBirthday) && Formatter.compareDateByDay(lastChildBirthday) >=0){
-                    errorMap.put("lastChildBirthday","Must be earlier then current date");
+                    errorMap.put("lastChildBirthday","Must be earlier then current date.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);

@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
 
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private DpDataSubmissionService dpDataSubmissionService;
 
     public void start(BaseProcessClass bpc) {
         bpc.request.removeAttribute(IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -49,17 +52,33 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
+
         HttpServletRequest request = bpc.request;
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
         if (dpSuperDataSubmissionDto == null) {
             dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
         }
+
         String cycleStages=dpSuperDataSubmissionDto.getCycleDto().getCycleType();
         if (cycleStages.equals("DSCL_005")) {
             dpSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO);
             dpSuperDataSubmissionDto = DataSubmissionHelper.dpReNew(dpSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
         }
+        String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        if ("resume".equals(actionValue)) {
+            dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
+                    dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
+            if (dpSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
+            }
+            DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
+        } else if ("delete".equals(actionValue)) {
+            dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
+        }
+        DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
     }
 
     @Override
@@ -81,16 +100,20 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         }
         patientDto.setPatientCode(patientService.getPatientCode(patientDto.getPatientCode()));
         dpSuperDataSubmissionDto.setPatientDto(patientDto);
-
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if ("resume".equals(actionValue)||"delete".equals(actionValue)) {
+            crud_action_type ="page";
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientDto, "DRP");
             errorMap = validationResult.retrieveAll();
-            verifyRfcCommon(request, errorMap);
-            if (errorMap.isEmpty()) {
-                valRFC(request,patientDto);
-            }
+                verifyRfcCommon(request, errorMap);
+                if (errorMap.isEmpty()) {
+                    valRFC(request,patientDto);
+                }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

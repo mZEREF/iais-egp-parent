@@ -33,7 +33,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_BAT_AND_ACTIVITY_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_SELECTION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APP_DT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APP_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_EDIT_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FACILITY_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_PROFILE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_AUTH_PERSONNEL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto.KEY_USER_ID_FACILITY_AUTH_MAP;
 
 
 @Slf4j
@@ -60,6 +82,7 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_OPTIONS_AUTH_PERSONNEL);
         session.removeAttribute(KEY_USER_ID_FACILITY_AUTH_MAP);
         session.removeAttribute(KEY_FACILITY_ID);
+        session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
         AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
     }
 
@@ -88,15 +111,6 @@ public class ApprovalBatAndActivityDelegator {
         }
 
         approvalBatAndActivityService.retrieveOrgAddressInfo(request);
-    }
-
-    public void preBegin(BaseProcessClass bpc){
-        // do nothing now
-    }
-
-    public void handleBegin(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
     }
 
     public void preApprovalSelection(BaseProcessClass bpc){

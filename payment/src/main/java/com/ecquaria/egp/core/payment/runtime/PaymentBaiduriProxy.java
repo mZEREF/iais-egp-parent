@@ -296,7 +296,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		return fields;
 	}
 
-	private String hashAllFields(Map<String, String> fields, String secureHashType) throws NoSuchAlgorithmException {
+	private String hashAllFields(Map<String, String> fields, String secureHashType)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		// create a list and sort it
 		List<String> fieldNames = IaisCommonUtils.genNewArrayList(fields.size());
 		fieldNames.addAll(fields.keySet());
@@ -322,7 +323,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 
 		// create the SHA-256(default) hash and UTF-8 encode it
-		MessageDigest md = MessageDigest.getInstance(MessageDigest.isEqual(DEFAULT_SECURE_HASH_TYPE.getBytes(), secureHashType.getBytes()) ? "SHA-256" : secureHashType);
+		MessageDigest md = MessageDigest.getInstance(MessageDigest.isEqual(DEFAULT_SECURE_HASH_TYPE.getBytes(AppConsts.DFT_CHARSET),
+				secureHashType.getBytes(AppConsts.DFT_CHARSET)) ? "SHA-256" : secureHashType);
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes(buf.toString()));
 
 

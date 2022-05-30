@@ -67,7 +67,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of Patient"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="patientName"  name="patientName" value="${dsEnquiryVssFilterDto.patientName}" >
+                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="${dsEnquiryVssFilterDto.patientName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -81,6 +81,16 @@
                                 <iais:field width="4" value="Patient ID Number"/>
                                 <iais:value width="4" cssClass="col-md-4" >
                                     <input type="text" maxlength="20" id="patientIdNo"  name="patientIdNo" value="${dsEnquiryVssFilterDto.patientIdNo}" >
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Patient Date Of Birth"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:datePicker id="birthDateFrom" name="birthDateFrom" dateVal="${dsEnquiryVssFilterDto.birthDateFrom}"/>
+                                </iais:value>
+                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <iais:value width="3" cssClass="col-md-3">
+                                    <iais:datePicker id="birthDateTo" name="birthDateTo" dateVal="${dsEnquiryVssFilterDto.birthDateTo}"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>

@@ -144,9 +144,9 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select name="facAction${status.index}" class="facActionDropdown${status.index}" id="facAction${status.index}" data-action-select="">
+                                                                <label for="facAction${status.index}"></label><select name="facAction${status.index}" class="facActionDropdown${status.index}" id="facAction${status.index}" data-action-select="">
                                                                     <option value="">Select</option>
-                                                                    <option value="/bsb-web/eservicecontinue/INTERNET/MohApprovalBatAndActivity/1/BeginPage?indeed_action_type=jump&facId=<iais:mask name='applyApprovalfacId' value='${fac.facilityId}'/>">Apply for Approval</option>
+                                                                    <option value="/bsb-web/eservicecontinue/INTERNET/MohApprovalBatAndActivity?facId=<iais:mask name='applyApprovalFacId' value='${fac.facilityId}'/>">Apply for Approval</option>
                                                                     <option value="">Renew</option>
                                                                     <option value="">Update</option>
                                                                     <option value="">Data Submission</option>

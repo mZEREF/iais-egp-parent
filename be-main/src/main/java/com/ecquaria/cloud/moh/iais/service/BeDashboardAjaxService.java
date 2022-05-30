@@ -6,7 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAppDetailsQu
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -34,6 +34,8 @@ public interface BeDashboardAjaxService {
     Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
                                                 String actionValue, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
+    Map<String, Object> getCommonDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                    String actionValue, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/4/28
@@ -45,6 +47,9 @@ public interface BeDashboardAjaxService {
                                              String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
                                              String hci_address);
 
+    Map<String, Object> getKpiDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                 String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                 String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/4/30
@@ -55,6 +60,8 @@ public interface BeDashboardAjaxService {
     Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
                                                   String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
+    Map<String, Object> getAssignMeDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                      String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/5/6
@@ -66,6 +73,9 @@ public interface BeDashboardAjaxService {
                                                   String switchAction, String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus,
                                                   HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
+    Map<String, Object> getWorkTeamDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                      String switchAction, String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus,
+                                                      HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/5/7
@@ -77,6 +87,9 @@ public interface BeDashboardAjaxService {
                                                String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
                                                String hci_address);
 
+    Map<String, Object> getRenewDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                   String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                   String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/5/8
@@ -87,6 +100,8 @@ public interface BeDashboardAjaxService {
     Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
                                                String switchAction, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
+    Map<String, Object> getReplyDropdownResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                   String switchAction, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/5/8
@@ -98,6 +113,9 @@ public interface BeDashboardAjaxService {
                                                  String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
                                                  String hci_address);
 
+    Map<String, Object> getWaitApproveDropResultOnce(ArrayList<String> groupNos, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                     String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                     String hci_address);
     /**
       * @author: shicheng
       * @Date 2021/5/27

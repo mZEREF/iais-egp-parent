@@ -49,7 +49,7 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                         </iais:value>
                     </iais:row>
-                   <div id="residenceStatus" <c:if test="${patientInformationDto.nationality =='NAT0001'}">style="display: none"</c:if>>
+                   <div id="residenceStatus" <c:if test="${patientInformationDto.nationality =='NAT0001' || patientInformationDto.nationality ==null}">style="display: none"</c:if>>
                        <iais:row>
                            <iais:field width="5" value="Residence Status" mandatory="true"/>
                            <iais:value width="7" cssClass="col-md-7">
@@ -59,7 +59,7 @@
                            </iais:value>
                        </iais:row>
                    </div>
-                   <div id="commResidenceInSgDate" <c:if test="${patientInformationDto.residenceStatus !='TOPRS002'}">style="display: none"</c:if>>
+                   <div id="commResidenceInSgDate" <c:if test="${patientInformationDto.residenceStatus !='TOPRS005'}">style="display: none"</c:if>>
                        <iais:row>
                            <iais:field width="5" value="Date Commenced Residence In Singapore" mandatory="true"/>
                            <iais:value width="7" cssClass="col-md-7">
@@ -158,6 +158,7 @@
                     </iais:row>
                 </div>
 <input type="hidden" id="genderCount" value="${genderCount}"/>
+<input type="hidden" id="counselling" value="${counselling}"/>
 <script>
     $(document).ready(function () {
         var childrenNum = $('#childrenNum').val();
@@ -172,6 +173,7 @@
                 $('#otherEthnicGroups').show();
             } else {
                 $('#otherEthnicGroups').hide();
+                $('#otherEthnicGroup').val(null);
             }
         });
     });
@@ -186,7 +188,7 @@
                 $('#occupations').hide();
                 $('#otherOccupations').hide();
                 fillValue($('#occupations'),null);
-                $('#otherOccupations').val(null);
+                $('#otherOccupation').val(null);
             }
         });
     });
@@ -241,7 +243,7 @@
     $(document).ready(function () {
         $('#residenceStatu').change(function () {
             var residenceStatus = $('#residenceStatu').val();
-            if (residenceStatus == "TOPRS002") {
+            if (residenceStatus == "TOPRS005") {
                 $('#commResidenceInSgDate').show();
             } else {
                 $('#commResidenceInSgDate').hide();
@@ -249,7 +251,7 @@
         });
         $('#nationality').change(function () {
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#residenceStatus').show();
             } else {
                 $('#residenceStatus').hide();
@@ -380,7 +382,7 @@
                 /*$(this).val(preValue);*/
                 /*$('#childrenNum').val(null);*/
                 clearErrorMsg();
-                $("#childrenNumMsg").text('cannot enter more than 10.');
+                $("#childrenNumMsg").text('Entered number is more than 10.');
                 /*$('#childrenNum').trigger('keyup');*/
                 $('#numMax').hide();
             }
@@ -388,4 +390,17 @@
             return true;
         });
     });
+
+    $(document).ready(function() {
+        $("#patientName").blur(autoCompleteValue());
+    });
+
+    function autoCompleteValue(){
+        var data = $("#counselling").val();
+        alert(data);
+        var availableTags = data.split("|");
+        $("#patientName").autocomplete({
+            source: availableTags,autoFocus:true
+        });
+    }
 </script>

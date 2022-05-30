@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
+import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
@@ -65,6 +66,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,19 +86,21 @@ public class FacilityRegistrationService {
     private final FacilityRegisterClient facRegClient;
     private final DocSettingService docSettingService;
     private final OrganizationInfoClient orgInfoClient;
+    private final DraftClient draftClient;
 
     @Autowired
     public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
                                        FacilityRegisterClient facRegClient,
-                                       DocSettingService docSettingService, OrganizationInfoClient orgInfoClient) {
+                                       DocSettingService docSettingService, OrganizationInfoClient orgInfoClient, DraftClient draftClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
         this.docSettingService = docSettingService;
         this.orgInfoClient = orgInfoClient;
+        this.draftClient = draftClient;
     }
 
-    public void retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
+    public NodeGroup retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
         NodeGroup facRegRoot = readRegisterDtoToNodeGroup(resultDto.getEntity(), KEY_ROOT_NODE_GROUP);
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
@@ -123,6 +127,7 @@ public class FacilityRegistrationService {
         }
 
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        return facRegRoot;
     }
 
     public void retrieveOrgAddressInfo(HttpServletRequest request) {
@@ -168,6 +173,137 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_SELECTION, selectionDto);
     }
 
+    private Map<Long, FacilityRegisterDto> sortByKey(Map<Long, FacilityRegisterDto> map) {
+        Map<Long, FacilityRegisterDto> result = new LinkedHashMap<>(map.size());
+        map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+
+    private void setEligibleDraftSession(HttpServletRequest request, FacilitySelectionDto selectionDto) {
+        FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
+        // judge the action is click on Apply New Facility menu or click on Draft Application
+        // if is click on draft application,do nothing
+        Object requestAttr = ParamUtil.getRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA);
+        boolean haveSuitableDraftData = requestAttr != null && (boolean) requestAttr;
+        if (eligibleDraftRegisterDto == null && !StringUtils.hasLength(selectionDto.getDraftAppNo())) {
+            Map<Long, FacilityRegisterDto> registerDtoMap = facRegClient.getSameClassificationAndActivityDraftData(selectionDto).getEntity();
+            //get latest data
+            if (!CollectionUtils.isEmpty(registerDtoMap)) {
+                Map<Long, FacilityRegisterDto> suitableMap = sortByKey(registerDtoMap);
+                Optional<FacilityRegisterDto> dtoOptional = suitableMap.values().stream().findFirst();
+                if (dtoOptional.isPresent()) {
+                    haveSuitableDraftData = true;
+                    eligibleDraftRegisterDto = dtoOptional.get();
+                } else {
+                    haveSuitableDraftData = false;
+                    eligibleDraftRegisterDto = null;
+                }
+            } else {
+                haveSuitableDraftData = false;
+                eligibleDraftRegisterDto = null;
+            }
+        }
+        if (eligibleDraftRegisterDto != null && StringUtils.hasLength(selectionDto.getDraftAppNo())) {
+            haveSuitableDraftData = true;
+        }
+        ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, eligibleDraftRegisterDto);
+        ParamUtil.setRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA, haveSuitableDraftData);
+        if (eligibleDraftRegisterDto != null) {
+            //judge whether need query the draft data again
+            FacilitySelectionDto facilitySelectionDto = eligibleDraftRegisterDto.getFacilitySelectionDto();
+            if (!facilitySelectionDto.getFacClassification().equals(selectionDto.getFacClassification()) || facilitySelectionDto.getActivityTypes().size() != selectionDto.getActivityTypes().size() || !facilitySelectionDto.getActivityTypes().equals(selectionDto.getActivityTypes())) {
+                selectionDto.setDraftAppNo(null);
+                ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, null);
+                setEligibleDraftSession(request, selectionDto);
+            }
+        }
+    }
+
+    public void handleNewFacilityServiceSelection(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
+        selectionDto.reqObjMapping(request);
+        //judge whether had eligible draft data
+        setEligibleDraftSession(request, selectionDto);
+        boolean haveSuitableDraftData = (boolean) ParamUtil.getRequestAttr(request,HAVE_SUITABLE_DRAFT_DATA);
+        String actionLoadDraft = ParamUtil.getString(request, ACTION_LOAD_DRAFT);
+        //if choose to load draft data,get dto from session
+        if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.YES)) {
+            FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
+            ResponseDto<FacilityRegisterDto> resultDto = new ResponseDto<>();
+            resultDto.setEntity(eligibleDraftRegisterDto);
+
+            // convert draft data to NodeGroup and set it into session, replace old data
+            facRegRoot = retrieveFacRegRoot(request, resultDto);
+
+            newFacServiceSelectionPageJumpJudge(request, false, facSelectionNode, facRegRoot, selectionDto);
+        } else if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.NO)) {
+            FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
+            if (eligibleDraftRegisterDto != null) {
+                //delete draft from database
+                draftClient.doRemoveDraftByDraftAppNo(eligibleDraftRegisterDto.getFacilitySelectionDto().getDraftAppNo());
+                //remove draft from session
+                ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, null);
+            }
+            //init NodeGroup,remove draft data from old NodeGroup
+            facRegRoot = initFacRegisterRoot(KEY_ROOT_NODE_GROUP);
+            //selectionDto reset the value
+            facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+            selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
+            selectionDto.reqObjMapping(request);
+
+            newFacServiceSelectionPageJumpJudge(request, false, facSelectionNode, facRegRoot, selectionDto);
+        } else {
+            String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+            if (KEY_ACTION_JUMP.equals(actionType)) {
+                String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+                if (!KEY_NAV_PREVIOUS.equals(actionValue) && !haveSuitableDraftData && selectionDto.getDraftAppNo() == null) {
+                    //init NodeGroup,remove draft data from old NodeGroup
+                    facRegRoot = initFacRegisterRoot(KEY_ROOT_NODE_GROUP);
+                    //selectionDto reset the value
+                    facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+                    selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
+                    selectionDto.reqObjMapping(request);
+                }
+            }
+            newFacServiceSelectionPageJumpJudge(request, haveSuitableDraftData, facSelectionNode, facRegRoot, selectionDto);
+        }
+    }
+
+    private void newFacServiceSelectionPageJumpJudge(HttpServletRequest request,boolean haveSuitableDraftData,SimpleNode facSelectionNode,NodeGroup facRegRoot,FacilitySelectionDto selectionDto){
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+            if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+                //If there is no matching data, the process proceeds normally
+                if (!haveSuitableDraftData) {
+                    boolean currentLetGo = facSelectionNode.doValidation();
+                    if (currentLetGo) {
+                        handleServiceSelectionNextValidated(request, facRegRoot, selectionDto, actionValue);
+                    } else {
+                        ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+                        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_FAC_SELECTION);
+                    }
+                } else {
+                    // a message is displayed asking you whether to load draft data
+                    ParamUtil.setRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA, true);
+                    ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_FAC_SELECTION);
+                }
+            } else if (KEY_NAV_PREVIOUS.equals(actionValue)) {
+                jump(request, facRegRoot, actionValue);
+            } else {
+                throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
     public void handleServiceSelection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
@@ -197,9 +333,7 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void handleServiceSelectionNextValidated(HttpServletRequest request, NodeGroup facRegRoot, FacilitySelectionDto selectionDto, String actionValue) {
-        Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
-
+    public void handleClassificationValidated(HttpServletRequest request, FacilitySelectionDto selectionDto){
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
         boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
@@ -211,18 +345,25 @@ public class FacilityRegistrationService {
         boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
         ParamUtil.setSessionAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
 
+        // set selected value in the dashboard, it will also be used by latter logic and page
+        ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
+        ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
+    }
+
+    public void handleServiceSelectionNextValidated(HttpServletRequest request, NodeGroup facRegRoot, FacilitySelectionDto selectionDto, String actionValue) {
+        Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
+
+        handleClassificationValidated(request,selectionDto);
+
         // change root node group
         changeRootNodeGroup(facRegRoot, selectionDto.getFacClassification(), selectionDto.getActivityTypes());
 
+        boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
         // change BAT node group
         if (isUcf) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
             changeBatNodeGroup(batGroup, selectionDto);
         }
-
-        // set selected value in the dashboard, it will also be used by latter logic and page
-        ParamUtil.setSessionAttr(request, KEY_SELECTED_CLASSIFICATION, selectionDto.getFacClassification());
-        ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
 
         // update impacted supporting document node
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
@@ -836,9 +977,26 @@ public class FacilityRegistrationService {
         if (isCf) {
             ParamUtil.setRequestAttr(request, NODE_NAME_AFC, ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
         } else if (isUcf || isFifthRf) {
+            previewSubmitDto.setContainsBat(true);
+
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
+
+            boolean containsImport = false;
+            for (BiologicalAgentToxinDto batDto : batList) {
+                for (BATInfo batInfo : batDto.getBatInfos()) {
+                    if (MasterCodeConstants.PROCUREMENT_MODE_IMPORT.equals(batInfo.getDetails().getProcurementMode())) {
+                        containsImport = true;
+                        break;
+                    }
+                }
+                if (containsImport) {
+                    break ;
+                }
+            }
+            ParamUtil.setRequestAttr(request, KEY_BAT_CONTAINS_IMPORT, containsImport);
+            previewSubmitDto.setBatContainsImport(containsImport);
         }
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();

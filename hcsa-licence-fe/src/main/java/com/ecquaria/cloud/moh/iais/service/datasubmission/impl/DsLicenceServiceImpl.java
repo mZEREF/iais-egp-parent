@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CounsellingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -14,14 +15,13 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@code DsLicenceServiceImpl}
@@ -119,6 +119,22 @@ public class DsLicenceServiceImpl implements DsLicenceService {
             }
             return null;
         }
+    }
+
+    @Override
+    public String getCounselling() {
+        StringBuilder sb = new StringBuilder();
+        List<CounsellingDto> counsellingDtos = licenceClient.getCounsellingDtos().getEntity();
+        if(IaisCommonUtils.isNotEmpty(counsellingDtos)){
+            for(int i = 0;i<counsellingDtos.size();i++){
+                CounsellingDto counsellingDto = counsellingDtos.get(i);
+                sb.append(counsellingDto.getCounselling());
+                if(i != counsellingDtos.size() -1  ){
+                    sb.append("|");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     private PremisesDto getArCenterPremises(String orgId, String hciCode) {

@@ -29,23 +29,21 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();
         }
-        if(!StringUtil.isEmpty(sexualSterilizationDto.isReviewedByHec()) && sexualSterilizationDto.isReviewedByHec() ==true){
+        if(!StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec()) && sexualSterilizationDto.getReviewedByHec() ==true){
             if(sexualSterilizationDto.getHecReviewDate() == null){
                 erMap.put("hecReviewDate", "GENERAL_ERR0006");
             }
-        }
-        if(!StringUtil.isEmpty(sexualSterilizationDto.getSterilizationMethod()) && sexualSterilizationDto.getSterilizationMethod().equals("VSMOS006")){
-            if(StringUtil.isEmpty(sexualSterilizationDto.getOtherSterilizationMethod())){
-                erMap.put("otherSterilizationMethod", "GENERAL_ERR0006");
+            if(StringUtil.isEmpty(sexualSterilizationDto.getHecReviewedHospital())){
+                erMap.put("hecReviewedHospital", "GENERAL_ERR0006");
             }
         }
-        if(StringUtil.isEmpty(sexualSterilizationDto.isReviewedByHec())){
+        if(StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec())){
             erMap.put("reviewedByHec", "GENERAL_ERR0006");
         }
         if(sexualSterilizationDto.getOperationDate() != null){
             try {
                 if(Formatter.compareDateByDay(sexualSterilizationDto.getOperationDate(),guardianAppliedPartDto.getCourtOrderIssueDate())<0){
-                    erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation");
+                    erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
