@@ -141,6 +141,7 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('div.blockUI').attr("style" ,"display: none");
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
         }
