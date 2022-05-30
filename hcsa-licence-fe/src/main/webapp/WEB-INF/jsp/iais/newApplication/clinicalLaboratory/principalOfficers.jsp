@@ -390,6 +390,7 @@
                         <div class="panel-main-content">
                             <h2>Nominee</h2>
                             <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
+                            <div class="dpo-content"><%-- can't be deleted --%></div>
                             <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController || canEditDpoEdit}" />
                             <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
