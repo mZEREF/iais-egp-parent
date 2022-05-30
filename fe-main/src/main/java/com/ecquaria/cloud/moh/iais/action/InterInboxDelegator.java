@@ -826,7 +826,8 @@ public class InterInboxDelegator {
                 result = checkIsBaseRenew(licIdValue);
                 if(!result){
                     ParamUtil.setRequestAttr(bpc.request,"licIsRenewed", Boolean.FALSE);
-                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"Special Service Licence need to renew together with Base Service Licence.");
+                    // INBOX_ERR012 - "Special Service Licence need to renew together with Base Service Licence."
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("INBOX_ERR012"));
                     return;
                 }
             }
