@@ -190,21 +190,23 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(drugPrescribedDispensed, profile);
             errorMap = validationResult.retrieveAll();
-            if(StringUtil.isEmpty(doctorInformationDto.getName())){
-                errorMap.put("dName", "GENERAL_ERR0006");
-            }
-            if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
-                errorMap.put("dSpeciality", "GENERAL_ERR0006");
-            }
-            if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
-                errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
-            }
-            if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
-                errorMap.put("dQualification", "GENERAL_ERR0006");
-            }
-            verifyRfcCommon(request, errorMap);
-            if (errorMap.isEmpty()) {
-                valRFC(request,drugPrescribedDispensed);
+            if("true".equals(drugSubmission.getDoctorInformations())){
+                if(StringUtil.isEmpty(doctorInformationDto.getName())){
+                    errorMap.put("dName", "GENERAL_ERR0006");
+                }
+                if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
+                    errorMap.put("dSpeciality", "GENERAL_ERR0006");
+                }
+                if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
+                    errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
+                }
+                if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
+                    errorMap.put("dQualification", "GENERAL_ERR0006");
+                }
+                verifyRfcCommon(request, errorMap);
+                if (errorMap.isEmpty()) {
+                    valRFC(request,drugPrescribedDispensed);
+                }
             }
         }
         if (!errorMap.isEmpty()) {
