@@ -415,7 +415,7 @@ function getJqueryNode(elem) {
             $target = $('#' + elem);
         }
         if ($target.length == 0 && elem.indexOf('.') != 0) {
-            $target = $('.' + sel);
+            $target = $('.' + elem);
         }
     }
     if ($target.length == 0) {

@@ -98,7 +98,7 @@ public class ApplicationDelegator extends AppCommDelegator {
      * Check Data For Edit App
      *
      * @param check   {@link HcsaAppConst#CHECKED_ALL}: do all check; {@link HcsaAppConst#CHECKED_BTN_SHOW}: check for
-     *                showing "Edit Application" button; {@link HcsaAppConst#CHECKED_BTN_APR}: check for approval button
+     *                showing "Edit Application" button
      * @param request
      * @return
      */
