@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.client.DoctorInfoClient;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
@@ -36,6 +37,9 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
 
     @Autowired
     private DpFeClient dpFeClient;
+
+    @Autowired
+    private DoctorInfoClient doctorInfoClient;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -215,7 +219,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
         if (StringUtil.isEmpty(doctorReignNo) ) {
             return null;
         }
-        return dpFeClient.getDoctorInformationDtoByConds(doctorReignNo).getEntity();
+        return doctorInfoClient.getDoctorInformationDtoByConds(doctorReignNo).getEntity();
     }
 
 
