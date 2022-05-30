@@ -203,10 +203,10 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
                     errorMap.put("dQualification", "GENERAL_ERR0006");
                 }
-                verifyRfcCommon(request, errorMap);
-                if (errorMap.isEmpty()) {
-                    valRFC(request,drugPrescribedDispensed);
-                }
+            }
+            verifyRfcCommon(request, errorMap);
+            if (errorMap.isEmpty()) {
+                valRFC(request,drugPrescribedDispensed);
             }
         }
         if (!errorMap.isEmpty()) {

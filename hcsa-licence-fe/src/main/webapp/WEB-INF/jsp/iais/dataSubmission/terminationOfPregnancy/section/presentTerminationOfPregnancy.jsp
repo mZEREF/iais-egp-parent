@@ -1,6 +1,7 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
 <c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
+<c:set var="doctorInformationDto" value="${topSuperDataSubmissionDto.doctorInformationDto}" />
 <c:set var="terminationDto" value="${terminationOfPregnancyDto.terminationDto}" />
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
@@ -299,26 +300,70 @@
             <a class="ValidateDoctor" onclick="validateDoctors()">
                 Validate Doctor
             </a>
-            <div>
+            <%--<div>
                 <span id="msg" name="iaisErrorMsg" class="error-msg"></span>
-            </div>
+            </div>--%>
         </iais:value>
     </iais:row>
-   <%-- <iais:row>
-        <iais:field width="5" value="Name of Doctor" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7" id="names">
-            &lt;%&ndash;<iais:input maxLength="66" type="text" name="doctorName" value="${terminationDto.doctorName}" />&ndash;%&gt;
-            ${terminationDto.doctorName}
-        </iais:value>
-    </iais:row>--%>
-    <iais:row>
-        <iais:field width="5" value="Name of Doctor" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7" display="true" id="names">
-            ${terminationDto.doctorName}
-        </iais:value>
-    </iais:row>
+        <div id="doctorInformation" <c:if test="${terminationDto.topDoctorInformations eq 'true'}">style="display: none"</c:if>>
+            <iais:row>
+                <iais:field width="5" value="Name of Doctor" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="names">
+                    ${terminationDto.doctorName}
+                </iais:value>
+            </iais:row>
+            <iais:row >
+                <iais:field width="5" value="Specialty" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                    ${terminationDto.specialty}
+                </iais:value>
+            </iais:row>
+            <iais:row >
+                <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                    ${terminationDto.subSpecialty}
+                </iais:value>
+            </iais:row>
+            <iais:row >
+                <iais:field width="5" value="Qualification" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                    ${terminationDto.qualification}
+                </iais:value>
+            </iais:row>
+        </div>
+    <div id="doctorInformationText" <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Doctor's Name" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <iais:input maxLength="16" type="text" name="dName" value="${doctorInformationDto.name}" />
+                <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row >
+            <iais:field width="5" value="Specialty" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <iais:input maxLength="16" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row >
+            <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <iais:input maxLength="16" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row >
+            <iais:field width="5" value="Qualification" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <iais:input maxLength="16" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
+            </iais:value>
+        </iais:row>
+    </div>
 </div>
 </c:if>
+<input type="hidden" name="docSource" value="TOP"/>
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -339,7 +384,11 @@
 </div>
 <div class="doctorNameSelectionHidden">
     <input type="hidden" name="names" id="doctorNameHidden" value="${terminationDto.doctorName}">
+    <input type="hidden" name="specialty" id="specialtyHidden" value="${terminationDto.specialty}">
+    <input type="hidden" name="subSpecialty" id="subSpecialtyHidden" value="${terminationDto.subSpecialty}">
+    <input type="hidden" name="qualification" id="qualificationHidden" value="${terminationDto.qualification}">
 </div>
+<input type="hidden" name="topDoctorInformations" id="topDoctorInformations" value="${terminationDto.topDoctorInformations}">
 <script>
     $(document).ready(function() {
         $('#topType').change(function () {
@@ -583,31 +632,32 @@
             return;
         }
         var no = $('input[name="doctorRegnNo"]').val();
+        var docSource = $('input[name="docSource"]').val();
         var jsonData = {
-            'prgNo': no
+            'prgNo': no,
+            'docSource': docSource
         };
         $.ajax({
-            'url': '${pageContext.request.contextPath}/top/prg-input-info',
+            'url': '${pageContext.request.contextPath}/doc/prg-input-info',
             'dataType': 'json',
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data)) {
+                if (isEmpty(data.selection)) {
+                    $('#topDoctorInformations').val(true);
                     console.log("The return data is null");
-                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
-                    $('#prsErrorMsg').val($('#flagDocMessage').html());
-                    $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
-                    clearPrsInfo();
-                } else if (data.hasException) {
+                    $('#doctorInformationText').show();
+                    $('#doctorInformation').hide();
+                } else if (data.selection.hasException) {
                     $('#prsErrorMsg').val($('#flagInvaMessage').html());
                     $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
                     clearPrsInfo();
-                } else if ('401' == data.statusCode) {
+                } else if ('401' == data.selection.statusCode) {
                     $('#prsErrorMsg').val($('#flagPrnMessage').html());
                     $('#msg').text('This Doctor is not authorized to perform Termination of Pregnancy.');
                     clearPrsInfo();
                 } else {
-                    console.log("1");
+                    $('#topDoctorInformations').val(false);
                     loadingSp(data);
                 }
                 dismissWaiting();
@@ -626,16 +676,29 @@
         $('#names').find('p').text('');
     };
     function loadingSp(data) {
-        console.log("2");
-        const name = data.name;
+        $('#doctorInformationText').hide();
+        $('#doctorInformation').show();
+        const name = data.selection.name;
         console.log(name);
         $('#names').find('p').text(name);
         $('#doctorNameHidden').val(name);
+
+        $('#specialty').find('p').text(data.selection.specialty);
+        $('#specialtyHidden').val(data.selection.specialty);
+
+        $('#subSpecialty').find('p').text(data.selection.subspecialty);
+        $('#subSpecialtyHidden').val(data.selection.subspecialty);
+
+        $('#qualification').find('p').text(data.selection.qualification);
+        $('#qualificationHidden').val(data.selection.qualification);
     }
     function clearDockerSelection(){
         console.log("clearDockerSelection!")
         clearErrorMsg();
         $('#names').find('p').text('');
+        $('#specialty').find('p').text('');
+        $('#subSpecialty').find('p').text('');
+        $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
 </script>

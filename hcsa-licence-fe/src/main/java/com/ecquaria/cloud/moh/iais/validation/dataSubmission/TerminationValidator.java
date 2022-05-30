@@ -109,9 +109,11 @@ public class TerminationValidator implements CustomizeValidator {
             errorMap.put("complicationForOperRslt", "GENERAL_ERR0006");
         }
         String doctorName=terminationDto.getDoctorName();
-        if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
-            errorMap.put("showValidatePT", AppConsts.YES);
-            ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
+        if(!"true".equals(terminationDto.getTopDoctorInformations())){
+            if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                errorMap.put("showValidatePT", AppConsts.YES);
+                ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
+            }
         }
         return errorMap;
     }
