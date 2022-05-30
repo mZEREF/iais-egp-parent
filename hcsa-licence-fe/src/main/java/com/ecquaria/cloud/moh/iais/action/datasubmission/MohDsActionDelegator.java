@@ -58,6 +58,9 @@ public class MohDsActionDelegator {
     private TopDataSubmissionService topDataSubmissionService;
 
     @Autowired
+    private DocInfoService docInfoService;
+
+    @Autowired
     private ArCycleStageDelegator arCycleStageDelegator;
     @Autowired
     private IuiCycleStageDelegator iuiCycleStageDelegator;
@@ -131,6 +134,19 @@ public class MohDsActionDelegator {
         } else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
             VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().getDoctorReignNo());
+            if(professionalResponseDto==null){
+                professionalResponseDto=new ProfessionalResponseDto();
+            }
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                VssTreatmentDto vssTreatmentDto=vssSuperDataSubmissionDto.getVssTreatmentDto();
+                SexualSterilizationDto sterilizationDto=vssTreatmentDto.getSexualSterilizationDto();
+                DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(sterilizationDto.getDoctorReignNo(),DataSubmissionConsts.DS_VSS);
+                vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                sterilizationDto.setDoctorInformations("true");
+                vssTreatmentDto.setSexualSterilizationDto(sterilizationDto);
+                vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+            }
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);

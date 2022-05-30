@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -21,17 +23,21 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +60,7 @@ public class VssDataSubmissionDelegator {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
+
 
     public static final String ACTION_TYPE_CONFIRM = "confirm";
 
@@ -145,6 +152,7 @@ public class VssDataSubmissionDelegator {
             vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
             vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
         }
+        retrieveHciCode(bpc.request, vssSuperDataSubmissionDto);
         initVssSuperDataSubmissionDto(bpc.request,vssSuperDataSubmissionDto);
 
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
@@ -183,6 +191,15 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto, false));
     }
 
+    private void retrieveHciCode(HttpServletRequest request ,VssSuperDataSubmissionDto vssSuperDataSubmissionDto) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null) {
+            return;
+        }
+        DataSubmissionHelper.setVssPremisesMap(request).values().stream().forEach(v->
+                vssSuperDataSubmissionDto.setPremisesDto(v)
+        );
+    }
     /**
      * Step: DoStep
      *
@@ -346,19 +363,45 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
+        DoctorInformationDto doctorInformationDto=vssSuperDataSubmissionDto.getDoctorInformationDto();
+        if(doctorInformationDto==null){
+            doctorInformationDto=new DoctorInformationDto();
+        }
+        String doctorName = ParamUtil.getString(request,"names");
+        String specialty = ParamUtil.getString(request,"specialty");
+        String subSpecialty = ParamUtil.getString(request,"subSpecialty");
+        String qualification = ParamUtil.getString(request,"qualification");
         String doctorReignNo = ParamUtil.getString(request,"doctorReignNo");
-        String doctorName = ParamUtil.getString(request,"doctorName");
         String sterilizationMethod = ParamUtil.getString(request,"sterilizationMethod");
         String hecReviewedHospital = ParamUtil.getString(request,"hecReviewedHospital");
         String operationDate = ParamUtil.getString(request,"operationDate");
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
         String sterilizationHospital = ParamUtil.getString(request,"sterilizationHospital");
+        String doctorInformations = ParamUtil.getString(request,"doctorInformations");
         sexualSterilizationDto.setSterilizationHospital(sterilizationHospital);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
         sexualSterilizationDto.setHecReviewedHospital(hecReviewedHospital);
+        sexualSterilizationDto.setSpecialty(specialty);
+        sexualSterilizationDto.setSubSpecialty(subSpecialty);
+        sexualSterilizationDto.setQualification(qualification);
+        sexualSterilizationDto.setDoctorInformations(doctorInformations);
+        if("true".equals(sexualSterilizationDto.getDoctorInformations())){
+            String dName = ParamUtil.getString(request, "dName");
+            String dSpeciality = ParamUtil.getString(request, "dSpeciality");
+            String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
+            String dQualification = ParamUtil.getString(request, "dQualification");
+            doctorInformationDto.setName(dName);
+            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+            doctorInformationDto.setSubSpeciality(dSubSpeciality);
+            doctorInformationDto.setSpeciality(dSpeciality);
+            doctorInformationDto.setQualification(dQualification);
+            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+            sexualSterilizationDto.setDoctorName(dName);
+            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }
