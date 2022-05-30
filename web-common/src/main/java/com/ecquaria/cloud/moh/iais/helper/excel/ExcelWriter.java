@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -393,7 +394,17 @@ public final class ExcelWriter {
                 List list= (List) sourceClz.getDeclaredMethod("get" +
                         StringUtils.capitalize(fieldList.getName())).invoke(t);
                 if(IaisCommonUtils.isNotEmpty(list)){
-                    setFieldName(subSourceClz, sheet, cellIndex++, false);
+                    if(sourceClz.equals(subSourceClz)){
+                        Row sheetRowPrevious = sheet.createRow(cellIndex++);
+                        Cell firstCell = sheetRowPrevious.createCell(0);
+                        firstCell.setCellValue("Previous Submissions");
+                        firstCell.setCellStyle(CellStyleHelper.getUnlockStyle());
+
+
+                        sheet.addMergedRegion(new CellRangeAddress(cellIndex-1,cellIndex-1,0,8));
+                    }else {
+                        setFieldName(subSourceClz, sheet, cellIndex++, false);
+                    }
                     for (Object ts : list) {
 
                         Row sheetRowSub = sheet.createRow(cellIndex);
