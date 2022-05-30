@@ -39,9 +39,6 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     private DpFeClient dpFeClient;
 
     @Autowired
-    private DoctorInfoClient doctorInfoClient;
-
-    @Autowired
     private FeEicGatewayClient feEicGatewayClient;
 
     @Autowired
@@ -212,14 +209,6 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return null;
         }
         return dpFeClient.getDrugMedicationDtoBySubmissionNoForDispensed(submissionNo,rfcSubmissionNo).getEntity();
-    }
-
-    @Override
-    public DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo) {
-        if (StringUtil.isEmpty(doctorReignNo) ) {
-            return null;
-        }
-        return doctorInfoClient.getDoctorInformationDtoByConds(doctorReignNo).getEntity();
     }
 
 

@@ -49,5 +49,4 @@ public interface DpDataSubmissionService {
 
     List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo,String rfcSubmissionNo);
 
-    DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo);
 }
