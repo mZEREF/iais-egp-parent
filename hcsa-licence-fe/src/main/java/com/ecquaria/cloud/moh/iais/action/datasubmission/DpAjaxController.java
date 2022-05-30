@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -101,8 +102,10 @@ public class DpAjaxController {
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
             DoctorInformationDto doctorInformationDto=dpDataSubmissionService.getDoctorInformationDtoByConds(professionRegoNo);
-            result.put("selection", doctorInformationDto);
-            return result;
+            professionalResponseDto.setName(doctorInformationDto.getName());
+            professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
+            professionalResponseDto.setQualification(Collections.singletonList(doctorInformationDto.getQualification()));
+            professionalResponseDto.setSubspecialty(Collections.singletonList(doctorInformationDto.getSubSpeciality()));
         }
         result.put("selection", professionalResponseDto);
         return result;
