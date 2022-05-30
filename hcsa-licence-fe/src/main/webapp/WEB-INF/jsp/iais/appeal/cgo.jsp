@@ -420,13 +420,14 @@
 
         $('#control--runtime--0').children().remove("hr")
         psnSelect();
-        $('.assignSel').trigger('change');
+        $('select.assignSel').trigger('change');
 
         if($('.designationSel').val()=='DES999'){
             $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
         }else {
             $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
         }
+        profRegNoBlur();
         initNationality('div.cgo-content', 'select[name="idType"]', '.nationalityDiv');
 
     });
@@ -438,7 +439,7 @@
         var $parentEle = $(this).closest('td.first');
         var $CurrentPsnEle = $(this).closest('table.assignContent');
 
-        clearPrsInfo($CurrentPsnEle);
+        //clearPrsInfo($CurrentPsnEle);
 
         if ('newOfficer' == $(this).val()) {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
