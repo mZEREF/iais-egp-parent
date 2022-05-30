@@ -236,6 +236,6 @@ public interface LicenceClient {
     @GetMapping(value = "/lic-common/ar-center-org-id-hci-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DsCenterDto> getArCenter(@RequestParam("orgId") String orgId, @RequestParam("hciCode") String hciCode);
 
-    @GetMapping(value = "/CounsellingDtos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/data-submission/CounsellingDtos", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<CounsellingDto>> getCounsellingDtos();
 }

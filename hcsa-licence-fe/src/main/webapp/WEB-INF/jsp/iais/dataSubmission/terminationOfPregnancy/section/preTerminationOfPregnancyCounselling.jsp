@@ -166,8 +166,10 @@
                 <iais:value width="7" cssClass="col-md-7">
                     <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                 value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                    <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"  id="counsellingPlaces" cssClass="counsellingPlace"/>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
+                   <%-- <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"  id="counsellingPlaces" cssClass="counsellingPlace"/>
+--%>
+                    <iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>
+
                 </iais:value>
             </iais:row>
             <iais:row>
@@ -261,6 +263,7 @@
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>
+<%@include file="../common/topCounselling.jsp" %>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
         <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -425,4 +428,6 @@
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+
+
 </script>

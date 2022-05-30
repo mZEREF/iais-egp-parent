@@ -195,12 +195,7 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(superDto.getAppType()));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_TOP,
                 superDto.getAppType(), superDto.getSubmissionType()));
-//        if(StringUtil.isEmpty(COUNSELLING)){
-//            COUNSELLING = dsLicenceService.getCounselling();
-//        }
-//        ParamUtil.setSessionAttr(bpc.request,"counselling",COUNSELLING);
 
-        ParamUtil.setSessionAttr(bpc.request,"counselling","11|22|33");
 
     }
     private String getActionType(HttpServletRequest request) {
@@ -312,6 +307,10 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
+        if(StringUtil.isEmpty(COUNSELLING)){
+          COUNSELLING = dsLicenceService.getCounselling();
+        }
+        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
     }
 
 
