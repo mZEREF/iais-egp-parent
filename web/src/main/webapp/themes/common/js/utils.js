@@ -411,11 +411,11 @@ function getJqueryNode(elem) {
     }
     var $target = $(elem);
     if ($target.length == 0 && Object.prototype.toString.call(elem) === "[object String]") {
-        if (elem.indexOf('#') != 0) {
+        if (elem.indexOf('#') != 0 && elem.indexOf('.') != 0) {
             $target = $('#' + elem);
-        }
-        if ($target.length == 0 && elem.indexOf('.') != 0) {
-            $target = $('.' + elem);
+            if ($target.length == 0) {
+                $target = $('.' + elem);
+            }
         }
     }
     if ($target.length == 0) {
