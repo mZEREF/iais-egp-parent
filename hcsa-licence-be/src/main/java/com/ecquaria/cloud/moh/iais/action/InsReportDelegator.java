@@ -165,10 +165,11 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
+        String ao1UserId = null;
         if (!StringUtil.isEmpty(ao1Sel)) {
             ParamUtil.setRequestAttr(request, "aoSelectVal", ao1Sel);
             String[] ao1SelStrs = ao1Sel.split("_");
-            taskDto.setUserId(ao1SelStrs[ao1SelStrs.length - 1]);
+            ao1UserId= ao1SelStrs[ao1SelStrs.length - 1];
         }
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         Date recomLiceStartDate = applicationViewDto.getRecomLiceStartDate();
@@ -234,7 +235,7 @@ public class InsReportDelegator {
             ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,SystemAdminBaseConstants.YES);
             return;
         }
-        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto);
+        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto, ao1UserId);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
