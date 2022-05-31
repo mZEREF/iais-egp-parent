@@ -150,9 +150,11 @@ public class ApplicationDelegator extends AppCommDelegator {
                 ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, error);
             }
             String appError = map.get(HcsaAppConst.ERROR_APP);
-            if (StringUtil.isNotEmpty(error)) {
+            if (StringUtil.isNotEmpty(appError)) {
                 isValid = false;
-                ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
+                if (check == HcsaAppConst.CHECKED_ALL) {
+                    ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, appError);
+                }
             }
         }
         if (!isValid && check == HcsaAppConst.CHECKED_ALL) {
