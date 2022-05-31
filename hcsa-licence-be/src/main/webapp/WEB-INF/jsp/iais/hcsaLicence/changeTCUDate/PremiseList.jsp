@@ -35,7 +35,7 @@
                             </div>
                         </div>
 
-                        <div id="searchCondition" class="collapse" aria-expanded="true">
+                        <div id="searchCondition" class="collapse <c:if test="${not empty errorMsg}">in</c:if>" aria-expanded="true">
                             <iais:row>
                                 <iais:field value="Licence No."/>
                                 <iais:value width="18">
@@ -154,8 +154,7 @@
                                     <c:when test="${empty licencePremiseResult.rows}">
                                         <tr>
                                             <td colspan="7">
-                                                <%--@elvariable id="emptyRowMessage" type="java.lang.String"--%>
-                                                <iais:message key="${emptyRowMessage}" escape="true"/>
+                                                <iais:message key="GENERAL_ACK018" escape="true"/>
                                             </td>
                                         </tr>
                                     </c:when>
