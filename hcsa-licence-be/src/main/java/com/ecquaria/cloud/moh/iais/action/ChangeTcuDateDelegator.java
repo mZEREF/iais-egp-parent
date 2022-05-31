@@ -90,9 +90,9 @@ public class ChangeTcuDateDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CHANGE_TCU_DATE);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.KEY_SVC_TYPE_OPTIONS, (Serializable) requestForInformationService.getLicSvcTypeOption());
         List<SelectOption> persionTypeOptions = IaisCommonUtils.genNewArrayList();
-        persionTypeOptions.add(new SelectOption("CGO","CGO"));
-        persionTypeOptions.add(new SelectOption("KAH","KAH"));
-        persionTypeOptions.add(new SelectOption("PO","PO"));
+        persionTypeOptions.add(new SelectOption("CGO","Clinical Governance Officer"));
+        persionTypeOptions.add(new SelectOption("KAH","Key Appointment Holder"));
+        persionTypeOptions.add(new SelectOption("PO","Principal Officer"));
         ParamUtil.setSessionAttr(bpc.request, keyPsnTypeOptions, (Serializable) persionTypeOptions);
     }
 
