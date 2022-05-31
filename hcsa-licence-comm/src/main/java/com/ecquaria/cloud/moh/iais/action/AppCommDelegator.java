@@ -468,7 +468,7 @@ public abstract class AppCommDelegator {
         orgLicensee.setClaimCompanyName(subLicenseeDto.getClaimCompanyName());
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
                 || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(orgLicensee.getLicenseeType())) {
-            subLicenseeDto = (SubLicenseeDto) CopyUtil.copyMutableObject(orgLicensee);
+            subLicenseeDto = CopyUtil.copyMutableObject(orgLicensee);
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
         // init option, map and some fields
@@ -476,7 +476,7 @@ public abstract class AppCommDelegator {
             Map<String, SubLicenseeDto> licenseeMap =
                     (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
             if (licenseeMap == null) {
-                List<SubLicenseeDto> subLicenseeDtoList = licCommService.getIndividualSubLicensees(loginContext.getOrgId());
+                List<SubLicenseeDto> subLicenseeDtoList = licCommService.getIndividualSubLicensees(orgLicensee.getOrgId());
                 licenseeMap = ApplicationHelper.genSubLicessMap(subLicenseeDtoList);
                 bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
             }
@@ -520,8 +520,9 @@ public abstract class AppCommDelegator {
                 ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_LICENSEE, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (isGetDataFromPage) {
-            SubLicenseeDto subLicenseeDto = getSubLicenseeDtoFromPage(bpc.request);
+            subLicenseeDto = getSubLicenseeDtoFromPage(bpc.request);
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -530,12 +531,12 @@ public abstract class AppCommDelegator {
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                 appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto, isRfi));
             }
-            String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            if (!"saveDraft".equals(actionValue)) {
-                AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
-            }
         }
-
+        // valiation
+        String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (!StringUtil.isIn(actionValue, new String[] {"saveDraft", "back"})) {
+            AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
+        }
         if (!errorMap.isEmpty()) {
             //set audit
             AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
