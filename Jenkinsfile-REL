@@ -1,9 +1,8 @@
 EMAILS_TO_NOTIFY = [
-    'josiahee@toppanecquaria.com',
     'julianlee@toppanecquaria.com',
     'mingde@toppanecquaria.com',
     'phangkangcheng@toppanecquaria.com',
-    'weiyang@toppanecquaria.com',
+    'gohsihao@toppanecquaria.com',
     'zamri@toppanecquaria.com'
 ].join(",");
 
@@ -49,7 +48,9 @@ DOCKER_IMAGES = [
     'hcsa-licence-fe|hcsa-application',
     'payment|egov-app',
     'systemadmin|systemadmin-web',
-    'web|web'
+    'web|web',
+    'bsb-be|bsb-be',
+    'bsb-fe|bsb-fe'
 ]
 // Stores meta information about images that have been built in this pipeline (i.e docker build)
 DOCKER_IMAGES_META = []
@@ -66,10 +67,7 @@ NEXUS_GROUP='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-grp/'
 NEXUS_RELEASE='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
 NEXUS_SNAPSHOT='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
 
-// Specify the project ID for the project (this value is retrieved from Dependency Track).
-DEPENDENCY_TRACK_PROJECT = '47741070-b027-4430-acc7-1e04adba7780'
-
-AD_TOOLS_VERSION = '6cdfe5e'
+AD_TOOLS_VERSION = '74da793'
 
 // Working directory for when we're handling the cicd folder.
 AUTO_DEPLOYMENT_DIRECTORY="auto-deployment"
@@ -217,8 +215,6 @@ try{
     node{
         docker.withServer(DOCKER_URL) {
             dependencyCheck()
-            // dependencyTrack()
-
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
                 buildDockerImages()
                 scanDockerImages()
@@ -422,7 +418,7 @@ def sonarqube(){
     stage('SonarQube Analysis'){
         withSonarQubeEnv(credentialsId: SONARQUBE_CREDENTIALS_ID){
             docker
-                .image('hub.ecquaria.com/maven:3.6.3-openjdk-11')
+                .image('hub.ecquaria.com/maven:3.6.3-jdk-11')
                 .inside(getDockerArgs()){
                     withCredentials(NEXUS_CREDENTIALS) {
                         sh """
@@ -431,8 +427,8 @@ def sonarqube(){
                             mvn \
                                 --no-transfer-progress \
                                 -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
-                                -Dsonar.projectKey=iais-iais-egp-rel \
-                                -Dsonar.projectName=iais-iais-egp-rel \
+                                -Dsonar.projectKey=P2-iais-iais-egp-rel \
+                                -Dsonar.projectName=P2-iais-iais-egp-rel \
                                 -P "!sg-nexus,cicd-sg-nexus" \
                                 -s settings-cicd-sg.xml \
                                 -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
@@ -473,7 +469,7 @@ def buildDockerImages(){
     stage('Build Docker Images'){
         def pom = readMavenPom file: "${CHECKOUT_DIRECTORY}/pom.xml"
         // def imageTag = "${pom.properties.revision}-b${BUILD_NUMBER}"
-        def imageTag = "${TAG_TO_BUILD}-b${BUILD_NUMBER}"
+        def imageTag = "P2-${TAG_TO_BUILD}-b${BUILD_NUMBER}"
 
         docker.withRegistry("https://${DOCKER_BUILD_REPO}", NEXUS_CREDENTIALS_ID){
             for (image in DOCKER_IMAGES) {
@@ -633,7 +629,9 @@ def dependencyCheck() {
                 "--format XML",
                 "--disableNodeJS",
                 "--disableNodeAudit",
-                "--disableNodeAuditCache"
+                "--disableNodeAuditCache",
+                "--disableYarnAudit",
+                "--disableAssembly"
         ]
 
         // Note that we using the installed tool instead of going the Docker container route.
@@ -642,35 +640,6 @@ def dependencyCheck() {
         dependencyCheckPublisher pattern: 'dependency-check-report.xml', unstableTotalCritical: 13, unstableTotalHigh: 34, unstableTotalMedium: 119, unstableTotalLow: 10
 
         archiveArtifacts 'dependency-check-report.html'
-    }
-}
-
-def dependencyTrack() {
-    stage("Dependency Track") {
-        docker
-            .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
-            .inside(getDockerArgs()){
-                withCredentials(NEXUS_CREDENTIALS) {
-                    sh """
-                        cd ${CHECKOUT_DIRECTORY}
-
-                        mvn \
-                            --no-transfer-progress \
-                            -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
-                            -P "!sg-nexus,cicd-sg-nexus" \
-                            -s settings-cicd-sg.xml \
-                            -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
-                            -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
-                            -Dsg.nexus.group.repo="$NEXUS_GROUP" \
-                            -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
-                            -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
-                            org.cyclonedx:cyclonedx-maven-plugin:1.6.4:makeAggregateBom
-                    """                
-                }
-
-                dependencyTrackPublisher projectId: DEPENDENCY_TRACK_PROJECT,
-                    artifact: "${CHECKOUT_DIRECTORY}/target/bom.xml", artifactType: 'bom', synchronous: false
-            }
     }
 }
 
@@ -876,7 +845,7 @@ def uploadVerificationPackage(){
                         --insecure \
                         --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
                         --upload-file "$VERIFICATION_PACKAGE" \
-                        https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/moh-iais-egp-verification-${BUILD_NUMBER}.zip
+                        https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-verification-${BUILD_NUMBER}.zip
                 """
             }
         }
@@ -906,7 +875,7 @@ def waitForVerifier(){
         def PARAMETER_COMMENTS = 'Comments'
 
         def signatureDescription = """\
-            Download the endorsement package over at https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/moh-iais-egp-verification-${BUILD_NUMBER}.zip
+            Download the endorsement package over at https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-verification-${BUILD_NUMBER}.zip
 
             Once you've gotten the package, extract and verify the signature against the hash file.
 
@@ -1069,7 +1038,7 @@ def uploadTransferPackage(){
                     --insecure \
                     --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
                     --upload-file "$ARCHIVE_3" \
-                    https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/moh-iais-egp-transfer-${BUILD_NUMBER}.tar
+                    https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar
                 """
             }
         }
@@ -1088,7 +1057,7 @@ def uploadTransferPackageToSFTP(){
         ]
 
         // this is where the file will end up on the remote
-        def REMOTE_PATH="/upload/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def REMOTE_PATH="/upload/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
@@ -1127,9 +1096,9 @@ def uploadTransferPackageToGDCSFTP(){
         ]
 
         // temporarily upload here first (to prevent it from being partially picked up by ctrl M)
-        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
         // this is where the file will end up on the remote
-        def REMOTE_PATH="/HOME/CICD/IN/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        def REMOTE_PATH="/HOME/CICD/IN/P2-moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
@@ -1180,7 +1149,7 @@ def runAutomatedTests(){
                     """
                 }
         }
-
+/*
         try{
             withCredentials(KATALON_OFFLINE_LICENSE_CREDENTIALS) {
                 // invoke katalon
@@ -1275,6 +1244,7 @@ def runAutomatedTests(){
                 println("Unable to archive katalon-reports.zip -- checkouts-at/Reports doesn't exist.")
             }
 		}
+        */
     }
 }
 
