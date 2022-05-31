@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
@@ -460,7 +459,7 @@ public class HcsaApplicationDelegator {
         //do not have the rfi applicaiton can approve.
         String approveSelect = ParamUtil.getString(bpc.request, "nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
-        validateCanApprove(approveSelect, applicationViewDto, errorMap);
+        applicationService.validateCanApprove(approveSelect, applicationViewDto, errorMap);
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(applicationViewDto.getApplicationDto(), errorMap);
             String doProcess = "Y";
@@ -708,35 +707,6 @@ public class HcsaApplicationDelegator {
                 applicationViewDto.setTuc(null);
             }
         }
-    }
-
-    private void validateCanApprove(String approveSelect, ApplicationViewDto applicationViewDto, Map<String, String> errMap) {
-        log.info(StringUtil.changeForLog("The validateCanApprove start ..."));
-        log.info(StringUtil.changeForLog("The approveSelect is -->:" + approveSelect));
-        if (!StringUtil.isEmpty(approveSelect) && ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)) {
-            ApplicationDto rfiApplicationDto = applicationService.getApplicationDtoByGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(), ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            if (rfiApplicationDto != null) {
-                List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(rfiApplicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-                if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
-                    AppEditSelectDto appEditSelectDto = appEditSelectDtos.get(0);
-                    log.info(StringUtil.changeForLog("The appEditSelectDto id is  -->:" + appEditSelectDto.getId()));
-                    if (appEditSelectDto.isPremisesEdit()) {
-                        errMap.put("nextStage", "You can not submit now, because there is request for information pending now.");
-                    }
-                } else {
-                    log.debug(StringUtil.changeForLog("There is the Data error for this Application id -->:" + rfiApplicationDto.getId()));
-                }
-            } else {
-                log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:" + applicationViewDto.getApplicationGroupDto().getGroupNo()));
-            }
-            //Check for BE update
-            Map<String, String> rslt = applicationService.checkDataForEditApp(HcsaAppConst.CHECKED_BTN_APR, null,
-                    applicationViewDto.getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
-            if (IaisCommonUtils.isNotEmpty(rslt)) {
-                errMap.put("nextStage", rslt.get(HcsaAppConst.ERROR_APP));
-            }
-        }
-        log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
     }
 
     /**
