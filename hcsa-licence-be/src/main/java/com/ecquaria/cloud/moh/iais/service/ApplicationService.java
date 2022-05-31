@@ -159,4 +159,5 @@ public interface ApplicationService {
      */
     Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo);
 
+    void validateCanApprove(String approveSelect, ApplicationViewDto applicationViewDto, Map<String, String> errMap);
 }
