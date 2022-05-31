@@ -130,7 +130,7 @@
                                                                     <iais:row id="ao1SelectRow">
                                                                         <iais:field value="Officer" required="false"/>
                                                                         <iais:value width="7" id = "showAoDiv">
-                                                                            <iais:select name="aoSelect" firstOption="By System"/>
+                                                                            <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                   </c:if>
@@ -276,44 +276,50 @@
 <script>
 <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037'}">
     $(document).ready(function () {
-        $("#ao1SelectRow").hide();
+        changeAoSelect();
         $("#processSubmit").change(function () {
-            var fv = $('#processSubmit option:selected').val();
-            if (fv == 'submit') {
-                showWaiting();
-                var data = {
-                    'verified':'REDECI003'
-                };
-                $.ajax({
-                    'url':'${pageContext.request.contextPath}/check-ao',
-                    'dataType':'json',
-                    'data':data,
-                    'type':'POST',
-                    'success':function (data) {
-                        if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
-                            $("#error_aoSelect").html('');
-                            $("#showAoDiv").html(data.resultJson + '');
-                            $("#aoSelect").niceSelect();
-                            $("#ao1SelectRow").show();
-                        }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
-                            $("#error_aoSelect").html(data.resultJson + '');
-                            $("#ao1SelectRow").hide();
-                        }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
-                            $("#error_aoSelect").html('');
-                            $("#ao1SelectRow").hide();
-                        }
-                        // setValue();
-                    },
-                    'error':function () {
-
-                    }
-                });
-                dismissWaiting();
-            } else {
-                $("#ao1SelectRow").hide();
-            }
+            changeAoSelect();
         })
     });
+
+    function changeAoSelect() {
+        var fv = $('#processSubmit option:selected').val();
+        if (fv == 'submit') {
+            showWaiting();
+            var data = {
+                'verified':'REDECI003'
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/check-ao',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                        $("#error_aoSelect").html('');
+                        $("#showAoDiv").html(data.resultJson + '');
+                        $("#aoSelect").val('${aoSelectVal}');
+                        $("#aoSelect").niceSelect();
+                        $("#ao1SelectRow").show();
+                    }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                        $("#error_aoSelect").html(data.resultJson + '');
+                        $("#ao1SelectRow").hide();
+                    }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                        $("#error_aoSelect").html('');
+                        $("#ao1SelectRow").hide();
+                    }
+                    // setValue();
+                },
+                'error':function () {
+
+                }
+            });
+            dismissWaiting();
+        } else {
+            $("#ao1SelectRow").hide();
+        }
+    }
+
 </c:if>
     function insSubmit() {
         const s = $("#processSubmit").val();

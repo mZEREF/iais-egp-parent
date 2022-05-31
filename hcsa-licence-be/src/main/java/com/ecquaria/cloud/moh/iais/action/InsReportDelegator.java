@@ -166,6 +166,7 @@ public class InsReportDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
         if (!StringUtil.isEmpty(ao1Sel)) {
+            ParamUtil.setRequestAttr(request, "aoSelectVal", ao1Sel);
             String[] ao1SelStrs = ao1Sel.split("_");
             taskDto.setUserId(ao1SelStrs[ao1SelStrs.length - 1]);
         }
