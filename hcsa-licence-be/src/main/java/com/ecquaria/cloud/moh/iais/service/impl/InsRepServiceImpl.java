@@ -732,7 +732,8 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
+    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto,
+                 String appPremisesCorrelationId, AppPremisesRecommendationDto appPremisesRecommendationDto, String ao1Id) throws Exception {
         String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
@@ -744,7 +745,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
+        List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2, ao1Id);
         taskService.createTasks(taskDtos);
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
@@ -1278,17 +1279,21 @@ public class InsRepServiceImpl implements InsRepService {
         return appPremisesRoutingHistoryDto;
     }
 
-    private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
+    private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto, String ao1UserId) throws FeignException {
         String appNo = applicationDto.getApplicationNo();
-        String userId = taskDto.getUserId();
+        String userId = ao1UserId;
         Set<String> ao1Report = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
         Set<String> ao1Email = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL, RoleConsts.USER_ROLE_AO1);
-        if (!ao1Report.isEmpty() && StringUtil.isEmpty(userId)) {
-            userId = ao1Report.iterator().next();
+        if (!ao1Report.isEmpty()) {
+            if (StringUtil.isEmpty(userId)) {
+                userId = ao1Report.iterator().next();
+            }
             taskDto.setUserId(userId);
         }
         if (!ao1Email.isEmpty() && StringUtil.isEmpty(userId)) {
-            userId = ao1Email.iterator().next();
+            if (StringUtil.isEmpty(userId)) {
+                userId = ao1Email.iterator().next();
+            }
             taskDto.setUserId(userId);
         }
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
