@@ -1387,7 +1387,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     @Override
     public Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo) {
-        //boolean checkBtn = check == HcsaAppConst.CHECKED_BTN_SHOW;
+        log.info(StringUtil.changeForLog("Params: " + check + " | " + curRoleId + " | " + appType + " | " + appGrpNo));
         Map<String, String> map = new HashMap<>();
         if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
             if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
@@ -1397,12 +1397,12 @@ public class ApplicationServiceImpl implements ApplicationService {
                 map.put(HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
             }
         }
-        if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(appType, new String[]{
+        if (StringUtil.isEmpty(appType) || !StringUtil.isIn(appType, new String[]{
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
                 ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
             // "Invalid Application Type."
-            map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060","Application Type", "data"));
+            map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060", "Application Type", "data"));
         }
         if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
             Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
