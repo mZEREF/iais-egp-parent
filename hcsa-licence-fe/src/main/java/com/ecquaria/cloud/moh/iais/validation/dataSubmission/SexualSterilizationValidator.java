@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.GuardianAppliedPartDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
@@ -69,6 +70,13 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                 log.error(e.getMessage(),e);
             }
 
+        }
+        String doctorName=sexualSterilizationDto.getDoctorName();
+        if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
+            if (erMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                erMap.put("showValidateVD", AppConsts.YES);
+                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+            }
         }
         return erMap;
     }

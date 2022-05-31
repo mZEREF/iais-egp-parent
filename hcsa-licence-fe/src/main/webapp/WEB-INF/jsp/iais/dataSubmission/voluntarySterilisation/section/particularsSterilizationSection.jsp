@@ -165,9 +165,9 @@
             <div class="modal-body" >
                 <div class="row">
                     <div class="col-md-12">
-            <span style="font-size: 2rem;" id="prsErrorMsg">
-              <iais:message key="GENERAL_ERR0057" escape="false" />
-            </span>
+                        <span style="font-size: 2rem;" id="prsErrorMsg">
+                            <iais:message key="DS_MSG011" escape="false" />
+                        </span>
                     </div>
                 </div>
             </div>
@@ -187,7 +187,11 @@
                 $('#hecReviewDateLabel').find('.mandatory').remove();
 
             }
+
         });
+        if ("1" == $('#showValidateVD').val()) {
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
     });
     var clearPrsInfo = function () {
         $('#names').find('p').text('');
@@ -209,7 +213,9 @@
         $('#qualification').find('p').text(data.selection.qualification);
         $('#qualificationHidden').val(data.selection.qualification);
     }
-
+    function cancels() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
     function clearDockerSelection(){
         console.log("clearDockerSelection!")
         clearErrorMsg();
@@ -219,7 +225,6 @@
         $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
-
 
     function validateDoctors() {
         console.log('loading info ...');
@@ -252,17 +257,13 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                } else if('-1' == data.selection.statusCode || '-2' == data.statusCode) {
-                    $('#prsErrorMsg').val($('#flagDocMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo();
                 } else if (data.selection.hasException) {
                     $('#prsErrorMsg').val($('#flagInvaMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
+                    $('#msg').text('This Doctor is not authorized to perform Voluntary Sterilization.');
                     clearPrsInfo();
                 } else if ('401' == data.selection.statusCode) {
                     $('#prsErrorMsg').val($('#flagPrnMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
+                    $('#msg').text('This Doctor is not authorized to perform Voluntary Sterilization.');
                     clearPrsInfo();
                 } else {
                     $('#doctorInformations').val(false);
