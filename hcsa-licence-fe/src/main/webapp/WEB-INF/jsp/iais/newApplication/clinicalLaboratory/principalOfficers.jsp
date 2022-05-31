@@ -957,21 +957,20 @@
                 $contentEle.find('input[type="text"]').css('color','');
                 */
             } else {
-                var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
-                if (!$deputyPoSelectDiv.hasClass('hidden')) {
-                    $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
-                    $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
-                    $deputyPoSelectDiv.find('input[type="text"]').css('color','');
-                }
                 //add one
                 $('#addDpoBtn').trigger('click');
                 //close dropdown
                 $('#deputyPrincipalOfficer').removeClass('disabled');
                 $('#deputyPrincipalOfficer').niceSelect('update');
             }
-
-        }else{
-            $poContentEle.find('div.deputy-content ').addClass('hidden');
+            var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
+            if (!$deputyPoSelectDiv.hasClass('hidden')) {
+                $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
+                $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
+                $deputyPoSelectDiv.find('input[type="text"]').css('color','');
+            }
+        } else {
+            $poContentEle.find('div.deputy-content').addClass('hidden');
         }
 
     });
@@ -1336,8 +1335,8 @@
             var $premContentEle= $(this).closest('div.po-content');
             $premContentEle.remove();
             //reset number
-            $('.po-content').each(function (k,v) {
-                $(this).find('.assign-psn-item').html(k);
+            $('.po-content').each(function (k, v) {
+                $(v).find('.assign-psn-item').html(k);
             });
             //show add more
             var psnLength = $('.po-content').length-1;
@@ -1357,8 +1356,8 @@
             var $premContentEle= $(this).closest('div.dpo-content');
             $premContentEle.remove();
             //reset number
-            $('.dpo-content').each(function (k,v) {
-                $(this).find('.assign-psn-item').html(k);
+            $('.dpo-content').each(function (k, v) {
+                $(v).find('.assign-psn-item').html(k);
             });
             //show add more
             var psnLength = $('.dpo-content').length-1;
@@ -1376,6 +1375,9 @@
     }
     var DPO_number =function (){
         var closest = $('.removeDpoBtn').closest("div.panel-main-content");
+        if (closest.length <= 0) {
+            return;
+        }
         var children = closest.children("div.dpo-content");
         if(children.length <= 0){
             $("select[name='deputyPrincipalOfficer']").next().find('.current').html('No');
