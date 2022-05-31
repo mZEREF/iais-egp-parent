@@ -469,26 +469,28 @@ public class InspecEmailDelegator {
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1=hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
             taskDto1.setWkGrpId(hcsaSvcStageWorkingGroupDto1.getGroupId());
+            String aoUserId = null;
             if (!StringUtil.isEmpty(ao1Sel)) {
-                taskDto1.setUserId(ao1Sel.replaceAll(hcsaSvcStageWorkingGroupDto1.getGroupId() + "_", ""));
-            } else {
-                switch (hcsaSvcStageWorkingGroupDto1.getSchemeType()) {
-                    case TaskConsts.TASK_SCHEME_TYPE_COMMON:
-                        taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-                        taskDto1.setUserId(null);
-                        break;
-                    case TaskConsts.TASK_SCHEME_TYPE_ROUND:
-                        taskDto1.setTaskType(taskDto.getTaskType());
-                        taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
-                        break;
-                    case TaskConsts.TASK_SCHEME_TYPE_ASSIGN:
-                        taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
-                        taskDto1.setUserId(null);
-                        break;
-                    default:taskDto1.setTaskType(taskDto.getTaskType());
-                        taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
-                        break;
-                }
+                aoUserId = ao1Sel.replaceAll(hcsaSvcStageWorkingGroupDto1.getGroupId() + "_", "");
+            }
+            switch (hcsaSvcStageWorkingGroupDto1.getSchemeType()) {
+                case TaskConsts.TASK_SCHEME_TYPE_COMMON:
+                    taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+                    taskDto1.setUserId(!StringUtil.isEmpty(aoUserId) ? aoUserId : null);
+                    break;
+                case TaskConsts.TASK_SCHEME_TYPE_ROUND:
+                    taskDto1.setTaskType(taskDto.getTaskType());
+                    taskDto1.setUserId(!StringUtil.isEmpty(aoUserId) ? aoUserId :
+                            taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
+                    break;
+                case TaskConsts.TASK_SCHEME_TYPE_ASSIGN:
+                    taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
+                    taskDto1.setUserId(!StringUtil.isEmpty(aoUserId) ? aoUserId : null);
+                    break;
+                default:taskDto1.setTaskType(taskDto.getTaskType());
+                    taskDto1.setUserId(!StringUtil.isEmpty(aoUserId) ? aoUserId :
+                            taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
+                    break;
             }
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,applicationViewDto.getApplicationDto());
             taskService.createTasks(taskDtos);
