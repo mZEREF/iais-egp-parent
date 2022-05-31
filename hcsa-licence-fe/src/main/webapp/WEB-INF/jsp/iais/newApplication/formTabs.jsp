@@ -56,11 +56,9 @@
     function initNationality(parent, idTypeTag, nationalityDiv) {
         $(parent).find(idTypeTag).on('change', function () {
             var $content = $(this).closest(parent.replace(':last', ''));
-            console.log(nationalityDiv + ': ' + $content.find(nationalityDiv).length);
             toggleOnSelect(this, 'IDTYPE003', 'IDTYPE003', $content.find(nationalityDiv));
         });
         $(parent).each(function (index, ele) {
-            console.log(idTypeTag + ': ' + $(ele).find(idTypeTag).length);
             toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
         });
     }
