@@ -335,17 +335,19 @@ public final class ExcelWriter {
         final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
         String path = postFileName;
         File out = MiscUtil.generateFile(path);
-        try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
+        try (OutputStream outputStream = newOutputStream(out.toPath())) {
             if (isNew) {
                 workbook = XSSFWorkbookFactory.createWorkbook();
             } else {
-                workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+                try (InputStream fileInputStream = newInputStream(file.toPath())) {
+                    workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+                }
             }
             startInternal(workbook);
             for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
                 XSSFSheet sheet;
                 if (isNew) {
-                    sheet = workbook.getSheet(excelSheetDto.getSheetName());
+                    sheet = workbook.createSheet(excelSheetDto.getSheetName());
                 } else {
                     sheet = workbook.getSheetAt(excelSheetDto.getSheetAt());
                     if (!StringUtils.isEmpty(excelSheetDto.getSheetName())) {
