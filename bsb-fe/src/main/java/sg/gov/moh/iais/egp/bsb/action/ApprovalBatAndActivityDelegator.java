@@ -13,7 +13,6 @@ import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
@@ -33,7 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.HAVE_SUITABLE_DRAFT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_JUMP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SAVE_AS_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SUBMIT;
@@ -83,6 +84,8 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_USER_ID_FACILITY_AUTH_MAP);
         session.removeAttribute(KEY_FACILITY_ID);
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        session.removeAttribute(DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        session.removeAttribute(HAVE_SUITABLE_DRAFT_DATA);
         AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
     }
 
@@ -102,6 +105,7 @@ public class ApprovalBatAndActivityDelegator {
                 NodeGroup approvalAppRoot = editDto.toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
                 ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
                 ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, editDto);
+                ParamUtil.setSessionAttr(request, KEY_APPROVAL_SELECTION_DTO, editDto.getApprovalSelectionDto());
                 // dash bord display
                 ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, editDto.getApprovalSelectionDto().getProcessType());
             }
@@ -274,7 +278,7 @@ public class ApprovalBatAndActivityDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        // do nothing now
     }
 
     public void print(BaseProcessClass bpc){
