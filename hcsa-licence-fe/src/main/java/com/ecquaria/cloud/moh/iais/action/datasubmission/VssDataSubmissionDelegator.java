@@ -192,13 +192,25 @@ public class VssDataSubmissionDelegator {
     }
 
     private void retrieveHciCode(HttpServletRequest request ,VssSuperDataSubmissionDto vssSuperDataSubmissionDto) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null) {
-            return;
+        Map<String, PremisesDto> premisesMap =
+                (Map<String, PremisesDto>) request.getSession().getAttribute(DataSubmissionConstant.VSS_PREMISES_MAP);
+        if (premisesMap == null || premisesMap.isEmpty()) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            premisesMap = vssDataSubmissionService.getVssCenterPremises(licenseeId);
         }
-        DataSubmissionHelper.setVssPremisesMap(request).values().stream().forEach(v->
+       if(premisesMap.size()==1){
+           premisesMap.values().stream().forEach(v-> vssSuperDataSubmissionDto.setPremisesDto(v));
+       }
+
+     /*   *//*DataSubmissionHelper.setVssPremisesMap(request).values().stream().forEach(v-> vssSuperDataSubmissionDto.setPremisesDto(v));*//*
+        Map<String, PremisesDto>  premisesDtoMap = DataSubmissionHelper.setVssPremisesMap(request);
+        premisesDtoMap.values().stream().forEach(v->
                 vssSuperDataSubmissionDto.setPremisesDto(v)
-        );
+        );*/
     }
     /**
      * Step: DoStep

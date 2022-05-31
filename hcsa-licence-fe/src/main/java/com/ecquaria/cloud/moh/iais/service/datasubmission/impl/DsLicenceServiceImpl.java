@@ -57,6 +57,10 @@ public class DsLicenceServiceImpl implements DsLicenceService {
         return getDataSubmissionPremises(licenseeId, DataSubmissionConsts.DS_DRP);
     }
 
+    public Map<String, PremisesDto> getVssCenterPremises(String licenseeId) {
+        return getDataSubmissionPremises(licenseeId, DataSubmissionConsts.DS_VSS);
+    }
+
     @Override
     public List<PremisesDto> getArCenterPremiseList(String orgId) {
         if (tempCenterEnable) {
