@@ -86,7 +86,7 @@
         <iais:field width="5" value="Name of Counsellor" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellorName" value="${postTerminationDto.counsellorName}" />
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>Date of Counselling
+            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
         </iais:value>
     </iais:row>
     <iais:row>
