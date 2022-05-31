@@ -140,12 +140,14 @@
                         <c:out value="${drugSubmission.startDate}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="End Date of Dispensing" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${drugSubmission.endDate}"/>
-                    </iais:value>
-                </iais:row>
+                <div <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="End Date of Dispensing" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${drugSubmission.endDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Diagnosis" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
