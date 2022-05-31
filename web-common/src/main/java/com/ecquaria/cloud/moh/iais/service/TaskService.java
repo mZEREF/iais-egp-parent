@@ -116,4 +116,6 @@ public interface TaskService {
     void sendNoteToAdm(String appNo,String refNo,OrgUserDto orgUserDto);
 
     boolean checkCompleteTaskByApplicationNo(List<ApplicationDto> applicationDtoList,String correlationId);
+
+    List<TaskDto> getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(String appNo, String roleId, String wrkGrpId, String userId);
 }

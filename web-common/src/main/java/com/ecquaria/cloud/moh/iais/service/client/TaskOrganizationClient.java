@@ -103,4 +103,7 @@ public interface TaskOrganizationClient {
     @PostMapping(value = "/iais-task/tasks/app-correlations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> updateTasks(@RequestBody List<AppPremisesCorrelationDto> appPremisesCorrelations);
 
+    @GetMapping(value = "/iais-task/get-task-by-app-role-wrkGrp-user",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(@RequestParam("appNo") String appNo,@RequestParam("roleId") String roleId,@RequestParam("wrkGrpId") String wrkGrpId,@RequestParam("userId") String userId);
+
 }

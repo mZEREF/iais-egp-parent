@@ -1033,6 +1033,143 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public void rollBackInspAo1AndIns(BaseProcessClass bpc, String roleId, String wrkGpId, String userId) throws CloneNotSupportedException {
+
+        //get the user for this applicationNo
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        String taskType = TaskConsts.TASK_TYPE_INSPECTION;
+        String taskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+        String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
+        String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PRE;
+
+        List<TaskDto> taskDtoList=taskOrganizationClient.getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(applicationViewDto.getApplicationDto().getApplicationNo(),roleId,wrkGpId,userId).getEntity();
+        //status by
+        switch (roleId){
+            case RoleConsts.USER_ROLE_AO1:
+                for (TaskDto task:taskDtoList
+                     ) {
+                    taskUrl=task.getProcessUrl();
+                    if(task.getProcessUrl().equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY;break;
+                    }
+                    if(task.getProcessUrl().equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT;break;
+                    }
+                }
+                break;
+            case RoleConsts.USER_ROLE_INSPECTIOR:
+                for (TaskDto task:taskDtoList
+                ) {
+                    taskUrl=task.getProcessUrl();
+
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PRE;break;
+                    }
+                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT)){
+                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
+                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT;break;
+                    }
+
+                }
+                break;
+            case RoleConsts.USER_ROLE_INSPECTION_LEAD:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING;
+                taskUrl=TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL;
+                insStatus=InspectionConstants.INSPECTION_STATUS_INSPECTOR_LEAD_ROUTE_BACK_EMAIL;
+            break;
+            default:
+        }
+        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+
+        //complated this task and create the history
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        //set / get completedTask
+        taskDto = completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
+        String processDecision = ParamUtil.getString(bpc.request, "nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
+            processDecision = nextStageReplys;
+        }
+        //save appPremisesRoutingHistoryExtDto
+        String routeBackReview = (String) ParamUtil.getSessionAttr(bpc.request, "routeBackReview");
+        if ("canRouteBackReview".equals(routeBackReview)) {
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
+            String[] routeBackReviews = ParamUtil.getStrings(bpc.request, "routeBackReview");
+            if (routeBackReviews != null) {
+                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
+            } else {
+                appPremisesRoutingHistoryExtDto.setComponentValue("N");
+                //route back and route task processing
+                processDecision = ApplicationConsts.PROCESSING_DECISION_ROUTE_BACK_AND_ROUTE_TASK;
+            }
+            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
+        }
+
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
+                applicationDto.getStatus(), taskDto.getTaskKey(), HcsaConsts.ROUTING_STAGE_POT, taskDto.getWkGrpId(), internalRemarks, null, processDecision, taskDto.getRoleId());
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setApplicationDto(applicationDto);
+
+        String subStageId = HcsaConsts.ROUTING_STAGE_POT;
+        //update inspector status
+        updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), insStatus);
+        TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS, taskType,
+                taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, wrkGpId, userId, new Date(), null,0, taskUrl, roleId,
+                IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastOrganizationDto.setCreateTask(newTaskDto);
+        //create new history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, subStageId,
+                taskDto.getWkGrpId(), null, null, null, roleId);
+        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog(submissionId));
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
+
+        //0062460 update FE  application status.
+        updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+    }
+
+    @Override
     public void updateInspectionStatusByAppNo(String appId, String inspectionStatus) {
         if(!StringUtil.isEmpty(appId)) {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
