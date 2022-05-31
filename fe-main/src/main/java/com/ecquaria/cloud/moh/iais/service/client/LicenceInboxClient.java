@@ -131,7 +131,7 @@ public interface LicenceInboxClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> refreshSubLicenseeInfo(@RequestBody LicenseeDto licenseeDto);
 
-    @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
                                                                                                  @PathVariable("originLicenceId") String originLicenceId);
 
