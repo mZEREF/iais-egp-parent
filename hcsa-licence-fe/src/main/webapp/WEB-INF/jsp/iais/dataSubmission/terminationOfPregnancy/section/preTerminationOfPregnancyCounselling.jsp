@@ -184,12 +184,6 @@
                 </iais:value>
             </iais:row>
         </div>
-        <iais:row>
-            <iais:field width="5" value="Patient Age (Years)"/>
-            <iais:value width="7" cssClass="col-md-7" display="true" id="age">
-                ${patientInformationDto.patientAge}
-        </iais:value>
-        </iais:row>
             <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
@@ -258,6 +252,12 @@
             <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+        </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Patient Age (Years)"/>
+        <iais:value width="7" cssClass="col-md-7" display="true" id="age">
+            ${patientInformationDto.patientAge}
         </iais:value>
         </iais:row>
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>

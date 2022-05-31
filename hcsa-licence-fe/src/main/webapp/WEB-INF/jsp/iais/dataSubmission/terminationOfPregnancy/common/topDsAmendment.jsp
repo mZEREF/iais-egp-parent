@@ -14,12 +14,12 @@
                     <iais:row>
                         <iais:field width="5" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_CYCLE_STAGE_AMENDMENT"
+                            <iais:select name="amendReason" firstOption="Please Select" codeCategory="REASON_FOR_TOP_AMENDMENT"
                                          value="${dataSubmission.amendReason}" id="amendReason" cssClass="amendReasonSel"
-                                         onchange="toggleOnSelect(this, 'PCS_002', 'amendReasonOtherDiv')"/>
+                                         onchange="toggleOnSelect(this, 'TCT_002', 'amendReasonOtherDiv')"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row id="amendReasonOtherDiv" style="${dataSubmission.amendReason ne 'PCS_002' ? 'display:none'  : null }" >
+                    <iais:row id="amendReasonOtherDiv" style="${dataSubmission.amendReason ne 'TCT_002' ? 'display:none'  : null }" >
                         <iais:field width="5" value="Reason for Amendment (Others)" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="50" type="text" name="amendReasonOther" id="amendReasonOther"

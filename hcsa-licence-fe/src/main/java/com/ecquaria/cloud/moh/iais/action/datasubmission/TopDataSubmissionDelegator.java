@@ -113,6 +113,7 @@ public class TopDataSubmissionDelegator {
                 crud_action_type="";
             }
             if(crud_action_type.equals("rfc")){
+                ParamUtil.setRequestAttr(bpc.request, "patientMotionless","motionles");
                 if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
                     DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
                     String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
@@ -966,7 +967,7 @@ public class TopDataSubmissionDelegator {
         return topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
     protected boolean isOthers(String others){
-        return StringUtil.isIn(others,DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS);
+        return StringUtil.isIn(others,DataSubmissionConsts.REASON_FOR_TOP_AMENDMENT_OTHERS);
     }
 
     private void sendNotification(String applicantName, String TOPId, String licenseeId, String dateStr) throws IOException, TemplateException {

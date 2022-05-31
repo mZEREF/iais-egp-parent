@@ -12,23 +12,25 @@
                 </iais:row>--%>
                    <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                    <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
-                    <iais:row>
-                        <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
-                        <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
-                        <iais:value width="3" cssClass="col-md-3">
-                            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                         value="${patientInformationDto.idType}" onchange="clearSelection()" cssClass="idType"/>
-                        </iais:value>
-                        <iais:value width="4" cssClass="col-md-4" style="width: 180px;">
-                            <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}" onchange="clearSelection()"/>
-                        </iais:value>
-                        <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
-                            <a class="retrieveIdentification" onclick="retrieveValidateTop()">
-                                Validate Patient
-                            </a>
-                            <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrieveData"></span>
-                        </iais:value>
-                    </iais:row>
+                   <div class="patient">
+                       <iais:row>
+                           <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
+                           <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
+                           <iais:value width="3" cssClass="col-md-3">
+                               <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                            value="${patientInformationDto.idType}" onchange="clearSelection()" cssClass="idType"/>
+                           </iais:value>
+                           <iais:value width="4" cssClass="col-md-4" style="width: 180px;">
+                               <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}" onchange="clearSelection()"/>
+                           </iais:value>
+                           <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
+                               <a class="retrieveIdentification" onclick="retrieveValidateTop()">
+                                   Validate Patient
+                               </a>
+                               <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrieveData"></span>
+                           </iais:value>
+                       </iais:row>
+                   </div>
                    <iais:row>
                        <iais:field width="5" value="Name of Patient" mandatory="true"/>
                        <iais:value width="7" cssClass="col-md-7">
@@ -160,6 +162,10 @@
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
+        <c:if test="${topSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+        disableContent('div.patient');
+        $('#retrieveDataDiv').hide();
+        </c:if>
         var childrenNum = $('#childrenNum').val();
         if(childrenNum>10){
             $('#numMax').hide();
@@ -200,6 +206,7 @@
                 $('#otherOccupations').show();
             } else {
                 $('#otherOccupations').hide();
+                $('#otherOccupation').val(null);
             }
         });
 

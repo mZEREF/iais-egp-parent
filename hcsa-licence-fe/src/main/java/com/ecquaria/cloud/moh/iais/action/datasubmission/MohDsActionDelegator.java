@@ -161,22 +161,23 @@ public class MohDsActionDelegator {
             }
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
-            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
-            if(professionalResponseDto==null){
-                professionalResponseDto=new ProfessionalResponseDto();
-            }
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-                TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP);
-                topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
-                terminationDto.setTopDoctorInformations("true");
-            }else {
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
-
+            if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+                if(professionalResponseDto==null){
+                    professionalResponseDto=new ProfessionalResponseDto();
+                }
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+                    TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP);
+                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    terminationDto.setTopDoctorInformations("true");
+                }else {
+                    topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
+                    topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
@@ -372,23 +373,25 @@ public class MohDsActionDelegator {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
             }*/
             DsConfigHelper.initTopConfig(request);
-            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuper.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
-            if(professionalResponseDto==null){
-                professionalResponseDto=new ProfessionalResponseDto();
-            }
-             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                TerminationOfPregnancyDto terminationOfPregnancyDto=topSuper.getTerminationOfPregnancyDto();
-                TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP);
-                topSuper.setDoctorInformationDto(doctorInformationDto);
-                terminationDto.setTopDoctorInformations("true");
-            }else {
-                 topSuper.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
-                 topSuper.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                 topSuper.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                 topSuper.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+            if(!StringUtil.isEmpty(topSuper.getTerminationOfPregnancyDto().getTerminationDto())){
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuper.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+                if(professionalResponseDto==null){
+                    professionalResponseDto=new ProfessionalResponseDto();
+                }
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    TerminationOfPregnancyDto terminationOfPregnancyDto=topSuper.getTerminationOfPregnancyDto();
+                    TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP);
+                    topSuper.setDoctorInformationDto(doctorInformationDto);
+                    terminationDto.setTopDoctorInformations("true");
+                }else {
+                    topSuper.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
+                    topSuper.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    topSuper.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    topSuper.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
 
-             }
+                }
+            }
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(topSuper));

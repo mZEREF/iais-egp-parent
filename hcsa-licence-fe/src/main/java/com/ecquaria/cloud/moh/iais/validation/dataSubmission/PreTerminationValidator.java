@@ -25,9 +25,6 @@ public class PreTerminationValidator implements CustomizeValidator {
             patientInformationDto =new PatientInformationDto();
         }
         if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true) {
-           /* if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
-                errorMap.put("patientSign", "GENERAL_ERR0006");
-            }*/
             if(StringUtil.isEmpty(preTerminationDto.getCounsellorIdType())){
                 errorMap.put("counsellorIdType", "GENERAL_ERR0006");
             }
