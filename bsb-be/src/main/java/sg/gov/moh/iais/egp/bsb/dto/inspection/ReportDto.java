@@ -41,7 +41,6 @@ public class ReportDto implements Serializable {
     // part 2
     private String observation;
     private String observationRemarks;
-    private List<NCDisplayDto> checkListItemGeneralList;
     private List<NCDisplayDto> checkListItemBsbList;
     // part 3
     private List<FollowUpDisplayDto> followUpItemGeneralList;
@@ -79,17 +78,8 @@ public class ReportDto implements Serializable {
             this.deficiency = new ArrayList<>(0);
         }
 
-        if (!CollectionUtils.isEmpty(checkListItemGeneralList)) {
-            for (NCDisplayDto ncDisplayDto : checkListItemGeneralList) {
-                String id = ncDisplayDto.getId();
-                ncDisplayDto.setFinding(ParamUtil.getString(request, KEY_FINDING + SEPARATOR + id));
-                ncDisplayDto.setActionRequired(ParamUtil.getString(request, KEY_ACTION_REQUIRED + SEPARATOR + id));
-                ncDisplayDto.setExcludeFromApplicantVersion(ParamUtil.getString(request, KEY_EXCLUDE_FROM_APPLICANT_VERSION + SEPARATOR + id));
-            }
-        }
-
-        if (!CollectionUtils.isEmpty(checkListItemGeneralList)) {
-            for (NCDisplayDto ncDisplayDto : checkListItemGeneralList) {
+        if (!CollectionUtils.isEmpty(checkListItemBsbList)) {
+            for (NCDisplayDto ncDisplayDto : checkListItemBsbList) {
                 String id = ncDisplayDto.getId();
                 ncDisplayDto.setFinding(ParamUtil.getString(request, KEY_FINDING + SEPARATOR + id));
                 ncDisplayDto.setActionRequired(ParamUtil.getString(request, KEY_ACTION_REQUIRED + SEPARATOR + id));
