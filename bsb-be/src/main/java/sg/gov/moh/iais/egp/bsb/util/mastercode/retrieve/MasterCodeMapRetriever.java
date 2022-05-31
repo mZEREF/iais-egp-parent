@@ -7,19 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class MasterCodeMapRetriever implements MasterCodeRetriever {
     private final Map<String, MasterCodeView> codeViewMap;
-    private final Map<String, MasterCodeView> valueViewMap;
-    private final Map<String, MasterCodeView> descViewMap;
+    private Map<String, MasterCodeView> valueViewMap;
+    private Map<String, MasterCodeView> descViewMap;
 
     public MasterCodeMapRetriever(List<MasterCodeView> dataList) {
         codeViewMap = Maps.newLinkedHashMapWithExpectedSize(dataList.size());
-        valueViewMap = Maps.newLinkedHashMapWithExpectedSize(dataList.size());
-        descViewMap = Maps.newLinkedHashMapWithExpectedSize(dataList.size());
         for (MasterCodeView data : dataList) {
             codeViewMap.put(data.getCode(), data);
-            valueViewMap.put(data.getCodeValue(), data);
-            descViewMap.put(data.getDescription(), data);
         }
     }
 
@@ -36,11 +33,23 @@ public class MasterCodeMapRetriever implements MasterCodeRetriever {
 
     @Override
     public MasterCodeView retrieveByValue(String value) {
+        if (valueViewMap == null) {
+            valueViewMap = Maps.newLinkedHashMapWithExpectedSize(codeViewMap.size());
+            for (MasterCodeView data : codeViewMap.values()) {
+                valueViewMap.put(data.getCodeValue(), data);
+            }
+        }
         return valueViewMap.get(value);
     }
 
     @Override
     public MasterCodeView retrieveByDesc(String desc) {
+        if (descViewMap == null) {
+            descViewMap = Maps.newLinkedHashMapWithExpectedSize(codeViewMap.size());
+            for (MasterCodeView data : codeViewMap.values()) {
+                descViewMap.put(data.getDescription(), data);
+            }
+        }
         return descViewMap.get(desc);
     }
 }
