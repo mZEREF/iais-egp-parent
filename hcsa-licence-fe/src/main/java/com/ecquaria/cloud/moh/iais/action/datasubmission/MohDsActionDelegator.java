@@ -72,8 +72,6 @@ public class MohDsActionDelegator {
     @Autowired
     private AppSubmissionService appSubmissionService;
 
-    @Autowired
-    private DocInfoService docInfoService;
 
     /**
      * Step: Start
