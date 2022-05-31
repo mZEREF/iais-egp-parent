@@ -53,7 +53,6 @@ public class ChangeTcuDateDelegator {
 
     private final String keyNewTcuDateDates = "newTcuDate";
     private final String keyNewTcuDateRemarks = "newTcuDateRemarks";
-    private final String keyEmptyMessage = "emptyRowMessage";
 
     private final String ACTION_PREMISE_LIST = "premiseList";
     private final String ACTION_CHANGE_PAGE = "changePage";
@@ -90,7 +89,6 @@ public class ChangeTcuDateDelegator {
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CHANGE_TCU_DATE);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.KEY_SVC_TYPE_OPTIONS, (Serializable) requestForInformationService.getLicSvcTypeOption());
-        ParamUtil.setSessionAttr(bpc.request, keyEmptyMessage, "GENERAL_ACK018");
         List<SelectOption> persionTypeOptions = IaisCommonUtils.genNewArrayList();
         persionTypeOptions.add(new SelectOption("CGO","CGO"));
         persionTypeOptions.add(new SelectOption("KAH","KAH"));
@@ -247,11 +245,11 @@ public class ChangeTcuDateDelegator {
 
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
 
-        ParamUtil.setSessionAttr(request,keyEmptyMessage,"GENERAL_ACK018");
-        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr)) {
-            if (fromDate.after(toDate)) {
-                ParamUtil.setSessionAttr(request,keyEmptyMessage,"AUDIT_ERR010");
-            }
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        validateSearch(filterParam, tcuDateFromStr, fromDate, tcuDateToStr, toDate, errMap);
+        if (!errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            return;
         }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
@@ -293,6 +291,14 @@ public class ChangeTcuDateDelegator {
 
         if (StringUtil.isNotEmpty(psnType)) {
             searchParam.addFilter("psn_type", psnType, true);
+        }
+    }
+
+    private void validateSearch(LicPremisesQueryDto filterParam, String tcuDateFromStr, Date fromDate, String tcuDateToStr, Date toDate, Map<String, String> errMap) {
+        if (StringUtil.isNotEmpty(tcuDateToStr) && StringUtil.isNotEmpty(tcuDateFromStr)) {
+            if (fromDate.after(toDate)) {
+                errMap.put("tcuDateFrom", "AUDIT_ERR010");
+            }
         }
     }
 
