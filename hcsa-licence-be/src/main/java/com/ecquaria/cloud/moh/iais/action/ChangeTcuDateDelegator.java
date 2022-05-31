@@ -290,7 +290,13 @@ public class ChangeTcuDateDelegator {
         }
 
         if (StringUtil.isNotEmpty(psnType)) {
-            searchParam.addFilter("psn_type", psnType, true);
+            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+            psnTypes.add(psnType);
+            //ESA MTS use
+            if("CGO".equals(psnType)){
+                psnTypes.add("CD");
+            }
+            searchParam.addFilter("psn_type", psnTypes, true);
         }
     }
 
