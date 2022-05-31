@@ -63,7 +63,7 @@
                 lkp.PERSON_ID = kp.ID
             WHERE
                 lkp.LICENCE_ID = l.ID
-                <#if psn_type??>AND :psn_type = lkp.PSN_TYPE</#if>
+                <#if psn_type??>AND lkp.PSN_TYPE in :psn_type </#if>
                 <#if psn_name??>AND charindex(:psn_name,kp.NAME) > 0</#if>
             )
             </#if>
