@@ -120,11 +120,23 @@
                                                             <span data-err-ind="error_message" class="error-msg"></span>
 
                                                         </div>
-                                                        <div style="text-align: right">
-                                                            <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
-                                                            <button name="skipBtn" id="skipBtn" type="button" class="btn btn-md" onclick="skipInspection()">Skip Inspection</button>
-                                                            <button name="skipValidation" id="skipValidation" type="button" class="btn btn-md" onclick="skipValidate()">Skip Validation</button>
-                                                        </div>
+
+                                                        <iais:action>
+                                                            <c:choose>
+                                                                <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
+                                                                <c:when test="${goBackUrl ne null}">
+                                                                    <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                            <div style="text-align: right">
+                                                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                <button name="skipBtn" id="skipBtn" type="button" class="btn btn-md" onclick="skipInspection()">Skip Inspection</button>
+                                                                <button name="skipValidation" id="skipValidation" type="button" class="btn btn-md" onclick="skipValidate()">Skip Validation</button>
+                                                            </div>
+                                                        </iais:action>
                                                     </div>
                                                 </div>
                                             </div>

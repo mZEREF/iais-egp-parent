@@ -67,21 +67,23 @@
                 <div class="clear"></div>
             </div>
 
-            <div style="text-align: right">
-                <button name="uploadChecklist" id="uploadChecklist" type="button" class="btn btn-primary">UPLOAD CHECKLIST</button>
-                <button name="downloadChecklist" id="downloadChecklist" type="button" class="btn btn-primary">DOWNLOAD CHECKLIST</button>
-                <button name="listAdhoc" id="listAdhoc" type="button" class="btn btn-primary">LIST ADHOC</button>
-                <button name="viewChecklist" id="viewChecklist" type="button" class="btn btn-primary">VIEW CHECKLIST</button>
-            </div>
+            <iais:action>
+                <c:choose>
+                    <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
+                    <c:when test="${goBackUrl ne null}">
+                        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                    </c:otherwise>
+                </c:choose>
+                <div style="text-align: right">
+                    <button name="uploadChecklist" id="uploadChecklist" type="button" class="btn btn-primary">UPLOAD CHECKLIST</button>
+                    <button name="downloadChecklist" id="downloadChecklist" type="button" class="btn btn-primary">DOWNLOAD CHECKLIST</button>
+                    <button name="listAdhoc" id="listAdhoc" type="button" class="btn btn-primary">LIST ADHOC</button>
+                    <button name="viewChecklist" id="viewChecklist" type="button" class="btn btn-primary">VIEW CHECKLIST</button>
+                </div>
+            </iais:action>
         </div>
     </div>
 </div>
-<c:choose>
-    <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
-    <c:when test="${goBackUrl ne null}">
-        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
-    </c:when>
-    <c:otherwise>
-        <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
-    </c:otherwise>
-</c:choose>
