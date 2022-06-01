@@ -609,6 +609,7 @@ public class HcsaApplicationDelegator {
             }
             String verified = ParamUtil.getString(bpc.request, "verified");
             String rollBack = ParamUtil.getMaskedString(bpc.request, "rollBack");
+            String rollBackCr = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
             String nextStage = null;
 
             boolean chooseInspection = (boolean) ParamUtil.getSessionAttr(bpc.request, "isChooseInspection");
@@ -645,6 +646,9 @@ public class HcsaApplicationDelegator {
                 nextStage = "PROCRB";
             } else if (!StringUtil.isEmpty(verified) && ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(stage)) {
                 nextStage = verified;
+            }
+            if (!StringUtil.isEmpty(rollBackCr) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(stage)) {
+                nextStage = stage;
             }
 
             //request for information
@@ -731,14 +735,17 @@ public class HcsaApplicationDelegator {
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
         String verified = "";
         String rollBack = "";
+        String rollBackCr = "";
         if (ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(nextStage)) {
             verified = ParamUtil.getString(bpc.request, "verified");
         } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)) {
             rollBack = ParamUtil.getMaskedString(bpc.request, "rollBack");
+        }else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage)) {
+            rollBackCr = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage) && applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
+        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage) &&!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage) && applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
             insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc());
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -800,6 +807,25 @@ public class HcsaApplicationDelegator {
                 } else if ((RoleConsts.USER_ROLE_AO3.equals(roleId))) {
                     //AO3
                     successInfo = "LOLEV_ACK025";
+                }
+            }else if (!StringUtil.isEmpty(rollBackCr)) {
+                //roll back
+                successInfo = "LOLEV_ACK002";
+                if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
+                    //AO1
+                    successInfo = "LOLEV_ACK002";
+                } else if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
+                    //AO2
+                    successInfo = "LOLEV_ACK014";
+                } else if ((RoleConsts.USER_ROLE_AO3.equals(roleId))) {
+                    //AO3
+                    successInfo = "LOLEV_ACK025";
+                }else if ((RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId))) {
+                    //Inspection
+                    successInfo = "LOLEV_ACK033";
+                }else if ((RoleConsts.USER_ROLE_PSO.equals(roleId))) {
+                    //PSO
+                    successInfo = "LOLEV_ACK001";
                 }
             } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(nextStage)) {
                 //AO3 DMS
@@ -1070,7 +1096,8 @@ public class HcsaApplicationDelegator {
      */
     public void rollBackCr(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rollBack start ...."));
-        String str = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
+        String str = ParamUtil.getString(bpc.request, "rollBackCr");
+        str=MaskUtil.unMaskValue("rollBack",str);
         log.info(StringUtil.changeForLog(str));
         String[] result = str.split(",");
         String stageId = result[0];
@@ -3795,6 +3822,8 @@ public class HcsaApplicationDelegator {
         setDmsProcessingDecisionDropdownValue(request);
         //set route back dropdown value
         setRouteBackDropdownValue(request, applicationViewDto);
+        //set roll back dropdown value
+        setRollBackDropdownValue(request, applicationViewDto);
         //set recommendation dropdown value
 //        setRecommendationDropdownValue(request,applicationViewDto);
         //set recommendation other dropdown value
@@ -4170,6 +4199,41 @@ public class HcsaApplicationDelegator {
         }
         applicationViewDto.setRollBack(rollBackMap);
         ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable) rollBackStage);
+    }
+
+    public void setRollBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+        //   rollback
+        log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
+        Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getAppPremisesRoutingHistoryDtoList();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
+        if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)) {
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
+//                String displayName = applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
+                String displayName = appPremisesRoutingHistoryDto.getRoleId();
+                String userId = appPremisesRoutingHistoryDto.getActionby();
+                String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
+                if(!userId.equals(loginContext.getLoginId())&&!displayName.equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)&&!displayName.equals(RoleConsts.USER_ROLE_BROADCAST)){
+                    OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
+                    if(user != null&&user.getUserRoles().contains(displayName)) {
+                        String actionBy = user.getDisplayName();
+                        if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
+                            rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                            String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                            SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                            rollBackStage.add(selectOption);
+                        }
+                    }
+                }
+
+            }
+        } else {
+            log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
+        }
+        applicationViewDto.setRollBack(rollBackMap);
+        ParamUtil.setSessionAttr(request, "rollBackValues", (Serializable) rollBackStage);
     }
 
     private boolean isFinalStage(TaskDto taskDto, ApplicationViewDto applicationViewDto) {

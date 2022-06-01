@@ -198,7 +198,7 @@
                                                                                 <iais:value width="10">
                                                                                     <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
                                                                                                  firstOption="Please Select"
-                                                                                                 options="routeBackValues"
+                                                                                                 options="rollBackValues"
                                                                                                  value="${selectRollBack}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
@@ -210,7 +210,7 @@
                                                                                     <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
                                                                                                  firstOption="Please Select"
                                                                                                  options="routeBackValues"
-                                                                                                 value="${selectRollBack}"></iais:select>
+                                                                                                 value="${selectRollBackCr}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
