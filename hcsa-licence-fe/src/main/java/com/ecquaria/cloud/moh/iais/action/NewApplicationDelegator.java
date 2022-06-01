@@ -311,13 +311,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-                HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
-                coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
-                coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-                coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_PREMISES);
-                coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_PREMISES);
-                coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-                ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+                DealSessionUtil.initCoMap(request);
                 //control premises edit
                 handlePremises(appSubmissionDto, appNo);
                 ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);

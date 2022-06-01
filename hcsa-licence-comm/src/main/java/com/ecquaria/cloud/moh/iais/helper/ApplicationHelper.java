@@ -4093,15 +4093,6 @@ public final class ApplicationHelper {
                 .collect(Collectors.toList()));
     }
 
-    public static void clearPremisesMap(HttpServletRequest request) {
-        request.getSession().removeAttribute(HcsaAppConst.LIC_PREMISES_MAP);
-        request.getSession().removeAttribute(HcsaAppConst.APP_PREMISES_MAP);
-        request.getSession().removeAttribute("premisesSelect");
-        request.getSession().removeAttribute("conveyancePremSel");
-        request.getSession().removeAttribute("offSitePremSel");
-        request.getSession().removeAttribute("easMtsPremSel");
-    }
-
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
         log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
         Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);

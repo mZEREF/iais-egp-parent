@@ -208,13 +208,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-            HashMap<String, String> coMap = (HashMap<String, String>) request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-            coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
-            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_PREMISES);
-            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_PREMISES);
-            coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-            ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+            DealSessionUtil.initCoMap(request);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
@@ -1081,7 +1075,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
         if ("undo".equals(crud_action_value)) {
             // Undo All Changes
-            ApplicationHelper.clearPremisesMap(bpc.request);
+            DealSessionUtil.clearPremisesMap(bpc.request);
             return;
         }
         //gen dto
@@ -2240,7 +2234,7 @@ public abstract class AppCommDelegator {
                     ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
                 }
             }
-            ApplicationHelper.clearPremisesMap(bpc.request);
+            DealSessionUtil.clearPremisesMap(bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         String tranSferFlag = appSubmissionDto.getTransferFlag();

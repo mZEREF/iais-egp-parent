@@ -70,6 +70,7 @@ public class DealSessionUtil {
     private static LicCommService getLicCommService() {
         return SpringHelper.getBean(LicCommService.class);
     }
+
     private static OrganizationService getOrganizationService() {
         return SpringHelper.getBean(OrganizationService.class);
     }
@@ -130,13 +131,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.PRIMARY_DOC_CONFIG);
         session.removeAttribute(HcsaAppConst.SVC_DOC_CONFIG);
         session.removeAttribute("app-rfc-tranfer");
-        HashMap<String, String> coMap = new HashMap<>(4);
-        coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
-        coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-        coMap.put(HcsaAppConst.SECTION_DOCUMENT, "");
-        coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
-        coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
-        session.setAttribute(HcsaAppConst.CO_MAP, coMap);
+        initCoMap(false, request);
         //request For Information Loading
         session.removeAttribute(HcsaAppConst.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
@@ -145,7 +140,41 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(HcsaAppConst.PREMISESTYPE);
         // CR: Split RFC Logic
-        ApplicationHelper.clearPremisesMap(request);
+        clearPremisesMap(request);
+    }
+
+    public static void initCoMap(HttpServletRequest request) {
+        initCoMap(true, request);
+    }
+
+    public static void initCoMap(boolean withValue, HttpServletRequest request) {
+        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
+        if (coMap == null) {
+            coMap = IaisCommonUtils.genNewHashMap(5);
+        }
+        if (withValue) {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
+            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
+            coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_DOCUMENT);
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
+        } else {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            coMap.put(HcsaAppConst.SECTION_DOCUMENT, "");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
+        }
+        ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+    }
+
+    public static void clearPremisesMap(HttpServletRequest request) {
+        request.getSession().removeAttribute(HcsaAppConst.LIC_PREMISES_MAP);
+        request.getSession().removeAttribute(HcsaAppConst.APP_PREMISES_MAP);
+        request.getSession().removeAttribute("premisesSelect");
+        request.getSession().removeAttribute("conveyancePremSel");
+        request.getSession().removeAttribute("offSitePremSel");
+        request.getSession().removeAttribute("easMtsPremSel");
     }
 
     public static void initSession(BaseProcessClass bpc) throws CloneNotSupportedException {
