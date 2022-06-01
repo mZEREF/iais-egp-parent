@@ -1582,7 +1582,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             //Check for BE update
             Map<String, String> rslt = checkDataForEditApp(HcsaAppConst.CHECKED_BTN_APR, null,
-                    applicationViewDto.getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
+                    applicationViewDto.getApplicationDto().getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
             if (IaisCommonUtils.isNotEmpty(rslt)) {
                 errMap.put("nextStage", rslt.get(HcsaAppConst.ERROR_APP));
             }
