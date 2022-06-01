@@ -356,7 +356,7 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao1 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
-                        Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                        Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto).getEntity();
                         if (IaisCommonUtils.isNotEmpty(errMap)) {
                             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
                             ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
@@ -394,12 +394,6 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
-                        Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
-                        if (IaisCommonUtils.isNotEmpty(errMap)) {
-                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
-                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
-                            return;
-                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
@@ -437,7 +431,7 @@ public class MohHcsaBeDashboardDelegator {
                     }else{
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                     }
-                    Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                    Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto).getEntity();
                     if (IaisCommonUtils.isNotEmpty(errMap)) {
                         ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
                         ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
