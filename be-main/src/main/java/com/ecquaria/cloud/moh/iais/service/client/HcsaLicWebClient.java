@@ -16,6 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @FeignClient(name = "hcsa-licence-web", configuration = FeignConfiguration.class)
 public interface HcsaLicWebClient {
-    @PostMapping("/hcsa-licence-web/canApproveValidation")
+    @PostMapping("/canApproveValidation")
     FeignResponseEntity<Map<String, String>> validateCanApprove(@RequestBody ApplicationViewDto applicationViewDto);
 }
