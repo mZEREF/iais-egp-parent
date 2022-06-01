@@ -1310,6 +1310,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        result.put(HcsaAppConst.CAN_RFI, AppConsts.YES);
         if (StringUtil.isEmpty(appGrpNo)) {
             // Can't find the related application.
             result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
@@ -1320,6 +1321,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (AppConsts.YES.equals(map.get("isRfi"))) {
             // "There is a related application is in doing RFI, please wait for it."
             result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR014"));
+            result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
         } else  {
             String appGrpStatus = map.get("appGrpStatus");
             if (StringUtil.isIn(appGrpStatus, new String[]{
@@ -1332,12 +1334,14 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
                 result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR015"));
+                result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
                 // "The application can't be edited."
                 result.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
                         "edited", "action"));
             }
         }
+        log.info(StringUtil.changeForLog("Check Application result: " + result));
         return result;
     }
 
