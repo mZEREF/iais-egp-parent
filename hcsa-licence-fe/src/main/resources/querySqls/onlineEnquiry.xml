@@ -6,8 +6,8 @@
         SELECT distinct tt.* from (
         SELECT  dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE,
             case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
-            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+            CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
+                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
@@ -39,8 +39,8 @@
             UNION ALL
             SELECT  dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE,
             case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
-            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+            CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
@@ -85,8 +85,8 @@
         <![CDATA[
            SELECT distinct ajax.* FROM (
                 SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+            CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
+                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
@@ -202,8 +202,8 @@
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
                 SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+            CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
@@ -314,8 +314,8 @@
                 when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-                CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+                CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
+                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
@@ -429,8 +429,8 @@
                 when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-                CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+                CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
@@ -645,8 +645,8 @@
         <![CDATA[
         SELECT distinct tt.* from (
         SELECT  dds.ID ,
-            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+            CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
+                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
@@ -682,8 +682,8 @@
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
             UNION ALL
             SELECT  dds.ID ,
-            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+            CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
@@ -747,8 +747,8 @@
         <![CDATA[
         SELECT distinct tt.* from (
         SELECT  dds2.ID ,dds.SUBMISSION_NO,
-            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+            CONCAT(case lp.BUSINESS_NAME when null then '-,' when '' then '-,' else lp.BUSINESS_NAME + ',' end ,
+                  case p.BLK_NO when null then null else ' '+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
@@ -769,12 +769,12 @@
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dds2lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else dds2lp.BUSINESS_NAME + ', ' end ,
+                  when null then '-,'
+                  when '' then '-,'
+                  else dds2lp.BUSINESS_NAME + ',' end ,
                   case dds2p.BLK_NO
                   when null then null
-                  else ''+dds2p.BLK_NO end ,
+                  else ' '+dds2p.BLK_NO end ,
                case dds2p.STREET_NAME
                   when null then null
                   else ' '+dds2p.STREET_NAME end
@@ -823,8 +823,8 @@
 
             UNION ALL
             SELECT  dds2.ID ,dds.SUBMISSION_NO,
-            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+            CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
@@ -835,12 +835,12 @@
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dcen2.CENTER_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else dcen2.CENTER_NAME + ', ' end ,
+                  when null then '-,'
+                  when '' then '-,'
+                  else dcen2.CENTER_NAME + ',' end ,
                   case dcen2.BLK_NO
                   when null then null
-                  else ''+dcen2.BLK_NO end ,
+                  else ' '+dcen2.BLK_NO end ,
                case dcen2.STREET_NAME
                   when null then null
                   else ' '+dcen2.STREET_NAME end
@@ -886,10 +886,10 @@
             SELECT  ldt.ID,null SUBMISSION_ID,
                    CONCAT(case Prem.HCI_NAME
                   when null then null
-                  else ', '+Prem.HCI_NAME end ,
+                  else Prem.HCI_NAME + ',' end ,
                   case Prem.BLK_NO
                   when null then null
-                  else ''+Prem.BLK_NO end ,
+                  else ' '+Prem.BLK_NO end ,
                case Prem.STREET_NAME
                   when null then null
                   else ' '+Prem.STREET_NAME end
@@ -926,8 +926,8 @@
                 <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
                 UNION ALL
               SELECT  ldt.ID,null SUBMISSION_ID,
-                   CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
-                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+                   CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
