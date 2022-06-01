@@ -650,6 +650,16 @@ public class HcsaApplicationDelegator {
             //request for information
             if (ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(stage)) {
                 nextStage = stage;
+                Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
+                        applicationViewDto.getApplicationGroupDto().getGroupNo());
+                String canEdit = map.get(HcsaAppConst.CAN_RFI);
+                if (AppConsts.NO.equals(canEdit)) {
+                    String appError = map.get(HcsaAppConst.ERROR_APP);
+                    if (StringUtil.isNotEmpty(appError)) {
+                        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
+                        nextStage = "PREPARE";
+                    }
+                }
             }
 
             String reply = ParamUtil.getString(bpc.request, "nextStageReplys");
@@ -4048,7 +4058,10 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
                 || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
-            if (rfiCount == 0) {
+            Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
+                    applicationViewDto.getApplicationGroupDto().getGroupNo());
+            String canEdit = map.get(HcsaAppConst.CAN_RFI);
+            if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
                         "Request For Information"));
             }

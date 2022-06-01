@@ -216,19 +216,6 @@ public class HcsaApplicationAjaxController{
         return map;
     }
 
-    @GetMapping("/check-application")
-    public Map<String, Object> checkApplication(HttpServletRequest request) {
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String appGrpNo = ParamUtil.getMaskedString(request, "appGrpNo");
-        if (StringUtil.isEmpty(appGrpNo)) {
-            map.put("appGrpNoError", "No records Found");
-        } else {
-            // applicationViewService
-            Map<String, String> result = applicationService.checkApplicationByAppGrpNo(appGrpNo);
-        }
-        return map;
-    }
-
     @PostMapping("/canApproveValidation")
     public Map<String, String> validateCanApprove(@RequestBody ApplicationViewDto applicationViewDto) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
