@@ -25,13 +25,13 @@
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
-                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
                                             </li>
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
                                             <li id="facilityDetails" role="presentation">
-                                                <a href="#tabFacilityDetails" id="doFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                                <a href="#tabFacilityDetails" id="doFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Application Recommendations</a>
                                             </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -40,13 +40,13 @@
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
-                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                                    <a href="#tabFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Application Recommendations</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>

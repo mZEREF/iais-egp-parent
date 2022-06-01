@@ -34,7 +34,7 @@
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
                                                 <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab"
-                                                   data-toggle="tab">Info</a>
+                                                   data-toggle="tab">Information</a>
                                             </li>
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
@@ -42,7 +42,7 @@
                                             </li>
                                             <li id="facility" role="presentation">
                                                 <a href="#tabFacility" id="doFacility" aria-controls="tabFacility"
-                                                   role="tab" data-toggle="tab">Facility Details</a>
+                                                   role="tab" data-toggle="tab">Application Recommendations</a>
                                             </li>
                                             <li id="checklist" role="presentation">
                                                 <a href="#tabChecklist" id="doChecklist" aria-controls="tabChecklist"
@@ -57,7 +57,7 @@
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
                                                     <a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                       data-toggle="tab">Info</a>
+                                                       data-toggle="tab">Information</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabFacility" aria-controls="tabFacility" role="tab"
-                                                       data-toggle="tab">Facility Details</a>
+                                                       data-toggle="tab">Application Recommendations</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabChecklist" aria-controls="tabChecklist" role="tab"
