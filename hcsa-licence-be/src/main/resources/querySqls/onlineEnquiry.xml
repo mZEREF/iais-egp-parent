@@ -998,7 +998,7 @@
               else '' end TEST_STATUS
               , ldt.REMARKS ,ldt.LDT_NO
                 FROM ds_laboratory_develop_test ldt
-                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID
+                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID and dds.STATUS not in ('DS002')
                 join ds_cycle dc on dc.ID=dds.CYCLE_ID
                 join premises Prem on Prem.HCI_CODE = dc.HCI_CODE and dc.HCI_CODE not in (select ldt_cen.HCI_CODE from ds_center ldt_cen where ldt_cen.CENTER_TYPE = 'LDT')
                 UNION ALL
@@ -1017,7 +1017,7 @@
               else '' end TEST_STATUS
               , ldt.REMARKS ,ldt.LDT_NO
                 FROM ds_laboratory_develop_test ldt
-                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID
+                join ds_data_submission dds on dds.ID = ldt.SUBMISSION_ID and dds.STATUS not in ('DS002')
                 join ds_cycle dc on dc.ID=dds.CYCLE_ID
                 join ds_center dcen on dcen.HCI_CODE = dc.HCI_CODE and dcen.CENTER_TYPE = 'LDT'
                 ) T1
@@ -1055,7 +1055,7 @@
                 where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
-                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
                 ) T1
             where 1 = 1
             <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
@@ -1089,7 +1089,7 @@
                 where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
-                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE ) and dds.STATUS not in ('DS002')
                 ) T1
             where 1 = 1
             <#if patientIdType??> AND  :patientIdType = T1.PATIENT_ID_TYPE</#if>
@@ -1118,7 +1118,7 @@
              where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
-                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
             <#if birthDateFrom??> AND dvt.PATIENT_BIRTHDAY >= convert(date,:birthDateFrom)</#if>
@@ -1149,7 +1149,7 @@
              where dds.SUBMIT_DT not in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
                 FROM ds_data_submission ddsNew
                 join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
-                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE ) and dds.STATUS not in ('DS002')
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
 
@@ -1204,7 +1204,7 @@
             join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
             join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE='DSCL_005'
             join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
-            where 1 = 1
+            where 1 = 1 and dds.STATUS not in ('DS002')
             <#if patientCode??> AND  :patientCode = dc.PATIENT_CODE</#if>
 
          ]]>
