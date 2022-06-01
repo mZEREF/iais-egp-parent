@@ -88,6 +88,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainC
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicWebClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
@@ -166,6 +167,9 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
+
+    @Autowired
+    private HcsaLicWebClient hcsaLicWebClient;
 
     /**
      * StartStep: hcsaBeDashboardStart
@@ -352,6 +356,12 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao1 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                        if (IaisCommonUtils.isNotEmpty(errMap)) {
+                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                            return;
+                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao1 approve end ...."));
                     }else{
@@ -384,6 +394,12 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                        if (IaisCommonUtils.isNotEmpty(errMap)) {
+                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                            return;
+                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
@@ -420,6 +436,12 @@ public class MohHcsaBeDashboardDelegator {
                         }
                     }else{
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                    }
+                    Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                    if (IaisCommonUtils.isNotEmpty(errMap)) {
+                        ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                        ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                        return;
                     }
                     log.info(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
