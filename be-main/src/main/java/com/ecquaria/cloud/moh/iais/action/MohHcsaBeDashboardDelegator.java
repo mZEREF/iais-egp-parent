@@ -394,7 +394,9 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        log.info(StringUtil.changeForLog("validate can approve start ...."));
                         Map<String,String> errMap = hcsaLicWebClient.validateCanApprove(applicationViewDto);
+                        log.info("validate can approve rslt ....{}", errMap);
                         if (IaisCommonUtils.isNotEmpty(errMap)) {
                             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
                             ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
