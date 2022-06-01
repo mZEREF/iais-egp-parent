@@ -253,6 +253,7 @@
                 $('#commResidenceInSgDate').show();
             } else {
                 $('#commResidenceInSgDate').hide();
+                $('#commResidenceInSgDates').val(null);
             }
         });
         $('#nationality').change(function () {
