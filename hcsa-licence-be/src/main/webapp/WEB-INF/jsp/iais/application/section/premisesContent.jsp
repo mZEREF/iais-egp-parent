@@ -137,7 +137,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <strong class="font-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
+                        <p class="app-title">Mode of Service Delivery ${status.index+1}</p>
                     </div>
                     <div class="col-xs-12 col-md-4 text-right">
                         <c:choose>

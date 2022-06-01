@@ -9,7 +9,7 @@
 <div class="form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
-            <strong class="font-22 premHeader">Licensee Details</strong>
+            <p class="app-title">Licensee Details</p>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">

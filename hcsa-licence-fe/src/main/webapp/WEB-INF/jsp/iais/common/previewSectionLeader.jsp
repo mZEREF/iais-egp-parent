@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="amended-service-info-gp">
-    <label class="svc-title">${currStepName}</label>
+    <label class="app-title">${currStepName}</label>
     <div class="amend-preview-info">
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
 

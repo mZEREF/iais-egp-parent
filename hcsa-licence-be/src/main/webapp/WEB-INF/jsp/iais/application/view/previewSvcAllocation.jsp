@@ -7,7 +7,7 @@
 </c:forEach>
 <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <div class="amended-service-info-gp">
-    <label class="svc-title">${currStepName}</label>
+    <label class="app-title">${currStepName}</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

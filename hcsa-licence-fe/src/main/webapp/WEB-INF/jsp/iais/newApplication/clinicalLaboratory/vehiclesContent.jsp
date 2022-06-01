@@ -41,7 +41,7 @@
             <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
 
             <div class="col-md-12 col-xs-12">
-                <p class="svc-title"></p>
+                <p class="app-title"></p>
             </div>
             <br/>
             <iais:row>
