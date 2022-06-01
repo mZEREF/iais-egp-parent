@@ -15,7 +15,7 @@
         <div class="row control control-caption-horizontal">
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
-                    <div class="svc-title">
+                    <div class="app-title">
                         <c:out value="${currStepName}"/>
                     </div>
                 </label>

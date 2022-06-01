@@ -25,7 +25,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <p class="svc-title">Key Appointment Holder</p>
+        <p class="app-title">Key Appointment Holder</p>
         <hr>
         <p><iais:message key="NEW_ACK029"/></p>
         <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>

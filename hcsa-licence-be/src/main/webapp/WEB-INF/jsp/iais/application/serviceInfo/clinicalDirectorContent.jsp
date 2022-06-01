@@ -51,7 +51,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <p class="svc-title"><c:out value="${currStepName}"/></p>
+                        <p class="app-title"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>

@@ -28,7 +28,7 @@
             <div class="panel-main-content form-horizontal min-row">
                 <iais:row>
                     <iais:value width="10">
-                        <p class="svc-title">Licensee Details</p>
+                        <p class="app-title">Licensee Details</p>
                     </iais:value>
                 </iais:row>
                 <c:if test="${subLicenseeDto.licenseeType ne soloType}">

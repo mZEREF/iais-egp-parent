@@ -9,7 +9,7 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
     <div class="col-xs-12">
-        <p class="svc-title">MedAlert Person</p>
+        <p class="app-title">MedAlert Person</p>
         <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
         <hr>
         <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>

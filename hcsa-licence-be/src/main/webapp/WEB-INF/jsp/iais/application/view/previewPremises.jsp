@@ -27,7 +27,7 @@
                        varStatus="status">
                 <div class="panel-main-content amend-preview-info">
                     <div class="row col-xs-12">
-                        <p class="svc-title">Mode of Service Delivery ${status.index+1}</p>
+                        <p class="app-title premHeader">Mode of Service Delivery ${status.index+1}</p>
                     </div>
                     <div class="preview-info">
                         <div class="row">
