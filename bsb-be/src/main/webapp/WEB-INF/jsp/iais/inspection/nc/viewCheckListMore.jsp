@@ -31,25 +31,26 @@
                         <div class="tab-content">
                         </div>
                         <div class="tab-pane " id="tabPayment" role="tabpanel">
-                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="complete active" role="presentation" onclick="javascript:doChangeTab('ServiceInfo')"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
-                                                                            data-toggle="tab"><c:out value="BSB Regulations"/></a></li>
-                            </ul>
+<%--                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">--%>
+<%--                                <li class="complete active" role="presentation" onclick="javascript:doChangeTab('ServiceInfo')"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"--%>
+<%--                                                                            data-toggle="tab"><c:out value="BSB Regulations"/></a></li>--%>
+<%--                            </ul>--%>
 
-                            <div class="tab-nav-mobile visible-xs visible-sm">
-                                <div class="swiper-wrapper" role="tablist">
-                                    <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab">ServiceInfo</a></div>
-                                    <div class="swiper-slide"><a href="#chkInfo" aria-controls="chkInfo" role="tab" data-toggle="tab">chkInfo</a></div>
-                                </div>
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
-                            </div>
-                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
+<%--                            <div class="tab-nav-mobile visible-xs visible-sm">--%>
+<%--                                <div class="swiper-wrapper" role="tablist">--%>
+<%--                                    <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab">ServiceInfo</a></div>--%>
+<%--                                    <div class="swiper-slide"><a href="#chkInfo" aria-controls="chkInfo" role="tab" data-toggle="tab">chkInfo</a></div>--%>
+<%--                                </div>--%>
+<%--                                <div class="swiper-button-prev"></div>--%>
+<%--                                <div class="swiper-button-next"></div>--%>
+<%--                            </div>--%>
+<%--                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>--%>
+                            <h2>BATA Inspection</h2>
                             <div class="tab-content">
                                 <div class="tab-pane ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" id="General" role="tabpanel">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/><br>
-                                    <span><strong>General</strong></span>
+<%--                                    <span><strong>General</strong></span>--%>
                                     <%@ include file="TabsForMoreIns.jsp" %>
                                     <%@ include file="common/combined.jsp" %>
                                     <%@ include file="inspChecklist.jsp" %>

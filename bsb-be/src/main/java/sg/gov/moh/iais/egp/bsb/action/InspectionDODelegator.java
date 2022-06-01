@@ -115,12 +115,19 @@ public class InspectionDODelegator {
     private final InternalDocClient internalDocClient;
     private final OrganizationClient organizationClient;
     private final InspectionService inspectionService;
-    private static final String SERLISTDTO="serListDto";
 
+    private static final String SERLISTDTO="serListDto";
 
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String ADHOC_DTO = "adchklDto";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
+
+    private static final String NOW_TAB_IN = "nowTabIn";
+    private static final String NOW_COM_TAB_IN = "nowComTabIn";
+    private static final String TAB_COMBINED = "Combined";
+    private static final String CHK_LIST = "chkList";
+    private static final String CHECK_LIST_DATA = "checklistData";
+    private static final String GENERAL_ERR0006 = "GENERAL_ERR0006";
 
     @Autowired
     public InspectionDODelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient, OrganizationClient organizationClient, InspectionService inspectionService) {
@@ -177,6 +184,7 @@ public class InspectionDODelegator {
         //get  commonDto draft
         List<String> ids=IaisCommonUtils.genNewArrayList();
         List<TaskAssignDto> taskAssignDtoList=inspectionClient.getOfficerTaskList("/bsb-web/eservice/INTRANET/MohBsbInspectionDO",appId).getBody();
+        assert taskAssignDtoList != null;
         for (TaskAssignDto ta:taskAssignDtoList) {
             ids.add(ta.getUserId());
         }
@@ -210,8 +218,7 @@ public class InspectionDODelegator {
                                             && inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())) {
                                         if(combinedChecklistDto!=null){
                                             List<ChklstItemAnswerDto> answerDtoCombineds=combinedChecklistDto.getAnswer();
-                                            for (ChklstItemAnswerDto combined:answerDtoCombineds
-                                                 ) {
+                                            for (ChklstItemAnswerDto combined : answerDtoCombineds) {
                                                 if(combined.equals(answer)){
                                                     inspectionCheckQuestionDto.setSameAnswer(false);
                                                     inspectionCheckQuestionDto.setDeconflict(officer.getId());
@@ -219,7 +226,11 @@ public class InspectionDODelegator {
                                             }
                                         }
                                         answerForDifDto.setAnswer(answer.getAnswer());
-                                        answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
+                                        if (answer.getRectified().equals(Boolean.TRUE)) {
+                                            answerForDifDto.setIsRec("1");
+                                        } else {
+                                            answerForDifDto.setIsRec("0");
+                                        }
                                         answerForDifDto.setNcs(answer.getFindings());
                                         answerForDifDto.setRemark(answer.getActionRequired());
                                         answerForDifDto.setSameAnswer(false);
@@ -255,7 +266,11 @@ public class InspectionDODelegator {
                                             }
                                         }
                                         answerForDifDto.setAnswer(answer.getAnswer());
-                                        answerForDifDto.setIsRec(answer.getRectified() ? "1" : "0");
+                                        if (answer.getRectified().equals(Boolean.TRUE)) {
+                                            answerForDifDto.setIsRec("1");
+                                        } else {
+                                            answerForDifDto.setIsRec("0");
+                                        }
                                         answerForDifDto.setNcs(answer.getFindings());
                                         answerForDifDto.setRemark(answer.getActionRequired());
                                         answerForDifDto.setSameAnswer(false);
@@ -293,7 +308,7 @@ public class InspectionDODelegator {
     }
 
     public void preChecklist(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "nowTabIn",  "Combined");
+        ParamUtil.setRequestAttr(bpc.request, NOW_TAB_IN,  TAB_COMBINED);
         String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
         setCheckListUnFinishedTask(bpc.request,appId);
         // do nothing now
@@ -302,10 +317,10 @@ public class InspectionDODelegator {
     public void changeTab(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         log.info("----------changeTab --");
-        String nowTabIn = ParamUtil.getString(request,"nowTabIn");
-        ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
-        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
-        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+        String nowTabIn = ParamUtil.getString(request,NOW_TAB_IN);
+        ParamUtil.setRequestAttr(request, NOW_TAB_IN,  nowTabIn);
+        String nowComTabIn = ParamUtil.getString(request,NOW_COM_TAB_IN);
+        ParamUtil.setRequestAttr(request, NOW_COM_TAB_IN,  nowComTabIn);
         changeDataForCheckList(request);
     }
     public void changeDataForCheckList(HttpServletRequest request){
@@ -441,8 +456,8 @@ public class InspectionDODelegator {
         InspectionFillCheckListDto comDto = serListDto.getFdtoList().get(0);
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
         Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
-        List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
-        if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
+        if(comDto != null && comDto.getCheckList()!=null && !comDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
                 List<BsbAnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
                 for(BsbAnswerForDifDto answerForDifDto : answerForDifDtos){
@@ -475,17 +490,16 @@ public class InspectionDODelegator {
         InspectionChecklistDto checklistDto= null;
 
         List<InspectionChecklistDto> checklistDtoList= (List<InspectionChecklistDto>) ParamUtil.getSessionAttr(request,KEY_INS_CHECKLIST_DTO);
-        if(checklistDtoList!=null){
-            for (InspectionChecklistDto cklDto:checklistDtoList
-                 ) {
-                if(cklDto.getUserId().equals(userId)){
-                    checklistDto=cklDto;
+        if (checklistDtoList != null) {
+            for (InspectionChecklistDto cklDto : checklistDtoList) {
+                if (cklDto.getUserId().equals(userId)) {
+                    checklistDto = cklDto;
                     checklistDto.setAnswer(answerDtos);
                 }
             }
         }
-        if(checklistDto==null){
-            checklistDto=new InspectionChecklistDto();
+        if (checklistDto == null) {
+            checklistDto = new InspectionChecklistDto();
             checklistDto.setApplicationId(serListDto.getFdtoList().get(0).getCheckList().get(0).getAppPreCorreId());
             checklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             checklistDto.setUserId(userId);
@@ -493,22 +507,21 @@ public class InspectionDODelegator {
             checklistDto.setChkLstConfigId(serListDto.getFdtoList().get(0).getConfigId());
             checklistDto.setAnswer(answerDtos);
         }
-        ParamUtil.setRequestAttr(request, "nowTabIn",  "Combined");
+        ParamUtil.setRequestAttr(request, NOW_TAB_IN,  TAB_COMBINED);
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            serListDto.setCheckListTab("chkList");
-            ParamUtil.setRequestAttr(request, "nowTabIn",  userId);
-            String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
-            ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+            serListDto.setCheckListTab(CHK_LIST);
+            ParamUtil.setRequestAttr(request, NOW_TAB_IN,  userId);
+            String nowComTabIn = ParamUtil.getString(request,NOW_COM_TAB_IN);
+            ParamUtil.setRequestAttr(request, NOW_COM_TAB_IN,  nowComTabIn);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
 
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             inspectionClient.saveChkListDraft(checklistDto);
         }
         ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
-        // do nothing now
     }
 
     public void validateAndSaveChecklist(BaseProcessClass bpc) {
@@ -523,7 +536,7 @@ public class InspectionDODelegator {
         Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
         Map<String, String> errMapCombined =IaisCommonUtils.genNewHashMap();
         ArrayList<ChklstItemAnswerDto> answerDtoList=IaisCommonUtils.genNewArrayList();
-        if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
+        if(comDto != null && comDto.getCheckList() != null && !comDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
 
             if(!IaisCommonUtils.isEmpty(checkList)){
@@ -549,15 +562,14 @@ public class InspectionDODelegator {
                         answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
                         answerDtoList.add(answerDto);
                     }else {
-                        errMapCombined.put(StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"com",MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                        errMapCombined.put(StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"com",MessageUtil.getMessageDesc(GENERAL_ERR0006));
                     }
                 }
 
             }
         }
         if(adhocConf!=null&&IaisCommonUtils.isNotEmpty(adhocConf.getAdItemList())){
-            for (BsbAdhocNcCheckItemDto adItem:adhocConf.getAdItemList()
-                 ) {
+            for (BsbAdhocNcCheckItemDto adItem : adhocConf.getAdItemList()) {
                 String adhocDeconflict=ParamUtil.getRequestString(request,adItem.getId()+"adhocDeconflict");
                 if(adhocDeconflict!=null){
                     adItem.setSameAnswer(false);
@@ -577,7 +589,7 @@ public class InspectionDODelegator {
                     answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
                     answerDtoList.add(answerDto);
                 }else {
-                    errMapCombined.put(adItem.getId()+"adhoc",MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                    errMapCombined.put(adItem.getId()+"adhoc",MessageUtil.getMessageDesc(GENERAL_ERR0006));
 
                 }
 
@@ -601,18 +613,18 @@ public class InspectionDODelegator {
         inspectionChecklistDto.setAnswer( answerDtoList);
 
 
-        ParamUtil.setRequestAttr(request, "nowTabIn",  "Combined");
+        ParamUtil.setRequestAttr(request, NOW_TAB_IN,  TAB_COMBINED);
         if("next".equalsIgnoreCase(doSubmitAction)) {
 
             if (!errMap.isEmpty()) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                serListDto.setCheckListTab("chkList");
-                ParamUtil.setRequestAttr(request, "nowTabIn",  userId);
-                String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
-                ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+                serListDto.setCheckListTab(CHK_LIST);
+                ParamUtil.setRequestAttr(request, NOW_TAB_IN,  userId);
+                String nowComTabIn = ParamUtil.getString(request,NOW_COM_TAB_IN);
+                ParamUtil.setRequestAttr(request, NOW_COM_TAB_IN,  nowComTabIn);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
-                serListDto.setCheckListTab("chkList");
+                serListDto.setCheckListTab(CHK_LIST);
                 if(errMapCombined.isEmpty()){
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                     inspectionClient.saveCombinedChkList(inspectionChecklistDto);
@@ -621,13 +633,12 @@ public class InspectionDODelegator {
                 }
             }
         }else {
-            serListDto.setCheckListTab("chkList");
+            serListDto.setCheckListTab(CHK_LIST);
 
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
 
         ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
-        // do nothing now
     }
 
     public void saveInsFinding(BaseProcessClass bpc) {
@@ -712,11 +723,11 @@ public class InspectionDODelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         NewDocInfo fileInfo = getFileInfo(request);
         if (fileInfo == null) {
-            errorMap.put("checklistData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            errorMap.put(CHECK_LIST_DATA, MessageUtil.getMessageDesc(GENERAL_ERR0006));
         } else if (fileInfo.getSize() == 0) {
-            errorMap.put("checklistData", "Could not parse file content.");
+            errorMap.put(CHECK_LIST_DATA, "Could not parse file content.");
         }  else if (!FileUtils.isExcel(fileInfo.getFilename())) {
-            errorMap.put("checklistData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
+            errorMap.put(CHECK_LIST_DATA, MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
             List<ChklstItemAnswerDto> bsbData = result.get(InspectionConstants.SHEET_NAME_BSB);
@@ -727,7 +738,7 @@ public class InspectionDODelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put("checklistData", "Could not parse file content. Please download new template to do this.");
+                errorMap.put(CHECK_LIST_DATA, "Could not parse file content. Please download new template to do this.");
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {
@@ -777,7 +788,7 @@ public class InspectionDODelegator {
      * @param bpc
      */
     public void addAdhoc(BaseProcessClass bpc) {
-
+        //do nothing now
     }
 
     /**
@@ -819,14 +830,14 @@ public class InspectionDODelegator {
             File file = fileInfo.getFile();
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, null, false);
             Map<String, List<InsChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
-            if (data != null && !data.isEmpty()) {
+            if (!data.isEmpty()) {
                 for (Map.Entry<String, List<InsChklItemExcelDto>> entry : data.entrySet()) {
                     List<ChklstItemAnswerDto> collect = entry.getValue().stream()
-                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()) && !StringUtil.isEmpty(dto.getChecklistItem()))
+                            .filter(dto -> !StringUtils.isEmpty(dto.getSnNo()) && !StringUtils.isEmpty(dto.getChecklistItem()))
                             .map(dto -> {
                                 ChklstItemAnswerDto answerDto = MiscUtil.transferEntityDto(dto, ChklstItemAnswerDto.class);
                                 String itemKey = dto.getItemKey();
-                                if (StringUtil.isEmpty(itemKey)) {
+                                if (StringUtils.isEmpty(itemKey)) {
                                     return new ChklstItemAnswerDto();
                                 }
                                 String[] keys = itemKey.split(KEY_SEPARATOR);
@@ -910,7 +921,7 @@ public class InspectionDODelegator {
             List<ChklstItemAnswerDto> answerDtoList = checklistDto.getAnswer();
             if (answerDtoList != null) {
                 answerMap = answerDtoList.stream()
-                        .collect(Collectors.toMap((t) -> new StringBuilder()
+                        .collect(Collectors.toMap(t -> new StringBuilder()
                                 .append(t.getConfigId())
                                 .append(KEY_SEPARATOR)
                                 .append(t.getSectionId())
