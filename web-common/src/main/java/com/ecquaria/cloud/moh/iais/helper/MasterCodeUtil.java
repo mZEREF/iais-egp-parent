@@ -265,6 +265,10 @@ public final class MasterCodeUtil {
 
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 
+    // Data Submission Id Type(dp,top,vs)
+    public static final String CATE_ID_DS_ID_TYPE_DTV ="7CAE7440-31F4-445F-A063-2351E9483175";
+
+
     /**
      * @description: refresh the master codes into cache
      *
