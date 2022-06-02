@@ -144,6 +144,10 @@ public final class ApplicationHelper {
         return NAME_MAP.get(personType);
     }
 
+    public static LoginContext getLoginContext() {
+        return (LoginContext) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(), AppConsts.SESSION_ATTR_LOGIN_USER);
+    }
+
     public static LoginContext getLoginContext(HttpServletRequest request) {
         return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
     }
