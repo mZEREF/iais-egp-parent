@@ -537,7 +537,7 @@ public abstract class AppCommDelegator {
                     appSubmissionDto.getLicenceNo());
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_LICENSEE);
-            bpc.request.setAttribute("errormapIs", "error");
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
             bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
@@ -1149,7 +1149,7 @@ public abstract class AppCommDelegator {
                             appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
-                    bpc.request.setAttribute("errormapIs", "error");
+                    ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
                 }
                 coMap.put(HcsaAppConst.SECTION_PREMISES, "");
             } else {
@@ -1267,7 +1267,7 @@ public abstract class AppCommDelegator {
         String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
-            bpc.request.setAttribute("errormapIs", "error");
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
             AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
                     appSubmissionDto.getLicenceNo());
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

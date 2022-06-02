@@ -329,7 +329,7 @@ public class ServiceInfoDelegator {
         if (errorMap == null || errorMap.isEmpty()) {
             return true;
         }
-        request.setAttribute("errormapIs", "error");
+        ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
         AppValidatorHelper.setAudiErrMap(ApplicationHelper.checkIsRfi(request), appSubmissionDto.getAppType(),
                 errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

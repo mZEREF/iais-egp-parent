@@ -566,7 +566,7 @@ public class RequestForChangeMenuDelegator {
             if (!StringUtil.isEmpty(hciNameUsed)) {
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
-            bpc.request.setAttribute("errormapIs", "error");
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;

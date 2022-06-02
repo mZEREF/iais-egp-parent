@@ -148,13 +148,13 @@
 
     function editContent() {
         $('#isEditHiddenVal').val('1');
-        <c:if test="${isNewApp && not empty dto.licenseeType}">
+        <c:if test="${isNewApp}">
         unDisableContent('div.assignSelectRow');
         unDisableContent('div.licenseeType');
         unDisableContent('div.licensee-detail');
         $('.retrieveAddr').removeClass('hidden');
         </c:if>
-        <c:if test="${!isNewApp && not empty dto.licenseeType}">
+        <c:if test="${!isNewApp}">
         unDisableContent('div.licensee-detail');
         $('.retrieveAddr').removeClass('hidden');
         disableContent('div.ind-no');
