@@ -138,7 +138,14 @@
         $(function(){
             var $appErrorMdl = $('#appErrorMdl');
             if ($appErrorMdl.length > 0) {
-                $appErrorMdl.modal('show');
+                var $newMdl = $appErrorMdl.clone(false);
+                var $parent = $appErrorMdl.closest('form');
+                $appErrorMdl.remove();
+                $parent.append($newMdl);
+                $newMdl.modal('show');
+                $('button', $newMdl).on('click', function () {
+                    $('#appErrorMdl').modal('hide');
+                });
             }
         });
         function doOpenApp() {
