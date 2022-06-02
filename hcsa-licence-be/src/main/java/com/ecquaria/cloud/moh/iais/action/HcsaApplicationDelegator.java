@@ -4215,18 +4215,21 @@ public class HcsaApplicationDelegator {
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
-                if(!userId.equals(loginContext.getLoginId())&&!displayName.equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)&&!displayName.equals(RoleConsts.USER_ROLE_BROADCAST)){
+                if(StringUtil.isNotEmpty(displayName)&&StringUtil.isNotEmpty(userId)&&StringUtil.isNotEmpty(wrkGrpId)){
                     OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-                    if(user != null&&user.getUserRoles().contains(displayName)) {
-                        String actionBy = user.getDisplayName();
-                        if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
-                            rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                            String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                            SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
-                            rollBackStage.add(selectOption);
+                    if(!userId.equals(loginContext.getLoginId())&&!displayName.equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)&&!displayName.equals(RoleConsts.USER_ROLE_BROADCAST)){
+                        if(user != null&&user.getUserRoles().contains(displayName)) {
+                            String actionBy = user.getDisplayName();
+                            if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
+                                rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                                String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                                SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                                rollBackStage.add(selectOption);
+                            }
                         }
                     }
                 }
+
 
             }
         } else {
