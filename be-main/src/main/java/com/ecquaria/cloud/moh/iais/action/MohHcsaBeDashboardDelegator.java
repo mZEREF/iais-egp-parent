@@ -401,6 +401,7 @@ public class MohHcsaBeDashboardDelegator {
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                         Map<String,String> errMap = validateCanApprove(applicationViewDto);
+                        log.info("AO2 approve validation rslt ==> {}", errMap);
                         if (IaisCommonUtils.isNotEmpty(errMap)) {
                             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
                             ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
