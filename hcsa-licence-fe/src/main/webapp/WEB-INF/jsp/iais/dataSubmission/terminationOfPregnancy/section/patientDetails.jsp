@@ -17,7 +17,7 @@
                            <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
                            <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                            <iais:value width="3" cssClass="col-md-3">
-                               <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                               <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                             value="${patientInformationDto.idType}" onchange="clearSelection()" cssClass="idType"/>
                            </iais:value>
                            <iais:value width="4" cssClass="col-md-4" style="width: 180px;">
@@ -123,7 +123,7 @@
                        <iais:row>
                            <iais:field width="5" value="Other Occupation" mandatory="true"/>
                            <iais:value width="7" cssClass="col-md-7">
-                               <iais:input maxLength="20" type="text" id="otherOccupation" name="otherOccupation"
+                               <iais:input maxLength="66" type="text" id="otherOccupation" name="otherOccupation"
                                            value="${patientInformationDto.otherOccupation}"/>
                                <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
                            </iais:value>
@@ -264,7 +264,7 @@
                 $('#residenceStatus').hide();
                 $('#commResidenceInSgDate').hide();
                 fillValue($('#residenceStatus'),null);
-                $('#commResidenceInSgDate').val(null);
+                $('#commResidenceInSgDates').val(null);
             }
         });
     });
@@ -342,6 +342,23 @@
         }
         if(data.selection.nationality == "NAT0001"){
             $('#residenceStatus').hide();
+            fillValue($('#residenceStatus'),null);
+            if(data.selection.residenceStatus != "TOPRS005"){
+                $('#commResidenceInSgDate').hide();
+                $('#commResidenceInSgDates').val(null);
+            }
+        }
+        if(data.selection.ethnicGroup != "ECGP004"){
+            $('#otherEthnicGroups').hide();
+            $('#otherEthnicGroup').val(null);
+        }
+        if(data.selection.activityStatus != "TOPAS001"){
+            $('#occupations').hide();
+            fillValue($('#occupations'),null);
+            if(data.selection.occupation != "TOPOCC011"){
+                $('#otherOccupations').hide();
+                $('#otherOccupation').val(null);
+            }
         }
         fillValue($('#ethnicGroups'),data.selection.ethnicGroup);
         if(!isEmpty(data.selection.otherEthnicGroup)){

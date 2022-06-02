@@ -967,7 +967,7 @@ public class TopDataSubmissionDelegator {
         return topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
     protected boolean isOthers(String others){
-        return StringUtil.isIn(others,DataSubmissionConsts.REASON_FOR_TOP_AMENDMENT_OTHERS);
+        return StringUtil.isIn(others,DataSubmissionConsts.REASON_FOR_TOP_AMEND_OTHERS);
     }
 
     private void sendNotification(String applicantName, String TOPId, String licenseeId, String dateStr) throws IOException, TemplateException {

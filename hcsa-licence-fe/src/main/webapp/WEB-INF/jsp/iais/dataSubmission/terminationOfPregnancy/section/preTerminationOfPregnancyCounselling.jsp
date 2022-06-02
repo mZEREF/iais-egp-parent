@@ -123,7 +123,7 @@
                 <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
                 <iais:field width="5" id="counsellorIdTypeLabel" value="Counsellor ID Type" mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
+                    <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdType"></span>
                 </iais:value>
             </iais:row>
@@ -131,7 +131,7 @@
                 <%--<c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="counsellor"/></c:set>--%>
                 <iais:field width="5" id="counsellorIdNoLabel" value="Counsellor ID No." mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${preTerminationDto.counsellorIdNo}"/>
+                    <iais:input maxLength="100" type="text" name="counsellorIdNo" value="${preTerminationDto.counsellorIdNo}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
                 </iais:value>
             </iais:row>
@@ -142,7 +142,7 @@
                     </span>
                 </label>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="100" type="text" name="counsellorName" value="${preTerminationDto.counsellorName}"/>
+                    <iais:input maxLength="66" type="text" name="counsellorName" value="${preTerminationDto.counsellorName}"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
                 </iais:value>
             </iais:row>
@@ -173,7 +173,7 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">Result of First Counselling
+                <label class="col-xs-5 col-md-4 control-label">Result of Counselling
                     <span id="counsellingResult" class="mandatory">
                         <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
                     </span>

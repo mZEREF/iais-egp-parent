@@ -258,8 +258,7 @@
     <div id="takenOwnLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <div id="topDrugPlace" <c:if test="${terminationDto.takenOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topDrugPlace">
-                <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
-                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true" info="${toolMsg}"/>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
                     ${'unknown'}
                 </iais:value>
@@ -267,8 +266,7 @@
         </div>
         <div id="topDrugPlaces" <c:if test="${terminationDto.takenOwn == null || terminationDto.takenOwn == true}">style="display: none"</c:if>>
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
-                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true" info="${toolMsg}"/>
+                <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.topDrugPlace}"
                                  cssClass="topDrugPlace"/>
@@ -333,30 +331,30 @@
         </div>
     <div id="doctorInformationText" <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Doctor's Name" mandatory="true"/>
+            <iais:field width="5" value="Name of Doctor" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="16" type="text" name="dName" value="${doctorInformationDto.name}" />
+                <iais:input maxLength="66" type="text" name="dName" value="${doctorInformationDto.name}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="16" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                <iais:input maxLength="100" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="16" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                <iais:input maxLength="100" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Qualification" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="16" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                <iais:input maxLength="100" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
             </iais:value>
         </iais:row>

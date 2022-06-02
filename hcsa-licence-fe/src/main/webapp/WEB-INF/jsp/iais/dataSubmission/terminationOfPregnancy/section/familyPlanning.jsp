@@ -128,7 +128,7 @@
         <iais:row>
             <iais:field width="5" value="Other Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
+                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -145,7 +145,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
+                <iais:input maxLength="66" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
             </iais:value>
         </iais:row>
     </div>

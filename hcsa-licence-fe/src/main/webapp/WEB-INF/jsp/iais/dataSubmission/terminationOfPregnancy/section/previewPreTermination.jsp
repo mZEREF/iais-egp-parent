@@ -89,7 +89,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Result of First Counselling" />
+                        <iais:field width="5" value="Result of Counselling" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${preTerminationDto.counsellingResult}"/>
                         </iais:value>
