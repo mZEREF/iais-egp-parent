@@ -236,6 +236,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             }catch (Exception e){
                 log.info(e.getMessage(),e);
             }
+            String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
+            String aoUserId = null;
             AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
             appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY);
             appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -260,7 +262,14 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
-            taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
+            if (!StringUtil.isEmpty(ao1Sel)) {
+                aoUserId = ao1Sel.replaceAll(taskDto1.getWkGrpId() + "_", "");
+            }
+            if (StringUtil.isEmpty(aoUserId)) {
+                taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
+            } else {
+                taskDto1.setUserId(aoUserId);
+            }
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,applicationViewDto.getApplicationDto());
             taskService.createTasks(taskDtos);
             taskDto1.setWkGrpId(taskDto.getWkGrpId());
