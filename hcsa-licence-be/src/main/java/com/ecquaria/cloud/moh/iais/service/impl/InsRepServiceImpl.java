@@ -771,11 +771,10 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks, String newCorrelationId) throws Exception {
+    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks, String newCorrelationId, String aoId) throws Exception {
         String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
-        final String userId = taskDto.getUserId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
@@ -798,9 +797,9 @@ public class InsRepServiceImpl implements InsRepService {
                 HcsaConsts.ROUTING_STAGE_AO2, RoleConsts.USER_ROLE_AO2, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-        if (!StringUtil.isEmpty(userId)) {
+        if (!StringUtil.isEmpty(aoId)) {
             taskDtos.forEach(t -> {
-                t.setUserId(userId);
+                t.setUserId(aoId);
             });
         }
         createHistoryList(appPremisesRoutingHistoryDtos);
@@ -1302,10 +1301,12 @@ public class InsRepServiceImpl implements InsRepService {
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         String schemeType = dto.getSchemeType();
         String groupId = dto.getGroupId();
-        if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
-            TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-            if (taskDto1 != null) {
-                userId = taskDto1.getUserId();
+        if (TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
+            if (StringUtil.isEmpty(userId)) {
+                TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
+                if (taskDto1 != null) {
+                    userId = taskDto1.getUserId();
+                }
             }
             if (StringUtil.isEmpty(userId)) {
                 List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
@@ -1316,11 +1317,19 @@ public class InsRepServiceImpl implements InsRepService {
             }
             taskDto.setUserId(userId);
             taskDto.setTaskType(TaskConsts.TASK_TYPE_MAIN_FLOW);
-        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
-            taskDto.setUserId(null);
+        } else if (TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
+            if (StringUtil.isEmpty(userId)) {
+                taskDto.setUserId(null);
+            } else {
+                taskDto.setUserId(userId);
+            }
             taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
-            taskDto.setUserId(null);
+        } else if (TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
+            if (StringUtil.isEmpty(userId)) {
+                taskDto.setUserId(null);
+            } else {
+                taskDto.setUserId(userId);
+            }
             taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         }
         taskDto.setId(null);
