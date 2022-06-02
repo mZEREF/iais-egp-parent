@@ -155,9 +155,10 @@ public class InsReportAoDelegator  {
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
+        String aoId = null;
         if (!StringUtil.isEmpty(ao1Sel)) {
             String[] ao1SelStrs = ao1Sel.split("_");
-            taskDto.setUserId(ao1SelStrs[ao1SelStrs.length - 1]);
+            aoId = ao1SelStrs[ao1SelStrs.length - 1];
         }
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
@@ -177,7 +178,7 @@ public class InsReportAoDelegator  {
             ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,SystemAdminBaseConstants.YES);
             return;
         }
-        insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks,newCorrelationId);
+        insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks,newCorrelationId,aoId);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }

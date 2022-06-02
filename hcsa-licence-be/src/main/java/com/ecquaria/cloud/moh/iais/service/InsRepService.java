@@ -34,7 +34,7 @@ public interface InsRepService {
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
     String  getRobackUserId(String appId,String stageId);
     void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto, String ao1Id) throws Exception;
-    void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks,String newCorrelationId) throws Exception;
+    void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks,String newCorrelationId, String aoId) throws Exception;
     void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws Exception;
     void routTaskToRoutBack(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception;
     void routTaskToRoutBackAo3(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks,boolean aolRole);
