@@ -210,11 +210,11 @@ public class InspectionPreDelegator {
         }
         // show edit application
         boolean showBtn = true;
-        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "nextStages");
+        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "processDecOption");
         if (nextStageList != null) {
             showBtn = nextStageList.stream()
                     .map(SelectOption::getValue)
-                    .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
+                    .anyMatch(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION::equals);
         }
         ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
                 && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
