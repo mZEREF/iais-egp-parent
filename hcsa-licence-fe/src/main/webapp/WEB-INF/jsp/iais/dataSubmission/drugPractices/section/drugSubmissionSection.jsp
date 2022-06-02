@@ -21,7 +21,7 @@
                 <iais:row>
                     <iais:field width="5" value="Patient's ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${drugSubmission.idType}"
+                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
                                      cssClass="idTypeSel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-4">
@@ -118,7 +118,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other-Qualification" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="50" type="text" id ="otherQualification" name="otherQualification"
+                        <iais:input maxLength="66" type="text" id ="otherQualification" name="otherQualification"
                                     value="${drugSubmission.otherQualification}" />
                     </iais:value>
                 </iais:row>
@@ -350,6 +350,7 @@
     }
 
     function changeStrength(){
+        var drugtype= $('#drugType option:selected').val();
         var medication= $('#medication').val();
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
@@ -357,9 +358,11 @@
             $('#nurse').show();
         }else if('MED002' == medication){
             $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
-            $('#urineTest').show();
             $('#nurse').hide();
-        }else{
+        }else if('MED002' == medicationa && 'DPD002' == drugtype){
+            $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+            $('#urineTest').show();
+        } else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
             $('#nurse').hide();

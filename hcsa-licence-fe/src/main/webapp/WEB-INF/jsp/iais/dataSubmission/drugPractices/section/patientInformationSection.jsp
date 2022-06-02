@@ -15,7 +15,7 @@
                 <iais:row>
                     <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" onchange ="toggleSelect(this, 'AR_IT_004', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                        <iais:select name="idType" onchange ="toggleSelect(this, 'DTV_IT_001', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                      value="${patientDto.idType}" cssClass="idTypeSel"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
@@ -27,7 +27,7 @@
                     <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">Nationality
                         <span id="nationalityStar" class="mandatory">
-                                <c:if test="${patientDto.idType =='AR_IT_004'}">*</c:if>
+                                <c:if test="${patientDto.idType =='DTV_IT_001'}">*</c:if>
                         </span>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
@@ -154,7 +154,7 @@
                 <iais:row>
                     <iais:field value="Mobile No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input  type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
+                        <iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
                         <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
                                name="mobileNo" value="${patientDto.mobileNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
@@ -164,7 +164,7 @@
                 <iais:row>
                     <iais:field value="Home Telephone No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input  type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <iais:input   maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
                         <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
                                name="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_homeTelNo"></span>
@@ -173,7 +173,7 @@
                 <iais:row>
                     <iais:field value="Email Address"  width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input type="text" name="emailAddr" maxLength="66" value="${patientDto.emailAddr}"/>
+                        <iais:input type="text" name="emailAddr" maxLength="320" value="${patientDto.emailAddr}"/>
                     </iais:value>
                 </iais:row>
             </div>

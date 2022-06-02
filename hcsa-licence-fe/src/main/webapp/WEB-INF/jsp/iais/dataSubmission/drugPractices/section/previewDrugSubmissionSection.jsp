@@ -154,7 +154,7 @@
                         <c:out value="${drugSubmission.diagnosis}"/>
                     </iais:value>
                 </iais:row>
-                <div class="" <c:if test="${drugSubmission.medication != 'MED002'}">style="display: none;"</c:if>>
+                <div class="" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
