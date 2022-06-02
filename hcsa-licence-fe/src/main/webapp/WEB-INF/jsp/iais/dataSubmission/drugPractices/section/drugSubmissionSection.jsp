@@ -126,7 +126,7 @@
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="drugType"  name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED"
+                        <iais:select cssClass="drugType" id="drugType" name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED"
                                      value="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
@@ -189,7 +189,7 @@
                         <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
-                <div id="urineTest">
+                <div id="urineTest" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -205,7 +205,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="nurse">
+                <div id="nurse" <c:if test="${drugSubmission.medication != 'MED001'}">style="display: none;"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Nurse/Pharmacist's Registration No." mandatory="true" />
                         <iais:value width="7" cssClass="col-md-7">
@@ -281,14 +281,14 @@
         $('#drugType').change(function () {
             drugTypeChange();
         });
-        $('#medication').change(function (){
+        $('#drugType,#medication').change(function (){
             changeStrength();
         });
         $('#prescriptionSubmissionId').change(function(){
             checkPrescriptionSubmissionId();
         });
 
-        changeStrength();
+        /*changeStrength();*/
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
         </c:if>
@@ -356,12 +356,11 @@
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
             $('#nurse').show();
-        }else if('MED002' == medication){
-            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
-            $('#nurse').hide();
-        }else if('MED002' == medicationa && 'DPD002' == drugtype){
+        }else if(('MED002' == medication && 'DPD002' == drugtype)){
+            console.log('DPD002')
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').show();
+            $('#nurse').hide();
         } else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
