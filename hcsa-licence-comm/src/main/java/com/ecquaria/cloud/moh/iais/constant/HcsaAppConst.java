@@ -144,6 +144,8 @@ public final class HcsaAppConst {
     public static final String STATUS_APP                                   = "STATUS_APP";
     public static final String STATUS_GRP                                   = "STATUS_GRP";
     public static final String ERROR_APP                                    = "appError";
+    public static final String ERROR_KEY                                    = "errormapIs";
+    public static final String ERROR_VAL                                    = "error";
 
     public static final String ERROR_TYPE                                   = "ERROR_TYPE";
     public static final String ERROR_ROLE                                   = "ERROR_ROLE";
