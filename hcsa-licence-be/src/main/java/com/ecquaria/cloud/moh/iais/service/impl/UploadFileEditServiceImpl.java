@@ -438,6 +438,7 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                 List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
                 List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtoList= IaisCommonUtils.genNewArrayList();
                 List<SubLicenseeDto> subLicenseeDtoList=IaisCommonUtils.genNewArrayList();
+                every.setStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
                 groupDtos.add(every);
                 String groupId = every.getId();
                 if(subLicenseeDtos!=null){

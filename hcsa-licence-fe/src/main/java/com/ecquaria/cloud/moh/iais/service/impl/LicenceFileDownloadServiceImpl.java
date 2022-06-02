@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -16,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
@@ -68,6 +71,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private GenerateIdClient generateIdClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private ServiceConfigService serviceConfigService;
 
     @Override
     public void initPath() {
@@ -363,8 +368,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private Boolean fileToDto(String str)
     {
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
-
-        return applicationClient.saveFeData(applicationListDto).getStatusCode()==200;
+        boolean flag=applicationClient.saveFeData(applicationListDto).getStatusCode()==200;
+        List<ApplicationGroupDto> applicationGroupDtoList=applicationListDto.getApplicationGroup();
+        for (ApplicationGroupDto appGrp:applicationGroupDtoList
+             ) {
+            appGrp.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
+        }
+        return flag;
 
     }
 
