@@ -131,7 +131,7 @@
                     </iais:value>
                 </iais:row>
                 </div>
-                <div  id="prescriptionDate" >
+                <div  id="prescriptionDate" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Date of Prescription" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -301,6 +301,7 @@
         if(drugtype == "DPD001"){
             $('#dispensingDate').hide();
             $('#ddEndDate').hide();
+            $('#prescriptionDate').show();
             unDisableContent('div.medication');
             fillValue($('#medication'),null);
         } else if(drugtype == "DPD002"){
@@ -308,9 +309,11 @@
             $('#ddEndDate').show();
             $('#prescriptionSubmissionId').val('');
             $('#error_prescriptionSubmissionId').html('');
+            $('#prescriptionDate').hide();
         }else{
             $('#dispensingDate').hide();
             $('#ddEndDate').hide();
+            $('#prescriptionDate').hide();
         }
         changeStrength();
     }
