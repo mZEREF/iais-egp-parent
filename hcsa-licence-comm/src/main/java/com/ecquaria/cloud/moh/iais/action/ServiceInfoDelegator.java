@@ -2821,53 +2821,6 @@ public class ServiceInfoDelegator {
         return stepName;
     }
 
-    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,
-            String appNo, int seqNum, String dupForPrem, String dupForPerson, String psnId) {
-        Integer version = 1;
-        if (StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)) {
-            return version;
-        }
-        if (isRfi) {
-            boolean canFound = false;
-            log.info(StringUtil.changeForLog("rfi appNo:" + appNo));
-            for (AppSvcDocDto appSvcDocDto : oldDocs) {
-                Integer oldVersion = appSvcDocDto.getVersion();
-                if (configDocId.equals(appSvcDocDto.getSvcDocId()) && seqNum == appSvcDocDto.getSeqNum()) {
-                    canFound = true;
-                    if (MessageDigest.isEqual(md5Code.getBytes(StandardCharsets.UTF_8),
-                            appSvcDocDto.getMd5Code().getBytes(StandardCharsets.UTF_8))) {
-                        if (!StringUtil.isEmpty(oldVersion)) {
-                            version = oldVersion;
-                        }
-                    } else {
-                        version = getVersion(appGrpId, configDocId, appNo, seqNum, dupForPrem, dupForPerson, psnId);
-                    }
-                    break;
-                }
-            }
-            if (!canFound) {
-                //last doc is null
-                version = getVersion(appGrpId, configDocId, appNo, seqNum, dupForPrem, dupForPerson, psnId);
-            }
-        }
-        return version;
-    }
-
-    private Integer getVersion(String appGrpId, String configDocId, String appNo, Integer seqNum, String dupForPrem,
-            String dupForPerson, String psnId) {
-        Integer version = 1;
-        AppSvcDocDto searchDto = new AppSvcDocDto();
-        searchDto.setAppGrpId(appGrpId);
-        searchDto.setSvcDocId(configDocId);
-        searchDto.setSeqNum(seqNum);
-        if ("0".equals(dupForPrem)) {
-            version = getMaxVersion(dupForPerson, searchDto, appNo, psnId, version);
-        } else if ("1".equals(dupForPrem)) {
-            version = getMaxVersion(dupForPerson, searchDto, appNo, psnId, version);
-        }
-        return version;
-    }
-
     private Set<String> getNewPersonKeySet(AppSubmissionDto appSubmissionDto) {
         Set<String> personKeySet = IaisCommonUtils.genNewHashSet();
         if (appSubmissionDto != null) {
@@ -2978,10 +2931,8 @@ public class ServiceInfoDelegator {
                     appSvcDocDto.setSeqNum(seqNum);
                     appSvcDocDto.setDupForPrem(dupForPrem);
                     appSvcDocDto.setDupForPerson(dupForPerson);
-                    appSvcDocDto.setVersion(
-                            getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(), oldDocs, isRfi, md5Code, appGrpId, appNo, seqNum,
-                                    dupForPrem, dupForPerson, psnId));
                     appSvcDocDto.setPersonType(ApplicationHelper.getPsnType(dupForPerson));
+                    setAppSvcDocDtoFileds(appSvcDocDto, oldDocs, hcsaSvcDocConfigDto.getId(), isRfi, appGrpId, appNo, psnId);
                     saveFileMap.put(premVal + hcsaSvcDocConfigDto.getId() + psnIndexNo + seqNum, v);
                 } else {
                     appSvcDocDto = getAppSvcDocByConfigIdAndSeqNum(currSvcDocDtoList, hcsaSvcDocConfigDto.getId(), seqNum, premVal,
@@ -2994,6 +2945,68 @@ public class ServiceInfoDelegator {
                 }
             });
         }
+    }
+
+    private void setAppSvcDocDtoFileds(AppSvcDocDto appSvcDocDto, List<AppSvcDocDto> oldDocs, String configDocId, boolean isRfi, String appGrpId, String appNo, String psnId) {
+        String md5Code = appSvcDocDto.getMd5Code();
+        String dupForPrem = appSvcDocDto.getDupForPrem();
+        String dupForPerson = appSvcDocDto.getDupForPerson();
+        int seqNum = appSvcDocDto.getSeqNum();
+
+        Integer version = 1;
+        if (StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)) {
+            appSvcDocDto.setVersion(version);
+            appSvcDocDto.setSubmitDt(new Date());
+            appSvcDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
+            return;
+        }
+        if (isRfi) {
+            boolean canFound = false;
+            log.info(StringUtil.changeForLog("rfi appNo:" + appNo));
+            for (AppSvcDocDto dto : oldDocs) {
+                Integer oldVersion = dto.getVersion();
+                if (configDocId.equals(dto.getSvcDocId()) && seqNum == dto.getSeqNum()) {
+                    canFound = true;
+                    if (MessageDigest.isEqual(md5Code.getBytes(StandardCharsets.UTF_8),
+                            dto.getMd5Code().getBytes(StandardCharsets.UTF_8))) {
+                        if (!StringUtil.isEmpty(oldVersion)) {
+                            version = oldVersion;
+                        }
+                        //appSvcDocDto.setSubmitDt(dto.getSubmitDt());
+                        //appSvcDocDto.setSubmitBy(dto.getSubmitBy());
+                    } else {
+                        version = getVersion(appGrpId, configDocId, appNo, seqNum, dupForPrem, dupForPerson, psnId);
+                    }
+                    break;
+                }
+            }
+            if (!canFound) {
+                //last doc is null
+                version = getVersion(appGrpId, configDocId, appNo, seqNum, dupForPrem, dupForPerson, psnId);
+            }
+        }
+        if (appSvcDocDto.getSubmitDt() == null) {
+            appSvcDocDto.setSubmitDt(new Date());
+        }
+        if (StringUtil.isEmpty(appSvcDocDto.getSubmitBy())) {
+            appSvcDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
+        }
+        appSvcDocDto.setVersion(version);
+    }
+
+    private Integer getVersion(String appGrpId, String configDocId, String appNo, Integer seqNum, String dupForPrem,
+            String dupForPerson, String psnId) {
+        Integer version = 1;
+        AppSvcDocDto searchDto = new AppSvcDocDto();
+        searchDto.setAppGrpId(appGrpId);
+        searchDto.setSvcDocId(configDocId);
+        searchDto.setSeqNum(seqNum);
+        if ("0".equals(dupForPrem)) {
+            version = getMaxVersion(dupForPerson, searchDto, appNo, psnId, version);
+        } else if ("1".equals(dupForPrem)) {
+            version = getMaxVersion(dupForPerson, searchDto, appNo, psnId, version);
+        }
+        return version;
     }
 
     private static AppSvcDocDto getAppSvcDocByConfigIdAndSeqNum(List<AppSvcDocDto> appSvcDocDtos, String configId, int seqNum,
@@ -3024,7 +3037,7 @@ public class ServiceInfoDelegator {
                         && premType.equals(currPremType)
                         && psnIndexNo.equals(currPsnIndexNo)) {
                     try {
-                        appSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto1);
+                        appSvcDocDto = CopyUtil.copyMutableObject(appSvcDocDto1);
                     } catch (Exception e) {
                         log.error(StringUtil.changeForLog("copy appSvcDocDto error !!!"));
                     }

@@ -2458,84 +2458,6 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
     }
 
-    private Integer getAppGrpPrimaryDocVersion(String configDocId, List<AppGrpPrimaryDocDto> oldDocs, boolean isRfi, String md5Code,
-            String appGrpId, String appNo, String appType, int seqNum, String dupForPrem) {
-        log.info(StringUtil.changeForLog("AppGrpPrimaryDocVersion start..."));
-        Integer version = 1;
-        if (StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)) {
-            return version;
-        }
-        log.info(StringUtil.changeForLog("isRfi:" + isRfi));
-        log.info(StringUtil.changeForLog("appType:" + appType));
-        log.info(StringUtil.changeForLog("seqNum:" + seqNum));
-        if (isRfi) {
-            log.info(StringUtil.changeForLog("rfi appNo:" + appNo));
-            boolean canFound = false;
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldDocs) {
-                Integer oldVersion = appGrpPrimaryDocDto.getVersion();
-                if (configDocId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && seqNum == appGrpPrimaryDocDto.getSeqNum()) {
-                    canFound = true;
-                    if (MessageDigest.isEqual(md5Code.getBytes(StandardCharsets.UTF_8),
-                            appGrpPrimaryDocDto.getMd5Code().getBytes(StandardCharsets.UTF_8))) {
-                        if (!StringUtil.isEmpty(oldVersion)) {
-                            version = oldVersion;
-                        }
-                    } else {
-                        version = getVersion(appGrpId, configDocId, appNo, appType, dupForPrem, seqNum);
-                    }
-                    break;
-                }
-            }
-            if (!canFound) {
-                //last doc is null new rfi not use app no
-                version = getVersion(appGrpId, configDocId, appNo, appType, dupForPrem, seqNum);
-            }
-        }
-        log.info(StringUtil.changeForLog("AppGrpPrimaryDocVersion end..."));
-        return version;
-    }
-
-    private Integer getVersion(String appGrpId, String configDocId, String appNo, String appType, String dupForPrem, int seqNum) {
-        Integer version = 1;
-
-        //common doc
-        if ("0".equals(dupForPrem)) {
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-                AppGrpPrimaryDocDto maxVersionDocDto = appCommService.getMaxVersionPrimaryComDoc(appGrpId, configDocId,
-                        String.valueOf(seqNum));
-                Integer maxVersion = maxVersionDocDto.getVersion();
-                String fileRepoId = maxVersionDocDto.getFileRepoId();
-                if (!StringUtil.isEmpty(maxVersion) && !StringUtil.isEmpty(fileRepoId)) {
-                    version = maxVersionDocDto.getVersion() + 1;
-                }
-            } else {
-                AppSvcDocDto maxVersionDocDto = appCommService.getMaxVersionSvcComDoc(appGrpId, configDocId, String.valueOf(seqNum));
-                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
-                    version = maxVersionDocDto.getVersion() + 1;
-                }
-            }
-
-        } else if ("1".equals(dupForPrem)) {
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-                AppGrpPrimaryDocDto maxVersionDocDto = appCommService.getMaxVersionPrimarySpecDoc(appGrpId, configDocId, appNo,
-                        String.valueOf(seqNum));
-                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
-                    version = maxVersionDocDto.getVersion() + 1;
-                }
-            } else {
-                AppSvcDocDto searchDto = new AppSvcDocDto();
-                searchDto.setAppGrpId(appGrpId);
-                searchDto.setSvcDocId(configDocId);
-                searchDto.setSeqNum(seqNum);
-                AppSvcDocDto maxVersionDocDto = appCommService.getMaxVersionSvcSpecDoc(searchDto, appNo);
-                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
-                    version = maxVersionDocDto.getVersion() + 1;
-                }
-            }
-        }
-        return version;
-    }
-
     private static AppGrpPrimaryDocDto getAppGrpPrimaryDocByConfigIdAndSeqNum(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,
             String configId, int seqNum, String premVal, String premType) {
         log.debug(StringUtil.changeForLog("getAppGrpPrimaryDocByConfigIdAndSeqNum start..."));
@@ -2558,7 +2480,7 @@ public abstract class AppCommDelegator {
                         && seqNum == appGrpPrimaryDocDto1.getSeqNum()
                         && premVal.equals(currPremVal)
                         && premType.equals(currPremType)) {
-                    appGrpPrimaryDocDto = (AppGrpPrimaryDocDto) CopyUtil.copyMutableObject(appGrpPrimaryDocDto1);
+                    appGrpPrimaryDocDto = CopyUtil.copyMutableObject(appGrpPrimaryDocDto1);
                     break;
                 }
             }
@@ -2600,9 +2522,7 @@ public abstract class AppCommDelegator {
                     primaryDocDto.setPremisessName(premVal);
                     primaryDocDto.setPremisessType(premType);
                     primaryDocDto.setSeqNum(seqNum);
-                    primaryDocDto.setVersion(
-                            getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(), oldPrimaryDotList, isRfi, md5Code, appGrpId, appNo,
-                                    appType, seqNum, dupForPrem));
+                    setAppGrpPrimaryDocFileds(primaryDocDto, oldPrimaryDotList, isRfi, appGrpId, appNo, appType, dupForPrem);
                     saveFileMap.put(premVal + hcsaSvcDocConfigDto.getId() + seqNum, v);
                 } else {
                     primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList, hcsaSvcDocConfigDto.getId(), seqNum,
@@ -2615,6 +2535,97 @@ public abstract class AppCommDelegator {
                 }
             }
         }
+    }
+
+    protected void setAppGrpPrimaryDocFileds(AppGrpPrimaryDocDto primaryDocDto, List<AppGrpPrimaryDocDto> oldDocs,
+            boolean isRfi, String appGrpId, String appNo, String appType, String dupForPrem) {
+        String configDocId = primaryDocDto.getSvcComDocId();
+        String md5Code = primaryDocDto.getMd5Code();
+        int seqNum = primaryDocDto.getSeqNum();
+
+        Integer version = 1;
+        if (StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)) {
+            primaryDocDto.setVersion(version);
+            primaryDocDto.setSubmitDt(new Date());
+            primaryDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
+            return;
+        }
+        log.info(StringUtil.changeForLog("isRfi:" + isRfi));
+        log.info(StringUtil.changeForLog("appType:" + appType));
+        log.info(StringUtil.changeForLog("seqNum:" + seqNum));
+        if (isRfi) {
+            log.info(StringUtil.changeForLog("rfi appNo:" + appNo));
+            boolean canFound = false;
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldDocs) {
+                Integer oldVersion = appGrpPrimaryDocDto.getVersion();
+                if (configDocId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && seqNum == appGrpPrimaryDocDto.getSeqNum()) {
+                    canFound = true;
+                    if (MessageDigest.isEqual(md5Code.getBytes(StandardCharsets.UTF_8),
+                            appGrpPrimaryDocDto.getMd5Code().getBytes(StandardCharsets.UTF_8))) {
+                        if (!StringUtil.isEmpty(oldVersion)) {
+                            version = oldVersion;
+                        }
+                        //primaryDocDto.setSubmitDt(appGrpPrimaryDocDto.getSubmitDt());
+                        //primaryDocDto.setSubmitBy(appGrpPrimaryDocDto.getSubmitBy());
+                    } else {
+                        version = getVersion(appGrpId, configDocId, appNo, appType, dupForPrem, seqNum);
+                    }
+                    break;
+                }
+            }
+            if (!canFound) {
+                //last doc is null new rfi not use app no
+                version = getVersion(appGrpId, configDocId, appNo, appType, dupForPrem, seqNum);
+            }
+        }
+        if (primaryDocDto.getSubmitDt() == null) {
+            primaryDocDto.setSubmitDt(new Date());
+        }
+        if (StringUtil.isEmpty(primaryDocDto.getSubmitBy())) {
+            primaryDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
+        }
+        primaryDocDto.setVersion(version);
+    }
+
+    private Integer getVersion(String appGrpId, String configDocId, String appNo, String appType, String dupForPrem, int seqNum) {
+        Integer version = 1;
+
+        //common doc
+        if ("0".equals(dupForPrem)) {
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                AppGrpPrimaryDocDto maxVersionDocDto = appCommService.getMaxVersionPrimaryComDoc(appGrpId, configDocId,
+                        String.valueOf(seqNum));
+                Integer maxVersion = maxVersionDocDto.getVersion();
+                String fileRepoId = maxVersionDocDto.getFileRepoId();
+                if (!StringUtil.isEmpty(maxVersion) && !StringUtil.isEmpty(fileRepoId)) {
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
+            } else {
+                AppSvcDocDto maxVersionDocDto = appCommService.getMaxVersionSvcComDoc(appGrpId, configDocId, String.valueOf(seqNum));
+                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
+            }
+
+        } else if ("1".equals(dupForPrem)) {
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                AppGrpPrimaryDocDto maxVersionDocDto = appCommService.getMaxVersionPrimarySpecDoc(appGrpId, configDocId, appNo,
+                        String.valueOf(seqNum));
+                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
+            } else {
+                AppSvcDocDto searchDto = new AppSvcDocDto();
+                searchDto.setAppGrpId(appGrpId);
+                searchDto.setSvcDocId(configDocId);
+                searchDto.setSeqNum(seqNum);
+                AppSvcDocDto maxVersionDocDto = appCommService.getMaxVersionSvcSpecDoc(searchDto, appNo);
+                if (!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())) {
+                    version = maxVersionDocDto.getVersion() + 1;
+                }
+            }
+        }
+        return version;
     }
 
     private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList, Map<String, File> saveFileMap) {
