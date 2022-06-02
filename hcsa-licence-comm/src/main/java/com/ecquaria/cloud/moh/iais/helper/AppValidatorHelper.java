@@ -736,11 +736,10 @@ public final class AppValidatorHelper {
                     }
                     //migrated licence need  judge
                     if (StringUtil.isEmpty(hciName)) {
-                        errorMap.put(hciNameKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
+                        errorMap.put(hciNameKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
                     } else {
                         if (hciName.length() > 100) {
-                            String general_err0041 = repLength("HCI Name", "100");
-                            errorMap.put(hciNameKey, general_err0041);
+                            errorMap.put(hciNameKey, repLength("Business Name", "100"));
                         }
                         checkHciName(hciNameKey, hciName, appType, licenceId, errorMap);
                     }
@@ -984,10 +983,10 @@ public final class AppValidatorHelper {
                 errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Email ", "field"));
             }
-        } else {
-            if (!ValidationUtils.isEmail(email)) {
-                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.getMessageDesc("GENERAL_ERR0014"));
-            }
+        } else if (email.length() > 320) {
+            errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), repLength("Email", "320"));
+        } else if (!ValidationUtils.isEmail(email)) {
+            errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.getMessageDesc("GENERAL_ERR0014"));
         }
 
         if (StringUtil.isEmpty(addrType)) {
@@ -2128,11 +2127,10 @@ public final class AppValidatorHelper {
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
-                errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
+                errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
             } else {
                 if (businessName.length() > 100) {
-                    String general_err0041 = repLength("businessName", "100");
-                    errorMap.put("businessName" + i, general_err0041);
+                    errorMap.put("businessName" + i, repLength("Business Name", "100"));
                 }
                 int hciNameChanged = 0;
                 if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
@@ -2794,61 +2792,61 @@ public final class AppValidatorHelper {
 
     public static void doValidatetionServicePerson(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos,
             String svcCode) {
-        if(IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
             return;
         }
-        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
-        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
-        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field");
-        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
-        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
-        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
-        String errOtherDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field");
+        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field");
+        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field");
+        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006", "Relevant working experience (Years)", "field");
+        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualification", "field");
+        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006", "Select Service Personnel", "field");
+        String errOtherDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field");
 
-        String errLengthName = repLength("Name","110");
-        String errLengthRegnNo = repLength("Professional Regn. No.","20");
-        String errLengthWrkExpYear = repLength("Relevant working experience (Years)","2");
-        String errLengthQualification = repLength("Qualification","100");
-        String errLengthOtherDesignation = repLength("Others Designation","100");
+        String errLengthName = repLength("Name", "110");
+        String errLengthRegnNo = repLength("Professional Regn. No.", "20");
+        String errLengthWrkExpYear = repLength("Relevant working experience (Years)", "2");
+        String errLengthQualification = repLength("Qualification", "100");
+        String errLengthOtherDesignation = repLength("Others Designation", "100");
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(svcCode);
         //Verify that each type of person has at least one
         //person type,value/empty
-        Map<String,String> personCountMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> personCountMap = IaisCommonUtils.genNewHashMap();
 
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
             String personType = appSvcPersonnelDtos.get(i).getPersonnelType();
-            if(!StringUtil.isEmpty(personType)){
-                personCountMap.put(personType,AppConsts.YES);
+            if (!StringUtil.isEmpty(personType)) {
+                personCountMap.put(personType, AppConsts.YES);
             }
             if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 if (StringUtil.isEmpty(designation)) {
                     errorMap.put("designation" + i, errDesignation);
-                }else if(HcsaAppConst.DESIGNATION_OTHERS.equals(designation)){
+                } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
                     String otherDesignation = appSvcPersonnelDtos.get(i).getOtherDesignation();
-                    if(StringUtil.isEmpty(otherDesignation)){
-                        errorMap.put("otherDesignation"+i,errOtherDesignation);
-                    }else if(otherDesignation.length() > 100){
+                    if (StringUtil.isEmpty(otherDesignation)) {
+                        errorMap.put("otherDesignation" + i, errOtherDesignation);
+                    } else if (otherDesignation.length() > 100) {
                         errorMap.put("otherDesignation" + i, errLengthOtherDesignation);
                     }
                 }
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 110){
+                } else if (name.length() > 110) {
                     errorMap.put("name" + i, errLengthName);
                 }
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 if (StringUtil.isEmpty(profRegNo)) {
                     errorMap.put("regnNo" + i, errRegnNo);
-                }else if(profRegNo.length() > 20){
+                } else if (profRegNo.length() > 20) {
                     errorMap.put("regnNo" + i, errLengthRegnNo);
                 }
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
                     errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
-                    if(wrkExpYear.length() > 2){
+                    if (wrkExpYear.length() > 2) {
                         errorMap.put("wrkExpYear" + i, errLengthWrkExpYear);
                     }
                     if (!wrkExpYear.matches("^[0-9]*$")) {
@@ -2859,47 +2857,47 @@ public final class AppValidatorHelper {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 110){
+                } else if (name.length() > 110) {
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if (StringUtil.isEmpty(quaification)) {
                     errorMap.put("qualification" + i, errQualification);
-                }else if(quaification.length() > 100){
+                } else if (quaification.length() > 100) {
                     errorMap.put("qualification" + i, errLengthQualification);
                 }
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
                     errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
-                    if(wrkExpYear.length() > 2){
+                    if (wrkExpYear.length() > 2) {
                         errorMap.put("wrkExpYear" + i, errLengthWrkExpYear);
                     }
                     if (!wrkExpYear.matches("^[0-9]*$")) {
                         errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                     }
                 }
-            }else if(!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
+            } else if (!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
                     && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
                     && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
-                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 110){
+                } else if (name.length() > 110) {
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if (StringUtil.isEmpty(quaification)) {
                     errorMap.put("qualification" + i, errQualification);
-                }else if(quaification.length() > 100){
+                } else if (quaification.length() > 100) {
                     errorMap.put("qualification" + i, errLengthQualification);
                 }
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
                     errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
-                    if(wrkExpYear.length() > 2){
+                    if (wrkExpYear.length() > 2) {
                         errorMap.put("wrkExpYear" + i, errLengthWrkExpYear);
                     }
                     if (!wrkExpYear.matches("^[0-9]*$")) {
@@ -2917,12 +2915,12 @@ public final class AppValidatorHelper {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 110){
+                    } else if (name.length() > 110) {
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(profRegNo)) {
                         errorMap.put("regnNo" + i, errRegnNo);
-                    }else if(profRegNo.length() > 20){
+                    } else if (profRegNo.length() > 20) {
                         errorMap.put("regnNo" + i, errLengthRegnNo);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
@@ -2933,23 +2931,23 @@ public final class AppValidatorHelper {
 
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 110){
+                    } else if (name.length() > 110) {
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(designation)) {
                         errorMap.put("designation" + i, errDesignation);
-                    }else if(HcsaAppConst.DESIGNATION_OTHERS.equals(designation)){
+                    } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
                         String otherDesignation = appSvcPersonnelDtos.get(i).getOtherDesignation();
-                        if(StringUtil.isEmpty(otherDesignation)){
-                            errorMap.put("otherDesignation"+i,errOtherDesignation);
-                        }else if(otherDesignation.length() > 100){
+                        if (StringUtil.isEmpty(otherDesignation)) {
+                            errorMap.put("otherDesignation" + i, errOtherDesignation);
+                        } else if (otherDesignation.length() > 100) {
                             errorMap.put("otherDesignation" + i, errLengthOtherDesignation);
                         }
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
                         errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
-                        if(wrkExpYear.length() > 2){
+                        if (wrkExpYear.length() > 2) {
                             errorMap.put("wrkExpYear" + i, errLengthWrkExpYear);
                         }
                         if (!wrkExpYear.matches("^[0-9]*$")) {
@@ -2958,7 +2956,7 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isEmpty(qualification)) {
                         errorMap.put("qualification" + i, errQualification);
-                    }else if(qualification.length() > 100){
+                    } else if (qualification.length() > 100) {
                         errorMap.put("qualification" + i, errLengthQualification);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
@@ -2967,13 +2965,13 @@ public final class AppValidatorHelper {
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 110){
+                    } else if (name.length() > 110) {
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
                         errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
-                        if(wrkExpYear.length() > 2){
+                        if (wrkExpYear.length() > 2) {
                             errorMap.put("wrkExpYear" + i, errLengthWrkExpYear);
                         }
                         if (!wrkExpYear.matches("^[0-9]*$")) {
@@ -2982,14 +2980,14 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isEmpty(quaification)) {
                         errorMap.put("qualification" + i, errQualification);
-                    }else if(quaification.length() > 100){
+                    } else if (quaification.length() > 100) {
                         errorMap.put("qualification" + i, errLengthQualification);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 110){
+                    } else if (name.length() > 110) {
                         errorMap.put("name" + i, errLengthName);
                     }
                 }
