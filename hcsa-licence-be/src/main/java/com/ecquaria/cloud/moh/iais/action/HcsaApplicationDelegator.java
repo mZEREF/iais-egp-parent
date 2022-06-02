@@ -1096,15 +1096,15 @@ public class HcsaApplicationDelegator {
      */
     public void rollBackCr(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rollBack start ...."));
-        String str = ParamUtil.getString(bpc.request, "rollBackCr");
-        str=MaskUtil.unMaskValue("rollBack",str);
+        String str = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
         log.info(StringUtil.changeForLog(str));
         String[] result = str.split(",");
         String stageId = result[0];
         String wrkGpId = result[1];
         String userId = result[2];
         String roleId = result[3];
-
+        OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
+        userId=user.getId();
         //do roll back
         if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO, wrkGpId, userId);
@@ -3163,7 +3163,7 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-        String appStatus= ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO;
+        String appStatus;
 
         //status by
         switch (roleId){
@@ -3171,8 +3171,7 @@ public class HcsaApplicationDelegator {
             case RoleConsts.USER_ROLE_AO3:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;break;
             case RoleConsts.USER_ROLE_PSO:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;break;
             case RoleConsts.USER_ROLE_ASO:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;break;
-
-            default:
+            default:appStatus= applicationViewDto.getApplicationDto().getStatus();
         }
 
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
