@@ -31,6 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -213,4 +216,11 @@ public class HcsaApplicationAjaxController{
         return map;
     }
 
+    @PostMapping("/canApproveValidation")
+    public ResponseEntity<Map<String, String>> validateCanApprove(@RequestBody ApplicationViewDto applicationViewDto) {
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        applicationService.validateCanApprove(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, applicationViewDto, errMap);
+
+        return ResponseEntity.ok(errMap);
+    }
 }
