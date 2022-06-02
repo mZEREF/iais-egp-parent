@@ -142,7 +142,8 @@
                 </div>
                 <div  id="dispensingDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="Prescription Submission ID" mandatory="true"/>
+                        <c:set var="toolMsg"><iais:message key="DS_MSG026"/></c:set>
+                        <iais:field width="5" value="Prescription Submission ID" info="${toolMsg}" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="16" type="text" id ="prescriptionSubmissionId" name="prescriptionSubmissionId"
                                         value="${drugSubmission.prescriptionSubmissionId}" />
@@ -184,7 +185,7 @@
                 <iais:row>
                     <iais:field width="5" value="Diagnosis" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <textarea rows="" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                        <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                         <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
@@ -206,27 +207,22 @@
                 </div>
                 <div id="nurse">
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist's Registration No." />
+                        <iais:field width="5" value="Nurse/Pharmacist's Registration No." mandatory="true" />
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="256" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
+                            <iais:input maxLength="20" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
                                         value="${drugSubmission.nurseRegistrationNo}" />
+                            <span id="error_nurseRegistrationNo" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist's Name" />
+                        <iais:field width="5" value="Nurse/Pharmacist's Name"  mandatory="true" />
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="512" type="text" id ="nurseName" name="nurseName"
+                            <iais:input maxLength="66" type="text" id ="nurseName" name="nurseName"
                                         value="${drugSubmission.nurseName}" />
+                            <span id="error_nurseName" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Fields are provided in my comments" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <textarea rows="" cols="62" name="providedComments">${drugSubmission.providedComments}</textarea>
-                        <span id="error_providedComments" name="iaisErrorMsg" class="error-msg"></span>
-                    </iais:value>
-                </iais:row>
             </div>
         </div>
     </div>

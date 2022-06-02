@@ -56,8 +56,17 @@
                     <iais:row>
                         <iais:field width="5" value="Frequency" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select" codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
+                            <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select"
+                                         onchange ="toggleOnSelect(this, 'FRE009', 'othersFrequency${index}')"
+                                         codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
+
                             <span class="error-msg" name="iaisErrorMsg" id="error_frequency"${index}></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row id="othersFrequency${index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
+                        <iais:field width="5" value="Other-Frequency" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="100" type="text" name="otherFrequency${index}" value="${drugMedicationDto.otherFrequency}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -106,7 +115,15 @@
                             <iais:row>
                                 <iais:field width="5" value="Frequency" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select" codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
+                                    <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select"
+                                                 onchange ="toggleOnSelect(this, 'FRE009', 'othersFrequency${index}')"
+                                                 codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row id="othersFrequency${index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
+                                <iais:field width="5" value="Other-Frequency" mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="100" type="text" name="otherFrequency${index}" value="${drugMedicationDto.otherFrequency}"/>
                                 </iais:value>
                             </iais:row>
                         </div>
@@ -122,7 +139,7 @@
                 <iais:row>
                     <iais:field width="5" value="Remarks" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="500" type="text" name="remarks" value="${drugSubmission.remarks}"/>
+                        <iais:input maxLength="1000" type="text" name="remarks" value="${drugSubmission.remarks}"/>
                     </iais:value>
                 </iais:row>
 

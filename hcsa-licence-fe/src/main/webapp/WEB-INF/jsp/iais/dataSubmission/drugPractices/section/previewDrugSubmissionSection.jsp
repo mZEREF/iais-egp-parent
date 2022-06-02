@@ -182,12 +182,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Fields are provided in my comments" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${drugSubmission.providedComments}"/>
-                    </iais:value>
-                </iais:row>
             </div>
         </div>
     </div>

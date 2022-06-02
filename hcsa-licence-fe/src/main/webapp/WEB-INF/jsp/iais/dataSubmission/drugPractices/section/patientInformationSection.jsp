@@ -55,7 +55,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <%--<input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
                                name="postalCode" value="${patientDto.postalCode}"/>--%>
-                        <iais:input maxLength="6" type="text" name="postalCode" id="postalCode" value="${patientDto.postalCode}"/>
+                        <iais:input maxLength="20" type="text" name="postalCode" id="postalCode" value="${patientDto.postalCode}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_postalCode"></span>
                     </iais:value>
                 </iais:row>
@@ -154,7 +154,7 @@
                 <iais:row>
                     <iais:field value="Mobile No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
+                        <iais:input  type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
                         <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
                                name="mobileNo" value="${patientDto.mobileNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
@@ -164,7 +164,7 @@
                 <iais:row>
                     <iais:field value="Home Telephone No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <iais:input  type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
                         <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
                                name="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_homeTelNo"></span>

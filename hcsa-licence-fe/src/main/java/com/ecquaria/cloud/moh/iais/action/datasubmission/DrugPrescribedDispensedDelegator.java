@@ -276,10 +276,12 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             String strength = ParamUtil.getString(request,"strength"+i);
             String quantity = ParamUtil.getString(request,"quantity"+i);
             String frequency = ParamUtil.getString(request,"frequency"+i);
+            String otherFrequency = ParamUtil.getString(request,"otherFrequency"+i);
             drugMedication.setBatchNo(batchNo);
             drugMedication.setStrength(strength);
             drugMedication.setQuantity(quantity);
             drugMedication.setFrequency(frequency);
+            drugMedication.setOtherFrequency(otherFrequency);
             drugMedicationDtos.add(drugMedication);
         }
         return drugMedicationDtos;
