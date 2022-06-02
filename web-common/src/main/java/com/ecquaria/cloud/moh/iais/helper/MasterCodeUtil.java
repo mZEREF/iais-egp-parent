@@ -229,7 +229,7 @@ public final class MasterCodeUtil {
     public static final String VSS_OCCUPATION                       ="7A6E622A-F986-45E2-AD3F-13C3B5639702";
     //Termination of Pregnancy
     //Reason for Amendment
-    public static final String REASON_FOR_TOP_AMENDMENT                  = "5C20970D-D805-4F32-A7BA-68796151E74A";
+    public static final String REASON_FOR_TOP_AMENDMENT                  ="5C20970D-D805-4F32-A7BA-68796151E74A";
     //Patient Information
     public static final String TOP_EDUCATION_LEVEL                       ="B0CDD9CD-8716-4867-89D0-00F31B86FD17";
     public static final String TOP_RESIDENCE_STATUS                      ="61EBD041-A0A5-42E6-9E8D-58506EC47008";
