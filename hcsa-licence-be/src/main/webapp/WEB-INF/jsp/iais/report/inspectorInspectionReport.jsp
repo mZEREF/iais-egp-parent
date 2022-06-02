@@ -128,7 +128,7 @@
                                                                     </iais:row>
                                                                   <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
                                                                     <iais:row id="ao1SelectRow">
-                                                                        <iais:field value="Officer" required="false"/>
+                                                                        <iais:field value="Select Approving Officer" required="false"/>
                                                                         <iais:value width="7" id = "showAoDiv">
                                                                             <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
                                                                         </iais:value>
