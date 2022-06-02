@@ -1790,16 +1790,20 @@ public final class AppValidatorHelper {
                     }
                 }
                 for (int i = 0; i < listDtos.size(); i++) {
-                    if (HcsaAppConst.PLEASEINDICATE.equals(listDtos.get(i).getChkName()) && StringUtil.isEmpty(
-                            listDtos.get(i).getOtherScopeName())) {
-                        map.put("pleaseIndicateError" + premCount, err006);
+                    AppSvcChckListDto appSvcChckListDto = listDtos.get(i);
+                    if (HcsaAppConst.PLEASEINDICATE.equals(appSvcChckListDto.getChkName())) {
+                        if (StringUtil.isEmpty(appSvcChckListDto.getOtherScopeName())) {
+                            map.put("pleaseIndicateError" + premCount, err006);
+                        } else if (appSvcChckListDto.getOtherScopeName().length() > 200) {
+                            map.put("pleaseIndicateError" + premCount, repLength("Please indicate", "200"));
+                        }
                     }
 
-                    String parentName = listDtos.get(i).getParentName();
+                    String parentName = appSvcChckListDto.getParentName();
                     if (parentName == null) {
                         count++;
                         continue;
-                    } else if (listDtos.get(i).isChkLstType()) {
+                    } else if (appSvcChckListDto.isChkLstType()) {
                         if (serviceId.equals(parentName)) {
                             count++;
                             continue;
@@ -1812,7 +1816,7 @@ public final class AppValidatorHelper {
                                 }
                             }
                         }
-                    } else if (!listDtos.get(i).isChkLstType()) {
+                    } else if (!appSvcChckListDto.isChkLstType()) {
                         for (AppSvcChckListDto every : listDtos) {
                             if (every.getChkLstConfId().equals(parentName)) {
                                 count++;
