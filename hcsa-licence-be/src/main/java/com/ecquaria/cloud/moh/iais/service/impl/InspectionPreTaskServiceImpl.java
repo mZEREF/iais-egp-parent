@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -163,7 +164,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getProcessDecOption(ApplicationDto applicationDto) {
+    public List<SelectOption> getProcessDecOption(ApplicationDto applicationDto, String appGrpNo) {
         String appType = applicationDto.getApplicationType();
         String[] processDecArr;
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
@@ -173,7 +174,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         } else {
             Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
                     ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            if(rfiCount==0){
+            Map<String, String> map = applicationService.checkApplicationByAppGrpNo(appGrpNo);
+            String canEdit = map.get(HcsaAppConst.CAN_RFI);
+            if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 processDecArr = processDec;
             } else {
                 processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};

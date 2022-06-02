@@ -39,7 +39,7 @@ public interface InspectionPreTaskService {
       * @return: List<SelectOption>
       * @Descripation: get Processing Decision Option
       */
-    List<SelectOption> getProcessDecOption(ApplicationDto applicationDto);
+    List<SelectOption> getProcessDecOption(ApplicationDto applicationDto, String appGrpNo);
 
     /**
       * @author: shicheng

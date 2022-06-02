@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
@@ -41,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -70,6 +74,9 @@ public class InspectionPreDelegator {
 
     @Autowired
     private FillupChklistService fillupChklistService;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Autowired
     private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService, AdhocChecklistService adhocChecklistService,
@@ -149,7 +156,8 @@ public class InspectionPreDelegator {
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
         }
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
+                 ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
         if(applicationViewDto == null) {
             //get application info show
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
@@ -159,7 +167,8 @@ public class InspectionPreDelegator {
             String appStatus = applicationDto.getStatus();
             inspectionPreTaskDto.setAppStatus(appStatus);
             //get process decision
-            List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto);
+            List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto,
+                    applicationViewDto.getApplicationGroupDto().getGroupNo());
             //Audit application doesn't do back and rfi
             if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
                 if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
@@ -188,7 +197,27 @@ public class InspectionPreDelegator {
             ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
             ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
             ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
+            // for edit application - need session - applicationViewDto
+            checkForEditingApplication(bpc.request);
         }
+    }
+
+    private void checkForEditingApplication(HttpServletRequest request) {
+        // check from editing application
+        String appError = ParamUtil.getString(request, HcsaAppConst.ERROR_APP);
+        if (StringUtil.isNotEmpty(appError)) {
+            ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, StringUtil.clarify(appError));
+        }
+        // show edit application
+        boolean showBtn = true;
+        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "nextStages");
+        if (nextStageList != null) {
+            showBtn = nextStageList.stream()
+                    .map(SelectOption::getValue)
+                    .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
+        }
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
+                && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
     }
 
     private void setPreInspSelfChecklistInfo(List<SelfAssessment> selfAssessments, BaseProcessClass bpc) {
@@ -267,6 +296,19 @@ public class InspectionPreDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+                ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+                if (applicationViewDto != null) {
+                    Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
+                            applicationViewDto.getApplicationGroupDto().getGroupNo());
+                    String canEdit = map.get(HcsaAppConst.CAN_RFI);
+                    if (AppConsts.NO.equals(canEdit)) {
+                        String appError = map.get(HcsaAppConst.ERROR_APP);
+                        if (StringUtil.isNotEmpty(appError)) {
+                            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
+                            ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                        }
+                    }
+                }
             }
         } else if(InspectionConstants.SWITCH_ACTION_ROUTE_BACK.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"preback");
