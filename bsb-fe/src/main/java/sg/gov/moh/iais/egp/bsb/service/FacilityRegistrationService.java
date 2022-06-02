@@ -365,6 +365,14 @@ public class FacilityRegistrationService {
             changeBatNodeGroup(batGroup, selectionDto);
         }
 
+
+        // impact declaration page
+        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
+        otherAppInfoDto.setDeclarationId(null);
+        otherAppInfoDto.setDeclarationConfig(null);
+        Nodes.needValidation(facRegRoot, NODE_NAME_OTHER_INFO);
+
         // update impacted supporting document node
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
