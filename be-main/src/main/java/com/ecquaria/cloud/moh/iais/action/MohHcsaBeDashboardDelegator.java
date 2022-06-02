@@ -104,6 +104,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -115,6 +120,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "mohHcsaBeDashboardDelegator")
 @Slf4j
 public class MohHcsaBeDashboardDelegator {
+    private static final String CAN_APPROVE_API_URL = "http://hcsa-licence-web/hcsa-licence-web/canApproveValidation";
 
     @Autowired
     private TaskService taskService;
@@ -166,6 +172,10 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
+
+    @Autowired
+    @Qualifier(value = "iaisRestTemplate")
+    private RestTemplate restTemplate;
 
     /**
      * StartStep: hcsaBeDashboardStart
@@ -384,6 +394,13 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        log.info(StringUtil.changeForLog("validate can approve start ...."));
+                        Map<String,String> errMap = validateCanApprove(applicationViewDto);
+                        if (IaisCommonUtils.isNotEmpty(errMap)) {
+                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                            return;
+                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
@@ -2158,5 +2175,12 @@ public class MohHcsaBeDashboardDelegator {
             }
         }
         return colour;
+    }
+
+    private Map<String, String> validateCanApprove(ApplicationViewDto applicationViewDto) {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity entity = new HttpEntity<>(applicationViewDto);
+        return restTemplate.postForObject(CAN_APPROVE_API_URL, applicationViewDto, Map.class);
     }
 }
