@@ -331,7 +331,7 @@ public class TopTerminationOfPregnancyDelegator {
                 }
             } else {
                 if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result4 != null) {
                             errMap.putAll(result4.retrieveAll());
@@ -353,7 +353,7 @@ public class TopTerminationOfPregnancyDelegator {
                 }
             } else {
                 if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
                         if (result5 != null) {
                             errMap.putAll(result5.retrieveAll());
@@ -454,7 +454,7 @@ public class TopTerminationOfPregnancyDelegator {
                     }
                 } else {
                     if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
+                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                             ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                             if (result != null) {
                                 errMap.putAll(result.retrieveAll());
@@ -501,7 +501,7 @@ public class TopTerminationOfPregnancyDelegator {
                     }
                 } else {
                     if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
+                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                             ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                             if(result !=null){
                                 errMap.putAll(result.retrieveAll());
