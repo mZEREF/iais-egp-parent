@@ -15,7 +15,7 @@
                 <iais:row>
                     <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" onchange ="toggleSelect(this, 'DTV_IT_001', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
+                        <iais:select name="idType" onchange ="toggleSelect(this, 'DTV_IT003', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                      value="${patientDto.idType}" cssClass="idTypeSel"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
@@ -27,7 +27,7 @@
                     <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">Nationality
                         <span id="nationalityStar" class="mandatory">
-                                <c:if test="${patientDto.idType =='DTV_IT_001'}">*</c:if>
+                                <c:if test="${patientDto.idType =='DTV_IT003'}">*</c:if>
                         </span>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">

@@ -25,7 +25,7 @@
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${treatmentDto.idType}" />
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
@@ -100,11 +100,11 @@
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="occupation" firstOption="Please Select" codeCategory="VSS_OCCUPATION"
-                         onchange ="toggleOnSelect(this, 'VSSOP012', 'occupationOthers')"
+                         onchange ="toggleOnSelect(this, 'VSSOP013', 'occupationOthers')"
                          value="${treatmentDto.occupation}"/>
         </iais:value>
     </iais:row>
-    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP012' ? '' : 'display: none'}">
+    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP013' ? '' : 'display: none'}">
         <iais:field width="5" value="Other Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="otherOccupation" value="${treatmentDto.otherOccupation}"/>

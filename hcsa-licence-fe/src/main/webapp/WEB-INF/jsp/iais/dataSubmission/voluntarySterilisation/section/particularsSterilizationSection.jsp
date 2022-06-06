@@ -136,7 +136,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Name of Hospital" mandatory="true"/>
+        <iais:field width="5" value="Name of Hospital" id="hecReviewedHospitalLabel"  mandatory="${sexualSterilizationDto.reviewedByHec ==true ? true : false}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input type="text" maxLength="100" name="hecReviewedHospital" value="${sexualSterilizationDto.hecReviewedHospital}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewedHospital"></span>
@@ -182,10 +182,11 @@
         $('input[name=reviewedByHec]').change(function () {
             if($('#genderMale').is(':checked')){
                 $('#hecReviewDateLabel').append('<span class="mandatory">&nbsp;*</span>');
+                $('#hecReviewedHospitalLabel').append('<span class="mandatory">&nbsp;*</span>');
             }
             if($('#genderFemale').is(':checked')){
                 $('#hecReviewDateLabel').find('.mandatory').remove();
-
+                $('#hecReviewedHospitalLabel').find('.mandatory').remove();
             }
 
         });
