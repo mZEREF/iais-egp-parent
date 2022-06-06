@@ -1105,7 +1105,6 @@ public class HcsaApplicationDelegator {
         String stageId = result[0];
         String wrkGpId = result[1];
         String userId = result[2];
-        String roleId = result[3];
         OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
         userId=user.getId();
         //do roll back
@@ -1114,7 +1113,7 @@ public class HcsaApplicationDelegator {
         } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInspAo1AndIns(bpc, roleId, wrkGpId, userId);
+            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, wrkGpId, userId);
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
