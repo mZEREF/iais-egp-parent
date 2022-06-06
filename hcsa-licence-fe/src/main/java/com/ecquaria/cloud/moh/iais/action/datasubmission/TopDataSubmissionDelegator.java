@@ -54,7 +54,7 @@ public class TopDataSubmissionDelegator {
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
-    private static String COUNSELLING = null;
+    //private static String COUNSELLING = null;
 
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
@@ -289,10 +289,10 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
-        if(StringUtil.isEmpty(COUNSELLING)){
-          COUNSELLING = dsLicenceService.getCounselling();
-        }
-        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
+//        if(StringUtil.isEmpty(COUNSELLING)){
+//          COUNSELLING = dsLicenceService.getCounselling();
+//        }
+//        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
     }
 
 

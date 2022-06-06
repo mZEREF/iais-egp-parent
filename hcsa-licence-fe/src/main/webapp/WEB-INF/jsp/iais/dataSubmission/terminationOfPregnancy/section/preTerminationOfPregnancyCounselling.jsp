@@ -263,7 +263,7 @@
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>
-<%@include file="../common/topCounselling.jsp" %>
+<%--<%@include file="../common/topCounselling.jsp" %>--%>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
         <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-dialog-centered" role="document">
