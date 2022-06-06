@@ -230,7 +230,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("minNum","0");
                 repMap.put("maxNum","99");
-            repMap.put("field","This field");
+                repMap.put("field","This field");
                 String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("otherDiscardedNum", errMsg);
             }

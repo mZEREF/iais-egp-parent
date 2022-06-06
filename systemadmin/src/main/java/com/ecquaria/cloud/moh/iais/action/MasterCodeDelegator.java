@@ -938,7 +938,6 @@ public class MasterCodeDelegator {
         String dateReplace = dateStr.replace(" "," at ");
         String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
-
     }
 
     /**
