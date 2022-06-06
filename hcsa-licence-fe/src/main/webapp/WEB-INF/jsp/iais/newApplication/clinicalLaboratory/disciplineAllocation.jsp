@@ -2,12 +2,18 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <style>
   @media only screen and (min-width : 993px) {
-      td:nth-of-type(1) {
-        width: 28%;
-      }
-      td:nth-of-type(3), td:nth-of-type(4) {
-        width: 25%;
-      }
+    .discipline-table th:nth-last-of-type(4) {
+      width: 28%;
+    }
+    .discipline-table th:nth-last-of-type(3) {
+      width: 22%;
+    }
+    .discipline-table th:nth-last-of-type(2) {
+      width: 25%;
+    }
+    .discipline-table th:nth-last-of-type(1) {
+      width: 25%;
+    }
   }
 </style>
 
@@ -110,7 +116,6 @@
         </c:forEach>
         </tbody>
       </c:forEach>
-
 
     </table>
     <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>

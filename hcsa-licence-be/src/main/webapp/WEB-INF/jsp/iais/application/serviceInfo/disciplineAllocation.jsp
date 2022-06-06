@@ -3,16 +3,16 @@
 
 <style>
   @media only screen and (min-width : 993px) {
-    td:nth-last-of-type(4) {
+    .discipline-table th:nth-last-of-type(4) {
       width: 28%;
     }
-    td:nth-last-of-type(3) {
+    .discipline-table th:nth-last-of-type(3) {
       width: 22%;
     }
-    td:nth-last-of-type(2) {
+    .discipline-table th:nth-last-of-type(2) {
       width: 25%;
     }
-    td:nth-last-of-type(1) {
+    .discipline-table th:nth-last-of-type(1) {
       width: 25%;
     }
   }
@@ -117,7 +117,6 @@
         </c:forEach>
         </tbody>
       </c:forEach>
-
 
     </table>
     <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>
