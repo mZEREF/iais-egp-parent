@@ -32,7 +32,7 @@
                                                    id="infoa"
                                                    aria-controls="tabInfo"
                                                    role="tab"
-                                                   data-toggle="tab">Info</a></li>
+                                                   data-toggle="tab">Information</a></li>
                                             <li class="complete" id="document" role="presentation">
                                                 <a href="#tabDocuments"
                                                    id="documenta"
@@ -48,7 +48,7 @@
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
                                                                              role="tab"
-                                                                             data-toggle="tab">Info</a></div>
+                                                                             data-toggle="tab">Information</a></div>
                                                 <div class="swiper-slide"><a href="#tabDocuments" id="doDocument"
                                                                              aria-controls="tabDocuments"
                                                                              role="tab" data-toggle="tab">Documents</a></div>

@@ -29,7 +29,7 @@
                                                        id="infoa"
                                                        aria-controls="tabInfo"
                                                        role="tab"
-                                                       data-toggle="tab">Info</a>
+                                                       data-toggle="tab">Information</a>
                                                 </li>
                                                 <li class="incomplete" id="process" role="presentation">
                                                     <a href="#tabProcessing" id="processa"
@@ -40,7 +40,7 @@
                                                 <div class="swiper-wrapper" role="tablist">
                                                     <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
                                                                                  role="tab"
-                                                                                 data-toggle="tab">Info</a></div>
+                                                                                 data-toggle="tab">Information</a></div>
                                                     <div class="swiper-slide"><a href="#tabProcessing" id="doProcess"
                                                                                  aria-controls="tabProcessing"
                                                                                  role="tab"

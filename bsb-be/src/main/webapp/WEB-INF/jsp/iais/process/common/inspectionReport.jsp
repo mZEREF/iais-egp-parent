@@ -1,15 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
-<%@page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
-<style>
-    .report-sub-title > h4 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: black;
-        margin: 0;
-    }
-</style>
 <%--@elvariable id="reportDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto"--%>
 <c:choose>
     <c:when test="${reportDto eq null}">
@@ -23,8 +15,10 @@
         <br/>
         <br/>
         <div class="tab-pane" id="tabInspection" role="tabpanel">
-            <div class="alert alert-info report-sub-title" role="alert">
-                <h4 style="border-bottom: none">Section A (Facility Details)</h4>
+            <div class="alert alert-info" role="alert">
+                <strong>
+                    <h4 style="border-bottom: none">Section A (Facility Details)</h4>
+                </strong>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -32,7 +26,6 @@
                         <table aria-describedby="" class="table">
                             <thead style="display: none">
                             <tr>
-                                <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -61,8 +54,10 @@
                 </div>
             </div>
 
-            <div class="alert alert-info report-sub-title" role="alert">
-                <h4 style="border-bottom: none">Section B (Inspection Details)</h4>
+            <div class="alert alert-info" role="alert">
+                <strong>
+                    <h4 style="border-bottom: none">Section B (Inspection Details)</h4>
+                </strong>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -70,7 +65,6 @@
                         <table aria-describedby="" class="table">
                             <thead style="display: none">
                             <tr>
-                                <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -94,92 +88,67 @@
                     </div>
                 </div>
             </div>
-
-            <div class="alert alert-info report-sub-title" role="alert">
-                <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
+            <div class="alert alert-info" role="alert">
+                <strong>
+                    <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
+                </strong>
             </div>
-
             <div class="row">
                 <div class="col-xs-12">
                     <div class="table-gp">
+                        <div class="text">
+                            <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
+                        </div>
                         <table aria-describedby="" class="table">
                             <thead style="display: none">
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col"></th>
                             </tr>
                             </thead>
                             <tr>
-                                <td colspan="2" style="font-weight:bold">Part I: Inspection Checklist</td>
+                                <td class="col-xs-4">
+                                    <p>Checklist Used</p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <p><c:out value="${reportDto.checkListUsed}"/></p>
+                                </td>
                             </tr>
-                            <tr>
-                                <td class="col-4">Checklist Used</td>
-                                <td><c:out value="${reportDto.checkListUsed}"/></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="font-weight:bold">Part II: Findings/Observations</td>
-                            </tr>
-                            <tr>
-                                <td>Observation</td>
-                                <td><c:out value="${reportDto.observation}"/></td>
-                            </tr>
-                            <tr>
-                                <td>Remarks</td>
-                                <td><c:out value="${reportDto.observationRemarks}"/></td>
-                            </tr>
-                            <c:if test="${(reportDto.checkListItemGeneralList ne null && reportDto.checkListItemGeneralList.size() > 0) || (reportDto.checkListItemBsbList ne null && reportDto.checkListItemBsbList.size() > 0)}">
-                            <tr>
-                                <td>Checklist Item</td>
-                                <td>
-                                    <c:if test="${reportDto.checkListItemGeneralList ne null && reportDto.checkListItemGeneralList.size() > 0}">
-                                    <div class="table-gp">
-                                        <p>General Regulation</p>
-                                        <table aria-describedby="" class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col" style="width:5%">S/N</th>
-                                                <th scope="col" style="width:15%">Item Description</th>
-                                                <th scope="col" style="width:15%">Findings/Non-Compliance</th>
-                                                <th scope="col" style="width:15%">Action Required</th>
-                                                <th scope="col" style="width:15%">Rectified?</th>
-                                                <th scope="col" style="width:15%">Applicant's Input</th>
-                                                <th scope="col" style="width:20%">Exclude from Applicant Version</th>
-                                            </tr>
-                                            </thead>
-                                            <c:forEach var="checkList" items="${reportDto.checkListItemGeneralList}" varStatus="status">
-                                                <tr>
-                                                    <td>1.${status.count}</td>
-                                                    <td><c:out value="${checkList.itemDescription}"/></td>
-                                                    <td><c:out value="${checkList.finding}"/></td>
-                                                    <td><c:out value="${checkList.actionRequired}"/></td>
-                                                    <td>
-                                                        <c:choose>
-                                                            <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
-                                                            <c:otherwise>No</c:otherwise>
-                                                        </c:choose>
-                                                    </td>
-                                                    <td><c:out value="${checkList.applicantInput}"/></td>
-                                                    <td>
-                                                        <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if> data-type="reportInput" disabled="disabled">
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                        </table>
-                                    </div>
-                                    </c:if>
-                                    <c:if test="${reportDto.checkListItemBsbList ne null && reportDto.checkListItemBsbList.size() > 0}">
-                                    <div class="table-gp">
+                        </table>
+                        <div class="text">
+                            <p><h4><strong><span>Part II: Findings/Observations</span></strong></h4></p>
+                        </div>
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table">
+                                <thead style="display: none">
+                                <tr>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td>Observation</td>
+                                    <td><c:out value="${reportDto.observation}"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Remarks</td>
+                                    <td><c:out value="${reportDto.observationRemarks}"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-xs-4">
+                                        <p>Checklist Item</p>
+                                    </td>
+                                    <td class="col-xs-8">
                                         <p>BSB Regulation</p>
+                                        <c:if test="${reportDto.checkListItemBsbList ne null && reportDto.checkListItemBsbList.size() > 0}">
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
-                                                <th scope="col" style="width:5%">S/N</th>
-                                                <th scope="col" style="width:15%">Item Description</th>
-                                                <th scope="col" style="width:15%">Findings/Non-Compliance</th>
-                                                <th scope="col" style="width:15%">Action Required</th>
-                                                <th scope="col" style="width:15%">Rectified?</th>
-                                                <th scope="col" style="width:15%">Applicant's Input</th>
-                                                <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                                <th scope="col">S/N</th>
+                                                <th scope="col">Item Description</th>
+                                                <th scope="col">Findings/Non-Compliance</th>
+                                                <th scope="col">Action Required</th>
+                                                <th scope="col">Rectified?</th>
+                                                <th scope="col">Applicant's Input</th>
+                                                <th scope="col">Exclude from Applicant Version</th>
                                             </tr>
                                             </thead>
                                             <c:forEach var="checkList" items="${reportDto.checkListItemBsbList}" varStatus="status">
@@ -201,28 +170,39 @@
                                                 </tr>
                                             </c:forEach>
                                         </table>
-                                    </div>
-                                    </c:if>
-                                </td>
-                            </tr>
-                            </c:if>
-                            <c:if test="${reportDto.followUpItemGeneralList ne null && reportDto.followUpItemGeneralList.size() > 0}">
-                            <tr>
-                                <td colspan="2" style="font-weight:bold">Part III: Follow-Up Item</td>
-                            </tr>
-                            <tr>
-                                <td>Follow-up Items</td>
-                                <td>
-                                    <div class="table-gp">
-                                        <p>General Regulation</p>
+                                        </c:if>
+                                        <c:if test="${reportDto.checkListItemBsbList == null}">
+                                            <p>0</p>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="text">
+                            <p><h4><strong><span>Part III: Follow-Up Item</span></strong></h4></p>
+                        </div>
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table">
+                                <thead style="display: none">
+                                <tr>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td class="col-xs-4">
+                                        <p>Follow-up Items</p>
+                                    </td>
+                                    <td class="col-xs-8">
+                                        <p>BSB Regulation</p>
+                                        <c:if test="${reportDto.followUpItemGeneralList ne null && reportDto.followUpItemGeneralList.size() > 0}">
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
-                                                <th scope="col" style="width:5%">S/N</th>
-                                                <th scope="col" style="width:25%">Item Description</th>
-                                                <th scope="col" style="width:25%">Observations for Follow-up</th>
-                                                <th scope="col" style="width:25%">Action Required</th>
-                                                <th scope="col" style="width:20%">Deadline</th>
+                                                <th scope="col">S/N</th>
+                                                <th scope="col">Item Description</th>
+                                                <th scope="col">Observations for Follow-up</th>
+                                                <th scope="col">Action Required</th>
+                                                <th scope="col">Deadline</th>
                                             </tr>
                                             </thead>
                                             <c:forEach var="followUp" items="${reportDto.followUpItemGeneralList}" varStatus="status">
@@ -235,16 +215,21 @@
                                                 </tr>
                                             </c:forEach>
                                         </table>
-                                    </div>
-                                </td>
-                            </tr>
-                            </c:if>
-                        </table>
+                                        </c:if>
+                                        <c:if test="${reportDto.followUpItemGeneralList == null}">
+                                        <p>0</p>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="alert alert-info report-sub-title" role="alert">
-                <h4 style="border-bottom: none">Section D (Recommendation)</h4>
+            <div class="alert alert-info" role="alert">
+                <strong>
+                    <h4 style="border-bottom: none">Section D (Recommendation)</h4>
+                </strong>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -252,7 +237,6 @@
                         <table aria-describedby="" class="table">
                             <thead style="display: none">
                             <tr>
-                                <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>

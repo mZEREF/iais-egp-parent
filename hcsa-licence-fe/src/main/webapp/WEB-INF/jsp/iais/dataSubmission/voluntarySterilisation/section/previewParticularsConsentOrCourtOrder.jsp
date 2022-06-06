@@ -1,7 +1,7 @@
+<c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
+<c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
+<c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <c:if test="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002'||treatmentDto.sterilizationReason =='VSSRFS005'}">
-    <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
-    <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
-    <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
     <div class="panel panel-default">
         <div class="panel-heading ${headingSign}">
             <h4 class="panel-title">

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -393,7 +394,17 @@ public final class ExcelWriter {
                 List list= (List) sourceClz.getDeclaredMethod("get" +
                         StringUtils.capitalize(fieldList.getName())).invoke(t);
                 if(IaisCommonUtils.isNotEmpty(list)){
-                    setFieldName(subSourceClz, sheet, cellIndex++, false);
+                    if(sourceClz.equals(subSourceClz)){
+                        Row sheetRowPrevious = sheet.createRow(cellIndex++);
+                        Cell firstCell = sheetRowPrevious.createCell(0);
+                        firstCell.setCellValue("Previous Submissions");
+                        firstCell.setCellStyle(CellStyleHelper.getUnlockStyle());
+
+
+                        sheet.addMergedRegion(new CellRangeAddress(cellIndex-1,cellIndex-1,0,8));
+                    }else {
+                        setFieldName(subSourceClz, sheet, cellIndex++, false);
+                    }
                     for (Object ts : list) {
 
                         Row sheetRowSub = sheet.createRow(cellIndex);
@@ -569,16 +580,18 @@ public final class ExcelWriter {
         if (excelSheetDto.getDefaultRowHeight() != null) {
             sheet.setDefaultRowHeight(excelSheetDto.getDefaultRowHeight());
         }
+
+        List<?> source = excelSheetDto.getSource();
+        Class<?> sourceClass = excelSheetDto.getSourceClass();
+        if (excelSheetDto.isNeedFiled() ) {
+            ExcelSheetProperty property = getSheetPropertyByClz(sourceClass);
+            int startCellIndex = property.startRowIndex();
+            setFieldName(sourceClass, sheet, startCellIndex, false);
+        }
+
         if (excelSheetDto.getWidthMap() != null) {
             for (Map.Entry<Integer, Integer> entry : excelSheetDto.getWidthMap().entrySet()) {
                 sheet.setColumnWidth(entry.getKey(), entry.getValue() * 256);
-            }
-        }
-        List<?> source = excelSheetDto.getSource();
-        Class<?> sourceClass = excelSheetDto.getSourceClass();
-        if (excelSheetDto.isNeedFiled() && excelSheetDto.getFiledRowIndexes() != null) {
-            for (int row : excelSheetDto.getFiledRowIndexes()) {
-                setFieldName(sourceClass, sheet, row, false);
             }
         }
         createCell(source, sourceClass, sheet, excelSheetDto);

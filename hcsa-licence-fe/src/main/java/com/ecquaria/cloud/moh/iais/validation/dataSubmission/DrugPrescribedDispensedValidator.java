@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -58,9 +59,11 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             errorMap.put("showValidatePT", AppConsts.YES);
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
         }
-        if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
-            errorMap.put("showValidateVD", AppConsts.YES);
-            ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+        if(!"true".equals(drugSubmission.getDoctorInformations())){
+            if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                errorMap.put("showValidateVD", AppConsts.YES);
+                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+            }
         }
         //validate the Submission
         result = WebValidationHelper.validateProperty(drugSubmission, profile);
@@ -130,7 +133,14 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 log.error(e.getMessage(),e);
             }
         }
-
+        if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
+            if(StringUtil.isEmpty(drugSubmission.getNurseRegistrationNo())){
+                errorMap.put("nurseRegistrationNo","GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(drugSubmission.getNurseName())){
+                errorMap.put("nurseName","GENERAL_ERR0006");
+            }
+        }
         if(!StringUtil.isEmpty(dispensingDate) && !StringUtil.isEmpty(endDate)){
             try {
                 if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
@@ -164,6 +174,10 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos i-->:"+i));
             if(StringUtil.isEmpty(drugMedicationDto.getBatchNo())){
                 errorMap.put("batchNo"+i, "GENERAL_ERR0006");
+            }
+            if(!StringUtil.isEmpty(drugMedicationDto.getBatchNo())&&drugMedicationDto.getBatchNo().length()>20){
+                String general_err0041 = NewApplicationHelper.repLength("Batch No", "20");
+                errorMap.put("batchNo"+i, general_err0041);
             }
             if(StringUtil.isEmpty(drugMedicationDto.getStrength())){
                 errorMap.put("strength"+i, "GENERAL_ERR0006");
@@ -199,6 +213,14 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
 
             if(StringUtil.isEmpty(drugMedicationDto.getFrequency())){
                 errorMap.put("frequency"+i, "GENERAL_ERR0006");
+            }
+            if(!StringUtil.isEmpty(drugMedicationDto.getFrequency())&&drugMedicationDto.getFrequency().equals("FRE009")){
+                if(StringUtil.isEmpty(drugMedicationDto.getOtherFrequency())){
+                    errorMap.put("otherFrequency"+i, "GENERAL_ERR0006");
+                }else if(drugMedicationDto.getOtherFrequency().length()>100){
+                    String general_err0041 = NewApplicationHelper.repLength("Other-Frequency", "100");
+                    errorMap.put("otherFrequency"+i, general_err0041);
+                }
             }
             i++;
         }

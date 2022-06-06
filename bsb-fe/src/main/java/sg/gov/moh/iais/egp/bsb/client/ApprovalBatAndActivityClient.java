@@ -3,13 +3,25 @@ package sg.gov.moh.iais.egp.bsb.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
@@ -62,4 +74,7 @@ public interface ApprovalBatAndActivityClient {
 
     @GetMapping(path = "/facility-authoriser/selection/{facilityId}", produces = MediaType.APPLICATION_JSON_VALUE)
     Map<String, FacilityAuthoriserDto> getApprovalSelectAuthorisedPersonnelByFacId(@PathVariable("facilityId") String facilityId);
+
+    @GetMapping(path = "/register/bat-and-activity-approval/draft/same-facility-processType", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovalBatAndActivityDto> getSameFacilityAndProcessTypeDraftData(@RequestParam("facId") String facId, @RequestParam("processType") String processType);
 }

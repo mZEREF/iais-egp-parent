@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
@@ -117,72 +116,7 @@ public class OnlineDsAjaxController {
         String patientCode = request.getParameter("patientCode");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientCode)){
-            SearchParam searchParam = new SearchParam(AssistedReproductionEnquiryAjaxPatientResultsDto.class.getName());
-            searchParam.setPageSize(Integer.MAX_VALUE);
-            searchParam.setPageNo(0);
-            searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
-            //set filter
-            SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
-            searchParam.setFilters(searchParamFather.getFilters());
-            searchParam.setParams(searchParamFather.getParams());
-            searchParam.addFilter("patientCode", patientCode, true);
-            //search
-            QueryHelp.setMainSql("onlineEnquiry", "searchPatientAjaxByAssistedReproduction", searchParam);
-            SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto> searchResult = assistedReproductionService.searchPatientAjaxByParam(searchParam);
-            List<AssistedReproductionEnquiryAjaxPatientResultsDto> arAjaxList=searchResult.getRows();
-            for (AssistedReproductionEnquiryAjaxPatientResultsDto ajax:arAjaxList
-                 ) {
-                String coFunding="";
-                String arTreatment="";
-
-                if(ajax.getTreatmentFreshNatural()!=null&&ajax.getTreatmentFreshNatural()){
-                    arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL);
-                }
-                if(ajax.getTreatmentFreshStimulated()!=null&&ajax.getTreatmentFreshStimulated()){
-                    if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+", ";
-                    }
-                    arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED);
-                }
-                if(ajax.getTreatmentFrozenEmbryo()!=null&&ajax.getTreatmentFrozenEmbryo()){
-                    if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+", ";
-                    }
-                    arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_EMBRYO_CYCLE);
-
-                }
-                if(ajax.getTreatmentFrozenOocyte()!=null&&ajax.getTreatmentFrozenOocyte()){
-                    if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+", ";
-                    }
-                    arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_OOCYTE_CYCLE);
-                }
-                if(StringUtil.isNotEmpty(ajax.getArCoFunding())){
-                    coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getArCoFunding());
-                }
-                if(StringUtil.isNotEmpty(ajax.getIuiCoFunding())){
-                    if(!"".equals(coFunding)){
-                        coFunding=coFunding+", ";
-                    }
-                    coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getIuiCoFunding());
-
-                }
-                if(StringUtil.isNotEmpty(ajax.getPgtCoFunding())){
-                    if(!"".equals(coFunding)){
-                        coFunding=coFunding+", ";
-                    }
-                    coFunding=coFunding+ajax.getPgtCoFunding();
-                }
-                if("".equals(arTreatment)){
-                    arTreatment="-";
-                }
-                if("".equals(coFunding)){
-                    coFunding="-";
-                }
-                ajax.setArTreatment(arTreatment);
-                ajax.setCoFunding(coFunding);
-                ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
-            }
+            SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto> searchResult = patientDetail(request,patientCode);
             if(searchResult.getRowCount()>0){
                 map.put("result", "Success");
             }else {
@@ -193,6 +127,76 @@ public class OnlineDsAjaxController {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto>  patientDetail(HttpServletRequest request, String patientCode ){
+        SearchParam searchParam = new SearchParam(AssistedReproductionEnquiryAjaxPatientResultsDto.class.getName());
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        searchParam.setPageNo(0);
+        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
+        //set filter
+        SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
+        searchParam.setFilters(searchParamFather.getFilters());
+        searchParam.setParams(searchParamFather.getParams());
+        searchParam.addFilter("patientCode", patientCode, true);
+        //search
+        QueryHelp.setMainSql("onlineEnquiry", "searchPatientAjaxByAssistedReproduction", searchParam);
+        SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto> searchResult = assistedReproductionService.searchPatientAjaxByParam(searchParam);
+        List<AssistedReproductionEnquiryAjaxPatientResultsDto> arAjaxList=searchResult.getRows();
+        for (AssistedReproductionEnquiryAjaxPatientResultsDto ajax:arAjaxList
+        ) {
+            String coFunding="";
+            String arTreatment="";
+
+            if(ajax.getTreatmentFreshNatural()!=null&&ajax.getTreatmentFreshNatural()){
+                arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL);
+            }
+            if(ajax.getTreatmentFreshStimulated()!=null&&ajax.getTreatmentFreshStimulated()){
+                if(!"".equals(arTreatment)){
+                    arTreatment=arTreatment+", ";
+                }
+                arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED);
+            }
+            if(ajax.getTreatmentFrozenEmbryo()!=null&&ajax.getTreatmentFrozenEmbryo()){
+                if(!"".equals(arTreatment)){
+                    arTreatment=arTreatment+", ";
+                }
+                arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_EMBRYO_CYCLE);
+
+            }
+            if(ajax.getTreatmentFrozenOocyte()!=null&&ajax.getTreatmentFrozenOocyte()){
+                if(!"".equals(arTreatment)){
+                    arTreatment=arTreatment+", ";
+                }
+                arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_OOCYTE_CYCLE);
+            }
+            if(StringUtil.isNotEmpty(ajax.getArCoFunding())){
+                coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getArCoFunding());
+            }
+            if(StringUtil.isNotEmpty(ajax.getIuiCoFunding())){
+                if(!"".equals(coFunding)){
+                    coFunding=coFunding+", ";
+                }
+                coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getIuiCoFunding());
+
+            }
+            if(StringUtil.isNotEmpty(ajax.getPgtCoFunding())){
+                if(!"".equals(coFunding)){
+                    coFunding=coFunding+", ";
+                }
+                coFunding=coFunding+ajax.getPgtCoFunding();
+            }
+            if("".equals(arTreatment)){
+                arTreatment="-";
+            }
+            if("".equals(coFunding)){
+                coFunding="-";
+            }
+            ajax.setArTreatment(arTreatment);
+            ajax.setCoFunding(coFunding);
+            ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
+        }
+        return searchResult;
     }
 
 
@@ -230,29 +234,9 @@ public class OnlineDsAjaxController {
         String patientIdType = request.getParameter("patientIdType");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
-            FilterParameter topParameter = new FilterParameter.Builder()
-                    .clz(DsTopEnquiryResultsDto.class)
-                    .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
+            SearchResult<DsTopEnquiryResultsDto> results=topDetail(request,patientIdNo,patientIdType);
 
-
-            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-
-            filter.put("patientIdType", patientIdType);
-            filter.put("patientIdNo",patientIdNo);
-            topParameter.setFilters(filter);
-            SearchParam searchParam = SearchResultHelper.getSearchParam(request, topParameter,true);
-            QueryHelp.setMainSql("onlineEnquiry", "searchTopAjax",searchParam);
-
-            SearchResult<DsTopEnquiryResultsDto> results = assistedReproductionService.searchDsTopByParam(searchParam);
-            List<DsTopEnquiryResultsDto> queryList = null;
             if (!Objects.isNull(results)){
-                 queryList = results.getRows();
-                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-                queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
-                queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-                queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
-                queryList.forEach(i -> i.setDoctorRegnNo(i.getDoctorRegnNo()==null?"":i.getDoctorRegnNo()));
-                queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
                 map.put("result", "Success");
             }else {
                 map.put("result", "Fail");
@@ -262,6 +246,34 @@ public class OnlineDsAjaxController {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private SearchResult<DsTopEnquiryResultsDto> topDetail(HttpServletRequest request, String patientIdNo,String patientIdType){
+        FilterParameter topParameter = new FilterParameter.Builder()
+                .clz(DsTopEnquiryResultsDto.class)
+                .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
+
+
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+
+        filter.put("patientIdType", patientIdType);
+        filter.put("patientIdNo",patientIdNo);
+        topParameter.setFilters(filter);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, topParameter,true);
+        QueryHelp.setMainSql("onlineEnquiry", "searchTopAjax",searchParam);
+
+        SearchResult<DsTopEnquiryResultsDto> results = assistedReproductionService.searchDsTopByParam(searchParam);
+        List<DsTopEnquiryResultsDto> queryList = null;
+        if (!Objects.isNull(results)){
+            queryList = results.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+            queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+            queryList.forEach(i -> i.setDoctorRegnNo(i.getDoctorRegnNo()==null?"":i.getDoctorRegnNo()));
+            queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
+        }
+        return results;
     }
 
     @RequestMapping(value = "vssDetail.do", method = RequestMethod.POST)
@@ -272,29 +284,9 @@ public class OnlineDsAjaxController {
         String patientIdType = request.getParameter("patientIdType");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientIdNo)&&!StringUtil.isEmpty(patientIdType)){
-            FilterParameter vssParameter = new FilterParameter.Builder()
-                    .clz(DsVssEnquiryResultsDto.class)
-                    .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
 
-
-            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-
-            filter.put("patientIdType", patientIdType);
-            filter.put("patientIdNo",patientIdNo);
-            vssParameter.setFilters(filter);
-            SearchParam searchParam = SearchResultHelper.getSearchParam(request, vssParameter,true);
-            QueryHelp.setMainSql("onlineEnquiry", "searchVssByAjax",searchParam);
-
-            SearchResult<DsVssEnquiryResultsDto> results = assistedReproductionService.searchDsVssByParam(searchParam);
-            List<DsVssEnquiryResultsDto> queryList = null;
+            SearchResult<DsVssEnquiryResultsDto> results=vssDetail(request,patientIdNo,patientIdType);
             if (!Objects.isNull(results)){
-                queryList = results.getRows();
-                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-                queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
-                queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-                queryList.forEach(i -> i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus())));
-                queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
-                queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
                 map.put("result", "Success");
             }else {
                 map.put("result", "Fail");
@@ -306,6 +298,34 @@ public class OnlineDsAjaxController {
         return map;
     }
 
+    private SearchResult<DsVssEnquiryResultsDto>  vssDetail(HttpServletRequest request,String patientIdNo ,String patientIdType){
+        FilterParameter vssParameter = new FilterParameter.Builder()
+                .clz(DsVssEnquiryResultsDto.class)
+                .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(0).pageSize(Integer.MAX_VALUE).build();
+
+
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+
+        filter.put("patientIdType", patientIdType);
+        filter.put("patientIdNo",patientIdNo);
+        vssParameter.setFilters(filter);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, vssParameter,true);
+        QueryHelp.setMainSql("onlineEnquiry", "searchVssByAjax",searchParam);
+
+        SearchResult<DsVssEnquiryResultsDto> results = assistedReproductionService.searchDsVssByParam(searchParam);
+        List<DsVssEnquiryResultsDto> queryList = null;
+        if (!Objects.isNull(results)){
+            queryList = results.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+            queryList.forEach(i -> i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus())));
+            queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
+            queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
+        }
+        return results;
+    }
+
     @RequestMapping(value = "drpDetail.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> drpDetailAjax(HttpServletRequest request, HttpServletResponse response) {
@@ -313,22 +333,10 @@ public class OnlineDsAjaxController {
         String patientCode = request.getParameter("patientCode");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(patientCode)){
-            SearchParam searchParam = new SearchParam(DsDrpEnquiryAjaxResultsDto.class.getName());
-            searchParam.setPageSize(Integer.MAX_VALUE);
-            searchParam.setPageNo(0);
-            searchParam.setSort("SUBMIT_DT", SearchParam.DESCENDING);
-            searchParam.addFilter("patientCode", patientCode, true);
-            //search
-            QueryHelp.setMainSql("onlineEnquiry", "searchByDrpAjax", searchParam);
-            SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = assistedReproductionService.searchDrpAjaxByParam(searchParam);
-            List<DsDrpEnquiryAjaxResultsDto> queryList = null;
-            if (!Objects.isNull(searchResult)){
-                queryList = searchResult.getRows();
-                queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-                queryList.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
-                queryList.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
-                queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
 
+            SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = drpDetail(request,patientCode);
+
+            if(searchResult.getRowCount()>0){
                 map.put("result", "Success");
             }else {
                 map.put("result", "Fail");
@@ -338,6 +346,27 @@ public class OnlineDsAjaxController {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private SearchResult<DsDrpEnquiryAjaxResultsDto> drpDetail(HttpServletRequest request,String patientCode){
+        SearchParam searchParam = new SearchParam(DsDrpEnquiryAjaxResultsDto.class.getName());
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        searchParam.setPageNo(0);
+        searchParam.setSort("SUBMIT_DT", SearchParam.DESCENDING);
+        searchParam.addFilter("patientCode", patientCode, true);
+        //search
+        QueryHelp.setMainSql("onlineEnquiry", "searchByDrpAjax", searchParam);
+        SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = assistedReproductionService.searchDrpAjaxByParam(searchParam);
+        List<DsDrpEnquiryAjaxResultsDto> queryList = null;
+        if (!Objects.isNull(searchResult)){
+            queryList = searchResult.getRows();
+            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
+            queryList.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
+            queryList.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
+            queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+
+        }
+        return searchResult;
     }
 
     @GetMapping(value = "PatientInfo-SearchResults-DownloadS")
@@ -363,12 +392,20 @@ public class OnlineDsAjaxController {
 
         if (!Objects.isNull(results)){
             List<AssistedReproductionEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-            queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
+            for (AssistedReproductionEnquiryResultsDto ar:queryList
+                 ) {
+                if(StringUtil.isNotEmpty(ar.getCdPatientCode())){
+                    SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto> searchResult = patientDetail(request,ar.getCdPatientCode());
+                    ar.setAjaxResultsDto(searchResult.getRows());
+                }
+
+                ar.setPatientIdType(MasterCodeUtil.getCodeDesc(ar.getPatientIdType()));
+                ar.setPatientNationality(MasterCodeUtil.getCodeDesc(ar.getPatientNationality()));
+                ar.setPatientDateBirthStr(Formatter.formatDateTime(ar.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT));
+            }
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, AssistedReproductionEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");
+                file = ExcelWriter.writerToExcelSubHead(queryList, AssistedReproductionEnquiryResultsDto.class, AssistedReproductionEnquiryAjaxPatientResultsDto.class ,"PatientInfo_SearchResults_DownloadS");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
@@ -434,44 +471,6 @@ public class OnlineDsAjaxController {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-    @GetMapping(value = "PatientInfo-Adv-SearchResults-DownloadS")
-    public @ResponseBody
-    void filePatientInfoAdvHandler(HttpServletRequest request, HttpServletResponse response) {
-        log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        File file = null;
-
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientAdvParam");
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-
-        log.debug("indicates that a record has been selected ");
-
-        QueryHelp.setMainSql("onlineEnquiry", "advancedSearchPatientByAssistedReproduction",searchParam);
-
-        SearchResult<AssistedReproductionAdvEnquiryResultsDto> results = assistedReproductionService.searchPatientAdvByParam(searchParam);
-
-        if (!Objects.isNull(results)){
-            List<AssistedReproductionAdvEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-            queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setCycleStartDateStr(Formatter.formatDateTime(i.getCycleStartDate(), AppConsts.DEFAULT_DATE_FORMAT)));
-
-            try {
-                file = ExcelWriter.writerToExcel(queryList, AssistedReproductionAdvEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");
-            } catch (Exception e) {
-                log.error("=======>fileHandler error >>>>>", e);
-            }
-        }
-
-        try {
-            FileUtils.writeFileResponseContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-    }
 
     @GetMapping(value = "DonorSample-SearchResults-DownloadS")
     public @ResponseBody
@@ -565,12 +564,23 @@ public class OnlineDsAjaxController {
 
         if (!Objects.isNull(results)){
             List<DsTopEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
+
+            for (DsTopEnquiryResultsDto i:queryList
+                 ) {
+                if(!StringUtil.isEmpty(i.getPatientIdNo())&&!StringUtil.isEmpty(i.getPatientIdType())){
+                    SearchResult<DsTopEnquiryResultsDto> searchResult=topDetail(request,i.getPatientIdNo(),i.getPatientIdType());
+                    if(searchResult!=null){
+                        i.setAjaxResultsDto(searchResult.getRows());
+                    }
+                }
+                i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));
+                i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT));
+                i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType()));
+            }
+
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, DsTopEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
+                file = ExcelWriter.writerToExcelSubHead(queryList, DsTopEnquiryResultsDto.class,DsTopEnquiryResultsDto.class, "TerminationOfPregnancy_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
@@ -603,14 +613,23 @@ public class OnlineDsAjaxController {
 
         if (!Objects.isNull(results)){
             List<DsVssEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT)));
-            queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
-            queryList.forEach(i -> i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus())));
-            queryList.forEach(i -> i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason())));
+            for (DsVssEnquiryResultsDto i:queryList
+                 ) {
+                if(!StringUtil.isEmpty(i.getPatientIdNo())&&!StringUtil.isEmpty(i.getPatientIdType())){
+                    SearchResult<DsVssEnquiryResultsDto> searchResult=vssDetail(request,i.getPatientIdNo(),i.getPatientIdType());
+                    if(searchResult!=null){
+                        i.setAjaxResultsDto(searchResult.getRows());
+                    }
+                }
+                i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));
+                i.setPatientBirthdayStr(Formatter.formatDateTime(i.getPatientBirthday(), AppConsts.DEFAULT_DATE_FORMAT));
+                i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType()));
+                i.setMaritalStatus(MasterCodeUtil.getCodeDesc(i.getMaritalStatus()));
+                i.setSterilisationReason(MasterCodeUtil.getCodeDesc(i.getSterilisationReason()));
+            }
 
             try {
-                file = ExcelWriter.writerToExcel(queryList, DsVssEnquiryResultsDto.class, "VoluntarySterilisation_SearchResults_Download");
+                file = ExcelWriter.writerToExcelSubHead(queryList, DsVssEnquiryResultsDto.class, DsVssEnquiryResultsDto.class, "VoluntarySterilisation_SearchResults_Download");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
@@ -646,23 +665,8 @@ public class OnlineDsAjaxController {
             for (DsDrpEnquiryResultsDto drp:queryList
                  ) {
                 if(StringUtil.isNotEmpty(drp.getCdPatientCode())){
-                    SearchParam searchParamAjax = new SearchParam(DsDrpEnquiryAjaxResultsDto.class.getName());
-                    searchParamAjax.setPageSize(Integer.MAX_VALUE);
-                    searchParamAjax.setPageNo(0);
-                    searchParamAjax.setSort("SUBMIT_DT", SearchParam.DESCENDING);
-                    searchParamAjax.addFilter("patientCode", drp.getPatientCode(), true);
-                    //search
-                    QueryHelp.setMainSql("onlineEnquiry", "searchByDrpAjax", searchParamAjax);
-                    SearchResult<DsDrpEnquiryAjaxResultsDto> searchResultAjax = assistedReproductionService.searchDrpAjaxByParam(searchParamAjax);
-                    List<DsDrpEnquiryAjaxResultsDto> queryListAjax = null;
-                    if (!Objects.isNull(searchResultAjax)){
-                        queryListAjax = searchResultAjax.getRows();
-                        queryListAjax.forEach(i -> i.setSubmitDtStr(Formatter.formatDateTime(i.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT)));
-                        queryListAjax.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
-                        queryListAjax.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
-                        queryListAjax.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
-                        drp.setAjaxResultsDto(queryListAjax);
-                    }
+                    SearchResult<DsDrpEnquiryAjaxResultsDto> searchResult = drpDetail(request,drp.getPatientCode());
+                    drp.setAjaxResultsDto(searchResult.getRows());
                 }
 
                 drp.setSubmitDtStr(Formatter.formatDateTime(drp.getSubmitDt(), AppConsts.DEFAULT_DATE_FORMAT));

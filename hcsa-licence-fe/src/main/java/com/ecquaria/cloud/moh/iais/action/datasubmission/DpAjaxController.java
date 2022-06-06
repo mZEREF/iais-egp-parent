@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -42,8 +43,6 @@ public class DpAjaxController {
     @Autowired
     private AppSubmissionService appSubmissionService;
 
-    @Autowired
-    private DpDataSubmissionService dpDataSubmissionService;
 
 
     @PostMapping(value = "/retrieve-identification")
@@ -92,21 +91,7 @@ public class DpAjaxController {
         result.put("ERR0054", MessageUtil.getMessageDesc("GENERAL_ERR0054"));
         return result;
     }*/
-   @GetMapping(value = "/prg-input-info")
-    public @ResponseBody
-    Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the prgNo start ...."));
-        String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
-        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
-        if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-            DoctorInformationDto doctorInformationDto=dpDataSubmissionService.getDoctorInformationDtoByConds(professionRegoNo);
-            result.put("selection", doctorInformationDto);
-            return result;
-        }
-        result.put("selection", professionalResponseDto);
-        return result;
-    }
+
 
     @ResponseBody
     @PostMapping(value = "/startdispensing-date")

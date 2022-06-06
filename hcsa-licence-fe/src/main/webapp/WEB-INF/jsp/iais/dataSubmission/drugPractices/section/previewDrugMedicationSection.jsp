@@ -54,6 +54,13 @@
                             <iais:code code="${drugMedicationDto.frequency}"/>
                         </iais:value>
                     </iais:row>
+                    <iais:row  style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
+                        <iais:field width="5" value="Other-Frequency"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${drugMedicationDto.otherFrequency}"/>
+                        </iais:value>
+                    </iais:row>
+
                 </c:forEach>
                 <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
                 <iais:row>

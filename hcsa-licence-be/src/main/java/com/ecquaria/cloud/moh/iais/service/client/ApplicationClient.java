@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
@@ -423,4 +424,11 @@ public interface ApplicationClient {
     FeignResponseEntity<AppGroupMiscDto> getAppGrpMiscByAppGrpIdTypeStatus(@PathVariable(name = "appGrpId") String appGrpId,
                                                                              @PathVariable(name = "miscType") String miscType,
                                                                              @PathVariable(name = "status") String status);
+
+    @GetMapping(value = "/iais-application-be/check-application/{appGrpNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(@PathVariable(name = "appGrpNo") String appGrpNo);
+
+    @GetMapping(value = "/iais-application-be/monitoring-app-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto();
+
 }

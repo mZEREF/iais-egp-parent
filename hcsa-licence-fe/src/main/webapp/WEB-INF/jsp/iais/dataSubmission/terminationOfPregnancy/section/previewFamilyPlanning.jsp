@@ -117,7 +117,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
+                <div <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP007' && familyPlanDto.subRopReason != 'TOPSCTP008')}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">

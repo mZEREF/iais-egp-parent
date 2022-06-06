@@ -35,12 +35,6 @@
                         <iais:code code="${sexualSterilizationDto.sterilizationMethod}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row  style="${sexualSterilizationDto.sterilizationMethod eq 'VSMOS006' ? '' : 'display: none'}">
-                    <iais:field width="6" value="Other Method of Sterilization" />
-                    <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${sexualSterilizationDto.otherSterilizationMethod}"/>
-                    </iais:value>
-                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Date of Operation" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
@@ -52,6 +46,12 @@
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:if test="${sexualSterilizationDto.reviewedByHec == true}"><c:out value="Yes"/></c:if>
                         <c:if test="${sexualSterilizationDto.reviewedByHec == false}"><c:out value="No"/></c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Name of Hospital" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <iais:code code="${sexualSterilizationDto.hecReviewedHospital}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

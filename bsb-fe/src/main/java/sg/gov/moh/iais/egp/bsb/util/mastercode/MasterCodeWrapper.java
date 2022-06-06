@@ -3,11 +3,13 @@ package sg.gov.moh.iais.egp.bsb.util.mastercode;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.convert.DefaultMasterCodeConverter;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.convert.MasterCodeConverter;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.option.MasterCodeOptionsSupplier;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeListRetriever;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeMapRetriever;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.retrieve.MasterCodeRetriever;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.validation.DefaultMasterCodeValidator;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.validation.MasterCodeValidator;
 
 import java.util.ArrayList;
@@ -15,10 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConverter, MasterCodeOptionsSupplier, MasterCodeValidator {
+public class MasterCodeWrapper implements MasterCodeOptionsSupplier {
     private final String categoryId;
-    private MasterCodeRetriever retriever;
-    public static final String DEFAULT_UNKNOWN = "Unknown";
 
     public MasterCodeWrapper(String categoryId) {
         if (categoryId == null || "".equals(categoryId)) {
@@ -31,95 +31,28 @@ public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConvert
         return categoryId;
     }
 
-    private boolean notLoaded() {
-        return this.retriever == null;
-    }
 
-    /** Load data of the master code category */
-    public void load() {
-        List<MasterCodeView> dataList = MasterCodeUtil.retrieveByCategory(categoryId);
+    /** Return a retriever to retrieve detail info of master code */
+    public MasterCodeRetriever retriever() {
+        MasterCodeRetriever newRetriever;
+        List<MasterCodeView> dataList = MasterCodeUtil.retrieveByCategory(this.categoryId);
         if (dataList.size() > 4) {
-            this.retriever = new MasterCodeMapRetriever(dataList);
+            newRetriever = new MasterCodeMapRetriever(dataList);
         } else {
-            this.retriever = new MasterCodeListRetriever(dataList);
+            newRetriever = new MasterCodeListRetriever(dataList);
         }
+        return newRetriever;
     }
 
-    /** Check if already loaded first, if not, load data */
-    public void tryLoad() {
-        if (notLoaded()) {
-            load();
-        }
+    /** Return a converter to convert between code, value and description */
+    public MasterCodeConverter converter() {
+        return new DefaultMasterCodeConverter(this.categoryId);
     }
 
-    @Override
-    public List<MasterCodeView> retrieveAll() {
-        tryLoad();
-        return retriever.retrieveAll();
-    }
-
-    @Override
-    public MasterCodeView retrieveByCode(String code) {
-        tryLoad();
-        return retriever.retrieveByCode(code);
-    }
-
-    @Override
-    public MasterCodeView retrieveByValue(String value) {
-        tryLoad();
-        return retriever.retrieveByValue(value);
-    }
-
-    @Override
-    public MasterCodeView retrieveByDesc(String desc) {
-        tryLoad();
-        return retriever.retrieveByDesc(desc);
-    }
-
-    @Override
-    public String code2Value(String code) {
-        if (code == null) {
-            return null;
-        }
-        tryLoad();
-        MasterCodeView data = retriever.retrieveByCode(code);
-        return data == null ? DEFAULT_UNKNOWN : data.getCodeValue();
-    }
-
-    @Override
-    public String value2Code(String value) {
-        if (value == null) {
-            return null;
-        }
-        tryLoad();
-        MasterCodeView data = retriever.retrieveByValue(value);
-        return data == null ? DEFAULT_UNKNOWN : data.getCode();
-    }
-
-    @Override
-    public String code2Desc(String code) {
-        if (code == null) {
-            return null;
-        }
-        tryLoad();
-        MasterCodeView data = retriever.retrieveByDesc(code);
-        return data == null ? DEFAULT_UNKNOWN : data.getDescription();
-    }
-
-    @Override
-    public String desc2Code(String desc) {
-        if (desc == null) {
-            return null;
-        }
-        tryLoad();
-        MasterCodeView data = retriever.retrieveByDesc(desc);
-        return data == null ? DEFAULT_UNKNOWN : data.getCode();
-    }
 
     @Override
     public List<SelectOption> allOptions() {
-        tryLoad();
-        List<MasterCodeView> dataList = retriever.retrieveAll();
+        List<MasterCodeView> dataList = MasterCodeUtil.retrieveByCategory(this.categoryId);
         List<SelectOption> options = new ArrayList<>(dataList.size());
         for (MasterCodeView data : dataList) {
             SelectOption option = new SelectOption(data.getCode(), data.getCodeValue());
@@ -133,22 +66,18 @@ public class MasterCodeWrapper implements MasterCodeRetriever, MasterCodeConvert
         if (codes == null) {
             return Collections.emptyList();
         }
-        tryLoad();
+        List<MasterCodeView> dataList = MasterCodeUtil.retrieveByCategory(this.categoryId);
+        MasterCodeRetriever newRetriever = new MasterCodeMapRetriever(dataList);
         List<SelectOption> options = new ArrayList<>(codes.length);
         for (String code : codes) {
-            MasterCodeView data = retriever.retrieveByCode(code);
+            MasterCodeView data = newRetriever.retrieveByCode(code);
             SelectOption option = new SelectOption(data.getCode(), data.getCodeValue());
             options.add(option);
         }
         return options;
     }
 
-    @Override
-    public boolean validate(String code) {
-        if (code == null) {
-            return false;
-        }
-        tryLoad();
-        return retrieveByCode(code) != null;
+    public MasterCodeValidator validator() {
+        return new DefaultMasterCodeValidator(this.categoryId);
     }
 }

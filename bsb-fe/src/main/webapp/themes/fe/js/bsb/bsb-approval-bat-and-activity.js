@@ -191,3 +191,33 @@ function jumpToStep() {
     $("input[name='action_value']").val($(this).attr("data-step-key"));
     $("#mainForm").submit();
 }
+
+function cancelLoadDraftData() {
+    $('#haveData').modal('hide');
+    showWaiting();
+    $("input[name='action_type']").val("jump");
+    $("input[name='action_value']").val("next");
+    $("input[name='action_load_draft']").val("N");
+    $("#mainForm").submit();
+}
+function loadDraftData() {
+    $('#haveData').modal('hide');
+    showWaiting();
+    $("input[name='action_type']").val("jump");
+    $("input[name='action_value']").val("next");
+    $("input[name='action_load_draft']").val("Y");
+    $("#mainForm").submit();
+}
+
+$(function (){
+    $("#continueB").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val("next");
+        $("#mainForm").submit();
+    });
+
+    if ($("#haveSuitableDraftData").val() === 'true') {
+        $('#haveData').modal('show');
+    }
+});

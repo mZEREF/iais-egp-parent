@@ -8,6 +8,7 @@ import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.convert.MasterCodeConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,29 +72,21 @@ public class FacilityAuthoriserFileDto implements Serializable {
     private String externalCompName;
 
 
-    public void value2MasterCode() {
-        this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
-        this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
-        this.employee = MasterCodeConstants.readUpperCaseYesNo(this.employee);
-    }
-
-    public void code2Value() {
-        this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
-        this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
-        this.employee = MasterCodeConstants.displayYesNo(this.employee);
-    }
-
-
     public static List<FacilityAuthoriserDto.FacilityAuthorisedPersonnel> toProcessingDtoList(List<FacilityAuthoriserFileDto> dtoList) {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter salutationConverter = MasterCodeHolder.SALUTATION.converter();
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+
         JMapper<FacilityAuthoriserDto.FacilityAuthorisedPersonnel, FacilityAuthoriserFileDto> jMapper = new JMapper<>(FacilityAuthoriserDto.FacilityAuthorisedPersonnel.class, FacilityAuthoriserFileDto.class);
         List<FacilityAuthoriserDto.FacilityAuthorisedPersonnel> list = new ArrayList<>(dtoList.size());
         for (FacilityAuthoriserFileDto fileDto : dtoList) {
-            fileDto.value2MasterCode();
+            fileDto.salutation = salutationConverter.value2Code(fileDto.salutation);
+            fileDto.idType = idTypeConverter.value2Code(fileDto.getIdType());
+            fileDto.nationality = nationalityConverter.value2Code(fileDto.getNationality());
+            fileDto.employee = MasterCodeConstants.readUpperCaseYesNo(fileDto.employee);
             FacilityAuthoriserDto.FacilityAuthorisedPersonnel dto = jMapper.getDestination(fileDto);
             list.add(dto);
         }
@@ -104,11 +97,18 @@ public class FacilityAuthoriserFileDto implements Serializable {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter salutationConverter = MasterCodeHolder.SALUTATION.converter();
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+
         JMapper<FacilityAuthoriserFileDto, FacilityAuthoriserDto.FacilityAuthorisedPersonnel> jMapper = new JMapper<>(FacilityAuthoriserFileDto.class, FacilityAuthoriserDto.FacilityAuthorisedPersonnel.class);
         List<FacilityAuthoriserFileDto> list = new ArrayList<>(dtoList.size());
         for (FacilityAuthoriserDto.FacilityAuthorisedPersonnel personnel : dtoList) {
             FacilityAuthoriserFileDto dto = jMapper.getDestination(personnel);
-            dto.code2Value();
+            dto.salutation = salutationConverter.code2Value(dto.salutation);
+            dto.idType = idTypeConverter.code2Value(dto.idType);
+            dto.nationality = nationalityConverter.code2Value(dto.nationality);
+            dto.employee = MasterCodeConstants.displayYesNo(dto.employee);
             list.add(dto);
         }
         return list;

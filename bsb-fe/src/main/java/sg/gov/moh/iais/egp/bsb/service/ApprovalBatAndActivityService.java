@@ -23,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
+import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -40,7 +41,14 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -51,10 +59,20 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ELIGIBLE_DRAFT_REGISTER_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ACTION_LOAD_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.HAVE_SUITABLE_DRAFT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_JUMP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SAVE_AS_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_TYPE;
@@ -114,15 +132,17 @@ public class ApprovalBatAndActivityService {
     private final OrganizationInfoClient orgInfoClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
+    private final DraftClient draftClient;
 
     @Autowired
     public ApprovalBatAndActivityService(ApprovalBatAndActivityClient approvalBatAndActivityClient, DocSettingService docSettingService,
-                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, OrganizationInfoClient orgInfoClient) {
+                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, OrganizationInfoClient orgInfoClient, DraftClient draftClient) {
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
         this.docSettingService = docSettingService;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.orgInfoClient = orgInfoClient;
+        this.draftClient = draftClient;
     }
 
 
@@ -147,15 +167,7 @@ public class ApprovalBatAndActivityService {
         HttpServletRequest request = bpc.request;
         //TODO: The facility value will be obtained from another method, and the method will be deleted
         boolean isEnteredInbox = false;
-        ApprovalSelectionDto approvalSelectionDto;
-        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request,KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
-        //enter from save as draft
-        if(approvalBatAndActivityDto != null && approvalBatAndActivityDto.getApprovalSelectionDto() != null){
-            approvalSelectionDto = approvalBatAndActivityDto.getApprovalSelectionDto();
-        }else{
-            //get from session
-            approvalSelectionDto = getApprovalSelectionDto(request);
-        }
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         //come from inbox facility tab
         String maskedFacId = request.getParameter(ApprovalBatAndActivityConstants.KEY_FACILITY_ID);
         if(org.springframework.util.StringUtils.hasLength(maskedFacId) || approvalSelectionDto.isEnteredInbox()){
@@ -184,36 +196,82 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request,KEY_APPROVAL_SELECTION_DTO,approvalSelectionDto);
     }
 
+    public void getSameFacilityAndProcessTypeDraftData(HttpServletRequest request, ApprovalSelectionDto selectionDto){
+        ApprovalBatAndActivityDto suitableDraftDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request, DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        // judge the action is click on Apply for Approval menu or click on Draft Application
+        // if is click on draft application,do nothing
+        Object requestAttr = ParamUtil.getRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA);
+        boolean haveSuitableDraftData = requestAttr != null && (boolean) requestAttr;
+        if (suitableDraftDto == null && !org.springframework.util.StringUtils.hasLength(selectionDto.getDraftAppNo())) {
+            suitableDraftDto = approvalBatAndActivityClient.getSameFacilityAndProcessTypeDraftData(selectionDto.getFacilityId(), selectionDto.getProcessType()).getEntity();
+            haveSuitableDraftData = suitableDraftDto != null;
+        }
+        if (suitableDraftDto != null && org.springframework.util.StringUtils.hasLength(selectionDto.getDraftAppNo())) {
+            // the enteredInbox is used to judge whether display facility select option
+            suitableDraftDto.getApprovalSelectionDto().setEnteredInbox(selectionDto.isEnteredInbox());
+            haveSuitableDraftData = true;
+        }
+        ParamUtil.setSessionAttr(request, DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO, suitableDraftDto);
+        ParamUtil.setRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA, haveSuitableDraftData);
+        if (suitableDraftDto != null) {
+            // the enteredInbox is used to judge whether display facility select option
+            suitableDraftDto.getApprovalSelectionDto().setEnteredInbox(selectionDto.isEnteredInbox());
+            //judge whether need query the draft data again
+            ApprovalSelectionDto approvalSelectionDto = suitableDraftDto.getApprovalSelectionDto();
+            if (!approvalSelectionDto.getFacilityId().equals(selectionDto.getFacilityId()) || !approvalSelectionDto.getProcessType().equals(selectionDto.getProcessType())) {
+                selectionDto.setDraftAppNo(null);
+                ParamUtil.setSessionAttr(request, DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO, null);
+                getSameFacilityAndProcessTypeDraftData(request, selectionDto);
+            }
+        }
+    }
+
     public void handleApprovalSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         // get approvalBatAndActivityDto
         ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         String oldProcessType = approvalSelectionDto.getProcessType();
         approvalSelectionDto.reqObjMapping(request);
+
         // judge jump logic
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String actionLoadDraft = ParamUtil.getString(request, ACTION_LOAD_DRAFT);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {
                 // do next: validate approvalSelectionDto
                 ValidationResultDto validationResultDto = approvalBatAndActivityClient.validateApprovalSelectionDto(approvalSelectionDto);
                 if (validationResultDto.isPass()) {
-                    // get nodeGroup
-                    NodeGroup approvalAppRoot;
-                    // judge whether the selected processType is the same
-                    String newProcessType = approvalSelectionDto.getProcessType();
-                    if (org.springframework.util.StringUtils.hasLength(oldProcessType) && oldProcessType.equals(newProcessType)) {
-                        // selected processType is the same
-                        approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
+                    ApprovalBatAndActivityDto suitableDraftDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request, DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
+                    if (org.springframework.util.StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.YES)) {
+                        // if select to resume draft data,load draft data
+                        NodeGroup approvalAppRoot = suitableDraftDto.toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
+                        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+                        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
+                        ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, suitableDraftDto);
+                        ParamUtil.setSessionAttr(request, KEY_APPROVAL_SELECTION_DTO, suitableDraftDto.getApprovalSelectionDto());
+                        // dash bord display
+                        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, suitableDraftDto.getApprovalSelectionDto().getProcessType());
+                    } else if (org.springframework.util.StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.NO)) {
+                        // if select to continue create new application,delete draft
+                        if (suitableDraftDto != null){
+                            //delete draft from database
+                            draftClient.doRemoveDraftByDraftAppNo(suitableDraftDto.getApprovalSelectionDto().getDraftAppNo());
+                            //remove draft from session
+                            ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, null);
+                        }
+                        ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, null);
+                        commonNewApprovalHandle(request,approvalSelectionDto,oldProcessType);
                     } else {
-                        // selected processType is the different
-                        approvalAppRoot = newApprovalAppRoot(KEY_ROOT_NODE_GROUP, newProcessType);
+                        commonNewApprovalHandle(request,approvalSelectionDto,oldProcessType);
+                        //judge whether have draft that have same facility and process type
+                        getSameFacilityAndProcessTypeDraftData(request, approvalSelectionDto);
+                        boolean haveSuitableDraftData = (boolean) ParamUtil.getRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA);
+                        //if have draft data that have same facility and process type,display modal box
+                        if (haveSuitableDraftData) {
+                            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
+                        }
                     }
-                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
-                    ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
-                    ParamUtil.setSessionAttr(request, KEY_APPROVAL_SELECTION_DTO, approvalSelectionDto);
-                    // dash bord display
-                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, approvalSelectionDto.getProcessType());
                 } else {
                     ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
@@ -227,6 +285,24 @@ public class ApprovalBatAndActivityService {
         }
     }
 
+    private void commonNewApprovalHandle(HttpServletRequest request,ApprovalSelectionDto approvalSelectionDto,String oldProcessType){
+        // get nodeGroup
+        NodeGroup approvalAppRoot;
+        // judge whether the selected processType is the same
+        String newProcessType = approvalSelectionDto.getProcessType();
+        if (org.springframework.util.StringUtils.hasLength(oldProcessType) && oldProcessType.equals(newProcessType)) {
+            // selected processType is the same
+            approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
+        } else {
+            // selected processType is the different
+            approvalAppRoot = newApprovalAppRoot(KEY_ROOT_NODE_GROUP, newProcessType);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
+        ParamUtil.setSessionAttr(request, KEY_APPROVAL_SELECTION_DTO, approvalSelectionDto);
+        // dash bord display
+        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, approvalSelectionDto.getProcessType());
+    }
 
     public void handleCompanyInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;

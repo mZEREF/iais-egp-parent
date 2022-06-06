@@ -8,6 +8,7 @@ import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.convert.MasterCodeConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,33 +84,24 @@ public class FacilityCommitteeFileDto implements Serializable {
     private String externalCompName;
 
 
-    public void value2MasterCode() {
-        this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
-        this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
-        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.desc2Code(this.role);
-        this.employee = MasterCodeConstants.readUpperCaseYesNo(this.employee);
-    }
-
-    public void code2Value() {
-        this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
-        this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
-        this.role = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.code2Value(this.role);
-        this.employee = MasterCodeConstants.displayYesNo(this.employee);
-    }
-
-
-
     /** Convert DTOs for file to DTOs for processing, convert necessary fields to master codes. */
     public static List<FacilityCommitteeDto.BioSafetyCommitteePersonnel> toProcessingDtoList(List<FacilityCommitteeFileDto> dtoList) {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter salutationConverter = MasterCodeHolder.SALUTATION.converter();
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+        MasterCodeConverter roleConverter = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.converter();
+
         JMapper<FacilityCommitteeDto.BioSafetyCommitteePersonnel, FacilityCommitteeFileDto> jMapper = new JMapper<>(FacilityCommitteeDto.BioSafetyCommitteePersonnel.class, FacilityCommitteeFileDto.class);
         List<FacilityCommitteeDto.BioSafetyCommitteePersonnel> list = new ArrayList<>(dtoList.size());
         for (FacilityCommitteeFileDto fileDto : dtoList) {
-            fileDto.value2MasterCode();
+            fileDto.salutation = salutationConverter.value2Code(fileDto.salutation);
+            fileDto.idType = idTypeConverter.value2Code(fileDto.getIdType());
+            fileDto.nationality = nationalityConverter.value2Code(fileDto.getNationality());
+            fileDto.role = roleConverter.desc2Code(fileDto.getRole());
+            fileDto.employee = MasterCodeConstants.readUpperCaseYesNo(fileDto.employee);
             FacilityCommitteeDto.BioSafetyCommitteePersonnel dto = jMapper.getDestination(fileDto);
             list.add(dto);
         }
@@ -121,11 +113,20 @@ public class FacilityCommitteeFileDto implements Serializable {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter salutationConverter = MasterCodeHolder.SALUTATION.converter();
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+        MasterCodeConverter roleConverter = MasterCodeHolder.ROLE_UNDER_SIXTH_SCHEDULE.converter();
+
         JMapper<FacilityCommitteeFileDto, FacilityCommitteeDto.BioSafetyCommitteePersonnel> jMapper = new JMapper<>(FacilityCommitteeFileDto.class, FacilityCommitteeDto.BioSafetyCommitteePersonnel.class);
         List<FacilityCommitteeFileDto> list = new ArrayList<>(dtoList.size());
         for (FacilityCommitteeDto.BioSafetyCommitteePersonnel personnel : dtoList) {
             FacilityCommitteeFileDto dto = jMapper.getDestination(personnel);
-            dto.code2Value();
+            dto.salutation = salutationConverter.code2Value(dto.salutation);
+            dto.idType = idTypeConverter.code2Value(dto.idType);
+            dto.nationality = nationalityConverter.code2Value(dto.nationality);
+            dto.role = roleConverter.code2Value(dto.role);
+            dto.employee = MasterCodeConstants.displayYesNo(dto.employee);
             list.add(dto);
         }
         return list;

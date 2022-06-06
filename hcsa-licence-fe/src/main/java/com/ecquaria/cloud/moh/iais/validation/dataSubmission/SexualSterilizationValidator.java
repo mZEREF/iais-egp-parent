@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.GuardianAppliedPartDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
@@ -25,7 +27,10 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto():vssTreatmentDto.getGuardianAppliedPartDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto()== null ? new SexualSterilizationDto():vssTreatmentDto.getSexualSterilizationDto();
-
+        DoctorInformationDto doctorInformationDto=vssSuperDataSubmissionDto.getDoctorInformationDto();
+        if(doctorInformationDto==null){
+            doctorInformationDto=new DoctorInformationDto();
+        }
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();
         }
@@ -40,6 +45,22 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec())){
             erMap.put("reviewedByHec", "GENERAL_ERR0006");
         }
+
+        if("true".equals(sexualSterilizationDto.getDoctorInformations())){
+            if(StringUtil.isEmpty(doctorInformationDto.getName())){
+                erMap.put("dName", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
+                erMap.put("dSpeciality", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
+                erMap.put("dSubSpeciality", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
+                erMap.put("dQualification", "GENERAL_ERR0006");
+            }
+        }
+
         if(sexualSterilizationDto.getOperationDate() != null){
             try {
                 if(Formatter.compareDateByDay(sexualSterilizationDto.getOperationDate(),guardianAppliedPartDto.getCourtOrderIssueDate())<0){
@@ -49,6 +70,13 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                 log.error(e.getMessage(),e);
             }
 
+        }
+        String doctorName=sexualSterilizationDto.getDoctorName();
+        if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
+            if (erMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                erMap.put("showValidateVD", AppConsts.YES);
+                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+            }
         }
         return erMap;
     }

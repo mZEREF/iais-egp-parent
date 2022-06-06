@@ -1,5 +1,5 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
 <c:set var="postTerminationDto" value="${terminationOfPregnancyDto.postTerminationDto}" />
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -70,7 +70,7 @@
         <iais:field width="5" value="Counsellor ID Type"
                     mandatory="true" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${postTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdType"></span>
         </iais:value>
@@ -86,7 +86,7 @@
         <iais:field width="5" value="Name of Counsellor" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellorName" value="${postTerminationDto.counsellorName}" />
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>Date of Counselling
+            <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -97,8 +97,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <c:set var="toolMsg"><iais:message key="DS_MSG012" paramKeys="1" paramValues="counsellor"/></c:set>
-        <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true" info="${toolMsg}"/>
+        <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE" value="${postTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
             <iais:select name="TopPlace" options="TopPlace"  value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>

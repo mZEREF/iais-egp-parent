@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -59,6 +60,39 @@ public class DpPatientInfoValidator implements CustomizeValidator {
         if(StringUtil.isNotEmpty(patientDto.getNationality())&& patientDto.getNationality().equals("NAT0001")){
             if(StringUtil.isEmpty(patientDto.getEthnicGroup())){
                 errorMap.put("ethnicGroup", "GENERAL_ERR0006");
+            }
+        }
+
+
+        if(StringUtil.isNotEmpty(patientDto.getPostalCode())){
+
+            if(StringUtil.isNumber(patientDto.getPostalCode())  && Long.valueOf(patientDto.getPostalCode())<0){
+                errorMap.put("postalCode", "Negative numbers are not allowed on this field.");
+            }else if("NAT0001".equals(patientDto.getNationality())){
+                    if(!CommonValidator.isValidePostalCode(patientDto.getPostalCode())){
+                        errorMap.put("postalCode", "NEW_ERR0004");
+                    }
+            }else {
+                if(patientDto.getPostalCode().length()>20){
+                    String general_err0041 = NewApplicationHelper.repLength("Postal Code", "20");
+                    errorMap.put("postalCode", general_err0041);
+                }
+            }
+        }
+        if(StringUtil.isNotEmpty(patientDto.getMobileNo())||StringUtil.isNotEmpty(patientDto.getHomeTelNo())){
+            if(StringUtil.isNumber(patientDto.getMobileNo())&&Long.valueOf(patientDto.getMobileNo())<0){
+                errorMap.put("mobileNo", "Negative numbers are not allowed on this field.");
+            }else if("NAT0001".equals(patientDto.getNationality())){
+                if(!CommonValidator.isMobile(patientDto.getMobileNo())){
+                    errorMap.put("mobileNo", "GENERAL_ERR0007");
+                }
+            }
+            if(StringUtil.isNumber(patientDto.getPostalCode())&&Long.valueOf(patientDto.getHomeTelNo())<0){
+                errorMap.put("homeTelNo", "Negative numbers are not allowed on this field.");
+            }else if("NAT0001".equals(patientDto.getNationality())){
+                    if(!CommonValidator.isTelephoneNo(patientDto.getHomeTelNo())){
+                        errorMap.put("homeTelNo", "GENERAL_ERR0015");
+                    }
             }
         }
         if(StringUtil.isNotEmpty(patientDto.getEthnicGroup())){

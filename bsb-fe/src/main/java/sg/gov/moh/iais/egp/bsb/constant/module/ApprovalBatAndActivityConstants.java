@@ -51,6 +51,9 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";
     public static final String KEY_ACTION_VALUE = "action_value";
     public static final String KEY_VALIDATION_ERRORS = "errorMsg";
+    public static final String ACTION_LOAD_DRAFT = "action_load_draft";
+    public static final String HAVE_SUITABLE_DRAFT_DATA = "haveSuitableDraftData";
+    public static final String DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO = "draftApprovalBatAndActivityDto";
 
     public static final String KEY_NAV_NEXT = "next";
     public static final String KEY_NAV_BACK = "back";

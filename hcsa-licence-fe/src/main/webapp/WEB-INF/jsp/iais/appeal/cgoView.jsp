@@ -407,7 +407,7 @@
 
         $('#control--runtime--0').children().remove("hr")
 
-        $('.assignSel ').trigger('change');
+        $('select.assignSel').trigger('change');
 
         $("input").attr("disabled",true);
         $('input[type="text"]').css('border-color','#ededed');

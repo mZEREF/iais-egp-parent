@@ -72,3 +72,4 @@
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>
+<input type="hidden" id="showValidateVD" name="showValidateVD" value="${showValidateVD}"/>

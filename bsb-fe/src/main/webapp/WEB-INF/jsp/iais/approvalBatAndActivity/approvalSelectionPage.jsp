@@ -19,6 +19,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
+    <input type="hidden" name="action_load_draft" value="">
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
@@ -77,14 +78,15 @@
             <br/>
             <div class="row">
                 <div class="col-xs-12 col-md-3">
-                    <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
+                    <a class="back" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="text-right button-group">
-                        <a class="btn btn-primary next" id="next" >Next</a>
+                        <a class="btn btn-primary next" id="continueB" >Next</a>
                     </div>
                 </div>
             </div>
         </div>
+        <%@include file="judgeResumeFromDraft.jsp"%>
     </div>
 </form>

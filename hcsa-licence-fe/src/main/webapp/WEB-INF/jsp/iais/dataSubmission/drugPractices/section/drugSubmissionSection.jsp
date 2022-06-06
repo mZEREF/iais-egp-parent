@@ -15,12 +15,13 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <input type="hidden" name="docSource" value="DRP"/>
                 <c:set var="suffix" value="" />
                 <c:set var="drug" value="${drugSubmission}"/>
                 <iais:row>
                     <iais:field width="5" value="Patient's ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${drugSubmission.idType}"
+                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
                                      cssClass="idTypeSel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-4">
@@ -88,28 +89,28 @@
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="16" type="text" name="dName" value="${doctorInformationDto.name}" />
+                            <iais:input type="text" name="dName" value="${doctorInformationDto.name}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="16" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <iais:input type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="16" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <iais:input type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Qualification" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="16" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <iais:input type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                         </iais:value>
                     </iais:row>
@@ -117,7 +118,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other-Qualification" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="50" type="text" id ="otherQualification" name="otherQualification"
+                        <iais:input maxLength="66" type="text" id ="otherQualification" name="otherQualification"
                                     value="${drugSubmission.otherQualification}" />
                     </iais:value>
                 </iais:row>
@@ -125,12 +126,12 @@
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="drugType"  name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED"
+                        <iais:select cssClass="drugType" id="drugType" name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED"
                                      value="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
                 </div>
-                <div  id="prescriptionDate" >
+                <div  id="prescriptionDate" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Date of Prescription" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -141,7 +142,8 @@
                 </div>
                 <div  id="dispensingDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="Prescription Submission ID" mandatory="true"/>
+                        <c:set var="toolMsg"><iais:message key="DS_MSG026"/></c:set>
+                        <iais:field width="5" value="Prescription Submission ID" info="${toolMsg}" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="16" type="text" id ="prescriptionSubmissionId" name="prescriptionSubmissionId"
                                         value="${drugSubmission.prescriptionSubmissionId}" />
@@ -183,11 +185,11 @@
                 <iais:row>
                     <iais:field width="5" value="Diagnosis" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <textarea rows="" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                        <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                         <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
-                <div id="urineTest">
+                <div id="urineTest" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -203,29 +205,24 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="nurse">
+                <div id="nurse" <c:if test="${drugSubmission.medication != 'MED001'}">style="display: none;"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist's Registration No." />
+                        <iais:field width="5" value="Nurse/Pharmacist's Registration No." mandatory="true" />
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="256" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
+                            <iais:input maxLength="20" type="text" id ="nurseRegistrationNo" name="nurseRegistrationNo"
                                         value="${drugSubmission.nurseRegistrationNo}" />
+                            <span id="error_nurseRegistrationNo" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Nurse/Pharmacist's Name" />
+                        <iais:field width="5" value="Nurse/Pharmacist's Name"  mandatory="true" />
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="512" type="text" id ="nurseName" name="nurseName"
+                            <iais:input maxLength="66" type="text" id ="nurseName" name="nurseName"
                                         value="${drugSubmission.nurseName}" />
+                            <span id="error_nurseName" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Fields are provided in my comments" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <textarea rows="" cols="62" name="providedComments">${drugSubmission.providedComments}</textarea>
-                        <span id="error_providedComments" name="iaisErrorMsg" class="error-msg"></span>
-                    </iais:value>
-                </iais:row>
             </div>
         </div>
     </div>
@@ -280,17 +277,18 @@
 </div>
 <script>
     $(document).ready(function() {
+        ifClickValidateButton();
         $('#drugType').change(function () {
             drugTypeChange();
         });
-        $('#medication').change(function (){
+        $('#drugType,#medication').change(function (){
             changeStrength();
         });
         $('#prescriptionSubmissionId').change(function(){
             checkPrescriptionSubmissionId();
         });
 
-        changeStrength();
+        /*changeStrength();*/
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
         </c:if>
@@ -303,6 +301,7 @@
         if(drugtype == "DPD001"){
             $('#dispensingDate').hide();
             $('#ddEndDate').hide();
+            $('#prescriptionDate').show();
             unDisableContent('div.medication');
             fillValue($('#medication'),null);
         } else if(drugtype == "DPD002"){
@@ -310,9 +309,11 @@
             $('#ddEndDate').show();
             $('#prescriptionSubmissionId').val('');
             $('#error_prescriptionSubmissionId').html('');
+            $('#prescriptionDate').hide();
         }else{
             $('#dispensingDate').hide();
             $('#ddEndDate').hide();
+            $('#prescriptionDate').hide();
         }
         changeStrength();
     }
@@ -352,16 +353,18 @@
     }
 
     function changeStrength(){
+        var drugtype= $('#drugType option:selected').val();
         var medication= $('#medication').val();
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
             $('#nurse').show();
-        }else if('MED002' == medication){
-            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+        }else if(('MED002' == medication && 'DPD002' == drugtype)){
+            console.log('DPD002')
+            $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').show();
             $('#nurse').hide();
-        }else{
+        } else{
             $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
             $('#nurse').hide();
@@ -444,12 +447,14 @@
             return;
         }
         var no = $('input[name="doctorReignNo"]').val();
+        var docSource = $('input[name="docSource"]').val();
         var jsonData = {
-            'prgNo': no
+            'prgNo': no,
+            'docSource': docSource
         };
         console.log('2');
         $.ajax({
-            'url': '${pageContext.request.contextPath}/dp/prg-input-info',
+            'url': '${pageContext.request.contextPath}/doc/prg-input-info',
             'dataType': 'json',
             'data': jsonData,
             'type': 'GET',

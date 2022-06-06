@@ -11,6 +11,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 
 @FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class)
 public interface BsbFileClient {
-    @PostMapping(value = "/file-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/bsb-file-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveFiles(@RequestBody FileRepoSyncDto fileRepoSyncDto);
 }

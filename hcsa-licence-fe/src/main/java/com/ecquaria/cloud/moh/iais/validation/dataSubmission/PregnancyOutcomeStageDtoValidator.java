@@ -98,7 +98,10 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             }
         }
         if (pregnancyOutcomeStageDto.getNicuCareBabyNum() > totalLiveBirth) {
-            errorMap.put("NICUCareBabyNum", MessageUtil.getMessageDesc("The filed cannot be greater than Total No. of Live Births"));
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field1", "Total No. of Baby Admitted to NICU Care");
+            params.put("field2", "Total No. of Live Births");
+            errorMap.put("NICUCareBabyNum", MessageUtil.getMessageDesc("DS_ERR065", params));
         }
         if (pregnancyOutcomeStageDto.getL2CareBabyNum() + pregnancyOutcomeStageDto.getL3CareBabyNum() > pregnancyOutcomeStageDto.getNicuCareBabyNum()) {
             Map<String, String> params = IaisCommonUtils.genNewHashMap();

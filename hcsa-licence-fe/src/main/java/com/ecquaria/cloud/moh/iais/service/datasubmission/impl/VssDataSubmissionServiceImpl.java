@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,24 +44,12 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
     @Autowired
     private  VssFeClient vssFeClient;
 
+    @Autowired
+    private DsLicenceService dsLicenceService;
 
     @Override
     public Map<String, PremisesDto> getVssCenterPremises(String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
-            return IaisCommonUtils.genNewHashMap();
-        }
-        List<String> svcNames = new ArrayList<>();
-        //TODO
-        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
-        List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
-        if (premisesDtos == null || premisesDtos.isEmpty()) {
-            return premisesDtoMap;
-        }
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto), premisesDto);
-        }
-        return premisesDtoMap;
+        return dsLicenceService.getVssCenterPremises(licenseeId);
     }
 
     @Override

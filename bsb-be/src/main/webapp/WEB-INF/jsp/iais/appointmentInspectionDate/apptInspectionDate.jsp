@@ -39,7 +39,7 @@
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                         <li id="apptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                                       data-toggle="tab">Info</a></li>
+                                                                                       data-toggle="tab">Information</a></li>
                         <li id="apptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                                                               aria-controls="tabDocuments" role="tab"
                                                                                               data-toggle="tab">Documents</a></li>
@@ -50,7 +50,7 @@
                       <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
                           <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                       data-toggle="tab">Info</a></div>
+                                                       data-toggle="tab">Information</a></div>
                           <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                                        role="tab" data-toggle="tab">Documents</a></div>
                           <div class="swiper-slide"><a id="apptInspectionDate" href="#tabProcessing" aria-controls="tabProcessing"

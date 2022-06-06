@@ -730,7 +730,7 @@ public class InterInboxDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
             for (String licId:licIdValue) {
-                errorMap = inboxService.checkRenewalStatus(licId);
+                errorMap.putAll(inboxService.checkRenewalStatus(licId));
                 if(!(errorMap.isEmpty())){
                     String licenseNo = errorMap.get("errorMessage");
                     if(!StringUtil.isEmpty(licenseNo)){
@@ -826,7 +826,8 @@ public class InterInboxDelegator {
                 result = checkIsBaseRenew(licIdValue);
                 if(!result){
                     ParamUtil.setRequestAttr(bpc.request,"licIsRenewed", Boolean.FALSE);
-                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"Special Service Licence need to renew together with Base Service Licence.");
+                    // INBOX_ERR012 - "Special Service Licence need to renew together with Base Service Licence."
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("INBOX_ERR012"));
                     return;
                 }
             }

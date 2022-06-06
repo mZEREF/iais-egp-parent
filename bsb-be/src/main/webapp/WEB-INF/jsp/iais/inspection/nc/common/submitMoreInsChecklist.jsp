@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+        <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Previous</a>
         <div style="float:right">
             <c:if test="${nowTabIn == 'Combined'}">
                 <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>

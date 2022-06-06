@@ -1,5 +1,5 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
 <c:set var="headingSign" value="${termination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading <c:if test="${DeclarationsCheckBox != 'hide'}">${headingSign}</c:if>">
@@ -13,6 +13,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
+                <c:set var="doctorInformationDto" value="${topSuperDataSubmissionDto.doctorInformationDto}" />
                 <c:set var="terminationDto" value="${terminationOfPregnancyDto.terminationDto}"/>
                 <iais:row>
                     <iais:field width="5" value="Type of Termination of Pregnancy"/>
@@ -176,12 +177,58 @@
                         <c:out value="${terminationDto.doctorRegnNo}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Name of Doctor"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${terminationDto.doctorName}"/>
-                    </iais:value>
-                </iais:row>
+                <div <c:if test="${terminationDto.topDoctorInformations eq 'true'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Name of Doctor" />
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${terminationDto.doctorName}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${terminationDto.specialty}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${terminationDto.subSpecialty}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${terminationDto.qualification}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Doctor's Name" />
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${doctorInformationDto.name}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${doctorInformationDto.speciality}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${doctorInformationDto.subSpeciality}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${doctorInformationDto.qualification}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>

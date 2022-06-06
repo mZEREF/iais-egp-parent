@@ -49,7 +49,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
             errorMap.putAll(result.retrieveAll());
         }
         if("TOPRTP003".equals(familyPlanDto.getMainTopReason())){
-            if("TOPSCTP003".equals(familyPlanDto.getSubRopReason())){
+            if("TOPSCTP007".equals(familyPlanDto.getSubRopReason())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherSubTopReason");
                 errorMap.putAll(result.retrieveAll());
             }

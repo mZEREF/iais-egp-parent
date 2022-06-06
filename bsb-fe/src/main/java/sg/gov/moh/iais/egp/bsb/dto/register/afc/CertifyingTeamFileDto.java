@@ -7,6 +7,7 @@ import com.googlecode.jmapper.JMapper;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.convert.MasterCodeConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -81,12 +82,6 @@ public class CertifyingTeamFileDto implements Serializable {
     private String otherRelatedAchievement;
 
 
-    public void value2MasterCode() {
-        this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
-        this.role = MasterCodeHolder.AFC_TEAM_ROLE.value2Code(this.role);
-    }
-
     public void value2SpecialYN(){
         if("Yes".equals(this.leadCertifier)){
             this.leadCertifier = "Y";
@@ -95,24 +90,23 @@ public class CertifyingTeamFileDto implements Serializable {
         }
     }
 
-    public void code2Value() {
-        this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
-        this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
-        this.role = MasterCodeHolder.AFC_TEAM_ROLE.code2Value(this.role);
-    }
-
-
 
     /** Convert DTOs for file to DTOs for processing, convert necessary fields to master codes. */
     public static List<CertifyingTeamDto.CertifierTeamMember> toProcessingDtoList(List<CertifyingTeamFileDto> dtoList) {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+        MasterCodeConverter roleConverter = MasterCodeHolder.AFC_TEAM_ROLE.converter();
+
         JMapper<CertifyingTeamDto.CertifierTeamMember, CertifyingTeamFileDto> jMapper = new JMapper<>(CertifyingTeamDto.CertifierTeamMember.class, CertifyingTeamFileDto.class);
         List<CertifyingTeamDto.CertifierTeamMember> list = new ArrayList<>(dtoList.size());
         for (CertifyingTeamFileDto fileDto : dtoList) {
             fileDto.value2SpecialYN();
-            fileDto.value2MasterCode();
+            fileDto.idType = idTypeConverter.value2Code(fileDto.getIdType());
+            fileDto.nationality = nationalityConverter.value2Code(fileDto.getNationality());
+            fileDto.role = roleConverter.value2Code(fileDto.role);
             CertifyingTeamDto.CertifierTeamMember dto = jMapper.getDestination(fileDto);
             list.add(dto);
         }
@@ -124,11 +118,17 @@ public class CertifyingTeamFileDto implements Serializable {
         if (dtoList == null || dtoList.isEmpty()) {
             return new ArrayList<>(0);
         }
+        MasterCodeConverter idTypeConverter = MasterCodeHolder.ID_TYPE.converter();
+        MasterCodeConverter nationalityConverter = MasterCodeHolder.NATIONALITY.converter();
+        MasterCodeConverter roleConverter = MasterCodeHolder.AFC_TEAM_ROLE.converter();
+
         JMapper<CertifyingTeamFileDto, CertifyingTeamDto.CertifierTeamMember> jMapper = new JMapper<>(CertifyingTeamFileDto.class, CertifyingTeamDto.CertifierTeamMember.class);
         List<CertifyingTeamFileDto> list = new ArrayList<>(dtoList.size());
         for (CertifyingTeamDto.CertifierTeamMember teamMember : dtoList) {
             CertifyingTeamFileDto dto = jMapper.getDestination(teamMember);
-            dto.code2Value();
+            dto.idType = idTypeConverter.code2Value(dto.idType);
+            dto.nationality = nationalityConverter.code2Value(dto.nationality);
+            dto.role = roleConverter.code2Value(dto.role);
             list.add(dto);
         }
         return list;

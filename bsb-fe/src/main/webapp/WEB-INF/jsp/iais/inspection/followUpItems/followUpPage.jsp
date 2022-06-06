@@ -104,9 +104,9 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <a class="btn btn-secondary" href="/bsb-web/eservice/INTERNET/MohBSBInboxMsg">CANCEL</a>
+                                                <a class="btn btn-secondary" id="draftBtn">SAVE AS DRAFT</a>
                                             </c:otherwise>
                                         </c:choose>
-                                        <a class="btn btn-secondary" id="draftBtn">SAVE AS DRAFT</a>
                                         <a class="btn btn-primary" id="saveBtn">SUBMIT</a>
                                     </div>
                                 </div>

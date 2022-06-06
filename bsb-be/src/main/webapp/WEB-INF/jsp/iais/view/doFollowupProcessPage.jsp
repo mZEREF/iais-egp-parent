@@ -28,7 +28,7 @@
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
-                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
                                             </li>
                                             <li id="personnel" role="presentation">
                                                 <a href="#tabPersonnel" id="doPersonnel" aria-controls="tabPersonnel" role="tab" data-toggle="tab">Biosafety Personnel</a>
@@ -46,7 +46,7 @@
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
-                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabPersonnel" aria-controls="tabPersonnel" role="tab" data-toggle="tab">Biosafety Personnel</a>
