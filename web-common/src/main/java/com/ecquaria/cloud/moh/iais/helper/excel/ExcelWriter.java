@@ -580,16 +580,18 @@ public final class ExcelWriter {
         if (excelSheetDto.getDefaultRowHeight() != null) {
             sheet.setDefaultRowHeight(excelSheetDto.getDefaultRowHeight());
         }
+
+        List<?> source = excelSheetDto.getSource();
+        Class<?> sourceClass = excelSheetDto.getSourceClass();
+        if (excelSheetDto.isNeedFiled() ) {
+            ExcelSheetProperty property = getSheetPropertyByClz(sourceClass);
+            int startCellIndex = property.startRowIndex();
+            setFieldName(sourceClass, sheet, startCellIndex, false);
+        }
+
         if (excelSheetDto.getWidthMap() != null) {
             for (Map.Entry<Integer, Integer> entry : excelSheetDto.getWidthMap().entrySet()) {
                 sheet.setColumnWidth(entry.getKey(), entry.getValue() * 256);
-            }
-        }
-        List<?> source = excelSheetDto.getSource();
-        Class<?> sourceClass = excelSheetDto.getSourceClass();
-        if (excelSheetDto.isNeedFiled() && excelSheetDto.getFiledRowIndexes() != null) {
-            for (int row : excelSheetDto.getFiledRowIndexes()) {
-                setFieldName(sourceClass, sheet, row, false);
             }
         }
         createCell(source, sourceClass, sheet, excelSheetDto);

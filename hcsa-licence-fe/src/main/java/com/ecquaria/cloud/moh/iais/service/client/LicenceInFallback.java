@@ -510,6 +510,14 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(String licenceId, Boolean checkSpec) {
         return getFeignResponseEntity(licenceId, checkSpec);
     }

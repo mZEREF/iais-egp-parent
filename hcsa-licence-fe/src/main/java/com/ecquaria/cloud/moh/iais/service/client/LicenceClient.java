@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
@@ -238,4 +239,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/data-submission/CounsellingDtos", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<CounsellingDto>> getCounsellingDtos();
+
+    @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
 }

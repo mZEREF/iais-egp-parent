@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -82,4 +83,7 @@ public interface OrganizationLienceseeClient {
 
     @GetMapping(value = "/iais-licensee/organizationDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> getOrganizationDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
+
+    @GetMapping(value = "/iais-internet-user/monitoring-user-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<MonitoringSheetsDto> getMonitoringUserSheetsDto();
 }

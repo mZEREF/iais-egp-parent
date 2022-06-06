@@ -189,13 +189,7 @@ public class LicenceViewServiceDelegator {
             appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
-        if(applicationViewDto==null||ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-            if ("Y".equals(prsFlag)) {
-                disciplinaryRecord(appSubmissionDto, bpc.request);
-            }
-            if ("Y".equals(herimsFlag)) {
-                herimsRecod(appSubmissionDto, bpc.request);
-            }
+        if(applicationViewDto==null){
             return;
         }
         // set App Edit Select Dto
