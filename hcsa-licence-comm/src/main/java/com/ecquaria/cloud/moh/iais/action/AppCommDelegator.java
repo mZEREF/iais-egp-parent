@@ -487,7 +487,8 @@ public abstract class AppCommDelegator {
             }
         }
         if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
-            subLicenseeDto.setUenNo(loginContext.getUenNo());
+            subLicenseeDto.setUenNo(orgLicensee.getUenNo());
+            subLicenseeDto.setOrgId(orgLicensee.getOrgId());
         }
         bpc.request.setAttribute("subLicenseeDto", orgLicensee);
     }
@@ -528,7 +529,7 @@ public abstract class AppCommDelegator {
         }
         // valiation
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (!StringUtil.isIn(actionValue, new String[] {"saveDraft", "back"})) {
+        if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
             AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
         }
         if (!errorMap.isEmpty()) {
@@ -608,10 +609,18 @@ public abstract class AppCommDelegator {
                     }
                 }
             }
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (loginContext != null) {
-                dto.setOrgId(loginContext.getOrgId());
-                dto.setUenNo(loginContext.getUenNo());
+            if (ApplicationHelper.isFrontend()) {
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                if (loginContext != null) {
+                    dto.setOrgId(loginContext.getOrgId());
+                    dto.setUenNo(loginContext.getUenNo());
+                }
+            } else {
+                SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
+                if (old != null) {
+                    dto.setOrgId(old.getOrgId());
+                    dto.setUenNo(old.getUenNo());
+                }
             }
         }
         if (StringUtil.isEmpty(licenseeType)) {
