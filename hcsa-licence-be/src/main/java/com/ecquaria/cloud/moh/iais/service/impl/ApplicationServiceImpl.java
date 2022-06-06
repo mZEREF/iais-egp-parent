@@ -1041,66 +1041,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         String taskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
         String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
         String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PRE;
-
-        List<TaskDto> taskDtoList=taskOrganizationClient.getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(applicationViewDto.getApplicationDto().getApplicationNo(),roleId,wrkGpId,userId).getEntity();
-        //status by
-        switch (roleId){
-            case RoleConsts.USER_ROLE_AO1:
-                for (TaskDto task:taskDtoList
-                     ) {
-                    taskUrl=task.getProcessUrl();
-                    if(task.getProcessUrl().equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY;break;
-                    }
-                    if(task.getProcessUrl().equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT;break;
-                    }
-                }
-                break;
-            case RoleConsts.USER_ROLE_INSPECTIOR:
-                for (TaskDto task:taskDtoList
-                ) {
-                    taskUrl=task.getProcessUrl();
-
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PRE;break;
-                    }
-                    if(taskUrl.equals(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT)){
-                        appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
-                        insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT;break;
-                    }
-
-                }
-                break;
-            case RoleConsts.USER_ROLE_INSPECTION_LEAD:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING;
-                taskUrl=TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL;
-                insStatus=InspectionConstants.INSPECTION_STATUS_INSPECTOR_LEAD_ROUTE_BACK_EMAIL;
-            break;
-            default:
-        }
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();

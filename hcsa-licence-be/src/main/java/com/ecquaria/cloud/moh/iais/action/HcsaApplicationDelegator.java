@@ -135,6 +135,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -233,6 +234,8 @@ public class HcsaApplicationDelegator {
     private VehicleCommonController vehicleCommonController;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
+
+    private static final List<String> ROLE = Arrays.asList(RoleConsts.USER_ROLE_ASO,RoleConsts.USER_ROLE_PSO,RoleConsts.USER_ROLE_INSPECTIOR,RoleConsts.USER_ROLE_AO1,RoleConsts.USER_ROLE_AO2,RoleConsts.USER_ROLE_AO3);
 
 
     @PostMapping(value = "/check-ao")
@@ -1111,13 +1114,8 @@ public class HcsaApplicationDelegator {
         } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
-                applicationService.rollBackInspAo1AndIns(bpc, roleId, wrkGpId, userId);
-            } else if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId)){
-                applicationService.rollBackInspAo1AndIns(bpc, roleId, wrkGpId, userId);
-            } else {
-                applicationService.rollBackInspAo1AndIns(bpc, roleId, wrkGpId, userId);
-            }
+            applicationService.rollBackInspAo1AndIns(bpc, roleId, wrkGpId, userId);
+
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
@@ -3822,7 +3820,7 @@ public class HcsaApplicationDelegator {
         //set route back dropdown value
         setRouteBackDropdownValue(request, applicationViewDto);
         //set roll back dropdown value
-        setRollBackDropdownValue(request, applicationViewDto);
+        setRollBackDropdownValue(request, applicationViewDto,taskDto);
         //set recommendation dropdown value
 //        setRecommendationDropdownValue(request,applicationViewDto);
         //set recommendation other dropdown value
@@ -4135,7 +4133,7 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
 
         } else {
-            if (hasRollBackHistoryList && routeBackFlag) {
+            if (hasRollBackHistoryList ) {
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, "Roll Back"));
             }
         }
@@ -4200,13 +4198,12 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable) rollBackStage);
     }
 
-    public void setRollBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+    public void setRollBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getAppPremisesRoutingHistoryDtoList();
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
         if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)) {
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
@@ -4214,17 +4211,18 @@ public class HcsaApplicationDelegator {
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
-                if(StringUtil.isNotEmpty(displayName)&&StringUtil.isNotEmpty(userId)&&StringUtil.isNotEmpty(wrkGrpId)){
+                if(appPremisesRoutingHistoryDto.getStageId().equals(HcsaConsts.ROUTING_STAGE_INS)){
+                    displayName=RoleConsts.USER_ROLE_INSPECTIOR;
+                }
+                if(StringUtil.isNotEmpty(displayName)&& ROLE.contains(displayName)&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)&&StringUtil.isNotEmpty(userId)&&StringUtil.isNotEmpty(wrkGrpId)){
                     OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-                    if(!userId.equals(loginContext.getLoginId())&&!displayName.equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)&&!displayName.equals(RoleConsts.USER_ROLE_BROADCAST)){
-                        if(user != null&&user.getUserRoles().contains(displayName)) {
-                            String actionBy = user.getDisplayName();
-                            if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
-                                rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                                String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                                SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
-                                rollBackStage.add(selectOption);
-                            }
+                    if(user != null&&user.getUserRoles().contains(displayName)) {
+                        String actionBy = user.getDisplayName();
+                        if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
+                            rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                            String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                            SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                            rollBackStage.add(selectOption);
                         }
                     }
                 }
