@@ -105,6 +105,7 @@ public class FacilityRegistrationService {
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+        boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
 
         if (!isRf) {
             // check data uploaded by committee data file
@@ -118,6 +119,8 @@ public class FacilityRegistrationService {
             if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
                 Nodes.passValidation(facRegRoot, committeeNodePath);
             }
+        }
+        if (!isPvRf) {
             // check data uploaded by authoriser data file
             String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
             FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
@@ -1156,6 +1159,7 @@ public class FacilityRegistrationService {
     public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         boolean isRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_RF);
+        boolean isPvRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_PV_RF);
 
         // save docs
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
@@ -1172,11 +1176,13 @@ public class FacilityRegistrationService {
         if (!isRf) {
             committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
             NewFileSyncDto committeeNewFile = saveCommitteeNewDataFile(committeeDto);
-            authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-            NewFileSyncDto authoriserNewFile = saveAuthoriserNewDataFile(authDto);
             if (committeeNewFile != null) {
                 newFilesToSync.add(committeeNewFile);
             }
+        }
+        if (!isPvRf) {
+            authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+            NewFileSyncDto authoriserNewFile = saveAuthoriserNewDataFile(authDto);
             if (authoriserNewFile != null) {
                 newFilesToSync.add(authoriserNewFile);
             }
@@ -1208,7 +1214,7 @@ public class FacilityRegistrationService {
                 toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
                 committeeDto.setToBeDeletedRepoId(null);
             }
-            if (!isRf && authDto.getToBeDeletedRepoId() != null) {
+            if (!isPvRf && authDto.getToBeDeletedRepoId() != null) {
                 FileRepoDto authoriserDeleteDto = new FileRepoDto();
                 authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
                 fileRepoClient.removeFileById(authoriserDeleteDto);
@@ -1357,10 +1363,12 @@ public class FacilityRegistrationService {
         SimpleNode facOperatorNode = new SimpleNode(newNodeGroup || rf ? new FacilityOperatorDto() : facRegDto.getFacilityOperatorDto(), NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
         SimpleNode facAdminOfficerNode = new SimpleNode(newNodeGroup ? new FacilityAdminAndOfficerDto() : facRegDto.getFacilityAdminAndOfficerDto(), NODE_NAME_FAC_ADMIN_OFFICER, new Node[]{facProfileNode, facOperatorNode});
         SimpleNode facCommitteeNode = new SimpleNode(newNodeGroup || rf ? new FacilityCommitteeDto() : facRegDto.getFacilityCommitteeDto(), NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode});
-        SimpleNode facAuthNode = new SimpleNode(newNodeGroup || rf ? new FacilityAuthoriserDto() : facRegDto.getFacilityAuthoriserDto(), NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode, facCommitteeNode});
+        SimpleNode facAuthNode = new SimpleNode(newNodeGroup || rf && !fifthRf ? new FacilityAuthoriserDto() : facRegDto.getFacilityAuthoriserDto(), NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode, facAdminOfficerNode, facCommitteeNode});
         if (rf) {
             facOperatorNode.disappear();
             facCommitteeNode.disappear();
+        }
+        if (rf && !fifthRf) {
             facAuthNode.disappear();
         }
         NodeGroup facInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
@@ -1427,7 +1435,7 @@ public class FacilityRegistrationService {
             if (MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType)) {
                 Nodes.disappear(facRegRoot, NODE_PATH_FAC_OPERATOR);
                 Nodes.disappear(facRegRoot, NODE_PATH_FAC_COMMITTEE);
-                Nodes.disappear(facRegRoot, NODE_PATH_FAC_AUTH);
+                Nodes.appear(facRegRoot, NODE_PATH_FAC_AUTH);
                 Nodes.appear(facRegRoot, NODE_NAME_FAC_BAT_INFO);
                 Nodes.disappear(facRegRoot, NODE_NAME_AFC);
             } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType)) {
@@ -1493,11 +1501,11 @@ public class FacilityRegistrationService {
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
-        boolean isSPFifthRf = false;
+        boolean isFifthRf = false;
         if (isRf) {
             Assert.state(selectionDto.getActivityTypes().size() == 1, ERR_MSG_RF_INVALID_ACTIVITY);
             String activityType = selectionDto.getActivityTypes().get(0);
-            isSPFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
+            isFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
         }
 
         dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
@@ -1509,6 +1517,8 @@ public class FacilityRegistrationService {
         if (isCf || isUcf) {
             dto.setFacilityOperatorDto((FacilityOperatorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
             dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
+        }
+        if (isCf || isUcf || isFifthRf) {
             dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
         }
 
@@ -1516,19 +1526,17 @@ public class FacilityRegistrationService {
         Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(dto.getFacilityProfileDto().getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 2);
         docRecordInfos.addAll(dto.getFacilityProfileDto().getSavedDocMap().values());
         docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
-        if (isCf || isUcf) {
-            if (dto.getFacilityCommitteeDto().getSavedFile() != null) {
-                docRecordInfos.add(dto.getFacilityCommitteeDto().getSavedFile());
-            }
-            if (dto.getFacilityAuthoriserDto().getSavedFile() != null) {
-                docRecordInfos.add(dto.getFacilityAuthoriserDto().getSavedFile());
-            }
+        if ((isCf || isUcf) && dto.getFacilityCommitteeDto().getSavedFile() != null) {
+            docRecordInfos.add(dto.getFacilityCommitteeDto().getSavedFile());
+        }
+        if ((isCf || isUcf || isFifthRf) && dto.getFacilityAuthoriserDto().getSavedFile() != null) {
+            docRecordInfos.add(dto.getFacilityAuthoriserDto().getSavedFile());
         }
         dto.setDocRecordInfos(docRecordInfos);
 
         if (isCf) {
             dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else if (isUcf || isSPFifthRf) {
+        } else if (isUcf || isFifthRf) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);
             dto.setBiologicalAgentToxinMap(batInfoMap);
@@ -1544,6 +1552,8 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = registerDto.getFacilitySelectionDto();
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
         boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+        boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+        boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
 
         // split documents for profile
         Collection<DocRecordInfo> profileDocs = new ArrayList<>();
@@ -1569,6 +1579,8 @@ public class FacilityRegistrationService {
         registerDto.getFacilityProfileDto().setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileDocs, DocRecordInfo::getRepoId));
         if (isCf || isUcf) {
             registerDto.getFacilityCommitteeDto().setSavedFile(committeeDoc);
+        }
+        if (isCf || isUcf || isFifthRf) {
             registerDto.getFacilityAuthoriserDto().setSavedFile(authoriserDoc);
         }
 

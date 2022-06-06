@@ -8,6 +8,8 @@
 <%@attribute name="isCfJudge" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isUcfJudge" required="true" type="java.lang.Boolean" %>
 <%@attribute name="isRfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isFifthRfJudge" required="true" type="java.lang.Boolean" %>
+<%@attribute name="isPvRfJudge" required="true" type="java.lang.Boolean" %>
 
 <%@attribute name="classification" required="true" type="java.lang.String" %>
 <%@attribute name="activities" required="false" type="java.util.List<java.lang.String>" %>
@@ -374,31 +376,33 @@
                             </div>
                             </c:if>
                             <c:if test="${not isRfJudge}">
-                            <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
-                            <div class="panel-main-content form-horizontal min-row">
-                                <div class="form-group">
-                                    <div class="col-10"><strong>Biosafety Committee</strong></div>
-                                    <div class="clear"></div>
+                                <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
+                                <div class="panel-main-content form-horizontal min-row">
+                                    <div class="form-group">
+                                        <div class="col-10"><strong>Biosafety Committee</strong></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div>
+                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'bsbCommittee')">View Biosafety Committee Information</a>
+                                    </div>
                                 </div>
-                                <div>
-                                    <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'bsbCommittee')">View Biosafety Committee Information</a>
+                            </c:if>
+                            <c:if test="${not isPvRfJudge}">
+                                <c:if test="${authorisedEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAuth")}</div></c:if>
+                                <div class="panel-main-content form-horizontal min-row">
+                                    <div class="form-group">
+                                        <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div>
+                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
+                                    </div>
                                 </div>
-                            </div>
-                            <c:if test="${authorisedEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAuth")}</div></c:if>
-                            <div class="panel-main-content form-horizontal min-row">
-                                <div class="form-group">
-                                    <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
-                                    <div class="clear"></div>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
-                                </div>
-                            </div>
                             </c:if>
                         </div>
                     </div>
                 </div>
-                <c:if test="${isUcfJudge or (isRfJudge and activities.get(0) eq masterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED)}">
+                <c:if test="${isUcfJudge or isFifthRfJudge}">
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
