@@ -1,8 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <style>
-  .padding-left{
-    padding-left: 0px;
+  @media only screen and (min-width : 993px) {
+      td:nth-of-type(1) {
+        width: 28%;
+      }
+      td:nth-of-type(3), td:nth-of-type(4) {
+        width: 25%;
+      }
   }
 </style>
 
@@ -54,8 +59,8 @@
       <tr>
         <th scope="col" >Mode of Service Delivery</th>
         <th scope="col" >${svcScopePageName}</th>
-        <th scope="col" style="width:30%">Clinical Governance Officers</th>
-        <th scope="col" style="width:30%">Section Leader</th>
+        <th scope="col" >Clinical Governance Officers</th>
+        <th scope="col" >Section Leader</th>
       </tr>
       </thead>
       <c:set var="row_count" value="0"></c:set>
@@ -68,7 +73,7 @@
           <c:set value="sl${premisesIndexNo}${status.index}" var="slSelName"/>
           <tr>
             <c:if test="${status.first}">
-              <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%" class="premAddress">
+              <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" class="premAddress">
                 <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                 <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                 <p>${premisesAndChkLst.premiseGetAddress} </p>

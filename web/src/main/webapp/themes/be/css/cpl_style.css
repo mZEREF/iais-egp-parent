@@ -5646,3 +5646,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .font-18 {
   font-size: 18px;
 }
+
+.padding-left {
+  padding-left: 0px;
+}
