@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -138,8 +140,13 @@ public class ApplicationDelegator extends AppCommDelegator {
                 isValid = false;
                 ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
             } else {
+                // licensee trasfer application
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                if (HcsaAppConst.CHECKED_BTN_SHOW == check && !StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
+                    isValid = false;
+                }
                 appType = applicationViewDto.getApplicationDto().getApplicationType();
-                appGrpNo = applicationViewDto.getApplicationGroupDto().getGroupNo();
+                appGrpNo = applicationGroupDto.getGroupNo();
             }
         }
         if (isValid) {
