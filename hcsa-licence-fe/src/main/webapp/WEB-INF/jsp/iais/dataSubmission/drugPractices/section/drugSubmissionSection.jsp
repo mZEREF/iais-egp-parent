@@ -167,13 +167,13 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
+               <%-- <iais:row>
                     <iais:field width="5" value="Prescribing Duration Start Date" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:datePicker name="startDate" value="${drugSubmission.startDate}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
-                </iais:row>
+                </iais:row>--%>
                 <div  id="ddEndDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="End Date of Dispensing" mandatory="true"/>

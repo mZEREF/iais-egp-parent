@@ -89,7 +89,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         String prescriptionDate = drugSubmission.getPrescriptionDate();
         String dispensingDate = drugSubmission.getDispensingDate();
         String drugType = drugSubmission.getDrugType();
-        String startDate = drugSubmission.getStartDate();
+      /*  String startDate = drugSubmission.getStartDate();*/
         String endDate = drugSubmission.getEndDate();
         List<DrugMedicationDto> preDrugMedicationDtos = IaisCommonUtils.genNewArrayList();
 
@@ -124,7 +124,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
-        if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
+       /* if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {
                 if(Formatter.compareDateByDay(prescriptionDate,startDate)>0){
                     errorMap.put("startDate", "Must be later than or equal to Date of Prescription.");
@@ -132,7 +132,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-        }
+        }*/
         if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
             if(StringUtil.isEmpty(drugSubmission.getNurseRegistrationNo())){
                 errorMap.put("nurseRegistrationNo","GENERAL_ERR0006");
