@@ -181,12 +181,17 @@ public class FacilityRegistrationService {
         return result;
     }
 
+    /**
+     *  The method is used to get draft data from db ,and the draft have same classification and activities
+     */
     private void setEligibleDraftSession(HttpServletRequest request, FacilitySelectionDto selectionDto) {
         FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
         // judge the action is click on Apply New Facility menu or click on Draft Application
         // if is click on draft application,do nothing
         Object requestAttr = ParamUtil.getRequestAttr(request, HAVE_SUITABLE_DRAFT_DATA);
         boolean haveSuitableDraftData = requestAttr != null && (boolean) requestAttr;
+        //if draftAppNo is not null, The applicant may enter the Apply for New Facility module by clicking the Draft Application
+        //when the draft dto get from session is null and draftAppNo is null,call API get draft data
         if (eligibleDraftRegisterDto == null && !StringUtils.hasLength(selectionDto.getDraftAppNo())) {
             Map<Long, FacilityRegisterDto> registerDtoMap = facRegClient.getSameClassificationAndActivityDraftData(selectionDto).getEntity();
             //get latest data
@@ -237,7 +242,7 @@ public class FacilityRegistrationService {
 
             // convert draft data to NodeGroup and set it into session, replace old data
             facRegRoot = retrieveFacRegRoot(request, resultDto);
-
+            facRegRoot.setActiveNodeKey(NODE_NAME_FAC_SELECTION);
             newFacServiceSelectionPageJumpJudge(request, false, facSelectionNode, facRegRoot, selectionDto);
         } else if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.NO)) {
             FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
