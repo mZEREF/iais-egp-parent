@@ -482,21 +482,6 @@ public final class RfcHelper {
         return flag;
     }
 
-/*    private static boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList,
-            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList) {
-        if (appSvcPersonnelDtoList == null) {
-            appSvcPersonnelDtoList = new ArrayList<>();
-        }
-        if (oldAppSvcPersonnelDtoList == null) {
-            oldAppSvcPersonnelDtoList = new ArrayList<>();
-        }
-        if (!PageDataCopyUtil.copySvcPersonnel(appSvcPersonnelDtoList).equals(
-                PageDataCopyUtil.copySvcPersonnel(oldAppSvcPersonnelDtoList))) {
-            return true;
-        }
-        return false;
-    }*/
-
     private static boolean eqSvcPrincipalOfficers(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList,
             List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
         if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
@@ -1254,6 +1239,8 @@ public final class RfcHelper {
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
+                        appGrpPrimaryDocDto.setSubmitDt(appSvcDocDto.getSubmitDt());
+                        appGrpPrimaryDocDto.setSubmitBy(appSvcDocDto.getSubmitBy());
                         if ("1".equals(entity.getDupForPrem())) {
                             appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
                             appGrpPrimaryDocDto.setPremisessType(premisesType);
@@ -1380,6 +1367,8 @@ public final class RfcHelper {
                 appSvcDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcComDocId());
                 appSvcDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
                 appSvcDocDto.setVersion(appGrpPrimaryDocDto.getVersion());
+                appSvcDocDto.setSubmitDt(appGrpPrimaryDocDto.getSubmitDt());
+                appSvcDocDto.setSubmitBy(appGrpPrimaryDocDto.getSubmitBy());
                 appSvcDocDtoList.add(appSvcDocDto);
             }
             appSubmissionDto.setAppGrpPrimaryDocDtos(null);
