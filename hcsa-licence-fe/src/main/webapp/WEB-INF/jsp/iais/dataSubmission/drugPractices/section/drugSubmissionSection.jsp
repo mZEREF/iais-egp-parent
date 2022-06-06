@@ -238,25 +238,6 @@
     <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
-<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body" >
-                <div class="row">
-                    <div class="col-md-12">
-            <span style="font-size: 2rem;" id="prsErrorMsg">
-              <iais:message key="GENERAL_ERR0057" escape="false" />
-            </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-            </div>
-        </div>
-    </div>
-</div>
-<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -427,18 +408,10 @@
         $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
-
-    $(document).ready(function() {
-        if($('#PRS_SERVICE_DOWN_INPUT').val()=='PRS_SERVICE_DOWN'){
-            $('#PRS_SERVICE_DOWN').modal('show');
-        }
-    });
-
     function validateDoctors() {
         console.log('loading info ...');
         showWaiting();
         var prgNo =  $('input[name="doctorReignNo"]').val();
-        console.log('1');
         if(prgNo == "" || prgNo == null || prgNo == undefined){
             clearPrsInfo();
             dismissWaiting();
@@ -452,31 +425,17 @@
             'prgNo': no,
             'docSource': docSource
         };
-        console.log('2');
         $.ajax({
             'url': '${pageContext.request.contextPath}/doc/prg-input-info',
             'dataType': 'json',
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                console.log('3');
                 if (isEmpty(data) || isEmpty(data.selection)) {
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                } else if('-1' == data.selection.statusCode || '-2' == data.statusCode) {
-                    $('#prsErrorMsg').val($('#flagDocMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo();
-                } else if (data.selection.hasException) {
-                    $('#prsErrorMsg').val($('#flagInvaMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo();
-                } else if ('401' == data.selection.statusCode) {
-                    $('#prsErrorMsg').val($('#flagPrnMessage').html());
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo();
                 } else {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
@@ -491,9 +450,6 @@
         });
     }
 
-    function cancels() {
-        $('#PRS_SERVICE_DOWN').modal('hide');
-    }
     var clearPrsInfo = function () {
         $('#names').find('p').text('');
     };

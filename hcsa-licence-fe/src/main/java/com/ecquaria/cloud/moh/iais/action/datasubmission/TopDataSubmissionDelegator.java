@@ -548,6 +548,9 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
             patientInformationDto.setOrgId(topSuperDataSubmissionDto.getOrgId());
         }
+        if (StringUtil.isNotEmpty(patientInformationDto.getPatientName())) {
+            patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);

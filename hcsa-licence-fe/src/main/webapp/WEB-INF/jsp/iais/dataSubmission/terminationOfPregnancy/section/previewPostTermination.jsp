@@ -83,7 +83,7 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Doctor's Professional Reign / MCR No."/>
+                    <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${postTerminationDto.counsellingReignNo}"/>
                     </iais:value>
