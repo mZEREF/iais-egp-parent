@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -16,8 +17,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
-import com.ecquaria.sz.commons.util.FileUtil;
-import ecq.commons.sequence.uuid.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +30,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -78,7 +79,9 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
         String uuId= UUID.randomUUID().toString().toUpperCase();
         String s = "";
         try{
-            s = FileUtil.genMd5FileChecksum(str.getBytes(StandardCharsets.UTF_8));
+            Date date = new Date();
+            String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
+            s =  "FECompareResults_"+dateStr;
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -189,8 +192,9 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
                         count= is.read(size);
                     }
 
-                    byte[] bytes = by.toByteArray();
-                    String s = FileUtil.genMd5FileChecksum(bytes);
+                    Date date = new Date();
+                    String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
+                    String s =  "FECompareResults_"+dateStr;
                     File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
                     boolean b = file.renameTo(curFile);
                     if(b){
