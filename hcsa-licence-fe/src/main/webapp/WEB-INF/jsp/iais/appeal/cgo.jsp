@@ -28,6 +28,13 @@
                   <c:set value="${GovernanceOfficersList}" var="cgoList"/>
                   <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
+                  <input type="hidden" id="hiddendesignation" value="${currentCgo.designation}">
+                  <input type="hidden" id="hiddenprofessionType" value="${currentCgo.professionType}">
+                  <input type="hidden" id="hiddenprofRegNo" value="${currentCgo.profRegNo}">
+                  <input type="hidden" id="hiddenspeciality" value="${currentCgo.speciality}">
+                  <input type="hidden" id="hiddensubSpeciality" value="${currentCgo.subSpeciality}">
+                  <input type="hidden" id="hiddenqualification" value="${currentCgo.qualification}">
+                  <input type="hidden" id="hiddenotherQualification" value="${currentCgo.otherQualification}">
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
                   <div class="cgo-content">
@@ -413,14 +420,49 @@
 
         reLoadChange();
 
-        showSpecialty();
-
         doEdit();
 
 
         $('#control--runtime--0').children().remove("hr")
         psnSelect();
-        $('select.assignSel').trigger('change');
+        var $parentEle = $('select.assignSel').closest('td.first');
+        $parentEle.find('> .new-officer-form').removeClass('hidden');
+        $parentEle.find('> .profile-info-gp').addClass('hidden');
+      var $CurrentPsnEle = $('select.assignSel').closest('table.assignContent');
+
+      if ('newOfficer' == $('select.assignSel').val()) {
+        $parentEle.find('> .new-officer-form').removeClass('hidden');
+        $parentEle.find('> .profile-info-gp').addClass('hidden');
+        unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+
+      } else if ('-1' == $('select.assignSel').val()) {
+        $parentEle.find('> .profile-info-gp').removeClass('hidden');
+        $parentEle.find('> .new-officer-form').addClass('hidden');
+        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+      } else {
+        $parentEle.find('> .new-officer-form').removeClass('hidden');
+        $parentEle.find('> .profile-info-gp').addClass('hidden');
+        //add disabled not add input disabled style
+        $CurrentPsnEle.find('input[name="idNo"]').prop('disabled',true);
+        $CurrentPsnEle.find('input[name="name"]').prop('disabled',true);
+        $CurrentPsnEle.find('input[name="mobileNo"]').prop('disabled',true);
+        $CurrentPsnEle.find('input[name="emailAddress"]').prop('disabled',true);
+        var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
+        $cgoPsnEle.find('div.idTypeSel').addClass('disabled');
+        $cgoPsnEle.find('div.salutationSel').addClass('disabled');
+        $CurrentPsnEle.find('input[name="idNo"]').css('border-color','#ededed');
+        $CurrentPsnEle.find('input[name="idNo"]').css('color','#999');
+        $CurrentPsnEle.find('input[name="name"]').css('border-color','#ededed');
+        $CurrentPsnEle.find('input[name="name"]').css('color','#999');
+        $CurrentPsnEle.find('input[name="mobileNo"]').css('border-color','#ededed');
+        $CurrentPsnEle.find('input[name="mobileNo"]').css('color','#999');
+        $CurrentPsnEle.find('input[name="emailAddress"]').css('border-color','#ededed');
+        $CurrentPsnEle.find('input[name="emailAddress"]').css('color','#999');
+
+      }
 
         if($('.designationSel').val()=='DES999'){
             $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
@@ -439,16 +481,15 @@
         var $parentEle = $(this).closest('td.first');
         var $CurrentPsnEle = $(this).closest('table.assignContent');
 
-        //clearPrsInfo($CurrentPsnEle);
+
 
         if ('newOfficer' == $(this).val()) {
+          clearPrsInfo($CurrentPsnEle);
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
           unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
           var emptyData = {};
-          $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
           fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
-          showSpecialty();
           $CurrentPsnEle.find('input[name="licPerson"]').val('0');
           $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
 
@@ -456,9 +497,7 @@
           $parentEle.find('> .profile-info-gp').removeClass('hidden');
           $parentEle.find('> .new-officer-form').addClass('hidden');
           var emptyData = {};
-          $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
           fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
-          showSpecialty();
           $CurrentPsnEle.find('input[name="licPerson"]').val('0');
           $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         } else {
@@ -473,18 +512,7 @@
       });
     }
 
-    var showSpecialty = function () {
-        $('.specialty').change(function () {
-            $specialtyEle = $(this).closest('.specialtyContent');
-            var val = $(this).val();
 
-            if('other' == val){
-                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            }else{
-                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-            }
-        });
-    }
 
     var reLoadChange = function () {
         var i=0;
@@ -515,7 +543,6 @@
                     data = "<hr/>" + data;
                 }
                 $('.assignContent:last').after(data);
-                showSpecialty();
                 psnSelect();
                 <!--change psn item -->
                 changePsnItem();
@@ -559,29 +586,18 @@
         if (specialty == 'Pathology') {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
         } else if (specialty == 'Haematology') {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
         }else if (specialty == 'Diagnostic Radiology') {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
         }else if (specialty == 'Nuclear Medicine') {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
         } else {
             $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
             $CurrentPsnEle.find("select[name='specialty']").val('other');
-            $CurrentPsnEle.find(".specialtyDiv .current").text("Others");
-            $CurrentPsnEle.find("input[name='specialtyOther']").removeClass('hidden');
-            $CurrentPsnEle.find("input[name='specialtyOther']").val(specialty);
         }
         $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
     };
@@ -864,9 +880,6 @@
       }
       if(psnEditDto.profRegNo){
         $cgoPsnEle.find('input[name="professionRegoNo"]').prop('disabled',false);
-      }
-      if(psnEditDto.specialityOther){
-        $cgoPsnEle.find('input[name="specialtyOther"]').prop('disabled',false);
       }
       if(psnEditDto.subSpeciality){
         $cgoPsnEle.find('input[name="qualification"]').prop('disabled',false);

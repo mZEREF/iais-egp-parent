@@ -396,7 +396,6 @@
 
         reLoadChange();
 
-        showSpecialty();
 
         doEdit();
 
@@ -419,18 +418,7 @@
         $('input[type="text"]').prop('disabled',true);
     }
 
-    var showSpecialty = function () {
-        $('.specialty').change(function () {
-            $specialtyEle = $(this).closest('.specialtyContent');
-            var val = $(this).val();
 
-            if('other' == val){
-                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            }else{
-                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-            }
-        });
-    }
 
     var reLoadChange = function () {
         var i=0;
@@ -461,7 +449,6 @@
                     data = "<hr/>" + data;
                 }
                 $('.assignContent:last').after(data);
-                showSpecialty();
 
                 $('select.assignSel').change(function () {
                     $parentEle = $(this).closest('td.first');
