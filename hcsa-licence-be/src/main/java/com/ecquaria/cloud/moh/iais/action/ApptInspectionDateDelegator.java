@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,27 +57,24 @@ public class ApptInspectionDateDelegator {
     private TaskService taskService;
 
     @Autowired
-    private ApptInspectionDateDelegator(ApplicationViewService applicationViewService, ApptInspectionDateService apptInspectionDateService, TaskService taskService){
-        this.apptInspectionDateService = apptInspectionDateService;
-        this.applicationViewService = applicationViewService;
-        this.taskService = taskService;
-    }
+    private InspectionService inspectionService;
+
     /**
      * StartStep: apptInspectionDateStart
      *
      * @param bpc
      * @throws
      */
-    public void apptInspectionDateStart(BaseProcessClass bpc){
+    public void apptInspectionDateStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
         String taskId = "";
-        try{
-            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-        }catch (MaskAttackException e){
+        try {
+            taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
-            try{
-                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-            } catch (IOException ioe){
+            try {
+                IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
                 return;
             }
@@ -116,7 +114,7 @@ public class ApptInspectionDateDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
             apptInspectionDateDto = new ApptInspectionDateDto();
             //set application info show
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
@@ -134,6 +132,26 @@ public class ApptInspectionDateDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+
+        // spec date
+        List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
+        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
+        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
+
+        List<SelectOption> nextStages = IaisCommonUtils.genNewArrayList();
+        if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysInspDateFlag())) {
+            nextStages.add(new SelectOption(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE, "Use System-Proposed Date"));
+        }
+        if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysSpecDateFlag())) {
+            nextStages.add(new SelectOption(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE, "Assign Specific Date"));
+        }
+        nextStages.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, "Roll Back"));
+        ParamUtil.setRequestAttr(bpc.request, "nextStages", nextStages);
+
+        //set rollback options
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList());
+        ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", (Serializable) rollBackStage);
     }
 
     /**
@@ -142,63 +160,41 @@ public class ApptInspectionDateDelegator {
      * @param bpc
      * @throws
      */
-    public void apptInspectionDateStep1(BaseProcessClass bpc){
+    public void apptInspectionDateStep1(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the apptInspectionDateStep1 start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
         apptInspectionDateDto.setProcessDec(processDec);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-    }
 
-    /**
-     * StartStep: apptInspectionDateSpec
-     *
-     * @param bpc
-     * @throws
-     */
-    public void apptInspectionDateSpec(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
-        List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
-        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
-        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
-        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-    }
-
-    /**
-     * StartStep: apptInspectionDateVali
-     *
-     * @param bpc
-     * @throws
-     */
-    public void apptInspectionDateVali(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the apptInspectionDateVali start ...."));
-        ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
-        if(StringUtil.isEmpty(processDec)) {
-            processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
+            validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
+        } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(processDec)) {
+            validateRollBack(bpc, errorMap);
         }
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        apptInspectionDateDto.setProcessDec(processDec);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, "apptInspectionDateType", "back");
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, "apptInspectionDateType", "success");
+    }
+
+    private void validateRollBack(BaseProcessClass bpc, Map<String, String> errorMap) {
+        String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+        if (StringUtil.isEmpty(rollBackTo)) {
+            errorMap.put("rollBackTo", "GENERAL_ERR0006");
+        }
+    }
+
+    private void validateSpecificDate(BaseProcessClass bpc, Map<String, String> errorMap, ApptInspectionDateDto apptInspectionDateDto) {
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
-        if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
-            ParamUtil.setRequestAttr(bpc.request, "apptBackShow", InspectionConstants.SWITCH_ACTION_BACK);
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-        } else {
-            ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto, "specific");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
-            }
+        ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto, "specific");
+        if (validationResult.isHasErrors()) {
+            errorMap.putAll(validationResult.retrieveAll());
         }
-        ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 
     private ApptInspectionDateDto getValidateValue(ApptInspectionDateDto apptInspectionDateDto, BaseProcessClass bpc) {
@@ -279,19 +275,24 @@ public class ApptInspectionDateDelegator {
      * @param bpc
      * @throws
      */
-    public void apptInspectionDateSuccess(BaseProcessClass bpc){
+    public void apptInspectionDateSuccess(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSuccess start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+        if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
         } else {
-            if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
+            if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
-            } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
+            } else if (InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
                 ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
+            } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(apptInspectionDateDto.getProcessDec())) {
+                int rollBackToIndex = ParamUtil.getInt(bpc.request, "rollBackTo");
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+                inspectionService.rollBack(bpc,taskDto,applicationViewDto,applicationViewDto.getRollBackHistroyList().get(rollBackToIndex));
+                ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);

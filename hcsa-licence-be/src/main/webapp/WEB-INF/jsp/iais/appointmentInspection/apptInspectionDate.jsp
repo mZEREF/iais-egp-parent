@@ -18,17 +18,18 @@
 <webui:setLayout name="iais-intranet"/>
 
 <%
-  String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+  String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <style type="text/css">
   li.apptInspScheduleUl:before {
     background-color: #333333;
   }
 </style>
+<%--@elvariable id="apptInspectionDateDto" type="com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto"--%>
+<%--@elvariable id="applicationViewDto" type="com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto"--%>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainInspDateForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="apptInspectionDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
     <input type="hidden" id="sysInspDateFlag" name="sysInspDateFlag" value="${apptInspectionDateDto.sysInspDateFlag}">
@@ -94,7 +95,7 @@
                                   <c:when test="${empty apptInspectionDateDto.applicationInfoShow}">
                                     <tr>
                                       <td colspan="7">
-                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                        <iais:message key="GENERAL_ACK018" escape="true"/>
                                       </td>
                                     </tr>
                                   </c:when>
@@ -117,55 +118,98 @@
                                 </tbody>
                               </table>
                             </div>
-                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
-                              <div class="row">
-                                <div class="col-md-2">
-                                  <label style="font-size: 16px">Licence Start Date</label>
+                            <iais:row>
+                              <iais:field value="Processing Decision" required="true"/>
+                              <iais:value width="10">
+                                <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
+                                             firstOption="Please Select"
+                                             options="nextStages"
+                                             value="${apptInspectionDateDto.processDec}"/>
+                              </iais:value>
+                            </iais:row>
+
+                            <iais:row id="systemDateRow">
+                              <iais:field value="Available Appointment Date" required="true" id="apptDateTitle"/>
+                              <iais:value width="10">
+                                <ul>
+                                  <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
+                                    <li class="apptInspScheduleUl"><span style="font-size: 16px"><c:out
+                                            value="${insepctionDate}"/></span></li>
+                                  </c:forEach>
+                                </ul>
+                              </iais:value>
+                            </iais:row>
+
+                            <iais:row id="specDateRow">
+                              <iais:field value="Date" required="true"/>
+                              <iais:value width="10">
+                                <div class="d-flex">
+                                  <p>From</p>
+                                  <div class="col-sm-4 col-md-3 col-xs-2">
+                                    <iais:datePicker id="specificStartDate" name="specificStartDate"
+                                                     dateVal="${apptInspectionDateDto.specificStartDate}"/>
+                                  </div>
+                                  <div class="col-sm-4 col-md-3 col-xs-2">
+                                    <iais:select name="startHours" options="hoursOption" firstOption="--:--"
+                                                 value="${apptInspectionDateDto.startHours}"/>
+                                  </div>
+                                  <p>To</p>
+                                  <div class="col-sm-4 col-md-3 col-xs-2">
+                                    <iais:datePicker id="specificEndDate" name="specificEndDate"
+                                                     dateVal="${apptInspectionDateDto.specificEndDate}"/>
+                                  </div>
+                                  <div class="col-sm-4 col-md-3 col-xs-2">
+                                    <iais:select name="endHours" options="endHoursOption" firstOption="--:--"
+                                                 value="${apptInspectionDateDto.endHours}"/>
+                                  </div>
                                 </div>
-                                <div class="col-md-6">
+                                <span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
+                              </iais:value>
+                            </iais:row>
+
+                            <iais:row id="rollBackToRow">
+                              <iais:field value="Roll Back To" required="true"/>
+                              <iais:value width="10">
+                                <iais:select name="rollBackTo" id="rollBackTo"
+                                             firstOption="Please Select"
+                                             options="rollBackOptions" needSort="true"
+                                             value=""/>
+                              </iais:value>
+                            </iais:row>
+
+                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
+                              <iais:row>
+                                <iais:field value="Licence Start Date"/>
+                                <iais:value width="10">
                                   <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                    <span style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></span>
+                                    <span style="font-size: 16px"><fmt:formatDate
+                                            value='${applicationViewDto.recomLiceStartDate}'
+                                            pattern='dd/MM/yyyy'/></span>
                                   </c:if>
                                   <c:if test="${applicationViewDto.recomLiceStartDate == null}">
                                     <span style="font-size: 16px">-</span>
                                   </c:if>
-                                </div>
-                              </div>
+                                </iais:value>
+                              </iais:row>
                             </c:if>
-                            <div class="row">
-                              <div class="col-md-2">
-                                <label style="font-size: 16px">Fast Tracking?</label>
-                              </div>
-                              <div class="col-md-6">
-                                <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                              </div>
-                            </div>
+
+                            <iais:row>
+                              <iais:field value="Fast Tracking?"/>
+                              <iais:value width="10">
+                                <input disabled type="checkbox"
+                                       <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                              </iais:value>
+                            </iais:row>
+
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
-                              <div id="apptThreeInspDate">
-                                <div class="row" id = "apptDateTitle">
-                                  <div class="col-md-4">
-                                    <label style="font-size: 16px">Available Appointment Date</label>
-                                  </div>
-                                </div>
-                              </div>
-                              <c:if test="${not empty apptInspectionDateDto.inspectionDate}">
-                                <div class="row">
-                                  <div class="col-md-6">
-                                    <ul>
-                                      <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
-                                        <li class="apptInspScheduleUl"><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
-                                      </c:forEach>
-                                    </ul>
-                                  </div>
-                                </div>
-                              </c:if>
                               <iais:action>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                                <button id="apptSpecInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
-                                <button id="disApptSpecInspDate" class="btn btn-primary disabled" style="float:right" type="button">Assign Specific Date</button>
-                                <span style="float:right">&nbsp;</span>
-                                <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Confirm System-proposed Date</button>
-                                <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Confirm System-proposed Date</button>
+                                <a style="float:left;padding-top: 1.1%;" class="back"
+                                   href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em
+                                        class="fa fa-angle-left"></em> Back</a>
+                                <button id="submitBut" class="btn btn-primary" style="float:right" type="button"
+                                        onclick="javascript:submitButFun()">
+                                  SUBMIT
+                                </button>
                               </iais:action>
                             </c:if>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
@@ -196,108 +240,124 @@
   </form>
 </div>
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="submit()" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
-    $(document).ready(function() {
-        var sysInspDateFlag = $("#sysInspDateFlag").val();
-        var sysSpecDateFlag = $("#sysSpecDateFlag").val();
-        if('true' == sysInspDateFlag){
-            $("#disApptSysInspDate").hide();
-            $("#apptSysInspDate").show();
-            $("#apptThreeInspDate").show();
-        } else {
-            $("#disApptSysInspDate").show();
-            $("#apptSysInspDate").hide();
-            $("#apptThreeInspDate").hide();
-        }
-        if('true' == sysSpecDateFlag){
-            $("#disApptSpecInspDate").hide();
-            $("#apptSpecInspDate").show();
-        } else {
-            $("#disApptSpecInspDate").show();
-            $("#apptSpecInspDate").hide();
-        }
-        var apptBackShow = $("#apptBackShow").val();
-        if('back' == apptBackShow){
-            apptInspectionDateJump();
-        }
-    });
-
-    function apptInspectionDateJump(){
-        $("#apptInspTabInfo").removeClass('active');
-        $("#apptInspTabDocuments").removeClass('active');
-        $("#apptInspTabProcessing").removeClass('active');
-        $('#apptInspectionDate').trigger("click");
-        $("#apptInspectionDateProcess").click();
-        $("#apptInspTabProcessing").addClass('active');
+  $(document).ready(function () {
+    changeNextStageFunc();
+    var apptBackShow = $("#apptBackShow").val();
+    if ('back' === apptBackShow) {
+      apptInspectionDateJump();
     }
+    $('#nextStage').change(changeNextStageFunc);
 
-    function apptInspectionDateSubmit(action){
-        $("[name='apptInspectionDateType']").val(action);
-        var mainPoolForm = document.getElementById('mainInspDateForm');
-        mainPoolForm.submit();
+    <c:if test="${not empty errorMsg}">
+    console.log('errormsg is not empty')
+    $('#apptInspectionDateProcess').trigger('click');
+    </c:if>
+  });
+
+  function apptInspectionDateJump() {
+    $("#apptInspTabInfo").removeClass('active');
+    $("#apptInspTabDocuments").removeClass('active');
+    $("#apptInspTabProcessing").removeClass('active');
+    $('#apptInspectionDate').trigger("click");
+    $("#apptInspectionDateProcess").click();
+    $("#apptInspTabProcessing").addClass('active');
+  }
+
+  function changeNextStageFunc() {
+    let nextStageValue = $('#nextStage').find('option:selected').val();
+    let systemDateRow = $('#systemDateRow');
+    let specDateRow = $('#specDateRow');
+    let rollBackToRow = $('#rollBackToRow');
+
+    systemDateRow.hide();
+    specDateRow.hide();
+    rollBackToRow.hide();
+    if ('REDECI017' === nextStageValue) {
+      systemDateRow.show();
+    } else if ('REDECI018' === nextStageValue) {
+      specDateRow.show();
+    } else if ('RollBack' === nextStageValue) {
+      rollBackToRow.show();
     }
+  }
 
-    function apptInspectionDateConfirm() {
-        showWaiting();
-        $("#actionValue").val('success');
-        $("#processDec").val('REDECI017');
-        apptInspectionDateSubmit("success");
-    }
-
-    function apptInspectionDateGetDate() {
-        showWaiting();
-        var sysInspDateFlag = $("#sysInspDateFlag").val();
-        if('true' == sysInspDateFlag){
-            $("#disApptSysInspDate").hide();
-            $("#apptSysInspDate").show();
-            $("#apptThreeInspDate").show();
-            dismissWaiting();
-        } else {
-            $.post(
-                '/hcsa-licence-web/online-appt/insp.date',
-                function (data) {
-                    dismissWaiting();
-                    var ajaxFlag = data.buttonFlag;
-                    var inspDateList = data.inspDateList;
-                    var specButtonFlag = data.specButtonFlag;
-                    if('true' == specButtonFlag){
-                        $("#disApptSpecInspDate").hide();
-                        $("#apptSpecInspDate").show();
-                    } else {
-                        $("#disApptSpecInspDate").show();
-                        $("#apptSpecInspDate").hide();
-                    }
-                    if('true' == ajaxFlag){
-                        $("#disApptSysInspDate").hide();
-                        $("#apptSysInspDate").show();
-                        $("#apptThreeInspDate").show();
-                        var html = '<div class="row">' +
-                            '<div class="col-md-6">' +
-                            '<ul>';
-                        for(var i = 0; i < inspDateList.length; i++){
-                            html += '<li class="apptInspScheduleUl"><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
-                        }
-                        html += '</ul>' +
-                            '</div>' +
-                            '</div>';
-                        $("#apptDateTitle").after(html);
-                        $("#sysInspDateFlag").val('true');
-                    } else {
-                        $("#disApptSysInspDate").show();
-                        $("#apptSysInspDate").hide();
-                        $("#apptThreeInspDate").hide();
-                    }
+  function apptInspectionDateGetDate() {
+    showWaiting();
+    let sysInspDateFlag = $("#sysInspDateFlag");
+    if ('true' === sysInspDateFlag.val()) {
+      dismissWaiting();
+    } else {
+      $.post(
+              '/hcsa-licence-web/online-appt/insp.date',
+              function (data) {
+                dismissWaiting();
+                var ajaxFlag = data.buttonFlag;
+                var inspDateList = data.inspDateList;
+                var specButtonFlag = data.specButtonFlag;
+                let nextStage = $('#nextStage');
+                let nextStageOption = $("#nextStage option[value='']");
+                let systemDate = $("#nextStage option[value='REDECI017']");
+                let specificDate = $("#nextStage option[value='REDECI018']");
+                console.log('apptInspectionDateGetDate systemFlag is %s, specFlag is %s, system is %s, spec is %s', ajaxFlag, specButtonFlag, systemDate.length, specificDate.length)
+                if ('true' === ajaxFlag) {
+                  if (systemDate.length === 0) {
+                    nextStageOption.after("<option value='REDECI017'>Use System-Proposed Date</option>")
+                    nextStage.niceSelect('update');
+                  }
+                  var html = '<div class="row">' +
+                          '<div class="col-md-6">' +
+                          '<ul>';
+                  for (var i = 0; i < inspDateList.length; i++) {
+                    html += '<li class="apptInspScheduleUl"><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
+                  }
+                  html += '</ul>' +
+                          '</div>' +
+                          '</div>';
+                  $("#apptDateTitle").after(html);
+                  sysInspDateFlag.val('true');
+                } else {
+                  if (systemDate.length > 0) {
+                    systemDate.remove();
+                    nextStage.niceSelect('update');
+                  }
                 }
-            )
-        }
-    }
 
-    function apptInspectionDateSpecific() {
-        showWaiting();
-        $("#actionValue").val('confirm');
-        $("#processDec").val('REDECI018');
-        apptInspectionDateSubmit("confirm");
+                if ('true' === specButtonFlag) {
+                  if (specificDate.length === 0) {
+                    nextStageOption.after("<option value='REDECI018'>Assign Specific Date</option>");
+                    nextStage.niceSelect('update');
+                  }
+                } else {
+                  if (specificDate.length > 0) {
+                    specificDate.remove();
+                    nextStage.niceSelect('update');
+                  }
+                }
+              }
+      )
     }
+  }
+
+  function submitButFun() {
+    let nextStageValue = $('#nextStage').find('option:selected').val();
+    $("#processDec").val(nextStageValue);
+    if ('RollBack' === nextStageValue) {
+      $('#confirmTag').modal('show');
+    } else {
+      submit();
+    }
+  }
+
+  function submit() {
+    document.getElementById('mainInspDateForm').submit();
+  }
 </script>
 
 

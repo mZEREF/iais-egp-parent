@@ -19,12 +19,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
@@ -34,12 +36,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -47,14 +52,18 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,6 +118,12 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private ReportBeViewTaskAssignClient reportBeViewTaskAssignClient;
+
+    @Autowired
+    private BroadcastService broadcastService;
+
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -552,6 +567,82 @@ public class InspectionServiceImpl implements InspectionService {
         return null;
     }
 
+    @Override
+    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList) {
+        List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(rollBackHistoryList)) {
+            int index = 0;
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : rollBackHistoryList) {
+                String displayName = appPremisesRoutingHistoryDto.getRoleId();
+                String userId = appPremisesRoutingHistoryDto.getActionby();
+                OrgUserDto user = applicationViewService.getUserById(userId);
+                if (user != null) {
+                    String actionBy = user.getDisplayName();
+                    SelectOption selectOption = new SelectOption(index+"", actionBy + " (" + displayName + ")");
+                    rollBackStage.add(selectOption);
+                }
+                index++;
+            }
+        }
+        return rollBackStage;
+    }
+
+    @SneakyThrows
+    @Override
+    public void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto) {
+        String stageId = rollBackHistoryDto.getStageId();
+        String wrkGpId = rollBackHistoryDto.getWrkGrpId();
+        String userId = rollBackHistoryDto.getActionby();
+        String roleId = rollBackHistoryDto.getRoleId();
+        String appStatus = rollBackHistoryDto.getAppStatus();
+        String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
+
+        //completed current task
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
+        //create completed task history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
+                applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, null, ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, taskDto.getRoleId());
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setApplicationDto(applicationDto);
+
+        //create newTask
+        TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), stageId, taskType,
+                taskDto.getRefNo(), TaskConsts.TASK_STATUS_PENDING, wrkGpId, userId, new Date(), null, 0, TaskUrl, roleId,
+                IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastOrganizationDto.setCreateTask(newTaskDto);
+        //create rollBack task history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
+                taskDto.getWkGrpId(), null, null, null, roleId);
+        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+
+        //save the broadcast
+        //set vehicle No
+        broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog(submissionId));
+        broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
+
+        //0062460 update FE  application status.
+        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+    }
+
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {
@@ -789,5 +880,30 @@ public class InspectionServiceImpl implements InspectionService {
         if(s.equals(so.getValue())){
             nameList.add(so);
         }
+    }
+
+    private TaskDto completedTask(TaskDto taskDto) {
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskDto;
+    }
+
+    private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
+                                                                      String stageId, String subStageId, String wrkGrpId, String internalRemarks, String externalRemarks, String processDecision,
+                                                                      String roleId) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setSubStage(subStageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setExternalRemarks(externalRemarks);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return appPremisesRoutingHistoryDto;
     }
 }
