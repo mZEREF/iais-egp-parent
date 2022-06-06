@@ -130,6 +130,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
+                    appSvcRelatedInfoDtoList.get(0).setAppNo(applicationDto.getApplicationNo());
                     log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSvcRelatedInfoDtoList)+"-----appSvcRelatedInfoDtoList"));
                     log.info(StringUtil.changeForLog(serviceId +"-------serviceId"));
                     String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
