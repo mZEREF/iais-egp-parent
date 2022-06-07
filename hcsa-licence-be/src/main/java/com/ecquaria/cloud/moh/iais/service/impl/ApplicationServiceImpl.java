@@ -1038,9 +1038,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String taskType = TaskConsts.TASK_TYPE_INSPECTION;
-        String taskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
-        String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
-        String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_PRE;
+        String taskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+        String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
+        String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
