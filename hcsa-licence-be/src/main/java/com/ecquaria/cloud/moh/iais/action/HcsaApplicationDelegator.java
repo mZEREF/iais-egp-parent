@@ -2593,8 +2593,8 @@ public class HcsaApplicationDelegator {
                             try {
                                 if(!oldApplication.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
                                     //WITHDRAWAL To restore the old task
-                                    List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos=applicationClient.getAppPremisesCorrelationsByAppId(oldAppId).getEntity();
-                                    String corrId=oldAppPremisesCorrelationDtos.get(0).getId();
+                                    AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationNo).getEntity();
+                                    String corrId=appPremisesCorrelationDto.getId();
                                     List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
                                     TaskDto oldTaskDto=taskDtos.get(0);
                                     oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
