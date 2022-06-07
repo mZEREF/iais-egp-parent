@@ -813,23 +813,8 @@ public class HcsaApplicationDelegator {
                 }
             }else if (!StringUtil.isEmpty(rollBackCr)) {
                 //roll back
-                successInfo = "LOLEV_ACK002";
-                if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
-                    //AO1
-                    successInfo = "LOLEV_ACK002";
-                } else if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
-                    //AO2
-                    successInfo = "LOLEV_ACK014";
-                } else if ((RoleConsts.USER_ROLE_AO3.equals(roleId))) {
-                    //AO3
-                    successInfo = "LOLEV_ACK025";
-                }else if ((RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId))) {
-                    //Inspection
-                    successInfo = "LOLEV_ACK033";
-                }else if ((RoleConsts.USER_ROLE_PSO.equals(roleId))) {
-                    //PSO
-                    successInfo = "LOLEV_ACK001";
-                }
+                successInfo = "INSPE_ACK002";
+
             } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(nextStage)) {
                 //AO3 DMS
                 successInfo = "LOLEV_ACK024";
