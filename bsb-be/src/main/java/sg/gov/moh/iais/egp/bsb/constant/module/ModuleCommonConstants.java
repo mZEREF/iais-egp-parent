@@ -43,4 +43,9 @@ public class ModuleCommonConstants {
     public static final String KEY_SELECT_ROUTE_TO_MOH              = "selectRouteToMoh";
 
     public static final String KEY_CAN_NOT_UPLOAD_DOC               = "canNotUploadInternalDoc";
+
+    public static final String KEY_DO                               = "Duty Officer";
+    public static final String KEY_AO                               = "Approval Officer";
+    public static final String KEY_HM                               = "Higher Management";
+    public static final String KEY_APPLICANT                        = "Applicant";
 }

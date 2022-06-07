@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
@@ -181,7 +183,9 @@ public class PreInspectionDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} TaskId {} Inspection mark as ready", appId, taskId);
         inspectionClient.changeInspectionStatusToReady(appId, taskId, processDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
     }
 
     public void rfi(BaseProcessClass bpc) {
@@ -197,7 +201,9 @@ public class PreInspectionDelegator {
         rfiPreInspectionDto.setRfiApplicationDto(rfiApplicationDto);
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
         inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiPreInspectionDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
 
     public void skip(BaseProcessClass bpc) {
@@ -206,6 +212,7 @@ public class PreInspectionDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         inspectionClient.skipInspection(appId, taskId, processDto);
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
     public void prepareApplicationRfi(BaseProcessClass bpc) {

@@ -4,11 +4,13 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
@@ -43,6 +46,7 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         request.getSession().removeAttribute(KEY_REVIEW_FOLLOW_UP_DTO);
         request.getSession().removeAttribute(KEY_INS_DECISION);
         request.getSession().removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
+        request.getSession().removeAttribute(KEY_APP_STATUS);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -92,7 +96,10 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.aoReviewInspectionFollowUpItemsRouteBackToDO(appId, taskId, insProcessDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "Your Request for Information has been sent to the Duty Officer on" + DateUtil.convertToString(LocalDate.now()) + ".");
+        String appStatus = (String) ParamUtil.getSessionAttr(request,KEY_APP_STATUS);
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
     }
 
     /**
@@ -106,6 +113,8 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.aoReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
+        String appStatus = (String) ParamUtil.getSessionAttr(request,KEY_APP_STATUS);
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
     }
 
     public void skip(BaseProcessClass bpc) {
@@ -114,6 +123,7 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.skipInspection(appId,taskId,insProcessDto);
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
     public ReviewInsFollowUpDto getDisplayDto(HttpServletRequest request) {

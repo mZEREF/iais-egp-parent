@@ -20,4 +20,8 @@ public class TaskModuleConstants {
     public static final String MASK_PARAM_ID                        = "id";
     public static final String PARAM_NAME_APP_ID                    = "appId";
     public static final String PARAM_NAME_TASK_ID                   = "taskId";
+
+    public static final String KEY_CURRENT_TASK                     = "currentTask";
+    public static final String KEY_NEXT_TASK                        = "nextTask";
+    public static final String KEY_NEXT_ROLE                        = "nextRole";
 }

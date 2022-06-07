@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
@@ -43,6 +44,7 @@ import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdCheckListShowDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdhocNcCheckItemDto;
@@ -100,6 +102,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_AC
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APPLICANT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
@@ -658,8 +661,11 @@ public class InspectionDODelegator {
         String route;
         if (validationResultDto.isPass() || (StringUtils.hasLength(actionValue) && "noValidate".equals(actionValue))) {
             String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+            SubmissionDetailsInfo submissionDetailsInfo = (SubmissionDetailsInfo) ParamUtil.getSessionAttr(request,KEY_SUBMISSION_DETAILS_INFO);
             inspectionClient.submitInspectionFindingChangeStatusToReport(appId, taskId);
-            ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
+            ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(submissionDetailsInfo.getApplicationStatus()));
+            ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION_REPORT));
+            ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
             route = "submit";
         } else {
             log.info("But not all necessary data has been submitted");
