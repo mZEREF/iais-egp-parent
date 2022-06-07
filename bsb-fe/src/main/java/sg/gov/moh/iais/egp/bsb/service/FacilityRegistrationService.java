@@ -187,7 +187,7 @@ public class FacilityRegistrationService {
     /**
      *  The method is used to get draft data from db ,and the draft have same classification and activities
      */
-    private void setEligibleDraftSession(HttpServletRequest request, FacilitySelectionDto selectionDto) {
+    private void getSameTypeFacilityDraftData(HttpServletRequest request, FacilitySelectionDto selectionDto) {
         FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
         // judge the action is click on Apply New Facility menu or click on Draft Application
         // if is click on draft application,do nothing
@@ -222,7 +222,7 @@ public class FacilityRegistrationService {
             if (!facilitySelectionDto.getFacClassification().equals(selectionDto.getFacClassification()) || facilitySelectionDto.getActivityTypes().size() != selectionDto.getActivityTypes().size() || !facilitySelectionDto.getActivityTypes().equals(selectionDto.getActivityTypes())) {
                 selectionDto.setDraftAppNo(null);
                 ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, null);
-                setEligibleDraftSession(request, selectionDto);
+                getSameTypeFacilityDraftData(request, selectionDto);
             }
         }
     }
@@ -234,7 +234,7 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         selectionDto.reqObjMapping(request);
         //judge whether had eligible draft data
-        setEligibleDraftSession(request, selectionDto);
+        getSameTypeFacilityDraftData(request, selectionDto);
         boolean haveSuitableDraftData = (boolean) ParamUtil.getRequestAttr(request,HAVE_SUITABLE_DRAFT_DATA);
         String actionLoadDraft = ParamUtil.getString(request, ACTION_LOAD_DRAFT);
         //if choose to load draft data,get dto from session
