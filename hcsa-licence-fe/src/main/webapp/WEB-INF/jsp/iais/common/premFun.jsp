@@ -761,16 +761,16 @@
             $addrType = $AddrEle.find('select[name="onSiteAddressType"]');
         } else if ('conveyance' == premisesType) {
             addrVal = data.conveyanceAddressType;
-            $addrType = $AddrEle.find('select[name="conveyanceAddressType"]');
+            $addrType = $AddrEle.find('select[name="conveyanceAddrType"]');
         } else if ('offSite' == premisesType) {
-            addrVal = data.conveyanceAddressType;
-            $addrType = $AddrEle.find('select[name="offSiteAddressType"]');
+            addrVal = data.offSiteAddressType;
+            $addrType = $AddrEle.find('select[name="offSiteAddrType"]');
         } else if ('easMts' == premisesType) {
             addrVal = data.easMtsAddressType;
             $addrType = $AddrEle.find('select[name="easMtsAddrType"]');
         }
+        fillValue($addrType, addrVal);
         if (!isEmpty($addrType) && $addrType.length > 0) {
-            fillValue($addrType, addrVal);
             $addrType.trigger('change');
         }
     }
