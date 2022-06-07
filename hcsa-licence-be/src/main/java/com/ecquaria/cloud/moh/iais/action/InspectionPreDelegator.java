@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +79,9 @@ public class InspectionPreDelegator {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Autowired
     private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService, AdhocChecklistService adhocChecklistService,
@@ -363,7 +368,7 @@ public class InspectionPreDelegator {
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
             inspectionPreTaskDto.setPreInspecComments(preInspecComments);
-        } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
+        } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec) || InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)){
             if(!StringUtil.isEmpty(checkRbStage)){
                 String userId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbStage);
                 if(!StringUtil.isEmpty(userId)){
@@ -477,6 +482,24 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setRequestAttr(bpc.request, "successPage", "routeBack");
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+    }
+
+    /**
+     * StartStep: inspectionPreInspectorRollBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionPreInspectorRollBack(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the inspectionPreInspectorRollBack start ...."));
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
+                ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+        InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto) ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        AppPremisesRoutingHistoryDto rollBackTo = inspectionPreTaskDto.getRollBackHistoryMap().get(inspectionPreTaskDto.getCheckRbStage());
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackTo);
+        ParamUtil.setRequestAttr(bpc.request, "successPage", "rollBack");
+        log.debug(StringUtil.changeForLog("the inspectionPreInspectorRollBack end ...."));
     }
 
     /**

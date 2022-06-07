@@ -183,14 +183,17 @@
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" cssClass="nextStage" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
+                                <iais:select name="selectValue" cssClass="nextStage" options="processDecOption"
+                                             firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}"
+                                             onchange="javascript:doInspectionPreTaskChange(this.value)"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_nextStage"></span>
                               </iais:value>
                             </iais:row>
                             <iais:row id="rbCheckStage">
-                              <iais:field value="Route Back To" required="true"/>
+                              <iais:field value="Route Back To" required="true" id="backToLabel"/>
                               <iais:value width="7">
-                                <iais:select name="checkRbStage" options="preInspRbOption" firstOption="Please Select" value="${inspectionPreTaskDto.checkRbStage}"></iais:select>
+                                <iais:select name="checkRbStage" options="preInspRbOption" firstOption="Please Select"
+                                             value="${inspectionPreTaskDto.checkRbStage}"/>
                               </iais:value>
                             </iais:row>
                             <iais:row id="rfiCheckBox">
@@ -288,6 +291,10 @@
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
+
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');showWaiting();inspectionPreTaskSubmit('rollBack');" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -312,10 +319,15 @@
         } else if("REDECI021" == selectValue){
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").show();
+        }else if("REDECI027" == selectValue){
+          $("#rfiCheckBox").hide();
+          $("#rbCheckStage").show();
         } else {
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").hide();
         }
+
+      initBackToLabel();
     });
 
     function inspectionPreTaskJump(value){
@@ -390,12 +402,18 @@
             $("#rbCheckStage").show();
             $("#preInspRfiComments").addClass('hidden');
             $("#rfiSelect").addClass('hidden');
+        } else if("REDECI027" == value){
+          $("#rfiCheckBox").hide();
+          $("#rbCheckStage").show();
+          $("#preInspRfiComments").addClass('hidden');
+          $("#rfiSelect").addClass('hidden');
         } else {
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").hide();
             $("#preInspRfiComments").addClass('hidden');
             $("#rfiSelect").addClass('hidden');
         }
+        initBackToLabel();
     }
 
     function doInspectionPreTaskSubmit() {
@@ -410,11 +428,25 @@
         } else if("REDECI021" == actionValue){
             $("#actionValue").val('routeB');
             inspectionPreTaskSubmit("apso");
+        } else if ("REDECI027" == actionValue) {
+          $("#actionValue").val('routeB');
+          dismissWaiting();
+          $('#confirmTag').modal('show');
         } else {
             var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }
+    }
+
+    function initBackToLabel() {
+      const actionValue = $("#processDec").val();
+      const backToLabel = $("#backToLabel");
+      if ("REDECI021" === actionValue) {
+        backToLabel.html("Route Back To");
+      } else {
+        backToLabel.html("Roll Back To");
+      }
     }
 </script>
 

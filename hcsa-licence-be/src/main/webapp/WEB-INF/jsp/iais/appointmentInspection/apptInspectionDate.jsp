@@ -244,7 +244,7 @@
 
 <iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
               cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="submit()" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+              callBack="$('#confirmTag').modal('hide');submit()" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 
 <script type="text/javascript">
   $(document).ready(function () {
@@ -283,7 +283,7 @@
       systemDateRow.show();
     } else if ('REDECI018' === nextStageValue) {
       specDateRow.show();
-    } else if ('RollBack' === nextStageValue) {
+    } else if ('REDECI027' === nextStageValue) {
       rollBackToRow.show();
     }
   }
@@ -348,7 +348,7 @@
   function submitButFun() {
     let nextStageValue = $('#nextStage').find('option:selected').val();
     $("#processDec").val(nextStageValue);
-    if ('RollBack' === nextStageValue) {
+    if ('REDECI027' === nextStageValue) {
       $('#confirmTag').modal('show');
     } else {
       submit();
@@ -356,6 +356,7 @@
   }
 
   function submit() {
+    showWaiting();
     document.getElementById('mainInspDateForm').submit();
   }
 </script>

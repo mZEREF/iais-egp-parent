@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
@@ -139,15 +140,15 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
 
-        List<SelectOption> nextStages = IaisCommonUtils.genNewArrayList();
+        List<String> processDecValues = IaisCommonUtils.genNewArrayList();
         if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysInspDateFlag())) {
-            nextStages.add(new SelectOption(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE, "Use System-Proposed Date"));
+            processDecValues.add(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
         }
         if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysSpecDateFlag())) {
-            nextStages.add(new SelectOption(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE, "Assign Specific Date"));
+            processDecValues.add(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
         }
-        nextStages.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, "Roll Back"));
-        ParamUtil.setRequestAttr(bpc.request, "nextStages", nextStages);
+        processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
 
         //set rollback options
         List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList());
@@ -170,7 +171,7 @@ public class ApptInspectionDateDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
             validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
-        } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(processDec)) {
+        } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
             validateRollBack(bpc, errorMap);
         }
         if (!errorMap.isEmpty()) {
@@ -288,7 +289,7 @@ public class ApptInspectionDateDelegator {
             } else if (InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
                 ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
-            } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(apptInspectionDateDto.getProcessDec())) {
+            } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(apptInspectionDateDto.getProcessDec())) {
                 int rollBackToIndex = ParamUtil.getInt(bpc.request, "rollBackTo");
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
                 inspectionService.rollBack(bpc,taskDto,applicationViewDto,applicationViewDto.getRollBackHistroyList().get(rollBackToIndex));
