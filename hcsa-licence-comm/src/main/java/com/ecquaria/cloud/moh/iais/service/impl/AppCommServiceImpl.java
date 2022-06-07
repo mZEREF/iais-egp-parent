@@ -259,31 +259,41 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+    public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
+            List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList) {
         List<String> result = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+        if (!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             List<String> svcNames = IaisCommonUtils.genNewArrayList();
-            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                 svcNames.add(hcsaServiceDto.getSvcName());
             }
             AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
-            List<HcsaServiceDto>  HcsaServiceDtoList= configCommService.getHcsaServiceByNames(svcNames);
+            List<HcsaServiceDto> HcsaServiceDtoList = configCommService.getHcsaServiceByNames(svcNames);
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            for(HcsaServiceDto hcsaServiceDto:HcsaServiceDtoList){
+            for (HcsaServiceDto hcsaServiceDto : HcsaServiceDtoList) {
                 svcIds.add(hcsaServiceDto.getId());
             }
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licCommService.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames);
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appCommClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
-            if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                for(PremisesDto premisesHciDto:premisesDtos){
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appCommClient.getPendAppPremises(appPremisesDoQueryDto)
+                    .getEntity();
+            if (!IaisCommonUtils.isEmpty(premisesDtos)) {
+                for (PremisesDto premisesHciDto : premisesDtos) {
+                    if (excludePremisesList != null && !excludePremisesList.isEmpty() && excludePremisesList.stream()
+                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesHciDto.getId()))) {
+                        continue;
+                    }
                     result.addAll(ApplicationHelper.genPremisesHciList(premisesHciDto));
                 }
             }
-            if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
-                for(AppGrpPremisesEntityDto premisesEntityDto:appGrpPremisesEntityDtos){
-                    PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto,PremisesDto.class);
+            if (!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
+                for (AppGrpPremisesEntityDto premisesEntityDto : appGrpPremisesEntityDtos) {
+                    if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
+                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesEntityDto.getId()))) {
+                        continue;
+                    }
+                    PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto, PremisesDto.class);
                     result.addAll(ApplicationHelper.genPremisesHciList(premisesDto));
                 }
             }

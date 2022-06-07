@@ -218,6 +218,15 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
+    public List<PremisesDto> getPremisesListByLicenceId(String licenceId) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+        if (StringUtil.isEmpty(licenceId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getPremisesListByLicenceId(licenceId).getEntity();
+    }
+
+    @Override
     public List<PremisesDto> getPremisesDtoByHciNameAndPremType(String hciName, String premisesType, String licenseeId) {
         log.info(StringUtil.changeForLog("Params: " + hciName + " | " + premisesType + " | " + licenseeId));
         if (StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(hciName) || StringUtil.isEmpty(premisesType)) {

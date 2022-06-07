@@ -16,6 +16,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,8 +65,12 @@ public interface LicCommClient {
     FeignResponseEntity<List<LicAppCorrelationDto>> getAllRelatedLicAppCorrs(@RequestParam("licenceId") String licenceId,
             @RequestParam(value = "svcName", required = false) String svcName);
 
-    @GetMapping(value = "/premises-for-business-name", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(@RequestParam("licenceId") String licenceId);
+    @GetMapping(value = "/lic-premises-list/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getPremisesListByLicenceId(@PathVariable("licenceId") String licenceId);
+
+    @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
+            @RequestParam("svcNames") List<String> svcNames);
 
     @GetMapping(value = "/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(
@@ -89,9 +94,6 @@ public interface LicCommClient {
     @GetMapping(value = "/individual-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(@RequestParam("orgId") String orgId);
 
-    @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
-            @RequestParam("svcNames") List<String> svcNames);
 
     @GetMapping(value = "/inactive-licence-app-correlations", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations();
