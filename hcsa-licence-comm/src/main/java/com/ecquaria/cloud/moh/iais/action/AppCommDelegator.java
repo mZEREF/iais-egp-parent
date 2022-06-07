@@ -1176,6 +1176,10 @@ public abstract class AppCommDelegator {
 
     private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
             HttpServletRequest request) {
+        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
+        if (premisesHciList != null) {
+            return premisesHciList;
+        }
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         List<PremisesDto> excludePremisesList = null;
@@ -1186,7 +1190,7 @@ public abstract class AppCommDelegator {
             }
             excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         }
-        List<String> premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
                 excludePremisesList, excludeAppPremList);
         ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
         return premisesHciList;
