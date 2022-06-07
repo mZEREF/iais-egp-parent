@@ -365,7 +365,7 @@ public class ServiceMenuDelegator {
         Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(allChkSvcIdList);
         log.debug("premises Type size {}",premisesTypeList.size());
         List<AppAlignLicQueryDto> appAlignLicQueryDtos = appSubmissionService.getAppAlignLicQueryDto(licenseeId,svcNameList,transferToList(premisesTypeList));
-        List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId,pendAndLicPremSvc);
+        List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId, pendAndLicPremSvc, null, null);
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
         for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
@@ -1678,7 +1678,7 @@ public class ServiceMenuDelegator {
                     hcsaServiceDtos.add(svcDto);
                 }
             }
-            List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
+            List<String> pendAndLicPremHci = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos, null, null);
             for(MenuLicenceDto menuLicenceDto:menuLicenceDtos){
                 PremisesDto premisesDto = MiscUtil.transferEntityDto(menuLicenceDto,PremisesDto.class);
                 List<String> premisesHciList = ApplicationHelper.genPremisesHciList(premisesDto);

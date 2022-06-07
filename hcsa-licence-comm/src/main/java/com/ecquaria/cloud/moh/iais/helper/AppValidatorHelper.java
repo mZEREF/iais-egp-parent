@@ -243,7 +243,6 @@ public final class AppValidatorHelper {
             errorList.add(HcsaAppConst.SECTION_LICENSEE);
         }
         // premises
-        String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         Map<String, String> premissMap = doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
                 premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
@@ -761,21 +760,18 @@ public final class AppValidatorHelper {
 
                 }
             }
-            //0062204
-            boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
-            if (newTypeFlag && hciFlag) {
-                boolean clickEdit = appGrpPremisesDto.isClickEdit();
+            //0062204 - 82421
+            if (hciFlag) {
                 List<String> currentHcis = ApplicationHelper.genPremisesHciList(appGrpPremisesDto);
-                if (!rfi) {
+                /*if (!rfi) {
                     //new
                     if (!IaisCommonUtils.isEmpty(premisesHciList)) {
                         checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                     }
-                } else if (rfi && clickEdit) {
+                } else if (rfi) {
                     boolean isChange = false;
-                    boolean appTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
-                    if ((appTypeFlag && rfi) && (oldAppSubmissionDto != null)) {
-                        AppGrpPremisesDto oldAppGrpPremisesDto = null;
+                    if (rfi && (oldAppSubmissionDto != null)) {
+                        AppGrpPremisesDto oldAppGrpPremisesDto;
                         if (i >= oldAppSubmissionDto.getAppGrpPremisesDtoList().size()) {
                             oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
                         } else {
@@ -788,6 +784,9 @@ public final class AppValidatorHelper {
                     if (!IaisCommonUtils.isEmpty(premisesHciList) && isChange) {
                         checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                     }
+                }*/
+                if (!IaisCommonUtils.isEmpty(premisesHciList)) {
+                    checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                 }
             }
             if (checkOthers) {
@@ -795,11 +794,13 @@ public final class AppValidatorHelper {
                         getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getActualHciName(),
                                 appGrpPremisesDto.getPremisesType(), licenseeId);
                 if (!IaisCommonUtils.isEmpty(premisesDtos)) {
+                    // The business name you have keyed in is currently in used.
                     errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                 }
                 String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
                 if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
                         dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, ApplicationHelper.getPremisesKey(dto)))) {
+                    // This is a repeated entry
                     errorMap.put("premisesHci" + i, "NEW_ERR0012");
                 } else {
                     HttpServletRequest request = MiscUtil.getCurrentRequest();
@@ -845,6 +846,14 @@ public final class AppValidatorHelper {
 
     }
 
+    /**
+     * There is an existing licence for this service.
+     *
+     * @param currentHcis
+     * @param premisesHciList
+     * @param errorMap
+     * @param errName
+     */
     private static void checkHciIsSame(List<String> currentHcis, List<String> premisesHciList, Map<String, String> errorMap,
             String errName) {
         for (String hci : currentHcis) {
@@ -2228,11 +2237,11 @@ public final class AppValidatorHelper {
         if (licenceId == null) {
             return 0;
         }
-        LicCommClient licenceClient = SpringContextHelper.getContext().getBean(LicCommClient.class);
-        PremisesDto premisesDto = licenceClient.getPremisesDtoForBusinessName(licenceId).getEntity();
-        if (premisesDto == null) {
+        List<PremisesDto> premisesDtoList = getLicCommService().getPremisesListByLicenceId(licenceId);
+        if (premisesDtoList == null || premisesDtoList.isEmpty()) {
             return 0;
         }
+        PremisesDto premisesDto = premisesDtoList.get(0);
         boolean sameHciName = Objects.equals(premisesDto.getHciName(), hciName);
         boolean sameBusinessName = Objects.equals(premisesDto.getBusinessName(), businessName);
 

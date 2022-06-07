@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -723,8 +724,8 @@ public abstract class AppCommDelegator {
         }
         //when rfc/renew check is select existing premises
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             if (appSubmissionDto.getAppGrpPremisesDtoList().size() == oldAppSubmissionDto.getAppGrpPremisesDtoList().size()) {
                 int length = appSubmissionDto.getAppGrpPremisesDtoList().size();
@@ -1126,21 +1127,16 @@ public abstract class AppCommDelegator {
         }
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if (!"saveDraft".equals(crud_action_value)) {
-            boolean isNeedShowValidation = !"back".equals(crud_action_value);
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
-                    AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> premisesHciList = appCommService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(), hcsaServiceDtos);
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-
             String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-
-            Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
-                    premisesHciList, isRfi, true);
-
-            String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             bpc.request.setAttribute("continueStep", actionType);
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
+            // validation
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
+                    bpc.request);
+            Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
+                    premisesHciList, isRfi, true);
+            String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
             }
@@ -1152,6 +1148,7 @@ public abstract class AppCommDelegator {
             // check result
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             if (errorMap.size() > 0) {
+                boolean isNeedShowValidation = !"back".equals(crud_action_value);
                 if (isNeedShowValidation) {
                     //set audit
                     AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
@@ -1175,6 +1172,24 @@ public abstract class AppCommDelegator {
             bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
+    }
+
+    private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            HttpServletRequest request) {
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
+        List<PremisesDto> excludePremisesList = null;
+        List<AppGrpPremisesDto> excludeAppPremList = null;
+        if (oldAppSubmissionDto != null) {
+            if (isRfi) {
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
+            }
+            excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        }
+        List<String> premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+                excludePremisesList, excludeAppPremList);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
+        return premisesHciList;
     }
 
     /**
