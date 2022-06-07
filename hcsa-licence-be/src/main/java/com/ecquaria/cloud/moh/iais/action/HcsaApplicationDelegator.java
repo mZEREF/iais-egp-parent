@@ -1084,6 +1084,7 @@ public class HcsaApplicationDelegator {
      */
     public void rollBackCr(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rollBack start ...."));
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String str = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
         log.info(StringUtil.changeForLog(str));
         String[] result = str.split(",");
@@ -1095,8 +1096,10 @@ public class HcsaApplicationDelegator {
         //do roll back
         if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO, wrkGpId, userId);
+            fillUpCheckListGetAppClient.rollBackPreInspect(applicationViewDto.getAppPremisesCorrelationId());
         } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
+            fillUpCheckListGetAppClient.rollBackPreInspect(applicationViewDto.getAppPremisesCorrelationId());
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
             applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, wrkGpId, userId);
 
