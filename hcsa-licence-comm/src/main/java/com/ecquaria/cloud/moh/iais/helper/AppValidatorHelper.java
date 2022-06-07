@@ -56,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
-import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
@@ -763,28 +762,6 @@ public final class AppValidatorHelper {
             //0062204 - 82421
             if (hciFlag) {
                 List<String> currentHcis = ApplicationHelper.genPremisesHciList(appGrpPremisesDto);
-                /*if (!rfi) {
-                    //new
-                    if (!IaisCommonUtils.isEmpty(premisesHciList)) {
-                        checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
-                    }
-                } else if (rfi) {
-                    boolean isChange = false;
-                    if (rfi && (oldAppSubmissionDto != null)) {
-                        AppGrpPremisesDto oldAppGrpPremisesDto;
-                        if (i >= oldAppSubmissionDto.getAppGrpPremisesDtoList().size()) {
-                            oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
-                        } else {
-                            oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
-                        }
-                        isChange = !Objects.equals(oldAppGrpPremisesDto.getHciName(), appGrpPremisesDto.getHciName())
-                                || !Objects.equals(oldAppGrpPremisesDto.getAddressWithoutFU(), appGrpPremisesDto.getAddressWithoutFU())
-                                || !RfcHelper.isFloorUnitAllIn(appGrpPremisesDto, oldAppGrpPremisesDto);
-                    }
-                    if (!IaisCommonUtils.isEmpty(premisesHciList) && isChange) {
-                        checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
-                    }
-                }*/
                 if (!IaisCommonUtils.isEmpty(premisesHciList)) {
                     checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                 }
