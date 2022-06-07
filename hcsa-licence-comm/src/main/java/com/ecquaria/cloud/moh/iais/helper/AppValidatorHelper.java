@@ -957,12 +957,21 @@ public final class AppValidatorHelper {
             postalCode = appGrpPremisesDto.getEasMtsPostalCode();
             buildingName = appGrpPremisesDto.getEasMtsBuildingName();
             streetName = appGrpPremisesDto.getEasMtsStreetName();
-            email = appGrpPremisesDto.getOffSiteEmail();
-            addrType = appGrpPremisesDto.getOffSiteAddressType();
-            blkNo = appGrpPremisesDto.getOffSiteBlockNo();
+            addrType = appGrpPremisesDto.getEasMtsAddressType();
+            blkNo = appGrpPremisesDto.getEasMtsBlockNo();
             easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
+            email = appGrpPremisesDto.getEasMtsPubEmail();
+            String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
             blkNoKey = "easMtsBlockNo" + i;
             addTypeKey = "easMtsAddressType" + i;
+            // "Public Hotline"
+            if (StringUtil.isEmpty(easMtsPubHotline)) {
+                if (!"UOT002".equals(easMtsUseOnly)) {
+                    errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                }
+            } else if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
+                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+            }
         }
 
         if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
@@ -991,16 +1000,15 @@ public final class AppValidatorHelper {
 
         if (StringUtil.isEmpty(addrType)) {
             errorMap.put(addTypeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-        } else {
-            // validate floor and units
-            validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
-            boolean empty1 = StringUtil.isEmpty(blkNo);
-            if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-            } else if (!empty1 && blkNo.length() > 10) {
-                String general_err0041 = repLength("Block / House No.", "10");
-                errorMap.put(blkNoKey, general_err0041);
-            }
+        }
+        // validate floor and units
+        validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
+        boolean empty1 = StringUtil.isEmpty(blkNo);
+        if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
+            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+        } else if (!empty1 && blkNo.length() > 10) {
+            String general_err0041 = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, general_err0041);
         }
         String postalCodeKey = ApplicationHelper.getParamName(prefix, "postalCode" + i);
         if (!StringUtil.isEmpty(postalCode)) {
@@ -1097,7 +1105,7 @@ public final class AppValidatorHelper {
         if (isAptBlkType && empty1) {
             addrTypeFlag = false;
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-        } else if (blkNo.length() > 10) {
+        } else if (!empty1 && blkNo.length() > 10) {
             String general_err0041 = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, general_err0041);
         }
