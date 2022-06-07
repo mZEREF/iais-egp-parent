@@ -899,11 +899,9 @@ public final class AppValidatorHelper {
         String blkNo = appGrpPremisesDto.getBlkNo();
         String premisesType = appGrpPremisesDto.getPremisesType();
         String blkNoKey = "";
-        String addTypeKey = "";
         String easMtsUseOnly = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
             blkNoKey = "blkNo" + i;
-            addTypeKey = "addrType" + i;
             String offTelNo = appGrpPremisesDto.getOffTelNo();
             String offTelNoKey = ApplicationHelper.getParamName(prefix, "offTelNo" + i);
             if (StringUtil.isEmpty(offTelNo)) {
@@ -927,7 +925,6 @@ public final class AppValidatorHelper {
             addrType = appGrpPremisesDto.getConveyanceAddressType();
             blkNo = appGrpPremisesDto.getConveyanceBlockNo();
             blkNoKey = "conveyanceBlockNos" + i;
-            addTypeKey = "conveyanceAddressType" + i;
         } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
             prefix = "offSite";
             postalCode = appGrpPremisesDto.getOffSitePostalCode();
@@ -937,7 +934,6 @@ public final class AppValidatorHelper {
             addrType = appGrpPremisesDto.getOffSiteAddressType();
             blkNo = appGrpPremisesDto.getOffSiteBlockNo();
             blkNoKey = "offSiteBlockNo" + i;
-            addTypeKey = "offSiteAddressType" + i;
         } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
             prefix = "easMts";
             postalCode = appGrpPremisesDto.getEasMtsPostalCode();
@@ -949,7 +945,6 @@ public final class AppValidatorHelper {
             email = appGrpPremisesDto.getEasMtsPubEmail();
             String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
             blkNoKey = "easMtsBlockNo" + i;
-            addTypeKey = "easMtsAddressType" + i;
             // "Public Hotline"
             if (StringUtil.isEmpty(easMtsPubHotline)) {
                 if (!"UOT002".equals(easMtsUseOnly)) {
@@ -985,7 +980,7 @@ public final class AppValidatorHelper {
         }
 
         if (StringUtil.isEmpty(addrType)) {
-            errorMap.put(addTypeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+            errorMap.put(ApplicationHelper.getParamName(prefix, "addrType" + i), MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
         // validate floor and units
         validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
