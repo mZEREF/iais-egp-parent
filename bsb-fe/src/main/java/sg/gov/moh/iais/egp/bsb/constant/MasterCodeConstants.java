@@ -348,4 +348,11 @@ public class MasterCodeConstants {
     //Inspection date status
     public static final String PENDING_DO_CONFIRM = "INSDTST001";
     public static final String CONFIRMED          = "INSDTST002";
+
+    public static final String ROLE_IN_FACILITY_MAIN_ADMINISTRATOR = "RLINFAC001";
+    public static final String ROLE_IN_FACILITY_ALTERNATE_ADMINISTRATOR = "RLINFAC002";
+    public static final String ROLE_IN_FACILITY_OFFICER = "RLINFAC003";
+    public static final String ROLE_IN_FACILITY_OPERATOR = "RLINFAC004";
+    public static final String ROLE_IN_FACILITY_COMMITTEE_MEMBER = "RLINFAC005";
+    public static final String ROLE_IN_FACILITY_AUTHORISER = "RLINFAC006";
 }
