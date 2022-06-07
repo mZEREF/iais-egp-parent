@@ -529,7 +529,6 @@ function fillValue(targetSelector, data, includeHidden){
     if (isEmpty($selector)) {
         return;
     }
-    console.info("data - " + data);
     if (isEmpty(data)) {
         clearFields($selector);
         return;

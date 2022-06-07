@@ -189,15 +189,16 @@
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
                 $premContent.find('.new-premise-form-off-site').addClass('hidden');
+                $premContent.find('.new-premise-form-eas-mts').addClass('hidden');
                 var data = {};
                 fillForm('onSite',data,$premContent);
                 fillForm('conveyance',data,$premContent);
                 fillForm('offSite',data,$premContent);
-                fillForm('easMtsSel',data,$premContent);
+                fillForm('easMts',data,$premContent);
                 setAddress('onSite',data,$premContent);
                 setAddress('conveyance',data,$premContent);
                 setAddress('offSite',data,$premContent);
-                setAddress('easMtsSel',data,$premContent);
+                setAddress('easMts',data,$premContent);
                 dismissWaiting();
             } else {
                 <!--choose already exist premises -->
