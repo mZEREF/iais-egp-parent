@@ -49,7 +49,7 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${keyAppointmentHoldeDto.idNo }"/></p>
                                 </td>
                             </tr>
-
+                            <c:if test="${keyAppointmentHoldeDto.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -62,7 +62,7 @@
                                     </p>
                                 </td>
                             </tr>
-
+                            </c:if>
                         </table>
                     </div>
                 </div>
