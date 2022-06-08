@@ -1926,18 +1926,16 @@ public final class AppValidatorHelper {
                     errMap.put("professionRegoNo" + i, general_err0041);
                 }
                 String specialty = appSvcCgoList.get(i).getSpeciality();
+                String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                 if (StringUtil.isEmpty(professionRegoNo) || StringUtil.isEmpty(specialty)) {
-                    String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                     if (StringUtil.isEmpty(otherQualification)) {
                         errMap.put("otherQualification" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
-                    } else if (otherQualification.length() > 100) {
-                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                        repMap.put("number", "100");
-                        repMap.put("fieldNo", "Other Qualification");
-                        errMap.put("otherQualification" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
-
                     }
+                }
+                // GENERAL_ERR0036 - GENERAL_ERR0041
+                if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
+                    errMap.put("otherQualification" + i, repLength("Other Qualification", "100"));
                 }
 
                 String name = appSvcCgoList.get(i).getName();
@@ -1963,7 +1961,6 @@ public final class AppValidatorHelper {
                     }
                 }
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
-
                 if (StringUtil.isEmpty(emailAddr)) {
                     errMap.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
                 } else {
