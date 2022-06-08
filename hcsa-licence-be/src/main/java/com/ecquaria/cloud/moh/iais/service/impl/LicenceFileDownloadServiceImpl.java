@@ -530,7 +530,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
-
+        applicationGroup.forEach(grp-> grp.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED));
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
         List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
         List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
