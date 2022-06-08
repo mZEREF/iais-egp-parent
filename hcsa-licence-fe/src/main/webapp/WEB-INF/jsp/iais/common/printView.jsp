@@ -33,11 +33,11 @@
     <div class="main-content">
         <div class="container">
             <div class="row">
-                <c:set var="printFlag" value="test"/>
+                <c:set var="printFlag" value="test" scope="request"/>
                 <c:forEach begin="0" end="${viewSubmissons.size()-1}" step="1" varStatus="submisonStat">
                     <c:set var="AppSubmissionDto" value="${viewSubmissons[submisonStat.index]}"/>
 
-                    <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+                    <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
                     <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
                     <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
                     <c:set var="isLicence" value="${not empty licenceView}"/>
@@ -60,18 +60,18 @@
                                                     <%@include file="../common/previewPremises.jsp"%>
                                                     <%@include file="../common/previewPrimary.jsp"%>
 
-                                                    <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
+                                                    <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}" scope="request"/>
                                                     <c:forEach var="currentPreviewSvcInfo" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="svcStat">
-
-                                                        <c:set var="reloadDisciplineAllocationMap" value="${currentPreviewSvcInfo.reloadDisciplineAllocationMap}"></c:set>
-                                                        <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.reloadPoDtoList}"></c:set>
-                                                        <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.reloadDpoList}"></c:set>
-                                                        <c:set var="svcDocConfig" value="${currentPreviewSvcInfo.svcDocConfig}"/>
-                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcCgoDtoList}"/>
-                                                        <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}"/>
-                                                        <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}"/>
-                                                        <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}"/>
-                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}"/>
+                                                        <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
+                                                        <c:set var="reloadDisciplineAllocationMap" value="${currentPreviewSvcInfo.reloadDisciplineAllocationMap}" scope="request"/>
+                                                        <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.reloadPoDtoList}"  scope="request" />
+                                                        <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.reloadDpoList}" scope="request"/>
+                                                        <c:set var="svcDocConfig" value="${currentPreviewSvcInfo.svcDocConfig}" scope="request"/>
+                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcCgoDtoList}" scope="request"/>
+                                                        <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" scope="request"/>
+                                                        <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" scope="request"/>
+                                                        <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" scope="request"/>
+                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
