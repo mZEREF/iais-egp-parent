@@ -34,19 +34,18 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
-                                </td>
-                                <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${cgo.idNo }</p>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.idType}"></iais:code></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${cgo.idNo }</p>
                                 </td>
                             </tr>
                             <c:if test="${cgo.idType == 'IDTYPE003'}">
