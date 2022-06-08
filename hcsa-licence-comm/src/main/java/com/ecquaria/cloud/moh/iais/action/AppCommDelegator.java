@@ -456,7 +456,6 @@ public abstract class AppCommDelegator {
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (subLicenseeDto == null) {
             subLicenseeDto = new SubLicenseeDto();
-            appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
         SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenseeId);
         orgLicensee.setClaimUenNo(subLicenseeDto.getClaimUenNo());
@@ -464,7 +463,6 @@ public abstract class AppCommDelegator {
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
                 || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(orgLicensee.getLicenseeType())) {
             subLicenseeDto = CopyUtil.copyMutableObject(orgLicensee);
-            appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
         // init option, map and some fields
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
@@ -491,6 +489,8 @@ public abstract class AppCommDelegator {
             subLicenseeDto.setUenNo(orgLicensee.getUenNo());
             subLicenseeDto.setOrgId(orgLicensee.getOrgId());
         }
+        appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         bpc.request.setAttribute("subLicenseeDto", orgLicensee);
     }
 

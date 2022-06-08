@@ -1858,7 +1858,7 @@ public class ServiceInfoDelegator {
      * @throws
      */
     public void doServicePersonnel(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
+        log.info(StringUtil.changeForLog("the do doServicePersonnel start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
@@ -1869,24 +1869,20 @@ public class ServiceInfoDelegator {
                 return;
             }
         }
-        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
-                ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION,
+                bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         if (isGetDataFromPage) {
-            String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request, personnelTypeList,
-                    currentSvcCod);
-
+            appSvcPersonnelDtos = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}", prsFlag);
             if ("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
@@ -1903,69 +1899,37 @@ public class ServiceInfoDelegator {
                 }
             }
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
-
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-            if (!StringUtil.isEmpty(nextStep)) {
-                AppValidatorHelper.doValidatetionServicePerson(errorMap, appSvcPersonnelDtos, currentSvcCod);
-                //validate mandatory count
-                int psnLength = 0;
-                if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-                    psnLength = appSvcPersonnelDtos.size();
-                }
-                List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                        ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-                if (!isRfi) {
-                    errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
-                            errorMap,
-                            psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
-                }
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
+        }
 
-                errorMap = servicePersonPrsValidate(bpc.request, errorMap, appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
-                if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    //clickEditPages.add(APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
-                    appSubmissionDto.setClickEditPage(clickEditPages);
-                }
-                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        if (!"back".equals(action)) {
+            AppValidatorHelper.doValidateSvcPersonnel(errorMap, appSvcPersonnelDtos, currentSvcCod);
+            //validate mandatory count
+            int psnLength = 0;
+            if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
+                psnLength = appSvcPersonnelDtos.size();
             }
-            //
-            //remove dirty psn doc info
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-            List<AppSvcPrincipalOfficersDto> spList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcPersonnelDto> appSvcPersonnelDtosList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtosList)) {
-                for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtosList) {
-                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-                    String psnIndexNo = appSvcPersonnelDto.getIndexNo();
-                    if (!StringUtil.isEmpty(psnIndexNo)) {
-                        appSvcPrincipalOfficersDto.setIndexNo(psnIndexNo);
-                        spList.add(appSvcPrincipalOfficersDto);
-                    }
-                }
-            }
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-            removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SVCPSN, bpc.request);
-            checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);
-        } else {
-            if (!isRfi) {
-                //validate mandatory count
-                int psnLength = 0;
-                List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-                if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-                    psnLength = appSvcPersonnelDtos.size();
-                }
-                List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                        ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                    ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+            if (!ApplicationHelper.checkIsRfi(bpc.request)) {
                 errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
                         errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
             }
             errorMap = servicePersonPrsValidate(bpc.request, errorMap, appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
-            if (!StringUtil.isEmpty(nextStep) && !errorMap.isEmpty() && "next".equals(nextStep)) {
-                checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);
+            if (appSubmissionDto.isNeedEditController()) {
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                //clickEditPages.add(APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
+                appSubmissionDto.setClickEditPage(clickEditPages);
             }
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);
+        if (isValid && isGetDataFromPage) {
+            //remove dirty psn doc info
+            removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SVCPSN, bpc.request);
+        }
+        log.info(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
     /**

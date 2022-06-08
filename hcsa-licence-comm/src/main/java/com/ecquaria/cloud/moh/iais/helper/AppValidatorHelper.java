@@ -435,7 +435,7 @@ public final class AppValidatorHelper {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                doAppSvcPersonnelDtoList(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
+                doValidateSvcPersonnel(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
                 if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
@@ -980,7 +980,8 @@ public final class AppValidatorHelper {
         }
 
         if (StringUtil.isEmpty(addrType)) {
-            errorMap.put(ApplicationHelper.getParamName(prefix, "addrType" + i), MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+            errorMap.put(ApplicationHelper.getParamName(prefix, "addrType" + i),
+                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
         // validate floor and units
         validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
@@ -2610,146 +2611,6 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void doAppSvcPersonnelDtoList(Map<String, String> map, List<AppSvcPersonnelDto> appSvcPersonnelDtos,
-            String svcCode) {
-        if (appSvcPersonnelDtos == null) {
-            /*if (hcsaSvcPersonnelDtos != null) {
-                for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
-                    String psnType = every.getPsnType();
-                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
-                        sB.append(serviceId);
-                        return;
-                    }
-                }
-            }*/
-            return;
-        }
-
-        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field");
-        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
-        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field");
-        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006", "Relevant working experience (Years)", "field");
-        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualification", "field");
-        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006", "Select Service Personnel", "field");
-        for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-            if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
-                String designation = appSvcPersonnelDtos.get(i).getDesignation();
-                if (StringUtil.isEmpty(designation)) {
-                    map.put("designation" + i, errDesignation);
-                }
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                }
-                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
-                if (StringUtil.isEmpty(profRegNo)) {
-                    map.put("regnNo" + i, errRegnNo);
-                }
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                if (StringUtil.isEmpty(wrkExpYear)) {
-                    map.put("wrkExpYear" + i, errWrkExpYear);
-                } else {
-                    if (!wrkExpYear.matches("^[0-9]*$")) {
-                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                    }
-                }
-            } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                }
-                String quaification = appSvcPersonnelDtos.get(i).getQualification();
-                if (StringUtil.isEmpty(quaification)) {
-                    map.put("qualification" + i, errQualification);
-                }
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                if (StringUtil.isEmpty(wrkExpYear)) {
-                    map.put("wrkExpYear" + i, errWrkExpYear);
-                } else {
-                    if (!wrkExpYear.matches("^[0-9]*$")) {
-                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                    }
-                }
-            } else if (!AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)
-                    && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
-                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
-                    && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
-                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String quaification = appSvcPersonnelDtos.get(i).getQualification();
-                if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, errName);
-                }
-                if (StringUtil.isEmpty(wrkExpYear)) {
-                    map.put("wrkExpYear" + i, errWrkExpYear);
-                } else {
-                    if (!wrkExpYear.matches("^[0-9]*$")) {
-                        map.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                    }
-                }
-                if (StringUtil.isEmpty(quaification)) {
-                    map.put("quaification" + i, errQualification);
-                }
-            } else {
-                String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
-                if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
-                    String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
-                    String name = appSvcPersonnelDtos.get(i).getName();
-                    if (StringUtil.isEmpty(name)) {
-                        map.put("name" + i, errName);
-                    }
-                    if (StringUtil.isEmpty(profRegNo)) {
-                        map.put("regnNo" + i, errRegnNo);
-                    }
-                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
-                    String designation = appSvcPersonnelDtos.get(i).getDesignation();
-                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                    String qualification = appSvcPersonnelDtos.get(i).getQualification();
-
-                    if (StringUtil.isEmpty(name)) {
-                        map.put("name" + i, errName);
-                    }
-                    if (StringUtil.isEmpty(designation)) {
-                        map.put("designation" + i, errDesignation);
-                    }
-                    if (StringUtil.isEmpty(wrkExpYear)) {
-                        map.put("wrkExpYear" + i, errWrkExpYear);
-                    } else {
-                        if (!wrkExpYear.matches("^[0-9]*$")) {
-                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                        }
-                    }
-                    if (StringUtil.isEmpty(qualification)) {
-                        map.put("qualification" + i, errQualification);
-                    }
-                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
-                    String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                    String quaification = appSvcPersonnelDtos.get(i).getQualification();
-                    if (StringUtil.isEmpty(name)) {
-                        map.put("name" + i, errName);
-                    }
-                    if (StringUtil.isEmpty(wrkExpYear)) {
-                        map.put("wrkExpYear" + i, errWrkExpYear);
-                    } else {
-                        if (!wrkExpYear.matches("^[0-9]*$")) {
-                            map.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                        }
-                    }
-                    if (StringUtil.isEmpty(quaification)) {
-                        map.put("quaification" + i, errQualification);
-                    }
-                } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
-                    if (StringUtil.isEmpty(name)) {
-                        map.put("name" + i, errName);
-                    }
-                }
-            }
-        }
-    }
-
     private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, int uploadFileLimit,
             String sysFileType) {
         if (appSvcDocDtoLit != null) {
@@ -2783,7 +2644,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidatetionServicePerson(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos,
+    public static void doValidateSvcPersonnel(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos,
             String svcCode) {
         if (IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
             return;
@@ -2801,15 +2662,19 @@ public final class AppValidatorHelper {
         String errLengthWrkExpYear = repLength("Relevant working experience (Years)", "2");
         String errLengthQualification = repLength("Qualification", "100");
         String errLengthOtherDesignation = repLength("Others Designation", "100");
-        List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(svcCode);
         //Verify that each type of person has at least one
-        //person type,value/empty
-        Map<String, String> personCountMap = IaisCommonUtils.genNewHashMap();
-
+        List<String> data = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
             String personType = appSvcPersonnelDtos.get(i).getPersonnelType();
-            if (!StringUtil.isEmpty(personType)) {
-                personCountMap.put(personType, AppConsts.YES);
+            if (StringUtil.isEmpty(personType)) {
+                personType = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL;
+            }
+            String name = appSvcPersonnelDtos.get(i).getName();
+            String personKey = StringUtil.getNonNull(name) + "__" + personType;
+            if (data.contains(personKey)) {
+                errorMap.put("name" + i, "NEW_ERR0012");
+            } else {
+                data.add(personKey);
             }
             if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
@@ -2823,7 +2688,6 @@ public final class AppValidatorHelper {
                         errorMap.put("otherDesignation" + i, errLengthOtherDesignation);
                     }
                 }
-                String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
                 } else if (name.length() > 110) {
@@ -2847,7 +2711,6 @@ public final class AppValidatorHelper {
                     }
                 }
             } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
                 } else if (name.length() > 110) {
@@ -2874,7 +2737,6 @@ public final class AppValidatorHelper {
                     && !AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)
                     && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)
                     && !AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
-                String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
                 } else if (name.length() > 110) {
@@ -2905,7 +2767,6 @@ public final class AppValidatorHelper {
 
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
                     String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
-                    String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
                     } else if (name.length() > 110) {
@@ -2917,7 +2778,6 @@ public final class AppValidatorHelper {
                         errorMap.put("regnNo" + i, errLengthRegnNo);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
                     String designation = appSvcPersonnelDtos.get(i).getDesignation();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                     String qualification = appSvcPersonnelDtos.get(i).getQualification();
@@ -2953,7 +2813,6 @@ public final class AppValidatorHelper {
                         errorMap.put("qualification" + i, errLengthQualification);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if (StringUtil.isEmpty(name)) {
@@ -2977,7 +2836,6 @@ public final class AppValidatorHelper {
                         errorMap.put("qualification" + i, errLengthQualification);
                     }
                 } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
-                    String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
                     } else if (name.length() > 110) {
