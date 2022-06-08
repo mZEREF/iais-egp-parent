@@ -74,16 +74,17 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -800,6 +801,7 @@ public class InsRepServiceImpl implements InsRepService {
         if (!StringUtil.isEmpty(aoId)) {
             taskDtos.forEach(t -> {
                 t.setUserId(aoId);
+                t.setDateAssigned(new Date());
             });
         }
         createHistoryList(appPremisesRoutingHistoryDtos);
