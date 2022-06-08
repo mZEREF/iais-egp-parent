@@ -27,7 +27,7 @@
                     <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">Nationality
                         <span id="nationalityStar" class="mandatory">
-                                <c:if test="${patientDto.idType =='DTV_IT003'}">*</c:if>
+                                <c:if test="${patientDto.idType eq'DTV_IT003'}">*</c:if>
                         </span>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">

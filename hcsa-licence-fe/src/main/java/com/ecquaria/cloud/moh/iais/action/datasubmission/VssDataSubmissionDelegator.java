@@ -390,8 +390,10 @@ public class VssDataSubmissionDelegator {
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
         String sterilizationHospital = ParamUtil.getString(request,"sterilizationHospital");
+        String otherQualification = ParamUtil.getString(request,"otherQualification");
         String doctorInformations = ParamUtil.getString(request,"doctorInformations");
         sexualSterilizationDto.setSterilizationHospital(sterilizationHospital);
+        sexualSterilizationDto.setOtherQualification(otherQualification);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
@@ -490,6 +492,7 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_VSS);
+        ParamUtil.setSessionAttr(request,"isPrint",null);
     }
 
     private int doPreview(HttpServletRequest request) {

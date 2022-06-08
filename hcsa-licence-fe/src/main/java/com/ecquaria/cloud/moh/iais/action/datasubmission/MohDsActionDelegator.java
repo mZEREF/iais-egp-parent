@@ -158,7 +158,13 @@ public class MohDsActionDelegator {
                 sterilizationDto.setDoctorInformations("true");
                 vssTreatmentDto.setSexualSterilizationDto(sterilizationDto);
                 vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+            }else {
+                vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().setDoctorName(professionalResponseDto.getName());
+                vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
             }
+            DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
