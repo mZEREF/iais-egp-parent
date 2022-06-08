@@ -581,7 +581,7 @@
                                                                             </div>
                                                                             <div class="col-sm-4 col-md-7">
                                                                                 <div class="">
-                                                                                    <iais:input maxLength="66"
+                                                                                    <iais:input maxLength="320"
                                                                                                 type="text"
                                                                                                 name="emailAddress"
                                                                                                 value="${currentCgo.emailAddr}"></iais:input>
