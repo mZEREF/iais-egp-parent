@@ -172,7 +172,7 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Professional Registration Number"/>
+                    <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorRegnNo}"/>
                     </iais:value>
@@ -229,6 +229,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row >
+                    <iais:field width="5" value="Other Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" >
+                        <c:out value="${terminationDto.otherQualification}"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

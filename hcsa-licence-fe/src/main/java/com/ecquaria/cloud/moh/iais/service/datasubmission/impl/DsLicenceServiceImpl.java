@@ -15,13 +15,14 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@code DsLicenceServiceImpl}
@@ -59,6 +60,10 @@ public class DsLicenceServiceImpl implements DsLicenceService {
 
     public Map<String, PremisesDto> getVssCenterPremises(String licenseeId) {
         return getDataSubmissionPremises(licenseeId, DataSubmissionConsts.DS_VSS);
+    }
+
+    public Map<String, PremisesDto> getTopCenterPremises(String licenseeId) {
+        return getDataSubmissionPremises(licenseeId, DataSubmissionConsts.DS_TOP);
     }
 
     @Override

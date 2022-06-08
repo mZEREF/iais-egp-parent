@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -101,6 +102,7 @@ public class TopDataSubmissionDelegator {
         log.info(" ----- PrepareSwitch ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if(topSuperDataSubmissionDto==null){
+
             topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
@@ -295,7 +297,21 @@ public class TopDataSubmissionDelegator {
 //        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
     }
 
-
+    private void retrieveHciCode(HttpServletRequest request ,TopSuperDataSubmissionDto topSuperDataSubmissionDto) {
+        Map<String, PremisesDto> premisesMap =
+                (Map<String, PremisesDto>) request.getSession().getAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
+        if (premisesMap == null || premisesMap.isEmpty()) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            premisesMap = topDataSubmissionService.getTopCenterPremises(licenseeId);
+        }
+        if (premisesMap.size() !=0) {
+            premisesMap.values().stream().forEach(v -> topSuperDataSubmissionDto.setPremisesDto(v));
+        }
+    }
     /**
      * Step: DoStep
      *
@@ -948,7 +964,7 @@ public class TopDataSubmissionDelegator {
     }
     private TopSuperDataSubmissionDto initTopSuperDataSubmissionDto(HttpServletRequest request) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto=new TopSuperDataSubmissionDto();
-
+        retrieveHciCode(request, topSuperDataSubmissionDto);
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
 
