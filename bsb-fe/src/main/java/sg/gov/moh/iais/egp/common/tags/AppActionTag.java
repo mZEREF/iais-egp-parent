@@ -1,7 +1,16 @@
 package sg.gov.moh.iais.egp.common.tags;
 
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.service.inbox.*;
+import sg.gov.moh.iais.egp.bsb.service.inbox.AFCUploadReportJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.AppActionJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.AppEditableJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.AppWithdrawableJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.ApplicantUploadCertReportJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.DraftAppJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InsAppointmentJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InsReportJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InspectionFollowUpJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.RfiJudge;
 
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
@@ -24,7 +33,8 @@ public class AppActionTag extends SimpleTagSupport {
                 new InsAppointmentJudge(info.getAppType(), info.getStatus()),
                 new AFCUploadReportJudge(info.getAppType(), info.getStatus()),
                 new ApplicantUploadCertReportJudge(info.getAppType(), info.getStatus()),
-                new RfiJudge(info.getStatus()));
+                new RfiJudge(info.getStatus()),
+                new InspectionFollowUpJudge(info.getAppType(), info.getStatus()));
         boolean actionAvailable = false;
         JspContext context = getJspContext();
         for (AppActionJudge judge : judgeList) {
