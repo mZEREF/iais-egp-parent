@@ -25,7 +25,7 @@
 </style>
 <br/>
 
-<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+<c:set var="isRfi" value="${not empty requestInformationConfig}" scope="request"/>
 
 <%--<%@include file="../common/dashboard.jsp" %>--%>
 <form method="post" class="table-responsive" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -35,12 +35,11 @@
             <div class="row">
                 <c:set var="printFlag" value="test" scope="request"/>
                 <c:forEach begin="0" end="${viewSubmissons.size()-1}" step="1" varStatus="submisonStat">
-                    <c:set var="AppSubmissionDto" value="${viewSubmissons[submisonStat.index]}"/>
-
+                    <c:set var="AppSubmissionDto" value="${viewSubmissons[submisonStat.index]}" scope="request"/>
                     <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
                     <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
                     <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
-                    <c:set var="isLicence" value="${not empty licenceView}"/>
+                    <c:set var="isLicence" value="${not empty licenceView}" scope="request"/>
 
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">
