@@ -784,6 +784,13 @@ public final class ApplicationHelper {
         return sBuffer.toString();
     }
 
+    public static boolean isGetDataFromPage(String currentType, HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String isEdit = ParamUtil.getString(request, HcsaAppConst.IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        return isGetDataFromPage(appSubmissionDto, currentType, isEdit, isRfi);
+    }
+
     public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isClickEdit, boolean isRfi) {
         if (appSubmissionDto == null) {
             return true;
