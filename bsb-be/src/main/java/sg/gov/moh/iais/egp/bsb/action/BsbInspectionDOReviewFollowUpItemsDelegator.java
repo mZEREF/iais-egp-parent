@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REQUEST_EXTENSION;
@@ -56,7 +55,6 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         request.getSession().removeAttribute(KEY_REVIEW_FOLLOW_UP_DTO);
         request.getSession().removeAttribute(KEY_INS_DECISION);
         request.getSession().removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
-        request.getSession().removeAttribute(KEY_APP_STATUS);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -109,7 +107,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsRFI(appId, taskId, insProcessDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
 
@@ -126,7 +124,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
 
@@ -142,7 +140,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
     }

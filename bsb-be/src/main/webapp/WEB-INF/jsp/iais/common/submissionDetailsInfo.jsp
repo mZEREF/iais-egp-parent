@@ -39,11 +39,23 @@
 <c:set var="maskedAppId"><iais:mask name="appId" value="${appId}"/></c:set>
 <c:set var="maskedAppViewModuleType"><iais:mask name="appViewModuleType" value="${appViewModuleType}"/></c:set>
 <div style="text-align: center">
-    <a href="javascript:void(0);" onclick="viewApplication('${maskedAppId}', '${maskedAppViewModuleType}')">
-        <button type="button" class="btn btn-primary">
-            View Application
-        </button>
-    </a>
+    <%--@elvariable id="appViewUrl" type="java.lang.String"--%>
+    <c:choose>
+        <c:when test="${appViewUrl ne null}">
+            <a href="javascript:void(0);" onclick="viewUrlApplication('${maskedAppId}', '${appViewUrl}')">
+                <button type="button" class="btn btn-primary">
+                    View Application
+                </button>
+            </a>
+        </c:when>
+        <c:otherwise>
+            <a href="javascript:void(0);" onclick="viewApplication('${maskedAppId}', '${maskedAppViewModuleType}')">
+                <button type="button" class="btn btn-primary">
+                    View Application
+                </button>
+            </a>
+        </c:otherwise>
+    </c:choose>
     <%--perInspection--%>
     <c:if test="${not empty selfAssessmentAvailable}">
         <button id="viewSelfAssessmt" type="button" class="btn btn-primary" <c:if test="${selfAssessmentAvailable eq false}">disabled</c:if>>

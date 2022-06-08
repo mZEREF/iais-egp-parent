@@ -1,10 +1,12 @@
-package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
+package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 
 @Data
-public class FacilityOperatorDto {
+public class FacilityOperatorDto implements Serializable {
     private String facOperator;
     private String salutation;
     private String designeeName;

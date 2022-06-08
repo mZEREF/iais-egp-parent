@@ -1,15 +1,16 @@
-package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
+package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FacilityAuthoriserDto {
+public class FacilityAuthoriserDto implements Serializable {
     @Data
     @NoArgsConstructor
-    public static class FacilityAuthorisedPersonnel {
+    public static class FacilityAuthorisedPersonnel implements Serializable {
         private String authEntityId;
 
         private String salutation;
@@ -44,4 +45,10 @@ public class FacilityAuthoriserDto {
     private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
 
     private String protectedPlace;
+
+    /** Get a list of committee data for display.
+     * All fields are not master codes */
+    public List<FacilityAuthoriserFileDto> getDataListForDisplay() {
+        return FacilityAuthoriserFileDto.toDisplayDtoList(this.facAuthPersonnelList);
+    }
 }

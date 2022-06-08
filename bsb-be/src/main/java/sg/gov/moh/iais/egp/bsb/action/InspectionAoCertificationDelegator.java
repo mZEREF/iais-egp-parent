@@ -17,7 +17,6 @@ import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
@@ -29,6 +28,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.InsAFCReportService;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -156,9 +156,8 @@ public class InspectionAoCertificationDelegator {
         ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_BSB_AO);
         ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
 
-        // view application need appId and moduleType
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_NEW_FACILITY);
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, appId);
     }
 
     public void bingAction(BaseProcessClass bpc){

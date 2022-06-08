@@ -8,18 +8,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsRectificationDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -30,10 +33,26 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_NON_COMPLIANCE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_ACTIVE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APPLICANT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SELECT_ROUTE_TO_MOH;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 
 @Slf4j
@@ -42,6 +61,7 @@ public class BsbInspectionOfficerReviewNCsDelegator {
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
 
+    @Autowired
     public BsbInspectionOfficerReviewNCsDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
@@ -115,6 +135,9 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
+
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, appId);
     }
 
     public void bindAction(BaseProcessClass bpc){

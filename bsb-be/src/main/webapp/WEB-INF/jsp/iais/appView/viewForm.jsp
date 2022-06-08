@@ -27,9 +27,6 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
-                                                    <c:if test="${appViewModuleType eq AppViewConstants.MODULE_VIEW_NEW_FACILITY}">
-                                                        <%@include file="/WEB-INF/jsp/iais/appView/facility/view.jsp" %>
-                                                    </c:if>
                                                     <c:if test="${appViewModuleType eq AppViewConstants.MODULE_VIEW_NEW_APPROVAL_APP}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/approval/view.jsp" %>
                                                     </c:if>

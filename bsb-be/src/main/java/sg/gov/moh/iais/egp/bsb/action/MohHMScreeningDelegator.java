@@ -16,8 +16,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.FUNCTION_NAME_HM_SCREENING;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_HM_SCREENING;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
 /**
  * @author : LiRan
@@ -58,7 +62,7 @@ public class MohHMScreeningDelegator {
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         processClient.saveHmScreeningApproveOrReject(appId, taskId, mohProcessDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Higher Management Screening");
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeConstants.APP_STATUS_PEND_AO+" Screening");
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeConstants.APP_STATUS_PEND_AO + " Screening");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
     }
 }

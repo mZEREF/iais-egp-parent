@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
@@ -72,21 +71,21 @@ public class MohAOProcessingDelegator {
         switch (processingDecision) {
             case MOH_PROCESSING_DECISION_APPROVE:
                 processClient.saveAoProcessingApprove(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK,MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT);
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESSING_DECISION_REJECT:
                 processClient.saveAoProcessingReject(appId, taskId, mohProcessDto);
                 break;
             case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO:
                 processClient.saveAoProcessingRouteBackToDo(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO)+" Processing");
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO) + " Processing");
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM:
                 processClient.saveAoProcessingRouteToHm(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK,MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_HM));
-                ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_HM));
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);
                 break;
             default:
                 log.info("don't have such processingDecision {}", StringUtils.normalizeSpace(processingDecision));

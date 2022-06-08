@@ -21,4 +21,9 @@ public class MasterCodeHolder {
     public static final MasterCodeWrapper APPROVAL_STATUS = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
 
     public static final MasterCodeWrapper APPROVAL_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_APPROVAL_TYPE);
+
+    public static final MasterCodeWrapper NATIONALITY = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_NATIONALITY);
+    public static final MasterCodeWrapper SALUTATION = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_SALUTATION);
+
+    public static final MasterCodeWrapper ROLE_UNDER_SIXTH_SCHEDULE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_ROLE_UNDER_SIXTH_SCHEDULE);
 }

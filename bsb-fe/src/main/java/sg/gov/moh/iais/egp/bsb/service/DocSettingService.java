@@ -91,16 +91,6 @@ public class DocSettingService {
         return docSettings;
     }
 
-    public List<DocSetting> getApprovalAppDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
-        return docSettings;
-    }
-
     public List<DocSetting> getApprovalAppDocSettings(String approvalType) {
         List<DocSetting> docSettings = new ArrayList<>(5);
         switch (approvalType) {

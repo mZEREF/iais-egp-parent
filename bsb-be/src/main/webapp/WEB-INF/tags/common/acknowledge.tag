@@ -21,11 +21,11 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <c:choose>
-                                <c:when test="${resultMsg ne null || resultMsg ne ''}">
+                                <c:when test="${resultMsg ne null && resultMsg ne ''}">
                                     <h2><c:out value="${resultMsg}"/></h2>
                                 </c:when>
                                 <c:otherwise>
-                                    <h2>
+                                    <h2 style="border-bottom: 0px">
                                         <span>You have successfully completed your task -- <c:out value="${task}"/></span>
                                     </h2>
                                     <c:choose>

@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbAppointmentDto;
@@ -19,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -29,8 +29,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_INSPECTION_DATE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_REVIEW_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL_TASK_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.INSPECTION_INFO_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_END_HOURS_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_START_HOURS_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_CONFIRM_DATE;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_SPECIFY_NEW_DATE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -92,9 +99,8 @@ public class AppointInspectionDateDelegator {
             setApptInspectionDateDto(taskId, request);
             apptInspectionDateService.setInspectionInfoDto(appId,request);
         }
-        // view application need appId and moduleType
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, dto.getApplicationId());
         ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_TASK_LIST);
     }
 

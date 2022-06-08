@@ -1,14 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ResponseConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
@@ -16,13 +18,16 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
@@ -30,10 +35,34 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APPROVAL_PROFILE_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_BAT_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_CANCELLATION_APPROVAL_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DECLARATION_ANSWER_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DECLARATION_CONFIG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DE_REGISTRATION_AFC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DE_REGISTRATION_FACILITY_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DOC_SETTINGS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FACILITY_REGISTRATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FILE_MAP_SAVED;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_INSPECTION_FOLLOW_UP_ITEMS_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_CF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_RF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_UCF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_ORG_ADDRESS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_OTHER_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_SAVED_FILES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_VIEW_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_FAC_ADMIN_OFFICER;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_CERTIFYING_TEAM;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_PROFILE;
 
 
 @Service
@@ -42,48 +71,27 @@ public class AppViewService {
     private static final String DOC_TYPE_OF_OTHERS = "Others";
     private final AppViewClient appViewClient;
     private final DocSettingService docSettingService;
+    private final OrganizationInfoClient orgInfoClient;
 
-    public AppViewService(AppViewClient appViewClient, DocSettingService docSettingService) {
+    public AppViewService(AppViewClient appViewClient, DocSettingService docSettingService, OrganizationInfoClient orgInfoClient) {
         this.appViewClient = appViewClient;
         this.docSettingService = docSettingService;
+        this.orgInfoClient = orgInfoClient;
     }
 
-    /**
-     * only use for process new, rfc, renewal, deregistration, cancellation module
-     */
-    public static String judgeProcessAppModuleType(String processType, String appType){
-        String module = "";
-        if (org.springframework.util.StringUtils.hasLength(processType) && org.springframework.util.StringUtils.hasLength(appType)){
-            switch (processType) {
-                case PROCESS_TYPE_FAC_REG:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        module = MODULE_VIEW_NEW_FACILITY;
-                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
-                        module = MODULE_VIEW_DEREGISTRATION_FACILITY;
-                    }
-                    break;
-                case PROCESS_TYPE_APPROVE_POSSESS:
-                case PROCESS_TYPE_APPROVE_LSP:
-                case PROCESS_TYPE_SP_APPROVE_HANDLE:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        module = MODULE_VIEW_NEW_APPROVAL_APP;
-                    } else if (appType.equals(APP_TYPE_CANCEL)){
-                        module = MODULE_VIEW_CANCELLATION_APPROVAL_APP;
-                    }
-                    break;
-                case PROCESS_TYPE_FAC_CERTIFIER_REG:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        module = MODULE_VIEW_NEW_FAC_CER_REG;
-                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
-                        module = MODULE_VIEW_DEREGISTRATION_FAC_CER_REG;
-                    }
-                    break;
-                default:
-                    log.info("don't have such processType {}", StringUtils.normalizeSpace(processType));
-                    break;
-            }
-        }
-        return module;
+    public static void facilityRegistrationViewApp(HttpServletRequest request, String appId) {
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.KEY_APP_VIEW_URL, AppViewConstants.KEY_APP_VIEW_URL_FACILITY);
+    }
+
+    public static void approvalAppViewApp(HttpServletRequest request, String appId) {
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.KEY_APP_VIEW_URL, AppViewConstants.KEY_APP_VIEW_URL_APPROVAL_APP);
+    }
+
+    public static void facilityCertificationRegistrationViewApp(HttpServletRequest request, String appId) {
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.KEY_APP_VIEW_URL, AppViewConstants.KEY_APP_VIEW_URL_FAC_CER_REG);
     }
 
     /**
@@ -94,49 +102,56 @@ public class AppViewService {
         ResponseDto<FacilityRegisterDto> resultDto = appViewClient.getFacRegDtoByAppId(applicationId);
         if (resultDto.ok()) {
             FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
-            // TODO retrieve company address
+            ParamUtil.setSessionAttr(request, KEY_FACILITY_REGISTRATION_DTO, facilityRegisterDto);
+            String uen = facilityRegisterDto.getUen();
+            LicenseeDto licenseeDto = orgInfoClient.getLicenseeDtoByUen(uen).getEntity().get(0);
             OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-            orgAddressInfo.setUen("185412420D");
-            orgAddressInfo.setCompName("DBO Laboratories");
-            orgAddressInfo.setPostalCode("980335");
-            orgAddressInfo.setAddressType("ADDTY001");
-            orgAddressInfo.setBlockNo("10");
-            orgAddressInfo.setFloor("03");
-            orgAddressInfo.setUnitNo("01");
-            orgAddressInfo.setStreet("Toa Payoh Lorong 2");
-            orgAddressInfo.setBuilding("-");
-            ParamUtil.setRequestAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
-
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facilityRegisterDto.getFacilityProfileDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facilityRegisterDto.getFacilityOperatorDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facilityRegisterDto.getFacilityAuthoriserDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, facilityRegisterDto.getFacilityAdminAndOfficerDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facilityRegisterDto.getFacilityCommitteeDto());
+            orgAddressInfo.setUen(uen);
+            orgAddressInfo.setCompName(licenseeDto.getName());
+            orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+            orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+            orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+            orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+            orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+            orgAddressInfo.setStreet(licenseeDto.getStreetName());
+            orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
+            ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
 
             FacilitySelectionDto selectionDto = facilityRegisterDto.getFacilitySelectionDto();
-            if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
-                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.TRUE);
+            boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
 
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facilityRegisterDto.getFacilityProfileDto());
+            if (isCf || isUcf) {
+                ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facilityRegisterDto.getFacilityOperatorDto());
+            }
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, facilityRegisterDto.getFacilityAdminAndOfficerDto());
+
+            if (isCf) {
                 ParamUtil.setRequestAttr(request, NODE_NAME_AFC, facilityRegisterDto.getAfcDto());
-            } else {
-                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.FALSE);
-
+            } else if (isUcf) {
                 List<BiologicalAgentToxinDto> batList = new ArrayList<>(facilityRegisterDto.getBiologicalAgentToxinMap().values());
                 ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
             }
 
             OtherApplicationInfoDto otherAppInfoDto = facilityRegisterDto.getOtherAppInfoDto();
-            // TODO after we save the declaration data into app misc, remove the hardcode
-            List<DeclarationItemMainInfo> config = appViewClient.getDeclarationConfigInfoById("B95B8F95-62B1-EC11-BE76-000C298D317C");
+            List<DeclarationItemMainInfo> config = appViewClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
             otherAppInfoDto.setDeclarationConfig(config);
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, docSettingService.getFacRegDocSettings());
+            List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
             primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(facilityRegisterDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, savedFiles);
+            ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
+            Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet());
+            ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
@@ -280,11 +295,11 @@ public class AppViewService {
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getApprovalAppDocSettings () {
         List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
+//        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+//        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
+//        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
+//        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
+//        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
         return docSettings;
     }
 

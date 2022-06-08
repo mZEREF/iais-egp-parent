@@ -18,7 +18,6 @@ import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
@@ -30,6 +29,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.InsAFCReportService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -44,9 +44,23 @@ import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFC_DASHBOARD_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_DASHBOARD_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_AFC_REPORT_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.PARAM_CAN_ACTION_ROLE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_ACTIVE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SELECT_ROUTE_TO_MOH;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 
 @Slf4j
@@ -144,9 +158,8 @@ public class InspectionDoCertificationDelegator {
         ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_BSB_DO);
         ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
 
-        // view application need appId and moduleType
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_NEW_FACILITY);
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, appId);
     }
 
     public void bindAction(BaseProcessClass bpc){

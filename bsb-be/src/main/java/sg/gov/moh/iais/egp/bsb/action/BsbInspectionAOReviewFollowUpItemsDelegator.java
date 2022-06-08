@@ -15,17 +15,23 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_STATUS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REQUEST_EXTENSION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_FOLLOW_UP_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_ACTIVE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_CAN_NOT_UPLOAD_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
 
 @Slf4j
 @Delegator("mohAOReviewFollowUpItems")
@@ -46,7 +52,6 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         request.getSession().removeAttribute(KEY_REVIEW_FOLLOW_UP_DTO);
         request.getSession().removeAttribute(KEY_INS_DECISION);
         request.getSession().removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
-        request.getSession().removeAttribute(KEY_APP_STATUS);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -96,8 +101,7 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.aoReviewInspectionFollowUpItemsRouteBackToDO(appId, taskId, insProcessDto);
-        String appStatus = (String) ParamUtil.getSessionAttr(request,KEY_APP_STATUS);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
     }
@@ -113,8 +117,7 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.aoReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
-        String appStatus = (String) ParamUtil.getSessionAttr(request,KEY_APP_STATUS);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
     }
 
     public void skip(BaseProcessClass bpc) {
