@@ -22,6 +22,10 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
         <div class="container center-content">
+            <br>
+            <div class="row">
+                <%@ include file="../common/dashboardDropDown.jsp" %>
+            </div>
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/companyDetail.jsp" %>

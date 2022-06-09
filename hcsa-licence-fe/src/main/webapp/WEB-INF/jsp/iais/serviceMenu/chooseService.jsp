@@ -22,6 +22,10 @@
     <input type="hidden" name="crud_action_value">
     <input type="hidden" name="draftNo"/>
     <div class="container">
+        <br>
+        <div class="row">
+            <%@ include file="../common/dashboardDropDown.jsp" %>
+        </div>
         <div class="row">
             <div class="col-xs-3">
             </div>
@@ -31,6 +35,7 @@
                 </div>
             </div>
         </div>
+
         <div class="component-gp">
             <br>
             <div id="svcStep1">
