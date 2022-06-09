@@ -237,7 +237,7 @@ public interface InspectionService {
      * @param rollBackHistoryList Roll Back History List
      * @return select options
      */
-    List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList);
+    List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap);
 
     /**
      * cr iais22-13

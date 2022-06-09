@@ -62,6 +62,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.Assert;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -568,7 +569,9 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList) {
+    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap) {
+        Assert.assertNotNull(rollBackHistoryValueMap);
+        rollBackHistoryValueMap.clear();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(rollBackHistoryList)) {
             int index = 0;
@@ -578,8 +581,9 @@ public class InspectionServiceImpl implements InspectionService {
                 OrgUserDto user = applicationViewService.getUserById(userId);
                 if (user != null) {
                     String actionBy = user.getDisplayName();
-                    SelectOption selectOption = new SelectOption(index+"", actionBy + " (" + displayName + ")");
+                    SelectOption selectOption = new SelectOption(index + "", actionBy + " (" + displayName + ")");
                     rollBackStage.add(selectOption);
+                    rollBackHistoryValueMap.put(Integer.toString(index), appPremisesRoutingHistoryDto);
                 }
                 index++;
             }
@@ -602,6 +606,9 @@ public class InspectionServiceImpl implements InspectionService {
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
 
+        //rollback inspection data
+        applicationClient.rollBackInspection(taskDto.getRefNo());
+
         //completed current task
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         completedTask(taskDto);
@@ -614,6 +621,10 @@ public class InspectionServiceImpl implements InspectionService {
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        //start self-checklist
+        applicationDto.setSelfAssMtFlag(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
+        //close submit pref insp date
+        applicationDto.setHasSubmitPrefDate(0);
         broadcastApplicationDto.setApplicationDto(applicationDto);
 
         //create newTask

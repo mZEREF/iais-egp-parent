@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -93,7 +94,7 @@ public class ApptInspectionDateDelegator {
      * @param bpc
      * @throws
      */
-    public void apptInspectionDateInit(BaseProcessClass bpc){
+    public void apptInspectionDateInit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the apptInspectionDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", null);
@@ -101,6 +102,8 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", null);
+        ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", null);
     }
 
     /**
@@ -151,8 +154,10 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
 
         //set rollback options
-        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList());
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap);
         ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", (Serializable) rollBackStage);
+        ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", (Serializable) rollBackValueMap);
     }
 
     /**
@@ -290,9 +295,10 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
                 ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
             } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(apptInspectionDateDto.getProcessDec())) {
-                int rollBackToIndex = ParamUtil.getInt(bpc.request, "rollBackTo");
+                String rollBackToIndex = ParamUtil.getString(bpc.request, "rollBackTo");
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-                inspectionService.rollBack(bpc,taskDto,applicationViewDto,applicationViewDto.getRollBackHistroyList().get(rollBackToIndex));
+                Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex));
                 ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
             }
         }

@@ -1062,4 +1062,12 @@ public class ApplicationClientFallback implements ApplicationClient{
         return IaisEGPHelper.getFeignResponseEntity();
     }
 
+    @Override
+    public FeignResponseEntity<Void> rollBackInspection(String premId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }
