@@ -267,6 +267,7 @@ public class AppCommServiceImpl implements AppCommService {
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                 svcNames.add(hcsaServiceDto.getSvcName());
             }
+            log.info(StringUtil.changeForLog("Svc Names: " + svcNames));
             AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
             List<HcsaServiceDto> HcsaServiceDtoList = configCommService.getHcsaServiceByNames(svcNames);
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
@@ -280,7 +281,13 @@ public class AppCommServiceImpl implements AppCommService {
                     .getEntity();
             if (!IaisCommonUtils.isEmpty(premisesDtos)) {
                 for (PremisesDto premisesHciDto : premisesDtos) {
+                    // rfi
                     if (excludePremisesList != null && !excludePremisesList.isEmpty() && excludePremisesList.stream()
+                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesHciDto.getId()))) {
+                        continue;
+                    }
+                    // rfc & renewal
+                    if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
                             .anyMatch(dto -> Objects.equals(dto.getId(), premisesHciDto.getId()))) {
                         continue;
                     }
@@ -289,6 +296,7 @@ public class AppCommServiceImpl implements AppCommService {
             }
             if (!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
                 for (AppGrpPremisesEntityDto premisesEntityDto : appGrpPremisesEntityDtos) {
+                    // rfi
                     if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
                             .anyMatch(dto -> Objects.equals(dto.getId(), premisesEntityDto.getId()))) {
                         continue;
@@ -298,6 +306,7 @@ public class AppCommServiceImpl implements AppCommService {
                 }
             }
         }
+        log.info(StringUtil.changeForLog("HciFromPendAppAndLic Result: " + result));
         return result;
     }
 
