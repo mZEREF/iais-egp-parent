@@ -1,7 +1,7 @@
+<c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
+<c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
+<c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <c:if test="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002'||treatmentDto.sterilizationReason =='VSSRFS005'}">
-    <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
-    <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
-    <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
     <div class="panel panel-default">
         <div class="panel-heading ">
             <h4 class="panel-title">
@@ -90,9 +90,7 @@
                                                varStatus="ind">
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                                <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                                         <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
-                                                </span>
+                                                     <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
                                             </span>
                                         </div>
                                     </c:forEach>

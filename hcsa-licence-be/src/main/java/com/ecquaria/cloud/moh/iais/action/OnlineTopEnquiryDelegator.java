@@ -9,11 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -226,7 +228,22 @@ public class OnlineTopEnquiryDelegator {
                 terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
             }
         }
-
+        if(!StringUtil.isEmpty(topInfo.getTerminationOfPregnancyDto().getTerminationDto())){
+            ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(topInfo.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+            if(professionalResponseDto==null){
+                professionalResponseDto=new ProfessionalResponseDto();
+            }
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                DoctorInformationDto doctorInformationDto=assistedReproductionClient.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP).getEntity();
+                topInfo.setDoctorInformationDto(doctorInformationDto);
+                terminationDto.setTopDoctorInformations("true");
+            }else {
+                topInfo.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
+                topInfo.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                topInfo.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                topInfo.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+            }
+        }
         ParamUtil.setRequestAttr(request,"topSuperDataSubmissionDto",topInfo);
     }
 }
