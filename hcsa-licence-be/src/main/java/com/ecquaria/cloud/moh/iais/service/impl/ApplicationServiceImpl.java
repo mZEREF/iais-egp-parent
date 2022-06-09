@@ -1400,13 +1400,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                     RoleConsts.USER_ROLE_INSPECTIOR})) {
                 map.put(HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
             }
-        }
-        if (StringUtil.isEmpty(appType) || !StringUtil.isIn(appType, new String[]{
-                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
-            // "Invalid Application Type."
-            map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060", "Application Type", "data"));
+            if (StringUtil.isEmpty(appType) || !StringUtil.isIn(appType, new String[]{
+                    ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
+                // "Invalid Application Type."
+                map.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0060", "Application Type", "data"));
+            }
         }
         if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
             Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
