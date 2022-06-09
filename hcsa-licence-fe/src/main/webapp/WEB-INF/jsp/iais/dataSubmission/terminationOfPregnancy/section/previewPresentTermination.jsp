@@ -90,7 +90,10 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Date of Termination of Pregnancy"/>
+                    <c:if test="${terminationDto.lateSubmit == true}">
+                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                    <iais:field width="5" value="Date of Termination of Pregnancy" info="${toolMsg}" style="width: 300px;"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.topDate}"/>
                     </iais:value>

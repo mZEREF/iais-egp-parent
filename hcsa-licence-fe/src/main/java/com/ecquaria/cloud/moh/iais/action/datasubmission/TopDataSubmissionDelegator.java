@@ -641,9 +641,23 @@ public class TopDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
-            if(result !=null){
-                errMap.putAll(result.retrieveAll());
+            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
+                if(preTerminationDto.getCounsellingGiven()==true){
+                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
+                    }
+                }else if(preTerminationDto.getCounsellingGiven()==false){
+                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
+                    }
+                }
+            } else {
+                ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
+                if(result !=null){
+                    errMap.putAll(result.retrieveAll());
+                }
             }
         }
         if(!errMap.isEmpty()){
@@ -664,6 +678,18 @@ public class TopDataSubmissionDelegator {
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto() == null ? new TerminationDto() : terminationOfPregnancyDto.getTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, terminationDto);
+        topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
+        String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        try {
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
+                terminationDto.setLateSubmit(true);
+            }else {
+                terminationDto.setLateSubmit(false);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         if("true".equals(terminationDto.getTopDoctorInformations())){
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
