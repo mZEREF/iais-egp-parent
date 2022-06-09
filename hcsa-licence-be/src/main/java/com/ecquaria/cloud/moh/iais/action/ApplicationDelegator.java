@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -143,7 +144,16 @@ public class ApplicationDelegator extends AppCommDelegator {
                 if (HcsaAppConst.CHECKED_BTN_SHOW == check && !StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
                     isValid = false;
                 }
-                appType = applicationViewDto.getApplicationDto().getApplicationType();
+                // check current application status
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if (IaisCommonUtils.getNonDoRFIStatus().contains(applicationDto.getStatus())) {
+                    isValid = false;
+                    if (check == HcsaAppConst.CHECKED_ALL) {
+                        ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
+                                "edited", "action"));
+                    }
+                }
+                appType = applicationDto.getApplicationType();
                 appGrpNo = applicationGroupDto.getGroupNo();
             }
         }

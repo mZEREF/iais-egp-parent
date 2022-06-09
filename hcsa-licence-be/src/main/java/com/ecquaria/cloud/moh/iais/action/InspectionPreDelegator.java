@@ -307,6 +307,14 @@ public class InspectionPreDelegator {
                             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
                             ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
                         }
+                    } else {
+                        String appNo = applicationViewDto.getApplicationDto().getApplicationNo();
+                        String appStatus = map.get(appNo);
+                        if (StringUtil.isNotEmpty(appStatus) && IaisCommonUtils.getNonDoRFIStatus().contains(appStatus)) {
+                            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
+                                    "edited", "action"));
+                            ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                        }
                     }
                 }
             }
