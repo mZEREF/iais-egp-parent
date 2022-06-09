@@ -20,6 +20,10 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type" value="">
     <div class="container center-content">
+        <br>
+        <div class="row">
+            <%@ include file="../common/dashboardDropDown.jsp" %>
+        </div>
         <div class="h3-with-desc">
             <strong>Authorised Person</strong>
             <p style="margin-top: 30px;margin-bottom: 20px">
