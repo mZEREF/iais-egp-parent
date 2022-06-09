@@ -492,7 +492,7 @@ public class InboxServiceImpl implements InboxService {
             if(!IaisCommonUtils.isEmpty(apps)){
                 for(ApplicationDto applicationDto:apps){
                     if(!endStatusList.contains(applicationDto.getStatus())){
-                        errorMap.put("errorMessage","There is already a pending application for this licence");
+                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
                         break;
                     }
                 }
@@ -502,7 +502,7 @@ public class InboxServiceImpl implements InboxService {
         }else if("application".equals(type)){
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
             if(!endStatusList.contains(applicationDto.getStatus())){
-                errorMap.put("errorMessage","There is already a pending application for this licence");
+                errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
             }
         }
         return errorMap;
