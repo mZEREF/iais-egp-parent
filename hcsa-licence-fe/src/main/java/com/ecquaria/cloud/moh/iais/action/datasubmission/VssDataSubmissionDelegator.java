@@ -202,9 +202,7 @@ public class VssDataSubmissionDelegator {
             }
             premisesMap = vssDataSubmissionService.getVssCenterPremises(licenseeId);
         }
-       if(premisesMap.size()==1){
            premisesMap.values().stream().forEach(v-> vssSuperDataSubmissionDto.setPremisesDto(v));
-       }
 
      /*   *//*DataSubmissionHelper.setVssPremisesMap(request).values().stream().forEach(v-> vssSuperDataSubmissionDto.setPremisesDto(v));*//*
         Map<String, PremisesDto>  premisesDtoMap = DataSubmissionHelper.setVssPremisesMap(request);
@@ -311,6 +309,9 @@ public class VssDataSubmissionDelegator {
     private void prepareConsentParticulars(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(request, "vssFiles", null);
+        ParamUtil.setSessionAttr(request,"seesion_files_map_ajax_feselectedVssFile",null);
+        ParamUtil.setSessionAttr(request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
@@ -447,7 +448,6 @@ public class VssDataSubmissionDelegator {
 
     private void setFiles(GuardianAppliedPartDto guardianAppliedPartDto,HttpServletRequest request){
         List<VssDocumentDto> vssDoc = guardianAppliedPartDto.getVssDocumentDto();
-        vssDoc.clear();
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX+"selectedVssFile");
         IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();

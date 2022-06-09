@@ -133,7 +133,7 @@
                                        class="selectedFile commDoc"
                                        type="file" style="display: none;"
                                        aria-label="selectedFile1"
-                                       onclick="(event)"
+                                       onclick="fileClicked(event)"
                                        onchange="doUserRecUploadConfirmFile(event)"/><a href="javascript:void(0);"
                                                                                         class="btn btn-file-upload btn-secondary"
                                                                                         onclick="clearFlagValueFEFile()">Upload</a>
