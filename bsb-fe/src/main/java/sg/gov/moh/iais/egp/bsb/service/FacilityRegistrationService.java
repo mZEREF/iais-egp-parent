@@ -100,8 +100,8 @@ public class FacilityRegistrationService {
         this.draftClient = draftClient;
     }
 
-    public NodeGroup retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
-        NodeGroup facRegRoot = readRegisterDtoToNodeGroup(resultDto.getEntity(), KEY_ROOT_NODE_GROUP);
+    public NodeGroup retrieveFacRegRoot(HttpServletRequest request, FacilityRegisterDto facilityRegisterDto) {
+        NodeGroup facRegRoot = readRegisterDtoToNodeGroup(facilityRegisterDto, KEY_ROOT_NODE_GROUP);
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
@@ -240,11 +240,8 @@ public class FacilityRegistrationService {
         //if choose to load draft data,get dto from session
         if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.YES)) {
             FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
-            ResponseDto<FacilityRegisterDto> resultDto = new ResponseDto<>();
-            resultDto.setEntity(eligibleDraftRegisterDto);
-
             // convert draft data to NodeGroup and set it into session, replace old data
-            facRegRoot = retrieveFacRegRoot(request, resultDto);
+            facRegRoot = retrieveFacRegRoot(request, eligibleDraftRegisterDto);
             facRegRoot.setActiveNodeKey(NODE_NAME_FAC_SELECTION);
             newFacServiceSelectionPageJumpJudge(request, false, facSelectionNode, facRegRoot, selectionDto);
         } else if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.NO)) {
@@ -400,6 +397,13 @@ public class FacilityRegistrationService {
         jump(request, facRegRoot, actionValue);
     }
 
+
+    /** Checks if current flow is registering a new facility, if so, it's allowed to save draft.
+     * Else, if current flow is editing a saved facility, it's not allowed to save draft. */
+    public boolean allowSaveDraft(HttpServletRequest request) {
+        return (boolean) ParamUtil.getSessionAttr(request, KEY_IS_NEW_REG_FAC);
+    }
+
     public void preCompInfo(BaseProcessClass bpc) {
         // do nothing now, need to prepare company info in the future
     }
@@ -413,6 +417,7 @@ public class FacilityRegistrationService {
             Nodes.passValidation(facRegRoot, NODE_NAME_COMPANY_INFO);
             jumpHandler(request, facRegRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
         } else {
@@ -457,6 +462,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facProfileNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -494,6 +500,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facOpNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -532,6 +539,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facAdminOfficerNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -627,6 +635,7 @@ public class FacilityRegistrationService {
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -733,6 +742,7 @@ public class FacilityRegistrationService {
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facAuthNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -800,6 +810,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, batNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -880,6 +891,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, NODE_NAME_OTHER_INFO, otherAppInfoNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_OTHER_INFO);
         } else {
@@ -930,6 +942,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
         } else {
@@ -963,6 +976,7 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, NODE_NAME_AFC, facCertifierNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            Assert.isTrue(allowSaveDraft(request), ERR_MSG_INVALID_ACTION);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_AFC);
         } else {

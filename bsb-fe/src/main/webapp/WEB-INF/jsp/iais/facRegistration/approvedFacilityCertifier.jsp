@@ -12,6 +12,7 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="isNewFacilityRegistration" type="java.lang.Boolean"--%>
+        <fac:innerFooter canSaveDraftJudge="${isNewFacilityRegistration}"/>
     </jsp:attribute>
 </fac:approvedFacilityCertifier>

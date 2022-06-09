@@ -73,7 +73,8 @@ public class FacilityRegistrationDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        boolean newFacReg = true;
+        boolean editDraft = false;
+        boolean editSavedFacility = false;
 
         // check if we are doing editing
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
@@ -81,14 +82,18 @@ public class FacilityRegistrationDelegator {
             if (log.isInfoEnabled()) {
                 log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
             }
-            newFacReg = false;
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
+                    FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
+                    facilityRegistrationService.retrieveFacRegRoot(request, facilityRegisterDto);
+
+                    // judge if the data comes from a draft or a saved facility
+                    editSavedFacility = facilityRegisterDto.getFacilityProfileDto().getFacilityEntityId() != null;
+                    editDraft = !editSavedFacility;
                 }
             }
             if (failRetrieveEditData) {
@@ -96,7 +101,10 @@ public class FacilityRegistrationDelegator {
             }
         }
 
-        if (newFacReg) {
+        /* this attribute means if this flow starts to create a new facility (starts from a draft also means new facility) */
+        ParamUtil.setSessionAttr(request, KEY_IS_NEW_REG_FAC, !editSavedFacility);
+
+        if (!editSavedFacility && !editDraft) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityRegistrationService.getFacilityRegisterRoot(request));
         }
 
@@ -120,7 +128,12 @@ public class FacilityRegistrationDelegator {
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
-        facilityRegistrationService.handleNewFacilityServiceSelection(bpc);
+        boolean newFacReg = (boolean) ParamUtil.getSessionAttr(bpc.request, KEY_IS_NEW_REG_FAC);
+        if (newFacReg) {
+            facilityRegistrationService.handleNewFacilityServiceSelection(bpc);
+        } else {
+            facilityRegistrationService.handleServiceSelection(bpc);
+        }
     }
 
     public void preFacProfile(BaseProcessClass bpc) {

@@ -116,7 +116,10 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
+                                                <%--@elvariable id="isNewFacilityRegistration" type="java.lang.Boolean"--%>
+                                                <c:if test="${isNewFacilityRegistration}">
                                                 <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
+                                                </c:if>
                                                 <a class="btn btn-primary next" id="submit" >Next</a>
                                             </div>
                                         </div>
