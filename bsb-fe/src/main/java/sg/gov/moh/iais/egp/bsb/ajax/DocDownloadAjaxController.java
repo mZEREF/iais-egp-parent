@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static sg.gov.moh.iais.egp.bsb.action.WithdrawnAppDelegator.PARAM_PRIMARY_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSUME_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
@@ -293,10 +292,10 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::auditGetNewFile);
     }
 
-    @GetMapping("/withdrawn/new/{id}")
-    public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
-    }
+//    @GetMapping("/withdrawn/new/{id}")
+//    public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+//        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
+//    }
 
     @GetMapping("/reportableEvent/followup/new/{id}")
     public void downloadNotSavedFollowupFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
@@ -637,10 +636,10 @@ public class DocDownloadAjaxController {
         return  (SimpleNode) facCertRegRoot.at(nodeName);
     }
 
-    private MultipartFile withdrawnGetNewFile(HttpServletRequest request, String id) {
-        sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto docDto = (sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto) ParamUtil.getSessionAttr(request, PARAM_PRIMARY_DOC_DTO);
-        return docDto.getNewDocMap().get(id).getMultipartFile();
-    }
+//    private MultipartFile withdrawnGetNewFile(HttpServletRequest request, String id) {
+//        sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto docDto = (sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto) ParamUtil.getSessionAttr(request, PARAM_PRIMARY_DOC_DTO);
+//        return docDto.getNewDocMap().get(id).getMultipartFile();
+//    }
 
     private MultipartFile auditGetNewFile(HttpServletRequest request, String id) {
         FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
