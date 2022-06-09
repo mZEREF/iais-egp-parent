@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -404,10 +405,14 @@ public class ApplicationDelegator extends AppCommDelegator {
                     .append(bpc.request.getServerName())
                     .append("main-web");
         } else {
-            //super.prepareJump(bpc);
             url.append(InboxConst.URL_HTTPS)
-                    .append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTRANET/ApplicationView/prepareData");
+                    .append(bpc.request.getServerName());
+            LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
+            if (RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())) {
+                url.append("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector/InspectionPreInspectorPre");
+            } else {
+                url.append("/hcsa-licence-web/eservice/INTRANET/ApplicationView/prepareData");
+            }
             String appError = (String) ParamUtil.getRequestAttr(bpc.request, HcsaAppConst.ERROR_APP);
             if (StringUtil.isNotEmpty(appError)) {
                 url.append("?").append(HcsaAppConst.ERROR_APP).append("=")
