@@ -72,7 +72,7 @@
                         <p id="activityTypeP" class="assessment-title" style="padding-left: 1.25rem; <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">display: none;</c:if>">Facility Activity Type <span id="facActivityMandatory" class="mandatory otherQualificationSpan" <c:if test="${MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(serviceSelection.facClassification)}">style="display:none;"</c:if>>*</span></p>
                         <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_BSL3}">style="display: none"</c:if>>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
+                                <input type="checkbox" class="form-check-input" readonly onclick="return false;" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
                                 <label for="bsl3fssba" class="form-check-label"><span class="check-square"></span>Possession of First and/or Second Schedule Biological Agent</label>
                             </div>
                             <div class="form-check">
@@ -90,7 +90,7 @@
                         </div>
                         <div id="bsl4Types" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_BSL4}">style="display: none"</c:if>>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
+                                <input type="checkbox" class="form-check-input" readonly onclick="return false;" name="bsl4ActviTypes" id="bsl4fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
                                 <label for="bsl4fssba" class="form-check-label"><span class="check-square"></span>Possession of First and/or Second Schedule Biological Agent</label>
                             </div>
                             <div class="form-check">

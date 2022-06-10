@@ -86,11 +86,16 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS   = "BSBAPST033";
     public static final String APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW   = "BSBAPST034";
     public static final String APP_STATUS_PEND_EXTENSION_REVIEW         = "BSBAPST035";
+    public static final String APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT = "BSBAPST036";
+    public static final String APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW = "BSBAPST037";
     public static final String APP_STATUS_PEND_AFC_REPORT_UPLOAD        = "BSBAPST038";
     public static final String APP_STATUS_PEND_AFC_INPUT                = "BSBAPST039";
     public static final String APP_STATUS_PEND_APPLICANT_REPORT_REVIEW  = "BSBAPST040";
+    public static final String APP_STATUS_PEND_ACKNOWLEDGEMENT          = "BSBAPST041";
+    public static final String APP_STATUS_ACKNOWLEDGED                  = "BSBAPST042";
     public static final String APP_STATUS_PEND_DO_REPORT_REVIEW         = "BSBAPST043";
     public static final String APP_STATUS_PEND_AO_REPORT_REVIEW         = "BSBAPST044";
+    public static final String APP_STATUS_PEND_DO_CONFIRM_INSPECTION_DATE = "BSBAPST045";
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
     public static final Set<String> UNAVAILABLE_APP_STATUS;
@@ -348,4 +353,11 @@ public class MasterCodeConstants {
     //Inspection date status
     public static final String PENDING_DO_CONFIRM = "INSDTST001";
     public static final String CONFIRMED          = "INSDTST002";
+
+    public static final String ROLE_IN_FACILITY_MAIN_ADMINISTRATOR = "RLINFAC001";
+    public static final String ROLE_IN_FACILITY_ALTERNATE_ADMINISTRATOR = "RLINFAC002";
+    public static final String ROLE_IN_FACILITY_OFFICER = "RLINFAC003";
+    public static final String ROLE_IN_FACILITY_OPERATOR = "RLINFAC004";
+    public static final String ROLE_IN_FACILITY_COMMITTEE_MEMBER = "RLINFAC005";
+    public static final String ROLE_IN_FACILITY_AUTHORISER = "RLINFAC006";
 }

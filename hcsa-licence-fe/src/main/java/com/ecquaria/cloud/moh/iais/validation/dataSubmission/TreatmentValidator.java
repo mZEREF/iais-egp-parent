@@ -42,7 +42,7 @@ public class TreatmentValidator implements CustomizeValidator {
             }
         }
        String occupation = treatmentDto.getOccupation();
-        if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP012")){
+        if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP013")){
             if(StringUtil.isEmpty(treatmentDto.getOtherOccupation())){
                 errorMap.put("otherOccupation", "GENERAL_ERR0006");
             }

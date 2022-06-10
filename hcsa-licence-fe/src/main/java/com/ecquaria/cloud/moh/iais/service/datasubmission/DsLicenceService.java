@@ -18,6 +18,8 @@ public interface DsLicenceService {
 
     Map<String, PremisesDto> getVssCenterPremises(String licenseeId);
 
+    Map<String, PremisesDto> getTopCenterPremises(String licenseeId);
+
     List<PremisesDto> getArCenterPremiseList(String orgId);
 
     List<PremisesDto> getLdtCenterPremiseList(String orgId);

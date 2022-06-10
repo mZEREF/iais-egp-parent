@@ -1,9 +1,10 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@taglib prefix="fac" tagdir="/WEB-INF/tags/common" %>
+<%@taglib prefix="comm" tagdir="/WEB-INF/tags/common" %>
+<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
-<fac:supportingDocuments savedFiles="${savedFiles}" newFiles="${newFiles}" docSettings="${docSettings}" otherDocTypes="${otherDocTypes}" docTypeOps="${docTypeOps}"
+<comm:supportingDocuments savedFiles="${savedFiles}" newFiles="${newFiles}" docSettings="${docSettings}" otherDocTypes="${otherDocTypes}" docTypeOps="${docTypeOps}"
                          newFileDLUrl="/bsb-web/ajax/doc/download/facReg/new/" savedFileDLUrl="/bsb-web/ajax/doc/download/facReg/repo/">
     <jsp:attribute name="innerNavTabFrag">
         <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/InnerNavTab.jsp" %>
@@ -17,6 +18,7 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="isNewFacilityRegistration" type="java.lang.Boolean"--%>
+        <fac:innerFooter canSaveDraftJudge="${isNewFacilityRegistration}"/>
     </jsp:attribute>
-</fac:supportingDocuments>
+</comm:supportingDocuments>

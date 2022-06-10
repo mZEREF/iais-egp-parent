@@ -13,8 +13,24 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_CONSUME;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_DISPOSAL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_EXPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_RECEIPT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.FUNCTION_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_CANCELLATION_APPROVAL_APP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FACILITY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FAC_CER_REG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_APPROVAL_APP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FAC_CER_REG;
 
 
 @Delegator
@@ -42,9 +58,6 @@ public class MohBeAppViewDelegator {
             String appViewModuleType = MaskUtil.unMaskValue(MASK_PARAM_APP_VIEW_MODULE_TYPE, maskedAppViewModuleType);
             ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, appViewModuleType);
             switch (appViewModuleType) {
-                case MODULE_VIEW_NEW_FACILITY:
-                    appViewService.retrieveFacReg(request, appId);
-                    break;
                 case MODULE_VIEW_DEREGISTRATION_FACILITY:
                     appViewService.retrieveDeregistrationFac(request, appId);
                     break;

@@ -9,12 +9,10 @@ import sg.gov.moh.iais.egp.bsb.client.ApplicationDocClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessDeregistrationClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.HMProcessDto;
-import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessDeregistrationService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
@@ -26,8 +24,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.FUNCTION_NAME_DO_PROCESS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.INDEED_ACTION_TYPE_DO_PROCESS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.INDEED_ACTION_TYPE_PREPARE_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.KEY_HM_PROCESS_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.KEY_SUBMISSION_DETAILS_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.MODULE_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.PROCESS_PAGE_VALIDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
@@ -71,9 +77,9 @@ public class HMProcessDeregistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_HM_PROCESS_DTO, hmProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, hmProcessDto.getSubmissionDetailsDto());
         // view application need appId and moduleType
-        String moduleType = AppViewService.judgeProcessAppModuleType(hmProcessDto.getSubmissionDetailsDto().getProcessType(), hmProcessDto.getSubmissionDetailsDto().getApplicationType());
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
+//        String moduleType = AppViewService.judgeProcessAppModuleType(hmProcessDto.getSubmissionDetailsDto().getProcessType(), hmProcessDto.getSubmissionDetailsDto().getApplicationType());
+//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(hmProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc

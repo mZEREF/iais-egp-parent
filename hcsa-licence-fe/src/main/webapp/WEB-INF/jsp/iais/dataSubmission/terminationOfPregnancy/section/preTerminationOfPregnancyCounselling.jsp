@@ -146,6 +146,15 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
                 </iais:value>
             </iais:row>
+        </div>
+        <iais:row>
+            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+            <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+            </iais:value>
+        </iais:row>
+        <div id="numCounsellingGivens" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
             <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
@@ -248,13 +257,6 @@
         </iais:row>
     </div>
         <iais:row>
-            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-            <iais:field width="5" value="Doctor's Professional Reign / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
-        </iais:value>
-        </iais:row>
-        <iais:row>
             <iais:field width="5" value="Patient Age (Years)"/>
         <iais:value width="7" cssClass="col-md-7" display="true" id="age">
             ${patientInformationDto.patientAge}
@@ -263,7 +265,7 @@
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>
-<%@include file="../common/topCounselling.jsp" %>
+<%--<%@include file="../common/topCounselling.jsp" %>--%>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
         <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -346,11 +348,13 @@
             if ($('#counsellingNo').prop('checked')) {
                 $('#noCounsReason').show();
                 $('#numCounsellingGiven').hide();
+                $('#numCounsellingGivens').hide();
                 fillValue($('#counsellingPlaces'),null);
             }
             if ($('#counsellingYes').prop('checked')) {
                 $('#noCounsReason').hide();
                 $('#numCounsellingGiven').show();
+                $('#numCounsellingGivens').show();
             }
         });
     });

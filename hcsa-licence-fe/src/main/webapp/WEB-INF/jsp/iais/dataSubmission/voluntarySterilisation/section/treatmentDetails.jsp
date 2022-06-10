@@ -25,7 +25,7 @@
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${treatmentDto.idType}" />
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
@@ -92,7 +92,7 @@
         <iais:row id="educationLevelOthers" style="${treatmentDto.educationLevel eq 'VSSEL006' ? '' : 'display: none'}">
             <iais:field width="5" value="Other Education Level" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="200" type="text" name="otherEducationLevel" value="${treatmentDto.otherEducationLevel}"/>
+                <iais:input maxLength="100" type="text" name="otherEducationLevel" value="${treatmentDto.otherEducationLevel}"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_otherEducationLevel"></span>
             </iais:value>
         </iais:row>
@@ -100,14 +100,14 @@
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="occupation" firstOption="Please Select" codeCategory="VSS_OCCUPATION"
-                         onchange ="toggleOnSelect(this, 'VSSOP012', 'occupationOthers')"
+                         onchange ="toggleOnSelect(this, 'VSSOP013', 'occupationOthers')"
                          value="${treatmentDto.occupation}"/>
         </iais:value>
     </iais:row>
-    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP012' ? '' : 'display: none'}">
+    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP013' ? '' : 'display: none'}">
         <iais:field width="5" value="Other Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="otherOccupation" value="${treatmentDto.otherOccupation}"/>
+            <iais:input maxLength="100" type="text" name="otherOccupation" value="${treatmentDto.otherOccupation}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
         </iais:value>
     </iais:row>
@@ -122,7 +122,7 @@
     <iais:row id="sterilizationReasonOthers" style="${treatmentDto.sterilizationReason eq 'VSSRFS009' ? '' : 'display: none'}">
         <iais:field width="5" value="Other Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="100" type="text" name="otherSterilizationReason" value="${treatmentDto.otherSterilizationReason}"/>
+            <iais:input maxLength="200" type="text" name="otherSterilizationReason" value="${treatmentDto.otherSterilizationReason}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_otherSterilizationReason"></span>
         </iais:value>
     </iais:row>

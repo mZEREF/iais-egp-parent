@@ -32,7 +32,7 @@
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="person"/></c:set>
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="guardianIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="guardianIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${guardianAppliedPartDto.guardianIdType}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianIdType"></span>
         </iais:value>
@@ -74,7 +74,7 @@
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="person"/></c:set>
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="appliedPartIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="appliedPartIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                          value="${guardianAppliedPartDto.appliedPartIdType}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartIdType"></span>
         </iais:value>
@@ -133,7 +133,7 @@
                                        class="selectedFile commDoc"
                                        type="file" style="display: none;"
                                        aria-label="selectedFile1"
-                                       onclick="(event)"
+                                       onclick="fileClicked(event)"
                                        onchange="doUserRecUploadConfirmFile(event)"/><a href="javascript:void(0);"
                                                                                         class="btn btn-file-upload btn-secondary"
                                                                                         onclick="clearFlagValueFEFile()">Upload</a>

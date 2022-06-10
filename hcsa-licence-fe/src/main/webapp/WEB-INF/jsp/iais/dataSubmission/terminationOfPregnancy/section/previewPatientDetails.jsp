@@ -13,15 +13,15 @@
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
                 <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                 <iais:row>
-                    <iais:field width="5" value="Name of Patient"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.patientName}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
                     <iais:field width="5" value="ID No." />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.idType}"/>/<c:out value="${patientInformationDto.idNumber}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Name of Patient"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${patientInformationDto.patientName}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

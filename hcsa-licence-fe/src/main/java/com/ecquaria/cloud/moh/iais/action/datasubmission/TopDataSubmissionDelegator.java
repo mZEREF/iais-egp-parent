@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -54,7 +55,7 @@ public class TopDataSubmissionDelegator {
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
-    private static String COUNSELLING = null;
+    //private static String COUNSELLING = null;
 
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
@@ -101,6 +102,7 @@ public class TopDataSubmissionDelegator {
         log.info(" ----- PrepareSwitch ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if(topSuperDataSubmissionDto==null){
+
             topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
@@ -289,13 +291,27 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
-        if(StringUtil.isEmpty(COUNSELLING)){
-          COUNSELLING = dsLicenceService.getCounselling();
-        }
-        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
+//        if(StringUtil.isEmpty(COUNSELLING)){
+//          COUNSELLING = dsLicenceService.getCounselling();
+//        }
+//        ParamUtil.setRequestAttr(bpc.request,"counselling",COUNSELLING);
     }
 
-
+    private void retrieveHciCode(HttpServletRequest request ,TopSuperDataSubmissionDto topSuperDataSubmissionDto) {
+        Map<String, PremisesDto> premisesMap =
+                (Map<String, PremisesDto>) request.getSession().getAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
+        if (premisesMap == null || premisesMap.isEmpty()) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            premisesMap = topDataSubmissionService.getTopCenterPremises(licenseeId);
+        }
+        if (premisesMap.size() !=0) {
+            premisesMap.values().stream().forEach(v -> topSuperDataSubmissionDto.setPremisesDto(v));
+        }
+    }
     /**
      * Step: DoStep
      *
@@ -548,6 +564,9 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
             patientInformationDto.setOrgId(topSuperDataSubmissionDto.getOrgId());
         }
+        if (StringUtil.isNotEmpty(patientInformationDto.getPatientName())) {
+            patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
@@ -622,9 +641,23 @@ public class TopDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
-            if(result !=null){
-                errMap.putAll(result.retrieveAll());
+            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
+                if(preTerminationDto.getCounsellingGiven()==true){
+                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
+                    }
+                }else if(preTerminationDto.getCounsellingGiven()==false){
+                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
+                    }
+                }
+            } else {
+                ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
+                if(result !=null){
+                    errMap.putAll(result.retrieveAll());
+                }
             }
         }
         if(!errMap.isEmpty()){
@@ -645,6 +678,18 @@ public class TopDataSubmissionDelegator {
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto() == null ? new TerminationDto() : terminationOfPregnancyDto.getTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, terminationDto);
+        topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
+        String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        try {
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
+                terminationDto.setLateSubmit(true);
+            }else {
+                terminationDto.setLateSubmit(false);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         if("true".equals(terminationDto.getTopDoctorInformations())){
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
@@ -945,7 +990,7 @@ public class TopDataSubmissionDelegator {
     }
     private TopSuperDataSubmissionDto initTopSuperDataSubmissionDto(HttpServletRequest request) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto=new TopSuperDataSubmissionDto();
-
+        retrieveHciCode(request, topSuperDataSubmissionDto);
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
 

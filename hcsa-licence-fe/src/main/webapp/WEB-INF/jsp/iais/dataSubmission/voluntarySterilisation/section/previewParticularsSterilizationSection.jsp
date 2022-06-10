@@ -26,7 +26,7 @@
                 </iais:row>--%>
 
                     <iais:row>
-                        <iais:field width="5" value="Doctor's Name"/>
+                        <iais:field width="5" value="Name of Doctor who performed the sterilization"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                             <c:if test="${sexualSterilizationDto.doctorInformations eq 'true'}">
                                 <c:out value="${doctorInformationDto.name}"/>
@@ -69,7 +69,12 @@
                             </c:if>
                         </iais:value>
                     </iais:row>
-
+                <iais:row>
+                    <iais:field width="5" value="Other-Qualification" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${sexualSterilizationDto.otherQualification}"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Hospital/Clinic where the sterilization was performed" />
                     <iais:value width="6" display="true" cssClass="col-md-6">

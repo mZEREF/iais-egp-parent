@@ -24,6 +24,7 @@
 %>
 
 <%--@elvariable id="isRegisteredFacility" type="java.lang.Boolean"--%>
+<%--@elvariable id="isPolioVirusRegisteredFacility" type="java.lang.Boolean"--%>
 <ul class="progress-tracker">
   <li class="tracker-item <%=order >= 1 ? "active" : "disabled"%>" data-step-key="facInfo_facProfile">Facility Profile</li>
   <c:if test="${not isRegisteredFacility}">
@@ -32,6 +33,8 @@
   <li class="tracker-item <%=order >= 3 ? "active" : "disabled"%>" data-step-key="facInfo_facAdminOfficer">Facility Administrator/Officer</li>
   <c:if test="${not isRegisteredFacility}">
     <li class="tracker-item <%=order >= 4 ? "active" : "disabled"%>" data-step-key="facInfo_facCommittee">Biosafety Committee</li>
+  </c:if>
+  <c:if test="${not isPolioVirusRegisteredFacility}">
     <li class="tracker-item <%=order >= 5 ? "active" : "disabled"%>" data-step-key="facInfo_facAuth">Authorised Personnel</li>
   </c:if>
 </ul>

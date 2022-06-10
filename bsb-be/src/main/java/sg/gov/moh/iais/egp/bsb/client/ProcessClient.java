@@ -45,7 +45,7 @@ public interface ProcessClient {
     void saveAoScreeningRouteToHm(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
 
     @PostMapping(value = "/bsb-moh-officer/ao-screening/moh-process-dto/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void saveAoScreeningApprove(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
+    String saveAoScreeningApprove(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
 
     @PostMapping(value = "/bsb-moh-officer/hm-screening/moh-process-dto/approve-or-reject", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveHmScreeningApproveOrReject(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
@@ -86,10 +85,8 @@ public class MohProcessService {
         // show routingHistory list
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, mohProcessDto.getProcessHistoryDtoList());
 
-        // view application need appId and moduleType
-        String moduleType = AppViewService.judgeProcessAppModuleType(mohProcessDto.getSubmissionDetailsInfo().getApplicationSubType(), mohProcessDto.getSubmissionDetailsInfo().getApplicationType());
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, appId);
 
         //AFC Certification Report and Inspection Report
         if (moduleName.equals(MODULE_NAME_DO_PROCESSING) || moduleName.equals(MODULE_NAME_AO_PROCESSING) || moduleName.equals(MODULE_NAME_HM_PROCESSING)) {

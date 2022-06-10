@@ -14,7 +14,7 @@
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
                 <c:set var="postTerminationDto" value="${terminationOfPregnancyDto.postTerminationDto}" />
                 <iais:row>
-                    <iais:field width="6" value="Whether given Post-counselling"/>
+                    <iais:field width="6" value="Whether Given Counselling"/>
                     <iais:value width="6" display="true">
                         <c:if test="${postTerminationDto.givenPostCounselling == true }">
                             Yes
@@ -26,7 +26,7 @@
                 </iais:row>
                 <div <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Post-Counselling Result"/>
+                        <iais:field width="5" value="Result of Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${postTerminationDto.counsellingRslt}"/>
                         </iais:value>
@@ -42,7 +42,7 @@
                 </div>
                 <div <c:if test="${postTerminationDto.givenPostCounselling !=false}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Reason If post-counselling was not given"/>
+                        <iais:field width="5" value="Reason for No Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${postTerminationDto.ifCounsellingNotGiven}"/>
                         </iais:value>
@@ -51,36 +51,42 @@
 
                 <div <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Post-Termination Counsellor ID Type"/>
+                        <iais:field width="5" value="Counsellor ID Type"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${postTerminationDto.counsellorIdType}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Post-Termination Counsellor ID No."/>
+                        <iais:field width="5" value="Counsellor ID No."/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellorIdNo}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Post Termination Counsellor Name"/>
+                        <iais:field width="5" value="Name of Counsellor"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellorName}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Post-Counselling Date"/>
+                        <iais:field width="5" value="Date of Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellingDate}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Place of Post-Counselling"/>
+                        <iais:field width="5" value="Place Where Counselling Was Done"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <iais:code code="${postTerminationDto.counsellingPlace}"/>
+                            <iais:optionText value="${postTerminationDto.counsellingPlace}" selectionOptions="TopPlace"/>
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${postTerminationDto.counsellingReignNo}"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

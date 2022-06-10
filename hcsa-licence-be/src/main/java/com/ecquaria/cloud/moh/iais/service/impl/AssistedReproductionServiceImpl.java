@@ -23,16 +23,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycl
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * AssistedReproductionServiceImpl
@@ -43,6 +54,24 @@ import java.util.Map;
 @Slf4j
 @Service
 public class AssistedReproductionServiceImpl implements AssistedReproductionService{
+
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
     private AssistedReproductionClient assistedReproductionClient;
@@ -179,5 +208,59 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public List<IncompleteCycleDto> getOverDayNotCompletedCycleDto(int day) {
         return assistedReproductionClient.getOverDayNotCompletedCycleDto(day).getEntity();
+    }
+
+    @Override
+    public ProfessionalResponseDto retrievePrsInfo(String profRegNo) {
+        log.info(StringUtil.changeForLog("Prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
+        ProfessionalResponseDto professionalResponseDto = null;
+        if ("Y".equals(prsFlag) && !StringUtil.isEmpty(profRegNo)) {
+            List<String> prgNos = IaisCommonUtils.genNewArrayList();
+            prgNos.add(profRegNo);
+            ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+            professionalParameterDto.setRegNo(prgNos);
+            professionalParameterDto.setClientId("22222");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String format = simpleDateFormat.format(new Date());
+            professionalParameterDto.setTimestamp(format);
+            professionalParameterDto.setSignature("2222");
+            try {
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                FeignResponseEntity<List> entity = beEicGatewayClient.getProfessionalDetail(professionalParameterDto,signature.date(),signature.authorization(),signature2.date(),signature2.authorization());
+                if (401 == entity.getStatusCode()) {
+                    professionalResponseDto = new ProfessionalResponseDto();
+                    professionalResponseDto.setStatusCode("401");
+                } else {
+                    List<ProfessionalResponseDto> professionalResponseDtos = entity.getEntity();
+                    if (professionalResponseDtos != null && professionalResponseDtos.size() > 0) {
+                        professionalResponseDto = professionalResponseDtos.get(0);
+                        List<String> qualification = professionalResponseDto.getQualification();
+                        List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                        if (qualification != null && qualification.size() > 1) {
+                            professionalResponseDto.setQualification(Collections.singletonList(qualification.stream()
+                                    .collect(Collectors.joining(","))));
+                        }
+                        if (subspecialty != null && subspecialty.size() > 1) {
+                            professionalResponseDto.setSubspecialty(Collections.singletonList(subspecialty.stream()
+                                    .collect(Collectors.joining(","))));
+                        }
+                    }
+                    if (professionalResponseDto == null) {
+                        professionalResponseDto = new ProfessionalResponseDto();
+                        professionalResponseDto.setStatusCode("-1");
+                    } else if (StringUtil.isEmpty(professionalResponseDto.getName())) {
+                        professionalResponseDto.setStatusCode("-2");
+                    }
+                }
+            } catch (Exception e) {
+                professionalResponseDto = new ProfessionalResponseDto();
+                professionalResponseDto.setHasException(true);
+                log.info(StringUtil.changeForLog("retrieve prs info start ..."));
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
+            }
+        }
+        log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
+        return professionalResponseDto;
     }
 }

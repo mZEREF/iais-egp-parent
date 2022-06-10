@@ -88,7 +88,7 @@ public class RfiFacilityRegistrationDelegator {
             ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
             if (resultDto.ok()) {
                 failRetrieveRfiData = false;
-                facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
+                facilityRegistrationService.retrieveFacRegRoot(request, resultDto.getEntity());
                 facilityRegistrationService.retrieveOrgAddressInfo(request);
             }
         }

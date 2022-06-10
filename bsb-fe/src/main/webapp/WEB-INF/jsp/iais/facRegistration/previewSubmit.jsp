@@ -54,8 +54,9 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" compProfile="${organizationAddress}"
-                                                 facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
+                                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
+                                                 compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
+                                                 facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                                  batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
                                                  classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
                                                  profileEditJudge="true" batListEditJudge="true" docEditJudge="true" otherAppInfoEditJudge="true" afcEditJudge="true">
@@ -115,7 +116,10 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
+                                                <%--@elvariable id="isNewFacilityRegistration" type="java.lang.Boolean"--%>
+                                                <c:if test="${isNewFacilityRegistration}">
                                                 <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
+                                                </c:if>
                                                 <a class="btn btn-primary next" id="submit" >Next</a>
                                             </div>
                                         </div>

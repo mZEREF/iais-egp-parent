@@ -164,7 +164,7 @@ public interface InspectionClient {
     void saveInspectionReportDto(@RequestParam("appId") String appId, @RequestParam("roleId") String roleId, @RequestBody ReportDto reportDto);
 
     @PostMapping(value = "/inspection/actual/report/do/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void finalizeInspectionReport(@RequestParam("appId") String appId,
+    String finalizeInspectionReport(@RequestParam("appId") String appId,
                                   @RequestParam("taskId") String taskId,
                                   @RequestBody InsProcessDto processDto);
 

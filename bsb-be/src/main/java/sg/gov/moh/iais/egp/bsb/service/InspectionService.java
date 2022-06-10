@@ -12,11 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdCheckListShowDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAdhocNcCheckItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.BsbAnswerForDifDto;
@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_FOLLOW_UP_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
@@ -77,9 +76,8 @@ public class InspectionService {
         ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, dto.getFacilityDetailsInfo());
         // show routingHistory list
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, dto.getProcessHistoryDtoList());
-        // view application need appId and moduleType
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getInsAppId());
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, dto.getInsAppId());
         // provide for download support doc
         Map<String, String> repoIdDocNameMap = DocDisplayDtoUtil.getRepoIdDocNameMap(dto.getSupportDocDisplayDtoList());
         repoIdDocNameMap.putAll(DocDisplayDtoUtil.getRepoIdDocNameMap(dto.getFollowUpDocDisplayDtoList()));
@@ -96,12 +94,12 @@ public class InspectionService {
 
         InspectionFillCheckListDto fDto;
         if("service".equals(conifgType)&&!dto.isCommon()) {
-            if (!((!needVehicleSeparation && StringUtil.isEmpty(dto.getInspectionEntity())) || (needVehicleSeparation && HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE.equalsIgnoreCase(dto.getInspectionEntity())))) {
+            if (!((!needVehicleSeparation && StringUtils.isEmpty(dto.getInspectionEntity())) || (needVehicleSeparation && HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE.equalsIgnoreCase(dto.getInspectionEntity())))) {
                 return null;
             }
             fDto = transferToInspectionCheckListDto(dto, appId);
 
-            if (!StringUtil.isEmpty(dto.getSvcName())) {
+            if (!StringUtils.isEmpty(dto.getSvcName())) {
                 fDto.setSvcName(dto.getSvcName());
             }
             fDto.setConfigId(dto.getId());
@@ -159,7 +157,7 @@ public class InspectionService {
                     inquest.setSectionId(temp.getId());
                     inquest.setConfigId(temp.getConfigId());
                     inquest.setRegClauseNo(item.getRegulationClauseNo());
-                    inquest.setRegClause(item.getRegulationClause());;
+                    inquest.setRegClause(item.getRegulationClause());
                     if(temp.getSection()!=null){
                         inquest.setSectionNameSub(temp.getSection().replace(" ",""));
                     }
@@ -169,10 +167,10 @@ public class InspectionService {
             }
         }
         dto.setCheckList(checkList);
-        if(checkList!=null && !checkList.isEmpty()){
+        if(!checkList.isEmpty()){
             List<InspectionCheckQuestionDto> cqDtoList = IaisCommonUtils.genNewArrayList();
             for(InspectionCheckQuestionDto temp:checkList){
-                InspectionCheckQuestionDto inspectionCheckQuestionDto = (InspectionCheckQuestionDto) CopyUtil.copyMutableObject(temp);
+                InspectionCheckQuestionDto inspectionCheckQuestionDto = CopyUtil.copyMutableObject(temp);
                 inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
                 cqDtoList.add(inspectionCheckQuestionDto);
             }
@@ -183,7 +181,7 @@ public class InspectionService {
         return dto;
     }
 
-    public InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
+    public void fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         List<SectionDto> sectionDtoList = IaisCommonUtils.genNewArrayList();
         for(InspectionCheckQuestionDto temp:iqdDtolist){
@@ -195,7 +193,6 @@ public class InspectionService {
         }
         infillCheckListDto.setSectionDtoList(sectionDtoList);
         itemDto(infillCheckListDto);
-        return infillCheckListDto;
     }
     public boolean isHaveSameSection(String sectionName,List<SectionDto> sectionDtoList){
         if(sectionDtoList!=null && !sectionDtoList.isEmpty()){
@@ -207,7 +204,7 @@ public class InspectionService {
         }
         return true;
     }
-    public InspectionFillCheckListDto itemDto(InspectionFillCheckListDto infillCheckListDto){
+    public void itemDto(InspectionFillCheckListDto infillCheckListDto){
         List<SectionDto> sectionDtoList = infillCheckListDto.getSectionDtoList();
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         for(SectionDto temp:sectionDtoList){
@@ -222,9 +219,8 @@ public class InspectionService {
             temp.setItemDtoList(itemDtoList);
         }
         getItemCheckListDto(infillCheckListDto);
-        return infillCheckListDto;
     }
-    public InspectionFillCheckListDto getItemCheckListDto(InspectionFillCheckListDto infillCheckListDto){
+    public void getItemCheckListDto(InspectionFillCheckListDto infillCheckListDto){
         List<SectionDto> sectionDtoList = infillCheckListDto.getSectionDtoList();
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         for(InspectionCheckQuestionDto temp:iqdDtolist){
@@ -239,7 +235,6 @@ public class InspectionService {
                 }
             }
         }
-        return infillCheckListDto;
     }
 
     public void getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, List<OrgUserDto> orgUserDtos) {
@@ -277,7 +272,7 @@ public class InspectionService {
 
 
 
-    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, BsbAnswerForDifDto answerForDifDto){
+    public void getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, BsbAnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
@@ -286,7 +281,6 @@ public class InspectionService {
         inspectionCheckQuestionDto.setFollowupItem(answerForDifDto.getFollowupItem());
         inspectionCheckQuestionDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
         inspectionCheckQuestionDto.setDueDate(answerForDifDto.getDueDate());
-        return  inspectionCheckQuestionDto;
     }
     public void getRateOfCheckList(InspectionFDtosDto serListDto, BsbAdCheckListShowDto adchklDto) {
         if(serListDto == null) return;
@@ -307,7 +301,7 @@ public class InspectionService {
         int doNum = 0;
         for(BsbAdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
             totalNum++;
-            if(!StringUtil.isEmpty(aditem.getAdAnswer())){
+            if(!StringUtils.isEmpty(aditem.getAdAnswer())){
                 if( "NO".equalsIgnoreCase(aditem.getAdAnswer())){
                     if(StringUtil.isNotEmpty(aditem.getRemark()) && StringUtil.isNotEmpty(aditem.getNcs())){
                         ncNum++;
@@ -331,7 +325,7 @@ public class InspectionService {
             if(!IaisCommonUtils.isEmpty(temp.getCheckList())){
                 for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
                     totalNum++;
-                    if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                    if(!StringUtils.isEmpty(cqDto.getChkanswer())){
                         if( "NO".equalsIgnoreCase(cqDto.getChkanswer())){
                             if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
                                 ncNum++;
@@ -351,9 +345,9 @@ public class InspectionService {
         if(inspectionFillCheckListDto != null){
             inspectionFillCheckListDto.setSvcNameShow( StringUtil.getFilterSpecialCharacter( inspectionFillCheckListDto.getSubName()));
             List<SectionDto> sectionDtos = inspectionFillCheckListDto.getSectionDtoList();
-            if(sectionDtos != null && sectionDtos.size() > 0){
+            if(!CollectionUtils.isEmpty(sectionDtos)){
                 for(SectionDto sectionDto : sectionDtos){
-                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0) {
+                    if(sectionDto != null && !CollectionUtils.isEmpty(sectionDto.getItemDtoList())) {
                         List<ItemDto> itemDtoList = sectionDto.getItemDtoList();
                         for (ItemDto itemDto : itemDtoList) {
                             if (itemDto.getIncqDto() != null)
@@ -377,7 +371,6 @@ public class InspectionService {
      *
      * @param adhocChecklistConfigDto    current AdhocChecklistConfig
      * @param adhocChecklistConfigDtoOld old AdhocChecklistConfig
-     * @return
      */
     private boolean isEditAdhocCheckListConfig(AdhocChecklistConfigDto adhocChecklistConfigDto, AdhocChecklistConfigDto adhocChecklistConfigDtoOld) {
         if (adhocChecklistConfigDto == null && adhocChecklistConfigDtoOld == null) {

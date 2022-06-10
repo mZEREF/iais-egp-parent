@@ -18,7 +18,7 @@ public class OrganizationInfoService {
         Assert.hasLength(uen, "uen cannot be null");
         OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
         try {
-            LicenseeDto licenseeDto = organizationInfoClient.getLicenseeByUenNo(uen);
+            LicenseeDto licenseeDto = organizationInfoClient.getLicenseeDtoByUen(uen).getEntity().get(0);
             if(licenseeDto ==null){
                 licenseeDto = new LicenseeDto();
             }

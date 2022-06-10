@@ -12,15 +12,15 @@
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
                 <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                 <iais:row>
-                    <iais:field width="5" value="Name of Patient"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.patientName}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
                     <iais:field width="5" value="ID No." />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.idType}"/>/<c:out value="${patientInformationDto.idNumber}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Name of Patient"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${patientInformationDto.patientName}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -35,19 +35,22 @@
                         <iais:code code="${patientInformationDto.nationality}"/>
                     </iais:value>
                 </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Date Commenced Residence In Singapore"/>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${patientInformationDto.commResidenceInSgDate}"/>
-                        </iais:value>
-                    </iais:row>
+                <div <c:if test="${patientInformationDto.nationality =='NAT0001' || patientInformationDto.nationality ==null}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Residence Status"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${patientInformationDto.residenceStatus}"/>
                         </iais:value>
                     </iais:row>
-
+                </div>
+                <div id="commResidenceInSgDate" <c:if test="${patientInformationDto.residenceStatus !='TOPRS005'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Date Commenced Residence In Singapore"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${patientInformationDto.commResidenceInSgDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -75,13 +78,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Living Children"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.livingChildrenNo}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Activity Status" />
+                    <iais:field width="5" value="Employment Status" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.activityStatus}"/>
                     </iais:value>
@@ -94,7 +91,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${patientInformationDto.occupation!='TOPOCC014' || patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
+                <div <c:if test="${patientInformationDto.occupation!='TOPOCC011' || patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Occupation"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
@@ -102,16 +99,22 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                    <iais:row>
-                        <div <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
-                            <iais:field width="5" value="Gender of Living Children (By Order)"/>
-                        </div>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders"  begin="0" varStatus="index">
-                                <iais:code code="${livingChildrenGenders}"/>&nbsp;&nbsp;
-                            </c:forEach>
-                        </iais:value>
-                    </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="No. of Living Children"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${patientInformationDto.livingChildrenNo}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <div <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
+                        <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                    </div>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders"  begin="0" varStatus="index">
+                            <iais:code code="${livingChildrenGenders}"/>&nbsp;&nbsp;
+                        </c:forEach>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

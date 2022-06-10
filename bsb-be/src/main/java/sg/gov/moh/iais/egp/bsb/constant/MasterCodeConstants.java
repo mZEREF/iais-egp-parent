@@ -11,6 +11,29 @@ public class MasterCodeConstants {
 
     public static final String YES = "Y";
     public static final String NO = "N";
+    public static final String YES_UPPER_CASE = "YES";
+    public static final String NO_UPPER_CASE = "NO";
+    public static final String YES_CAPITALIZED = "Yes";
+    public static final String NO_CAPITALIZED = "No";
+
+    public static String readUpperCaseYesNo(String raw) {
+        String value = null;
+        if (YES_UPPER_CASE.equals(raw)) {
+            value = YES;
+        } else if (NO_UPPER_CASE.equals(raw)) {
+            value = NO;
+        }
+        return value;
+    }
+    public static String displayYesNo(String value) {
+        String display = null;
+        if (YES.equals(value)) {
+            display = YES_CAPITALIZED;
+        } else if (NO.equals(value)) {
+            display = NO_CAPITALIZED;
+        }
+        return display;
+    }
 
     public static final String FIRST_SCHEDULE_PART_I = "SCHTYPE001";
     public static final String FIRST_SCHEDULE_PART_II = "SCHTYPE002";
@@ -328,11 +351,18 @@ public class MasterCodeConstants {
     public static final String VALUE_DEFICIENCY_MINOR = "BSBIRD002";
     public static final String VALUE_DEFICIENCY_NIL = "BSBIRD003";
     // Inspection report Outcome
-    public static final String VALUE_OUTCOME_PASS = "BSBIRFO001";
+    public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
     public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
     public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
 
     //Inspection date status
     public static final String PENDING_DO_CONFIRM = "INSDTST001";
     public static final String CONFIRMED          = "INSDTST002";
+
+    public static final String ROLE_IN_FACILITY_MAIN_ADMINISTRATOR = "RLINFAC001";
+    public static final String ROLE_IN_FACILITY_ALTERNATE_ADMINISTRATOR = "RLINFAC002";
+    public static final String ROLE_IN_FACILITY_OFFICER = "RLINFAC003";
+    public static final String ROLE_IN_FACILITY_OPERATOR = "RLINFAC004";
+    public static final String ROLE_IN_FACILITY_COMMITTEE_MEMBER = "RLINFAC005";
+    public static final String ROLE_IN_FACILITY_AUTHORISER = "RLINFAC006";
 }

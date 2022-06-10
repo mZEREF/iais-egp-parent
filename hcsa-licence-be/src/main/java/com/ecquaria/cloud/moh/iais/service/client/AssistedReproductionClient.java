@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryAjaxResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
@@ -144,4 +145,8 @@ public interface AssistedReproductionClient {
 
     @GetMapping(value = "/ar-common/over-day-not-completed-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<IncompleteCycleDto>> getOverDayNotCompletedCycleDto(@RequestParam(name = "day") Integer day);
+
+    @GetMapping(value = "/dp-common/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(@RequestParam("doctorReignNo") String doctorReignNo,
+                                                                             @RequestParam("doctorSource") String doctorSource);
 }

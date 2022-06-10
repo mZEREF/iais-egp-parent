@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
+package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FacilityCommitteeDto {
+public class FacilityCommitteeDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class BioSafetyCommitteePersonnel implements Serializable {
@@ -39,4 +39,10 @@ public class FacilityCommitteeDto {
     private String toBeDeletedRepoId;
     @JsonIgnore
     private boolean dataErrorExists;
+
+    /** Get a list of committee data for display.
+     * All fields are not master codes */
+    public List<FacilityCommitteeFileDto> getDataListForDisplay() {
+        return FacilityCommitteeFileDto.toDisplayDtoList(this.facCommitteePersonnelList);
+    }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = DpFeClientFallback.class)
 public interface DoctorInfoClient {
 
-    @GetMapping(value = "/data-submission/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/dp-common/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(@RequestParam("doctorReignNo") String doctorReignNo,
                                                                              @RequestParam("doctorSource") String doctorSource);
 }

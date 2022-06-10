@@ -44,6 +44,7 @@ public class FacRegisterConstants {
     public static final String KEY_IS_PV_RF                = "isPolioVirusRegisteredFacility";
 
     public static final String KEY_EDIT_APP_ID             = "editId";
+    public static final String KEY_IS_NEW_REG_FAC          = "isNewFacilityRegistration";
     public static final String KEY_ACTION_TYPE             = "action_type";
     public static final String KEY_INDEED_ACTION_TYPE      = "indeed_action_type";
     public static final String KEY_ACTION_VALUE            = "action_value";

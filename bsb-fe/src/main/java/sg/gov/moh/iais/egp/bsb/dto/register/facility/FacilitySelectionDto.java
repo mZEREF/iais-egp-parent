@@ -130,6 +130,10 @@ public class FacilitySelectionDto extends ValidatableNodeValue {
                     break;
             }
         }
+        if (facActivityTypes != null) {
+            // remove duplicate values if exists
+            facActivityTypes = Arrays.stream(facActivityTypes).distinct().toArray(String[]::new);
+        }
         this.replaceActivityTypes(facActivityTypes);
     }
 }

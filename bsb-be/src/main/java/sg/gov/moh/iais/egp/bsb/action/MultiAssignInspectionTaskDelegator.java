@@ -13,10 +13,10 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbTaskClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.multiassign.MultiAssignInsDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -29,8 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ASSIGN_RESULT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
 @Slf4j
 @Delegator("multiAssignInspectionTaskDelegator")
@@ -87,9 +88,9 @@ public class MultiAssignInspectionTaskDelegator {
             }
             ParamUtil.setSessionAttr(request, MULTI_ASSIGN_INSPECTION_DTO, dto);
         }
-        // view application need appId and moduleType
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
-        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
+
+        // view application
+        AppViewService.facilityRegistrationViewApp(request, dto.getApplicationId());
     }
 
     public void valFormData(BaseProcessClass bpc) {
@@ -107,7 +108,7 @@ public class MultiAssignInspectionTaskDelegator {
             dto.setInspectorsDisplayName(displayList);
         }
         dto.setModule("multiAssignIns");
-        String actionType = "";
+        String actionType;
         ValidationResultDto validationResultDto = bsbTaskClient.validateMultiAssignInsDto(dto);
         if (!validationResultDto.isPass()){
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());

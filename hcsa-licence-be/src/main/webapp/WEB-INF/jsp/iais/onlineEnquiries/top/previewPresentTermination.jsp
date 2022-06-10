@@ -12,6 +12,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
+                <c:set var="doctorInformationDto" value="${topSuperDataSubmissionDto.doctorInformationDto}" />
                 <c:set var="terminationDto" value="${terminationOfPregnancyDto.terminationDto}"/>
                 <iais:row>
                     <iais:field width="5" value="Type of Termination of Pregnancy"/>
@@ -29,7 +30,7 @@
                 </div>
                 <div <c:if test="${terminationDto.spType!='TOPTSP003' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003')}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Type of Surgical Procedure - others"/>
+                        <iais:field width="5" value="Other Type of Surgical Procedure"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${terminationDto.otherSpType}"/>
                         </iais:value>
@@ -61,7 +62,7 @@
                 </div>
                 <div <c:if test="${terminationDto.drugType!='TOPTOD005' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002')}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Type of Drug (Others)"/>
+                        <iais:field width="5" value="Other Type of Drug"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${terminationDto.otherDrugType}"/>
                         </iais:value>
@@ -95,7 +96,7 @@
                 </iais:row>
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Is Termination of Pregnancy by Surgery performed inown premises?"/>
+                        <iais:field width="6" value="Is Surgical Termination of Pregnancy Performed in Own Premises?"/>
                         <iais:value width="6" display="true">
                             <c:if test="${terminationDto.performedOwn == true }">
                                 Yes
@@ -108,15 +109,16 @@
                 </div>
                 <div <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Place of Termination of Pregnancy"/>
+                        <iais:field width="5" value="Place of Surgical Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.topPlace}"/>
+                            <c:if test="${terminationDto.performedOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.performedOwn == false}"><iais:optionText value="${terminationDto.topPlace}" selectionOptions="TopPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Is Drug prescribed for Termination of Pregnancy in own premises?"/>
+                        <iais:field width="6" value="Is Drug for Termination of Pregnancy Prescribed in Own Premises?"/>
                         <iais:value width="6" display="true">
                             <c:if test="${terminationDto.pregnancyOwn == true }">
                                 Yes
@@ -130,15 +132,16 @@
 
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
+                        <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.prescribeTopPlace}"/>
+                            <c:if test="${terminationDto.pregnancyOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.pregnancyOwn == false}"><iais:optionText value="${terminationDto.prescribeTopPlace}" selectionOptions="TopPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Is Termination of Pregnancy Drug used in own premises?"/>
+                        <iais:field width="6" value="Is Drug for Termination of Pregnancy Taken in Own Premises?"/>
                         <iais:value width="6" display="true">
                             <c:if test="${terminationDto.takenOwn == true }">
                                 Yes
@@ -151,9 +154,10 @@
                 </div>
                 <div <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
+                        <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
+                            <c:if test="${terminationDto.takenOwn == true}">${'unknown'}</c:if>
+                            <c:if test="${terminationDto.takenOwn == false}"><iais:optionText value="${terminationDto.topDrugPlace}" selectionOptions="TopDrugPlace"/></c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -167,15 +171,67 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Doctor Professional Regn No."/>
+                    <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorRegnNo}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Name of Doctor who performed the Termination of Pregnancy"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${terminationDto.doctorName}"/>
+                <div <c:if test="${terminationDto.topDoctorInformations eq 'true'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Name of Doctor" />
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${terminationDto.doctorName}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${terminationDto.specialty}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${terminationDto.subSpecialty}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${terminationDto.qualification}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Doctor's Name" />
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${doctorInformationDto.name}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${doctorInformationDto.speciality}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Sub-Specialty"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${doctorInformationDto.subSpeciality}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row >
+                        <iais:field width="5" value="Qualification"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
+                            <c:out value="${doctorInformationDto.qualification}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <iais:row >
+                    <iais:field width="5" value="Other Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" >
+                        <c:out value="${terminationDto.otherQualification}"/>
                     </iais:value>
                 </iais:row>
             </div>

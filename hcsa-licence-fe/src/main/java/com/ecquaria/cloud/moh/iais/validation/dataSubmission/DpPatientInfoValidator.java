@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -51,7 +52,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
         }
 
         if(!StringUtil.isEmpty(patientDto.getIdType())){
-            if (patientDto.getIdType().equals(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO)){
+            if (patientDto.getIdType().equals(DataSubmissionConsts.DTV_ID_TYPE_PASSPORT)){
                 if(StringUtil.isEmpty(patientDto.getNationality())){
                     errorMap.put("nationality", "GENERAL_ERR0006");
                 }
@@ -62,7 +63,11 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                 errorMap.put("ethnicGroup", "GENERAL_ERR0006");
             }
         }
-
+        if(StringUtil.isNotEmpty(patientDto.getIdType())&&StringUtil.isNotEmpty(patientDto.getIdNumber())){
+            if(!SgNoValidator.validateNewIdNoForDataSubmission(patientDto.getIdType(), patientDto.getIdNumber())){
+                errorMap.put("idNumber", "RFC_ERR0012");
+            }
+        }
 
         if(StringUtil.isNotEmpty(patientDto.getPostalCode())){
 

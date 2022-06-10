@@ -89,6 +89,10 @@ function resetNiceSelect(parentEl) {
     });
 }
 
+function resetInput(parentEl){
+    parentEl.find("input").attr("value","");
+}
+
 function resetRadio(parentEl) {
     parentEl.find(":radio:checked").prop("checked", false);
 }

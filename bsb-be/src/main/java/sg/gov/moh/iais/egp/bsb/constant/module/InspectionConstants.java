@@ -9,6 +9,8 @@ public class InspectionConstants {
     public static final String KEY_TASK_ID = "taskId";
     public static final String KEY_ACTION_TYPE_SKIP = "skip";
 
+    public static final String KEY_APP_STATUS = "appStatus";
+
     public static final String KEY_INS_CHECKLIST_DTO = "inspectionChecklistDto";
     public static final String KEY_SELF_ASSESSMENT_CHK_LST = "bsbSelfAssessmentCheckList";
     public static final String KEY_SELF_ASSESSMENT_CONFIG = "bsbSelfAssessmentConfig";
@@ -85,10 +87,10 @@ public class InspectionConstants {
     public static final String FILE_APPEND_ID               = "uploadFile";
     public static final String SEESION_FILES_MAP_AJAX       = IaisEGPConstant.SEESION_FILES_MAP_AJAX + FILE_APPEND_ID;
     public static final int START_ROW                       = 1;
-    public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
+    public static final String FILE_ITEM_ERROR_MSGS         = "fileItemErrorMsgs";
 
-    public static String SHEET_NAME_COMMON                  = "General Regulation";
-    public static String SHEET_NAME_BSB                     = "BSB Regulation";
+    public static final String SHEET_NAME_COMMON            = "General Regulation";
+    public static final String SHEET_NAME_BSB               = "BSB Regulation";
 
 
 

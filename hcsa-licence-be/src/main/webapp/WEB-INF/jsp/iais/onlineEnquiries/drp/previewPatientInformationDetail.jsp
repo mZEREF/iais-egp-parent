@@ -90,7 +90,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
-                    <iais:field width="6" value="Ethnic Group (Others)" />
+                    <iais:field width="6" value="Other Ethnic Group" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.ethnicGroupOther}"/>
                     </iais:value>

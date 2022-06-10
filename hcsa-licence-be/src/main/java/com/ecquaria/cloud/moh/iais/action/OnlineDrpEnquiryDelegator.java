@@ -9,10 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -191,7 +195,7 @@ public class OnlineDrpEnquiryDelegator {
         String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
 
 
-        DpSuperDataSubmissionDto drpInfo = assistedReproductionClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+        DpSuperDataSubmissionDto dpSuper = assistedReproductionClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
         List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_DRP,"null","null").getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
@@ -208,7 +212,24 @@ public class OnlineDrpEnquiryDelegator {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
-
-        ParamUtil.setRequestAttr(request,"dpSuperDataSubmissionDto",drpInfo);
+        if("DP_TP002".equals(dpSuper.getSubmissionType())){
+            ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
+            if(professionalResponseDto==null){
+                professionalResponseDto=new ProfessionalResponseDto();
+            }
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                DoctorInformationDto doctorInformationDto=assistedReproductionClient.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_DRP).getEntity();
+                dpSuper.setDoctorInformationDto(doctorInformationDto);
+                drugSubmissionDto.setDoctorInformations("true");
+            }else {
+                dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
+                dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+            }
+        }
+        ParamUtil.setRequestAttr(request,"dpSuperDataSubmissionDto",dpSuper);
     }
 }

@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryRe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 
 import java.util.List;
 
@@ -78,4 +79,7 @@ public interface AssistedReproductionService{
 
 
     List<IncompleteCycleDto> getOverDayNotCompletedCycleDto(int day);
+
+    ProfessionalResponseDto retrievePrsInfo(String profRegNo);
+
 }

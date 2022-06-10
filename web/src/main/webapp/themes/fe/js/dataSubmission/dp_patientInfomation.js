@@ -1,7 +1,7 @@
 $(document).ready(function () {
     toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
 
-    toggleSelect("#idType",'AR_IT_004', 'nationalityStar');
+    toggleSelect("#idType",'DTV_IT003', 'nationalityStar');
     toggleSelect("#addrType",'ADDTY001', 'blkNoStar');
     toggleSelect("#addrType",'ADDTY001', 'floorNoStar');
 });

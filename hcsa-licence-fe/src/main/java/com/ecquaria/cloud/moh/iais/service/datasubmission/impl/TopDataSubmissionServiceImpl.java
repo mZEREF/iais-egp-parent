@@ -7,18 +7,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,9 +25,9 @@ import java.util.Map;
 @Slf4j
 @Service
 public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
-    @Autowired
+    /*@Autowired
     private LicenceClient licenceClient;
-
+*/
     @Autowired
     private SystemAdminClient systemAdminClient;
 
@@ -43,9 +40,12 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     @Autowired
     private LicEicClient licEicClient;
 
+    @Autowired
+    private DsLicenceService dsLicenceService;
+
     @Override
     public Map<String, PremisesDto> getTopCenterPremises(String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
+        /*if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }
         List<String> svcNames = new ArrayList<>();
@@ -59,7 +59,8 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         for (PremisesDto premisesDto : premisesDtos) {
             premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto), premisesDto);
         }
-        return premisesDtoMap;
+        return premisesDtoMap;*/
+        return dsLicenceService.getTopCenterPremises(licenseeId);
     }
 
     @Override

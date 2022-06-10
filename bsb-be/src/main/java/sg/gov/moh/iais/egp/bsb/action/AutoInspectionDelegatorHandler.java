@@ -8,20 +8,22 @@ import org.springframework.stereotype.Component;
 import sg.gov.moh.iais.egp.bsb.client.AutoTaskClient;
 
 
-@JobHandler(value="autoNCRectificationDelegatorHandler")
+@JobHandler(value="autoInspectionDelegatorHandler")
 @Component
 @Slf4j
-public class AutoNCRectificationDelegatorHandler extends IJobHandler {
+public class AutoInspectionDelegatorHandler extends IJobHandler {
     private final AutoTaskClient autoTaskClient;
 
-    public AutoNCRectificationDelegatorHandler(AutoTaskClient autoTaskClient) {
+    public AutoInspectionDelegatorHandler(AutoTaskClient autoTaskClient) {
         this.autoTaskClient = autoTaskClient;
     }
 
     @Override
-    public ReturnT<String> execute(String s) throws Exception {
+    public ReturnT<String> execute(String s){
         try {
             autoTaskClient.doInspectionRemindUserDoNCTask();
+            autoTaskClient.doInspectionRemindReadinessNotMarkAsReady();
+            autoTaskClient.doInspectionAFCDOOrAONotRespond();
         }catch (Exception e){
             return ReturnT.FAIL;
         }
