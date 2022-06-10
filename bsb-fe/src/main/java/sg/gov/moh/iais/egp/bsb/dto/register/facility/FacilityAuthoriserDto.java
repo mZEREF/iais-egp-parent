@@ -23,7 +23,6 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.excel.CsvConvertUtil;
 import sg.gov.moh.iais.egp.bsb.util.excel.ExcelConverter;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,34 +45,24 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
 
         private String salutation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.name")
         private String name;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.nationality")
         private String nationality;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.idType")
         private String idType;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.idNumber")
         private String idNumber;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.designation")
         private String designation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.contactNo")
         private String contactNo;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.email")
         private String email;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentStartDate")
         private String employmentStartDt;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.workArea")
         private String workArea;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.securityClearanceDate")
         private String securityClearanceDt;
 
         private String employee;
@@ -81,7 +70,6 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         private String externalCompName;
     }
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.addOrDelete")
     private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
 
     private String protectedPlace;
