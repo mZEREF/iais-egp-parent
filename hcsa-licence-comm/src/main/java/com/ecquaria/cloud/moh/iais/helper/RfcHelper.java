@@ -294,6 +294,7 @@ public final class RfcHelper {
 
         // allocation
         int flag = isChangeDisciplineAllocation(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto);
+        log.info(StringUtil.changeForLog("Allocation Flag: " + flag));
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = oldAppSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         boolean flag1 = eqAppSvcLaboratoryDisciplines(appSvcLaboratoryDisciplinesDtoList, oldAppSvcLaboratoryDisciplinesDtoList);
@@ -434,12 +435,86 @@ public final class RfcHelper {
         }
     }
 
+    public static boolean checkNonAutoChangeDisciplines(AppSvcRelatedInfoDto appSvcRelatedInfoDtoList,
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList) {
+        return checkNonAutoChangeDisciplines(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, true);
+    }
+
+    public static boolean checkNonAutoChangeDisciplines(AppSvcRelatedInfoDto appSvcRelatedInfoDtoList,
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList, boolean withResetVal) {
+        boolean isChanged = false;
+        List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcLaboratoryDisciplinesDto> oldDisciplinesDto = oldAppSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+        if (!IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
+            for (AppSvcLaboratoryDisciplinesDto item : newDisciplinesDto) {
+                String hciName = item.getPremiseVal();
+                AppSvcLaboratoryDisciplinesDto oldAppSvcLaboratoryDisciplinesDto = getDisciplinesDto(oldDisciplinesDto, hciName);
+                List<AppSvcChckListDto> addedAppSvcChckLists = IaisCommonUtils.genNewArrayList();
+                List<AppSvcChckListDto> newCheckList = item.getAppSvcChckListDtoList();
+                List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                if (!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)) {
+                    List<String> oldCheckListIds = IaisCommonUtils.genNewArrayList();
+                    for (AppSvcChckListDto checBox : oldCheckList) {
+                        oldCheckListIds.add(checBox.getChkLstConfId());
+                    }
+                    for (AppSvcChckListDto checBox : newCheckList) {
+                        if (!oldCheckListIds.contains(checBox.getChkLstConfId())) {
+                            isChanged = true;
+                            if (withResetVal) {
+                                addedAppSvcChckLists.add(checBox);
+                            }
+                        }
+                    }
+                } else if (!IaisCommonUtils.isEmpty(newCheckList)) {
+                    isChanged = true;
+                    addedAppSvcChckLists = newCheckList;
+                } else if (!IaisCommonUtils.isEmpty(oldCheckList)) {
+                    isChanged = true;
+                }
+                if (withResetVal) {
+                    item.setAddedAppSvcChckLists(addedAppSvcChckLists);
+                }
+            }
+        } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto)) {
+            isChanged = true;
+            if (withResetVal) {
+                for (AppSvcLaboratoryDisciplinesDto item : newDisciplinesDto) {
+                    item.setAddedAppSvcChckLists(item.getAppSvcChckListDtoList());
+                }
+            }
+        } else if (!IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
+            isChanged = true;
+        }
+        List<AppSvcDisciplineAllocationDto> allocationList = appSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList();
+        if (withResetVal && !IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(allocationList)) {
+            allocationList.forEach(dto -> dto.setNewAdded(false));
+            for (AppSvcLaboratoryDisciplinesDto item : newDisciplinesDto) {
+                List<AppSvcChckListDto> addedAppSvcChckLists = item.getAddedAppSvcChckLists();
+                if (IaisCommonUtils.isEmpty(addedAppSvcChckLists)) {
+                    continue;
+                }
+                for (AppSvcDisciplineAllocationDto allocationDto : allocationList) {
+                    boolean newAdded = addedAppSvcChckLists.stream()
+                            .anyMatch(dto -> Objects.equals(dto.getChkLstConfId(), allocationDto.getChkLstConfId())
+                                    && Objects.equals(item.getPremiseVal(), allocationDto.getPremiseVal()));
+                    if (newAdded) {
+                        allocationDto.setNewAdded(true);
+                    }
+                }
+            }
+        }
+        return isChanged;
+    }
+
     /**
      * 0: not changed
-     * 1: changed with related cgo and sl no changed
-     * 2: changed with related cgo no changed and sl changed
-     * 3: changed with related cgo changed and sl no changed
-     * 4: changed with cgo and sl both changed
+     * 1: changed with related cgo and sl bath no changed
+     * 2: changed with one of new is null
+     * 3: changed with one of old is null
+     * 4: changed with related cgo no changed and sl changed
+     * 5: changed with related cgo changed and sl no changed
+     * 6: changed with cgo and sl both changed
+     * 7: changed with new checklist
      *
      * @param appSvcDisciplineAllocationDtoList
      * @param oldAppSvcDisciplineAllocationDtoList
@@ -457,25 +532,33 @@ public final class RfcHelper {
                     oldAppSvcDisciplineAllocationDtoList);
             flag = list1.equals(list2) ? 0 : 1;
         } else if (appSvcDisciplineAllocationDtoList != null ^ oldAppSvcDisciplineAllocationDtoList != null) {
-            flag = 1;
+            flag = 2;
         }
         if (appSvcDisciplineAllocationDtoList != null && flag != 0) {
-            boolean newCgo = false;
-            if (cgoList != null) {
-                newCgo = appSvcDisciplineAllocationDtoList.stream()
-                        .anyMatch(dto -> !cgoList.contains(dto.getCgoPerson()));
-            }
-            boolean newSL = false;
-            if (slList != null) {
-                newSL = appSvcDisciplineAllocationDtoList.stream()
-                        .anyMatch(dto -> !slList.contains(dto.getSectionLeaderName()));
-            }
-            if (newCgo && newSL) {
-                flag = 4;
-            } else if (newCgo) {
-                flag = 3;
-            } else if (newSL) {
-                flag = 2;
+            boolean isNewAdded = appSvcDisciplineAllocationDtoList.stream()
+                    .anyMatch(AppSvcDisciplineAllocationDto::isNewAdded);
+            if (isNewAdded) {
+                flag = 7;
+            } else {
+                boolean newCgo = false;
+                if (cgoList != null) {
+                    newCgo = appSvcDisciplineAllocationDtoList.stream()
+                            .anyMatch(dto -> !cgoList.contains(dto.getCgoPerson()));
+                }
+                boolean newSL = false;
+                if (slList != null) {
+                    newSL = appSvcDisciplineAllocationDtoList.stream()
+                            .anyMatch(dto -> !slList.contains(dto.getSectionLeaderName()));
+                }
+                if (newCgo && newSL) {
+                    flag = 6;
+                } else if (newCgo) {
+                    flag = 5;
+                } else if (newSL) {
+                    flag = 4;
+                } else if (flag == 2) {
+                    flag = 3;
+                }
             }
         }
         log.info(StringUtil.changeForLog("---Change Discipline Allocation Flag: " + flag + "---"));
@@ -914,36 +997,9 @@ public final class RfcHelper {
             personnelEditList.add(HcsaConsts.STEP_MEDALERT_PERSON);
         }
         // disciplines
-        List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
-        List<AppSvcLaboratoryDisciplinesDto> oldDisciplinesDto = oldAppSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
-        if (!IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
-            for (AppSvcLaboratoryDisciplinesDto item : newDisciplinesDto) {
-                String hciName = item.getPremiseVal();
-                AppSvcLaboratoryDisciplinesDto oldAppSvcLaboratoryDisciplinesDto = getDisciplinesDto(oldDisciplinesDto, hciName);
-                List<AppSvcChckListDto> newCheckList = item.getAppSvcChckListDtoList();
-                List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                if (!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)) {
-                    List<String> oldCheckListIds = IaisCommonUtils.genNewArrayList();
-                    for (AppSvcChckListDto checBox : oldCheckList) {
-                        oldCheckListIds.add(checBox.getChkLstConfId());
-                    }
-                    for (AppSvcChckListDto checBox : newCheckList) {
-                        if (!oldCheckListIds.contains(checBox.getChkLstConfId())) {
-                            isAuto = false;
-                            personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                            IaisCommonUtils.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
-                            break;
-                        }
-                    }
-                } else if (!IaisCommonUtils.isEmpty(newCheckList) || !IaisCommonUtils.isEmpty(oldCheckList)) {
-                    isAuto = false;
-                    personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                    IaisCommonUtils.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
-                }
-            }
-        } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto) || !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
+        if (checkNonAutoChangeDisciplines(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList)) {
             isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
+            IaisCommonUtils.addToList(HcsaConsts.STEP_LABORATORY_DISCIPLINES, personnelEditList);
             IaisCommonUtils.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
         }
         // KAH
@@ -1051,12 +1107,15 @@ public final class RfcHelper {
     }
 
     /**
+     * -1: changed with svc info
      * 0: not changed
-     * 1: changed with related cgo and sl no changed
-     * 2: changed with related cgo no changed and sl changed
-     * 3: changed with related cgo changed and sl no changed
-     * 4: changed with cgo and sl both changed
-     * 5: changed with svc info
+     * 1: changed with related cgo and sl bath no changed
+     * 2: changed with one of new is null
+     * 3: changed with one of old is null
+     * 4: changed with related cgo no changed and sl changed
+     * 5: changed with related cgo changed and sl no changed
+     * 6: changed with cgo and sl both changed
+     * 7: changed with new checklist
      *
      * @param appSvcRelatedInfoDto
      * @param oldAppSvcRelatedInfoDto
@@ -1067,7 +1126,7 @@ public final class RfcHelper {
         if (appSvcRelatedInfoDto == null && oldAppSvcRelatedInfoDto == null) {
             return 0;
         } else if (appSvcRelatedInfoDto == null ^ oldAppSvcRelatedInfoDto == null) {
-            return 5;
+            return -1;
         }
         List<String> cgoList = null;
         if (oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList() != null) {

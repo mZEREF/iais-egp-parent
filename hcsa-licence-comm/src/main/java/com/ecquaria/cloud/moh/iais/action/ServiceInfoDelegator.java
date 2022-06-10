@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -1103,7 +1104,16 @@ public class ServiceInfoDelegator {
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_LABORATORY_DISCIPLINES, appSubmissionDto, bpc.request);
         if (isValid) {
+            // check allocations
             handleDisciplineAllocations(appSvcLaboratoryDisciplinesDtoList, currentSvcDto);
+            // check added
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfo = new AppSvcRelatedInfoDto();
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            if (oldAppSubmissionDto != null) {
+                oldAppSvcRelatedInfo = ApplicationHelper.getAppSvcRelatedInfo(oldAppSubmissionDto,
+                        currentSvcId, null);
+            }
+            RfcHelper.checkNonAutoChangeDisciplines(currentSvcDto, oldAppSvcRelatedInfo);
         }
         currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
@@ -1378,6 +1388,8 @@ public class ServiceInfoDelegator {
                             break;
                         }
                     }
+                    List<AppSvcChckListDto> addedAppSvcChckLists =
+                            IaisCommonUtils.getList(appSvcLaboratoryDisciplinesDto.getAddedAppSvcChckLists());
                     List<AppSvcChckListDto> newAppSvcChckListDtos = ApplicationHelper.handlerPleaseIndicateLab(
                             appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList(), svcScopeAlignMap);
                     AppSvcChckListDto targetChkDto = ApplicationHelper.getScopeDtoByRecursiveTarNameUpward(
@@ -1415,6 +1427,8 @@ public class ServiceInfoDelegator {
                                         .findAny()
                                         .orElse(null);
                                 appSvcDisciplineAllocationDto.setSectionLeaderName(sectionLeaderName);
+                                appSvcDisciplineAllocationDto.setNewAdded(addedAppSvcChckLists.stream()
+                                        .anyMatch(dto -> svcScopeConfigId.equals(dto.getChkLstConfId())));
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if (targetChkDto != null && HcsaAppConst.SERVICE_SCOPE_LAB_OTHERS.equals(
                                         svcScopeConfigDto.getName())) {
