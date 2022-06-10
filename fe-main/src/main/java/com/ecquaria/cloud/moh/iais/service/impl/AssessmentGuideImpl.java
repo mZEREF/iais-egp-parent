@@ -104,8 +104,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             }
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
-            String svcNameStr = JsonUtil.parseToJson(svcNames);
-            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
+            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
             List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
             if(!IaisCommonUtils.isEmpty(premisesDtos)){
                 for(PremisesDto premisesHciDto:premisesDtos){
@@ -182,8 +181,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             }
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
-            String svcNameStr = JsonUtil.parseToJson(svcNames);
-            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
+            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
             List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
             log.debug("licence record size {}",premisesDtos.size());
             log.debug("pending application record size {}",appGrpPremisesEntityDtos.size());
