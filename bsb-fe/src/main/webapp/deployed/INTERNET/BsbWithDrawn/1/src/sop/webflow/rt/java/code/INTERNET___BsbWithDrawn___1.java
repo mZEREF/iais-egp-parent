@@ -28,12 +28,12 @@ public class INTERNET___BsbWithDrawn___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
 	}
 
-	public void preSwitch_OnStepProcess_0() throws Exception {
-	// 		preSwitch->OnStepProcess
-	}
-
 	public void submit_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "submitWithdrawn", this);
+	}
+
+	public void printStep_OnStepProcess_0() throws Exception {
+		// 		printStep->OnStepProcess
 	}
 
 }

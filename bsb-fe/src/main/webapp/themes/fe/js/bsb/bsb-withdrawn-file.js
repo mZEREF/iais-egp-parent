@@ -22,8 +22,8 @@ function deleteNewFile(id) {
     fileDiv.parentNode.removeChild(fileDiv);
 
     // add id into the delete list
-    var deleteSavedInput = document.getElementById("deleteNewFiles");
-    appendInputValue(deleteSavedInput, id);
+    var deleteNewInput = document.getElementById("deleteNewFiles");
+    appendInputValue(deleteNewInput, id);
 }
 
 function reloadNewFile(id) {

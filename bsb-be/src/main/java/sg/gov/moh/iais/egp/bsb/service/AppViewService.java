@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
+import sg.gov.moh.iais.egp.bsb.client.ApplicationDocClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
@@ -21,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFac
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
@@ -28,10 +30,13 @@ import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.withdrawn.ViewWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +68,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_CERTIFYING_TEAM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 
 @Service
@@ -72,11 +79,13 @@ public class AppViewService {
     private final AppViewClient appViewClient;
     private final DocSettingService docSettingService;
     private final OrganizationInfoClient orgInfoClient;
+    private final ApplicationDocClient applicationDocClient;
 
-    public AppViewService(AppViewClient appViewClient, DocSettingService docSettingService, OrganizationInfoClient orgInfoClient) {
+    public AppViewService(AppViewClient appViewClient, DocSettingService docSettingService, OrganizationInfoClient orgInfoClient, ApplicationDocClient applicationDocClient) {
         this.appViewClient = appViewClient;
         this.docSettingService = docSettingService;
         this.orgInfoClient = orgInfoClient;
+        this.applicationDocClient = applicationDocClient;
     }
 
     public static void facilityRegistrationViewApp(HttpServletRequest request, String appId) {
@@ -289,6 +298,20 @@ public class AppViewService {
             ParamUtil.setRequestAttr(request, KEY_INSPECTION_FOLLOW_UP_ITEMS_DTO, rectifyFindingFormDto);
         }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    public void retrieveWithdrawnData(HttpServletRequest request, String applicationId){
+        ResponseDto<ViewWithdrawnDto> responseDto = appViewClient.getApplicantSubmitWithdrawDataByAppId(applicationId);
+        if (responseDto.ok()){
+            ViewWithdrawnDto viewWithdrawnDto = responseDto.getEntity();
+            ParamUtil.setRequestAttr(request, "viewWithdrawnDto", viewWithdrawnDto);
+            //show applicant submit doc
+            List<DocDisplayDto> supportDocDisplayDto = applicationDocClient.getApplicationDocForDisplay(applicationId);
+            ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, supportDocDisplayDto);
+            //provide for download support doc
+            Map<String, String> repoIdDocNameMap = DocDisplayDtoUtil.getRepoIdDocNameMap(supportDocDisplayDto);
+            ParamUtil.setSessionAttr(request, KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP, (Serializable) repoIdDocNameMap);
         }
     }
 

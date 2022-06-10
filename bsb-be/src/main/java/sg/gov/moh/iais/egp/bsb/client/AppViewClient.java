@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
+import sg.gov.moh.iais.egp.bsb.dto.withdrawn.ViewWithdrawnDto;
 
 import java.util.List;
 
@@ -47,4 +48,7 @@ public interface AppViewClient {
 
     @GetMapping(path = "/app-view/inspection/follow-up-items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String applicationId);
+
+    @GetMapping(path = "/app-view/withdrawal/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ViewWithdrawnDto> getApplicantSubmitWithdrawDataByAppId(@PathVariable("appId") String applicationId);
 }

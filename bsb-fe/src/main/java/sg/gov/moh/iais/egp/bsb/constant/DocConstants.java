@@ -95,4 +95,5 @@ public class DocConstants {
 
 
     public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
+    public static final String PARAM_PRIMARY_DOC_DTO = "primaryDocDto";
 }
