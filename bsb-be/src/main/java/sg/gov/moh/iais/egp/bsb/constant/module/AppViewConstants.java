@@ -6,6 +6,7 @@ public class AppViewConstants {
     // mask param used by appView
     public static final String MASK_PARAM_APP_ID                            = "appId";
     public static final String MASK_PARAM_APP_VIEW_MODULE_TYPE              = "appViewModuleType";
+    public static final String KEY_TASK_TYPE                         = "taskType";
     public static final String KEY_APP_VIEW_URL                             = "appViewUrl";
 
     public static final String KEY_APP_VIEW_URL_FACILITY                    = "/bsb-web/eservice/INTRANET/BsbBeViewFacilityRegistration";

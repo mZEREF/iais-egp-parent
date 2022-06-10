@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
@@ -17,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DATA_
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FACILITY_REGISTRATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_TASK_TYPE;
 
 
 @Slf4j
@@ -32,17 +35,21 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARA
 public class BsbBeViewFacilityDelegator {
 
     private final AppViewService appViewService;
+    private final AppViewClient appViewClient;
 
     @Autowired
-    public BsbBeViewFacilityDelegator(AppViewService appViewService) {
+    public BsbBeViewFacilityDelegator(AppViewService appViewService, AppViewClient appViewClient) {
         this.appViewService = appViewService;
+        this.appViewClient = appViewClient;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(MASK_PARAM_APP_ID);
-        request.getSession().removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
-        AuditTrailHelper.auditFunction("", "");
+        HttpSession session = request.getSession();
+        session.removeAttribute(MASK_PARAM_APP_ID);
+        session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
+        session.removeAttribute(KEY_TASK_TYPE);
+        AuditTrailHelper.auditFunction("View Application", "Facility Registration");
     }
 
     public void init(BaseProcessClass bpc) {
@@ -53,12 +60,28 @@ public class BsbBeViewFacilityDelegator {
             throw new IaisRuntimeException("Invalid App ID");
         }
         ParamUtil.setSessionAttr(request, MASK_PARAM_APP_ID, appId);
+
+        String taskType = request.getParameter(KEY_TASK_TYPE);
+        if (taskType != null && !taskType.equals("")) {
+            ParamUtil.setSessionAttr(request, KEY_TASK_TYPE, taskType);
+        }
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, MASK_PARAM_APP_ID);
-        appViewService.retrieveFacReg(request, appId);
+        String taskType = (String) ParamUtil.getSessionAttr(request, KEY_TASK_TYPE);
+        if (taskType != null) {
+            // need judge has rfi
+            if (appViewClient.hasCompletedRfi(appId, taskType)) {
+                FacilityRegisterDto oldFacRegDto = appViewClient.getOldFacilityRegistrationData(appId).getEntity();
+                appViewService.retrieveRfiFacReg(request, appId, oldFacRegDto);
+            } else {
+                appViewService.retrieveFacReg(request, appId);
+            }
+        } else {
+            appViewService.retrieveFacReg(request, appId);
+        }
     }
 
     public void handle(BaseProcessClass bpc) {

@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
@@ -51,4 +52,10 @@ public interface AppViewClient {
 
     @GetMapping(path = "/app-view/withdrawal/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ViewWithdrawnDto> getApplicantSubmitWithdrawDataByAppId(@PathVariable("appId") String applicationId);
+
+    @GetMapping(path = "/app-view/has-completed-rfi")
+    boolean hasCompletedRfi(@RequestParam("appId") String appId, @RequestParam("taskType") String taskType);
+
+    @GetMapping(path = "/app-view/rfi-old-data/facility", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityRegisterDto> getOldFacilityRegistrationData(@RequestParam("appId") String appId);
 }

@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.TaskType;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
@@ -137,7 +138,7 @@ public class PreInspectionDelegator {
         }
 
         // view application
-        AppViewService.facilityRegistrationViewApp(request, appId);
+        AppViewService.facilityRegistrationViewApp(request, appId, TaskType.CHECK_INSPECTION_READINESS);
     }
 
     public void bindAction(BaseProcessClass bpc) {

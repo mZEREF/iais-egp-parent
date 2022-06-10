@@ -10,6 +10,7 @@ public class FacilityProfileDto implements Serializable {
     private String facilityEntityId;
     private String facName;
     private String facType;
+    private String facTypeDetails;
     private String sameAddress;
     private String block;
     private String addressType;
