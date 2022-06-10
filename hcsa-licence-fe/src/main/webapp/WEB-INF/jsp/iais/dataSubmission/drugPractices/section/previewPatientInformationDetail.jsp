@@ -47,6 +47,24 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
+                    <iais:field width="6" value="Country" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <iais:code code="${patientDto.country}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="City" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${patientDto.city}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="State" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${patientDto.state}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="6" value="Address Type" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <iais:code code="${patientDto.addrType}" />

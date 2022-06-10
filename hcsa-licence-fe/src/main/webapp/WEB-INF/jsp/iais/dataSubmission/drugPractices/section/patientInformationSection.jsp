@@ -60,6 +60,24 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
+                    <iais:field width="5" value="Country" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:select name="country"  codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select" value="${patientDto.country}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="City" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="city" value="${patientDto.city}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="State" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="state" value="${patientDto.state}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Address Type" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" onchange="test(this, 'ADDTY001', 'floorNoStar','blkNoStar')"  firstOption="Please Select"
