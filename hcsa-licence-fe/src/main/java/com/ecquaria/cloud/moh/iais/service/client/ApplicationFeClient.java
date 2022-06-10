@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
@@ -19,14 +18,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -44,7 +41,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -200,7 +196,7 @@ public interface ApplicationFeClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPremPreNc(@RequestBody AppPremPreInspectionNcDto appPremPreInspectionNcDto);
 
-    @GetMapping(value = "/iais-application/application/{AppNo}", produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/hcsa-app-common/application/{AppNo}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationViewDto> searchAppByNo(@PathVariable("AppNo") String appNo);
 
@@ -303,7 +299,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity<String> deleteOverdueDraft(@RequestBody String draftValidity);
     @PostMapping(value = "/iais-application/app-fee-details-renew",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppFeeDetailsDto> saveAppFeeDetails(@RequestBody AppFeeDetailsDto appFeeDetailsDto);
-    @GetMapping(value = "/iais-application/app-fee-detail-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-app-common/app-fee-detail-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam("applicationNo") String applicationNo);
 
     @GetMapping(value = "/iais-application/app-grp-premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE)

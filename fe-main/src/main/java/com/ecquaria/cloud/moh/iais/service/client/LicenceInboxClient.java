@@ -4,15 +4,28 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -97,8 +110,9 @@ public interface LicenceInboxClient {
     @GetMapping(path = "/hcsa-licence/assessment-personnel",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelListDto>>  getPersonnelListAssessment(@RequestParam("idNos") List<String> idNos,@RequestParam("orgId") String orgId);
 
-    @GetMapping(value = "/lic-common/lic-premises",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr);
+    @GetMapping(value = "/lic-common/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
+                                                                           @RequestParam("svcNames") List<String> svcNames);
     @GetMapping(value = "/hcsa-licence/appeal-new-application",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <List<LicenceDto>> isNewApplication(@RequestParam("application") String application);
     @GetMapping(value = "/hcsa-licence/appeal-new-licence",produces = MediaType.APPLICATION_JSON_VALUE)
