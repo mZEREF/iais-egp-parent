@@ -3,34 +3,59 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+%>
 <webui:setLayout name="iais-internet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <%@include file="dashboard.jsp" %>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<div class="main-content">
     <div class="container">
+        <br/>
         <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="internet-content">
-                    <div class="bg-title">
-                        <h2>Acknowledgement</h2>
-                        <p>You have submitted a request for Withdrawal of Application</p>
-                    </div>
+            <div class="col-lg-6 col-xs-12">
+                <p style="font-size:2rem;"><strong>Your submission is successful.</strong></p>
+                <p><span>Withdrawal of the following submission.</span></p>
+                <div class="table-responsive">
+                    <table aria-describedby="" class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Application Number</th>
+                            <th scope="col">Date & Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <%--@elvariable id="withdrawnDtoListAck" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.WithdrawnAckDto"--%>
+                        <c:forEach items="${withdrawnDtoListAck.applicationNos}" var="appNo">
+                            <tr>
+                                <td>
+                                    <p><c:out value="${appNo}"/></p>
+                                </td>
+                                <td>
+                                    <p><fmt:formatDate value="${withdrawnDtoListAck.withdrawnDate}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="text-left">
-                    <span>
-                        <%--get href from delegator--%>
-                        <a href="${backUrl}"><em class="fa fa-angle-left"></em> Back</a>
-                    </span>
+            </div>
+            <div class="col-lg-7 col-xs-12">
+                <div style="padding-top: 10px;text-align: right">
+                    <a href="${backUrl}" class="btn btn-secondary">PRINT</a>
+                    <a href="${backUrl}" class="btn btn-secondary">HOME</a>
                 </div>
             </div>
         </div>
+        <br/>
     </div>
-</form>
+</div>
+
+
+
+
