@@ -1504,7 +1504,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void validateCanApprove(String approveSelect, ApplicationViewDto applicationViewDto, Map<String, String> errMap) {
         log.info(StringUtil.changeForLog("The validateCanApprove start ..."));
         log.info(StringUtil.changeForLog("The approveSelect is -->:" + approveSelect));
-        if (!StringUtil.isEmpty(approveSelect) && ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)) {
+        if ((!StringUtil.isEmpty(approveSelect) && ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect))
+                || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
             ApplicationDto rfiApplicationDto = getApplicationDtoByGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(), ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
             if (rfiApplicationDto != null) {
                 List<AppEditSelectDto> appEditSelectDtos = getAppEditSelectDtos(rfiApplicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
@@ -1525,6 +1526,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                     applicationViewDto.getApplicationDto().getApplicationType(), applicationViewDto.getApplicationGroupDto().getGroupNo());
             if (IaisCommonUtils.isNotEmpty(rslt)) {
                 errMap.put("nextStage", rslt.get(HcsaAppConst.ERROR_APP));
+                if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
+                    errMap.put("decisionValues", rslt.get(HcsaAppConst.ERROR_APP));
+                }
             }
         }
         log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
