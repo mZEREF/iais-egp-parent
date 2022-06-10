@@ -111,6 +111,11 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 }
             }
         }
+        if("DPD001".equals(drugSubmission.getDrugType())){
+            if(StringUtil.isEmpty(drugSubmission.getDiagnosis())){
+                errorMap.put("diagnosis","GENERAL_ERR0006");
+            }
+        }
         //validate the medication
         result = WebValidationHelper.validateProperty(drugSubmission, "medication");
         if (result != null) {
