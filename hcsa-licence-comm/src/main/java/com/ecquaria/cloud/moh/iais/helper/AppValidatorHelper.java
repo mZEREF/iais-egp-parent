@@ -1518,9 +1518,6 @@ public final class AppValidatorHelper {
                             if (subLicenseeDto != null && !OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(
                                     subLicenseeDto.getLicenseeType())) {
                                 String subLicenseeNationality = subLicenseeDto.getNationality();
-                                if (StringUtil.isEmpty(subLicenseeNationality)) {
-                                    subLicenseeNationality = AppConsts.NATIONALITY_SG;
-                                }
                                 String subLicenseeKey = ApplicationHelper.getPersonKey(subLicenseeNationality,
                                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
                                 if (Objects.equals(subLicenseeKey, personKey)) {
