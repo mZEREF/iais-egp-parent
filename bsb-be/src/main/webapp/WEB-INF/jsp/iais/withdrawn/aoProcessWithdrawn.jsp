@@ -58,10 +58,10 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="facilityInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -84,35 +84,15 @@
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="DO Remarks" width="15" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p><c:out value="${withdrawnDto.doRemarks}"/></p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="DO Decision" width="15" required="false"/>
+                                                                            <iais:field value="Processing Decision/Recommendation by DO" width="15" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <p><iais:code code="${withdrawnDto.doDecision}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="AO Remarks" width="15" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <textarea id="aoRemarks"
-                                                                                          name="aoRemarks"
-                                                                                          cols="70"
-                                                                                          rows="5"
-                                                                                          maxlength="300">${withdrawnDto.aoRemarks}</textarea>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
                                                                     <div id="processingDecision">
                                                                         <iais:row>
-                                                                            <iais:field value="Processing Decision" required="true"/>
+                                                                            <iais:field value="Processing Decision / Recommendation" required="true"/>
                                                                             <iais:value width="10">
                                                                                 <select name="aoDecision" class="aoDecisionDropdown" id="aoDecision">
                                                                                     <option value="">Please Select</option>
@@ -120,6 +100,18 @@
                                                                                     <option value="MOHPRO003" <c:if test="${withdrawnDto.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
                                                                                 </select>
                                                                                 <span data-err-ind="aoDecision" class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Remarks" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="aoRemarks"
+                                                                                          name="aoRemarks"
+                                                                                          cols="70"
+                                                                                          rows="5"
+                                                                                          maxlength="300">${withdrawnDto.aoRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

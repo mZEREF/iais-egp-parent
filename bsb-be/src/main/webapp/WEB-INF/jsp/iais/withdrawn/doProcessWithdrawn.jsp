@@ -58,10 +58,10 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="facilityInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -82,28 +82,28 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    <div id="processingDecision">
+                                                                        <iais:row>
+                                                                            <iais:field value="Processing Decision / Recommendation" required="true"/>
+                                                                            <iais:value width="10">
+                                                                                <select name="doDecision" class="doDecisionDropdown" id="doDecision">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${withdrawnDto.doDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Screened By Duty Officer. Proceed to next stage.</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${withdrawnDto.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                </select>
+                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="DO Remarks" width="15" required="false"/>
+                                                                            <iais:field value="Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <textarea id="doRemarks"
                                                                                           name="doRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
                                                                                           maxlength="300">${withdrawnDto.doRemarks}</textarea>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div id="processingDecision">
-                                                                        <iais:row>
-                                                                            <iais:field value="Processing Decision" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <select name="doDecision" class="doDecisionDropdown" id="doDecision">
-                                                                                    <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${withdrawnDto.doDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
-                                                                                    <option value="MOHPRO003" <c:if test="${withdrawnDto.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
-                                                                                </select>
-                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

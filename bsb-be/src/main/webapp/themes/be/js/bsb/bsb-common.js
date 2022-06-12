@@ -80,7 +80,7 @@ function viewApplication(appId, appViewModuleType) {
     window.open(url);
 }
 
-function viewUrlApplication(appId, appViewUrl) {
-    var url = appViewUrl + "?appId=" + appId;
+function viewUrlApplication(appId, appViewUrl, taskType) {
+    var url = appViewUrl + "?appId=" + appId + "&taskType=" + taskType;
     window.open(url);
 }

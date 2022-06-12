@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,33 +13,24 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityOperatorDto extends ValidatableNodeValue {
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.name")
     private String facOperator;
 
     private String salutation;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.designeeName")
     private String designeeName;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.nationality")
     private String nationality;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.idType")
     private String idType;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.idNumber")
     private String idNumber;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.designation")
     private String designation;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.contactNo")
     private String contactNo;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.email")
     private String email;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.employmentStartDate")
     private String employmentStartDt;
 
     @JsonIgnore

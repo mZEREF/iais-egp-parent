@@ -8,7 +8,6 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +24,6 @@ public class CompanyProfileDto extends ValidatableNodeValue {
 
     private String facCertEntityId;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.name")
     private String name;
 
     private String sameAddress;
@@ -34,34 +32,24 @@ public class CompanyProfileDto extends ValidatableNodeValue {
 
     private String block;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.addressType")
     private String addressType;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.floor")
     private String floor;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.unitNo")
     private String unitNo;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.building")
     private String building;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.streetName")
     private String streetName;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.postalCode")
     private String postalCode;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.city")
     private String city;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.state")
     private String state;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.country")
     private String country;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.yearEstablished")
     private String yearEstablished;
 
     private ValidationResultDto validationResultDto;

@@ -175,6 +175,11 @@
                     </iais:row>
                 </div>
                 <iais:row>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <strong>Doctor who Performed the Termination of Pregnancy</strong>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorRegnNo}"/>
@@ -208,7 +213,7 @@
                 </div>
                 <div <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Doctor's Name" />
+                        <iais:field width="5" value="Name of Doctor" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${doctorInformationDto.name}"/>
                         </iais:value>

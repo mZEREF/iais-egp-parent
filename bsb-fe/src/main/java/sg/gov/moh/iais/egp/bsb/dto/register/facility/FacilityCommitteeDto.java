@@ -23,7 +23,6 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.excel.CsvConvertUtil;
 import sg.gov.moh.iais.egp.bsb.util.excel.ExcelConverter;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,43 +45,31 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
 
         private String salutation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.name")
         private String name;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.nationality")
         private String nationality;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.idType")
         private String idType;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.idNumber")
         private String idNumber;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.designation")
         private String designation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.contactNo")
         private String contactNo;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.email")
         private String email;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employmentStartDate")
         private String employmentStartDt;
 
         private String workArea;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.role")
         private String role;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employee")
         private String employee;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.externalCompName")
         private String externalCompName;
     }
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.addOrDelete")
     private List<BioSafetyCommitteePersonnel> facCommitteePersonnelList;
 
 

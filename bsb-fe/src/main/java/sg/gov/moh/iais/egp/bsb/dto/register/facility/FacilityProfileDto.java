@@ -24,7 +24,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
@@ -61,7 +60,6 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
     private String facilityEntityId;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.name")
     private String facName;
 
     private String facType;
@@ -70,26 +68,20 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
     private String sameAddress;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.blkNo")
     private String block;
 
     private String addressType;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.streetName")
     private String streetName;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.floorNo")
     private String floor;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.unitNo")
     private String unitNo;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.postalCode")
     private String postalCode;
 
     private String building;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.isProtected")
     private String facilityProtected;
 
 

@@ -632,6 +632,8 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto = terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, preTerminationDto);
+        String counsellingAge = ParamUtil.getString(request, "counsellingAge");
+        preTerminationDto.setPatientAppointment(counsellingAge);
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
         terminationOfPregnancyDto.setPreTerminationDto(preTerminationDto);

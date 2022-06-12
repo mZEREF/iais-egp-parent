@@ -10,7 +10,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,10 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdministratorDto extends ValidatableNodeValue {
 
-    @RfcAttributeDesc
     private final EmployeeInfo mainAdmin;
 
-    @RfcAttributeDesc
     private final EmployeeInfo alternativeAdmin;
 
 

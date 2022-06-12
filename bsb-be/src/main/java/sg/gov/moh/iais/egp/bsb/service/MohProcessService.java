@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.constant.TaskType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
@@ -86,7 +87,16 @@ public class MohProcessService {
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, mohProcessDto.getProcessHistoryDtoList());
 
         // view application
-        AppViewService.facilityRegistrationViewApp(request, appId);
+        if (moduleName.equals(MODULE_NAME_DO_SCREENING)) {
+            // has rfi decision
+            AppViewService.facilityRegistrationViewApp(request, appId, TaskType.DO_SCREENING);
+        } else if (moduleName.equals(MODULE_NAME_DO_PROCESSING)) {
+            // has rfi decision
+            AppViewService.facilityRegistrationViewApp(request, appId, TaskType.DO_PROCESSING);
+        } else {
+            // hasn't rfi decision
+            AppViewService.facilityRegistrationViewApp(request, appId);
+        }
 
         //AFC Certification Report and Inspection Report
         if (moduleName.equals(MODULE_NAME_DO_PROCESSING) || moduleName.equals(MODULE_NAME_AO_PROCESSING) || moduleName.equals(MODULE_NAME_HM_PROCESSING)) {

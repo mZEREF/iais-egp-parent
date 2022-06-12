@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -17,7 +16,6 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
     private String activityEntityId;
     private String activityType;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.addOrDelete")
     private List<BATInfo> batInfos;
 
 

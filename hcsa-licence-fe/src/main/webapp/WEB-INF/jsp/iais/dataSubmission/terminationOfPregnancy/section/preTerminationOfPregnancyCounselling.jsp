@@ -146,15 +146,13 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
                 </iais:value>
             </iais:row>
-        </div>
-        <iais:row>
-            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-            <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
-            </iais:value>
-        </iais:row>
-        <div id="numCounsellingGivens" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
+            <iais:row>
+                <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+                <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
+                </iais:value>
+            </iais:row>
             <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
@@ -175,9 +173,8 @@
                 <iais:value width="7" cssClass="col-md-7">
                     <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                 value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                   <%-- <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"  id="counsellingPlaces" cssClass="counsellingPlace"/>
---%>
-                    <iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>
+                   <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"  id="counsellingPlaces" cssClass="counsellingPlace"/>
+                    <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
 
                 </iais:value>
             </iais:row>
@@ -256,15 +253,18 @@
             </iais:value>
         </iais:row>
     </div>
-        <iais:row>
-            <iais:field width="5" value="Patient Age (Years)"/>
-        <iais:value width="7" cssClass="col-md-7" display="true" id="age">
-            ${patientInformationDto.patientAge}
-        </iais:value>
-        </iais:row>
+        <div id="numCounsellingGivens" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
+            <iais:row>
+                <iais:field width="5" value="Patient Age (Years)"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="counsellingAge">
+                    ${preTerminationDto.counsellingAge}
+                </iais:value>
+            </iais:row>
+        </div>
 <input type="hidden" id="maritalStatus" value="${patientInformationDto.maritalStatus}"/>
 <input type="hidden" id="patientAge" value="${patientInformationDto.patientAge}"/>
 <input type="hidden" id="birthData" value="${patientInformationDto.birthData}"/>
+<input type="hidden" id="counselling" name="counsellingAge" value="${preTerminationDto.counsellingAge}"/>
 <%--<%@include file="../common/topCounselling.jsp" %>--%>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
         <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
@@ -433,5 +433,27 @@
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
 
+    $("#counsellingGivenDate").on('blur, change', function () {
+        showWaiting();
+        var birthData=$('#birthData').val();
+        var counsellingGiven=$('#counsellingGivenDate').val();
+        var url = $('#_contextPath').val() + '/top/counselling-age';
+        var options = {
+            birthData: birthData,
+            counsellingGiven: counsellingGiven,
+            url: url
+        }
+        callCommonAjax(options, checkBirthDateCallbacks);
+    });
+    function checkBirthDateCallbacks(data) {
+        console.log("counselling");
+        if (isEmpty(data.selection.counsellingAge) || isEmpty(data)) {
+            $('#counsellingAge').html(null);
+            return;
+        }
+        console.log("counsellingAge");
+        $('#counsellingAge').html(data.selection.counsellingAge);
+        $('#counselling').val(data.selection.counsellingAge);
+    }
 
 </script>

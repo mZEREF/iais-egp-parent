@@ -24,7 +24,6 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.excel.CsvConvertUtil;
 import sg.gov.moh.iais.egp.bsb.util.excel.ExcelConverter;
-import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,51 +50,37 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
 
         private String salutation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.name")
         private String name;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.idType")
         private String idType;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.idNo")
         private String idNumber;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.birthDate")
         private String entityBirthDate;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.nationality")
         private String nationality;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.telNo")
         private String contactNo;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.jobDesignation")
         private String jobDesignation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.leadCertifier")
         private String leadCertifier;
 
         private String role;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.certBSL3Exp")
         private String certBSL3Exp;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.commBSL34Exp")
         private String commBSL34Exp;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.otherBSL34Exp")
         private String otherBSL34Exp;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.eduBackground")
         private String highestEdu;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.proRegAndCert")
         private String proCertifications;
 
         private String otherRelatedAchievement;
     }
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.addOrDelete")
     private  List<CertifierTeamMember> certifierTeamMemberList;
 
     @JsonIgnore

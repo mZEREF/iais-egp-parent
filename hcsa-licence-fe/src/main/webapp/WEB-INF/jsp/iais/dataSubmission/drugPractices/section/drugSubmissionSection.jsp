@@ -182,13 +182,15 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Diagnosis" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
-                        <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
-                    </iais:value>
-                </iais:row>
+                <div id="diagnosi" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="Diagnosis" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                            <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <div id="urineTest" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" mandatory="true"/>
@@ -261,6 +263,7 @@
         ifClickValidateButton();
         $('#drugType').change(function () {
             drugTypeChange();
+            diagnosi();
         });
         $('#drugType,#medication').change(function (){
             changeStrength();
@@ -273,9 +276,18 @@
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
         </c:if>
-        checkPrescriptionSubmissionId();
 
+        checkPrescriptionSubmissionId();
     });
+    function diagnosi(){
+        var drugtype= $('#drugType option:selected').val();
+        if(drugtype == "DPD001"){
+            $('#diagnosi').show();
+        } else {
+            $('#diagnosi').hide();
+        }
+    }
+
 
     function drugTypeChange(){
         var drugtype= $('#drugType option:selected').val();

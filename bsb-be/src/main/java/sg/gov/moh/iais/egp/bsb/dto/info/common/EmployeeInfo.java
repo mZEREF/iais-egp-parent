@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.info.common;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.javers.core.metamodel.annotation.Id;
 
 import java.io.Serializable;
 
@@ -10,6 +11,8 @@ import java.io.Serializable;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeInfo implements Serializable {
+    // javers compare id, must be unique and non-empty
+    @Id
     @JsonProperty("id")
     private String entityId;
 

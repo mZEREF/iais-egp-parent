@@ -47,7 +47,8 @@
                                                  compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
                                                  facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                                  batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                                 classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}">
+                                                 classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
+                                                 diffMap="${diffMap}">
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
