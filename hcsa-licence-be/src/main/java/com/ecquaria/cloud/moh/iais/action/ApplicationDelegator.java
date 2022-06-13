@@ -80,7 +80,9 @@ public class ApplicationDelegator extends AppCommDelegator {
             //init session and data reomve function to DealSessionUtil
             DealSessionUtil.initSession(bpc);
         }
-        //bpc.request.getSession().setAttribute("RFC_ERR004", MessageUtil.getMessageDesc("RFC_ERR004"));
+        // the mandatory declaration message in preview page
+        // RFC_ERR004 - Please agree to the terms and conditions/declaration statement
+        bpc.request.getSession().setAttribute("RFC_ERR004", MessageUtil.getMessageDesc("RFC_ERR004"));
         // app type and licence id
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if (appSubmissionDto != null && appSubmissionDto.getAppSvcRelatedInfoDtoList() != null) {

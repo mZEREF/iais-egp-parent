@@ -1370,18 +1370,19 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String appType = appSubmissionDto.getAppType();
         String isGroupLic = ParamUtil.getString(bpc.request, "isGroupLic");
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         boolean needNewDeclaration = false;
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             if (!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)) {
                 appSubmissionDto.setGroupLic(true);
             } else {
                 appSubmissionDto.setGroupLic(false);
             }
             needNewDeclaration = !isRfi;
-        } else if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        } else if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
