@@ -1,4 +1,5 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>
+<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>--%>
+<input type="hidden" name="appType" id="appType" value="${dpSuperDataSubmissionDto.appType}">
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
@@ -12,17 +13,24 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="patientDto" value="${dpSuperDataSubmissionDto.patientDto}"/>
                 <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:row>
-                    <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" onchange ="toggleSelect(this, 'DTV_IT003', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
-                                     value="${patientDto.idType}" cssClass="idTypeSel"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <iais:input maxLength="20" type="text" name="idNumber" value="${patientDto.idNumber}" />
-                        <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
-                    </iais:value>
-                </iais:row>
+                <div class="patient">
+                    <iais:row>
+                        <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
+                        <iais:value width="3" cssClass="col-md-3">
+                            <iais:select name="idType"
+                                         onchange ="toggleSelect(this, 'DTV_IT003', 'nationalityStar')"
+                                         firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
+                                         value="${patientDto.idType}" cssClass="idTypeSel"/>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4">
+                            <iais:input maxLength="20"
+                                        type="text"
+                                        name="idNumber"
+                                        value="${patientDto.idNumber}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">Nationality
@@ -200,3 +208,45 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        var appType = $('input[name="appType"]').val();
+        if('DSTY_005'==appType){
+            disableContent('div.patient');
+        }
+        toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
+
+        toggleSelect("#idType",'DTV_IT003', 'nationalityStar');
+        toggleSelect("#addrType",'ADDTY001', 'blkNoStar');
+        toggleSelect("#addrType",'ADDTY001', 'floorNoStar');
+    });
+    function  test(sel,val,id1,id2){
+        toggleSelect(sel,val,id1);
+        toggleSelect(sel,val,id2);
+    }
+    function toggleSelect(sel, val, elem) {
+        if (isEmpty(sel)) {
+            return;
+        }
+        var $selector = $(sel);
+        if ($selector.length == 0) {
+            $selector = $('#' + sel);
+        } else if ($selector.length == 0) {
+            $selector = $('.' + sel);
+        }
+        var $target = $(elem);
+        if ($target.length == 0) {
+            $target = $('#' + elem);
+        } else if ($target.length == 0) {
+            $target = $('.' + sel);
+        }
+        if ($selector.length == 0 || $target.length == 0) {
+            return;
+        }
+        if ($selector.val() == val) {
+            $target.text("*")
+        } else {
+            $target.text("")
+        }
+    }
+</script>
