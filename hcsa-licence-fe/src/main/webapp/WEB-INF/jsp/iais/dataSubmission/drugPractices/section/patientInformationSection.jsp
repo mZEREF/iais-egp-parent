@@ -62,7 +62,8 @@
                 <iais:row>
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="country"  codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select" value="${patientDto.country}" />
+                        <iais:select name="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
+                                     cssClass="countrySel" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -81,7 +82,7 @@
                     <iais:field width="5" value="Address Type" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" onchange="test(this, 'ADDTY001', 'floorNoStar','blkNoStar')"  firstOption="Please Select"
-                                     value="${patientDto.addrType}" />
+                                     cssClass="addrTypeSel" value="${patientDto.addrType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -159,7 +160,8 @@
                     <iais:field width="5" value="Ethnic Group" id="ethnicGroupLabel" mandatory="${patientDto.nationality eq 'NAT0001' ? true : false}"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="VSS_ETHNIC_GROUP"
-                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOtherss')" />
+                                     cssClass="ethnicGroupSel" value="${patientDto.ethnicGroup}"
+                                     onchange="toggleOnSelect(this, 'ECGP004', 'ethnicOtherss')" />
                     </iais:value>
                 </iais:row>
                 <iais:row id="ethnicOtherss" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">

@@ -10,7 +10,7 @@
             <iais:value width="6" cssClass="col-md-6">
                 <iais:select id="birthWeight${status.index}" firstOption="Please Select"
                              name="birthWeight${status.index}" codeCategory="CATE_ID_BABY_BIRTH_WEIGHT"
-                             value="${pregnancyOutcomeBabyDto.birthWeight}"/>
+                             cssClass="birthWeightSel${status.index}" value="${pregnancyOutcomeBabyDto.birthWeight}"/>
             </iais:value>
         </iais:row>
 

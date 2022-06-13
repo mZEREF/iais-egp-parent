@@ -63,13 +63,15 @@
                   <iais:row>
                     <iais:field width="5" value="No. of Children from Current Marriage" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
-                      <iais:select name="curMarrChildNum" firstOption="Please Select" options="curMarrChildNumOption" value="${iuiCycleStageDto.curMarrChildNum}"></iais:select>
+                      <iais:select name="curMarrChildNum" firstOption="Please Select" options="curMarrChildNumOption"
+                                   cssClass="curMarrChildNumSel" value="${iuiCycleStageDto.curMarrChildNum}"/>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <iais:select name="prevMarrChildNum" firstOption="Please Select" options="prevMarrChildNumOption" value="${iuiCycleStageDto.prevMarrChildNum}"></iais:select>
+                      <iais:select name="prevMarrChildNum" firstOption="Please Select" options="prevMarrChildNumOption"
+                                   cssClass="prevMarrChildNumSel" value="${iuiCycleStageDto.prevMarrChildNum}"/>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -80,7 +82,8 @@
                          data-original-title="">i</a>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
-                      <iais:select name="iuiDeliverChildNum" firstOption="Please Select" options="iuiDeliverChildNumOption" value="${iuiCycleStageDto.iuiDeliverChildNum}"></iais:select>
+                      <iais:select name="iuiDeliverChildNum" firstOption="Please Select" options="iuiDeliverChildNumOption"
+                                   cssClass="iuiDeliverChildNumSel" value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
                     </iais:value>
                   </iais:row>
                   <iais:row>

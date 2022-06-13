@@ -22,6 +22,7 @@
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="firstUltrasoundOrderShow" firstOption="Please Select"
                                      id="firstUltrasoundOrderShow" codeCategory="CATE_ID_ORDER_IN_ULTRASOUND"
+                                     cssClass="firstUltrasoundOrderShowSel"
                                      value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"/>
                     </iais:value>
                 </iais:row>
@@ -29,7 +30,7 @@
                     <iais:field width="6" value="Outcome of Pregnancy" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="pregnancyOutcome" firstOption="Please Select" id="pregnancyOutcome"
-                                     codeCategory="CATE_ID_OUTCOME_OFPREGNANCY"
+                                     codeCategory="CATE_ID_OUTCOME_OFPREGNANCY" cssClass="pregnancyOutcomeSel"
                                      value="${pregnancyOutcomeStageDto.pregnancyOutcome}"/>
                     </iais:value>
                 </iais:row>
@@ -95,7 +96,7 @@
                         <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="wasSelFoeReduCarryOut" id="wasSelFoeReduCarryOut"
-                                         options="wasSelFoeReduCarryOutOptions"
+                                         options="wasSelFoeReduCarryOutOptions" cssClass="wasSelFoeReduCarryOutSel"
                                          value="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut}"/>
                         </iais:value>
                     </iais:row>
@@ -105,7 +106,7 @@
                         <iais:field width="6" value="Mode of Delivery" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="deliveryMode" firstOption="Please Select"
-                                         codeCategory="CATE_ID_MODE_OF_DELIVERY"
+                                         codeCategory="CATE_ID_MODE_OF_DELIVERY" cssClass="deliveryModeSel"
                                          value="${pregnancyOutcomeStageDto.deliveryMode}"/>
                         </iais:value>
                     </iais:row>
@@ -245,7 +246,7 @@
                                 cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="NICUCareBabyNum" id="NICUCareBabyNum" options="transferNumSelectOption"
-                                     value="${pregnancyOutcomeStageDto.nicuCareBabyNum}"/>
+                                     cssClass="NICUCareBabyNumSel" value="${pregnancyOutcomeStageDto.nicuCareBabyNum}"/>
                     </iais:value>
                 </iais:row>
                 <div id="careBabyNumSection">
@@ -254,7 +255,7 @@
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="l2CareBabyNum" id="l2CareBabyNum" options="transferNumSelectOption"
-                                         value="${pregnancyOutcomeStageDto.l2CareBabyNum}"/>
+                                         cssClass="l2CareBabyNumSel" value="${pregnancyOutcomeStageDto.l2CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -262,7 +263,7 @@
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="l3CareBabyNum" id="l3CareBabyNum" options="transferNumSelectOption"
-                                         value="${pregnancyOutcomeStageDto.l3CareBabyNum}"/>
+                                         cssClass="l3CareBabyNumSel" value="${pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>

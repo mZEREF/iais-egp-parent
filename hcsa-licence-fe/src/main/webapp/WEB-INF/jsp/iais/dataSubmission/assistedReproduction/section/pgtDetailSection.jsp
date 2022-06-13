@@ -363,7 +363,7 @@
                 <iais:row>
                     <iais:field width="5" value="Embryos were Biospied At" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <select name="isEmbryosBiopsiedLocal" id="isEmbryosBiopsiedLocal">
+                        <select name="isEmbryosBiopsiedLocal" id="isEmbryosBiopsiedLocal" class="isEmbryosBiopsiedLocalSel">
                             <c:forEach items="${embryosBiopsiedLocalSelectOption}" var="selectOption">
                                 <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
                             </c:forEach>
@@ -385,7 +385,7 @@
                 <iais:row>
                     <iais:field width="5" value="Biopsy Done By" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <select name="isBiopsyLocal" id="isBiopsyLocal">
+                        <select name="isBiopsyLocal" id="isBiopsyLocal" class="isBiopsyLocalSel">
                             <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}">selected="selected"</c:if>>Please Select</option>
                             <c:forEach items="${biopsyLocalSelectOption}" var="selectOption">
                                 <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>

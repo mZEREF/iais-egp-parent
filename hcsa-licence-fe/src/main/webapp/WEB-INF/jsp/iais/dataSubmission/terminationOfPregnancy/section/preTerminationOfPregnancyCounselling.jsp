@@ -123,7 +123,8 @@
                 <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
                 <iais:field width="5" id="counsellorIdTypeLabel" value="Counsellor ID Type" mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
+                    <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
+                                 value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdType"></span>
                 </iais:value>
             </iais:row>
@@ -173,7 +174,8 @@
                 <iais:value width="7" cssClass="col-md-7">
                     <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                 value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                   <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"  id="counsellingPlaces" cssClass="counsellingPlace"/>
+                   <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
+                                id="counsellingPlaces" cssClass="counsellingPlace"/>
                     <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
 
                 </iais:value>
@@ -185,7 +187,8 @@
                     </span>
                 </label>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="counsellingResult" firstOption="Please Select" codeCategory="TOP_CONSULTATION_RESULTS" value="${preTerminationDto.counsellingResult}" id="counsellingResults" cssClass="counsellingResult"/>
+                    <iais:select name="counsellingResult" firstOption="Please Select" codeCategory="TOP_CONSULTATION_RESULTS"
+                                 value="${preTerminationDto.counsellingResult}" id="counsellingResults" cssClass="counsellingResult"/>
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
                 </iais:value>
             </iais:row>
@@ -248,7 +251,8 @@
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Result of Second or Final Counselling" mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select name="secCounsellingResult" firstOption="Please Select" id="secCounsellingResult" codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT" value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
+                <iais:select name="secCounsellingResult" firstOption="Please Select" id="secCounsellingResult"
+                             codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT" value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_secCounsellingResult"></span>
             </iais:value>
         </iais:row>

@@ -33,7 +33,7 @@
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
             <iais:select name="guardianIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
-                         value="${guardianAppliedPartDto.guardianIdType}" />
+                         cssClass="guardianIdTypeSel" value="${guardianAppliedPartDto.guardianIdType}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianIdType"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
@@ -75,7 +75,7 @@
         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
             <iais:select name="appliedPartIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
-                         value="${guardianAppliedPartDto.appliedPartIdType}" />
+                         cssClass="appliedPartIdTypeSel" value="${guardianAppliedPartDto.appliedPartIdType}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartIdType"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">

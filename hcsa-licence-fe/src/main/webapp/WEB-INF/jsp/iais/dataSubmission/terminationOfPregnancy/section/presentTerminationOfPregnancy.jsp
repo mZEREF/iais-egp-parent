@@ -161,7 +161,7 @@
             <iais:row>
                 <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="topPlace" options="TopPlace"  value="${terminationDto.topPlace}" cssClass="topPlace"/>
+                    <iais:select name="topPlace" options="TopPlace" value="${terminationDto.topPlace}" cssClass="topPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
             </iais:row>
