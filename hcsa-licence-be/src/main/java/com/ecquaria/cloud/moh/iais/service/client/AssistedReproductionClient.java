@@ -146,7 +146,7 @@ public interface AssistedReproductionClient {
     @GetMapping(value = "/ar-common/over-day-not-completed-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<IncompleteCycleDto>> getOverDayNotCompletedCycleDto(@RequestParam(name = "day") Integer day);
 
-    @GetMapping(value = "/dp-common/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/doc-common/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(@RequestParam("doctorReignNo") String doctorReignNo,
                                                                              @RequestParam("doctorSource") String doctorSource);
 }
