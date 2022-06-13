@@ -69,6 +69,16 @@ public class DpPatientInfoValidator implements CustomizeValidator {
             }
         }
 
+        if(StringUtil.isNotEmpty(patientDto.getCountry())&&!"NAT0001".equals(patientDto.getCountry())){
+            if(StringUtil.isEmpty(patientDto.getCity())){
+                errorMap.put("city", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(patientDto.getState())){
+                errorMap.put("state", "GENERAL_ERR0006");
+            }
+        }
+
+
         if(StringUtil.isNotEmpty(patientDto.getPostalCode())){
 
             if(StringUtil.isNumber(patientDto.getPostalCode())  && Long.valueOf(patientDto.getPostalCode())<0){

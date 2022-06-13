@@ -71,17 +71,18 @@
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
+                                     onchange="countryStar()"
                                      cssClass="countrySel" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="City" mandatory="true"/>
+                    <iais:field width="5" id="cityLable" value="City" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="city" value="${patientDto.city}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="State" mandatory="true"/>
+                    <iais:field width="5" id="stateLable" value="State"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="state" value="${patientDto.state}" />
                     </iais:value>
