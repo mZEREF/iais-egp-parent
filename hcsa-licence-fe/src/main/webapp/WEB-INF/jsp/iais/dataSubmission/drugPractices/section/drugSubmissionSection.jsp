@@ -524,7 +524,7 @@
                 } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
-                    if (('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                    if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         $('#ELIS_SERVICE').modal('show');
                     }else if(isEmpty(data.selections)){
                         $('#PRS_SERVICE').modal('show');
