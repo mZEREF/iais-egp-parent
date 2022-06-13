@@ -111,9 +111,14 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 }
             }
         }
-        if("DPD001".equals(drugSubmission.getDrugType())){
+        if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugSubmission.getDrugType())){
             if(StringUtil.isEmpty(drugSubmission.getDiagnosis())){
-                errorMap.put("diagnosis","GENERAL_ERR0006");
+                result = WebValidationHelper.validateProperty(drugSubmission,"diagnosis");
+                errorMap.putAll(result.retrieveAll());
+            }
+            if(StringUtil.isEmpty(drugSubmission.getPrescriptionDate())){
+                result = WebValidationHelper.validateProperty(drugSubmission,"prescriptionDate");
+                errorMap.putAll(result.retrieveAll());
             }
         }
         //validate the medication
