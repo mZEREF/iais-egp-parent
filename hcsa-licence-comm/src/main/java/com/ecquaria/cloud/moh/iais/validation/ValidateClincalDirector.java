@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -40,15 +41,16 @@ public class ValidateClincalDirector {
         List<String> stringList = new ArrayList<>();
         List<String> assignList = new ArrayList<>();
         for (int i = 0; i < appSvcClinicalDirectorDtos.size(); i++) {
-            String assignSelect = appSvcClinicalDirectorDtos.get(i).getAssignSelect();
+            AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = appSvcClinicalDirectorDtos.get(i);
+            String assignSelect = appSvcClinicalDirectorDto.getAssignSelect();
             if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
                 map.put("assignSelect" + i,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Assign a " + HcsaConsts.CLINICAL_DIRECTOR + " Person",
                                 "field"));
             } else {
-                String nationality = appSvcClinicalDirectorDtos.get(i).getNationality();
-                String idType = appSvcClinicalDirectorDtos.get(i).getIdType();
-                String idNo = appSvcClinicalDirectorDtos.get(i).getIdNo();
+                String nationality = appSvcClinicalDirectorDto.getNationality();
+                String idType = appSvcClinicalDirectorDto.getIdType();
+                String idNo = appSvcClinicalDirectorDto.getIdNo();
                 // check person key
                 String keyIdType = "idType" + i;
                 String keyIdNo = "idNo" + i;
@@ -57,7 +59,7 @@ public class ValidateClincalDirector {
                 // check duplicated
                 if (isValid) {
                     String personKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
-                    boolean licPerson = appSvcClinicalDirectorDtos.get(i).isLicPerson();
+                    boolean licPerson = appSvcClinicalDirectorDto.isLicPerson();
                     String idTypeNoKey = "idTypeNo" + i;
                     isValid = AppValidatorHelper.doPsnCommValidate(map, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
                     if (isValid) {
@@ -77,26 +79,26 @@ public class ValidateClincalDirector {
                     }
                 }
 
-                String salutation = appSvcClinicalDirectorDtos.get(i).getSalutation();
+                String salutation = appSvcClinicalDirectorDto.getSalutation();
                 if (StringUtil.isEmpty(salutation) || "-1".equals(salutation)) {
-                    map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "salutation", "field"));
+                    map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 } else {
 
                 }
-                String name = appSvcClinicalDirectorDtos.get(i).getName();
+                String name = appSvcClinicalDirectorDto.getName();
                 if (StringUtil.isEmpty(name)) {
-                    map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "name", "field"));
+                    map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
                     if (name.length() > 110) {
-                        String general_err0041 = AppValidatorHelper.repLength("name", "110");
+                        String general_err0041 = AppValidatorHelper.repLength("Name", "110");
                         map.put("name" + i, general_err0041);
                     }
                 }
-                String designation = appSvcClinicalDirectorDtos.get(i).getDesignation();
+                String designation = appSvcClinicalDirectorDto.getDesignation();
                 if (StringUtil.isEmpty(designation)) {
-                    map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "designation", "field"));
+                    map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                 } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
-                    String otherDesignation = appSvcClinicalDirectorDtos.get(i).getOtherDesignation();
+                    String otherDesignation = appSvcClinicalDirectorDto.getOtherDesignation();
                     if (StringUtil.isEmpty(otherDesignation)) {
                         map.put("otherDesignation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
                     } else if (otherDesignation.length() > 100) {
@@ -104,16 +106,16 @@ public class ValidateClincalDirector {
                         map.put("otherDesignation" + i, general_err0041);
                     }
                 }
-//                String specialty = appSvcClinicalDirectorDtos.get(i).getSpeciality();
+//                String specialty = appSvcClinicalDirectorDto.getSpeciality();
 //                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
 //                    map.put("speciality"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "speciality", "field"));
 //                }else {
 //
 //                }
-                String typeOfCurrRegi = appSvcClinicalDirectorDtos.get(i).getTypeOfCurrRegi();
-                /*Date specialtyGetDate = appSvcClinicalDirectorDtos.get(i).getSpecialtyGetDate();
-                String specialtyStr = appSvcClinicalDirectorDtos.get(i).getSpeciality();
-                String regNo = appSvcClinicalDirectorDtos.get(i).getProfRegNo();
+                String typeOfCurrRegi = appSvcClinicalDirectorDto.getTypeOfCurrRegi();
+                /*Date specialtyGetDate = appSvcClinicalDirectorDto.getSpecialtyGetDate();
+                String specialtyStr = appSvcClinicalDirectorDto.getSpeciality();
+                String regNo = appSvcClinicalDirectorDto.getProfRegNo();
                 //non-mandatory when no return Specialty value from PRS
                 if(!(!StringUtil.isEmpty(regNo) && !StringUtil.isEmpty(typeOfCurrRegi) && StringUtil.isEmpty(specialtyStr))){
                     if(StringUtil.isEmpty(specialtyGetDate)) {
@@ -121,46 +123,47 @@ public class ValidateClincalDirector {
                     }
                 }*/
                 if (StringUtil.isEmpty(typeOfCurrRegi)) {
-                    map.put("typeOfCurrRegi" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "typeOfCurrRegi", "field"));
+                    map.put("typeOfCurrRegi" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
                 } else {
                     if (typeOfCurrRegi.length() > 50) {
-                        String general_err0041 = AppValidatorHelper.repLength("typeOfCurrRegi", "50");
+                        String general_err0041 = AppValidatorHelper.repLength("Type of Registration Date", "50");
                         map.put("typeOfCurrRegi" + i, general_err0041);
                     }
                 }
-                String currRegiDate = appSvcClinicalDirectorDtos.get(i).getCurrRegiDateStr();
+                String currRegiDate = appSvcClinicalDirectorDto.getCurrRegiDateStr();
                 if (StringUtil.isEmpty(currRegiDate)) {
-                    map.put("currRegiDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "currRegiDate", "field"));
+                    map.put("currRegiDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Current Registration Date", "field"));
                 }
-                String praCerEndDate = appSvcClinicalDirectorDtos.get(i).getPraCerEndDateStr();
+                String praCerEndDate = appSvcClinicalDirectorDto.getPraCerEndDateStr();
                 if (StringUtil.isEmpty(praCerEndDate)) {
-                    map.put("praCerEndDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "praCerEndDate", "field"));
+                    map.put("praCerEndDate" + i,
+                            MessageUtil.replaceMessage("GENERAL_ERR0006", "Practicing Certificate End Date", "field"));
                 }
-                String typeOfRegister = appSvcClinicalDirectorDtos.get(i).getTypeOfRegister();
+                String typeOfRegister = appSvcClinicalDirectorDto.getTypeOfRegister();
                 if (StringUtil.isEmpty(typeOfRegister)) {
-                    map.put("typeOfRegister" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "typeOfRegister", "field"));
-                } else {
-
+                    map.put("typeOfRegister" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Register", "field"));
+                } else if (typeOfRegister.length() > 50) {
+                    map.put("typeOfRegister" + i, AppValidatorHelper.repLength("Type of Register", "50"));
                 }
-
-                String holdCerByEMS = appSvcClinicalDirectorDtos.get(i).getHoldCerByEMS();
+                // Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop
+                String holdCerByEMS = appSvcClinicalDirectorDto.getHoldCerByEMS();
                 if (StringUtil.isEmpty(holdCerByEMS)) {
                     map.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
                 } else if (AppConsts.NO.equals(holdCerByEMS)) {
                     map.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                 }
 
-                String mobileNo = appSvcClinicalDirectorDtos.get(i).getMobileNo();
+                String mobileNo = appSvcClinicalDirectorDto.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
-                    map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "mobileNo", "field"));
+                    map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
                 } else {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         map.put("mobileNo" + i, "GENERAL_ERR0007");
                     }
                 }
-                String emailAddr = appSvcClinicalDirectorDtos.get(i).getEmailAddr();
+                String emailAddr = appSvcClinicalDirectorDto.getEmailAddr();
                 if (StringUtil.isEmpty(emailAddr)) {
-                    map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "emailAddr", "field"));
+                    map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
                 } else {
                     if (!ValidationUtils.isEmail(emailAddr)) {
                         map.put("emailAddr" + i, "GENERAL_ERR0014");
@@ -169,7 +172,7 @@ public class ValidateClincalDirector {
                         map.put("emailAddr" + i, general_err0041);
                     }
                 }
-                switchService(serviceCode, appSvcClinicalDirectorDtos.get(i), map, i);
+                switchService(serviceCode, appSvcClinicalDirectorDto, map, i);
             }
         }
         log.info(StringUtil.changeForLog("=====>ValidateClincalDirector-->" + JsonUtil.parseToJson(map)));
@@ -188,7 +191,12 @@ public class ValidateClincalDirector {
                 map.put("profRegNo" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "profRegNo", "field"));
             }
         }
-        validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
+        if (StringUtil.isEmpty(relevantExperience)) {
+            map.put("relevantExperience" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Relevant Experience", "field"));
+        } else if (relevantExperience.length() > 180) {
+            map.put("relevantExperience" + index, AppValidatorHelper.repLength("Relevant Experience", "180"));
+        }
 //        Date now = new Date();
         LocalDate now = LocalDate.now();
         String err032 = MessageUtil.getMessageDesc("NEW_ERR0032");
@@ -206,19 +214,6 @@ public class ValidateClincalDirector {
         }
     }
 
-    protected void validateRelevantExperience(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto, Map<String, String> map,
-            int index) {
-        String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
-        if (StringUtil.isEmpty(relevantExperience)) {
-            map.put("relevantExperience" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "relevantExperience", "field"));
-        } else {
-            if (relevantExperience.length() > 180) {
-                String general_err0041 = AppValidatorHelper.repLength("relevantExperience", "50");
-                map.put("relevantExperience" + index, general_err0041);
-            }
-        }
-    }
-
     //Emergency Ambulance Service
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto, Map<String, String> map, int index) {
         String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
@@ -229,10 +224,15 @@ public class ValidateClincalDirector {
         if (StringUtil.isEmpty(profRegNo)) {
             map.put("profRegNo" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "profRegNo", "field"));
         }
+        String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
-        String regNo = appSvcClinicalDirectorDto.getProfRegNo();
-        if (!StringUtil.isEmpty(regNo) && StringUtil.isEmpty(speciality)) {
-            validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        if (!StringUtil.isEmpty(profRegNo) && StringUtil.isEmpty(speciality)) {
+            if (StringUtil.isEmpty(relevantExperience)) {
+                map.put("relevantExperience" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Relevant Experience", "field"));
+            }
+        }
+        if (relevantExperience != null && relevantExperience.length() > 180) {
+            map.put("relevantExperience" + index, AppValidatorHelper.repLength("Relevant Experience", "180"));
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
         LocalDate now = LocalDate.now();
@@ -249,9 +249,9 @@ public class ValidateClincalDirector {
         if (code == null) {
             return;
         }
-        if ("MTS".equals(code)) {
+        if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(code)) {
             doValidateForMTS(appSvcClinicalDirectorDto, map, index);
-        } else if ("EAS".equals(code)) {
+        } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(code)) {
             doValidateForEAS(appSvcClinicalDirectorDto, map, index);
         }
     }
