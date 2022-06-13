@@ -42,7 +42,7 @@
 <script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
-<script type="text/javascript" src="<%=webroot%>js/select2.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/select2.min.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/jquery.multi-select.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
