@@ -48,30 +48,32 @@ public class DocSettingService {
     public List<DocSetting> getFacRegDocSettings(String classification, List<String> activityTypes) {
         List<DocSetting> docSettings;
         if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(classification)) {
-            docSettings = new ArrayList<>(4);
+            docSettings = new ArrayList<>(5);
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout and ACMV Schematics", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL, "Facility Biosafety and Biosecurity Manual", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", false));
         } else if (MasterCodeConstants.FAC_CLASSIFICATION_UF.equals(classification)) {
             docSettings = new ArrayList<>(9);
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout and ACMV Schematics", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", false));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", false));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management: Work Activities", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL, "Facility Biosafety and Biosecurity Manual", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TEMPLATE, "Inventory Template", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TEMPLATE, "Inventory Template", false));
         } else if (MasterCodeConstants.FAC_CLASSIFICATION_LSPF.equals(classification)) {
-            docSettings = new ArrayList<>(7);
+            docSettings = new ArrayList<>(8);
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout and ACMV Schematics", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", false));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management: Work Activities", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", false));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL, "Facility Biosafety and Biosecurity Manual", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
         } else if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(classification)) {
             docSettings = new ArrayList<>(2);
@@ -80,7 +82,7 @@ public class DocSettingService {
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_PERSONNEL_HANDLE_TOXIN, "Personnel authorised to handle Fifth Schedule Toxins", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BS_SECURITY_MEASURE, "Biosafety and Biosecurity Measures", true));
             } else if (MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityType)) {
-                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_REPORTING_FORM, "Reporting Form", true));
+                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_REPORTING_FORM, "Inventory Reporting Form", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_MITIGATION_PLAN, "Risk Mitigation Plan", true));
             } else {
                 throw new IllegalArgumentException("Invalid facility activity type");
