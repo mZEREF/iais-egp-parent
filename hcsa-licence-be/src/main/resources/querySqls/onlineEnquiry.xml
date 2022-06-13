@@ -1170,10 +1170,10 @@
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS CENTER_NAME ,dds.SUBMISSION_NO,dpi.NAME PATIENT_NAME, dpi.ID_TYPE PATIENT_ID_TYPE, dpi.ID_NUMBER PATIENT_ID_NO, dpi.DATE_OF_BIRTH PATIENT_BIRTHDAY, dds.SUBMIT_DT,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_data_submission dds on (dds.ID = dpi.SUBMISSION_ID or dds.CYCLE_ID in(select dcp.ID from ds_cycle dcp where dcp.PATIENT_CODE = dpi.PATIENT_CODE)) AND dds.STATUS in ('DS001', 'DS011')
+                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID AND dds.STATUS in ('DS001', 'DS011')
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'DRP'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
-                left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
+                left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE and dc2.ID in (select dds2.CYCLE_ID from ds_data_submission dds2 where dds2.SUBMISSION_TYPE !='DP_TP001' AND dds2.STATUS in ('DS001', 'DS011'))
                 where 1=1
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
@@ -1199,11 +1199,12 @@
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS CENTER_NAME,
-                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,NULL DOCTOR_NAME ,dds.SUBMIT_DT
+                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,ddi.NAME DOCTOR_NAME ,dds.SUBMIT_DT
               FROM ds_dp_prescribed_dispensed ddpd
             join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
             join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE='DSCL_005'
             join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
+            left join ds_doctor_information ddi on ddi.DOCTOR_REIGN_NO =ddpd.DOCTOR_REIGN_NO
             where 1 = 1 and dds.STATUS not in ('DS002')
             <#if patientCode??> AND  :patientCode = dc.PATIENT_CODE</#if>
 
