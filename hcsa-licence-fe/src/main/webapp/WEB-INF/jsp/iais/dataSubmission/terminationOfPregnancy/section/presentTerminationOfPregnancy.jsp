@@ -728,16 +728,14 @@
                 } else if(isEmpty(!data.selection)) {
                     $('#topDoctorInformations').val(false);
                     loadingSp(data);
-                    if ('-1' == data.statusCode || '-2' == data.statusCode) {
+                    if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         $('#ELIS_SERVICE').modal('show');
-                    } else {
+                    }else if(isEmpty(data.selections)){
                         $('#PRS_SERVICE').modal('show');
-                    }
-                    if (data.hasException) {
+                    }else if (data.hasException) {
                         $('#PRS_CLOSE').modal('show');
                     }
                 }
-
                 dismissWaiting();
             },
             'error': function () {
