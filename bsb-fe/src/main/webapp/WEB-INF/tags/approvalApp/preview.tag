@@ -594,7 +594,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
-                            <a class="collapsed" data-toggle="collapse" href="#previewDocs">Primary Documents</a>
+                            <a class="collapsed" data-toggle="collapse" href="#previewDocs">Supporting Documents</a>
                         </h4>
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">

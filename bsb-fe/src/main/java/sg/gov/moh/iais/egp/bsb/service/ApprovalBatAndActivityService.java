@@ -31,6 +31,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
@@ -50,6 +51,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -967,13 +969,18 @@ public class ApprovalBatAndActivityService {
         Nodes.needValidation(approvalAppRoot, NODE_NAME_PREVIEW);
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW, previewDto);
 
+        boolean isProcModeImport = false;
         String processType = (String) ParamUtil.getSessionAttr(request, KEY_PROCESS_TYPE);
         switch (processType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
-                ParamUtil.setRequestAttr(request, KEY_BAT_INFO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT)).getValue());
+                BiologicalAgentToxinDto dto = (BiologicalAgentToxinDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT)).getValue();
+                ParamUtil.setRequestAttr(request, KEY_BAT_INFO, dto);
+                isProcModeImport = dto.getBatInfos().stream().map(i->i.getDetails().getProcurementMode()).collect(Collectors.toSet()).contains(MasterCodeConstants.PROCUREMENT_MODE_IMPORT);
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
-                ParamUtil.setRequestAttr(request, KEY_BAT_INFO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT)).getValue());
+                ApprovalToLargeDto lspDto = (ApprovalToLargeDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT)).getValue();
+                ParamUtil.setRequestAttr(request, KEY_BAT_INFO, lspDto);
+                isProcModeImport = lspDto.getBatInfos().stream().map(i->i.getDetails().getProcurementMode()).collect(Collectors.toSet()).contains(MasterCodeConstants.PROCUREMENT_MODE_IMPORT);
                 break;
             case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
                 ParamUtil.setRequestAttr(request, KEY_BAT_INFO, ((SimpleNode)approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT)).getValue());
@@ -986,7 +993,6 @@ public class ApprovalBatAndActivityService {
                 log.info("no such processType {}", StringUtils.normalizeSpace(processType));
                 break;
         }
-
         List<DocSetting> approvalAppDocSettings = docSettingService.getApprovalAppDocSettings(processType);
         ParamUtil.setRequestAttr(request, "docSettings", approvalAppDocSettings);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
@@ -994,6 +1000,7 @@ public class ApprovalBatAndActivityService {
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setSessionAttr(request,"isProcModeImport",isProcModeImport);
 
         Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(approvalAppDocSettings, savedFiles.keySet(), newFiles.keySet());
         ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);

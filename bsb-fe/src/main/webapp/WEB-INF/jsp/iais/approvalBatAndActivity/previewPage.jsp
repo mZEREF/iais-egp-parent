@@ -49,23 +49,39 @@
                                                 <span data-err-ind="remarks" class="error-msg"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group ">
-                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="declare1" id="declare1" value="Y" <c:if test="${previewDto.require eq 'Y'}">checked = checked</c:if>/>
+
+
+                                        <c:if test="${processType ne 'PROTYPE012' && processType ne 'PROTYPE004'}">
+                                            <div class="form-group ">
+                                                <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                                                    <input type="checkbox" name="declare1" id="declare1" value="Y" <c:if test="${previewDto.declare1 eq 'Y'}">checked = checked</c:if>/>
+                                                </div>
+                                                <div class="col-xs-10 control-label" style="padding: 30px 0">
+                                                    <label for="declare1" >I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                                                    <span data-err-ind="declare1" class="error-msg"></span>
+                                                </div>
                                             </div>
-                                            <div class="col-xs-10 control-label" style="padding: 30px 0">
-                                                <label for="declare1" >I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
-                                                <span data-err-ind="require" class="error-msg"></span>
+                                        </c:if>
+
+                                        <c:if test="${isProcModeImport}">
+                                            <div class="form-group ">
+                                                <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                                                    <input type="checkbox" name="declare3" id="declare3" value="Y" <c:if test="${previewDto.declare3 eq 'Y'}">checked = checked</c:if>/>
+                                                </div>
+                                                <div class="col-xs-10 control-label" style="padding: 30px 0">
+                                                    <label for="declare3" >I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                                                    <span data-err-ind="declare3" class="error-msg"></span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </c:if>
 
                                         <div class="form-group ">
                                             <div class="col-xs-1" style="padding: 30px 0 0 30px;">
-                                                <input type="checkbox" name="declare2" id="declare2" value="Y" <c:if test="${previewDto.accuracy eq 'Y'}">checked = checked</c:if>/>
+                                                <input type="checkbox" name="declare2" id="declare2" value="Y" <c:if test="${previewDto.declare2 eq 'Y'}">checked = checked</c:if>/>
                                             </div>
                                             <div class="col-xs-10 control-label" style="padding: 30px 0">
                                                 <label for="declare2">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
-                                                <span data-err-ind="accuracy" class="error-msg"></span>
+                                                <span data-err-ind="declare2" class="error-msg"></span>
                                             </div>
                                         </div>
 

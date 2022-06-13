@@ -13,14 +13,18 @@ import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,6 +58,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APP_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_LARGE_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_POSSESS_BAT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto.KEY_USER_ID_FACILITY_AUTH_MAP;
@@ -197,10 +204,17 @@ public class ApprovalBatAndActivityDelegator {
     public void handlePreview(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = approvalBatAndActivityService.getApprovalActivityRoot(request, null);
+        String processType = (String) ParamUtil.getSessionAttr(request, ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE);
         SimpleNode previewNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PREVIEW);
         PreviewDto previewDto = (PreviewDto) previewNode.getValue();
         previewDto.reqObjMapping(request);
-
+        boolean isProcModeImport = (boolean) ParamUtil.getSessionAttr(request,"isProcModeImport");
+        if(isProcModeImport){
+            previewDto.setHasProcModeImport(ValidationConstants.YES);
+        }else{
+            previewDto.setHasProcModeImport(ValidationConstants.NO);
+        }
+        request.getSession().removeAttribute("isProcModeImport");
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
@@ -221,7 +235,6 @@ public class ApprovalBatAndActivityDelegator {
                     AppMainInfo appMainInfo = responseDto.getEntity();
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
-                    String processType = approvalSelectionDto.getProcessType();
                     List<String> displayList;
                     switch (processType){
                         case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
