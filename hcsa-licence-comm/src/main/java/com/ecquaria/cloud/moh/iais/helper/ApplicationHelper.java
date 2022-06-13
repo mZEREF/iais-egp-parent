@@ -1231,7 +1231,7 @@ public final class ApplicationHelper {
                 if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
                     continue;
                 }
-                String nationality = AppConsts.NATIONALITY_SG;
+                //String nationality = AppConsts.NATIONALITY_SG;
                 AppSvcPersonAndExtDto appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
                 AppSvcPersonDto appSvcPersonDto = new AppSvcPersonDto();
 //                    appSvcPersonDto.setCurPersonelId("");
@@ -1239,7 +1239,6 @@ public final class ApplicationHelper {
                 appSvcPersonDto.setName(feUserDto.getDisplayName());
                 appSvcPersonDto.setIdType(idType);
                 appSvcPersonDto.setIdNo(idNo);
-                appSvcPersonDto.setNationality(nationality);
                 appSvcPersonDto.setDesignation(feUserDto.getDesignation());
                 appSvcPersonDto.setOtherDesignation(feUserDto.getDesignationOther());
                 appSvcPersonDto.setMobileNo(feUserDto.getMobileNo());
@@ -1249,7 +1248,7 @@ public final class ApplicationHelper {
                 appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 appSvcPersonAndExtDto.setLicPerson(true);
                 appSvcPersonAndExtDto.setLoadingType(ApplicationConsts.PERSON_LOADING_TYPE_BLUR);
-                personMap.put(getPersonKey(nationality, idType, idNo), appSvcPersonAndExtDto);
+                personMap.put(getPersonKey(null, idType, idNo), appSvcPersonAndExtDto);
             }
         }
 
