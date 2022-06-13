@@ -4068,7 +4068,7 @@ public class NewApplicationHelper {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.APPSUBMISSIONDTO);
         return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
-                && checkIsRfi(request);
+                && !checkIsRfi(request);
     }
 
     private static AppSvcChckListDto getSvcChckListDtoByConfigId(String configId, List<AppSvcChckListDto> appSvcChckListDtos) {
