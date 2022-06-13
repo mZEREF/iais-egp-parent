@@ -165,6 +165,7 @@ $(function () {
 
         var section0 = $("#" + meta.sectionIdPrefix + meta.separator + "0");
         if (firstOfficer) {
+            $("#fakeOfficerSection").hide();
             modifyClonedNode(section0[0], 0, meta.separator);
             resetNiceSelect(section0);
             section0.show();
@@ -221,6 +222,9 @@ $(function () {
                 deleteSection(meta.sectionIdPrefix, meta.separator, idx);
             }
             idxArr = removeIdx(idxArr, idx);
+            if (idxArr.length === 0) {
+                $("#fakeOfficerSection").show();
+            }
             // set the input after the deletion of DOM to make sure the consistent between view and value.
             idxInput.val(idxArr.join(" "));
         }

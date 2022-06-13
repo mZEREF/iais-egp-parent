@@ -76,9 +76,18 @@
                                                     <label for="employeeNameM">Name</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <label id="employeeNameM">${facAdminOfficer.mainAdmin.name}</label>
+                                                <div class="col-sm-6 col-md-7 control-label">
+                                                    <label id="employeeNameM"><c:out value="${facAdminOfficer.mainAdmin.name}"/></label>
                                                     <span data-err-ind="nameM" class="error-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label for="idTypeM">ID Type</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7 control-label">
+                                                    <label id="idTypeM"><iais:code code="${facAdminOfficer.mainAdmin.idType}"/></label>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -86,8 +95,8 @@
                                                     <label for="idNumberM">ID No</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <label id="idNumberM">${facAdminOfficer.mainAdmin.idNumber}</label>
+                                                <div class="col-sm-6 col-md-7 control-label">
+                                                    <label id="idNumberM"><c:out value="${facAdminOfficer.mainAdmin.idNumber}"/></label>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -260,8 +269,14 @@
                                                     request.setAttribute("noOfficer", java.lang.Boolean.TRUE);
                                                 } else {
                                                     request.setAttribute("officerList", facAdminAndOfficerDto.getOfficerList());
+                                                    request.setAttribute("noOfficer", java.lang.Boolean.FALSE);
                                                 }
                                             %>
+                                            <section id="fakeOfficerSection" <c:if test="${not noOfficer}">style="display: none"</c:if>>
+                                                <div class="form-group">
+                                                    <h3 class="col-xs-12" style="border-bottom: 1px solid black">Facility Officer <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note: The Facility Officer refers to personnel who are authorised by the Facility Administrator/Alternate Facility Administrator to login to HALP to perform selected transactions for the facility. Nomination of a Facility Officer is optional. The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of Facility Officer is always kept up to date i.e. prompt submission of updates to include newly appointed Facility Officer or to remove Facility Officer who are no longer authorised to transact for the facility.</p>">i</a></h3>
+                                                </div>
+                                            </section>
                                             <c:forEach var="officer" items="${officerList}" varStatus="status">
                                             <section id="officerSection--v--${status.index}" <c:if test="${noOfficer}">style="display: none"</c:if>>
                                                     <div class="form-group">
