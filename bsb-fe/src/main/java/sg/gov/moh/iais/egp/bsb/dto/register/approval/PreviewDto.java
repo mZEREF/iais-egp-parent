@@ -16,11 +16,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PreviewDto extends ValidatableNodeValue {
+    private String processType;
+
+    private String hasProcModeImport;
+
     private String remarks;
     //I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.
     private String declare1;
     //I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.
     private String declare2;
+
+    private String declare3;
 
 
     @JsonIgnore
@@ -69,16 +75,43 @@ public class PreviewDto extends ValidatableNodeValue {
         this.declare2 = declare2;
     }
 
+    public String getDeclare3() {
+        return declare3;
+    }
+
+    public void setDeclare3(String declare3) {
+        this.declare3 = declare3;
+    }
+
+    public String getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(String processType) {
+        this.processType = processType;
+    }
+
+    public String getHasProcModeImport() {
+        return hasProcModeImport;
+    }
+
+    public void setHasProcModeImport(String hasProcModeImport) {
+        this.hasProcModeImport = hasProcModeImport;
+    }
+
     //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_REMARKS = "remarks";
     private static final String KEY_DECLARE_1 = "declare1";
     private static final String KEY_DECLARE_2 = "declare2";
+    private static final String KEY_DECLARE_3 = "declare3";
 
     public void reqObjMapping(HttpServletRequest request) {
+        setProcessType((String) ParamUtil.getSessionAttr(request,ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE));
         setRemarks(ParamUtil.getString(request, KEY_REMARKS));
         String[] declareArray1 = ParamUtil.getStrings(request, KEY_DECLARE_1);
         String[] declareArray2 = ParamUtil.getStrings(request, KEY_DECLARE_2);
+        String[] declareArray3 = ParamUtil.getStrings(request, KEY_DECLARE_3);
         if (declareArray1 != null && declareArray1.length > 0) {
             setDeclare1("Y");
         } else {
@@ -88,6 +121,11 @@ public class PreviewDto extends ValidatableNodeValue {
             setDeclare2("Y");
         } else {
             setDeclare2("");
+        }
+        if (declareArray3 != null && declareArray3.length > 0) {
+            setDeclare3("Y");
+        } else {
+            setDeclare3("");
         }
     }
 }

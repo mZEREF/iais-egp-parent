@@ -128,15 +128,12 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     var nextIdx = parseInt(idxArr[currentAmt - 1]) + 1;
 
     var section0 = $("#" + sectionIdPrefix + separator + "0");
-    if (currentAmt > 1) {
-        changeFirstSectionHeader(sectionIdPrefix, 0, headerTitlePrefix, true);
-    }
     var newSectionDivJqObj = section0.clone(true);
     var newSectionDiv = newSectionDivJqObj[0];
-    modifyClonedNode(newSectionDiv, nextIdx, separator);
-    if(currentAmt === 2){
-        $("#" + sectionIdPrefix + separator + nextIdx).find("div");
+    if (nextIdx === 1) {
+        changeFirstSectionHeader(sectionIdPrefix, 0, headerTitlePrefix,separator,true);
     }
+    modifyClonedNode(newSectionDiv, nextIdx, separator);
     var newHeaderDiv = newSectionHeader(currentAmt + 1, nextIdx, headerTitlePrefix);
     newSectionDiv.replaceChild(newHeaderDiv, newSectionDiv.children[0]);
 
