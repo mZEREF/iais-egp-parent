@@ -30,7 +30,7 @@ public interface InsRepService {
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
     String getPeriodDefault(ApplicationViewDto applicationViewDto,TaskDto taskDto);
     List<String> getPeriods(ApplicationViewDto applicationViewDto);
-    ApplicationViewDto getApplicationViewDto (String appNo);
+    ApplicationViewDto getApplicationViewDto (String appNo, String currentRoleId);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
     String  getRobackUserId(String appId,String stageId);
     void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto, String ao1Id) throws Exception;

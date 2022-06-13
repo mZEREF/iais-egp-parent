@@ -73,6 +73,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -129,6 +130,8 @@ public class InspecEmailDelegator {
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String SUBJECT="subject";
     private static final String APP_VIEW_DTO="applicationViewDto";
+    private static final String ROLL_BACK_OPTIONS="rollBackToOptions";
+    private static final String ROLL_BACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -156,6 +159,8 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
+        ParamUtil.setSessionAttr(request,ROLL_BACK_OPTIONS, null);
+        ParamUtil.setSessionAttr(request,ROLL_BACK_VALUE_MAP, null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
@@ -348,7 +353,7 @@ public class InspecEmailDelegator {
         }
         inspectionEmailTemplateDto.setMessageContent(mesContext);
 
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
             if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
@@ -378,6 +383,10 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+        //init roll back
+        Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
+        ParamUtil.setSessionAttr(request,ROLL_BACK_OPTIONS,(Serializable) inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap));
+        ParamUtil.setSessionAttr(request,ROLL_BACK_VALUE_MAP, (Serializable) historyDtoMap);
     }
 
 
@@ -496,6 +505,17 @@ public class InspecEmailDelegator {
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto,userId,inspectionEmailTemplateDto.getRemarks());
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"");
+        } else if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
+            String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            if(StringUtil.isEmpty(rollBackTo)){
+                errorMap.put("rollBackTo", "GENERAL_ERR0006");
+                ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
+            }else {
+                Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+                ParamUtil.setRequestAttr(bpc.request,"isRollBack",true);
+            }
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);

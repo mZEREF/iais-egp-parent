@@ -86,7 +86,7 @@ public class InsReportAoDelegator  {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId, null);
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         }

@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import java.io.IOException;
@@ -63,6 +65,8 @@ public class InsReportDelegator {
     private FillupChklistService fillupChklistService;
     @Autowired
     private VehicleCommonController vehicleCommonController;
+    @Autowired
+    private InspectionService inspectionService;
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final static String RECOMMENDATION = "recommendation";
     private final static String CHRONO = "chrono";
@@ -79,6 +83,9 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "insRepDto", null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+        ParamUtil.setSessionAttr(request,"rollBackToOptions",null);
+        ParamUtil.setSessionAttr(request,"rollBackToValueMap",null);
         vehicleCommonController.clearVehicleInformationSession(request);
     }
 
@@ -95,7 +102,7 @@ public class InsReportDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId, taskDto.getRoleId());
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT, applicationViewDto.getApplicationDto().getApplicationNo());
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
@@ -126,6 +133,10 @@ public class InsReportDelegator {
                 appPremisesRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
             }
         }
+        Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackSelectOptions = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap);
+        ParamUtil.setSessionAttr(request,"rollBackToOptions",(Serializable) rollBackSelectOptions);
+        ParamUtil.setSessionAttr(request,"rollBackValueMap", (Serializable) historyDtoMap);
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
@@ -140,8 +151,10 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "appType", null);
         ParamUtil.setSessionAttr(request, "infoClassTop", infoClassTop);
         ParamUtil.setSessionAttr(request, "reportClassTop", null);
+        ParamUtil.setSessionAttr(request, "processClassTop", null);
         ParamUtil.setSessionAttr(request, "infoClassBelow", infoClassBelow);
         ParamUtil.setSessionAttr(request, "reportClassBelow", reportClassBelow);
+        ParamUtil.setSessionAttr(request, "processClassBelow", "tab-pane");
         ParamUtil.setSessionAttr(request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(request, "chronoOption", (Serializable) chronoOption);
@@ -189,6 +202,29 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecommendation("Post");
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if("rollBack".equals(appPremisesRecommendationDto.getProcessingDecision())){
+            String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+            if(StringUtil.isEmpty(rollBackTo)){
+                errorMap.put("rollBackTo", "GENERAL_ERR0006");
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                //set open process tab
+                ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "processClassTop", "active");
+                ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
+            }else {
+                Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+                ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"rollBack");
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            }
+            return;
+        }
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if(appTypes.contains(applicationType)){
             String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
@@ -209,8 +245,10 @@ public class InsReportDelegator {
             String reportClassBelow = "tab-pane active";
             ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
             ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
+            ParamUtil.setSessionAttr(bpc.request, "processClassTop", null);
             ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
             ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane");
             return;
         }
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
@@ -479,6 +517,7 @@ public class InsReportDelegator {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
+        riskLevelResult.add(new SelectOption("rollBack", "RollBack"));
         return riskLevelResult;
     }
 }
