@@ -411,7 +411,7 @@
                                         <input type="hidden" name="dpoIsPartEdit" value="0"/>
                                         <input type="hidden" name="dpoIndexNo" value="${deputy.indexNo}"/>
                                         <input type="hidden" name="dpoLoadingType" value="${deputy.loadingType}"/>
-                                        <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
+                                        <div class="row" <c:if test="${status.first}">style="margin-top: -20px;"</c:if> >
                                             <div class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-6 control-label formtext col-md-8">

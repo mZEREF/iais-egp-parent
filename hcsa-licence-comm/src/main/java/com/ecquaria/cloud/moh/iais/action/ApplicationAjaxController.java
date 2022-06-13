@@ -835,7 +835,7 @@ public class ApplicationAjaxController {
         String resCode = "404";
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
         if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)
-                && (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))) {
+                /*&& (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))*/) {
             for (FeUserDto feUserDto : feUserDtos) {
                 String userIdType = feUserDto.getIdType();
                 if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
