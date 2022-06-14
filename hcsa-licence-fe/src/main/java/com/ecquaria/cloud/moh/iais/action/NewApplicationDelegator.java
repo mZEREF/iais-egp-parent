@@ -193,7 +193,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
                     Map<String, AppGrpPremisesDto> premisesDtoMap = ApplicationHelper.checkPremisesMap(appGrpPremisesDtoList, false,
-                            request);
+                            false, request);
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                         if (HcsaAppConst.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())) {
                             String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
