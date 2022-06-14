@@ -193,7 +193,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="urineTest" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
+                <div id="urineTest" <c:if test="${drugSubmission.drugType!='DPD002'|| drugSubmission.medication !='MED002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">

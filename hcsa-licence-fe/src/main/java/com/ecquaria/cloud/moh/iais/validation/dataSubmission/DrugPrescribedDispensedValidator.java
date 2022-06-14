@@ -121,7 +121,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
-        if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())){
+        if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())&&DataSubmissionConsts.DRUG_DISPENSED.equals(drugSubmission.getDrugType())){
             result = WebValidationHelper.validateProperty(drugSubmission, "UT");
         }else if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
             result = WebValidationHelper.validateProperty(drugSubmission, "NURSE");
