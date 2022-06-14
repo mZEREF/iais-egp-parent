@@ -295,6 +295,10 @@ public class ApprovalBatAndActivityService {
         if (org.springframework.util.StringUtils.hasLength(oldProcessType) && oldProcessType.equals(newProcessType)) {
             // selected processType is the same
             approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
+            if(approvalAppRoot == null){
+                //handle context oldProcessType is same as newProcessType,but validation is no pass,without init of NodeGroup
+                approvalAppRoot = newApprovalAppRoot(KEY_ROOT_NODE_GROUP,oldProcessType);
+            }
         } else {
             // selected processType is the different
             approvalAppRoot = newApprovalAppRoot(KEY_ROOT_NODE_GROUP, newProcessType);
