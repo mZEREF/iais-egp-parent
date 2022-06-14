@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>
 <input type="hidden" name="appType" id="appType" value="${dpSuperDataSubmissionDto.appType}">
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 95px;">
@@ -70,19 +70,28 @@
                 <iais:row>
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
-                                     onchange="countryStar()"
+                        <iais:select name="country" id="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
                                      cssClass="countrySel" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" id="cityLable" value="City" mandatory="true"/>
+                    <%--<iais:field width="5" id="cityLable" value="City" mandatory="true"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">City
+                        <span id="cityStar" class="mandatory">
+                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="city" value="${patientDto.city}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" id="stateLable" value="State"  mandatory="true"/>
+                    <%--<iais:field width="5" id="stateLable" value="State"  mandatory="true"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">State
+                        <span id="stateStar" class="mandatory">
+                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="state" value="${patientDto.state}" />
                     </iais:value>
@@ -209,45 +218,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        var appType = $('input[name="appType"]').val();
-        if('DSTY_005'==appType){
-            disableContent('div.patient');
-        }
-        toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
-
-        toggleSelect("#idType",'DTV_IT003', 'nationalityStar');
-        toggleSelect("#addrType",'ADDTY001', 'blkNoStar');
-        toggleSelect("#addrType",'ADDTY001', 'floorNoStar');
-    });
-    function  test(sel,val,id1,id2){
-        toggleSelect(sel,val,id1);
-        toggleSelect(sel,val,id2);
-    }
-    function toggleSelect(sel, val, elem) {
-        if (isEmpty(sel)) {
-            return;
-        }
-        var $selector = $(sel);
-        if ($selector.length == 0) {
-            $selector = $('#' + sel);
-        } else if ($selector.length == 0) {
-            $selector = $('.' + sel);
-        }
-        var $target = $(elem);
-        if ($target.length == 0) {
-            $target = $('#' + elem);
-        } else if ($target.length == 0) {
-            $target = $('.' + sel);
-        }
-        if ($selector.length == 0 || $target.length == 0) {
-            return;
-        }
-        if ($selector.val() == val) {
-            $target.text("*")
-        } else {
-            $target.text("")
-        }
-    }
-</script>
