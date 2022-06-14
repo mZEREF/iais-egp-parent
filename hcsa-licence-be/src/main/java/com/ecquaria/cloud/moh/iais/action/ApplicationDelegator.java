@@ -203,6 +203,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         if (isRenewalOrRfc) {
             RfcHelper.svcDocToPresmise(appSubmissionDto);
         }
+        loadingRfiGrpServiceConfig(appSubmissionDto, request);
         svcRelatedInfoRFI(appSubmissionDto, appNo);
         //set max file index into session
         ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
