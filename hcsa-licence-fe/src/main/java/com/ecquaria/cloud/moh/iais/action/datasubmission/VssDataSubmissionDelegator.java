@@ -61,7 +61,6 @@ public class VssDataSubmissionDelegator {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
-
     public static final String ACTION_TYPE_CONFIRM = "confirm";
 
     /**
@@ -86,6 +85,7 @@ public class VssDataSubmissionDelegator {
         if (vssSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
+
     }
 
 
@@ -492,7 +492,7 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_VSS);
-        ParamUtil.setSessionAttr(request,"isPrint",null);
+        ParamUtil.setSessionAttr(request,"isPrintDoc",null);
     }
 
     private int doPreview(HttpServletRequest request) {

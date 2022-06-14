@@ -49,6 +49,7 @@ public class MohDsPrintDelegator {
             String title = ParamUtil.getString(bpc.request, "title");
             ParamUtil.setRequestAttr(bpc.request, "title", title);
         }
+        ParamUtil.setSessionAttr(bpc.request,"isPrintDoc","yes");
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);
         ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
@@ -108,7 +109,7 @@ public class MohDsPrintDelegator {
                 dataSubmissionDto.setDeclaration(null);
             }
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
-            ParamUtil.setSessionAttr(request,"isPrint","yes");
+            ParamUtil.setSessionAttr(request,"isPrintDoc","yes");
         }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTTOP,DataSubmissionConstant.PRINT_FLAG_TOP})) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
