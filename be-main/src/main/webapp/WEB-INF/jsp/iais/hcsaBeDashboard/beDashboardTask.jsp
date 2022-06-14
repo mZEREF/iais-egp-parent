@@ -260,6 +260,12 @@
 <script type="text/javascript">
     var dividajaxlist = [];
 
+    <c:if test="${flag eq 'false' && not empty successInfo}">
+    $(document).ready(function() {
+        $('#approveAo .modal-body span').html('${successInfo["nextStage"]}');
+        $('#approveAo').modal('show');
+    });
+    </c:if>
     $("#clearBtn").click(function () {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
