@@ -100,7 +100,7 @@
     <iais:row>
         <iais:field width="5" value="Method of Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="sterilizationMethod" firstOption="Please Select"  options="sterilizationLists"
+            <iais:select name="sterilizationMethod" cssClass="sterilizationMethod" firstOption="Please Select"  options="sterilizationLists"
                          value="${sexualSterilizationDto.sterilizationMethod}"/>
         </iais:value>
     </iais:row>
