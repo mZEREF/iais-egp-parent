@@ -56,11 +56,11 @@ public class DeclarationOnCriminalRecords implements Declarations {
             }
         }
         String criminalRecordsRemark = appDeclarationMessageDto.getCriminalRecordsRemark();
-        if(StringUtil.isEmpty(criminalRecordsRemark)&&flag){
+        if (StringUtil.isEmpty(criminalRecordsRemark) && flag) {
             map.put("criminalRecordsRemark", err06);
-        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>=1000){
-            String general_err0041= AppValidatorHelper.repLength("this","1000");
-            map.put("criminalRecordsRemark",general_err0041);
+        }
+        if (!StringUtil.isEmpty(criminalRecordsRemark) && criminalRecordsRemark.length() > 1000) {
+            map.put("criminalRecordsRemark", AppValidatorHelper.repLength("This", "1000"));
         }
     }
 }
