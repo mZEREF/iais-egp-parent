@@ -1551,7 +1551,7 @@ public final class ApplicationHelper {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APPSUBMISSIONDTO);
         String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
-        checkPremisesMap(request);
+        checkPremisesMap(true, true, request);
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -3796,24 +3796,25 @@ public final class ApplicationHelper {
         return MiscUtil.getFloorNo(floorNo);
     }
 
-    public static Map<String, AppGrpPremisesDto> checkPremisesMap(HttpServletRequest request) {
-        return checkPremisesMap(true, request);
+    public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, HttpServletRequest request) {
+        return checkPremisesMap(reSetCurrent, false, request);
     }
 
-    public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, HttpServletRequest request) {
+    public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
+            HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        return checkPremisesMap(appSubmissionDto.getAppGrpPremisesDtoList(), reSetCurrent, request);
+        return checkPremisesMap(appSubmissionDto.getAppGrpPremisesDtoList(), reSetCurrent, reSetSesstion, request);
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(final List<AppGrpPremisesDto> appGrpPremisesDtoList,
-            boolean reSetCurrent, HttpServletRequest request) {
+            boolean reSetCurrent, boolean reSetSesstion, HttpServletRequest request) {
         LicCommService licCommService = SpringHelper.getBean(LicCommService.class);
         String licenseeId = getLicenseeId(request);
         List<AppGrpPremisesDto> licenceList = IaisCommonUtils.genNewArrayList();
         boolean handleCurrent = appGrpPremisesDtoList != null;
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.LIC_PREMISES_MAP);
-        if (licAppGrpPremisesDtoMap == null) {
+        if (reSetSesstion || licAppGrpPremisesDtoMap == null) {
             List<AppGrpPremisesDto> licencePremisesDtoList =
                     IaisCommonUtils.getList(licCommService.getLicencePremisesDtoList(licenseeId));
             // check licence data with current
@@ -3836,7 +3837,7 @@ public final class ApplicationHelper {
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.APP_PREMISES_MAP);
-        if (appPremisesMap == null) {
+        if (reSetSesstion || appPremisesMap == null) {
             AppCommService appCommService = SpringHelper.getBean(AppCommService.class);
             List<AppGrpPremisesDto> activePendingPremiseList = IaisCommonUtils.getList(
                     appCommService.getActivePendingPremiseList(licenseeId));
