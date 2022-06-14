@@ -3539,11 +3539,11 @@ public final class ApplicationHelper {
         if (dupForPerson == null && "0".equals(dupForPrem)) {
             result = docTitle;
         } else if (dupForPerson == null && "1".equals(dupForPrem)) {
-            result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + "  1: " + docTitle;
+            result = HcsaConsts.MODE_OF_SVC_DELIVERY + "  1: " + docTitle;
         } else if (dupForPerson != null) {
             StringBuilder title = new StringBuilder();
             if ("1".equals(dupForPrem)) {
-                title.append(ApplicationConsts.TITLE_MODE_OF_SVCDLVY).append(" 1: ");
+                title.append(HcsaConsts.MODE_OF_SVC_DELIVERY).append(" 1: ");
             }
             title.append(getDupForPersonName(dupForPerson));
             if (num != null) {

@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
@@ -103,7 +104,7 @@ public class ClientReschedulingDelegator {
     }
 
     public void init(BaseProcessClass bpc)  {
-        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Scheduled Appointments");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Scheduled Appointments");
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
@@ -243,7 +244,7 @@ public class ClientReschedulingDelegator {
 
     public void doReschedule(BaseProcessClass bpc)  {
         String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
-        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Appointment Rescheduling");
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Appointment Rescheduling");
 
         if(keyIds==null){
             keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");

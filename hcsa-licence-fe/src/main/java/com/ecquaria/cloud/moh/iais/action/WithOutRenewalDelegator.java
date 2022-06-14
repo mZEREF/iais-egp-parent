@@ -191,7 +191,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, "requestInformationConfig", null);
         ParamUtil.setSessionAttr(bpc.request, "rfc_eqHciCode", null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile", null);
         ParamUtil.setSessionAttr(bpc.request, "pageShowFileDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "selectedRENEWFileDocShowPageDto", null);

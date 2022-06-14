@@ -1328,7 +1328,7 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             if (!isRfi) {
                 map = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, map, psnLength,
-                        "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
+                        "psnMandatory", HcsaConsts.CLINICAL_GOVERNANCE_OFFICER);
             }
             errList.putAll(map);
             reSetChangesForApp(appSubmissionDto);
@@ -1547,10 +1547,10 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
             if (!isRfi) {
                 map = AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poLength,
-                        "poPsnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER);
+                        "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
                 if (dpoLength > 0) {
                     map = AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
-                            dpoLength, "dpoPsnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
+                            dpoLength, "dpoPsnMandatory", HcsaConsts.NOMINEE);
                 }
             }
             reSetChangesForApp(appSubmissionDto);
@@ -1928,7 +1928,7 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
             if (!ApplicationHelper.checkIsRfi(bpc.request)) {
                 errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
-                        errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
+                        errorMap, psnLength, "psnMandatory", HcsaConsts.SERVICE_PERSONNEL);
             }
             errorMap = servicePersonPrsValidate(bpc.request, errorMap, appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
             if (appSubmissionDto.isNeedEditController()) {
@@ -2025,7 +2025,7 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
             if (!isRfi) {
                 errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap,
-                        psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                        psnLength, "psnMandatory", HcsaConsts.MEDALERT_PERSON);
             }
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_MEDALERT_PERSON, appSubmissionDto, bpc.request);

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -1608,12 +1609,12 @@ public class LicenceViewServiceDelegator {
                 v.setSvcComDocId(svcDocId);
             }
             if ("1".equals(dupForPrem)) {
-                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(ApplicationConsts.TITLE_MODE_OF_SVCDLVY +
+                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(HcsaConsts.MODE_OF_SVC_DELIVERY +
                         " 1: " + v.getSvcComDocName());
                 if (grpPrimaryDocDtos == null) {
                     grpPrimaryDocDtos = new ArrayList<>();
                     grpPrimaryDocDtos.add(v);
-                    multipleGrpPrimaryDoc.put(ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + v.getSvcComDocName(),
+                    multipleGrpPrimaryDoc.put(HcsaConsts.MODE_OF_SVC_DELIVERY + " 1: " + v.getSvcComDocName(),
                             grpPrimaryDocDtos);
                 } else {
                     grpPrimaryDocDtos.add(v);

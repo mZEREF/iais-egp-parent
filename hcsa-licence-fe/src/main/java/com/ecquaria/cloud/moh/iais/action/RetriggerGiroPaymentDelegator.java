@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -98,8 +97,8 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_TITLE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ACK_SMALL_TITLE, null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"retriggerGiro");
+        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG,null);
 
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.constant;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,8 +14,8 @@ public final class HcsaAppConst {
 
     public static final String NEW_PREMISES                                 = "newPremise";
     public static final String NEW_PSN                                      = "newOfficer";
-    public static final String PLEASEINDICATE                               = "Please indicate";
-    public static final String SERVICE_SCOPE_LAB_OTHERS                     = "Others";
+    public static final String PLEASEINDICATE                               = HcsaConsts.SUBTYPE_PLEASEINDICATE;
+    public static final String SERVICE_SCOPE_LAB_OTHERS                     = HcsaConsts.SUBTYPE_OTHERS;
     public static final String DESIGNATION_OTHERS                           = "Others";
 
     public static final String SESSION_PARAM_APPLICATION_GROUP_ID           = "appGroupId";
@@ -32,7 +33,7 @@ public final class HcsaAppConst {
     public static final String ACK_SMALL_TITLE                              = "smallTitle";
 
     public static final String TITLE_LICENSEE                               = "Licensee Details";
-    public static final String TITLE_MODE_OF_SVCDLVY                        = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
+    public static final String TITLE_MODE_OF_SVCDLVY                        = HcsaConsts.MODE_OF_SVC_DELIVERY;
     public static final String TITLE_DOCUMENT                               = "Primary Documents";
     public static final String TITLE_SVCINFO                                = "Service-Related Information";
 
@@ -74,9 +75,9 @@ public final class HcsaAppConst {
     public static final String LICPERSONSELECTMAP                           = "LicPersonSelectMap";
 
     public static final String DRAFTCONFIG                                  = "DraftConfig";
-    public static final String GROUPLICENCECONFIG                          = "GroupLicenceConfig";
-    public static final String RFI_REPLY_SVC_DTO                           = "rfiReplySvcDto";
-    public static final String ASSESSMENTCONFIG                            = "AssessMentConfig";
+    public static final String GROUPLICENCECONFIG                           = "GroupLicenceConfig";
+    public static final String RFI_REPLY_SVC_DTO                            = "rfiReplySvcDto";
+    public static final String ASSESSMENTCONFIG                             = "AssessMentConfig";
 
     //page name
     public static final String APP_PAGE_NAME_LICENSEE                       = "APPPN00";

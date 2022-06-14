@@ -2234,7 +2234,8 @@
                         <iais:row>
                             <iais:field value="Public Email" mandatory="true" width="4"/>
                             <iais:value width="7" cssClass="col-md-5">
-                                <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
+                                <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"
+                                            value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsEmail${status.index}"></span>
                             </iais:value>
                         </iais:row>

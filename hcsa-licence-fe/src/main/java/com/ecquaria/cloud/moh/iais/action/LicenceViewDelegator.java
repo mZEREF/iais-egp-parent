@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -70,7 +69,7 @@ public class LicenceViewDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, null);
         String appeal = bpc.request.getParameter("appeal");
         bpc.request.setAttribute("appeal",appeal);
-        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
@@ -84,7 +83,7 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Licence Details");
+        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Licence Details");
         String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
         if(StringUtil.isEmpty(licencId)){
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);

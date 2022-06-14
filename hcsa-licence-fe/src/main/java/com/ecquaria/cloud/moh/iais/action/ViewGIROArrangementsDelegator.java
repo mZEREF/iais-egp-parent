@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixD
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -50,7 +51,7 @@ public class ViewGIROArrangementsDelegator {
     @Autowired
     private LicenceClient licenceClient;
     public void start(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","View GIRO Arrangements");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"View GIRO Arrangements");
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
