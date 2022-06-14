@@ -564,9 +564,6 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
             patientInformationDto.setOrgId(topSuperDataSubmissionDto.getOrgId());
         }
-        if (StringUtil.isNotEmpty(patientInformationDto.getPatientName())) {
-            patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
-        }
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
@@ -844,6 +841,10 @@ public class TopDataSubmissionDelegator {
         }
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
+        PatientInformationDto patientInformationDto=terminationOfPregnancyDto.getPatientInformationDto();
+        if (StringUtil.isNotEmpty(patientInformationDto.getPatientName())) {
+            patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
         String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
