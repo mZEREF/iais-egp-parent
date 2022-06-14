@@ -49,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -268,7 +267,7 @@ public class RequestForChangeMenuDelegator {
             bpc.request.setAttribute("ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
         }
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Mode of Service Delivery List");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Mode of Service Delivery List");
         List<SelectOption> list = new ArrayList<>();
         setSelectOption(list);
         ParamUtil.setRequestAttr(bpc.request, "applicationType", (Serializable) list);
@@ -433,7 +432,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Mode of Service Delivery Amendment");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Mode of Service Delivery Amendment");
         ParamUtil.setRequestAttr(bpc.request, "premisesList", AppConsts.YES);
         List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         ParamUtil.setRequestAttr(bpc.request, "weeklyOpList", weeklyOpList);
@@ -630,7 +629,7 @@ public class RequestForChangeMenuDelegator {
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Personnel List");
         List<SelectOption> specialtySelectList = genSpecialtySelectList();
         List<SelectOption> replaceOptions = genReplacePersonnel(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
@@ -686,7 +685,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DROPWOWN_IDTYPESELECT, idTypeSelectList);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel Amendment");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
 

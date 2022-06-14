@@ -965,7 +965,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         svcPerRoleOption.add(selectOption);
         selectOption=new SelectOption();
-        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
         selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
         svcPerRoleOption.add(selectOption);
         svcPerRoleOption.sort(Comparator.comparing(SelectOption::getText));

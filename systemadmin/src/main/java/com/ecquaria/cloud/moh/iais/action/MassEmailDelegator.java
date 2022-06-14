@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -555,7 +556,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Nominee","Nominee"));
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
-            selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+            selectOptions.add(new SelectOption("MedAlert Person","MedAlert Person"));
             selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
         }
         doSortSelOption(selectOptions);
@@ -587,7 +588,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Nominee"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,"Service Personnel"));
-            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,"MedAlert Person"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
 
         }
@@ -600,25 +601,25 @@ public class MassEmailDelegator {
         String roleName = "";
         switch (roleAbbreviation){
             case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
-                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER;
+                roleName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
-                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER;
+                roleName = HcsaConsts.PRINCIPAL_OFFICER;
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
-                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER;
+                roleName = HcsaConsts.NOMINEE;
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
-                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT;
+                roleName = HcsaConsts.MEDALERT_PERSON;
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
-                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC;
+                roleName = HcsaConsts.SERVICE_PERSONNEL;
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
-                roleName = "Licensee";
+                roleName = HcsaConsts.LICENSEE;
                 break;
             case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
-                roleName = "Clinical Director";
+                roleName = HcsaConsts.CLINICAL_DIRECTOR_BE;
                 break;
                 default:
                     roleName = roleAbbreviation;

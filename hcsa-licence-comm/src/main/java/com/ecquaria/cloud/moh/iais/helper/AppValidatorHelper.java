@@ -788,7 +788,7 @@ public final class AppValidatorHelper {
                     if (premises != null && (ApplicationConsts.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())
                             || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
                         errorMap.put("premisesHci" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
+                                MessageUtil.replaceMessage("GENERAL_ERR0050", HcsaConsts.MODE_OF_SVC_DELIVERY, "field"));
                     }
                 }
                 //65116

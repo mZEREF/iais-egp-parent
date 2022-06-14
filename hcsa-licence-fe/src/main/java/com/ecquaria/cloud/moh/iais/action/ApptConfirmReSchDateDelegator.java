@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -88,7 +88,7 @@ public class ApptConfirmReSchDateDelegator {
     public void apptUserChooseDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
     }
 
     /**
@@ -116,7 +116,7 @@ public class ApptConfirmReSchDateDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.SUCCESS);
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"System Proposes Alternate Dates");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"System Proposes Alternate Dates");
         ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", processReSchedulingDto);
     }
 

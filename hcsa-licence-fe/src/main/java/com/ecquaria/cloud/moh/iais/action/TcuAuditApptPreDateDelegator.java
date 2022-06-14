@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -81,7 +81,7 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, null);
         ParamUtil.setSessionAttr(bpc.request, "tcuAuditApptPreDateFlag", null);
     }
 
@@ -95,7 +95,7 @@ public class TcuAuditApptPreDateDelegator {
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDatePre start ...."));
         InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
         String apptPreDateFlag = applicantConfirmInspDateService.getTcuAuditApptPreDateFlag(inspSetMaskValueDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
         ParamUtil.setSessionAttr(bpc.request, "tcuAuditApptPreDateFlag", apptPreDateFlag);
     }
 
@@ -107,7 +107,7 @@ public class TcuAuditApptPreDateDelegator {
      */
     public void feTcuAuditApptPreDateStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the feTcuAuditApptPreDateStep start ...."));
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
     }
 
     /**
@@ -149,7 +149,7 @@ public class TcuAuditApptPreDateDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
         }
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
     }
 
     /**
@@ -171,6 +171,6 @@ public class TcuAuditApptPreDateDelegator {
             String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
             inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         }
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
     }
 }
