@@ -1542,6 +1542,11 @@ public final class ApplicationHelper {
         return timeMinList;
     }
 
+    /**
+     * set premises dropdown options
+     *
+     * @param request
+     */
     public static void setPremSelect(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APPSUBMISSIONDTO);
@@ -3853,6 +3858,12 @@ public final class ApplicationHelper {
             for (AppGrpPremisesDto dto : appList) {
                 appPremisesMap.remove(dto.getPremisesSelect());
             }
+            // Remove duplicated
+            for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
+                if (!licAppGrpPremisesDtoMap.containsKey(entry.getKey())) {
+                    newAppMap.put(entry.getKey(), entry.getValue());
+                }
+            }
             if (handleCurrent && (!licenceList.isEmpty() || !appList.isEmpty())) {
                 boolean isRfi = checkIsRfi(request);
                 int check = isRfi ? 3 : 2;
@@ -3906,7 +3917,7 @@ public final class ApplicationHelper {
         AppGrpPremisesDto premiseEntry = null;
         boolean isLicence = false;
         if (check == 3) {
-            premiseEntry = (AppGrpPremisesDto) CopyUtil.copyMutableObject(srcDto);
+            premiseEntry = CopyUtil.copyMutableObject(srcDto);
             if (StringUtil.isEmpty(premiseEntry.getExistingData())) {
                 premiseEntry.setExistingData(AppConsts.NO);
             } else if (AppConsts.YES.equals(premiseEntry.getExistingData())) {
