@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
@@ -49,12 +51,14 @@ public class TopDataSubmissionDelegator {
     public static final String ACTION_TYPE_CONFIRM = "confim";
     public static final String ACTION_TYPE_BACK = "back";
     private static final String PREMISES = "premises";
-    protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
+    /*protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";*/
     protected final static String  TOP_OTHERS    = "Others (E.g. Home)";
     private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
+    @Autowired
+    private AppSubmissionService appSubmissionService;
     //private static String COUNSELLING = null;
 
     @Autowired
@@ -195,20 +199,20 @@ public class TopDataSubmissionDelegator {
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
         DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+       /* TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         if(currentSuper==null){
            currentSuper=new TopSuperDataSubmissionDto();
         }
         TerminationOfPregnancyDto terminationOfPregnancyDto= currentSuper.getTerminationOfPregnancyDto();
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
-        }
-        PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto():terminationOfPregnancyDto.getPatientInformationDto();
+        }*/
+        /*PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto():terminationOfPregnancyDto.getPatientInformationDto();
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
             if(patientInformationDto.getPatientAge()<16){
                 selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
             }
-        }
+        }*/
         return selectOptions;
     }
     //TODO from ar center
@@ -856,6 +860,11 @@ public class TopDataSubmissionDelegator {
         }
         topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
         try {
+            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                terminationDto.setTopDoctorInformations("true");
+                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().setTerminationDto(terminationDto);
+            }
             topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);

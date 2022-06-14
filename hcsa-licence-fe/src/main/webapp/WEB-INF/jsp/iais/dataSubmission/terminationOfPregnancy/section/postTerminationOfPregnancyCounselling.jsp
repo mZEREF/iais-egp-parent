@@ -48,7 +48,7 @@
     </div>
     <div id="otherCounsellingRslts" <c:if test="${postTerminationDto.counsellingRslt != 'TOPCR007' || postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Post-Counselling Result - Others" mandatory="true"/>
+            <iais:field width="5" value="Result of Counselling - Others" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" name="otherCounsellingRslt" value="${postTerminationDto.otherCounsellingRslt}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_otherCounsellingRslt"></span>
@@ -89,28 +89,34 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-        <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${postTerminationDto.counsellingReignNo}"/>
-        </iais:value>
-    </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Date of Counselling" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker name="counsellingDate" value="${postTerminationDto.counsellingDate}"/>
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
-        </iais:value>
-    </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE" value="${postTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-            <iais:select name="TopPlace" options="TopPlace"  value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>
-            <span class="error-msg" name="iaisErrorMsg" id="error_TopPlace"></span>
-        </iais:value>
-    </iais:row>
+</div>
+    <div id="numCounsellingGivenDoc" <c:if test="${postTerminationDto.givenPostCounselling == false}">style="display: none"</c:if> >
+        <iais:row>
+            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+            <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${postTerminationDto.counsellingReignNo}"/>
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="numGivenPostCounsellings" <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Date of Counselling" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:datePicker name="counsellingDate" value="${postTerminationDto.counsellingDate}"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE" value="${postTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
+                <iais:select name="TopPlace" options="TopPlace"  value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_TopPlace"></span>
+            </iais:value>
+        </iais:row>
+    </div>
+
 </div>
 </div>
 </c:if>
@@ -125,9 +131,13 @@
        $('input[name=givenPostCounselling]').change(function () {
            if($('#radioYes').prop('checked')) {
                $('#numGivenPostCounselling').show();
+               $('#numGivenPostCounsellings').show();
+               $('#numCounsellingGivenDoc').show();
            }
            if($('#radioNo').prop('checked')) {
                $('#numGivenPostCounselling').hide();
+               $('#numGivenPostCounsellings').hide();
+               $('#numCounsellingGivenDoc').hide();
            }
        });
    }

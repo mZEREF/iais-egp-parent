@@ -147,6 +147,8 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
                 </iais:value>
             </iais:row>
+        </div>
+        <div id="numCounsellingGivenDoc" <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
             <iais:row>
                 <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
                 <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
@@ -154,6 +156,9 @@
                     <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
                 </iais:value>
             </iais:row>
+        </div>
+
+        <div id="numCounsellingGivens" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
             <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Date of Counselling
                     <span id="counsellingDate" class="mandatory">
@@ -257,7 +262,7 @@
             </iais:value>
         </iais:row>
     </div>
-        <div id="numCounsellingGivens" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
+        <div id="numCounsellingGivenAge" <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
             <iais:row>
                 <iais:field width="5" value="Patient Age (Years)"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="counsellingAge">
@@ -353,12 +358,16 @@
                 $('#noCounsReason').show();
                 $('#numCounsellingGiven').hide();
                 $('#numCounsellingGivens').hide();
+                $('#numCounsellingGivenAge').hide();
+                $('#numCounsellingGivenDoc').hide();
                 fillValue($('#counsellingPlaces'),null);
             }
             if ($('#counsellingYes').prop('checked')) {
                 $('#noCounsReason').hide();
                 $('#numCounsellingGiven').show();
                 $('#numCounsellingGivens').show();
+                $('#numCounsellingGivenAge').show();
+                $('#numCounsellingGivenDoc').show();
             }
         });
     });

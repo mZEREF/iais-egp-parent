@@ -35,7 +35,7 @@
                 </div>
                 <div <c:if test="${postTerminationDto.counsellingRslt != 'TOPCR007' || postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Post-Counselling Result - Others"/>
+                        <iais:field width="5" value="Result of Counselling - Others"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.otherCounsellingRslt}"/>
                         </iais:value>
@@ -69,12 +69,16 @@
                             <c:out value="${postTerminationDto.counsellorName}"/>
                         </iais:value>
                     </iais:row>
+                </div>
+                <div <c:if test="${postTerminationDto.givenPostCounselling == false}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellingReignNo}"/>
                         </iais:value>
                     </iais:row>
+                </div>
+                <div <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Date of Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
