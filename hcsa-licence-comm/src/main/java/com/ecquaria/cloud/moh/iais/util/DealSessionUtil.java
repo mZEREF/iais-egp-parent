@@ -112,6 +112,7 @@ public class DealSessionUtil {
         Map<String, AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
         session.setAttribute(HcsaAppConst.PERSONSELECTMAP, psnMap);
         session.removeAttribute(AppServicesConsts.HCSASERVICEDTOLIST);
+        session.removeAttribute(HcsaAppConst.HCSAS_GRP_SVC_LIST);
 
         session.removeAttribute("oldSubmitAppSubmissionDto");
         session.removeAttribute("submitAppSubmissionDto");

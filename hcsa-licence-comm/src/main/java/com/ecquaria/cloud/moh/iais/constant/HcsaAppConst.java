@@ -60,6 +60,8 @@ public final class HcsaAppConst {
     public static final String PRIMARY_DOC_CONFIG                           = "primaryDocConfig";
     public static final String SVC_DOC_CONFIG                               = "svcDocConfig";
     public static final String ALL_SVC_NAMES                                = "allSvcNames";
+    public static final String HCSAS_GRP_SVC_LIST                           = "HCSAS_GRP_SVC_LIST";
+
 
     public static final String REQUESTINFORMATIONCONFIG                     = "requestInformationConfig";
     public static final String ACKSTATUS                                    = "AckStatus";

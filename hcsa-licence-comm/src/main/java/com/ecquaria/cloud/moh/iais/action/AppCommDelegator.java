@@ -351,6 +351,18 @@ public abstract class AppCommDelegator {
         return optional.orElseGet(() -> appSvcRelatedInfoDtos.get(0));
     }
 
+    protected void loadingRfiGrpServiceConfig(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<String> serviceConfigIds = appSvcRelatedInfoDtos.stream()
+                .map(AppSvcRelatedInfoDto::getServiceId).collect(Collectors.toList());
+        List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosById(serviceConfigIds);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST, (Serializable) hcsaServiceDtoList);
+        log.info(StringUtil.changeForLog("the group config service size: " + hcsaServiceDtoList.size()));
+    }
+
     protected boolean loadingServiceConfig(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
@@ -1180,8 +1192,15 @@ public abstract class AppCommDelegator {
         if (premisesHciList != null) {
             return premisesHciList;
         }
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
-                AppServicesConsts.HCSASERVICEDTOLIST);
+        // if current is one of group new rfi, the premises will be only one, we need to check all apps in this group
+        List<HcsaServiceDto> hcsaServiceDtos = null;
+        if (isRfi) {
+            // init: this#loadingRfiGrpServiceConfig
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST);
+        }
+        if (hcsaServiceDtos == null) {
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
+        }
         List<PremisesDto> excludePremisesList = null;
         List<AppGrpPremisesDto> excludeAppPremList = null;
         if (oldAppSubmissionDto != null) {

@@ -272,6 +272,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
 
             if (appSubmissionDto != null) {
+                loadingRfiGrpServiceConfig(appSubmissionDto, request);
                 svcRelatedInfoRFI(appSubmissionDto, appNo);
                 //set max file index into session
                 ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
