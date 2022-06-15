@@ -2,14 +2,12 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
@@ -56,15 +54,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Slf4j
 @Delegator("bsbRfiFacilityRegisterDelegator")
 public class RfiFacilityRegistrationDelegator {
-    private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
     private final RfiService rfiService;
 
     @Autowired
-    public RfiFacilityRegistrationDelegator(FileRepoClient fileRepoClient,
-                                            FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, RfiService rfiService) {
-        this.fileRepoClient = fileRepoClient;
+    public RfiFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, RfiService rfiService) {
         this.facRegClient = facRegClient;
         this.facilityRegistrationService = facilityRegistrationService;
         this.rfiService = rfiService;
@@ -304,7 +299,6 @@ public class RfiFacilityRegistrationDelegator {
     }
 
     public void print(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        facilityRegistrationService.preparePreviewData(request);
+        facilityRegistrationService.print(bpc);
     }
 }
