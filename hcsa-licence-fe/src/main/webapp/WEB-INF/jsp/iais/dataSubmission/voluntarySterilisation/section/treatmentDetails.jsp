@@ -35,7 +35,7 @@
     <iais:row>
         <iais:field width="5" value="Date of Birth" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="birthDate" name="birthData" value="${treatmentDto.birthData}"/>
+            <iais:datePicker id="birthDate" name="birthDate" value="${treatmentDto.birthDate}"/>
         </iais:value>
     </iais:row>
     <iais:row>
