@@ -192,7 +192,7 @@ public final class HcsaServiceCacheHelper {
 			}
 
 		}
-		return null;
+		return IaisCommonUtils.genNewArrayList();
 	}
 
 }
