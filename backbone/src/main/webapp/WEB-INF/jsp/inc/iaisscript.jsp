@@ -7,6 +7,8 @@
 <%@ page import="sop.i18n.MultiLangUtil" %>
 
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/reset.js"></script>
+<script src="<%=EngineHelper.getWorkspaceContextPath()%>/JavaScriptServlet"></script>
+<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-upgrade-patch.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.cookie.js"></script>
@@ -46,7 +48,7 @@
     if(aBoolean){
 %>
 
-<script src="<%=EngineHelper.getWorkspaceContextPath()%>/JavaScriptServlet"></script>
+
 <%
     }
 %>
