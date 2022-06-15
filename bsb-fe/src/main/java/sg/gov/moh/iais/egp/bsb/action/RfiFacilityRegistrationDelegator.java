@@ -246,30 +246,10 @@ public class RfiFacilityRegistrationDelegator {
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
 
                     try {
-                        // delete docs
-                        log.info("Delete already saved documents in file-repo");
-                        List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
-                        List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
-                        if (committeeDto.getToBeDeletedRepoId() != null) {
-                            FileRepoDto committeeDeleteDto = new FileRepoDto();
-                            committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
-                            fileRepoClient.removeFileById(committeeDeleteDto);
-                            toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
-                            committeeDto.setToBeDeletedRepoId(null);
-                        }
-                        if (authDto.getToBeDeletedRepoId() != null) {
-                            FileRepoDto authoriserDeleteDto = new FileRepoDto();
-                            authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
-                            fileRepoClient.removeFileById(authoriserDeleteDto);
-                            toBeDeletedRepoIds.add(authDto.getToBeDeletedRepoId());
-                            authDto.setToBeDeletedRepoId(null);
-                        }
-                        toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
-                        toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
                         // sync docs
                         log.info("Sync new uploaded documents to BE");
-                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+                        // don't need to delete file, RFI officer will download old file by repo id
+                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, null);
                     } catch (Exception e) {
                         log.error("Fail to synchronize documents", e);
                     }
