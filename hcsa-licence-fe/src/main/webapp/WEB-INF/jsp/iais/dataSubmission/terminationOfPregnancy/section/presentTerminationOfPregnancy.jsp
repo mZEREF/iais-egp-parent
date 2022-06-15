@@ -160,8 +160,8 @@
         <div id="topPlaceNo" <c:if test="${terminationDto.performedOwn == null || terminationDto.performedOwn == true}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="topPlace" options="TopPlace" value="${terminationDto.topPlace}" cssClass="topPlace"/>
+                <iais:value width="7" cssClass="col-md-7 partial-search-container">
+                    <iais:select name="topPlace" id="topPlace" options="TopPlace" value="${terminationDto.topPlace}" cssClass="topPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
             </iais:row>
@@ -213,8 +213,8 @@
         <div id="prescribeTopPlaces" <c:if test="${terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="prescribeTopPlace" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
+                <iais:value width="7" cssClass="col-md-7 partial-search-container">
+                    <iais:select name="prescribeTopPlace" id="prescribeTopPlace" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
                                  cssClass="prescribeTopPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_prescribeTopPlace"></span>
@@ -267,7 +267,7 @@
         <div id="topDrugPlaces" <c:if test="${terminationDto.takenOwn == null || terminationDto.takenOwn == true}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:value width="7" cssClass="col-md-7 partial-search-container">
                     <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.topDrugPlace}"
                                  cssClass="topDrugPlace"/>
                 </iais:value>
@@ -777,4 +777,10 @@
         $('#qualification').find('p').text('');
         clearFields('.doctorNameSelectionHidden');
     }
+    $(document).ready(function(){
+        // Initialize select2
+        $("#topPlace").select2();
+        $("#prescribeTopPlace").select2();
+        $("#otherTopDrugPlace").select2();
+    });
 </script>

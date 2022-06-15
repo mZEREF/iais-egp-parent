@@ -176,7 +176,7 @@
                 <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
             </span>
                 </label>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:value width="7" cssClass="col-md-7 partial-search-container">
                     <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                 value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
                    <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
@@ -468,5 +468,8 @@
         $('#counsellingAge').html(data.selection.counsellingAge);
         $('#counselling').val(data.selection.counsellingAge);
     }
-
+    $(document).ready(function(){
+        // Initialize select2
+        $("#counsellingPlaces").select2();
+    });
 </script>
