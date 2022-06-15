@@ -1505,6 +1505,7 @@ public final class ApplicationHelper {
         List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         if (appSvcRelatedInfoDto != null) {
+            List<AppSvcPrincipalOfficersDto> result = new ArrayList<>();
             for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList()) {
                 if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
                     principalOfficersDtos.add(appSvcPrincipalOfficersDto);
@@ -1512,6 +1513,9 @@ public final class ApplicationHelper {
                     deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                 }
             }
+            result.addAll(principalOfficersDtos);
+            result.addAll(deputyPrincipalOfficersDtos);
+            appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(result);
         }
         ParamUtil.setRequestAttr(request, "ReloadPrincipalOfficers", principalOfficersDtos);
         ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
@@ -4235,5 +4239,23 @@ public final class ApplicationHelper {
         appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return appEditSelectDto;
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> sortKeyPersonnel(List<AppSvcPrincipalOfficersDto> persons) {
+        if (persons == null || persons.isEmpty()) {
+            return persons;
+        }
+        List<AppSvcPrincipalOfficersDto> result = new ArrayList<>();
+        Map<String, List<AppSvcPrincipalOfficersDto>> listMap = persons.stream()
+                .collect(Collectors.groupingBy(AppSvcPrincipalOfficersDto::getPsnType));
+        List<AppSvcPrincipalOfficersDto> dtos = listMap.get(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        if (dtos != null) {
+            result.addAll(dtos);
+            listMap.remove(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        }
+        for (Map.Entry<String, List<AppSvcPrincipalOfficersDto>> entry : listMap.entrySet()) {
+            result.addAll(entry.getValue());
+        }
+        return result;
     }
 }

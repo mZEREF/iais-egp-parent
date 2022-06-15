@@ -1145,6 +1145,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
                                 newPremisesDtos, appSvcRelatedInfoDto);
                         appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        // sort po and dpo
+                        appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(
+                                ApplicationHelper.sortKeyPersonnel(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList()));
                         newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                     }
 
