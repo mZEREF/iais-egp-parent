@@ -1579,9 +1579,9 @@ public abstract class AppCommDelegator {
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             appSubmissionDto.setAppDeclarationDocDtos(oldAppSubmissionDto.getAppDeclarationDocDtos());
             appSubmissionDto.setAppDeclarationMessageDto(oldAppSubmissionDto.getAppDeclarationMessageDto());
             RfcHelper.premisesDocToSvcDoc(appSubmissionDto);
@@ -1592,8 +1592,8 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         }
 
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             //beforeSubmitRfi(appSubmissionDto, appNo);
         }
         if (ApplicationHelper.isFrontend()) {
@@ -1606,9 +1606,9 @@ public abstract class AppCommDelegator {
         //update message statusdo
         //appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
 
-        appSubmissionDto = submitRequestInformation(appSubmissionRequestInformationDto, appSubmissionDto.getAppType());
+        appSubmissionDto = submitRequestInformation(appSubmissionRequestInformationDto, appType);
 
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
             appSubmissionDto.setAmountStr("N/A");
             appSubmissionDtos.add(appSubmissionDto);
