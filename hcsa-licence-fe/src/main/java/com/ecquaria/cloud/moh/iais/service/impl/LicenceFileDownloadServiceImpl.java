@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -370,6 +371,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         boolean flag=applicationClient.saveFeData(applicationListDto).getStatusCode()==200;
         List<ApplicationGroupDto> applicationGroupDtoList=applicationListDto.getApplicationGroup();
+        List<ApplicationDto> applicationDtoList=applicationListDto.getApplication();
+        applicationClient.invalidApplicationDtos(applicationDtoList);
         for (ApplicationGroupDto appGrp:applicationGroupDtoList
              ) {
             appGrp.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);

@@ -315,6 +315,8 @@ public interface ApplicationFeClient {
 
     @PostMapping(value = "/iais-application/fe-application-dto-list",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
+    @PostMapping(value = "/iais-application/fe-invalid-application-dto-list",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> invalidApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
     @GetMapping(value = "/iais-application/application-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationByCorrId(@RequestParam("corrId")String corrId);
     @GetMapping(value = "/iais-application/all-appGrpDto-paying")
