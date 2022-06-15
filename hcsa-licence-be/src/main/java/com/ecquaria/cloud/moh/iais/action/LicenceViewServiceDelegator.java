@@ -1673,7 +1673,7 @@ public class LicenceViewServiceDelegator {
         for (Map.Entry<String, List<AppGrpPrimaryDocDto>> entry : multipleGrpPrimaryDoc.entrySet()) {
             List<AppGrpPrimaryDocDto> dtos = entry.getValue();
             if (dtos != null && !dtos.isEmpty()) {
-                someSvcComDocId = dtos.get(0).getSvcComDocId();
+                someSvcComDocId = dtos.get(0).getSvcDocId();
                 break;
             }
         }
