@@ -188,7 +188,7 @@ public class HalpSearchResultHelper {
 
     public static List<String> getDsTypes(List<String> privilegeIds){
         if(IaisCommonUtils.isEmpty(privilegeIds)){
-            return null;
+            return IaisCommonUtils.genNewArrayList();
         }
         List<String> types = IaisCommonUtils.genNewArrayList(5);
         privilegeIds.stream().forEach(privilegeId ->{
