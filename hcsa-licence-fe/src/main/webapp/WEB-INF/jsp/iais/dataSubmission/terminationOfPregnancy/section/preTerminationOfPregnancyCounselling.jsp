@@ -471,5 +471,6 @@
     $(document).ready(function(){
         // Initialize select2
         $("#counsellingPlaces").select2();
+        $('.select2-container--default').attr('style','width:100%');
     });
 </script>

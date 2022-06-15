@@ -780,7 +780,11 @@
     $(document).ready(function(){
         // Initialize select2
         $("#topPlace").select2();
+        <c:if test="${!(terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true)}">
+        $("#prescribeTopPlace").select2();
+        </c:if>
         $("#prescribeTopPlace").select2();
         $("#otherTopDrugPlace").select2();
+        $('.select2-container--default').attr('style','width:100%');
     });
 </script>
