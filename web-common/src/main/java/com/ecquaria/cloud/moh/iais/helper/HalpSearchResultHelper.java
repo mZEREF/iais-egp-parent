@@ -1,34 +1,28 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.privilege.Privilege;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-
-import javax.servlet.http.HttpServletRequest;
+import com.ecquaria.cloud.privilege.Privilege;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 
 public class HalpSearchResultHelper {
 
@@ -67,7 +61,10 @@ public class HalpSearchResultHelper {
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
                     initMsgControlSearchParam(searchParam,request);
-                    setMsgParamByField(searchParam,"hcsaServicesShow",HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos));
+                    List<String> allTypes = HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos);
+                    InterMessageSearchDto ims = initInterMessageSearchDto(request);
+                    allTypes.addAll(ims.getServiceCodes());
+                    setMsgParamByField(searchParam,"hcsaServicesShow", allTypes);
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
                 break;
