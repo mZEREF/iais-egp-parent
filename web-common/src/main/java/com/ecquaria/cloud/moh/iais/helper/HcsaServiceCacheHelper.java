@@ -165,11 +165,16 @@ public final class HcsaServiceCacheHelper {
 
 	// 0 -> msg, serviceCodes= serviceCodes+@ ; 1-> app, serviceCodes= serviceCodes+@ ; 2 -> lic serviceCodes = serviceNames; 3->serviceCodes = serviceCodes
 	public static List<String> controlServices(int searchDataTab, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
-		if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
+		if(IaisCommonUtils.isNotEmpty(userRoleAccessMatrixDtos)){
+			List<String> allTypes = IaisCommonUtils.genNewArrayList();
 			for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
 				if(AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())){
 					if(searchDataTab == 0 || searchDataTab == 1){
-						return receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList());
+						allTypes = receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList());
+						if (searchDataTab == 0) {
+							allTypes.addAll(HalpSearchResultHelper.allDsTypes);
+						}
+						return allTypes;
 					}
 					if(searchDataTab == 2){
 						return receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList());
@@ -180,7 +185,11 @@ public final class HcsaServiceCacheHelper {
 				}
 			}
 			if(searchDataTab == 0 || searchDataTab == 1){
-				return userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue()+ "@").collect(Collectors.toList());
+				allTypes = userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue()+ "@").collect(Collectors.toList());
+				if (searchDataTab == 0) {
+					allTypes.addAll(HalpSearchResultHelper.allDsTypes);
+				}
+				return allTypes;
 			}
 
 			if(searchDataTab == 2){
@@ -190,7 +199,6 @@ public final class HcsaServiceCacheHelper {
 			if(searchDataTab == 3){
 				return userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList());
 			}
-
 		}
 		return null;
 	}
