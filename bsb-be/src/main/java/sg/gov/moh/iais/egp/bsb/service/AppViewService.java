@@ -53,6 +53,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APPROVAL_PROFILE_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_BAT_LIST;
@@ -302,7 +303,7 @@ public class AppViewService {
             List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
             ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(oldFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(newFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
             ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
             Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet());
@@ -314,7 +315,12 @@ public class AppViewService {
         }
     }
 
-    private void compareDiffDocRecordInfo(Collection<DocRecordInfo> oldInfos, Collection<DocRecordInfo> newInfos, String docType) {
+    private void compareDiffDocRecordInfo(Collection<DocRecordInfo> oldInfos, Collection<DocRecordInfo> newInfos, String docType, HttpServletRequest request) {
+        List<String> oldRepoIdList = oldInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+        List<String> newRepoIdList = newInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+        if (!oldRepoIdList.containsAll(newRepoIdList) || !newRepoIdList.containsAll(oldRepoIdList)) {
+            ParamUtil.setRequestAttr(request, docType, true);
+        }
     }
 
     /**

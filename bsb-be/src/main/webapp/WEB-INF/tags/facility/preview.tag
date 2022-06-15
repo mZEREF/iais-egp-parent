@@ -437,7 +437,7 @@
                                         </div>
                                         <div class="col-xs-6">
                                             <c:if test="${bioSafetyCommitteeIsDifferent}">
-                                                <p class="compareTdStyle">View Biosafety Information</p>
+                                                <p class="compareTdStyle">Biosafety Information Updated</p>
                                             </c:if>
                                         </div>
                                     </div>
@@ -454,7 +454,7 @@
                                         </div>
                                         <div class="col-xs-6">
                                             <c:if test="${facilityAuthorizerIsDifferent}">
-                                                <p class="compareTdStyle">View Personnel Authorised Information</p>
+                                                <p class="compareTdStyle">Personnel Authorised Information Updated</p>
                                             </c:if>
                                         </div>
                                     </div>
