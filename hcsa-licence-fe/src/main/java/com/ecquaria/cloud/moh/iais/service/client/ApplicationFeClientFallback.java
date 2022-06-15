@@ -724,6 +724,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
+    public FeignResponseEntity<Void> invalidApplicationDtos(List<ApplicationDto> applicationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<ApplicationDto> getApplicationByCorrId(String corrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
