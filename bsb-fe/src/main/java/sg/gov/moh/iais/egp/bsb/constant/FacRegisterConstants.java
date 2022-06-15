@@ -100,6 +100,9 @@ public class FacRegisterConstants {
     public static final String KEY_DECLARATION_ANSWER_MAP  = "answerMap";
     public static final String KEY_DECLARATION_ERROR_MAP   = "answerErrorMap";
 
+    public static final String KEY_PRINT_MASK_PARAM        = "printFacReg";
+    public static final String KEY_PRINT_MASKED_ID         = "printFacRegId";
+
     public static final String ERR_MSG_BAT_NOT_NULL        = "Biological Agent/Toxin node group must not be null!";
     public static final String ERR_MSG_NULL_GROUP          = "Node group must not be null!";
     public static final String ERR_MSG_NULL_NAME           = "Name must not be null!";

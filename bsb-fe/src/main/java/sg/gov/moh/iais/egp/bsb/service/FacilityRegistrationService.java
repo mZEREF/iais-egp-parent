@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -986,9 +987,32 @@ public class FacilityRegistrationService {
 
     }
 
+    /** Sets print if into request, used by js function in JSP */
+    public void preparePrintMaskId(HttpServletRequest request) {
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        String maskForPrint = MaskUtil.maskValue(KEY_PRINT_MASK_PARAM, String.valueOf(facRegRoot.hashCode()));
+        ParamUtil.setRequestAttr(request, KEY_PRINT_MASKED_ID, maskForPrint);
+    }
+
+    /** Validates if it is allowed to print the facility details.
+     * If it is not allowed, an exception will be thrown */
+    public void validatePrintMaskId(HttpServletRequest request) {
+        String maskedId = ParamUtil.getString(request, "printId");
+        boolean allowToPrint = false;
+        if (StringUtils.hasLength(maskedId)) {
+            MaskUtil.unMaskValue(KEY_PRINT_MASK_PARAM, maskedId);
+            // if it can not be unmasked, an exception is thrown
+            allowToPrint = true;
+        }
+        if (!allowToPrint) {
+            throw new IaisRuntimeException("Invalid mask key, don't allow to print");
+        }
+    }
+
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         preparePreviewData(request);
+        preparePrintMaskId(request);
     }
 
     public void preparePreviewData(HttpServletRequest request) {
@@ -1059,7 +1083,13 @@ public class FacilityRegistrationService {
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
-        //do nothing now
+        preparePrintMaskId(bpc.request);
+    }
+
+    public void print(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        validatePrintMaskId(request);
+        preparePreviewData(request);
     }
 
     public void actionFilter(BaseProcessClass bpc, String appType) {

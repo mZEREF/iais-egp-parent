@@ -355,3 +355,8 @@ function newSectionHeader(num, idx, titlePrefix) {
     }
     return divEl;
 }
+
+
+function printFacilityRegistration(id) {
+    window.open("/bsb-web/eservice/INTERNET/MohBsbFacilityRegistration/1/Print?printId=" + id);
+}
