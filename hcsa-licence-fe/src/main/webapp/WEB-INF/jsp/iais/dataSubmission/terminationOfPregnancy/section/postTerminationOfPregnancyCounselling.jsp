@@ -109,9 +109,9 @@
         </iais:row>
         <iais:row>
             <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
-            <iais:value width="7" cssClass="col-md-7">
+            <iais:value width="7" cssClass="col-md-7 partial-search-container">
                 <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE" value="${postTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                <iais:select name="TopPlace" options="TopPlace"  value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>
+                <iais:select name="TopPlace" options="TopPlace" id="TopPlace" value="${postTerminationDto.counsellingPlace}" cssClass="TopPlace"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_TopPlace"></span>
             </iais:value>
         </iais:row>
@@ -173,4 +173,8 @@
             }
         });
     }
+    $(document).ready(function(){
+        // Initialize select2
+        $("#TopPlace").select2();
+    });
 </script>
