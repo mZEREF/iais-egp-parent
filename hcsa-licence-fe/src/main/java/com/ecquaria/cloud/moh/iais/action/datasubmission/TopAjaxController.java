@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,7 +16,10 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.Optional;
 @Slf4j
 public class TopAjaxController {
 
+    /*protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";*/
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
 
@@ -118,15 +121,26 @@ public class TopAjaxController {
         return result;
     }
 
-    @GetMapping(value = "/prg-input-info")
+  /* @PostMapping(value = "/check-date")
     public @ResponseBody
-    ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("the prgNo start ...."));
-        String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
-        if(StringUtil.isEmpty(professionalResponseDto.getName())){
-
-        }
-        return professionalResponseDto;
+   AjaxResDto checkDate(HttpServletRequest request){
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+        Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+        chargesTypeAttr.put("name", "subLicensee");
+        chargesTypeAttr.put("id", "subLicensee");
+        List<String> checkedVals = IaisCommonUtils.genNewArrayList();
+        String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(request), NewApplicationDelegator.FIRESTOPTION, checkedVals, false,true);
+        ajaxResDto.setResultJson(chargeTypeSelHtml);
+        return ajaxResDto;
     }
+
+    private List<SelectOption> getSelect(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> result = DataSubmissionHelper.genOptions(stringStringMap);
+        result.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+        return result;
+    }*/
+
 }
