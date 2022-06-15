@@ -259,6 +259,27 @@
                                     </div>
                                 </td>
                             </tr>
+                            <c:if test="${appSvcClinicalDirectorDto.designation=='DES999' || oldClinicalDirecotrDto.designation=='DES999'}">
+                                <tr>
+                                    <td class="col-xs-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                        <div class="col-xs-12 col-md-12">
+                                            <span class="newVal " attr="${appSvcClinicalDirectorDto.otherDesignation}">
+                                                <iais:code code="${appSvcClinicalDirectorDto.otherDesignation}"/>
+                                            </span>
+                                            <br>
+                                            <span class="oldVal " attr="${oldClinicalDirecotrDto.otherDesignation}" style="display: none">
+                                                <iais:code code="${oldClinicalDirecotrDto.otherDesignation}"/>
+                                            </span>
+                                        </div>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Speciality</p>
