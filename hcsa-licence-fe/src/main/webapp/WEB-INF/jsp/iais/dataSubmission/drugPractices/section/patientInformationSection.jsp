@@ -48,7 +48,7 @@
                 <iais:row>
                     <iais:field width="5" value="Name of Patient" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="66" type="text" name="name" value="${patientDto.name}" />
+                        <iais:input maxLength="66" id="patientName" type="text" name="name" value="${patientDto.name}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
