@@ -62,8 +62,8 @@ public class HalpSearchResultHelper {
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
                     initMsgControlSearchParam(searchParam,request);
                     List<String> allTypes = HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos);
-                    InterMessageSearchDto ims = initInterMessageSearchDto(request);
-                    allTypes.addAll(ims.getServiceCodes());
+                    List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+                    allTypes.addAll( getDsTypes(privilegeIds));
                     setMsgParamByField(searchParam,"hcsaServicesShow", allTypes);
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
