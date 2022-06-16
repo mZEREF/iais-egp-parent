@@ -424,6 +424,15 @@ function getJqueryNode(elem) {
     return $target;
 }
 
+function updateSelectTag($sel) {
+    if ($sel.is('select[multiple]')) {
+        // mutiple select
+        $sel.trigger('change.multiselect');
+    } else {
+        $sel.niceSelect("update");
+    }
+}
+
 function toggleOnSelect(sel, val, elem) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(elem);
@@ -440,7 +449,7 @@ function toggleOnSelect(sel, val, elem) {
     }
     $target.each(function(i, ele) {
         if ('select' == ele.tagName.toLowerCase()) {
-            $(ele).niceSelect("update");
+            updateSelectTag($(ele));
         }
     });
 }
@@ -472,7 +481,7 @@ function toggleOnCheck(sel, elem, hide) {
     }
     $target.each(function(i, ele) {
         if ('select' == ele.tagName.toLowerCase()) {
-            $(ele).niceSelect("update");
+            updateSelectTag($(ele));
         }
     });
 }
@@ -518,7 +527,7 @@ function clearFields(targetSelector) {
                 this.checked = false;
             } else if (tag == 'select') {
                 this.selectedIndex = 0;
-                $(this).niceSelect("update");
+                updateSelectTag($(this));
             }
         }
     });
@@ -558,7 +567,7 @@ function fillValue(targetSelector, data, includeHidden){
                 $selector[0].selectedIndex = 0;
             }
             if ($selector.val() != oldVal) {
-                $selector.niceSelect("update");
+                updateSelectTag($selector);
             }
         } else {
             $selector.val(data);
@@ -607,7 +616,7 @@ function disableContent(targetSelector) {
         $input.css('border-color','#ededed');
         $input.css('color','#999');
         if (tag == 'select') {
-            $input.niceSelect("update");
+            updateSelectTag($input);
         }
     });
 }
@@ -632,7 +641,7 @@ function unDisableContent(targetSelector) {
         $input.css('border-color','');
         $input.css('color','');
         if (tag == 'select') {
-            $input.niceSelect("update");
+            updateSelectTag($input);
         }
     });
 }
@@ -642,7 +651,7 @@ function refreshIndex(targetSelector) {
     if (isEmpty($target)) {
         return;
     }
-    $target.each(function (k,v) {
+    $target.each(function (k, v) {
         var $ele = $(v);
         var $selector;
         if ($ele.is(':input')) {
@@ -666,18 +675,19 @@ function refreshIndex(targetSelector) {
             if (isEmpty(orgName)) {
                 return;
             }
-            var result = /([a-zA-Z_]*)/g.exec(orgName);
+            var result = /(.*\D+)/g.exec(orgName);
             var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            $input.prop('name', name + k);
+            name = name + k;
+            $input.prop('name', name);
             if (orgName == orgId) {
-                $input.prop('id', name + k);
+                $input.prop('id', name);
             }
             var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
             if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + name + k);
+                $errorSpan.prop('id', 'error_' + name);
             }
             if (tag == 'select') {
-                $input.niceSelect("update");
+                updateSelectTag($input);
             }
         });
     });
