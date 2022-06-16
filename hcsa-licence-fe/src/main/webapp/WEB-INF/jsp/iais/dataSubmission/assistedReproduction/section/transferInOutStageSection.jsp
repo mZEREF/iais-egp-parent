@@ -139,6 +139,7 @@
                                        var="selecctInValue"/>
                                 <iais:select name="transInFromHciCode" firstOption="Please Select"
                                              options="transferOutInPremisesSelect" value="${selecctInValue}"
+                                             cssClass="transInFromHciCodeSel"
                                              onchange="toggleOnSelect(this, 'Others', 'othersInFrom')"/>
                             </iais:value>
                         </iais:row>
@@ -160,6 +161,7 @@
                                    var="selecctOutValue"/>
                             <iais:select name="transOutToHciCode" firstOption="Please Select"
                                          options="transferOutInPremisesSelect" value="${selecctOutValue}"
+                                         cssClass="transOutToHciCodeSel"
                                          onchange="toggleOnSelect(this, 'Others', 'othersOutFrom')"/>
                         </iais:value>
                     </iais:row>

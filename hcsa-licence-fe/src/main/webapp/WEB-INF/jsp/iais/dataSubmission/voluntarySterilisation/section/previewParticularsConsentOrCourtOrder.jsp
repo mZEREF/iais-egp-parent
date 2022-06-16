@@ -91,7 +91,7 @@
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                                                  <c:choose>
-                                                     <c:when test="${isPrint eq 'yes'}">
+                                                     <c:when test="${isPrintDoc eq 'yes'}">
                                                          ${vssFile.docName}
                                                      </c:when>
                                                      <c:otherwise>

@@ -100,7 +100,7 @@
     <iais:row>
         <iais:field width="5" value="Method of Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="sterilizationMethod" firstOption="Please Select"  options="sterilizationLists"
+            <iais:select name="sterilizationMethod" cssClass="sterilizationMethod" firstOption="Please Select"  options="sterilizationLists"
                          value="${sexualSterilizationDto.sterilizationMethod}"/>
         </iais:value>
     </iais:row>
@@ -174,6 +174,78 @@
                     <div class="col-md-12">
                         <span style="font-size: 2rem;" id="prsErrorMsg">
                             <iais:message key="DS_MSG011" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="elisMsg">
+                            <iais:message key="GENERAL_ERR0063" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsMsg">
+                            <iais:message key="GENERAL_ERR0064" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="NO_PRS_ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="noMsg">
+                            <iais:message key="GENERAL_ERR0065" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_CLOSE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsCloseMsg">
+                            <iais:message key="GENERAL_ERR0066" escape="false" />
                         </span>
                     </div>
                 </div>
@@ -260,23 +332,26 @@
             'type': 'GET',
             'success': function (data) {
                 console.log('3');
-                if (isEmpty(data) || isEmpty(data.selection)) {
+                if (isEmpty(data.selection)) {
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                } else if (data.selection.hasException) {
-                    $('#prsErrorMsg').val($('#flagInvaMessage').html());
-                    $('#msg').text('This Doctor is not authorized to perform Voluntary Sterilization.');
-                    clearPrsInfo();
-                } else if ('401' == data.selection.statusCode) {
-                    $('#prsErrorMsg').val($('#flagPrnMessage').html());
-                    $('#msg').text('This Doctor is not authorized to perform Voluntary Sterilization.');
-                    clearPrsInfo();
-                } else {
+                    $('#NO_PRS_ELIS_SERVICE').modal('show');
+                } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
+                    if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
+                        $('#ELIS_SERVICE').modal('show');
+                    }
+                    if(isEmpty(data.selections)){
+                        $('#PRS_SERVICE').modal('show');
+                    }
+                    if (data.hasException) {
+                        $('#PRS_CLOSE').modal('show');
+                    }
                 }
+
                 dismissWaiting();
             },
             'error': function () {

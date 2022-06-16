@@ -32,6 +32,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
 
@@ -605,8 +617,15 @@ public final class ExcelWriter {
         try {
             //sequence number
             int cellIndex = excelSheetDto.getStartRowIndex();
+            List<Integer> filedRowIndexes = excelSheetDto.getFiledRowIndexes();
+            if (filedRowIndexes == null) {
+                filedRowIndexes = new ArrayList<>(0);
+            }
             short fontHeight = -1;
             for (Object t : source) {
+                if (filedRowIndexes.contains(Integer.valueOf(cellIndex))) {
+                    continue;
+                }
                 XSSFRow sheetRow = sheet.createRow(cellIndex);
 
                 cellIndex++;

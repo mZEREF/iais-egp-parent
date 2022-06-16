@@ -306,3 +306,7 @@ $(function () {
         });
     });
 });
+
+function printFacilityRegistration(id) {
+    window.open("/bsb-web/eservice/INTERNET/MohBsbRfiFacilityRegistration/1/Print?printId=" + id);
+}

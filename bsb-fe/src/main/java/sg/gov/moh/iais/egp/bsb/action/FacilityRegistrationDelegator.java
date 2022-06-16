@@ -350,11 +350,10 @@ public class FacilityRegistrationDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
-        // do nothing now, all data are set by previous page (select & save)
+        facilityRegistrationService.preAcknowledge(bpc);
     }
 
     public void print(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        facilityRegistrationService.preparePreviewData(request);
+        facilityRegistrationService.print(bpc);
     }
 }

@@ -1,4 +1,13 @@
 $(document).ready(function () {
+
+    $('#country').change(function (){
+        countryStar();
+    });
+
+    var appType = $('input[name="appType"]').val();
+    if('DSTY_005'==appType){
+        disableContent('div.patient');
+    }
     toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
 
     toggleSelect("#idType",'DTV_IT003', 'nationalityStar');
@@ -8,6 +17,16 @@ $(document).ready(function () {
 function  test(sel,val,id1,id2){
     toggleSelect(sel,val,id1);
     toggleSelect(sel,val,id2);
+}
+function countryStar(){
+    var country= $('#country option:selected').val();
+    if("NAT0001" ==country){
+        $('#cityStar').text("")
+        $('#stateStar').text("")
+    }else {
+        $('#cityStar').text("*")
+        $('#stateStar').text("*")
+    }
 }
 function toggleSelect(sel, val, elem) {
     if (isEmpty(sel)) {

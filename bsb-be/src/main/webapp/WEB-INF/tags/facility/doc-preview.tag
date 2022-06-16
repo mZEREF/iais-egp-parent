@@ -22,13 +22,6 @@
                     <div class="clear"></div>
                 </div>
             </c:forEach>
-            <c:forEach var="file" items="${newFileList}">
-                <c:set var="tmpId"><iais:mask name="file" value="${file.tmpId}"/></c:set>
-                <div class="form-group">
-                    <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/facReg/new/${tmpId}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
-                    <div class="clear"></div>
-                </div>
-            </c:forEach>
         </div>
     </c:if>
 </c:forEach>

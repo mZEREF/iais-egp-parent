@@ -1,4 +1,5 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>
+<input type="hidden" name="appType" id="appType" value="${dpSuperDataSubmissionDto.appType}">
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
@@ -12,17 +13,24 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="patientDto" value="${dpSuperDataSubmissionDto.patientDto}"/>
                 <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:row>
-                    <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" onchange ="toggleSelect(this, 'DTV_IT003', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
-                                     value="${patientDto.idType}" cssClass="idTypeSel"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <iais:input maxLength="20" type="text" name="idNumber" value="${patientDto.idNumber}" />
-                        <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
-                    </iais:value>
-                </iais:row>
+                <div class="patient">
+                    <iais:row>
+                        <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
+                        <iais:value width="3" cssClass="col-md-3">
+                            <iais:select name="idType"
+                                         onchange ="toggleSelect(this, 'DTV_IT003', 'nationalityStar')"
+                                         firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
+                                         value="${patientDto.idType}" cssClass="idTypeSel"/>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4">
+                            <iais:input maxLength="20"
+                                        type="text"
+                                        name="idNumber"
+                                        value="${patientDto.idNumber}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">Nationality
@@ -62,17 +70,28 @@
                 <iais:row>
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="country"  codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select" value="${patientDto.country}" />
+                        <iais:select name="country" id="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
+                                     cssClass="countrySel" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="City" mandatory="true"/>
+                    <%--<iais:field width="5" id="cityLable" value="City" mandatory="true"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">City
+                        <span id="cityStar" class="mandatory">
+                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="city" value="${patientDto.city}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="State" mandatory="true"/>
+                    <%--<iais:field width="5" id="stateLable" value="State"  mandatory="true"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">State
+                        <span id="stateStar" class="mandatory">
+                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="state" value="${patientDto.state}" />
                     </iais:value>
@@ -81,7 +100,7 @@
                     <iais:field width="5" value="Address Type" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" onchange="test(this, 'ADDTY001', 'floorNoStar','blkNoStar')"  firstOption="Please Select"
-                                     value="${patientDto.addrType}" />
+                                     cssClass="addrTypeSel" value="${patientDto.addrType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -159,7 +178,8 @@
                     <iais:field width="5" value="Ethnic Group" id="ethnicGroupLabel" mandatory="${patientDto.nationality eq 'NAT0001' ? true : false}"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="VSS_ETHNIC_GROUP"
-                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOtherss')" />
+                                     cssClass="ethnicGroupSel" value="${patientDto.ethnicGroup}"
+                                     onchange="toggleOnSelect(this, 'ECGP004', 'ethnicOtherss')" />
                     </iais:value>
                 </iais:row>
                 <iais:row id="ethnicOtherss" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">

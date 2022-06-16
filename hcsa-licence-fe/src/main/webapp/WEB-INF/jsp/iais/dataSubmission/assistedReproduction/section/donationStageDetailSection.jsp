@@ -80,7 +80,7 @@
                 <iais:row>
                     <iais:field width="5" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <select name="donatedCentre" id="donatedCentre">
+                        <select name="donatedCentre" id="donatedCentre" class="donatedCentreSel">
                             <c:forEach items="${curCenDonatedSelectOption}" var="selectOption">
                                 <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedCentre ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
                             </c:forEach>

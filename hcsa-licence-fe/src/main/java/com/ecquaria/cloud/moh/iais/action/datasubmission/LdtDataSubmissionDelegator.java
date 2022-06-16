@@ -194,14 +194,13 @@ public class LdtDataSubmissionDelegator {
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         String licenceId = "";
-        String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");
         List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
         if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
             LicenceDto licenceDto = licenceDtoList.get(0);
             licenceId = licenceDto.getId();
         }
         try {
-            sendNotification(licenseeDtoName, submissionNo, licenceId, dateStr);
+            sendMsgAndEmail(licenceId, "Lab-developed Test", licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -481,23 +480,24 @@ public class LdtDataSubmissionDelegator {
         return result;
     }
 
-    private void sendNotification(String applicantName, String LDTId, String licenceId, String dateStr) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG).getEntity();
+    private void sendMsgAndEmail(String licenceId, String serverName, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("ApplicantName", applicantName);
-        msgContentMap.put("LDTId", LDTId);
+        msgContentMap.put("serverName", serverName);
+        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-        msgContentMap.put("date",dateStr);
 
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgSubjectMap.put("LDTId", LDTId);
+        msgSubjectMap.put("serverName", serverName);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
 
         EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG);
         msgParam.setTemplateContent(msgContentMap);
-        msgParam.setQueryCode(LDTId);
-        msgParam.setReqRefNum(LDTId);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
         msgParam.setRefId(licenceId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -506,7 +506,7 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send LDT Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send LDT Email  end *****************"));

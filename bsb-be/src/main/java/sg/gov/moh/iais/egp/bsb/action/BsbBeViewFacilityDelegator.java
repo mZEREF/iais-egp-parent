@@ -104,7 +104,7 @@ public class BsbBeViewFacilityDelegator {
     public void preCommittee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityRegisterDto facilityRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_REGISTRATION_DTO);
-        FacilityCommitteeDto facCommitteeDto = facilityRegisterDto.getFacilityCommitteeDto() ;
+        FacilityCommitteeDto facCommitteeDto = facilityRegisterDto.getFacilityCommitteeDto();
         List<FacilityCommitteeFileDto> dataList = facCommitteeDto.getDataListForDisplay();
         ParamUtil.setRequestAttr(request, KEY_DATA_LIST, dataList);
     }

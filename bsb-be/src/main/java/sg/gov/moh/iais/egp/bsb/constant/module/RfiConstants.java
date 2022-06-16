@@ -14,4 +14,6 @@ public class RfiConstants {
     public static final String KEY_SUPPORT_DOCUMENTS = "supportDocuments";
     public static final String KEY_FACILITY_AFC = "facilityAfc";
     public static final String KEY_BAT_LIST = "batList";
+    public static final String BIO_SAFETY_COMMITTEE_IS_DIFFERENT = "bioSafetyCommitteeIsDifferent";
+    public static final String AUTHORIZER_IS_DIFFERENT = "facilityAuthorizerIsDifferent";
 }

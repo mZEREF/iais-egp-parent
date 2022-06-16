@@ -110,14 +110,9 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
                 }
             }
-        }
-        if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugSubmission.getDrugType())){
+        }else if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugType)){
             if(StringUtil.isEmpty(drugSubmission.getDiagnosis())){
-                result = WebValidationHelper.validateProperty(drugSubmission,"diagnosis");
-                errorMap.putAll(result.retrieveAll());
-            }
-            if(StringUtil.isEmpty(drugSubmission.getPrescriptionDate())){
-                result = WebValidationHelper.validateProperty(drugSubmission,"prescriptionDate");
+                result = WebValidationHelper.validateProperty(drugSubmission,"DRUG_PRESCRIBED");
                 errorMap.putAll(result.retrieveAll());
             }
         }
@@ -126,7 +121,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
-        if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())){
+        if (DataSubmissionConsts.DRUG_METHADONE.equals(drugSubmission.getMedication())&&DataSubmissionConsts.DRUG_DISPENSED.equals(drugSubmission.getDrugType())){
             result = WebValidationHelper.validateProperty(drugSubmission, "UT");
         }else if(DataSubmissionConsts.DRUG_SOVENOR_PATCH.equals(drugSubmission.getMedication())){
             result = WebValidationHelper.validateProperty(drugSubmission, "NURSE");

@@ -27,7 +27,16 @@
 <script>
     $(function () {
         $('.collapse').collapse();
+        var printRow = document.getElementById('printRow');
+        printRow.parentNode.removeChild(printRow);
+        $('a').each(function () {
+            var newSpan = document.createElement("span");
+            newSpan.innerText = this.innerText;
+            this.parentNode.replaceChild(newSpan, this);
+        });
         document.body.innerHTML = document.getElementById('printContent').innerHTML;
-        window.print();
+        setTimeout(function () {
+            window.print();
+        }, 1000);
     });
 </script>

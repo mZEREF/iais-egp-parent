@@ -18,23 +18,25 @@
                 <input type="hidden" name="docSource" value="DRP"/>
                 <c:set var="suffix" value="" />
                 <c:set var="drug" value="${drugSubmission}"/>
-                <iais:row>
-                    <iais:field width="5" value="Patient's ID No." mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
-                                     cssClass="idTypeSel" onchange="clearSelection()"/>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-4">
-                        <iais:input maxLength="20" type="text" name="idNumber" value="${drugSubmission.idNumber}" onchange="clearSelection()"/>
-                    </iais:value>
-                </iais:row>
+                <div class="patient">
+                    <iais:row>
+                        <iais:field width="5" value="Patient's ID No." mandatory="true"/>
+                        <iais:value width="3" cssClass="col-md-3">
+                            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
+                                         cssClass="idTypeSel" onchange="clearSelection()"/>
+                        </iais:value>
+                        <iais:value width="3" cssClass="col-md-4">
+                            <iais:input maxLength="20" type="text" name="idNumber" value="${drugSubmission.idNumber}" onchange="clearSelection()"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Nationality" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" style="width: 232px;">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                      value="${drugSubmission.nationality}" cssClass="nationalitySel" onchange="clearSelection()"/>
                     </iais:value>
-                    <iais:value width="2" cssClass="col-md-3 patientData" display="true" style="width: 330px;">
+                    <iais:value width="2" cssClass="col-md-3 patientData" display="true" style="width: 330px;" id="retrieveDataDiv">
                         <a class="retrieveIdentification" onclick="retrieveValidateDrug()">
                             Validate Patient
                         </a>
@@ -191,7 +193,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="urineTest" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
+                <div id="urineTest" <c:if test="${drugSubmission.drugType!='DPD002'|| drugSubmission.medication !='MED002'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -258,8 +260,84 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="elisMsg">
+                            <iais:message key="GENERAL_ERR0063" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsMsg">
+                            <iais:message key="GENERAL_ERR0064" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="NO_PRS_ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="noMsg">
+                            <iais:message key="GENERAL_ERR0065" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_CLOSE" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsCloseMsg">
+                            <iais:message key="GENERAL_ERR0066" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
+        <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+        disableContent('div.patient');
+        $('#retrieveDataDiv').hide();
+        </c:if>
         ifClickValidateButton();
         $('#drugType').change(function () {
             drugTypeChange();
@@ -443,20 +521,29 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data) || isEmpty(data.selection)) {
+                if (isEmpty(data.selection)) {
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                } else {
+                    $('#NO_PRS_ELIS_SERVICE').modal('show');
+                } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
+                    if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
+                        $('#ELIS_SERVICE').modal('show');
+                    }else if(isEmpty(data.selections)){
+                        $('#PRS_SERVICE').modal('show');
+                    }
+                    if (data.hasException) {
+                        $('#PRS_CLOSE').modal('show');
+                    }
                 }
                 dismissWaiting();
             },
             'error': function () {
                 console.log('error');
-                clearPrsInfo;
+                clearPrsInfo();
                 dismissWaiting();
             },
         });

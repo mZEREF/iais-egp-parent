@@ -7,23 +7,32 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
@@ -39,6 +48,9 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -64,6 +76,20 @@ public class VssDataSubmissionDelegator {
 
     public static final String ACTION_TYPE_CONFIRM = "confirm";
 
+    @Autowired
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+
+    @Autowired
+    NotificationHelper notificationHelper;
+
+    @Autowired
+    LicenceViewService licenceViewService;
+
+    @Autowired
+    DsLicenceService dsLicenceService;
+
+    @Autowired
+    private LicenceClient licenceClient;
     /**
      * Step: Start
      *
@@ -86,6 +112,7 @@ public class VssDataSubmissionDelegator {
         if (vssSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
+
     }
 
 
@@ -273,7 +300,7 @@ public class VssDataSubmissionDelegator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request,treatmentDto);
         try {
-           int age= -Formatter.compareDateByDay(treatmentDto.getBirthData());
+           int age= -Formatter.compareDateByDay(treatmentDto.getBirthDate());
             treatmentDto.setAge(age/365);
         }catch (Exception e){
            log.error(e.getMessage(),e);
@@ -492,7 +519,7 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_VSS);
-        ParamUtil.setSessionAttr(request,"isPrint",null);
+        ParamUtil.setSessionAttr(request,"isPrintDoc",null);
     }
 
     private int doPreview(HttpServletRequest request) {
@@ -565,10 +592,12 @@ public class VssDataSubmissionDelegator {
 
         cycle.setStatus(status);
         vssSuperDataSubmissionDto.setCycleDto(cycle);
+       /* String licenseeId = null;*/
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
+           /* licenseeId = loginContext.getLicenseeId();*/
         }
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
@@ -596,6 +625,21 @@ public class VssDataSubmissionDelegator {
             vssDataSubmissionService.updateDataSubmissionDraftStatus(vssSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
+/*
+        LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
+        String licenseeDtoName = licenseeDto.getName();
+        String submissionNo = vssSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
+        String licenceId = "";
+        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(vssSuperDataSubmissionDto.getHciCode(), licenseeId).getEntity();
+        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
+            LicenceDto licenceDto = licenceDtoList.get(0);
+            licenceId = licenceDto.getId();
+        }
+        try {
+            sendMsgAndEmail("Voluntary Sterilization",licenceId, licenseeDtoName, submissionNo);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+        }*/
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
@@ -703,8 +747,36 @@ public class VssDataSubmissionDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
-    private boolean isRfc(HttpServletRequest request) {
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
-        return vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(vssSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
-    }
+    /*private void sendMsgAndEmail(String serverName,String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("serverName", serverName);
+        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("serverName", serverName);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_VSS);
+        msgParam.setRefId(licenceId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setSubject(subject);
+        notificationHelper.sendNotification(msgParam);
+        log.info(StringUtil.changeForLog("***************** send VSS Notification  end *****************"));
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
+        log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));
+    }*/
 }
+

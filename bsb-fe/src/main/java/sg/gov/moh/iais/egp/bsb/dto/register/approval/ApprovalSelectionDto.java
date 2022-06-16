@@ -107,10 +107,7 @@ public class ApprovalSelectionDto implements Serializable{
         String newFacilityName = ParamUtil.getString(request, KEY_FACILITY_NAME);
         String newProcessType = ParamUtil.getString(request, KEY_PROCESS_TYPE);
         //retrieve facility id from session or jsp
-        if(StringUtils.hasLength(newFacilityId)){
-            //retrieve facility id from draft
-            this.setFacilityId(newFacilityId);
-        }
+        this.setFacilityId(newFacilityId);
         this.setFacilityName(newFacilityName);
         this.setProcessType(newProcessType);
     }

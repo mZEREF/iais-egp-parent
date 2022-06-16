@@ -226,7 +226,7 @@
             $("#genders").empty();
             for (var i = 0; i < value; i++) {
                 var input = "<div class=\"col-sm-7 col-md-5 col-xs-7 col-md-12\" style=\"padding-left: 0px;padding-right: 0px;\">\n" +
-                    "<select name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" style=\"display: none;\">\n" +
+                    "<select class='livingChildrenGendersSel' name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" style=\"display: none;\">\n" +
                     "     <option value=\"\">Please Select</option>\n" +
                     "     <option value=\"TOPGAW001\">Male</option>\n" +
                     "     <option value=\"TOPGAW002\">Female</option>\n" +

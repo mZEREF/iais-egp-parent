@@ -41,12 +41,6 @@
 
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
-<style type="text/css">
-    .newVal{
-        color:#00FF00;
-    }
-</style>
-
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
@@ -133,49 +127,51 @@
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Facility Name</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.facName}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('facName')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('facName')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="facName" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Is the Facility address the same as the company address?</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.sameAddress}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('sameAddress')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('sameAddress')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="sameAddress" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Postal Code</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.postalCode}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('postalCode')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('postalCode')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="postalCode" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Address Type</label>
                                         <div class="col-xs-4"><p><iais:code code="${facProfile.addressType}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newFacProfile.get('addressType')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('addressType')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="addressType" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Block / House No.</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.block}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('block')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('block')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="block" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Floor and Unit No.</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.floor} - ${facProfile.unitNo}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('floor')} - ${newFacProfile.get('unitNo')}"/></p></div>
+                                        <div class="col-xs-1"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('floor')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="floor" replaceWith="-"/></p></div>
+                                        <div class="col-xs-1"><p style="text-align: right">-</p></div>
+                                        <div class="col-xs-1"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('unitNo')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="unitNo" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Street Name</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.streetName}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('streetName')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('streetName')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="streetName" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Is the facility a Protected Place?</label>
                                         <div class="col-xs-4"><p><c:out value="${facProfile.facilityProtected}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newFacProfile.get('facilityProtected')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacProfile.get('facilityProtected')}"><iais-bsb:compare-display diffMap="${newFacProfile}" key="facilityProtected" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -192,7 +188,7 @@
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Designation of Facility Operator</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.facOperator}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('facOperator')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('facOperator')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="facOperator" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
@@ -202,49 +198,49 @@
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Salutation</label>
                                             <div class="col-xs-4"><p><iais:code code="${facOperator.salutation}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><iais:code code="${newFacOperator.get('salutation')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('salutation')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="salutation" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Name</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.designeeName}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('designeeName')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('designeeName')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="designeeName" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">ID No.</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.idNumber}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('idNumber')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('idNumber')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="idNumber" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Nationality</label>
                                             <div class="col-xs-4"><p><iais:code code="${facOperator.nationality}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><iais:code code="${newFacOperator.get('nationality')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('nationality')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="nationality" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Designation</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.designation}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('designation')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('designation')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="designation" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Contact No.</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.contactNo}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('contactNo')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('contactNo')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="contactNo" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Email</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.email}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('email')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('email')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="email" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Employment Start Date</label>
                                             <div class="col-xs-4"><p><c:out value="${facOperator.employmentStartDt}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newFacOperator.get('employmentStartDt')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newFacOperator.get('employmentStartDt')}"><iais-bsb:compare-display diffMap="${newFacOperator}" key="employmentStartDt" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                     </div>
@@ -265,49 +261,49 @@
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Salutation</label>
                                         <div class="col-xs-4"><p><iais:code code="${facAdminOfficer.mainAdmin.salutation}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newMainAdmin.get('salutation')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('salutation')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="salutation" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Name</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.name}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('name')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('name')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="name" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Nationality</label>
                                         <div class="col-xs-4"><p><iais:code code="${facAdminOfficer.mainAdmin.nationality}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newMainAdmin.get('nationality')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('nationality')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="nationality" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">NRIC/FIN</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.idNumber}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('idNumber')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('idNumber')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="idNumber" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Designation</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.designation}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('designation')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('designation')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="designation" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Contact No.</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.contactNo}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('contactNo')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('contactNo')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="contactNo" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Email Address</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.email}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('email')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('email')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="email" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Employment Start Date</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.mainAdmin.employmentStartDt}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><c:out value="${newMainAdmin.get('employmentStartDt')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newMainAdmin.get('employmentStartDt')}"><iais-bsb:compare-display diffMap="${newMainAdmin}" key="employmentStartDt" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -320,49 +316,49 @@
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Salutation</label>
                                         <div class="col-xs-4"><p><iais:code code="${facAdminOfficer.alternativeAdmin.salutation}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('salutation')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('salutation')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="salutation" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Name</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.name}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('name')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('name')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="name" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Nationality</label>
                                         <div class="col-xs-4"><p><iais:code code="${facAdminOfficer.alternativeAdmin.nationality}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('nationality')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('nationality')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="nationality" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">NRIC/FIN</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.idNumber}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('idNumber')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('idNumber')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="idNumber" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Designation</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.designation}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('designation')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('designation')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="designation" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Contact No.</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.contactNo}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('contactNo')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('contactNo')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="contactNo" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Email Address</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.email}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('email')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('email')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="email" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-4 control-label">Employment Start Date</label>
                                         <div class="col-xs-4"><p><c:out value="${facAdminOfficer.alternativeAdmin.employmentStartDt}"/></p></div>
-                                        <div class="col-xs-4 newVal"><p><iais:code code="${newAlterAdmin.get('employmentStartDt')}"/></p></div>
+                                        <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAlterAdmin.get('employmentStartDt')}"><iais-bsb:compare-display diffMap="${newAlterAdmin}" key="employmentStartDt" replaceWith="-"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -435,11 +431,15 @@
                                         <div class="col-10"><strong>Biosafety Committee</strong></div>
                                         <div class="clear"></div>
                                     </div>
-                                    <div>
-                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'bsbCommittee')">View Biosafety Committee Information</a>
-                                    </div>
-                                    <div>
-                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'bsbCommittee')">View Biosafety Committee Information</a>
+                                    <div class="form-group">
+                                        <div class="col-xs-6">
+                                            <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'bsbCommittee')">View Biosafety Committee Information</a>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <c:if test="${bioSafetyCommitteeIsDifferent}">
+                                                <p class="compareTdStyle">Biosafety Information Updated</p>
+                                            </c:if>
+                                        </div>
                                     </div>
                                 </div>
                                 <c:if test="${authorisedEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAuth")}</div></c:if>
@@ -448,11 +448,15 @@
                                         <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
                                         <div class="clear"></div>
                                     </div>
-                                    <div>
-                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
-                                    </div>
-                                    <div>
-                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
+                                    <div class="form-group">
+                                        <div class="col-xs-6">
+                                            <a href="javascript:void(0)" onclick="expandFile('previewSubmit', 'facAuth')">View Authorised Personnel Information</a>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <c:if test="${facilityAuthorizerIsDifferent}">
+                                                <p class="compareTdStyle">Personnel Authorised Information Updated</p>
+                                            </c:if>
+                                        </div>
                                     </div>
                                 </div>
                             </c:if>
@@ -755,7 +759,7 @@
                                             No <span class="fa <c:choose><c:when test="${afc.appointed eq 'N'}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span>
                                         </div>
                                         <c:if test="${newAfc.get('appointed') ne null}">
-                                            <div class="col-xs-4 newVal">
+                                            <div class="col-xs-4 compareTdStyle">
                                                 Yes <span class="fa <c:choose><c:when test="${newAfc.get('appointed') eq 'Y'}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 No <span class="fa <c:choose><c:when test="${newAfc.get('appointed') eq 'N'}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span>
@@ -767,13 +771,13 @@
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Select Approved Facility Certifier</label>
                                             <div class="col-xs-4"><p><iais:code code="${afc.afc}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><iais:code code="${newAfc.get('afc')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAfc.get('afc')}"><iais-bsb:compare-display diffMap="${newAfc}" key="afc" replaceWith="-" needUnMaskedCode="true"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-4 control-label">Reasons for choosing this AFC</label>
                                             <div class="col-xs-4"><p><c:out value="${afc.selectReason}"/></p></div>
-                                            <div class="col-xs-4 newVal"><p><c:out value="${newAfc.get('selectReason')}"/></p></div>
+                                            <div class="col-xs-4"><p class="compareTdStyle" style="display: none" data-compare-new-data="${newAfc.get('selectReason')}"><iais-bsb:compare-display diffMap="${newAfc}" key="selectReason" replaceWith="-"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                     </c:if>

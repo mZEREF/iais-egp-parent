@@ -11,6 +11,7 @@
 
 <%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
 
+
 <link href="<%=webroot%>css/bs4-migrate-master/bs4-migrate-master.css" rel="stylesheet">
 <link href="<%=webroot%>css/bootstrap.min.css" rel="stylesheet">
 <link href="<%=webroot%>css/custom.css" rel="stylesheet">
@@ -38,7 +39,7 @@
 <script type="text/javascript" src="<%=webroot%>js/navbarscroll.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/dropdown.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/jquery.nice-select.js"></script>
-<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>
+<%--<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>--%>
 <script type="text/javascript" src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>
@@ -46,6 +47,8 @@
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/select2.js"></script>
+
 
 <script type="text/javascript">
     var BASE_CONTEXT_PATH = '<%=request.getContextPath()%>';

@@ -26,7 +26,7 @@
                 <iais:row>
                     <iais:field width="6" value="Date of Birth"/>
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${treatmentDto.birthData}"/>
+                        <c:out value="${treatmentDto.birthDate}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

@@ -39,7 +39,7 @@
 <script type="text/javascript" src="<%=webroot%>js/navbarscroll.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/dropdown.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/jquery.nice-select.js"></script>
-<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>
+<%--<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>--%>
 <script type="text/javascript" src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>

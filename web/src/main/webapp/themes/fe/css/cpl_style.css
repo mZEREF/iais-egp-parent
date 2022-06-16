@@ -6004,6 +6004,8 @@ ul.v-numberlist li::before {
 }
 
 
-
+.partial-search-container .nice-select {
+    display: none !important;
+}
 
 

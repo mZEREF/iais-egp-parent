@@ -22,6 +22,7 @@ public class DocConstants {
     public static final String DOC_TYPE_STANDARD_OPERATING_PROCEDURE = "DOCTYPE010";
     public static final String DOC_TYPE_EMERGENCY_RESPONSE_PLAN = "DOCTYPE035";
     public static final String DOC_TYPE_APPLICATION_LETTER = "DOCTYPE011";
+    public static final String DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL = "DOCTYPE052";
     public static final String DOC_TYPE_INVENTORY_TEMPLATE = "inventoryTemplate";
 
     public static final String DOC_TYPE_GMAC_ENDORSEMENT = "gmacEndorsement";

@@ -49,9 +49,11 @@ import sg.gov.moh.iais.egp.bsb.util.JaversUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APPROVAL_PROFILE_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_BAT_LIST;
@@ -81,6 +83,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_ORG_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.AUTHORIZER_IS_DIFFERENT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.BIO_SAFETY_COMMITTEE_IS_DIFFERENT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_ALTERNATIVE_ADMIN;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_FACILITY_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_FACILITY_OPERATOR;
@@ -92,7 +96,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_OFFICER_L
 @Service
 @Slf4j
 public class AppViewService {
-    private static final String DOC_TYPE_OF_OTHERS = "Others";
     private final AppViewClient appViewClient;
     private final DocSettingService docSettingService;
     private final OrganizationInfoClient orgInfoClient;
@@ -265,6 +268,19 @@ public class AppViewService {
 
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, oldFacRegDto.getFacilityAdminAndOfficerDto());
 
+            // compare facility committee
+            String oldCommitteeDataRepoId = oldFacRegDto.getDocRecordInfos().stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals("committeeData")).map(DocRecordInfo::getRepoId).findFirst().orElseThrow(() -> new IllegalStateException("no such doc type docRecordInfo"));
+            String newCommitteeDataRepoId = newFacRegDto.getDocRecordInfos().stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals("committeeData")).map(DocRecordInfo::getRepoId).findFirst().orElseThrow(() -> new IllegalStateException("no such doc type docRecordInfo"));
+            if (!oldCommitteeDataRepoId.equals(newCommitteeDataRepoId)) {
+                ParamUtil.setRequestAttr(request, BIO_SAFETY_COMMITTEE_IS_DIFFERENT, true);
+            }
+            // compare facility authorizer
+            String oldAuthorizerDataRepoId = oldFacRegDto.getDocRecordInfos().stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals("authoriserData")).map(DocRecordInfo::getRepoId).findFirst().orElseThrow(() -> new IllegalStateException("no such doc type docRecordInfo"));
+            String newAuthorizerDataRepoId = newFacRegDto.getDocRecordInfos().stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals("authoriserData")).map(DocRecordInfo::getRepoId).findFirst().orElseThrow(() -> new IllegalStateException("no such doc type docRecordInfo"));
+            if (!oldAuthorizerDataRepoId.equals(newAuthorizerDataRepoId)) {
+                ParamUtil.setRequestAttr(request, AUTHORIZER_IS_DIFFERENT, true);
+            }
+
             if (isCf) {
                 // compare afc
                 FacilityAfcDto oldFacRegDtoAfcDto = oldFacRegDto.getAfcDto();
@@ -287,7 +303,7 @@ public class AppViewService {
             List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
             ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(oldFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(newFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
             ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
             Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet());
@@ -296,6 +312,14 @@ public class AppViewService {
             ParamUtil.setRequestAttr(request, "diffMap", sumDiffMap);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    private void compareDiffDocRecordInfo(Collection<DocRecordInfo> oldInfos, Collection<DocRecordInfo> newInfos, String docType, HttpServletRequest request) {
+        List<String> oldRepoIdList = oldInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+        List<String> newRepoIdList = newInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+        if (!oldRepoIdList.containsAll(newRepoIdList) || !newRepoIdList.containsAll(oldRepoIdList)) {
+            ParamUtil.setRequestAttr(request, docType, true);
         }
     }
 

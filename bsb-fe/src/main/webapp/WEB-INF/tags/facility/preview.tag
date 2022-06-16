@@ -44,6 +44,11 @@
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
+    <div class="row" id="printRow">
+        <div class="text-right" style="padding: 0 15px">
+            <p class="print"></p><div style="font-size: 16px;"><a onclick="printFacilityRegistration('${printFacRegId}');" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div><p></p>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
@@ -629,17 +634,17 @@
                                     <div class="col-10" style="padding-bottom: 15px;"><strong>Declaration</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <div class="col-xs-12 form-group">
-                                    <h4 style="font-size: 16px">I, hereby declare the following:</h4>
+                                <div class="form-group" style="margin: 0">
+                                    <p style="font-size: 16px">I, hereby declare the following:</p>
                                     <br/>
                                     <ol style="padding-left: 16px">
                                         <c:forEach var="item" items="${declarationConfigList}">
                                             <li class="col-xs-12">
-                                                <div class="col-xs-9 form-group" style="padding-left: 0">${item.statement}</div>
-                                                <div class="form-check col-xs-2">
+                                                <div class="col-xs-8 form-group" style="padding-left: 0">${item.statement}</div>
+                                                <div class="form-check col-xs-2" style="text-align: right">
                                                     <span class="fa <c:choose><c:when test="${'Y' eq declarationAnswerMap.get(item.id)}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
                                                 </div>
-                                                <div class="form-check col-xs-1">
+                                                <div class="form-check col-xs-2" style="text-align: right">
                                                     <span class="fa <c:choose><c:when test="${'N' eq declarationAnswerMap.get(item.id)}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
                                                 </div>
                                             </li>
@@ -652,7 +657,7 @@
                                     <div class="col-10"><strong>Other Information</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <div class="col-xs-12 form-group">
+                                <div class="form-group" style="margin: 0">
                                     <fac:supportingDocInfo classification="${classification}" activities="${activities}" masterCodeConstants="${masterCodeConstants}"/>
                                 </div>
                             </div>
