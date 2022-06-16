@@ -631,14 +631,8 @@ public class VssDataSubmissionDelegator {
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = vssSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-        String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(vssSuperDataSubmissionDto.getHciCode(), licenseeId).getEntity();
-        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
-            LicenceDto licenceDto = licenceDtoList.get(0);
-            licenceId = licenceDto.getId();
-        }
         try {
-            sendMsgAndEmail("Voluntary Sterilization",licenceId, licenseeDtoName, submissionNo);
+            sendMsgAndEmail("Voluntary Sterilization",licenseeId, licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -749,14 +743,13 @@ public class VssDataSubmissionDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
-    private void sendMsgAndEmail(String serverName,String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendMsgAndEmail(String serverName,String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
         msgContentMap.put("submitterName", submitterName);
-
         msgContentMap.put("submissionId", submissionNo);
-        msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
@@ -769,7 +762,7 @@ public class VssDataSubmissionDelegator {
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_VSS);
-        msgParam.setRefId(licenceId);
+        msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
         notificationHelper.sendNotification(msgParam);
