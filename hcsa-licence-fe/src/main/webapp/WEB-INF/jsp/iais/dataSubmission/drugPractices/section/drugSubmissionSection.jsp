@@ -118,9 +118,9 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Other-Qualification" />
+                    <iais:field width="5" value="Other Qualification" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="66" type="text" id ="otherQualification" name="otherQualification"
+                        <iais:input maxLength="100" type="text" id ="otherQualification" name="otherQualification"
                                     value="${drugSubmission.otherQualification}" />
                     </iais:value>
                 </iais:row>

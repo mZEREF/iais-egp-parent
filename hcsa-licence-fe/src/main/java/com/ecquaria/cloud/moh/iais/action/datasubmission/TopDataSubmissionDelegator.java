@@ -54,7 +54,7 @@ public class TopDataSubmissionDelegator {
     protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
     protected final static String  TOP_OTHERS    = "Others (E.g. Home)";
     private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
-    /*private final static String  COUNSE_LLING_PLACE_AGES          =  "counsellingPlacea";*/
+    /*private final static String  COUNSE_LLING_PLACE_AGES          =  "CounsellingPlacea";*/
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
@@ -112,6 +112,7 @@ public class TopDataSubmissionDelegator {
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            retrieveHciCode(bpc.request, topSuperDataSubmissionDto);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
@@ -629,8 +630,13 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto = terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, preTerminationDto);
-        String counsellingAge = ParamUtil.getString(request, "counsellingAge");
-        preTerminationDto.setPatientAppointment(counsellingAge);
+        String counsellingPlace = ParamUtil.getString(request, "counsellingPlace");
+        preTerminationDto.setCounsellingPlace(counsellingPlace);
+        ParamUtil.setSessionAttr(request, "counsellingPlace",counsellingPlace);
+        if(StringUtil.isNotEmpty(counsellingPlace)){
+            Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
+            preTerminationDto.setCounsellingAge(counsellingAge);
+        }
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
         terminationOfPregnancyDto.setPreTerminationDto(preTerminationDto);
@@ -645,6 +651,9 @@ public class TopDataSubmissionDelegator {
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
+                    }
+                    if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
+                        ParamUtil.setSessionAttr(request, "counsellingPlaceError", "This is a mandatory field.");
                     }
                 }else if(preTerminationDto.getCounsellingGiven()==false){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
@@ -1030,11 +1039,12 @@ public class TopDataSubmissionDelegator {
         msgContentMap.put("serverName", serverName);
         msgContentMap.put("submitterName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
-        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
 
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("serverName", serverName);
+        msgSubjectMap.put("serverName", serverName);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
 
         EmailParam msgParam = new EmailParam();
