@@ -519,7 +519,8 @@ public class InterInboxDelegator {
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
             boolean periodEqDay = calendar.getTime().after(new Date());
             if (!periodEqDay){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The selected licence is not eligible for appeal");
+                // APPEAL_ACK003 - The selected licence is not eligible for appeal
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("APPEAL_ACK003"));
                 ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
                 return;
             }
@@ -1317,7 +1318,8 @@ public class InterInboxDelegator {
         calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getAgainstRejection()));
         boolean rejectEqDay = calendar.getTime().after(new Date());
         if (!cgoEqDay&&!nameEqDay&&!otherEqDay&&!feeEqDay&&!rejectEqDay){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The selected application is not eligible for appeal");
+            // APPEAL_ACK004 - The selected application is not eligible for appeal
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT, MessageUtil.getMessageDesc("APPEAL_ACK004"));
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
             return;
         }
