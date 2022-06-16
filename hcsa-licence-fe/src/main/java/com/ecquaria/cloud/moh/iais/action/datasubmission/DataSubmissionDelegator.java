@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.dto.ComplianceDto;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -33,6 +34,42 @@ public class DataSubmissionDelegator {
     public void doPrepareDataSubmissionSelect(BaseProcessClass bpc) {
 
 
+    }
+
+    /**
+     * StartStep: PrepareCompliance
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareCompliance(BaseProcessClass bpc) {
+        bpc.request.setAttribute("title","New Data Submission");
+        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+        ComplianceDto  complianceDto = new ComplianceDto();
+        complianceDto.setSubmissionType(crud_action_type_ds);
+        switch (crud_action_type_ds){
+            case "AR" :
+                complianceDto.setMins("30");
+                complianceDto.setSubmissionTypeDisplay("Assisted Reproduction");
+                break;
+            case "DP" :
+                complianceDto.setMins("5");
+                complianceDto.setSubmissionTypeDisplay("Drug Practices");
+                break;
+            case "LDT" :
+                complianceDto.setMins("5");
+                complianceDto.setSubmissionTypeDisplay("Laboratory Developed Test");
+                break;
+            case "TP" :
+                complianceDto.setMins("15");
+                complianceDto.setSubmissionTypeDisplay("Termination of Pregnancy");
+                break;
+            case "VS" :
+                complianceDto.setMins("10");
+                complianceDto.setSubmissionTypeDisplay("Voluntary Sterilisation");
+                break;
+        }
+        bpc.request.setAttribute("complianceDto",complianceDto);
     }
     /**
      * StartStep: PrepareDataSubmission
@@ -89,6 +126,14 @@ public class DataSubmissionDelegator {
     public void doPrepeareTP(BaseProcessClass bpc) {
 
     }
+    /**
+     * StartStep: Back
+     *
+     * @param bpc
+     * @throws
+     */
+    public void back(BaseProcessClass bpc) {
 
+    }
 
 }

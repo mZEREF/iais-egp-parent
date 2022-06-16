@@ -57,4 +57,14 @@ public class INTERNET___MohDataSubmission___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPrepeareTP", this);
 	}
 
+	public void prepareCompliance_OnStepProcess_0() throws Exception {
+	// 		PrepareCompliance->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareCompliance", this);
+	}
+
+	public void back_OnStepProcess_0() throws Exception {
+	// 		Back->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "back", this);
+	}
+
 }
