@@ -35,6 +35,12 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,11 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -446,6 +447,9 @@ public class DataSubmissionInboxDelegator {
 								case 13:
 									//DP change the Prescribed  81503 2)
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR063");break;
+								case 14:
+									//DP change the Sovenor Inventory )
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR067");break;
 								default:
 							}
 							break;
@@ -560,7 +564,12 @@ public class DataSubmissionInboxDelegator {
 						PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
 						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
-							return 2;
+							for (CycleDto cyc:cycleDtoList
+								 ) {
+								if(!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_ART)){
+									return 2;
+								}
+							}
 						}
 					}
 					if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
@@ -575,7 +584,12 @@ public class DataSubmissionInboxDelegator {
 						PatientDto patientDto=dpSuperDataSubmissionDto.getPatientDto();
 						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
-							return 12;
+							for (CycleDto cyc:cycleDtoList
+							) {
+								if(!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP)){
+									return 12;
+								}
+							}
 						}
 					}
 				}
@@ -587,7 +601,11 @@ public class DataSubmissionInboxDelegator {
                         log.info(StringUtil.changeForLog("Drug Prescribed 13"));
                         return 13;
                     }
-                }
+					DpSuperDataSubmissionDto dpSuperDataSubmissionDto=licenceInboxClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+					if(dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY)){
+						return 14;
+					}
+				}
             }
 
 			//check x times,change check status is locked
