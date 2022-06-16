@@ -33,6 +33,7 @@ public class DataSubmissionConstant {
     public static String SUBMITTED_BY                       = "submittedBy";
 
     public static String AR_DATA_LIST                       = "arSuperList";
+    public static String DP_DATA_LIST                       = "dpSuperList";
 
     public static String AR_DATA_SUBMISSION                 = "arSuperDataSubmissionDto";
     public static String AR_OLD_DATA_SUBMISSION             = "arOldSuperDataSubmissionDto";

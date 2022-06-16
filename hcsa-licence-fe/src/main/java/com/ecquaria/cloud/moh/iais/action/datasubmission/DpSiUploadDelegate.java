@@ -4,11 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -17,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
+import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.SovenorInventoryExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -24,10 +24,22 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
@@ -37,18 +49,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDpSIUpload
@@ -76,6 +78,9 @@ public class DpSiUploadDelegate {
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
+    @Autowired
+    private DpDataSubmissionService dpDataSubmissionService;
+
     /**
      * Step: Start
      *
@@ -91,7 +96,7 @@ public class DpSiUploadDelegate {
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
         session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
     }
 
     /**
@@ -129,8 +134,8 @@ public class DpSiUploadDelegate {
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
         if (fileItemSize == null) {
-            List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
-            fileItemSize = patientInfoList != null ? patientInfoList.size() : 0;
+            List<DpSovenorInventoryDto> sovenorInventoryDtos = (List<DpSovenorInventoryDto>) request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
+            fileItemSize = sovenorInventoryDtos != null ? sovenorInventoryDtos.size() : 0;
             ParamUtil.setRequestAttr(request, FILE_ITEM_SIZE, fileItemSize);
         }
     }
@@ -168,24 +173,14 @@ public class DpSiUploadDelegate {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
                             Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
                 } else {
-                    String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
-                    dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos, orgId);
-                   /* Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
-                    List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
-                    List<PatientDto> patientDtos = patientInfoList.stream()
-                            .map(PatientInfoDto::getPatient)
-                            .collect(Collectors.toList());
-                    for (int i = 1; i < fileItemSize; i++) {
-                        if (duplicate(patientDtos.get(i), patientDtos.subList(0, i))) {
-                            errorMsgs.add(new FileErrorMsg(DataSubmissionHelper.getRow(i), fieldCellMap.get("idNumber"),
-                                    "GENERAL_ERR0053"));
-                        }
-                    }
+                    dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
+                    Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
+                    List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(dpSovenorInventoryDtos, "file", fieldCellMap);
                     if (!errorMsgs.isEmpty()) {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
                         errorMap.put("itemError", "itemError");
-                    }*/
+                    }
                 }
             }
             //crudype = ACTION_TYPE_PAGE;
@@ -211,84 +206,37 @@ public class DpSiUploadDelegate {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
 
-    /**
-     * Check duplication for all records in file
-     *
-     * @param patient
-     * @param patientDtos
-     * @return
-     */
-    private boolean duplicate(PatientDto patient, List<PatientDto> patientDtos) {
-        if (StringUtil.isEmpty(patient.getIdType()) || StringUtil.isEmpty(patient.getIdNumber()) || StringUtil.isEmpty(
-                patient.getNationality())) {
-            return false;
-        }
-        return patientDtos.stream().anyMatch(dto -> Objects.equals(patient.getIdNumber(), dto.getIdNumber())
-                && Objects.equals(patient.getIdType(), dto.getIdType())
-                && Objects.equals(patient.getNationality(), dto.getNationality()));
-    }
+
 
     /**
      * Transfer to patient info dto from patient info excel dto
      * And map value to code for some fields (drowndrop)
      *
      * @param sovenorInventoryExcelDtos
-     * @param orgId
      * @return
      */
-    private List<DpSovenorInventoryDto> getSovenorInventoryList(List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos, String orgId) {
+    private List<DpSovenorInventoryDto> getSovenorInventoryList(List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos) {
         if (sovenorInventoryExcelDtos == null) {
             return null;
         }
-        /*List<MasterCodeView> idTypes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE);
-        List<MasterCodeView> nationalities = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
-        List<MasterCodeView> groups = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_ETHNIC_GROUP);
-        List<PatientInfoDto> result = IaisCommonUtils.genNewArrayList(patientInfoExcelDtoList.size());
-        for (PatientInfoExcelDto patientInfoExcelDto : patientInfoExcelDtoList) {
-            PatientInfoDto dto = new PatientInfoDto();
-            PatientDto patient = MiscUtil.transferEntityDto(patientInfoExcelDto, PatientDto.class);
-            if (StringUtil.isNotEmpty(patient.getName())) {
-                patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
-            }
-            patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
-            patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
-            patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
-            patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
-            // for oval validation
-            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
-            patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
-            patient.setOrgId(orgId);
-            dto.setPatient(patient);
-            dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
-            if (patient.isPreviousIdentification()) {
-                String preIdType = DataSubmissionHelper.getCode(patientInfoExcelDto.getPreIdType(), idTypes);
-                String preIdNumber = patientInfoExcelDto.getPreIdNumber();
-                String preNationality = DataSubmissionHelper.getCode(patientInfoExcelDto.getPreNationality(), nationalities);
-                PatientDto previous = new PatientDto();
-                previous.setIdType(preIdType);
-                previous.setIdNumber(preIdNumber);
-                previous.setNationality(preNationality);
-                PatientDto db = patientService.getActiveArPatientByConds(preIdType, preIdNumber, preNationality, orgId);
-                if (db != null) {
-                    previous = db;
-                }
-                dto.setPrevious(previous);
-            }
-            HusbandDto husbandDto = new HusbandDto();
-            if (StringUtil.isNotEmpty(patientInfoExcelDto.getNameHbd())) {
-                husbandDto.setName(patientInfoExcelDto.getNameHbd().toUpperCase(AppConsts.DFT_LOCALE));
-            }
-            husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
-            husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
-            husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
-            husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
-            husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            // for oval validation
-            husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
-            dto.setHusband(husbandDto);
+
+        List<DpSovenorInventoryDto> result = IaisCommonUtils.genNewArrayList(sovenorInventoryExcelDtos.size());
+        for (SovenorInventoryExcelDto excelDto : sovenorInventoryExcelDtos) {
+            DpSovenorInventoryDto dto = new DpSovenorInventoryDto();
+            dto.setBatchNumber(excelDto.getBatchNumber());
+            dto.setDeliveryDate(IaisCommonUtils.handleDate(excelDto.getDeliveryDate()));
+            dto.setDrugName(excelDto.getDrugName());
+            dto.setDrugStrength(excelDto.getDrugStrength());
+            dto.setExpiryDate(IaisCommonUtils.handleDate(excelDto.getExpiryDate()));
+            dto.setHciName(excelDto.getHciName());
+            dto.setPurchaseDate(IaisCommonUtils.handleDate(excelDto.getPurchaseDate()));
+            dto.setQuantityBalanceStock(excelDto.getQuantityBalanceStock());
+            dto.setQuantityDrugPurchased(excelDto.getQuantityDrugPurchased());
+            dto.setQuantityExpiredStock(excelDto.getQuantityExpiredStock());
+            dto.setRemarks(excelDto.getRemarks());
             result.add(dto);
-        }*/
-        return null;
+        }
+        return result;
     }
 
     private List<SovenorInventoryExcelDto> getSovenorInventoryExcelDtoList(Entry<String, File> fileEntry) {
@@ -367,10 +315,10 @@ public class DpSiUploadDelegate {
         log.info(StringUtil.changeForLog("----- DoPreview -----"));
         // declaration
         String declaration = ParamUtil.getString(bpc.request, "declaration");
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
+        DpSuperDataSubmissionDto superDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = superDataSubmissionDto.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentDpDataSubmission(superDataSubmissionDto, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{ACTION_TYPE_PAGE, "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
@@ -394,44 +342,49 @@ public class DpSiUploadDelegate {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- Submission -----"));
-        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
-        if (patientInfoList == null || patientInfoList.isEmpty()) {
+        List<DpSovenorInventoryDto> sovenorInventoryDtos = (List<DpSovenorInventoryDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
+        if (sovenorInventoryDtos == null || sovenorInventoryDtos.isEmpty()) {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;
         }
-        boolean useParallel = patientInfoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
-        ArSuperDataSubmissionDto arSuperDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
-        List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(patientInfoList.spliterator(), useParallel)
+        boolean useParallel = sovenorInventoryDtos.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
+        DpSuperDataSubmissionDto dpSuperDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        String declaration = dpSuperDto.getDataSubmissionDto().getDeclaration();
+        List<DpSuperDataSubmissionDto> dpSuperList = StreamSupport.stream(sovenorInventoryDtos.spliterator(), useParallel)
                 .map(dto -> {
-                    ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
+                    DpSuperDataSubmissionDto newDto = DataSubmissionHelper.dpReNew(dpSuperDto);
                     newDto.setFe(true);
                     DataSubmissionDto dataSubmissionDto = newDto.getDataSubmissionDto();
-                    String submissionNo = arDataSubmissionService.getSubmissionNo(newDto.getSelectionDto(),
-                            DataSubmissionConsts.DS_AR);
+                    String submissionNo = dpDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_DRP);
                     dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(bpc.request).getUserId());
                     dataSubmissionDto.setSubmitDt(new Date());
                     dataSubmissionDto.setSubmissionNo(submissionNo);
                     dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
-                    PatientDto patient = dto.getPatient();
-                    patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
-                    patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
-                    dto.setPatient(patient);
-                    newDto.setPatientInfoDto(dto);
+                    newDto.setDpSovenorInventoryDto(dto);
                     return newDto;
                 })
                 .collect(Collectors.toList());
         if (useParallel) {
-            Collections.sort(arSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
+            Collections.sort(dpSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
         }
-        arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
+        List<DpSuperDataSubmissionDto> dpSuperLists=IaisCommonUtils.genNewArrayList();
+        for (DpSuperDataSubmissionDto dp:dpSuperList
+             ) {
+            DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDto(dp);
+            dpSuperLists.add(dpNew);
+        }
+        List<DpSuperDataSubmissionDto> dpSuperListBe=IaisCommonUtils.genNewArrayList();
         try {
-            arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
+            for (DpSuperDataSubmissionDto dp:dpSuperLists
+            ) {
+                DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dp);
+                dpSuperListBe.add(dpNew);
+            }
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperListBe);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
                 DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
@@ -460,7 +413,7 @@ public class DpSiUploadDelegate {
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) {
         log.info(StringUtil.changeForLog("----- Export Patient Info File -----"));
         try {
-            String fileName = "Data_Submission_ART_Patient";
+            String fileName = "Sovenor Inventory List";
             File inputFile = ResourceUtils.getFile("classpath:template/" + fileName + ".xlsx");
             if (!inputFile.exists() || !inputFile.isFile()) {
                 log.error("No File Template Found!");
