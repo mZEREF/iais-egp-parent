@@ -536,19 +536,20 @@ public class ApplicationAjaxController {
             String premPrefixName = getPremPrefixName(premisesType);
             //weekly
             List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDto.getWeeklyDtoList();
-            if(!IaisCommonUtils.isEmpty(weeklyDtoList)){
+            if (!IaisCommonUtils.isEmpty(weeklyDtoList)) {
                 StringBuilder weeklyHtml = new StringBuilder();
-                for(int i =0;i<weeklyDtoList.size();i++){
-                    String sql = genWeeklyCountHtml(premisesType,premiseIndex,String.valueOf(i));
-                    String weeklyName =  "Weekly";
+                for (int i = 0; i < weeklyDtoList.size(); i++) {
+                    String sql = genWeeklyCountHtml(premisesType, premiseIndex, String.valueOf(i));
+                    String weeklyName = "Weekly";
                     Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
                     weeklyAttr.put("class", weeklyName);
-                    weeklyAttr.put("id", weeklyName);
-                    weeklyAttr.put("name", premiseIndex+premPrefixName + weeklyName + i);
+                    weeklyAttr.put("id", premiseIndex + premPrefixName + weeklyName + i);
+                    weeklyAttr.put("name", premiseIndex + premPrefixName + weeklyName + i);
                     weeklyAttr.put("style", "display: none;");
-                    List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
-                    String weeklyDropHtml = ApplicationHelper.genMutilSelectOpHtml(weeklyAttr,weeklyOpList,null,weeklyDtoList.get(i).getSelectValList(),true);
-                    sql = sql.replace("${multipleDropDown}",weeklyDropHtml);
+                    List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
+                    String weeklyDropHtml = ApplicationHelper.genMutilSelectOpHtml(weeklyAttr, weeklyOpList, null,
+                            weeklyDtoList.get(i).getSelectValList(), true);
+                    sql = sql.replace("${multipleDropDown}", weeklyDropHtml);
                     weeklyHtml.append(sql);
                 }
                 appGrpPremisesDto.setWeeklyHtml(weeklyHtml.toString());
@@ -556,30 +557,31 @@ public class ApplicationAjaxController {
             //ph
             List<OperationHoursReloadDto> phDtoList = appGrpPremisesDto.getPhDtoList();
             StringBuilder phHtml = new StringBuilder();
-            if(!IaisCommonUtils.isEmpty(phDtoList)){
-                for(int i =0;i<phDtoList.size();i++){
-                    String sql = genPhCountHtml(premisesType,premiseIndex,String.valueOf(i));
-                    String pubHolidayName ="PubHoliday";
+            if (!IaisCommonUtils.isEmpty(phDtoList)) {
+                for (int i = 0; i < phDtoList.size(); i++) {
+                    String sql = genPhCountHtml(premisesType, premiseIndex, String.valueOf(i));
+                    String pubHolidayName = "PubHoliday";
                     Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
                     pubHolidayAttr.put("class", pubHolidayName);
-                    pubHolidayAttr.put("id", pubHolidayName);
-                    pubHolidayAttr.put("name", premiseIndex +premPrefixName+ pubHolidayName + i);
+                    pubHolidayAttr.put("id", premiseIndex + premPrefixName + pubHolidayName + i);
+                    pubHolidayAttr.put("name", premiseIndex + premPrefixName + pubHolidayName + i);
                     pubHolidayAttr.put("style", "display: none;");
                     List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-                    String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,phDtoList.get(i).getSelectValList(),true);
+                    String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr, phOpList, null,
+                            phDtoList.get(i).getSelectValList(), true);
                     sql = sql.replace("${multipleDropDown}", pubHolidayHtml);
                     phHtml.append(sql);
                 }
-            }else{
-                String sql = genPhCountHtml(premisesType,"0","0");
-                String pubHolidayName ="PubHoliday";
+            } else {
+                String sql = genPhCountHtml(premisesType, "0", "0");
+                String pubHolidayName = "PubHoliday";
                 Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
                 pubHolidayAttr.put("class", pubHolidayName);
-                pubHolidayAttr.put("id", pubHolidayName);
-                pubHolidayAttr.put("name", premiseIndex +premPrefixName+ pubHolidayName + 0);
+                pubHolidayAttr.put("id", premiseIndex + premPrefixName + pubHolidayName + 0);
+                pubHolidayAttr.put("name", premiseIndex + premPrefixName + pubHolidayName + 0);
                 pubHolidayAttr.put("style", "display: none;");
                 List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-                String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,null,true);
+                String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr, phOpList, null, null, true);
                 sql = sql.replace("${multipleDropDown}", pubHolidayHtml);
                 phHtml.append(sql);
             }
@@ -904,7 +906,7 @@ public class ApplicationAjaxController {
         String weeklyName = "Weekly";
         Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
         weeklyAttr.put("class", weeklyName);
-        weeklyAttr.put("id", weeklyName);
+        weeklyAttr.put("id", premIndex +premPrefixName+ weeklyName + weeklyCount);
         weeklyAttr.put("name", premIndex +premPrefixName+ weeklyName + weeklyCount);
         weeklyAttr.put("style", "display: none;");
         List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
@@ -930,7 +932,7 @@ public class ApplicationAjaxController {
         String pubHolidayName = "PubHoliday";
         Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
         pubHolidayAttr.put("class", pubHolidayName);
-        pubHolidayAttr.put("id", pubHolidayName);
+        pubHolidayAttr.put("id", premIndex +premPrefixName+ pubHolidayName + phCount);
         pubHolidayAttr.put("name", premIndex +premPrefixName+ pubHolidayName + phCount);
         pubHolidayAttr.put("style", "display: none;");
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);

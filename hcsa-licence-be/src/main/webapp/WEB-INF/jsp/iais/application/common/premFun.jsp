@@ -1526,25 +1526,7 @@
             var weeklyLength = $weeklyContent.find('.weeklyDiv').length;
             $premContent.find('input[name="weeklyLength"]').val(weeklyLength);
             //reset name
-            var premValue = $premContent.find('.premValue').val();
-            var premType = $premContent.find('.premTypeValue').val();
-            var premTypeVal = getPagePremType(premType);
-            $weeklyContent.find('div.weeklyDiv').each(function (k) {
-                // $(this).find('div.multi-select label->input').attr("name",premValue+premTypeVal+'Weekly'+k);
-                var $thisWeekly = $(this);
-                $thisWeekly.find('.WeeklyStartHH').attr('name',premValue+premTypeVal+'WeeklyStartHH'+k);
-                $thisWeekly.find('.WeeklyStartMM').attr('name',premValue+premTypeVal+'WeeklyStartMM'+k);
-                $thisWeekly.find('.WeeklyEndHH').attr('name',premValue+premTypeVal+'WeeklyEndHH'+k);
-                $thisWeekly.find('.WeeklyEndMM').attr('name',premValue+premTypeVal+'WeeklyEndMM'+k);
-                $thisWeekly.find('div.multi-select').children('div').children('label').each(function (weeklyCount) {
-                    console.log("weeklyCount:"+weeklyCount);
-                    var $thisSelect = $(this);
-                    $thisSelect.find('input').attr('name',premValue+premTypeVal+'Weekly'+k);
-                    $thisSelect.find('input').attr('id',premValue+'Weekly'+k+weeklyCount);
-                    $thisSelect.find('label').attr('for',premValue+'Weekly'+k+weeklyCount);
-                });
-
-            });
+            refreshIndex($weeklyContent.find('div.weeklyDiv'));
 
             if(weeklyLength < '${weeklyCount}'){
                 $weeklyContent.find('.addWeeklyDiv').removeClass('hidden');
@@ -1562,22 +1544,7 @@
             $premContent.find('input[name="phLength"]').val(phLength);
 
             //reset name
-            var premValue = $premContent.find('.premValue').val();
-            var premType = $premContent.find('.premTypeValue').val();
-            var premTypeVal = getPagePremType(premType);
-            $phContent.find('div.pubHolidayDiv').each(function (k) {
-                var $thisPh = $(this);
-                $thisPh.find('.PhStartHH').attr('name',premValue+premTypeVal+'PhStartHH'+k);
-                $thisPh.find('.PhStartMM').attr('name',premValue+premTypeVal+'PhStartMM'+k);
-                $thisPh.find('.PhEndHH').attr('name',premValue+premTypeVal+'PhEndHH'+k);
-                $thisPh.find('.PhEndMM').attr('name',premValue+premTypeVal+'PhEndMM'+k);
-                $thisPh.find('div.multi-select').children('div').children('label').each(function (phCount) {
-                    var $thisSelect = $(this);
-                    $thisSelect.find('input').attr('name',premValue+premTypeVal+'PubHoliday'+k);
-                    $thisSelect.find('input').attr('id',premValue+'PubHoliday'+k+phCount);
-                    $thisSelect.find('label').attr('for',premValue+'PubHoliday'+k+phCount);
-                });
-            });
+            refreshIndex($phContent.find('div.pubHolidayDiv'));
 
             if(phLength < '${phCount}'){
                 $phContent.find('.addPhDiv').removeClass('hidden');
