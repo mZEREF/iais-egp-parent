@@ -18,7 +18,7 @@ public class BsbInboxDto extends BaseEntityDto {
     private String msgType;
     private String facilityName;
     private String refNo;
-    private String appType;
+    private String submissionType;
     private String msgContent;
     private String status;
 }

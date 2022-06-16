@@ -16,10 +16,10 @@ import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class InboxMsgSearchDto extends PagingAndSortingDto {
     private String searchMsgType;
-    private String searchAppType;
+    private String searchSubType;
     private String searchSubject;
-    private String dateFrom;
-    private String dateTo;
+    private String searchMsgDateFrom;
+    private String searchMsgDateTo;
     private String msgStatus;
 
 
@@ -28,10 +28,10 @@ public class InboxMsgSearchDto extends PagingAndSortingDto {
      */
     public void clearAllFields() {
         searchMsgType = "";
-        searchAppType = "";
+        searchSubType = "";
         searchSubject = "";
-        dateFrom = "";
-        dateTo = "";
+        searchMsgDateFrom = "";
+        searchMsgDateTo = "";
         msgStatus = "";
     }
 }
