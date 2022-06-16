@@ -677,14 +677,14 @@ function refreshIndex(targetSelector) {
             }
             var result = /(.*\D+)/g.exec(orgName);
             var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            name = name + k;
-            $input.prop('name', name);
-            if (orgName == orgId) {
-                $input.prop('id', name);
+            var newName = name + k;
+            $input.prop('name', newName);
+            if (orgName == orgId || name == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+                $input.prop('id', newName);
             }
             var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
             if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + name);
+                $errorSpan.prop('id', 'error_' + newName);
             }
             if (tag == 'select') {
                 updateSelectTag($input);
