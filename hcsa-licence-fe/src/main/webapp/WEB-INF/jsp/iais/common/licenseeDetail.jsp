@@ -22,10 +22,10 @@
             </c:if>
         </iais:value>
     </iais:row>
-    <c:if test="${canEdit}">
+    <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
-    </c:if>
+    </c:if>--%>
     <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
