@@ -239,6 +239,8 @@
         const actionValue = $("#decision_email").val();
         if ("REDECI027" === actionValue && (rollBackTo===''||rollBackTo===undefined||rollBackTo===null)) {
             $("#error_rollBackTo1").show();
+            //close fangDuoJi in has error
+            $('#fangDuoJiconfirmTag').val(null);
         }else {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");

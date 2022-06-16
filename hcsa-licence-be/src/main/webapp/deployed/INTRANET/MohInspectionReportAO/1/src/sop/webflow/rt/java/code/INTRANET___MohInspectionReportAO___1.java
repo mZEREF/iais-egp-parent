@@ -41,6 +41,10 @@ public class INTRANET___MohInspectionReportAO___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "action", this);
 	}
 
+	public void crRollBack_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "rollBack", this);
+	}
+
 
 	
 

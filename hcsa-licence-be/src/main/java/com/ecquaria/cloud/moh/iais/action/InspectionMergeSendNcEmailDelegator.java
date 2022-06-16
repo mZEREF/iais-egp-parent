@@ -134,6 +134,8 @@ public class InspectionMergeSendNcEmailDelegator {
     private static final String MSG_CON="messageContent";
     private static final String APP_VIEW_DTO="applicationViewDto";
     private static final String TD="</td><td>";
+    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -162,7 +164,12 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
-
+        //init rollBack params
+        ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
+        ParamUtil.setSessionAttr(bpc.request, ROLLBACK_OPTIONS, (Serializable) rollBackStage);
+        ParamUtil.setSessionAttr(bpc.request, ROLLBACK_VALUE_MAP, (Serializable) rollBackValueMap);
     }
 
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
@@ -383,7 +390,7 @@ public class InspectionMergeSendNcEmailDelegator {
             inspectionEmailTemplateDto.setMessageContent(msgTemplateDto.getMessageContent());
         }
 
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,InspectionConstants.PROCESS_DECI_ROLL_BACK});
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
@@ -441,6 +448,15 @@ public class InspectionMergeSendNcEmailDelegator {
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
+
+        //rollBack
+        if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
+            Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
+            String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+            return;
+        }
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos1=inspEmailService.getAppPremisesCorrelationsByPremises(applicationViewDto.getAppPremisesCorrelationId());
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();

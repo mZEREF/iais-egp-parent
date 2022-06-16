@@ -5,24 +5,30 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
@@ -32,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -40,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -51,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -58,6 +67,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +77,13 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -126,6 +138,12 @@ public class InspectionServiceImpl implements InspectionService {
     @Autowired
     private GenerateIdClient generateIdClient;
 
+    @Autowired
+    private BeEicGatewayClient gatewayClient;
+
+    @Autowired
+    private SystemBeLicClient systemBeLicClient;
+
     @Override
     public List<SelectOption> getAppTypeOption() {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
@@ -140,6 +158,7 @@ public class InspectionServiceImpl implements InspectionService {
         });
         return appTypeOption;
     }
+    private static final List<String> ROLE = Arrays.asList(RoleConsts.USER_ROLE_ASO,RoleConsts.USER_ROLE_PSO,RoleConsts.USER_ROLE_INSPECTIOR,RoleConsts.USER_ROLE_AO1,RoleConsts.USER_ROLE_AO2,RoleConsts.USER_ROLE_AO3);
 
     @Override
     public List<SelectOption> getAppStatusOption(LoginContext loginContext, String poolType) {
@@ -569,7 +588,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap) {
+    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole) {
         Assert.assertNotNull(rollBackHistoryValueMap);
         rollBackHistoryValueMap.clear();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
@@ -579,9 +598,8 @@ public class InspectionServiceImpl implements InspectionService {
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                if (user != null) {
-                    String actionBy = user.getDisplayName();
-                    SelectOption selectOption = new SelectOption(index + "", actionBy + " (" + displayName + ")");
+                if (user != null && validateRole(displayName, currentRole)) {
+                    SelectOption selectOption = new SelectOption(Integer.toString(index), user.getDisplayName() + " (" + displayName + ")");
                     rollBackStage.add(selectOption);
                     rollBackHistoryValueMap.put(Integer.toString(index), appPremisesRoutingHistoryDto);
                 }
@@ -591,9 +609,85 @@ public class InspectionServiceImpl implements InspectionService {
         return rollBackStage;
     }
 
-    @SneakyThrows
+    private boolean validateRole(String historyRole, String currentRole) {
+        if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(currentRole)){
+            currentRole = RoleConsts.USER_ROLE_AO1;
+        }
+        return StringUtil.isNotEmpty(historyRole) && ROLE.contains(historyRole) && ROLE.indexOf(currentRole) > ROLE.indexOf(historyRole);
+    }
+
+    /**
+     * Delete all the Inspection records
+     * update application's self assessment flag
+     * @param premCorrId
+     * @param applicationDto
+     */
     @Override
-    public void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto) {
+    public void rollBackInspectionRecord(String premCorrId, ApplicationDto applicationDto){
+        log.info("start rollBackInspection");
+        applicationClient.rollBackInspection(premCorrId);
+
+        //rollBack appointment date
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(premCorrId).getEntity();
+        if(IaisCommonUtils.isNotEmpty(appPremisesInspecApptDtos)){
+            for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
+                appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            }
+            applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtos);
+            gatewayClient.callEicWithTrack(appPremisesInspecApptDtos, gatewayClient::createAppPremisesInspecApptDto,
+                    "rollBackAppointmentDate");
+        }
+        //rollBack adhoc
+        AdhocCheckListConifgDto adhocCheckListConifgDto = applicationClient.getAdhocConfigByAppPremCorrId(premCorrId).getEntity();
+        if(!Objects.isNull(adhocCheckListConifgDto)){
+            adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            adhocCheckListConifgDto.setAllAdhocItem(IaisCommonUtils.genNewArrayList());
+            gatewayClient.callEicWithTrack(adhocCheckListConifgDto, gatewayClient::syncAdhocItemData, "rollBackAdhocCheck");
+        }
+        //rollBack Nc
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(premCorrId).getEntity();
+        if(!Objects.isNull(appPremPreInspectionNcDto)){
+            appPremPreInspectionNcDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            appPremPreInspectionNcDto.setApplicationNo(applicationDto.getApplicationNo());
+            InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
+            inspRectificationSaveDto.setAppPremPreInspectionNcDtos(Collections.singletonList(appPremPreInspectionNcDto));
+            inspRectificationSaveDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+            gatewayClient.callEicWithTrack(inspRectificationSaveDto, gatewayClient::beCreateNcData, "rollBackNc");
+        }
+        //rollBack InspectionSendRecJobHandler remind
+        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(applicationDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
+        if(!Objects.isNull(jobRemindMsgTrackingDto)){
+            jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
+        }
+
+        List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos = applicationClient.getAppPremisesSelfDeclByCorrelationId(premCorrId).getEntity();
+        if(IaisCommonUtils.isNotEmpty(appPremisesSelfDeclChklDtos)){
+            applicationDto.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
+        } else {
+            applicationDto.setSelfAssMtFlag(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
+        }
+        //open submit pref insp date
+        applicationDto.setHasSubmitPrefDate(0);
+    }
+
+    @Override
+    @SneakyThrows
+    public void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto){
+        String stageId = rollBackHistoryDto.getStageId();
+        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
+            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto);
+        } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto);
+        } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, rollBackHistoryDto.getWrkGrpId(), rollBackHistoryDto.getActionby());
+        } else{
+            log.warn("wrong rollBack target, Stage Id is {}",rollBackHistoryDto.getStageId());
+        }
+    }
+
+    @SneakyThrows
+    private void rollBackToPsoAso(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto) {
         String stageId = rollBackHistoryDto.getStageId();
         String wrkGpId = rollBackHistoryDto.getWrkGrpId();
         String userId = rollBackHistoryDto.getActionby();
@@ -605,10 +699,8 @@ public class InspectionServiceImpl implements InspectionService {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
-
-        //rollback inspection data
-        applicationClient.rollBackInspection(taskDto.getRefNo());
-
+        //Delete all the Inspection records and update application's self assessment flag
+        this.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
         //completed current task
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         completedTask(taskDto);
@@ -621,10 +713,6 @@ public class InspectionServiceImpl implements InspectionService {
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        //start self-checklist
-        applicationDto.setSelfAssMtFlag(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
-        //close submit pref insp date
-        applicationDto.setHasSubmitPrefDate(0);
         broadcastApplicationDto.setApplicationDto(applicationDto);
 
         //create newTask

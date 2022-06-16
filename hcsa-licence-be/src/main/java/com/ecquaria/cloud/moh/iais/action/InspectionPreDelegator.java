@@ -146,6 +146,8 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", null);
+        ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", null);
     }
 
     /**
@@ -202,6 +204,10 @@ public class InspectionPreDelegator {
             ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
             ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
             ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
+            Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+            List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
+            ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", (Serializable) rollBackStage);
+            ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", (Serializable) rollBackValueMap);
             // for edit application - need session - applicationViewDto
             checkForEditingApplication(bpc.request);
         }
@@ -504,8 +510,8 @@ public class InspectionPreDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
                 ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto) ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
-        AppPremisesRoutingHistoryDto rollBackTo = inspectionPreTaskDto.getRollBackHistoryMap().get(inspectionPreTaskDto.getCheckRbStage());
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackTo);
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(inspectionPreTaskDto.getCheckRbStage()));
         ParamUtil.setRequestAttr(bpc.request, "successPage", "rollBack");
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRollBack end ...."));
     }

@@ -192,7 +192,7 @@
                             <iais:row id="rbCheckStage">
                               <iais:field value="Route Back To" required="true" id="backToLabel"/>
                               <iais:value width="7">
-                                <iais:select name="checkRbStage" options="preInspRbOption" firstOption="Please Select"
+                                <iais:select name="checkRbStage" options="rollBackOptions" firstOption="Please Select"
                                              value="${inspectionPreTaskDto.checkRbStage}"/>
                               </iais:value>
                             </iais:row>

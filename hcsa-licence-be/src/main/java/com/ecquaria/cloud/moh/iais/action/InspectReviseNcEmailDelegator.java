@@ -138,6 +138,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     private static final String SUBJECT="subject";
     private static final String SER_LIST_DTO= "serListDto";
     private static final String DRA_EMA_ID="draftEmailId";
+    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -160,6 +162,12 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         setSelectionsForDDMMAndAuditRiskSelect(request);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        //init rollBack params
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
+        ParamUtil.setSessionAttr(bpc.request, ROLLBACK_OPTIONS, (Serializable) rollBackStage);
+        ParamUtil.setSessionAttr(bpc.request, ROLLBACK_VALUE_MAP, (Serializable) rollBackValueMap);
     }
 
 
@@ -400,23 +408,23 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
-        List<SelectOption> appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
+        List<SelectOption> appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTION_LEAD);
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_AO1);
 
 
         if(appPremisesRoutingHistoryDto==null){
-            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
         }
         if (appPremisesRoutingHistoryDto1==null) {
-            appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
+            appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
         }
         if(appPremisesRoutingHistoryDto!=null&&appPremisesRoutingHistoryDto1!=null){
             try {
                 String ao1=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto1.getUpdatedDt());
                 String lead=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto.getUpdatedDt());
                 if(lead.compareTo(ao1) <= 0) {
-                    appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
+                    appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
                 }
             }catch (Exception e){
                 log.error(e.getMessage(), e);
@@ -444,6 +452,18 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
+    }
+
+    public void doRollBack(BaseProcessClass bpc){
+        log.info("=======>>>>>doRollBack>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APP_VIEW_DTO);
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
+        String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+        ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "send");
     }
 
     public void emailView(BaseProcessClass bpc) {

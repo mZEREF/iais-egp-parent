@@ -134,7 +134,7 @@ public class InsReportDelegator {
             }
         }
         Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> rollBackSelectOptions = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap);
+        List<SelectOption> rollBackSelectOptions = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap, taskDto.getRoleId());
         ParamUtil.setSessionAttr(request,"rollBackToOptions",(Serializable) rollBackSelectOptions);
         ParamUtil.setSessionAttr(request,"rollBackValueMap", (Serializable) historyDtoMap);
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();

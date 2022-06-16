@@ -119,6 +119,13 @@
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
+                                                <iais:row id="rollBackToRow">
+                                                    <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                    <iais:value width="7">
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
+                                                    </iais:value>
+                                                </iais:row>
                                                 <iais:row id="ao1SelectRow">
                                                     <iais:field value="Select Approving Officer" required="false"/>
                                                     <iais:value width="7" id = "showAoDiv">
@@ -168,6 +175,10 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("#ao1SelectRow").hide();
@@ -205,8 +216,10 @@
                 dismissWaiting();
             } else {
                 $("#ao1SelectRow").hide();
-            }
-        })
+            };
+            showRollBackToRow();
+        });
+        showRollBackToRow();
     });
 
     function doSend() {
@@ -220,13 +233,33 @@
         if(remark.length>300){
             $("#remarksMsg").show();
         }
-        if(f != null && f != ""  &&remark.length<=300){
+        if('REDECI027' === f){
+            $('#confirmTag').modal('show');
+        }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }
 
+    function rollBackSubmit(){
+        const rollBackTo = $('#rollBackTo').val();
+        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+            $('#err_rollBackTo').show();
+        }else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "rollBack");
+        }
+    }
 
+    function showRollBackToRow(){
+        const f = $('#decision-revise-email option:selected').val();
+        const row = $('#rollBackToRow')
+        if('REDECI027' === f){
+            row.show();
+        }else {
+            row.hide();
+        }
+    }
 </script>
 
 

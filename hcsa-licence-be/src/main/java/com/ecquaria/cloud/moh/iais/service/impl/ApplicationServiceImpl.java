@@ -62,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -156,6 +157,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EventBusHelper eventBusHelper;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -1049,6 +1053,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        //Delete all the Inspection records and update application's self assessment flag
+        inspectionService.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
         //set / get completedTask
         taskDto = completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);

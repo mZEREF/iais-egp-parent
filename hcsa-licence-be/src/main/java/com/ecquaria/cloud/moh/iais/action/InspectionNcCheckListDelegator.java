@@ -130,7 +130,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         //set rollback select options
         ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> selectOptionList = inspectionService.getRollBackSelectOptions(appViewDto.getRollBackHistroyList(), rollBackValueMap);
+        List<SelectOption> selectOptionList = inspectionService.getRollBackSelectOptions(appViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
         ParamUtil.setSessionAttr(request, ROLL_BACK_OPTIONS, (Serializable) selectOptionList);
         ParamUtil.setSessionAttr(request, ROLL_BACK_VALUE_MAP, (Serializable) rollBackValueMap);
     }

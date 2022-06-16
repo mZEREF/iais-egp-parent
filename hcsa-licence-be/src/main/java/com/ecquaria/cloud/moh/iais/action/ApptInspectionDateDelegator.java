@@ -155,7 +155,7 @@ public class ApptInspectionDateDelegator {
 
         //set rollback options
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap);
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
         ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", (Serializable) rollBackStage);
         ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", (Serializable) rollBackValueMap);
     }

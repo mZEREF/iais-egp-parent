@@ -385,7 +385,7 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         //init roll back
         Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
-        ParamUtil.setSessionAttr(request,ROLL_BACK_OPTIONS,(Serializable) inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap));
+        ParamUtil.setSessionAttr(request,ROLL_BACK_OPTIONS,(Serializable) inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap, taskDto.getRoleId()));
         ParamUtil.setSessionAttr(request,ROLL_BACK_VALUE_MAP, (Serializable) historyDtoMap);
     }
 

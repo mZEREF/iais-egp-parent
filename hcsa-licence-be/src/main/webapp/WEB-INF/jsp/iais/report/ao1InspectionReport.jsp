@@ -122,6 +122,16 @@
                                                                             <span id="error_submit" class="error-msg" style="display:none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
                                                                         </iais:value>
                                                                     </iais:row>
+                                                                    <iais:row id="rollBackToRow">
+                                                                        <iais:field value="Roll Back To" required="true"/>
+                                                                        <iais:value width="10">
+                                                                            <iais:select name="rollBackTo" id="rollBackTo"
+                                                                                         firstOption="Please Select"
+                                                                                         options="rollBackOptions" needSort="true"
+                                                                                         value=""/>
+                                                                            <span id="error_rollback" class="error-msg" style="display:none;"><iais:message key="GENERAL_ERR0006"/></span>
+                                                                        </iais:value>
+                                                                    </iais:row>
                                                                     <iais:row id="ao2SelectRow">
                                                                         <iais:field value="Select Approving Officer" required="false"/>
                                                                         <iais:value width="7" id = "showAoDiv">
@@ -268,7 +278,12 @@
         </div>
     </form>
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="console.log('yes');$('#confirmTag').modal('hide');realSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script>
     $(document).ready(function () {
         $("#ao2SelectRow").hide();
@@ -307,23 +322,50 @@
             } else {
                 $("#ao2SelectRow").hide();
             }
-        })
+            showRollBackToRow();
+        });
+        showRollBackToRow();
     });
 
     function aoSubmit() {
         var s = $("#processingDecision").val();
+        $("#error_submit").hide();
+        $("#error_rollback").hide();
         if (s == "" || s == null) {
             $("#error_submit").show();
         } else if ("Approval" == s || "submit" == s) {
             $("[name='action_type']").val('approval');
             showWaiting();
             $("#mainForm").submit();
-            $("#error_submit").hide();
         } else if ("Reject" == s) {
             $("[name='action_type']").val('back');
             showWaiting();
             $("#mainForm").submit();
-            $("#error_submit").hide();
+        } else if("rollBack" === s){
+            $("[name='action_type']").val('rollBack');
+            $('#confirmTag').modal('show')
+        }
+    }
+
+    function realSubmit() {
+        const rollBackTo = $('#rollBackTo').val();
+        if(rollBackTo === "" || rollBackTo === undefined || rollBackTo === null){
+            //close fangDuoJi in has error
+            $('#fangDuoJiconfirmTag').val(null);
+            $("#error_rollback").show();
+        }else {
+            showWaiting();
+            $("#mainForm").submit();
+        }
+    }
+
+    function showRollBackToRow() {
+        const processDec = $('#processingDecision option:selected').val();
+        const rollBackToRow = $('#rollBackToRow');
+        if(processDec === 'rollBack'){
+            rollBackToRow.show();
+        }else {
+            rollBackToRow.hide();
         }
     }
 
