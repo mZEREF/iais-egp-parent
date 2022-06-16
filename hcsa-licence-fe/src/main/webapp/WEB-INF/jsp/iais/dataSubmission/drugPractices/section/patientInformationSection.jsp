@@ -71,7 +71,7 @@
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="country" id="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
-                                     cssClass="countrySel" value="${patientDto.country}" />
+                                     cssClass="country" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
