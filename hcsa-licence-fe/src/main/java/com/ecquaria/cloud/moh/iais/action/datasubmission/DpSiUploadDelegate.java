@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -21,11 +20,9 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.SovenorInventoryExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -324,6 +321,7 @@ public class DpSiUploadDelegate {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             return;
         }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         if (StringUtil.isEmpty(declaration)) {
             errorMap.put("declaration", "GENERAL_ERR0006");
@@ -418,48 +416,6 @@ public class DpSiUploadDelegate {
             if (!inputFile.exists() || !inputFile.isFile()) {
                 log.error("No File Template Found!");
                 return;
-            }
-            // write Id type
-            List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE);
-            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
-                int size = masterCodes.size();
-                List<String> values = IaisCommonUtils.genNewArrayList(size);
-                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
-                int i = 1;
-                for (MasterCodeView view : masterCodes) {
-                    values.add(view.getCodeValue());
-                    excelConfigIndex.put(i++, Collections.singletonList(1));
-                }
-                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 1, values.toArray(new String[size]),
-                        excelConfigIndex);
-            }
-            // wite nationality
-            masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
-            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
-                int size = masterCodes.size();
-                List<String> values = IaisCommonUtils.genNewArrayList(size);
-                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
-                int i = 1;
-                for (MasterCodeView view : masterCodes) {
-                    values.add(view.getCodeValue());
-                    excelConfigIndex.put(i++, Collections.singletonList(3));
-                }
-                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 1, values.toArray(new String[size]),
-                        excelConfigIndex);
-            }
-            // wite ethnic group
-            masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_ETHNIC_GROUP);
-            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
-                int size = masterCodes.size();
-                List<String> values = IaisCommonUtils.genNewArrayList(size);
-                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
-                int i = 1;
-                for (MasterCodeView view : masterCodes) {
-                    values.add(view.getCodeValue());
-                    excelConfigIndex.put(i++, Collections.singletonList(5));
-                }
-                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 1, values.toArray(new String[size]),
-                        excelConfigIndex);
             }
             final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
             File outFile = MiscUtil.generateFile(postFileName);

@@ -21,6 +21,9 @@
     </c:when>
     <c:when test="${submissionType == 'DP_TP003'}">
         <%-- Sovenor Inventory --%>
+        <%@include file="../drugPractices/section/previewSovenorInventory.jsp" %>
+<%--        <%@include file="../drugPractices/common/previewDpDsAmendment.jsp" %>--%>
+        <%@include file="../drugPractices/common/dpDeclaration.jsp" %>
     </c:when>
 </c:choose>
 
