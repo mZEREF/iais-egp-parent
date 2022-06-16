@@ -20,7 +20,7 @@ function  test(sel,val,id1,id2){
 }
 function countryStar(){
     var country= $('#country option:selected').val();
-    if("NAT0001" ==country){
+    if("SG" ==country){
         $('#cityStar').text("")
         $('#stateStar').text("")
     }else {

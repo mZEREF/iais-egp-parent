@@ -103,7 +103,7 @@
                 <iais:row>
                     <iais:field width="6" value="Name of Hospital" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <iais:code code="${sexualSterilizationDto.hecReviewedHospital}"/>
+                        <c:out value="${sexualSterilizationDto.hecReviewedHospital}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

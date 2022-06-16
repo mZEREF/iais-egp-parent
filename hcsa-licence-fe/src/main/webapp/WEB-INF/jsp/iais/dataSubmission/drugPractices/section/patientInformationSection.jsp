@@ -70,7 +70,7 @@
                 <iais:row>
                     <iais:field width="5" value="Country" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="country" id="country" codeCategory="CATE_ID_NATIONALITY" firstOption="Please Select"
+                        <iais:select name="country" id="country" codeCategory="CATE_ID_COUNTRY" firstOption="Please Select"
                                      cssClass="country" value="${patientDto.country}" />
                     </iais:value>
                 </iais:row>
@@ -78,7 +78,7 @@
                     <%--<iais:field width="5" id="cityLable" value="City" mandatory="true"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">City
                         <span id="cityStar" class="mandatory">
-                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                                <c:if test="${patientDto.country !='SG'}">*</c:if>
                         </span>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
@@ -89,11 +89,12 @@
                     <%--<iais:field width="5" id="stateLable" value="State"  mandatory="true"/>--%>
                     <label class="col-xs-5 col-md-4 control-label">State
                         <span id="stateStar" class="mandatory">
-                                <c:if test="${patientDto.country !='NAT0001'}">*</c:if>
+                                <c:if test="${patientDto.country !='SG'}">*</c:if>
                         </span>
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="100" type="text" name="state" value="${patientDto.state}" />
+                        <iais:select name="state" id="state" codeCategory="CATE_ID_STATE_OF_COUNTRY" firstOption="Please Select"
+                                     cssClass="state" value="${patientDto.state}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>

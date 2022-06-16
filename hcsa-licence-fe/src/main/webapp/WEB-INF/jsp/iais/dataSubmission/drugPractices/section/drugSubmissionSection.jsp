@@ -394,6 +394,7 @@
         if(prescriptionSubmissionId != ""){
             var data = {
                 'prescriptionSubmissionId':prescriptionSubmissionId
+
             };
             showWaiting();
             $.ajax({
