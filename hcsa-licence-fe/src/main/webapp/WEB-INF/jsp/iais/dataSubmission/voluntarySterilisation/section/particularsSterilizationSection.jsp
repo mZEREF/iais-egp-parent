@@ -256,6 +256,24 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="PRS_PRN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsPrn">
+                            <iais:message key="GENERAL_ERR0065" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         $('input[name=reviewedByHec]').change(function () {
@@ -343,15 +361,21 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         $('#ELIS_SERVICE').modal('show');
-                    }
-                    if(isEmpty(data.selections)){
+                    }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
-                    }
-                    if (data.hasException) {
+                    }else if (data.selection.hasException) {
+                        $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
+                    }else if ('401' == data.selection.statusCode) {
+                        $('#doctorInformations').val(true);
+                        $('#PRS_PRN').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
                     }
-                }
 
+                }
                 dismissWaiting();
             },
             'error': function () {
