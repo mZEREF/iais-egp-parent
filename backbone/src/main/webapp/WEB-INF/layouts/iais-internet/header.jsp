@@ -16,9 +16,13 @@
 %>
 <%--<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>--%>
 <%
-    if ("Y".equals(enableWogaa)) {
+    if ("UAT".equals(enableWogaa)) {
 %>
 <script src="https://assets.dcube.cloud/scripts/wogaa.js"></script>
+<%
+    } else if ("PROD".equals(enableWogaa)) {
+%>
+<script src="https://assets.wogaa.sg/scripts/wogaa.js"></script>
 <%
     }
 %>
