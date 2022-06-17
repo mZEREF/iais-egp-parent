@@ -173,6 +173,14 @@ public final class MasterCodeUtil {
 
     public static final String CATE_ID_BSB_DOCUMENT_TYPE                                = "095099A5-CB2B-4D4F-81B3-83D5F78B34AC";
 
+    public static final String CATE_ID_DOC_TYPE_RF_ETF                                  = "0A338112-AF36-4623-B43D-6153001192F0";
+    public static final String CATE_ID_DOC_TYPE_RF_PV                                   = "E418C949-CB7B-4442-BFBE-6A877F3303AE";
+    public static final String CATE_ID_DOC_TYPE_CF                                      = "791CAD7A-BC8B-418F-9887-C50F8BFEBE49";
+    public static final String CATE_ID_DOC_TYPE_UCF_OR_BMP                              = "E1070798-7014-48E0-8CF1-B14F30FFBB8F";
+    public static final String CATE_ID_DOC_TYPE_APPROVAL_FOR_FACILITY                   = "FDBF6199-D64A-4982-891E-A35DE03A6B83";
+    public static final String CATE_ID_DOC_TYPE_MOH_AFC                                 = "FB9F547A-DB40-4D28-82D3-0D58205C1C2E";
+    public static final String CATE_ID_DOC_TYPE_MOH                                     = "0C30BF79-7218-4BAD-8CFE-20F328D84B5A";
+
 
     /**
      * @description: refresh the master codes into cache

@@ -51,9 +51,10 @@ public class TopDataSubmissionDelegator {
     public static final String ACTION_TYPE_CONFIRM = "confim";
     public static final String ACTION_TYPE_BACK = "back";
     private static final String PREMISES = "premises";
-    /*protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";*/
+    protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
     protected final static String  TOP_OTHERS    = "Others (E.g. Home)";
     private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
+    /*private final static String  COUNSE_LLING_PLACE_AGES          =  "CounsellingPlacea";*/
     private final static String  TOP_PLACE          =  "TopPlace";
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
@@ -111,6 +112,7 @@ public class TopDataSubmissionDelegator {
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            retrieveHciCode(bpc.request, topSuperDataSubmissionDto);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
                 topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
             }
@@ -156,6 +158,7 @@ public class TopDataSubmissionDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
+        /*ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE_AGES,(Serializable) getSourseListAge(bpc.request));*/
         ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) getSourseLists(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) getSourseListsDrug(bpc.request));
 
@@ -199,22 +202,16 @@ public class TopDataSubmissionDelegator {
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
         DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-       /* TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
-        if(currentSuper==null){
-           currentSuper=new TopSuperDataSubmissionDto();
-        }
-        TerminationOfPregnancyDto terminationOfPregnancyDto= currentSuper.getTerminationOfPregnancyDto();
-        if(terminationOfPregnancyDto==null){
-            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
-        }*/
-        /*PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto():terminationOfPregnancyDto.getPatientInformationDto();
-        if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
-            if(patientInformationDto.getPatientAge()<16){
-                selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
-            }
-        }*/
         return selectOptions;
     }
+    /*//TODO from ar center
+    protected final List<SelectOption> getSourseListAge(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+        return selectOptions;
+    }*/
     //TODO from ar center
     protected final List<SelectOption> getSourseLists(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
@@ -633,8 +630,13 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto = terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, preTerminationDto);
-        String counsellingAge = ParamUtil.getString(request, "counsellingAge");
-        preTerminationDto.setPatientAppointment(counsellingAge);
+        String counsellingPlace = ParamUtil.getString(request, "counsellingPlace");
+        preTerminationDto.setCounsellingPlace(counsellingPlace);
+        ParamUtil.setSessionAttr(request, "counsellingPlace",counsellingPlace);
+        if(StringUtil.isNotEmpty(counsellingPlace)){
+            Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
+            preTerminationDto.setCounsellingAge(counsellingAge);
+        }
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
         terminationOfPregnancyDto.setPreTerminationDto(preTerminationDto);
@@ -649,6 +651,9 @@ public class TopDataSubmissionDelegator {
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
+                    }
+                    if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
+                        ParamUtil.setSessionAttr(request, "counsellingPlaceError", "This is a mandatory field.");
                     }
                 }else if(preTerminationDto.getCounsellingGiven()==false){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
@@ -877,9 +882,10 @@ public class TopDataSubmissionDelegator {
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-        String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");
+        /*String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");*/
         try {
-            sendNotification(licenseeDtoName, submissionNo, licenseeId, dateStr);
+            /*sendNotification(licenseeDtoName, submissionNo, licenseeId, dateStr);*/
+            sendMsgAndEmail(licenseeId, "Termination Of Pregnancy", licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -1027,23 +1033,25 @@ public class TopDataSubmissionDelegator {
         return StringUtil.isIn(others,DataSubmissionConsts.REASON_FOR_TOP_AMEND_OTHERS);
     }
 
-    private void sendNotification(String applicantName, String TOPId, String licenseeId, String dateStr) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_TOP_MSG).getEntity();
+    private void sendMsgAndEmail(String licenseeId, String serverName, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("ApplicantName", applicantName);
-        msgContentMap.put("TOPId", TOPId);
+        msgContentMap.put("serverName", serverName);
+        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-        msgContentMap.put("date",dateStr);
+
 
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgSubjectMap.put("TOPId", TOPId);
+        msgSubjectMap.put("serverName", serverName);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
 
         EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_MSG);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG);
         msgParam.setTemplateContent(msgContentMap);
-        msgParam.setQueryCode(TOPId);
-        msgParam.setReqRefNum(TOPId);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_TOP);
         msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
@@ -1052,7 +1060,7 @@ public class TopDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));

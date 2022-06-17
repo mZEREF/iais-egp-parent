@@ -1,21 +1,36 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -42,7 +57,20 @@ public abstract class DpCommonDelegator {
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
 
+    @Autowired
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
+    @Autowired
+    NotificationHelper notificationHelper;
+
+    @Autowired
+    LicenceViewService licenceViewService;
+
+    @Autowired
+    DsLicenceService dsLicenceService;
+
+    @Autowired
+    private LicenceClient licenceClient;
     /**
      * StartStep: Start
      *
@@ -244,10 +272,12 @@ public abstract class DpCommonDelegator {
         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
                 + " - Status: " + status + " -----"));
 
+        String licenseeId = null;
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
+            licenseeId = loginContext.getLicenseeId();
         }
         dpSuperDataSubmissionDto.setFe(true);
         dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto);
@@ -259,6 +289,30 @@ public abstract class DpCommonDelegator {
         if (!StringUtil.isEmpty(dpSuperDataSubmissionDto.getDraftId())) {
             dpDataSubmissionService.updateDataSubmissionDraftStatus(dpSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
+        }
+
+        String serverName = null;
+        if(dpSuperDataSubmissionDto.getCycleDto().getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP)){
+            serverName ="Patient Information";
+        }else if(dpSuperDataSubmissionDto.getCycleDto().getCycleType().equals(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED)){
+            serverName ="Drug Prescribed";
+        }else if(dpSuperDataSubmissionDto.getCycleDto().getCycleType().equals(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED)){
+            serverName = "Drug Dispensed";
+        }
+
+        LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
+        String licenseeDtoName = licenseeDto.getName();
+        String submissionNo = dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
+        String licenceId = "";
+        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dpSuperDataSubmissionDto.getHciCode(), licenseeId).getEntity();
+        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
+            LicenceDto licenceDto = licenceDtoList.get(0);
+            licenceId = licenceDto.getId();
+        }
+        try {
+            sendMsgAndEmail(serverName,licenceId, licenseeDtoName, submissionNo);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
@@ -415,6 +469,38 @@ public abstract class DpCommonDelegator {
                 }
             }
         }
+    }
+
+    private void sendMsgAndEmail(String serverName,String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("serverName", serverName);
+        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("serverName", serverName);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setRefId(licenceId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setSubject(subject);
+        notificationHelper.sendNotification(msgParam);
+        log.info(StringUtil.changeForLog("***************** send VSS Notification  end *****************"));
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
+        log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));
     }
 
 

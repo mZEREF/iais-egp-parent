@@ -21,6 +21,11 @@ public class INTERNET___MohBSBInboxMsg___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
+	public void init_OnStepProcess_0() throws Exception {
+		// 		init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
+	}
+
 	public void prepareData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
@@ -48,6 +53,16 @@ public class INTERNET___MohBSBInboxMsg___1 extends BaseProcessClass {
 
 	public void bindAction_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "bindAction", this);
+	}
+
+	public void doArchive_OnStepProcess_0() throws Exception {
+		// 		DoArchive->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doArchive", this);
+	}
+
+	public void moveArchive_OnStepProcess_0() throws Exception {
+		// 		MoveArchive->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doArchive", this);
 	}
 
 }

@@ -26,14 +26,17 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         Map<String, String> erMap = IaisCommonUtils.genNewHashMap();
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION);
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
-        GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto():vssTreatmentDto.getGuardianAppliedPartDto();
-        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto()== null ? new SexualSterilizationDto():vssTreatmentDto.getSexualSterilizationDto();
+        GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto();
+        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
         DoctorInformationDto doctorInformationDto=vssSuperDataSubmissionDto.getDoctorInformationDto();
         if(doctorInformationDto==null){
             doctorInformationDto=new DoctorInformationDto();
         }
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();
+        }
+        if(guardianAppliedPartDto ==null){
+            guardianAppliedPartDto= new GuardianAppliedPartDto();
         }
         if(!StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec()) && sexualSterilizationDto.getReviewedByHec() ==true){
             if(sexualSterilizationDto.getHecReviewDate() == null){
@@ -77,7 +80,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
 
         }
 
-        if(sexualSterilizationDto.getOperationDate() != null){
+        if(sexualSterilizationDto.getOperationDate() != null && guardianAppliedPartDto.getCourtOrderIssueDate() !=null){
             try {
                 if(Formatter.compareDateByDay(sexualSterilizationDto.getOperationDate(),guardianAppliedPartDto.getCourtOrderIssueDate())<0){
                     erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation.");

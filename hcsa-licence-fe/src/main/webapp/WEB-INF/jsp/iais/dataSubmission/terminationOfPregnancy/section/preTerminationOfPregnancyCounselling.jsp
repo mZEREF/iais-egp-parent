@@ -170,21 +170,31 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
                 </iais:value>
             </iais:row>
-            <iais:row>
-                <label class="col-xs-5 col-md-4 control-label">Place Where Counselling Was Done
-                    <span id="counsellingPlace" class="mandatory">
-                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
-            </span>
-                </label>
-                <iais:value width="7" cssClass="col-md-7 partial-search-container">
-                    <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
-                                value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                   <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
-                                id="counsellingPlaces" cssClass="counsellingPlace"/>
-                    <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
-
-                </iais:value>
-            </iais:row>
+            <%--<div id="counsellingPlaceAge" <c:if test="${preTerminationDto.counsellingAge < 16}">style="display: none"</c:if> >--%>
+                <iais:row id = "counsellingPlaceRow">
+                    <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
+                    <iais:value width="7" id="counsellingPlaceDiv" cssClass="col-md-7">
+                        <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
+                                    value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
+                        <iais:select name="counsellingPlace" firstOption="Please Select" value="${preTerminationDto.counsellingPlace}"
+                                     id="counsellingPlaces" cssClass="counsellingPlace"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlaceError"></span>
+                        <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
+                    </iais:value>
+                </iais:row>
+            <%--</div>--%>
+            <%--<div id="counsellingPlaceAges" <c:if test="${preTerminationDto.counsellingAge == null || preTerminationDto.counsellingAge >= 16 }">style="display: none"</c:if> >
+                <iais:row>
+                    <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        &lt;%&ndash;<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
+                                    value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>&ndash;%&gt;
+                        <iais:select name="counsellingPlace" options="CounsellingPlacea" value="${preTerminationDto.counsellingPlace}"
+                                     id="counsellingPlaces" cssClass="counsellingPlace"/>
+                        &lt;%&ndash;<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>&ndash;%&gt;
+                    </iais:value>
+                </iais:row>
+            </div>--%>
             <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Result of Counselling
                     <span id="counsellingResult" class="mandatory">
@@ -312,7 +322,13 @@
             secCounsellingDate();
             secCounsellingResult();
         });
-
+        /*$("#counsellingGivenDate").change(function () {
+            age();
+        })*/
+        checkDate();
+        $("#counsellingGivenDate").change(function () {
+            checkDate();
+        })
     });
     function counsellingNo() {
         var counsellingNo = $('#counsellingNo').val();
@@ -339,13 +355,11 @@
             if ($('#counsellingYes').prop('checked')) {
                 $('#counsellorName').text('*');
                 $('#counsellingDate').text('*');
-                $('#counsellingPlace').text('*');
                 $('#counsellingResult').text('*');
             }
             if ($('#counsellingNo').prop('checked')) {
                 $('#counsellorName').text('');
                 $('#counsellingDate').text('');
-                $('#counsellingPlace').text('');
                 $('#counsellingResult').text('');
             }
             checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
@@ -468,9 +482,43 @@
         $('#counsellingAge').html(data.selection.counsellingAge);
         $('#counselling').val(data.selection.counsellingAge);
     }
-    $(document).ready(function(){
+    /*$(document).ready(function(){
         // Initialize select2
         $("#counsellingPlaces").select2();
         $('.select2-container--default').attr('style','width:100%');
-    });
+    });*/
+    /*function age(){
+        var counsellingAge = $('#counselling').val();
+        if(counsellingAge < 16){
+            $('#counsellingPlaceAge').show();
+            $('#counsellingPlaceAges').hide();
+        }else {
+            $('#counsellingPlaceAges').show();
+            $('#counsellingPlaceAge').hide();
+        }
+    }*/
+    function checkDate(){
+        var counsellingGivenDate = $("#counsellingGivenDate").val();
+        var counsellingPlace = $("#counsellingPlaces").val();
+        if(counsellingGivenDate != "" || counsellingPlace != "" ){
+            var data = {
+                'counsellingGivenDate':counsellingGivenDate,
+                'counsellingPlace':counsellingPlace
+            };
+            showWaiting();
+            $.ajax({
+                'url':$('#_contextPath').val()+'/top/check-date',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    $("#counsellingPlaceDiv").html(data.resultJson + '');
+                    $("#counsellingPlaces").niceSelect();
+                },
+                'error':function () {
+                }
+            });
+            dismissWaiting();
+        }
+    }
 </script>

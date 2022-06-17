@@ -153,6 +153,9 @@ public final class MasterCodeUtil {
     // Data Submission Id Type
     public static final String CATE_ID_DS_STAGE_TYPE = "C51566B8-4C32-EC11-BE72-000C298D317C";
 
+    public static final String CATE_ID_COUNTRY                             = "CFC8053B-36ED-EC11-8B82-000C293F0C99";
+    public static final String CATE_ID_STATE_OF_COUNTRY                    = "0D075EC2-3EED-EC11-8B82-000C293F0C99";
+
     // Data Submission Donor Identity Known
     public static final String CATE_DIK = "E8118F2B-5843-EC11-8B83-000C29FD17F9";
 

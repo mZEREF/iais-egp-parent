@@ -229,7 +229,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             DrugSubmissionDto drugSubmission = drugPrescribedDispensed.getDrugSubmission();
             String dpLateReasonRadio=ParamUtil.getRequestString(request, "dpLateReasonRadio");
             String remarks=ParamUtil.getRequestString(request, "remarks");
-            if(drugSubmission.getReasonMandatory()){
+            if("DPD002".equals(drugSubmission.getDrugType()) && drugSubmission.getReasonMandatory() && "MED001".equals(drugSubmission.getMedication())){
                 if(StringUtil.isEmpty(dpLateReasonRadio)){
                     errorMap.put("dpLateReasonRadio", "GENERAL_ERR0006");
                 }

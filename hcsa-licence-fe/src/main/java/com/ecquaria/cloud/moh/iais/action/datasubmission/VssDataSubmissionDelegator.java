@@ -314,6 +314,9 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isNotEmpty(treatmentDto.getSterilizationReason()) && !treatmentDto.getSterilizationReason().equals("VSSRFS009")) {
             treatmentDto.setOtherSterilizationReason(null);
         }
+        if(StringUtil.isEmpty(treatmentDto.getOrgId())){
+            treatmentDto.setOrgId(vssSuperDataSubmissionDto.getOrgId());
+        }
         vssTreatmentDto.setTreatmentDto(treatmentDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
@@ -592,12 +595,12 @@ public class VssDataSubmissionDelegator {
 
         cycle.setStatus(status);
         vssSuperDataSubmissionDto.setCycleDto(cycle);
-       /* String licenseeId = null;*/
+        String licenseeId = null;
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
-           /* licenseeId = loginContext.getLicenseeId();*/
+            licenseeId = loginContext.getLicenseeId();
         }
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
@@ -625,21 +628,14 @@ public class VssDataSubmissionDelegator {
             vssDataSubmissionService.updateDataSubmissionDraftStatus(vssSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
-/*
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = vssSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-        String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(vssSuperDataSubmissionDto.getHciCode(), licenseeId).getEntity();
-        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
-            LicenceDto licenceDto = licenceDtoList.get(0);
-            licenceId = licenceDto.getId();
-        }
         try {
-            sendMsgAndEmail("Voluntary Sterilization",licenceId, licenseeDtoName, submissionNo);
+            sendMsgAndEmail("Voluntary Sterilization",licenseeId, licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
-        }*/
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
@@ -747,13 +743,13 @@ public class VssDataSubmissionDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
-    /*private void sendMsgAndEmail(String serverName,String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendMsgAndEmail(String serverName,String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
         msgContentMap.put("submitterName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
-        msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
@@ -766,7 +762,7 @@ public class VssDataSubmissionDelegator {
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_VSS);
-        msgParam.setRefId(licenceId);
+        msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
         notificationHelper.sendNotification(msgParam);
@@ -777,6 +773,6 @@ public class VssDataSubmissionDelegator {
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));
-    }*/
+    }
 }
 

@@ -35,10 +35,10 @@ $(function () {
     });
 
 
-    $("#searchAppType").change(function () {
+    $("#searchSubType").change(function () {
         showWaiting();
         $("[name='action_type']").val("search");
-        $("[name='action_value']").val("appType");
+        $("[name='action_value']").val("subType");
         $("#mainForm").submit();
     });
 
@@ -81,6 +81,58 @@ $(function () {
     $("#viewSubmission").click(function (){
         showWaiting();
         $("[name='action_type']").val("search");
+        $("#mainForm").submit();
+    });
+
+    $("input[name=chkParent]").click(function (){
+        var chkLength = $("input[name=chkParent]:checked").length;
+        if(chkLength === 1){
+            $("input[name=chkChild]").each(function (){
+                if(!$(this).prop("disabled")){
+                    $(this).prop("checked",true);
+                }
+            })
+        }else if(chkLength < 1){
+            $("input[name=chkChild]").prop("checked",false);
+        }
+    });
+
+    $("input[name=chkChild]").change(function (){
+        var allChkLength = $("input[name=chkChild]").length;
+        var checkedChkLength = $("input[name=chkChild]:checked").length;
+        var disabledChkLength = $("input[name=chkChild]:disabled").length;
+        if(allChkLength-disabledChkLength === checkedChkLength){
+            $("input[name=chkParent]").prop("checked",true);
+        }else{
+            $("input[name=chkParent]").prop("checked",false);
+        }
+    });
+
+    $("#doArchive").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doArchive");
+        $("[name='action_value']").val("inbox");
+        $("#mainForm").submit();
+    });
+
+    $("#moveArchive").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("moveArchive");
+        $("[name='action_value']").val("archive");
+        $("#mainForm").submit();
+    });
+
+    $("#archive").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("[name='action_value']").val("archive");
+        $("#mainForm").submit();
+    });
+
+    $("#inbox").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("[name='action_value']").val("inbox");
         $("#mainForm").submit();
     });
 });

@@ -70,7 +70,7 @@
                         </iais:value>
                     </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Other-Qualification" />
+                    <iais:field width="5" value="Other Qualification" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${sexualSterilizationDto.otherQualification}"/>
                     </iais:value>
@@ -103,7 +103,7 @@
                 <iais:row>
                     <iais:field width="6" value="Name of Hospital" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <iais:code code="${sexualSterilizationDto.hecReviewedHospital}"/>
+                        <c:out value="${sexualSterilizationDto.hecReviewedHospital}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

@@ -165,8 +165,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             errorMap.putAll(result.retrieveAll());
         }
         //
-        Map<String,Integer> preDrugMedicationMap = null ;
-        Map<String,Integer> drugMedicationMap = null;
+        Map<String,Double> preDrugMedicationMap = null ;
+        Map<String,Double> drugMedicationMap = null;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
             List<DrugMedicationDto> oldDrugMedicationDtos =  dpDataSubmissionService.
                     getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId(),
@@ -191,8 +191,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 errorMap.put("strength"+i, "GENERAL_ERR0002");
             }
             if(StringUtil.isNotEmpty(drugMedicationDto.getStrength()) && StringUtil.isNumber(drugMedicationDto.getStrength())){
-                int f=Integer.parseInt(drugMedicationDto.getStrength());
-                if(f<m){
+                double d = Double.parseDouble(drugMedicationDto.getStrength());
+                if(d<m){
                     errorMap.put("strength"+i, "Negative numbers are not allowed on this field.");
                 }
             }
@@ -201,12 +201,12 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 errorMap.put("quantity"+i, "GENERAL_ERR0006");
             } else if(!StringUtil.isNumber(drugMedicationDto.getQuantity())){
                 errorMap.put("quantity"+i, "GENERAL_ERR0002");
-            }else if(Integer.parseInt(drugMedicationDto.getQuantity())<m){
+            }else if(Double.parseDouble(drugMedicationDto.getQuantity())<m){
                 errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
             }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
                if(drugMedicationMap != null && preDrugMedicationMap != null){
-                   Integer preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
-                   Integer nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   Double preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   Double nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
                    if(preCount ==  null || nowCount > preCount){
@@ -232,7 +232,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         return errorMap;
     }
 
-    private Map<String,Integer> tidyDrugMedicationDto(Map<String,Integer> result ,List<DrugMedicationDto> preDrugMedicationDtos){
+    private Map<String,Double> tidyDrugMedicationDto(Map<String,Double> result ,List<DrugMedicationDto> preDrugMedicationDtos){
         if(result == null){
             result = IaisCommonUtils.genNewHashMap();
         }
@@ -240,12 +240,12 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
           for(DrugMedicationDto drugMedicationDto : preDrugMedicationDtos){
             String batchNo =  drugMedicationDto.getBatchNo();
             String quantity = drugMedicationDto.getQuantity();
-            Integer quantityInt = result.get(batchNo);
+              Double quantityInt = result.get(batchNo);
             if(quantityInt == null){
-                quantityInt = 0;
+                quantityInt = 0.00;
             }
             if(StringUtil.isNotEmpty(quantity) && StringUtil.isNumber(quantity)){
-                quantityInt = quantityInt + Integer.parseInt(quantity);
+                quantityInt = quantityInt + Double.parseDouble(quantity);
             }
             result.put(batchNo,quantityInt);
           }

@@ -69,7 +69,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
             }
         }
 
-        if(StringUtil.isNotEmpty(patientDto.getCountry())&&!"NAT0001".equals(patientDto.getCountry())){
+        if(StringUtil.isNotEmpty(patientDto.getCountry())&&!"SG".equals(patientDto.getCountry())){
             if(StringUtil.isEmpty(patientDto.getCity())){
                 errorMap.put("city", "GENERAL_ERR0006");
             }
@@ -80,10 +80,9 @@ public class DpPatientInfoValidator implements CustomizeValidator {
 
 
         if(StringUtil.isNotEmpty(patientDto.getPostalCode())){
-
-            if(StringUtil.isNumber(patientDto.getPostalCode())  && Long.valueOf(patientDto.getPostalCode())<0){
+            if(StringUtil.isNumber(patientDto.getPostalCode())  && patientDto.getPostalCode().startsWith("-")){
                 errorMap.put("postalCode", "Negative numbers are not allowed on this field.");
-            }else if("NAT0001".equals(patientDto.getNationality())){
+            }else if("SG".equals(patientDto.getCountry())){
                     if(!CommonValidator.isValidePostalCode(patientDto.getPostalCode())){
                         errorMap.put("postalCode", "NEW_ERR0004");
                     }
@@ -94,20 +93,22 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                 }
             }
         }
-        if(StringUtil.isNotEmpty(patientDto.getMobileNo())||StringUtil.isNotEmpty(patientDto.getHomeTelNo())){
-            if(StringUtil.isNumber(patientDto.getMobileNo())&&Long.valueOf(patientDto.getMobileNo())<0){
+        if(StringUtil.isNotEmpty(patientDto.getMobileNo())){
+            if(StringUtil.isNumber(patientDto.getMobileNo())&& patientDto.getMobileNo().startsWith("-")){
                 errorMap.put("mobileNo", "Negative numbers are not allowed on this field.");
-            }else if("NAT0001".equals(patientDto.getNationality())){
+            }else if("SG".equals(patientDto.getCountry())){
                 if(!CommonValidator.isMobile(patientDto.getMobileNo())){
                     errorMap.put("mobileNo", "GENERAL_ERR0007");
                 }
             }
-            if(StringUtil.isNumber(patientDto.getPostalCode())&&Long.valueOf(patientDto.getHomeTelNo())<0){
+        }
+        if(StringUtil.isNotEmpty(patientDto.getHomeTelNo())){
+            if(StringUtil.isNumber(patientDto.getHomeTelNo())&&patientDto.getHomeTelNo().startsWith("-")){
                 errorMap.put("homeTelNo", "Negative numbers are not allowed on this field.");
-            }else if("NAT0001".equals(patientDto.getNationality())){
-                    if(!CommonValidator.isTelephoneNo(patientDto.getHomeTelNo())){
-                        errorMap.put("homeTelNo", "GENERAL_ERR0015");
-                    }
+            }else if("SG".equals(patientDto.getCountry())){
+                if(!CommonValidator.isTelephoneNo(patientDto.getHomeTelNo())){
+                    errorMap.put("homeTelNo", "GENERAL_ERR0015");
+                }
             }
         }
         if(StringUtil.isNotEmpty(patientDto.getEthnicGroup())){

@@ -82,6 +82,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_CONFIG_EFFECTIVE_DATE       = "A22973DF-2094-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_APPLICATION_DRAFT_VALIDITY  = "A89CA599-179F-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENCE_STATUS              = "CF69FBD0-B37A-4DD9-9BD6-0A153ED55BF8";
+    public static final String CATE_ID_SUBMISSION_TYPE             = "834FF40B-353D-4A91-AD72-23FCA6944849";
 
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";
@@ -182,6 +183,14 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_ROLE_IN_FACILITY                             = "56F494C2-5836-40AA-938D-3C98EC0F146C";
 
     public static final String CATE_ID_BSB_DOCUMENT_TYPE                                = "095099A5-CB2B-4D4F-81B3-83D5F78B34AC";
+
+    public static final String CATE_ID_DOC_TYPE_RF_ETF                                  = "0A338112-AF36-4623-B43D-6153001192F0";
+    public static final String CATE_ID_DOC_TYPE_RF_PV                                   = "E418C949-CB7B-4442-BFBE-6A877F3303AE";
+    public static final String CATE_ID_DOC_TYPE_CF                                      = "791CAD7A-BC8B-418F-9887-C50F8BFEBE49";
+    public static final String CATE_ID_DOC_TYPE_UCF_OR_BMP                              = "E1070798-7014-48E0-8CF1-B14F30FFBB8F";
+    public static final String CATE_ID_DOC_TYPE_APPROVAL_FOR_FACILITY                   = "FDBF6199-D64A-4982-891E-A35DE03A6B83";
+    public static final String CATE_ID_DOC_TYPE_MOH_AFC                                 = "FB9F547A-DB40-4D28-82D3-0D58205C1C2E";
+    public static final String CATE_ID_DOC_TYPE_MOH                                     = "0C30BF79-7218-4BAD-8CFE-20F328D84B5A";
 
     /**
      * @description: refresh the master codes into cache

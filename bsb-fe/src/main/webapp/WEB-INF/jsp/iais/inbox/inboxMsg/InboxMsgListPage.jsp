@@ -42,19 +42,19 @@
 
                                 <%--@elvariable id="inboxMsgSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto"--%>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="col-md-3 control-label" for="searchMsgType" style="margin-top:5%;">Type</label>
-                                        <div class="col-md-8">
+                                    <div class="col-xs-12 col-sm-4">
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchMsgType">Message Type:</label>
+                                        <div class="col-xs-12 col-sm-7">
                                             <iais:select name="searchMsgType" id="searchMsgType" cssClass="searchMsgTypeDropDown" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="col-md-4 control-label" for="searchAppType" style="margin-top:3%;">Application Type</label>
-                                        <div class="col-md-7">
-                                            <iais:select name="searchAppType" cssClass="searchAppTypeDropdown" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="Please Select"/>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchSubType">Submission Type:</label>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <iais:select name="searchSubType" cssClass="searchSubTypeDropdown" id="searchSubType" options="msgSubTypeOps" value="${inboxMsgSearchDto.searchSubType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-xs-12 col-sm-4">
                                         <div class="col-xs-12 visible-xs visible-sm" style="height: 20px;">
                                         </div>
                                         <div class="col-xs-12">
@@ -65,30 +65,30 @@
                                                                placeholder="Search your keywords" name="searchSubject"
                                                                aria-label="searchSubject" maxlength="50" value="${inboxMsgSearchDto.searchSubject}" />
                                                         <span class="input-group-btn">
-                                    <button class="btn btn-default buttonsearch" title="Search your keywords" id="searchSubjectBtn"><em class="fa fa-search"></em></button>
-                                </span>
+                                                             <button class="btn btn-default buttonsearch" title="Search your keywords" id="searchSubjectBtn"><em class="fa fa-search"></em></button>
+                                                        </span>
                                                     </div>
                                                 </iais:value>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-<%--                                <div class="row">--%>
-<%--                                    <div class="col-xs-12 col-sm-6">--%>
-<%--                                        <label class="col-xs-12 col-sm-4 control-label" style="padding-left: 0">Date From:</label>--%>
-<%--                                        <div class="col-xs-12 col-sm-8">--%>
-<%--                                            <iais:datePicker id="searchMsgDateFrom" name="searchMsgDateFrom" value="${inboxMsgSearchDto.searchMsgDateFrom}"/>--%>
-<%--                                        </div>--%>
-<%--                                        <span data-err-ind="searchMsgDateFrom" class="error-msg"></span>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-xs-12 col-sm-6">--%>
-<%--                                        <label class="col-xs-2 col-sm-2 control-label" style="padding-left: 0">Date To:</label>--%>
-<%--                                        <div class="col-xs-12 col-sm-8">--%>
-<%--                                            <iais:datePicker id="searchMsgDateTo" name="searchMsgDateTo" value="${inboxMsgSearchDto.searchMsgDateTo}"/>--%>
-<%--                                        </div>--%>
-<%--                                        <span data-err-ind="searchMsgDateTo" class="error-msg"></span>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
+                                <div class="row" style="margin-top: 20px">
+                                    <div class="col-xs-12 col-sm-4">
+                                        <label class="col-xs-12 col-sm-5 control-label">Date From:</label>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <iais:datePicker id="searchMsgDateFrom" name="searchMsgDateFrom" value="${inboxMsgSearchDto.searchMsgDateFrom}"/>
+                                        </div>
+                                        <span data-err-ind="searchMsgDateFrom" class="error-msg"></span>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <label class="col-xs-12 col-sm-5 control-label">Date To:</label>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <iais:datePicker id="searchMsgDateTo" name="searchMsgDateTo" value="${inboxMsgSearchDto.searchMsgDateTo}"/>
+                                        </div>
+                                        <span data-err-ind="searchMsgDateTo" class="error-msg"></span>
+                                    </div>
+                                </div>
                                 <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
                                 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                             </div>
@@ -100,13 +100,21 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
-                                                <%-- need to use new tag in future --%>
+
                                                 <th scope="col" style="display: none"></th>
+                                                <th scope="col">
+                                                    <div class="form-check" style="margin-bottom: 1rem;padding-left: 14px">
+                                                        <input class="form-check-input msgCheck" id="msgCheckAll" type="checkbox" name="chkParent" aria-invalid="false">
+                                                        <label class="form-check-label" for="msgCheckAll"><span
+                                                                class="check-square"></span>
+                                                        </label>
+                                                    </div>
+                                                </th>
                                                 <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="msgType" value="Message Type" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="refNo" value="Ref. No." isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="submissionType" value="Application Type" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="createdAt" value="Date" isFE="true"/>
                                             </tr>
                                             </thead>
@@ -133,20 +141,19 @@
                                                                 <tr>
                                                             </c:otherwise>
                                                         </c:choose>
-                                                        <%--                                <C:if test="${msgPage == 'msgView'}">--%>
-                                                        <%--                                    <td>--%>
-                                                        <%--                                        <div class="form-check">--%>
-                                                        <%--                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="msgIdList" aria-invalid="false" value="${inboxQuery.id}"--%>
-                                                        <%--                                                   <c:if test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">disabled = "disabled"</c:if>>--%>
-                                                        <%--                                            <label class="form-check-label" for="msgCheck"><span--%>
-                                                        <%--                                                    class="check-square"></span>--%>
-                                                        <%--                                            </label>--%>
-                                                        <%--                                        </div>--%>
-                                                        <%--                                    </td>--%>
-                                                        <%--                                </C:if>--%>
+                                                        <c:set var="maskedMsgId"><iais:mask name="action_value" value="${msg.id}"/></c:set>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="chkChild" aria-invalid="false" value="${maskedMsgId}"
+                                                                       <c:if test="${msg.status == 'MSGRS001' || msg.status == 'MSGRS002'}">disabled = "disabled"</c:if>>
+                                                                <label class="form-check-label" for="msgCheck"><span
+                                                                        class="check-square"></span>
+                                                                </label>
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                                            <p><a href="#" onclick="bsbInboxViewMsg('<iais:mask name="action_value" value="${msg.id}"/>')" >${msg.subject}</a>
+                                                            <p><a href="#" onclick="bsbInboxViewMsg('${maskedMsgId}')" >${msg.subject}</a>
                                                             </p>
                                                         </td>
                                                         <td>
@@ -158,21 +165,22 @@
                                                             <p><iais:code code="${msg.facilityName}"/></p>
                                                         </td>
                                                         <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Ref. No.</p>
+                                                            <p class="visible-xs visible-sm table-row-title">Reference Number</p>
                                                             <p>${msg.refNo}</p>
                                                         </td>
                                                         <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Application Type</p>
-                                                            <p><iais:code code="${msg.appType}"/></p>
+                                                            <p class="visible-xs visible-sm table-row-title">Submission Type</p>
+                                                            <p><iais:code code="${msg.submissionType}"/></p>
                                                         </td>
                                                         <td>
-                                                            <p class="visible-xs visible-sm table-row-title">Date</p>
+                                                            <p class="visible-xs visible-sm table-row-title">Date of Notification</p>
                                                             <p><fmt:formatDate value="${msg.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                         </td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
+                                            <tr><span data-err-ind="archiveInfo" class="error-msg"></span></tr>
                                             </tbody>
                                         </table>
                                         <!-- Modal -->
@@ -225,10 +233,18 @@
                                         <!--Modal End-->
                                         <div class="row" style="margin-top: 1.5%">
                                             <div class="col-md-12">
-                                                <div class="col-md-6 pull-right">
-                                                    <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px; display:none; ">Archive</button>
-                                                    <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()" style="display: none">Access Archive</button>
-                                                </div>
+                                                <c:if test="${msgPage == 'inbox'}">
+                                                    <div class="col-md-6 pull-right">
+                                                        <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px;">Archive</button>
+                                                        <button type="button" class="btn btn-primary pull-right" id="archive">Access Archive</button>
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="${msgPage == 'archive'}">
+                                                    <div class="col-md-6 pull-right">
+                                                        <button type="button" class="btn btn-primary" id="moveArchive" style="margin-right: 10px;">Move to Inbox</button>
+                                                        <button type="button" class="btn btn-primary pull-right" id="inbox">Return to Inbox</button>
+                                                    </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
