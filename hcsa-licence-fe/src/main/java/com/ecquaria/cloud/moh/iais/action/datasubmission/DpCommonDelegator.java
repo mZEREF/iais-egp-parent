@@ -201,6 +201,12 @@ public abstract class DpCommonDelegator {
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        CycleDto cycle = dpSuperDataSubmissionDto.getCycleDto();
+        if((DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType()))){
+            if(DataSubmissionConsts.DRUG_DISPENSED.equals(dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getDrugType())){
+                cycle.setCycleType(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED);
+            }
+        }
         if (dpSuperDataSubmissionDto != null) {
             dpSuperDataSubmissionDto.setDraftNo(dpDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_DRP,
                     dpSuperDataSubmissionDto.getDraftNo()));
