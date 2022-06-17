@@ -173,6 +173,11 @@ public class DpSiUploadDelegate {
                     dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
                     Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(dpSovenorInventoryDtos, "file", fieldCellMap);
+
+                    for (int i = 1; i <= fileItemSize; i++) {
+                        DpSovenorInventoryDto siDto=dpSovenorInventoryDtos.get(i-1);
+                        validSovenorInventory(errorMsgs, siDto, fieldCellMap, i);
+                    }
                     if (!errorMsgs.isEmpty()) {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
@@ -202,6 +207,152 @@ public class DpSiUploadDelegate {
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
+
+    private void validSovenorInventory(List<FileErrorMsg> errorMsgs,DpSovenorInventoryDto siDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
+        if(StringUtil.isNotEmpty(siDto.getHciName())){
+            if(siDto.getHciName().length()>256){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","256");
+                repMap.put("HCI Name","This field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hciName"), errMsg));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hciName"), errMsgErr006));
+        }
+
+        if(StringUtil.isNotEmpty(siDto.getDrugName())){
+            if(siDto.getDrugName().length()>50){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","50");
+                repMap.put("Drug Name","This field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsg));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsgErr006));
+        }
+        if(StringUtil.isNotEmpty(siDto.getBatchNumber())){
+            try {
+                Double.parseDouble(siDto.getBatchNumber());
+                if(siDto.getBatchNumber().length()>50){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","50");
+                    repMap.put("Batch Number","This field");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsg));
+                }
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr002));
+            }
+
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsgErr006));
+        }
+        if(StringUtil.isNotEmpty(siDto.getDrugStrength())){
+            try {
+                Double.parseDouble(siDto.getDrugStrength());
+                if(siDto.getDrugStrength().length()>50){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","50");
+                    repMap.put("Drug Strength","This field");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsg));
+                }
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr002));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsgErr006));
+        }
+        if(StringUtil.isNotEmpty(siDto.getQuantityDrugPurchased())){
+            if(siDto.getQuantityDrugPurchased().length()>50){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","50");
+                repMap.put("Quantity of Drug Purchased","This field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsg));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsgErr006));
+        }
+
+        if(StringUtil.isNotEmpty(siDto.getPurchaseDate())){
+            try {
+                Formatter.parseDate(siDto.getPurchaseDate());
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), "GENERAL_ERR0033"));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("purchaseDate"), errMsgErr006));
+        }
+
+        if(StringUtil.isNotEmpty(siDto.getDeliveryDate())){
+            try {
+                Formatter.parseDate(siDto.getDeliveryDate());
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), "GENERAL_ERR0033"));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("deliveryDate"), errMsgErr006));
+        }
+
+        if(StringUtil.isNotEmpty(siDto.getExpiryDate())){
+            try {
+                Formatter.parseDate(siDto.getExpiryDate());
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), "GENERAL_ERR0033"));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("expiryDate"), errMsgErr006));
+        }
+
+        if(StringUtil.isNotEmpty(siDto.getQuantityBalanceStock())){
+            try {
+                Double.parseDouble(siDto.getQuantityBalanceStock());
+                if(siDto.getQuantityBalanceStock().length()>50){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","50");
+                    repMap.put("Quantity of balance stock as at 31 Dec 2017","This field");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsg));
+                }
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr002));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsgErr006));
+        }
+        if(StringUtil.isNotEmpty(siDto.getQuantityExpiredStock())){
+            try {
+                Double.parseDouble(siDto.getQuantityExpiredStock());
+                if(siDto.getQuantityExpiredStock().length()>50){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","50");
+                    repMap.put("Quantity of expired stock as at 31 Dec 2017","This field");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsg));
+                }
+            }catch (Exception e){
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr002));
+            }
+        }else {
+            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsgErr006));
+        }
+        if(StringUtil.isNotEmpty(siDto.getRemarks())){
+            if(siDto.getRemarks().length()>50){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","50");
+                repMap.put("Remarks","This field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("remarks"), errMsg));
+            }
+        }
+    }
+
 
 
 
