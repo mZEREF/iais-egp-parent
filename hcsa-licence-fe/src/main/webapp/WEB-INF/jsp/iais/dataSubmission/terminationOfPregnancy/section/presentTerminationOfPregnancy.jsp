@@ -305,25 +305,25 @@
     </iais:row>
         <div id="doctorInformation" <c:if test="${terminationDto.topDoctorInformations eq 'true'}">style="display: none"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Name of Doctor" mandatory="true"/>
+                <iais:field width="5" value="Name of Doctor"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                     ${terminationDto.doctorName}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Specialty" mandatory="true"/>
+                <iais:field width="5" value="Specialty"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
                     ${terminationDto.specialty}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                <iais:field width="5" value="Sub-Specialty"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
                     ${terminationDto.subSpecialty}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Qualification" mandatory="true"/>
+                <iais:field width="5" value="Qualification"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
                     ${terminationDto.qualification}
                 </iais:value>
