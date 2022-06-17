@@ -1407,7 +1407,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             // "There is a related application is in doing RFI, please wait for it."
             appError = MessageUtil.getMessageDesc("PRF_ERR014");
             canRFI = AppConsts.NO;
-        } else if (AppConsts.YES.equals(map.get(HcsaAppConst.STATUS_RFI))) {
+        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT))) {
             // The application is pending payment
             appError = MessageUtil.getMessageDesc("NEW_ERR0023");
             canRFI = AppConsts.NO;
