@@ -203,10 +203,12 @@
                         </c:if>
                         <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
                         <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
-                        <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>
+                       <%-- <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>--%>
                         <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+
                         <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
+
                         <%--<a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>--%>
                        <c:if test="${dataSubARTPrivilege == 1}">
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
@@ -305,19 +307,19 @@
             }else {
                 $('#ds-amend').addClass("disabled");
             }
-            $('#ds-withdraw').removeClass("disabled");
+            //$('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
         }else if (size <= 0) {
             $('#ds-deleteDraft').addClass("disabled");
             $('#ds-amend').addClass("disabled");
-            $('#ds-withdraw').addClass("disabled");
+            //$('#ds-withdraw').addClass("disabled");
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
             if(selectAllTypeSub.indexOf(',') > 0){
-                $('#ds-withdraw').addClass("disabled");
+               // $('#ds-withdraw').addClass("disabled");
             }else {
-                $('#ds-withdraw').removeClass("disabled");
+               // $('#ds-withdraw').removeClass("disabled");
             }
         }
     }
