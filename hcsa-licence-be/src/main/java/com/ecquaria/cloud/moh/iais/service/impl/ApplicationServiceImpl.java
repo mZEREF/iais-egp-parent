@@ -1393,20 +1393,26 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
-        result.put(HcsaAppConst.CAN_RFI, AppConsts.YES);
         if (StringUtil.isEmpty(appGrpNo)) {
             // Can't find the related application.
             result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
+            result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
             return result;
         }
         Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
         result.putAll(map);
-        if (AppConsts.YES.equals(map.get("isRfi"))) {
+        String appError = null;
+        String canRFI = AppConsts.YES;
+        if (AppConsts.YES.equals(map.get(HcsaAppConst.STATUS_RFI))) {
             // "There is a related application is in doing RFI, please wait for it."
-            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR014"));
-            result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
-        } else  {
-            String appGrpStatus = map.get("appGrpStatus");
+            appError = MessageUtil.getMessageDesc("PRF_ERR014");
+            canRFI = AppConsts.NO;
+        } else if (AppConsts.YES.equals(map.get(HcsaAppConst.STATUS_RFI))) {
+            // The application is pending payment
+            appError = MessageUtil.getMessageDesc("NEW_ERR0023");
+            canRFI = AppConsts.NO;
+        } else {
+            String appGrpStatus = map.get(HcsaAppConst.STATUS_GRP);
             if (StringUtil.isIn(appGrpStatus, new String[]{
                     ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE,
                     ApplicationConsts.APPLICATION_SUCCESS_ZIP,
@@ -1416,14 +1422,18 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
-                result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR015"));
-                result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
+                appError = MessageUtil.getMessageDesc("PRF_ERR015");
+                canRFI = AppConsts.NO;
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
                 // "The application can't be edited."
-                result.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
-                        "edited", "action"));
+                appError = MessageUtil.replaceMessage("GENERAL_ERR0061",
+                        "edited", "action");
             }
         }
+        if (StringUtil.isNotEmpty(appError)) {
+            result.put(HcsaAppConst.ERROR_APP, appError);
+        }
+        result.put(HcsaAppConst.CAN_RFI, canRFI);
         log.info(StringUtil.changeForLog("Check Application result: " + result));
         return result;
     }
