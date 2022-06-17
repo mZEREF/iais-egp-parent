@@ -46,7 +46,7 @@
                  </c:if>
                     <c:if test="${dssTab == 1}">
                         <div class="dashboard-tile-item">
-                            <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>
+                            <div class="dashboard-tile"><a data-tab="#tabSubmission" href="#"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>
                                 <h1 class="dashboard-count">${dssDraftNum}</h1>
                                 <p class="dashboard-txt">Data Submission Draft</p>
                             </a></div>
