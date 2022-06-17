@@ -186,7 +186,7 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
-            /*ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");*/
+            ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
