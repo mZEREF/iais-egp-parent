@@ -43,14 +43,15 @@ public class DocInfoAjaxController {
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,doctorSource);
         if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-            professionalResponseDto.setName(doctorInformationDto.getName());
-            professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
-            professionalResponseDto.setQualification(Collections.singletonList(doctorInformationDto.getQualification()));
-            professionalResponseDto.setSubspecialty(Collections.singletonList(doctorInformationDto.getSubSpeciality()));
+            if(doctorInformationDto!=null){
+                professionalResponseDto.setName(doctorInformationDto.getName());
+                professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
+                professionalResponseDto.setQualification(Collections.singletonList(doctorInformationDto.getQualification()));
+                professionalResponseDto.setSubspecialty(Collections.singletonList(doctorInformationDto.getSubSpeciality()));
+            }
         }
         result.put("selections", doctorInformationDto);
         result.put("selection", professionalResponseDto);
-
         return result;
     }
 }
