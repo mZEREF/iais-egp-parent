@@ -222,6 +222,7 @@
         <input type="hidden" value="${empty selectAllTypeSub ? '' : selectAllTypeSub}" id="selectAllTypeSub" name="selectAllTypeSub">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
+        <input type="hidden" value="${rfcType}" id="rfcType" name="rfcType">
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
@@ -302,7 +303,9 @@
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
-            if(selectAllTypeSub.indexOf('DSCL_012') < 0){
+            var rfcType = $("#rfcType".val());
+            /*if(selectAllTypeSub.indexOf('DSCL_012') < 0 ){*/
+            if(rfcType.indexOf(selectAllTypeSub)>0){
                 $('#ds-amend').removeClass("disabled");
             }else {
                 $('#ds-amend').addClass("disabled");

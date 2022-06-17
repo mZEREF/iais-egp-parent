@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -35,12 +36,6 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +43,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -152,6 +152,12 @@ public class DataSubmissionInboxDelegator {
 				setSearchParamOnlyForDsTab(searchParam,(List<SelectOption>)ParamUtil.getSessionAttr(request,FE_USERS));
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
+				//control the Amend by the privilege
+				List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+				log.info(StringUtil.changeForLog("The privilegeIds is -->:"+privilegeIds.toString()));
+				String rfcType =getRfcType(privilegeIds);
+				log.info(StringUtil.changeForLog("The rfcType is -->:"+rfcType));
+                ParamUtil.setRequestAttr(request,"rfcType",rfcType);
 			}else {
 				ParamUtil.clearSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 			}
@@ -161,6 +167,34 @@ public class DataSubmissionInboxDelegator {
 			ParamUtil.reSetSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 		}
 		setLog("prepare",false);
+	}
+
+
+	private String getRfcType(List<String> privilegeIds){
+		StringBuilder rfcType = new StringBuilder();
+		privilegeIds.stream().forEach(privilegeId ->{
+			switch(privilegeId){
+				case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC :
+					rfcType.append(""+",");
+					break;
+				case PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC :
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_DRP_DISPENSED+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP+",");
+					break;
+				case PrivilegeConsts.USER_PRIVILEGE_DS_TOP_RFC:
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP+",");
+					break;
+//				case PrivilegeConsts.USER_PRIVILEGE_DS_VSS_RFC:
+//					rfcType.append(DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP+",");
+//					break;
+				case PrivilegeConsts.USER_PRIVILEGE_DS_LDT_RFC:
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_LDT+",");
+					break;
+				default: break;
+			}
+		});
+		return rfcType.toString();
 	}
 
 	private void setSearchParamOnlyForDsTab(SearchParam searchParam, List<SelectOption> selectOptions){
