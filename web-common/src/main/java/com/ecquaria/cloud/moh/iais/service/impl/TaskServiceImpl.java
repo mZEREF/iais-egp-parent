@@ -41,16 +41,17 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -549,6 +550,11 @@ public class TaskServiceImpl implements TaskService {
         }
         log.debug(StringUtil.changeForLog("checkCompleteTaskByApplicationNo flag : " + flag));
         return flag;
+    }
+
+    @Override
+    public List<TaskDto> getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(String appNo, String roleId, String wrkGrpId, String userId) {
+        return taskOrganizationClient.getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(appNo,roleId,wrkGrpId,userId).getEntity();
     }
 
     private boolean checkTaskAppStatus(String status,String correlationId){

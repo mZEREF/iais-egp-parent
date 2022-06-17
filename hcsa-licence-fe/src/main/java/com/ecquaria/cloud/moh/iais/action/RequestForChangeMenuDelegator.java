@@ -1818,8 +1818,8 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean compareLocation(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
-        String oldAddress = premisesListQueryDto.getAddressWithoutFU();
-        String newAddress = appGrpPremisesDto.getAddressWithoutFU();
+        String oldAddress = premisesListQueryDto.getNonAutoAddressWithoutFU();
+        String newAddress = appGrpPremisesDto.getNonAutoAddressWithoutFU();
         if (!oldAddress.equals(newAddress)) {
             return false;
         }

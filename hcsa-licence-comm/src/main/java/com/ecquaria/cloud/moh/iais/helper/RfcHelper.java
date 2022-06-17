@@ -173,7 +173,7 @@ public final class RfcHelper {
             if (eqHciNameChange(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
-            if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
+            if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
                 return true;
             }
             if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
@@ -808,7 +808,7 @@ public final class RfcHelper {
             for (int i = 0; i < length; i++) {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
-                if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())
+                if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())
                         || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getConveyanceVehicleNo()),
                         StringUtil.getNonNull(oldAppGrpPremisesDto.getConveyanceVehicleNo()))) {
                     return false;

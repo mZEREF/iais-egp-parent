@@ -128,6 +128,16 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "chooseAckValue", this);
 	}
 
+	public void approveWithdrawal_OnStepProcess_0() throws Exception {
+	// 		ApproveWithdrawal->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "approveWithdrawal", this);
+	}
+
+	public void rollBack_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "rollBackCr", this);
+// 		RollBack->OnStepProcess
+	}
+
 
 
 

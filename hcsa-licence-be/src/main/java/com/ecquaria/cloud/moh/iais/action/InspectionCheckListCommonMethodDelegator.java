@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -59,6 +60,8 @@ public class InspectionCheckListCommonMethodDelegator {
     protected TaskService taskService;
     @Autowired
     protected AdhocChecklistService adhocChecklistService;
+    @Autowired
+    protected InspectionService inspectionService;
 
     private static final String SERLISTDTO="serListDto";
     private static final String COMMONDTO="commonDto";
@@ -72,6 +75,9 @@ public class InspectionCheckListCommonMethodDelegator {
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
     private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
     private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
+    private static final String PROCESS_DEC_OPTIONS = "processDecOption";
+    private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
+    private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
 
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
@@ -359,6 +365,9 @@ public class InspectionCheckListCommonMethodDelegator {
         ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH,null);
         ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.NO);
         ParamUtil.setSessionAttr(request, MOBILE_REMARK_GROUP,null);
+        ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, null);
+        ParamUtil.setSessionAttr(request, ROLL_BACK_OPTIONS, null);
+        ParamUtil.setSessionAttr(request, ROLL_BACK_VALUE_MAP, null);
     }
 
 

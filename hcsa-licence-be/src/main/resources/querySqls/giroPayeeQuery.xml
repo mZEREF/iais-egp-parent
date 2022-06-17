@@ -32,7 +32,7 @@
         <![CDATA[
         SELECT distinct * from (
             select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
-            a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
+            a.ID,a.APP_GROUP_NO,ag.STATUS APP_GROUP_STATUS ,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
             from application_group as ag
             join giro_payment_view as a  on ag.GROUP_NO=a.APP_GROUP_NO
             join application as app on app.APP_GRP_ID=ag.ID

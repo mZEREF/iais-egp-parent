@@ -44,7 +44,7 @@
                                                         id="reportClink" href="#tabInspectionReport"
                                                         aria-controls="tabProcessing" role="tab"
                                                         data-toggle="tab">Inspection Report</a></li>
-                                                <li onclick="changePeriod()" class="complete" role="presentation"><a href="#tabProcessing"
+                                                <li onclick="changePeriod()" class="${processClassTop}" role="presentation"><a href="#tabProcessing"
                                                                                             aria-controls="tabProcessing"
                                                                                             role="tab"
                                                                                             data-toggle="tab">Processing</a>
@@ -83,7 +83,7 @@
                                                     <jsp:include
                                                             page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"></jsp:include>
                                                 </div>
-                                                <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                                <div class="${processClassBelow}" id="tabProcessing" role="tabpanel">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <div class="alert alert-info" role="alert">
@@ -123,7 +123,7 @@
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
                                                                             <span id="error_submit" class="error-msg"
-                                                                                  style="display: none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
+                                                                                  style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                   <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
@@ -134,6 +134,12 @@
                                                                         </iais:value>
                                                                     </iais:row>
                                                                   </c:if>
+                                                                    <iais:row id="backToRow">
+                                                                        <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                                        <iais:value width="7">
+                                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                                        </iais:value>
+                                                                    </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                         <iais:row>
                                                                             <iais:field value="Licence Start Date"
@@ -273,13 +279,20 @@
     </form>
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
+
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');mysubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script>
 <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
     $(document).ready(function () {
         changeAoSelect();
         $("#processSubmit").change(function () {
             changeAoSelect();
+            initBackToRow();
         })
+        initBackToRow();
     });
 
     function changeAoSelect() {
@@ -309,12 +322,12 @@
                         $("#ao1SelectRow").hide();
                     }
                     // setValue();
+                    dismissWaiting();
                 },
                 'error':function () {
-
+                    dismissWaiting();
                 }
             });
-            dismissWaiting();
         } else {
             $("#ao1SelectRow").hide();
         }
@@ -326,9 +339,25 @@
         if (s == "" || s == null) {
             $("#error_submit").show();
         } else if ("submit" == s) {
-            showWaiting();
-            $("#mainForm").submit();
-            $("#error_submit").hide();
+            mysubmit();
+        }else if("rollBack" == s){
+            $('#confirmTag').modal('show');
+        }
+    }
+
+    function mysubmit(){
+        $("#error_submit").hide();
+        showWaiting();
+        $("#mainForm").submit();
+    }
+
+    function initBackToRow() {
+        const actionValue = $("#processSubmit").val();
+        const backToRow = $("#backToRow");
+        if ("rollBack" === actionValue) {
+            backToRow.show();
+        } else {
+            backToRow.hide();
         }
     }
 

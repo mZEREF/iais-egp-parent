@@ -714,7 +714,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
 
 
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId, null);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();

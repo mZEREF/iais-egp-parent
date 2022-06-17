@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -18,12 +19,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -51,13 +56,16 @@ public class InsReportAoDelegator  {
     private FillupChklistService fillupChklistService;
     @Autowired
     private VehicleCommonController vehicleCommonController;
-
+    @Autowired
+    private InspectionService inspectionService;
 
     private final static String APPROVAL="Approval";
     private final static String REJECT="Reject";
     private final static String INSREPDTO="insRepDto";
     private final static String APPLICATIONVIEWDTO="applicationViewDto";
     private final static String TASKDTO="taskDto";
+    private final static String ROLLBACK_OPTIONS = "rollBackOptions";
+    private final static String ROLLBACK_VALUE_MAP = "rollBackValueMap";
 
 
     public void start(BaseProcessClass bpc) {
@@ -70,6 +78,8 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
         vehicleCommonController.clearVehicleInformationSession(request);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+        ParamUtil.setSessionAttr(request, ROLLBACK_OPTIONS, null);
+        ParamUtil.setSessionAttr(request, ROLLBACK_VALUE_MAP, null);
     }
     public void AoInit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
@@ -86,7 +96,7 @@ public class InsReportAoDelegator  {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId, taskDto.getRoleId());
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         }
@@ -96,6 +106,8 @@ public class InsReportAoDelegator  {
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
         vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
 
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
@@ -114,6 +126,8 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, TASKDTO, taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        ParamUtil.setSessionAttr(request, ROLLBACK_OPTIONS, (Serializable) rollBackStage);
+        ParamUtil.setSessionAttr(request, ROLLBACK_VALUE_MAP, (Serializable) rollBackValueMap);
         vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
@@ -144,6 +158,26 @@ public class InsReportAoDelegator  {
         log.debug(StringUtil.changeForLog("the saveAoRecommendation start ...."));
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
+    }
+
+    public void rollBack(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the rollback start ...."));
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
+        String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+        if(StringUtil.isEmpty(rollBackTo)){
+            Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("rollBackTo", "GENERAL_ERR0006");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        }else {
+            Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, ROLLBACK_VALUE_MAP);
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"rollBack");
+        }
+
     }
 
     public void approve(BaseProcessClass bpc) throws Exception {
@@ -198,6 +232,7 @@ public class InsReportAoDelegator  {
         SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
+        riskLevelResult.add(new SelectOption("rollBack", "Roll Back To"));
         return riskLevelResult;
     }
 

@@ -144,8 +144,10 @@ public final class HcsaAppConst {
     public static final String COND_TYPE_RFI                                = "isrfiSuccess";
 
     public static final String CAN_RFI                                      = "CAN_RFI";
-    public static final String STATUS_APP                                   = "STATUS_APP";
-    public static final String STATUS_GRP                                   = "STATUS_GRP";
+    public static final String STATUS_RFI                                   = ApplicationConsts.STATUS_RFI;
+    public static final String STATUS_APP                                   = ApplicationConsts.STATUS_APP;
+    public static final String STATUS_GRP                                   = ApplicationConsts.STATUS_GRP;
+    public static final String STATUS_PMT                                   = ApplicationConsts.STATUS_PMT;
     public static final String ERROR_APP                                    = "appError";
     public static final String ERROR_KEY                                    = "errormapIs";
     public static final String ERROR_VAL                                    = "error";

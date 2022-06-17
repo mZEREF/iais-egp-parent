@@ -152,7 +152,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     static String[] processDecArr = new String[]
             {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
-                    InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
+                    InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, InspectionConstants.PROCESS_DECI_ROLL_BACK};
     @Override
     public AppPremisesRoutingHistoryDto getAppHistoryByTask(String appNo, String stageId) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(appNo, stageId).getEntity();

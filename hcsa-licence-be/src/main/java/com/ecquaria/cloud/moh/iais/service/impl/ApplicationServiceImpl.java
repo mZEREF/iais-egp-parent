@@ -62,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -76,13 +77,6 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -93,6 +87,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * ApplicationServiceImpl
@@ -156,6 +156,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EventBusHelper eventBusHelper;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -1033,6 +1036,85 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public void rollBackInsp(BaseProcessClass bpc, String roleId, String wrkGpId, String userId) throws CloneNotSupportedException {
+
+        //get the user for this applicationNo
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        String taskType = TaskConsts.TASK_TYPE_INSPECTION;
+        String taskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+        String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
+        String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;
+        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+
+        //complated this task and create the history
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        //Delete all the Inspection records and update application's self assessment flag
+        inspectionService.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
+        //set / get completedTask
+        taskDto = completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
+        String processDecision = ParamUtil.getString(bpc.request, "nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
+            processDecision = nextStageReplys;
+        }
+        //save appPremisesRoutingHistoryExtDto
+        String routeBackReview = (String) ParamUtil.getSessionAttr(bpc.request, "routeBackReview");
+        if ("canRouteBackReview".equals(routeBackReview)) {
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
+            String[] routeBackReviews = ParamUtil.getStrings(bpc.request, "routeBackReview");
+            if (routeBackReviews != null) {
+                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
+            } else {
+                appPremisesRoutingHistoryExtDto.setComponentValue("N");
+                //route back and route task processing
+                processDecision = ApplicationConsts.PROCESSING_DECISION_ROUTE_BACK_AND_ROUTE_TASK;
+            }
+            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
+        }
+
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
+                applicationDto.getStatus(), taskDto.getTaskKey(), HcsaConsts.ROUTING_STAGE_POT, taskDto.getWkGrpId(), internalRemarks, null, processDecision, taskDto.getRoleId());
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setApplicationDto(applicationDto);
+
+        String subStageId = HcsaConsts.ROUTING_STAGE_POT;
+        //update inspector status
+        updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), insStatus);
+        TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS, taskType,
+                taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, wrkGpId, userId, new Date(), null,0, taskUrl, roleId,
+                IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastOrganizationDto.setCreateTask(newTaskDto);
+        //create new history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, subStageId,
+                taskDto.getWkGrpId(), null, null, null, roleId);
+        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        String evenRefNum = String.valueOf(System.currentTimeMillis());
+        broadcastOrganizationDto.setEventRefNo(evenRefNum);
+        broadcastApplicationDto.setEventRefNo(evenRefNum);
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog(submissionId));
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
+        fillUpCheckListGetAppClient.rollBackPreInspect(applicationViewDto.getAppPremisesCorrelationId());
+        //0062460 update FE  application status.
+        updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+    }
+
+    @Override
     public void updateInspectionStatusByAppNo(String appId, String inspectionStatus) {
         if(!StringUtil.isEmpty(appId)) {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
@@ -1314,16 +1396,23 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (StringUtil.isEmpty(appGrpNo)) {
             // Can't find the related application.
             result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
+            result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
             return result;
         }
         Map<String, String> map = applicationClient.checkApplicationByAppGrpNo(appGrpNo).getEntity();
         result.putAll(map);
-        if (AppConsts.YES.equals(map.get("isRfi"))) {
+        String appError = null;
+        String canRFI = AppConsts.YES;
+        if (AppConsts.YES.equals(map.get(HcsaAppConst.STATUS_RFI))) {
             // "There is a related application is in doing RFI, please wait for it."
-            result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR014"));
-            result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
-        } else  {
-            String appGrpStatus = map.get("appGrpStatus");
+            appError = MessageUtil.getMessageDesc("PRF_ERR014");
+            canRFI = AppConsts.NO;
+        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT))) {
+            // The application is pending payment
+            appError = MessageUtil.getMessageDesc("NEW_ERR0023");
+            canRFI = AppConsts.NO;
+        } else {
+            String appGrpStatus = map.get(HcsaAppConst.STATUS_GRP);
             if (StringUtil.isIn(appGrpStatus, new String[]{
                     ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE,
                     ApplicationConsts.APPLICATION_SUCCESS_ZIP,
@@ -1333,14 +1422,18 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_SECOND,
                     ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP_THIRD})) {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
-                result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR015"));
-                result.put(HcsaAppConst.CAN_RFI, AppConsts.NO);
+                appError = MessageUtil.getMessageDesc("PRF_ERR015");
+                canRFI = AppConsts.NO;
             } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
                 // "The application can't be edited."
-                result.put(HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
-                        "edited", "action"));
+                appError = MessageUtil.replaceMessage("GENERAL_ERR0061",
+                        "edited", "action");
             }
         }
+        if (StringUtil.isNotEmpty(appError)) {
+            result.put(HcsaAppConst.ERROR_APP, appError);
+        }
+        result.put(HcsaAppConst.CAN_RFI, canRFI);
         log.info(StringUtil.changeForLog("Check Application result: " + result));
         return result;
     }

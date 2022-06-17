@@ -10,7 +10,7 @@
                 <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="table-gp">
+                        <div class="table-gp" style="word-break:break-all">
                             <table aria-describedby="" class="table table-bordered">
                                 <thead style="display: none">
                                 <tr>
@@ -52,7 +52,7 @@
                 <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="table-gp">
+                        <div class="table-gp" style="word-break:break-all">
                             <table aria-describedby="" class="table table-bordered">
                                 <thead style="display: none">
                                 <tr>
@@ -147,7 +147,7 @@
             <div class="panel-heading"><strong><iais:code code="${sectionLeader.personnelType}"/></strong></div>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="table-gp">
+                    <div class="table-gp" style="word-break:break-all">
                         <table aria-describedby="" class="table table-bordered">
                             <thead style="display: none">
                             <tr>
@@ -184,7 +184,7 @@
         <div class="panel-heading"><strong>General Conveyance Charges</strong></div>
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-gp">
+                <div class="table-gp" style="word-break:break-all">
                     <table aria-describedby="" class="table table-bordered">
                         <thead style="display: none">
                         <tr>
@@ -254,7 +254,7 @@
 
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-gp">
+                <div class="table-gp" style="word-break:break-all">
                     <table aria-describedby="" class="table table-bordered">
                         <thead style="display: none">
                         <tr>
@@ -336,7 +336,7 @@
         <div class="panel-heading"><strong>Vehicle</strong></div>
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-gp">
+                <div class="table-gp" style="word-break:break-all">
                     <table aria-describedby="" class="table table-bordered">
                         <thead style="display: none">
                         <tr>
@@ -392,7 +392,7 @@
         <div class="panel-heading"><strong>Clinical Director</strong></div>
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-gp">
+                <div class="table-gp" style="word-break:break-all">
                     <table aria-describedby="" class="table table-bordered">
                         <thead style="display: none">
                         <tr>

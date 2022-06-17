@@ -154,7 +154,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     static private String[] processDec = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
             InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY,
+            InspectionConstants.PROCESS_DECI_ROLL_BACK};
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -179,11 +180,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 processDecArr = processDec;
             } else {
-                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, InspectionConstants.PROCESS_DECI_ROLL_BACK};
             }
         }
-        List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
-        return processDecOption;
+        return MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
     }
 
     @Override
@@ -671,6 +671,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryMap = IaisCommonUtils.genNewHashMap();
         //get history to route back
         if(applicationViewDto != null){
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
@@ -685,6 +686,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                             preInspRbOption.add(selectOption);
                             userIdMap.put(index + "", actionUserId);
                             roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                            rollBackHistoryMap.put(index + "", appPremisesRoutingHistoryDto);
                             index++;
                         }
                     }
@@ -694,6 +696,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
         inspectionPreTaskDto.setStageRoleMap(roleIdMap);
+        inspectionPreTaskDto.setRollBackHistoryMap(rollBackHistoryMap);
         return inspectionPreTaskDto;
     }
 
