@@ -3,7 +3,8 @@ EMAILS_TO_NOTIFY = [
     'mingde@toppanecquaria.com',
     'phangkangcheng@toppanecquaria.com',
     'gohsihao@toppanecquaria.com',
-    'zamri@toppanecquaria.com'
+    'zamri@toppanecquaria.com',
+    'ongkarloon@toppanecquaria.com'
 ].join(",");
 
 // Specify the connection URL to the Docker daemon.
@@ -17,6 +18,13 @@ CLAIR_OUTPUT_DIRECTORY = "clair"
 // Specify the IP address of hub.ecquaria.com. Without this, containers are not able to resolve
 // this address -- unless, network=host is used.
 HUB_IP = '192.168.0.228'
+
+// Specify the IP address of inter & intra for katalon. Without this, katalon are not able to resolve
+KATALON_SIT2_INTER_IP = '192.168.88.28'
+KATALON_SIT2_INTRA_IP = '192.168.88.13'
+
+KATALON_SIT3_INTER_IP = '192.168.88.58'
+KATALON_SIT3_INTRA_IP = '192.168.88.43'
 
 // Gitlab requires authentication, specify the credential ID here.
 GITLAB_CREDENTIALS_ID = 'moh-iais-gitlab'
@@ -907,7 +915,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com, julianlee@ecquaria.com',
+                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com, julianlee@ecquaria.com, ongkarloon@ecquaria.com',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
@@ -1153,13 +1161,23 @@ def runAutomatedTests(){
         try{
             withCredentials(KATALON_OFFLINE_LICENSE_CREDENTIALS) {
                 // invoke katalon
+                def interIp;
+                def intraIp;
+                if(KATALON.equalsIgnoreCase("CICD2-SIT2")){
+                    interIp = KATALON_SIT2_INTER_IP;
+                    intraIp = KATALON_SIT2_INTRA_IP;
+                }
+                if(KATALON.equalsIgnoreCase("CICD2-SIT3")){
+                    interIp = KATALON_SIT3_INTER_IP;
+                    intraIp = KATALON_SIT3_INTRA_IP;
+                }
                 dockerArgs = [
                     "--entrypoint=''",
                     "-e KATALON_USER_ID=1000",
                     "-e TZ=Asia/Singapore",
                     "-u root",
-                    "--add-host=egp.sit.inter.iais.com:192.168.1.229",
-                    "--add-host=egp.sit.intra.iais.com:192.168.0.222"
+                    "--add-host=egp.sit.inter.iais.com:" + interIp,
+                    "--add-host=egp.sit.intra.iais.com:" + intraIp
                 ]
 
                 String CHOICES_RETRY = 'Retry Automated Test'

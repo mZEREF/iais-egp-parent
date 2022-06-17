@@ -28,7 +28,6 @@
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/multipleSelect.css">
 <link rel="stylesheet" href="<%=webroot%>css/multiselectdropdown-styles.css">
-<link rel="stylesheet" href="<%=webroot%>css/select2.css">
 
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/particles.js"></script>
