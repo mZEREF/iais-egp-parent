@@ -207,7 +207,7 @@
                         <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                         <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                        <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                        <%--<a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>--%>
                        <c:if test="${dataSubARTPrivilege == 1}">
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                        </c:if>

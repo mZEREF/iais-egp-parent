@@ -22,9 +22,9 @@
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Edit a Draft Submission</a>
         </li>
-        <li>
+        <%--<li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Withdraw Submission</a>
-        </li>
+        </li>--%>
 
 
 
