@@ -91,28 +91,28 @@
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dName" value="${doctorInformationDto.name}" />
+                            <iais:input maxLength="66" type="text" name="dName" value="${doctorInformationDto.name}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <iais:input maxLength="100" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <iais:input maxLength="100" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Qualification" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <iais:input maxLength="100" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                         </iais:value>
                     </iais:row>
