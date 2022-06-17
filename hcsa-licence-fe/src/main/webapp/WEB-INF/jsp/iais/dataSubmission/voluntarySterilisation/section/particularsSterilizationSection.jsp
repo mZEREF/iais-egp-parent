@@ -263,7 +263,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <span style="font-size: 2rem;" id="prsPrn">
-                            <iais:message key="GENERAL_ERR0065" escape="false" />
+                            <iais:message key="GENERAL_ERR0054" escape="false" />
                         </span>
                     </div>
                 </div>
@@ -350,7 +350,7 @@
             'type': 'GET',
             'success': function (data) {
                 console.log('3');
-                if (isEmpty(data.selection)) {
+                if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
