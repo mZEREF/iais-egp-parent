@@ -144,8 +144,14 @@ public class ApplicationDelegator extends AppCommDelegator {
             } else {
                 // licensee trasfer application
                 ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                if (HcsaAppConst.CHECKED_BTN_SHOW == check && !StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
-                    isValid = false;
+                if (HcsaAppConst.CHECKED_BTN_SHOW == check) {
+                    if (!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())) {
+                        isValid = false;
+                    }
+                    AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+                    if (appEditSelectDto == null || !appEditSelectDto.isEdited()) {
+                        isValid = false;
+                    }
                 }
                 // check current application status
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
