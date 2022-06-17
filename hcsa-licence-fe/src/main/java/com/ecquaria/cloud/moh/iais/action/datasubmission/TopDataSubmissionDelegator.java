@@ -749,15 +749,27 @@ public class TopDataSubmissionDelegator {
         if("true".equals(terminationDto.getTopDoctorInformations())) {
             if (StringUtil.isEmpty(doctorInformationDto.getName())) {
                 errMap.put("dName", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
+                String general_err0041 = NewApplicationHelper.repLength("Name of Doctor", "66");
+                errMap.put("dName", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 errMap.put("dSpeciality", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                errMap.put("dSpeciality", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                 errMap.put("dSubSpeciality", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                errMap.put("dSubSpeciality", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                 errMap.put("dQualification", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                errMap.put("dQualification", general_err0041);
             }
         }
         if(!errMap.isEmpty()){
