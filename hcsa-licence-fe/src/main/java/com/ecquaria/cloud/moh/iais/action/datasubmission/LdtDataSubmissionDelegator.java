@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -14,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -33,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
@@ -59,9 +56,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Delegator("ldtDataSubmissionDelegator")
 public class LdtDataSubmissionDelegator {
-
-    @Autowired
-    private LicenceClient licenceClient;
 
     @Autowired
     private LdtDataSubmissionService ldtDataSubmissionService;
@@ -96,20 +90,7 @@ public class LdtDataSubmissionDelegator {
     public void start(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
-
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            String licenseeId = loginContext.getLicenseeId();
-            List<LicenceDto> licenceDtos = licenceClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
-            boolean containCLB = containCLB(licenceDtos);
-            if (containCLB) {
-                setSelectOptions(bpc);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, "Y");
-                ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_RETURN);
-            }
-        }
-
+        setSelectOptions(bpc);
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
@@ -193,14 +174,8 @@ public class LdtDataSubmissionDelegator {
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-        String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
-        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
-            LicenceDto licenceDto = licenceDtoList.get(0);
-            licenceId = licenceDto.getId();
-        }
         try {
-            sendMsgAndEmail(licenceId, "Lab-developed Test", licenseeDtoName, submissionNo);
+            sendMsgAndEmail(licenseeId, "Lab-developed Test", licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -288,11 +263,9 @@ public class LdtDataSubmissionDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         log.info(" ----- DoReturn ------ ");
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
-        String cannotCLT = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-        if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
+        if (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType())) {
             target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
             String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
             if ("true".equals(isGuide)){
                 target = InboxConst.URL_MAIN_WEB_MODULE + "MohAccessmentGuide/subDateMoh";
@@ -461,26 +434,7 @@ public class LdtDataSubmissionDelegator {
         return ldtSuperDataSubmissionDto;
     }
 
-    private boolean containCLB(List<LicenceDto> licenceDtos) {
-        log.info(StringUtil.changeForLog("The containCLB  start ..."));
-        boolean result = false;
-        if (!IaisCommonUtils.isEmpty(licenceDtos)) {
-            for (LicenceDto licenceDto : licenceDtos) {
-                if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(licenceDto.getSvcName())
-                        && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
-                    result = true;
-                    break;
-                }
-            }
-        } else {
-            log.info(StringUtil.changeForLog("The containCLB  licenceDtos is empty"));
-        }
-        log.info(StringUtil.changeForLog("The containCLB  result is -->:" + result));
-        log.info(StringUtil.changeForLog("The containCLB  end ..."));
-        return result;
-    }
-
-    private void sendMsgAndEmail(String licenceId, String serverName, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendMsgAndEmail(String licenseeId, String serverName, String submitterName, String submissionNo) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
@@ -499,7 +453,7 @@ public class LdtDataSubmissionDelegator {
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
-        msgParam.setRefId(licenceId);
+        msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
         notificationHelper.sendNotification(msgParam);
