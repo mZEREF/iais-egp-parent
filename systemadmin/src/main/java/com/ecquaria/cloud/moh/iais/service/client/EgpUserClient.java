@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
-import com.ecquaria.cloud.role.Role;
+import com.ecquaria.cloud.rbac.role.Role;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;

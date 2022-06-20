@@ -9,9 +9,10 @@ import org.springframework.http.HttpHeaders;
  * @Date:2020/8/20
  */
 
-public class FEMainRbacClientFallback implements FEMainRbacClient{
+public class FEMainRbacClientFallback implements FEMainRbacClient {
+
     @Override
-    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String var3) {
+    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String... var3) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -25,4 +26,5 @@ public class FEMainRbacClientFallback implements FEMainRbacClient{
         entity.setHeaders(headers);
         return entity;
     }
+
 }

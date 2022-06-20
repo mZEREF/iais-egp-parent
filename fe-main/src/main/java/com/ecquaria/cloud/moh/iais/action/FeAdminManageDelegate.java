@@ -38,8 +38,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -137,15 +137,16 @@ public class FeAdminManageDelegate {
             isAdmin = "0";
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
-
-        if(IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())){
-            StringBuilder stringBuilder = new StringBuilder();
-            List<String> roleShows = feUserDto.getOrgUserRoleDtos().stream().map(role -> IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(role.getRoleName()).getText()).collect(Collectors.toList());
-            roleShows.sort(String::compareTo);
-            roleShows.stream().forEach( roleShow -> stringBuilder.append(roleShow).append("<br>"));
-            ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,stringBuilder.substring(0,stringBuilder.length()-4));
+        // show role names
+        if (IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())) {
+            Map<String, String> roleMap = orgUserManageService.getFeRoleMap();
+            String roleNames = feUserDto.getOrgUserRoleDtos().stream()
+                    .map(role -> roleMap.get(role.getRoleName()))
+                    .filter(Objects::nonNull)
+                    .sorted(String::compareTo)
+                    .collect(Collectors.joining("<br/>"));
+            ParamUtil.setSessionAttr(bpc.request, FE_NO_ADMIN_ROLES_SHOW, roleNames);
         }
-
         ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(bpc.request,UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);

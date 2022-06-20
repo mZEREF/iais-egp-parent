@@ -9,7 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -33,6 +37,8 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
+import com.ecquaria.cloud.rbac.role.Role;
+import com.ecquaria.cloud.rbac.role.RoleServiceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -42,7 +48,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -71,6 +84,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private FeMainEmailHelper feMainEmailHelper;
+
+    @Autowired
+    private RoleServiceClient roleServiceClient;
 
     @Override
     @SearchTrack(catalog = "interInboxQuery", key = "feUserList")
@@ -295,7 +311,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 clientUser.setPassword(pwd);
                 userClient.updateClientUser(clientUser);
                 //delete egp role
-                IaisEGPHelper.getRoles().stream().forEach( role -> feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),role));
+                List<String> roles = IaisEGPHelper.getFeRoles();
+                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId(),
+                        roles.toArray(new String[roles.size()]));
             } else {
                 clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
                 clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
@@ -604,7 +622,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                                 if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
                                     for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                                         if (orgUserRoleDto != null) {
-                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && !RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(orgUserRoleDto.getRoleName()) && IaisEGPHelper.getRoles().contains(orgUserRoleDto.getRoleName())) {
+                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus())
+                                                    && !RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(orgUserRoleDto.getRoleName())
+                                                    && IaisEGPHelper.getFeRoles().contains(orgUserRoleDto.getRoleName())) {
                                                 //account active
                                                 return AppConsts.TRUE;
                                             }
@@ -640,33 +660,46 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId) {
-        List<String> strings = IaisCommonUtils.genNewArrayList();
-        if(fromDsCenter){
-            if(StringUtil.isNotEmpty(orgId)){
+    public List<SelectOption> getRoleSelection(boolean fromDsCenter, String licenseeId, String orgId) {
+        List<String> data = IaisCommonUtils.genNewArrayList();
+        if (fromDsCenter) {
+            if (StringUtil.isNotEmpty(orgId)) {
+                log.info(StringUtil.changeForLog("The Org Id: " + orgId));
                 List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
-                if(IaisCommonUtils.isNotEmpty(dsCenterDtos)){
-                    dsCenterDtos.stream().forEach(dsCenterDto -> {
-                        if(!strings.contains(dsCenterDto.getCenterType())){
-                            strings.add(dsCenterDto.getCenterType());
-                        }
-                    });
+                if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
+                    dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
                 }
-                return IaisEGPHelper.getRoleSelectionByDsCenter(strings);
             }
-        }else {
-            if(StringUtil.isNotEmpty(licenseeId)){
-            List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
-            if(IaisCommonUtils.isNotEmpty(licenceDtos)){
-                licenceDtos.stream().forEach(licenceDto ->{
-                    if(!strings.contains(licenceDto.getSvcName())){
-                        strings.add(licenceDto.getSvcName());
-                    }
-                } );
+        } else {
+            if (StringUtil.isNotEmpty(licenseeId)) {
+                log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
+                List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+                if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
+                    licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
+                }
             }
-            return IaisEGPHelper.getRoleSelection(strings);
-          }
         }
-        return IaisEGPHelper.getRoleSelection(null);
+        List<String> roles = IaisEGPHelper.getFeRoles(data);
+        Map<String, String> roleMap = getFeRoleMap();
+        return roles.stream()
+                .map(role -> new SelectOption(role, roleMap.get(role)))
+                .filter(opt -> Objects.nonNull(opt.getText()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Role> getFeRoles() {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        map.put("userDomain", AppConsts.HALP_EGP_DOMAIN);
+        return roleServiceClient.search(map).getEntity();
+    }
+
+    @Override
+    public Map<String, String> getFeRoleMap() {
+        List<Role> roleList = getFeRoles();
+        if (roleList == null || roleList.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return roleList.stream().collect(Collectors.toMap(Role::getId, Role::getName, (a, b) -> b));
     }
 }

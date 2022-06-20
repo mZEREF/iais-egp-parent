@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.rbac.role.Role;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,14 @@ public class EicGatewayClient {
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/licensee-user-sync", HttpMethod.POST, feUserDto,
 				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 				signature2.date(), signature2.authorization(), Void.class);
+	}
+
+	public FeignResponseEntity<List> getFeRoles() {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/fe-roles", HttpMethod.GET, null,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), Role.class);
 	}
 
 }
