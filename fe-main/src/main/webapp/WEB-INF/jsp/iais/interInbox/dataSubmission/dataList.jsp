@@ -158,6 +158,7 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                         <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
