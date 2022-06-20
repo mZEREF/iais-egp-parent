@@ -330,7 +330,7 @@ public class MohDsActionDelegator {
             uri = DEFAULT_URI;
         } else {
             if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuper.getSubmissionType())) {
-                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PreparePatientInfo";
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PreparePatientInfo?crud_type=" +DataSubmissionConstant.CRUD_TYPE_RFC;
             } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuper.getSubmissionType())) {
                 ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
                     if(professionalResponseDto==null){

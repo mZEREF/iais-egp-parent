@@ -213,8 +213,12 @@ public class DpDataSubmissionDelegator {
         log.info("----- PreparePatientInfo -----");
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto= DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
         dpSuperDataSubmissionDto = dpSuperDataSubmissionDto == null ? new DpSuperDataSubmissionDto() : dpSuperDataSubmissionDto;
-
+        String crud_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (StringUtil.isEmpty(crud_type)){
+            crud_type="";
+        }
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
+            if (crud_type.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
                 String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                         .map(LoginContext::getOrgId).orElse("");
@@ -222,6 +226,7 @@ public class DpDataSubmissionDelegator {
                         orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
+            }
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
     }
