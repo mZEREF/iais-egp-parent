@@ -773,6 +773,11 @@
     }
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
+        $('#ELIS_SERVICE').modal('hide');
+        $('#PRS_SERVICE').modal('hide');
+        $('#NO_PRS_ELIS_SERVICE').modal('hide');
+        $('#PRS_CLOSE').modal('hide');
+        $('#PRS_PRN').modal('hide');
     }
     var clearPrsInfo = function () {
         $('#names').find('p').text('');
