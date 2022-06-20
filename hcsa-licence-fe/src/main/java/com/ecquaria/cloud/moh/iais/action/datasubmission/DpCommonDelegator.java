@@ -8,12 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -24,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
@@ -72,6 +70,9 @@ public abstract class DpCommonDelegator {
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
     /**
      * StartStep: Start
      *
@@ -292,6 +293,14 @@ public abstract class DpCommonDelegator {
         dpSuperDataSubmissionDto.setFe(true);
         dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto);
         try {
+            if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType())){
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                    drugSubmissionDto.setDoctorInformations("true");
+                    dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto().setDrugSubmission(drugSubmissionDto);
+                }
+            }
             dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
