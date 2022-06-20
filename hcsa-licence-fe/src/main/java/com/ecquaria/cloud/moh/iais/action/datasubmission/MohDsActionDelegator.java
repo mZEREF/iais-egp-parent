@@ -4,7 +4,26 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -13,21 +32,28 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.privilege.Privilege;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDsAction
@@ -280,16 +306,17 @@ public class MohDsActionDelegator {
         log.info(StringUtil.changeForLog("------ PrepareRfc -----" ));
         String dsType = ParamUtil.getString(bpc.request, "dsType");
         String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
+        List<String> privilegeIds = AccessUtil.getLoginUser(bpc.request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
         String uri = "";
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(submissionNo)) {
             uri = DEFAULT_URI;
-        } else if (DataSubmissionConsts.DS_AR.equals(dsType)) {
+        } else if (DataSubmissionConsts.DS_AR.equals(dsType) && privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC)) {
             uri = prepareArRfc(submissionNo, bpc.request);
-        } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
+        } else if (DataSubmissionConsts.DS_DRP.equals(dsType)&& privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC)) {
             uri = prepareDpRfc(submissionNo, bpc.request);
-        } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
+        } else if (DataSubmissionConsts.DS_LDT.equals(dsType)&& privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_DS_LDT_RFC)) {
             uri = prepareLdtRfc(submissionNo, bpc.request);
-        }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
+        }else if (DataSubmissionConsts.DS_TOP.equals(dsType)&& privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_DS_TOP_RFC)) {
             uri = prepareTopRfc(submissionNo, bpc.request);
         }
         log.info(StringUtil.changeForLog("------URI: " + uri));

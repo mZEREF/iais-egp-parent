@@ -186,7 +186,7 @@ public class DataSubmissionInboxDelegator {
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP+",");
 					break;
 //				case PrivilegeConsts.USER_PRIVILEGE_DS_VSS_RFC:
-//					rfcType.append(DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP+",");
+//					rfcType.append(DataSubmissionConsts.DS_CYCLE_VSS+",");
 //					break;
 				case PrivilegeConsts.USER_PRIVILEGE_DS_LDT_RFC:
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_LDT+",");
