@@ -99,6 +99,27 @@ public final class FeInboxHelper {
             return getCaseWhenSql(list,replaceArea,tabCol,renameTabCol,sql,true);
     }
 
+    public static boolean canCreate(List<String> privilegeIds){
+        log.info(StringUtil.changeForLog("The canCreate start ..."));
+        boolean result = false;
+        List<String> createPrivilegeList = IaisCommonUtils.genNewArrayList();
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_AR_CRE);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_DP_CRE);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_TOP_CRE);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_LDT_CRE);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_VSS_CRE);
+        if(IaisCommonUtils.isNotEmpty(privilegeIds)){
+            List<String> intersection = privilegeIds.stream().filter(createPrivilegeList::contains).collect(Collectors.toList());
+            log.info(StringUtil.changeForLog("The canCreate intersection -->:"+intersection));
+            if(intersection.size() >0){
+                result = true;
+            }
+        }
+        log.info(StringUtil.changeForLog("The canCreate result -->:"+result));
+        log.info(StringUtil.changeForLog("The canCreate end ..."));
+        return result;
+    }
+
     private FeInboxHelper(){
         throw new IllegalStateException("Utility class");
     }

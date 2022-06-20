@@ -195,7 +195,9 @@
                 </table>
                 <br>
                 <div  style="padding-bottom: 3%;width: 140%" class="text-left">
-                      <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
+                        <c:if test="${canCreateDs}">
+                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
+                        </c:if>
                         <c:if test="${dataSubARTPrivilege == 1}">
                             <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online Enquiry</a>
                         </c:if>
@@ -304,7 +306,7 @@
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
-            var rfcType = $("#rfcType".val());
+            var rfcType = $("#rfcType").val();
             /*if(selectAllTypeSub.indexOf('DSCL_012') < 0 ){*/
             if(rfcType.indexOf(selectAllTypeSub)>0){
                 $('#ds-amend').removeClass("disabled");

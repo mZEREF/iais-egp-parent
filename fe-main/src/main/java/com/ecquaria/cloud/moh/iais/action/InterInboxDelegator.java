@@ -29,14 +29,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -54,6 +63,21 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +85,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Author: Hc
@@ -1660,6 +1676,7 @@ public class InterInboxDelegator {
                     .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",false);
         }else{
             AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(), bpc.request.getSession().getId());
             InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
@@ -1674,6 +1691,10 @@ public class InterInboxDelegator {
             log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
             ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
 
+            List<String> privilegeIds = AccessUtil.getLoginUser(bpc.request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+            //for new
+            boolean canCreate =  FeInboxHelper.canCreate(privilegeIds);
+            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",canCreate);
             return interInboxUserDto;
         }
 

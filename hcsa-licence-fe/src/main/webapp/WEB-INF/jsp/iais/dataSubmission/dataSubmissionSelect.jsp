@@ -13,19 +13,19 @@
 
 <%@ include file="assistedReproduction/common/arHeader.jsp" %>
 <c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
-  <c:if test="${privilege.id == 'HALP_MOH_DS_ART'}">
+  <c:if test="${privilege.id == 'HALP_MOH_DS_ART_CRE'}">
     <c:set var="dataSubARTPrivilege" value="1"/>
   </c:if>
-  <c:if test="${privilege.id == 'HALP_MOH_DS_DP'}">
+  <c:if test="${privilege.id == 'HALP_MOH_DS_DP_CRE'}">
     <c:set var="dataSubDPPrivilege" value="1"/>
   </c:if>
-  <c:if test="${privilege.id == 'HALP_MOH_DS_TOP'}">
+  <c:if test="${privilege.id == 'HALP_MOH_DS_TOP_CRE'}">
     <c:set var="dataSubTOPPrivilege" value="1"/>
   </c:if>
-  <c:if test="${privilege.id == 'HALP_MOH_DS_LDT'}">
+  <c:if test="${privilege.id == 'HALP_MOH_DS_LDT_CRE'}">
     <c:set var="dataSubLDTPrivilege" value="1"/>
   </c:if>
-  <c:if test="${privilege.id == 'HALP_MOH_DS_VSS'}">
+  <c:if test="${privilege.id == 'HALP_MOH_DS_VSS_CRE'}">
     <c:set var="dataSubVSSPrivilege" value="1"/>
   </c:if>
 </c:forEach>

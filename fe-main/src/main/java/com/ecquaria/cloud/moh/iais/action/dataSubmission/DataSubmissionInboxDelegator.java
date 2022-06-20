@@ -155,9 +155,14 @@ public class DataSubmissionInboxDelegator {
 				//control the Amend by the privilege
 				List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
 				log.info(StringUtil.changeForLog("The privilegeIds is -->:"+privilegeIds.toString()));
+				//for RFC
 				String rfcType =getRfcType(privilegeIds);
 				log.info(StringUtil.changeForLog("The rfcType is -->:"+rfcType));
                 ParamUtil.setRequestAttr(request,"rfcType",rfcType);
+                /*//for new
+				boolean canCreate =  FeInboxHelper.canCreate(privilegeIds);
+				ParamUtil.setRequestAttr(request,"canCreate",canCreate);*/
+
 			}else {
 				ParamUtil.clearSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 			}
@@ -168,6 +173,8 @@ public class DataSubmissionInboxDelegator {
 		}
 		setLog("prepare",false);
 	}
+
+
 
 
 	private String getRfcType(List<String> privilegeIds){
