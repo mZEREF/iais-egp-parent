@@ -109,11 +109,20 @@ $(function () {
     });
 
     $("#doArchive").click(function (){
+        var checkedChkLength = $("input[name=chkChild]:checked").length;
+        if(checkedChkLength >= 1){
+            $("#doArchiveModal").modal('show');
+        }else{
+            $("#archiveModal").modal('show');
+        }
+    });
+
+    $("#confirmArchive").click(function (){
         showWaiting();
         $("[name='action_type']").val("doArchive");
         $("[name='action_value']").val("inbox");
         $("#mainForm").submit();
-    });
+    })
 
     $("#moveArchive").click(function (){
         showWaiting();
@@ -135,4 +144,8 @@ $(function () {
         $("[name='action_value']").val("inbox");
         $("#mainForm").submit();
     });
+
+    if($("input[name='afterDoArchive']").val() === 'true'){
+        $("#isArchivedModal").modal('show');
+    }
 });

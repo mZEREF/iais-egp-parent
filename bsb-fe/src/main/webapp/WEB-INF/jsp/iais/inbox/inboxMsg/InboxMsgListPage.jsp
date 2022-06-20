@@ -18,7 +18,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
-
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <%@include file="../dashboard/dashboard.jsp"%>
 
 
@@ -38,6 +38,7 @@
                                 <input type="hidden" name="action_type" value="">
                                 <input type="hidden" name="action_value" value="">
                                 <input type="hidden" name="action_additional" value="">
+                                <input type="hidden" name="afterDoArchive" value="${AFTER_ARCHIVE}">
 
 
                                 <%--@elvariable id="inboxMsgSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto"--%>
@@ -112,10 +113,10 @@
                                                 </th>
                                                 <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="msgType" value="Message Type" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="refNo" value="Ref. No." isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="submissionType" value="Application Type" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="createdAt" value="Date" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" style="width:15%" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="refNo" value="Reference Number" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="submissionType" value="Submission Type" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="createdAt" value="Date of Notification" isFE="true"/>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -180,57 +181,9 @@
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <tr><span data-err-ind="archiveInfo" class="error-msg"></span></tr>
                                             </tbody>
                                         </table>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">Please select at least one record</span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Modal End-->
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">The message(s) is/are archived</span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Modal End-->
-                                        <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to archive ?</span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary btn-md" id="confirmArchive">Confirm</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Modal End-->
+                                        <div class="row"><span data-err-ind="archiveInfo" class="error-msg"></span></div>
                                         <div class="row" style="margin-top: 1.5%">
                                             <div class="col-md-12">
                                                 <c:if test="${msgPage == 'inbox'}">
@@ -250,6 +203,54 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12"><span style="font-size: 2rem">Please select at least one record</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Modal End-->
+                            <!-- Modal -->
+                            <div class="modal fade " id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12"><span style="font-size: 2rem">The message(s) is/are archived</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Modal End-->
+                            <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to archive ?</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="confirmArchive">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Modal End-->
                         </form>
 
                     </div>

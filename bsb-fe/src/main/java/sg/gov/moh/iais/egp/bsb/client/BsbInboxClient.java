@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
-import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppPageInfoResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAfcResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalFacAdminResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalSearchDto;
@@ -27,6 +27,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public interface BsbInboxClient {
     ResponseDto<InboxMsgSearchResultDto> getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
 
     @GetMapping(value = "/fe-inbox/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<InboxAppSearchResultDto> getInboxApplication(@SpringQueryMap InboxAppSearchDto dto);
+    ResponseDto<InboxAppPageInfoResultDto> getInboxApplication(@SpringQueryMap InboxAppSearchDto dto);
 
     @GetMapping(value = "/fe-inbox/approval/facAdmin", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxApprovalFacAdminResultDto> getInboxApprovalForFacAdmin(@SpringQueryMap InboxApprovalSearchDto dto);
@@ -75,4 +76,6 @@ public interface BsbInboxClient {
     @GetMapping(value = "/fe-inbox/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxFacPageInfoResultInfo> searchInboxFacility(@SpringQueryMap InboxFacSearchDto dto);
 
+    @PostMapping(value = "/fe-inbox/validate/archive",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateInboxMsgArchive(@RequestBody List<String> msgIds);
 }

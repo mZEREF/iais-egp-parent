@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.common.tags;
 
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AFCUploadReportJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AppActionJudge;
@@ -20,21 +21,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AppActionTag extends SimpleTagSupport {
-    private AppMainInfo info;
+    private InboxAppResultDto info;
     private String attributeKey;
 
     @Override
     public void doTag() throws JspException, IOException {
         List<AppActionJudge> judgeList = Arrays.asList(
-                new AppEditableJudge(info.getStatus(), info.getAssigned()),
-                new DraftAppJudge(info.getStatus()),
-                new InsReportJudge(info.getStatus()),
-                new AppWithdrawableJudge(info.getAppType(), info.getStatus()),
-                new InsAppointmentJudge(info.getAppType(), info.getStatus()),
-                new AFCUploadReportJudge(info.getAppType(), info.getStatus()),
-                new ApplicantUploadCertReportJudge(info.getAppType(), info.getStatus()),
-                new RfiJudge(info.getStatus()),
-                new InspectionFollowUpJudge(info.getAppType(), info.getStatus()));
+                new AppEditableJudge(info.getAppStatus(), info.getAssigned()),
+                new DraftAppJudge(info.getAppStatus()),
+                new InsReportJudge(info.getAppStatus()),
+                new AppWithdrawableJudge(info.getAppType(), info.getAppStatus()),
+                new InsAppointmentJudge(info.getAppType(), info.getAppStatus()),
+                new AFCUploadReportJudge(info.getAppType(), info.getAppStatus()),
+                new ApplicantUploadCertReportJudge(info.getAppType(), info.getAppStatus()),
+                new RfiJudge(info.getAppStatus()),
+                new InspectionFollowUpJudge(info.getAppType(), info.getAppStatus()));
         boolean actionAvailable = false;
         JspContext context = getJspContext();
         for (AppActionJudge judge : judgeList) {
@@ -48,7 +49,7 @@ public class AppActionTag extends SimpleTagSupport {
         context.setAttribute(this.attributeKey, actionAvailable);
     }
 
-    public void setInfo(AppMainInfo info) {
+    public void setInfo(InboxAppResultDto info) {
         this.info = info;
     }
 

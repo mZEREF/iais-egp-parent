@@ -4,10 +4,11 @@ import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import java.util.List;
+import java.util.Map;
 
 
 @Data
-public class InboxAppSearchResultDto {
+public class InboxAppPageInfoResultDto {
     private PageInfo pageInfo;
-    private List<AppMainInfo> applications;
+    private List<InboxAppResultDto> applications;
 }

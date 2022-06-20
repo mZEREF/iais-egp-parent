@@ -13,8 +13,7 @@ import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
-import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppPageInfoResultDto;
 import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -72,7 +71,7 @@ public class BsbInboxAppDelegator {
         // call API to get dashboard data
         inboxService.retrieveDashboardData(request);
         // call API to get searched data
-        ResponseDto<InboxAppSearchResultDto> resultDto = inboxClient.getInboxApplication(searchDto);
+        ResponseDto<InboxAppPageInfoResultDto> resultDto = inboxClient.getInboxApplication(searchDto);
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApplications());
@@ -89,6 +88,8 @@ public class BsbInboxAppDelegator {
         ParamUtil.setRequestAttr(request, "processTypeOps", processTypeOps);
         List<SelectOption> appStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
         ParamUtil.setRequestAttr(request, "appStatusOps", appStatusOps);
+        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
+        ParamUtil.setRequestAttr(request,"appTypeOps",appTypeOps);
     }
 
     public void search(BaseProcessClass bpc) {
@@ -152,7 +153,9 @@ public class BsbInboxAppDelegator {
     private static InboxAppSearchDto bindModel(HttpServletRequest request, InboxAppSearchDto dto) {
         dto.setSearchAppNo(request.getParameter("searchAppNo"));
         dto.setSearchProcessType(request.getParameter("searchProcessType"));
+        dto.setSearchFacilityName(request.getParameter("searchFacilityName"));
         dto.setSearchStatus(request.getParameter("searchStatus"));
+        dto.setSearchAppType(request.getParameter("searchAppType"));
         dto.setSearchSubmissionDateFrom(request.getParameter("searchSubmissionDateFrom"));
         dto.setSearchSubmissionDateTo(request.getParameter("searchSubmissionDateTo"));
         return dto;
