@@ -49,8 +49,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="3" value="Doctor's Professional Registration No." mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" >
+                    <iais:field width="5" value="Doctor's Professional Registration No." mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-5" >
                         <iais:input maxLength="20" type="text" id="doctorRegnNo" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" onchange="clearDockerSelection();"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>
                         <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
