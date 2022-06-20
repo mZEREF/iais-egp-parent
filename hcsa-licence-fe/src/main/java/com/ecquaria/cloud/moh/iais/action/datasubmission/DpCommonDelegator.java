@@ -313,14 +313,9 @@ public abstract class DpCommonDelegator {
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-        String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dpSuperDataSubmissionDto.getHciCode(), licenseeId).getEntity();
-        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
-            LicenceDto licenceDto = licenceDtoList.get(0);
-            licenceId = licenceDto.getId();
-        }
+
         try {
-            sendMsgAndEmail(serverName,licenceId, licenseeDtoName, submissionNo);
+            sendMsgAndEmail(serverName,licenseeId, licenseeDtoName, submissionNo);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -481,7 +476,7 @@ public abstract class DpCommonDelegator {
         }
     }
 
-    private void sendMsgAndEmail(String serverName,String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendMsgAndEmail(String serverName,String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
@@ -500,7 +495,7 @@ public abstract class DpCommonDelegator {
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
         msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
-        msgParam.setRefId(licenceId);
+        msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
         notificationHelper.sendNotification(msgParam);
