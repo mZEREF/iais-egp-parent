@@ -133,7 +133,15 @@
             </ul>
         </div>
     </div>
-    <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2">
+<style>
+    @media (max-width: 1200px){
+        .col-max-2 {
+            flex: 0 0 83.33333%;
+            max-width: 83.33333%;
+        }
+    }
+</style>
+    <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2 col-max-2">
         <div class="dropdown profile-dropdown"><a class="profile-btn btn" id="profileBtn" data-toggle="dropdown"
                                                   aria-haspopup="true" aria-expanded="false" href="javascript:;" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${iais_Login_User_Info_Attr.userName}</a>
             <ol class="dropdown-menu" aria-labelledby="profileBtn">
