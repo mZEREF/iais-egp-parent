@@ -50,7 +50,7 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="3" value="Doctor's Professional Registration No." mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
+                    <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="20" type="text" id="doctorRegnNo" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" onchange="clearDockerSelection();"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>
                         <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
@@ -188,7 +188,7 @@
                     <iais:row>
                         <iais:field width="5" value="Diagnosis" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                            <textarea rows="" maxlength="1000" cols="28" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                             <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
