@@ -9,7 +9,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="title" value="Data Submission" />
+<c:set var="title" value="New Data Submission" />
 
 <%@ include file="assistedReproduction/common/arHeader.jsp" %>
 <c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
