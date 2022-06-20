@@ -211,8 +211,6 @@ public class InspectionPreDelegator {
             // for edit application - need session - applicationViewDto
             checkForEditingApplication(bpc.request);
         }
-        /*ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
-                && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));*/
     }
 
     private void checkForEditingApplication(HttpServletRequest request) {
