@@ -607,7 +607,6 @@ public class DpSiUploadDelegate {
             EmailParam msgParam = new EmailParam();
             msgParam.setQueryCode(subNo);
             msgParam.setReqRefNum(subNo);
-            msgParam.setRefId(subNo);
             msgParam.setTemplateContent(emailMap);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_MSG);
 
@@ -615,7 +614,7 @@ public class DpSiUploadDelegate {
             svcCode.add(DataSubmissionConsts.DS_DRP);
             msgParam.setSvcCodeList(svcCode);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            msgParam.setRefId(subNo);
+            msgParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
             notificationHelper.sendNotification(msgParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
