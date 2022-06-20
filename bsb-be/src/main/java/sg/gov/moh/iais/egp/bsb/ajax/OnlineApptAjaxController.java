@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,13 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
 
@@ -99,54 +104,6 @@ public class OnlineApptAjaxController {
             }
         }
         return map;
-    }
-
-    private void setInspDateDraftData(BsbApptInspectionDateDto bsbApptInspectionDateDto, InspectionInfoDto inspectionInfoDto) {
-        List<TaskDto> taskDtos = bsbApptInspectionDateDto.getTaskDtos();
-        if (!IaisCommonUtils.isEmpty(taskDtos)) {
-            log.info(StringUtil.changeForLog("Inspection Scheduling taskDtos Size ====" + taskDtos.size()));
-            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(4);
-            for (TaskDto taskDto : taskDtos) {
-                if (taskDto != null) {
-                    String apptRefNo = inspectionInfoDto.getApptRefNo();
-                    List<ApptUserCalendarDto> apptUserCalendarDtos = inspectionDateMap.computeIfPresent(apptRefNo, (s, apptUserCalendarDtos1) -> new ArrayList<>(1));
-                    if (CollectionUtils.isEmpty(apptUserCalendarDtos)) {
-                        apptUserCalendarDtos = new ArrayList<>();
-                    }
-                    ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
-                    List<Date> startSlot = new ArrayList<>(1);
-                    List<Date> endSlot = new ArrayList<>(1);
-                    Date inspStartDate = inspectionInfoDto.getInsStartDate();
-                    startSlot.add(inspStartDate);
-                    Date inspEndDate = inspectionInfoDto.getInsEndDate();
-                    endSlot.add(inspEndDate);
-                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
-                    //set
-                    apptUserCalendarDto.setAppNo(taskDto.getApplication().getApplicationNo());
-                    apptUserCalendarDto.setApptRefNo(apptRefNo);
-                    apptUserCalendarDto.setStartSlot(startSlot);
-                    apptUserCalendarDto.setEndSlot(endSlot);
-                    apptUserCalendarDto.setLoginUserId(orgUserDto.getUserId());
-                    apptUserCalendarDtos.add(apptUserCalendarDto);
-                    inspectionDateMap.put(apptRefNo, apptUserCalendarDtos);
-                }
-            }
-            //set insp date string show
-            setInspDateDraftStrShow(inspectionInfoDto, bsbApptInspectionDateDto);
-            bsbApptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
-        }
-    }
-
-    private void setInspDateDraftStrShow(InspectionInfoDto inspectionInfoDto, BsbApptInspectionDateDto bsbApptInspectionDateDto) {
-        Date inspStartDate = inspectionInfoDto.getInsStartDate();
-        Date inspEndDate = inspectionInfoDto.getInsEndDate();
-        //date to str
-        String inspStartDateStr = apptDateToStringShow(inspStartDate);
-        String inspEndDateStr = apptDateToStringShow(inspEndDate);
-        String inspectionDate = inspStartDateStr + " - " + inspEndDateStr;
-        List<String> inspectionDates = new ArrayList<>(1);
-        inspectionDates.add(inspectionDate);
-        bsbApptInspectionDateDto.setInspectionDate(inspectionDates);
     }
 
     private void getNewInspDateData(BsbApptInspectionDateDto bsbApptInspectionDateDto, BsbAppointmentDto bsbAppointmentDto, Map<String, Object> map,
