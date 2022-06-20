@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
@@ -14,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -21,11 +24,11 @@ import com.ecquaria.cloud.moh.iais.dto.SovenorInventoryExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +73,10 @@ public class DpSiUploadDelegate {
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired
-    private PatientService patientService;
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
@@ -533,6 +539,7 @@ public class DpSiUploadDelegate {
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
+        sendSovenorFileMsg(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperListBe);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
                 DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
@@ -581,6 +588,39 @@ public class DpSiUploadDelegate {
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
         }
+    }
+
+    public void sendSovenorFileMsg(HttpServletRequest request)  {
+
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+
+        String subNo=System.currentTimeMillis()+"";
+        emailMap.put("SubmitterName", DataSubmissionHelper.getLoginContext(request).getUserName());
+
+        emailMap.put("DDMMYYYYtime", Formatter.formatDateTime(new Date()));
+
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+
+        //msg
+        try {
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(subNo);
+            msgParam.setReqRefNum(subNo);
+            msgParam.setRefId(subNo);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_MSG);
+
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(DataSubmissionConsts.DS_DRP);
+            msgParam.setSvcCodeList(svcCode);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(subNo);
+            notificationHelper.sendNotification(msgParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+
     }
 
 }
