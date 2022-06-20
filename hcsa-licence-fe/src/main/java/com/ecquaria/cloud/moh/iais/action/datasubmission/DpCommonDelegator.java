@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +89,10 @@ public abstract class DpCommonDelegator {
      * @param bpc
      * @throws
      */
-    public void start(BaseProcessClass bpc) {}
+    public void start(BaseProcessClass bpc) {
+        HttpSession session = bpc.request.getSession();
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
+    }
 
     /**
      * StartStep: PrepareSwitch

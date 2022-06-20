@@ -56,6 +56,7 @@ public final class DataSubmissionHelper {
     public static void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
