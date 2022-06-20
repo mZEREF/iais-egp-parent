@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
-import com.ecquaria.cloud.role.Role;
+import com.ecquaria.cloud.rbac.role.Role;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -96,4 +96,8 @@ public interface IntranetUserService {
     List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId);
 
     List<SelectOption> getRoleSelection(String licenseeId);
+
+    List<Role> getFeRoles();
+
+    Map<String, String> getFeRoleMap();
 }

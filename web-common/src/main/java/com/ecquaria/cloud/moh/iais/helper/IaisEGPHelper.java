@@ -74,7 +74,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -152,11 +151,6 @@ public final class IaisEGPHelper extends EGPHelper {
     };
 
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
-
-
-    private static  Map<String,List<String>> SVC_ROLE_MAP = getSvcRoleMap();
-    public static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
-    public static  Map<String,String> CENTER_TYPE_ROLE_MAP = getCenterTypeRoleMap();
 
     /**
      * @author: Shicheng on 2021/07/16 15:03
@@ -958,89 +952,48 @@ public final class IaisEGPHelper extends EGPHelper {
         return timeStr.substring(timeStr.length() - 10);
     }
 
-
-    private  static  Map<String,List<String>> getSvcRoleMap(){
-        Map<String,List<String>> stringStringMap = IaisCommonUtils.genNewHashMap(8);
-        List<String> onlyDp = Collections.singletonList(RoleConsts.USER_ROLE_DS_DP);
-        List<String> onlyTop = Collections.singletonList(RoleConsts.USER_ROLE_DS_TOP);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,Collections.singletonList(RoleConsts.USER_ROLE_DS_AR));
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL,onlyDp);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_NURSING_HOME,onlyDp);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_MEDICAL_CLINIC,onlyTop);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL,onlyTop);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,Arrays.asList(RoleConsts.USER_ROLE_DS_DP,RoleConsts.USER_ROLE_DS_TOP));
-        return stringStringMap;
-    }
-    private  static  Map<String,SelectOption> getRoleRoleRoleNameMap(){
-        Map<String,SelectOption> stringStringMap = IaisCommonUtils.genNewHashMap(2);
-        stringStringMap.put(RoleConsts.USER_ROLE_DS_AR,new SelectOption(RoleConsts.USER_ROLE_DS_AR,RoleConsts.SHOW_USER_ROLE_DS_AR));
-        stringStringMap.put(RoleConsts.USER_ROLE_ORG_USER,new SelectOption(RoleConsts.USER_ROLE_ORG_USER,RoleConsts.SHOW_USER_ROLE_ORG_USER));
-        stringStringMap.put(RoleConsts.USER_ROLE_ORG_ADMIN,new SelectOption(RoleConsts.USER_ROLE_ORG_ADMIN,RoleConsts.SHOW_USER_ROLE_ORG_ADMIN));
-        stringStringMap.put(RoleConsts.USER_ROLE_DS_DP,new SelectOption(RoleConsts.USER_ROLE_DS_DP,RoleConsts.SHOW_USER_ROLE_DS_DP));
-        stringStringMap.put(RoleConsts.USER_ROLE_DS_TOP,new SelectOption(RoleConsts.USER_ROLE_DS_TOP,RoleConsts.SHOW_USER_ROLE_DS_TOP));
-        stringStringMap.put(RoleConsts.USER_ROLE_DS_VSS,new SelectOption(RoleConsts.USER_ROLE_DS_VSS,RoleConsts.SHOW_USER_ROLE_DS_VSS));
-        stringStringMap.put(RoleConsts.USER_ROLE_DS_LDT,new SelectOption(RoleConsts.USER_ROLE_DS_LDT,RoleConsts.SHOW_USER_ROLE_DS_LDT));
-        return stringStringMap;
-    }
-    public static List<SelectOption> getRoleSelection(List<String> svcNames) {
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(RoleConsts.USER_ROLE_ORG_USER));
-       if(IaisCommonUtils.isEmpty(svcNames) || IaisCommonUtils.isEmpty(SVC_ROLE_MAP)){
-           return selectOptions;
-       }
-        svcNames.stream().forEach( s-> {
-            List<String> value = SVC_ROLE_MAP.get(s);
-            if(IaisCommonUtils.isNotEmpty(value)){
-                value.forEach( v->{
-                    SelectOption selectOption = ROLE_ROLE_ROLE_NAME_MAP.get(v);
-                    if(!selectOptions.contains(selectOption)){
-                        selectOptions.add(selectOption);
-                    }
-                });
-            }
-        });
-        selectOptions.sort(SelectOption::compareTo);
-        return selectOptions;
+    public static List<String> getFeRoles() {
+        return getFeRoles(null);
     }
 
-    public static List<String> getRoles(){
-        List<String> stringList = IaisCommonUtils.genNewArrayList();
-        stringList.addAll(ROLE_ROLE_ROLE_NAME_MAP.keySet());
-        return stringList;
-    }
-
-    public static List<SelectOption> getRoleSelectionByDsCenter(List<String> centerTypes){
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(RoleConsts.USER_ROLE_ORG_USER));
-        if(IaisCommonUtils.isEmpty(centerTypes) || IaisCommonUtils.isEmpty(CENTER_TYPE_ROLE_MAP)){
-            return selectOptions;
+    public static List<String> getFeRoles(List<String> data) {
+        List<String> roles = IaisCommonUtils.genNewArrayList();
+        roles.add(RoleConsts.USER_ROLE_ORG_USER);
+        if (data != null && data.isEmpty()) {
+            return roles;
         }
-        centerTypes.stream().forEach( s-> {
-            String value = CENTER_TYPE_ROLE_MAP.get(s);
-            if(StringUtil.isNotEmpty(value)){
-                SelectOption selectOption = ROLE_ROLE_ROLE_NAME_MAP.get(value);
-                if(!selectOptions.contains(selectOption)){
-                        selectOptions.add(selectOption);
-                }
-            }
-        });
-        selectOptions.sort(SelectOption::compareTo);
-        return selectOptions;
-    }
-
-
-    private static Map<String,String> getCenterTypeRoleMap(){
-        if(IaisCommonUtils.isNotEmpty(CENTER_TYPE_ROLE_MAP)){
-            return CENTER_TYPE_ROLE_MAP;
-        }else {
-            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(8);
-            stringStringMap.put(DataSubmissionConsts.DS_AR,RoleConsts.USER_ROLE_DS_AR);
-            stringStringMap.put(DataSubmissionConsts.DS_DRP,RoleConsts.USER_ROLE_DS_DP);
-            stringStringMap.put(DataSubmissionConsts.DS_LDT,RoleConsts.USER_ROLE_DS_LDT);
-            stringStringMap.put(DataSubmissionConsts.DS_VSS,RoleConsts.USER_ROLE_DS_VSS);
-            stringStringMap.put(DataSubmissionConsts.DS_TOP,RoleConsts.USER_ROLE_DS_TOP);
-            return Collections.unmodifiableMap(stringStringMap);
+        // services & DS centers
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
+                AppServicesConsts.SERVICE_NAME_AR_CENTER,
+                DataSubmissionConsts.DS_AR}))) {
+            roles.add(RoleConsts.USER_ROLE_DS_AR);
+            roles.add(RoleConsts.USER_ROLE_DS_AR_SUPERVISOR);
         }
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
+                AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL,
+                AppServicesConsts.SERVICE_NAME_NURSING_HOME,
+                AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,
+                DataSubmissionConsts.DS_DRP}))) {
+            roles.add(RoleConsts.USER_ROLE_DS_DP);
+            roles.add(RoleConsts.USER_ROLE_DS_DP_SUPERVISOR);
+        }
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{DataSubmissionConsts.DS_LDT}))) {
+            roles.add(RoleConsts.USER_ROLE_DS_LDT);
+            roles.add(RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR);
+        }
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
+                AppServicesConsts.SERVICE_NAME_MEDICAL_CLINIC,
+                AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL,
+                AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,
+                DataSubmissionConsts.DS_TOP}))) {
+            roles.add(RoleConsts.USER_ROLE_DS_TOP);
+            roles.add(RoleConsts.USER_ROLE_DS_TOP_SUPERVISOR);
+        }
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{DataSubmissionConsts.DS_VSS}))) {
+            roles.add(RoleConsts.USER_ROLE_DS_VSS);
+            roles.add(RoleConsts.USER_ROLE_DS_VSS_SUPERVISOR);
+        }
+        return roles;
     }
 
     public static FeignResponseEntity getFeignResponseEntity(Object... params) {

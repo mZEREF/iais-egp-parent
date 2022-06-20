@@ -158,6 +158,7 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                         <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
@@ -194,7 +195,9 @@
                 </table>
                 <br>
                 <div  style="padding-bottom: 3%;width: 140%" class="text-left">
-                      <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
+                        <c:if test="${canCreateDs}">
+                            <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Create</a>
+                        </c:if>
                         <c:if test="${dataSubARTPrivilege == 1}">
                             <a class="btn btn-primary" href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online Enquiry</a>
                         </c:if>
@@ -203,11 +206,13 @@
                         </c:if>
                         <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
                         <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
-                        <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>
+                       <%-- <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>--%>
                         <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+
                         <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                        <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+
+                        <%--<a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>--%>
                        <c:if test="${dataSubARTPrivilege == 1}">
                         <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                        </c:if>
@@ -220,6 +225,7 @@
         <input type="hidden" value="${empty selectAllTypeSub ? '' : selectAllTypeSub}" id="selectAllTypeSub" name="selectAllTypeSub">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
+        <input type="hidden" value="${rfcType}" id="rfcType" name="rfcType">
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
@@ -300,24 +306,26 @@
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
-            if(selectAllTypeSub.indexOf('DSCL_012') < 0){
+            var rfcType = $("#rfcType").val();
+            /*if(selectAllTypeSub.indexOf('DSCL_012') < 0 ){*/
+            if(rfcType.indexOf(selectAllTypeSub)>0){
                 $('#ds-amend').removeClass("disabled");
             }else {
                 $('#ds-amend').addClass("disabled");
             }
-            $('#ds-withdraw').removeClass("disabled");
+            //$('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
         }else if (size <= 0) {
             $('#ds-deleteDraft').addClass("disabled");
             $('#ds-amend').addClass("disabled");
-            $('#ds-withdraw').addClass("disabled");
+            //$('#ds-withdraw').addClass("disabled");
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
             if(selectAllTypeSub.indexOf(',') > 0){
-                $('#ds-withdraw').addClass("disabled");
+               // $('#ds-withdraw').addClass("disabled");
             }else {
-                $('#ds-withdraw').removeClass("disabled");
+               // $('#ds-withdraw').removeClass("disabled");
             }
         }
     }

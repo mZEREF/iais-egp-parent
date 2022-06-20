@@ -34,11 +34,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>${dpSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
-                    <td>${submittedBy}</td>
-                    <td><fmt:formatDate value="${dpSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
-                </tr>
+                <c:if test="${not empty dpSuperList}" var="hasDpSuperList">
+                    <c:forEach var="dpSuper" items="${dpSuperList}">
+                        <tr>
+                            <td>${dpSuper.dataSubmissionDto.submissionNo}</td>
+                            <td>${submittedBy}</td>
+                            <td><fmt:formatDate value="${dpSuper.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${!hasDpSuperList}">
+                    <tr>
+                        <td>${dpSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
+                        <td>${submittedBy}</td>
+                        <td><fmt:formatDate value="${dpSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                    </tr>
+                </c:if>
                 </tbody>
             </table>
         </div>

@@ -40,7 +40,7 @@
                     <iais:row>
                         <iais:field width="5" value="Date of Birth" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="birthData" id="birthData" value="${patientInformationDto.birthData}"/>
+                            <iais:datePicker name="birthData" id="birthDate" value="${patientInformationDto.birthData}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -329,7 +329,7 @@
         clearSelection();
         $('#patientName').val(data.selection.patientName);
 
-        $('#birthData').val(data.selection.birthData);
+        $('#birthDate').val(data.selection.birthData);
 
         fillValue($('#nationality'),data.selection.nationality);
         if(!isEmpty(data.selection.commResidenceInSgDate)){

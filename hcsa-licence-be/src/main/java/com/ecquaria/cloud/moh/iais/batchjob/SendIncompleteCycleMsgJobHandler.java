@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import ecq.commons.helper.DateHelper;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +78,9 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                                 sendFirstNotification(LicenseeId, submissionerName, patientName, submissionNo, dateStr);
                                 addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
                             } else {
-                                Date date = new Date(new Date().getTime() - 1000 * 60 * 60 * 24L * preDays);
-                                if (jobRemindMsgTrackingDto.getCreateTime().before(date)) {
+                                long current = DateHelper.getDays(new Date());
+                                long remind = DateHelper.getDays(jobRemindMsgTrackingDto.getCreateTime());
+                                if ((current - remind) >= 3) {
                                     // send pre
                                     sendPertNotification(LicenseeId, submissionerName, patientName, submissionNo);
                                     addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);

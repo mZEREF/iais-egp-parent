@@ -27,10 +27,11 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.role.Role;
+import com.ecquaria.cloud.rbac.role.Role;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -45,7 +46,9 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -63,6 +66,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     private OrganizationClient organizationClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+
+    @Autowired
+    private EicGatewayClient eicGatewayClient;
+
     private static final Set<String> notWorkGrp = ImmutableSet.of(
             "BROADCAST",
             "REGULATORY_ANALYTICS",
@@ -623,36 +630,46 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId) {
-      if(fromDsCenter){
-          List<String> strings = IaisCommonUtils.genNewArrayList();
-          List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
-          if(IaisCommonUtils.isNotEmpty(dsCenterDtos)){
-              dsCenterDtos.stream().forEach(dsCenterDto -> {
-                  if(!strings.contains(dsCenterDto.getCenterType())){
-                      strings.add(dsCenterDto.getCenterType());
-                  }
-              });
-          }
-          return IaisEGPHelper.getRoleSelectionByDsCenter(strings);
-      }else {
-          return getRoleSelection(licenseeId);
-      }
+        List<String> data = IaisCommonUtils.genNewArrayList();
+        if (fromDsCenter) {
+            log.info(StringUtil.changeForLog("The Org Id: " + orgId));
+            if (StringUtil.isNotEmpty(orgId)) {
+                List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+                if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
+                    dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
+                }
+            }
+        } else if (StringUtil.isNotEmpty(licenseeId)) {
+            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
+            List<LicenceDto> licenceDtos = hcsaLicenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
+                licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
+            }
+        }
+        List<String> roles = IaisEGPHelper.getFeRoles(data);
+        Map<String, String> roleMap = getFeRoleMap();
+        return roles.stream()
+                .map(role -> new SelectOption(role, roleMap.get(role)))
+                .filter(opt -> Objects.nonNull(opt.getText()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<SelectOption> getRoleSelection(String licenseeId) {
-        if(StringUtil.isEmpty(licenseeId)){
-            return IaisEGPHelper.getRoleSelection(IaisCommonUtils.genNewArrayList());
+        return getRoleSelection(false, licenseeId, null);
+    }
+
+    @Override
+    public List<Role> getFeRoles() {
+        return eicGatewayClient.getFeRoles().getEntity();
+    }
+
+    @Override
+    public Map<String, String> getFeRoleMap() {
+        List<Role> roleList = getFeRoles();
+        if (roleList == null || roleList.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
         }
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
-        List<String> strings = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isNotEmpty(licenceDtos)){
-            licenceDtos.stream().forEach(licenceDto ->{
-                if(!strings.contains(licenceDto.getSvcName())){
-                    strings.add(licenceDto.getSvcName());
-                }
-            } );
-        }
-        return IaisEGPHelper.getRoleSelection(strings);
+        return roleList.stream().collect(Collectors.toMap(Role::getId, Role::getName, (a, b) -> b));
     }
 }

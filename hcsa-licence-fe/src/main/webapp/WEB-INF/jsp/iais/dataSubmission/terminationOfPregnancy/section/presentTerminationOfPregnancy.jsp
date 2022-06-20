@@ -305,25 +305,25 @@
     </iais:row>
         <div id="doctorInformation" <c:if test="${terminationDto.topDoctorInformations eq 'true'}">style="display: none"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Name of Doctor" mandatory="true"/>
+                <iais:field width="5" value="Name of Doctor"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                     ${terminationDto.doctorName}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Specialty" mandatory="true"/>
+                <iais:field width="5" value="Specialty"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
                     ${terminationDto.specialty}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                <iais:field width="5" value="Sub-Specialty"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
                     ${terminationDto.subSpecialty}
                 </iais:value>
             </iais:row>
             <iais:row >
-                <iais:field width="5" value="Qualification" mandatory="true"/>
+                <iais:field width="5" value="Qualification"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
                     ${terminationDto.qualification}
                 </iais:value>
@@ -448,6 +448,24 @@
                     <div class="col-md-12">
                         <span style="font-size: 2rem;" id="prsCloseMsg">
                             <iais:message key="GENERAL_ERR0066" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_PRN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsPrn">
+                            <iais:message key="GENERAL_ERR0054" escape="false" />
                         </span>
                     </div>
                 </div>
@@ -719,7 +737,7 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data.selection)) {
+                if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     $('#topDoctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
@@ -732,8 +750,16 @@
                         $('#ELIS_SERVICE').modal('show');
                     }else if(isEmpty(data.selections)){
                         $('#PRS_SERVICE').modal('show');
-                    }else if (data.hasException) {
+                    }else if (data.selection.hasException) {
+                        $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
+                    }else if ('401' == data.selection.statusCode) {
+                        $('#topDoctorInformations').val(true);
+                        $('#PRS_PRN').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
                     }
                 }
                 dismissWaiting();
@@ -747,6 +773,11 @@
     }
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
+        $('#ELIS_SERVICE').modal('hide');
+        $('#PRS_SERVICE').modal('hide');
+        $('#NO_PRS_ELIS_SERVICE').modal('hide');
+        $('#PRS_CLOSE').modal('hide');
+        $('#PRS_PRN').modal('hide');
     }
     var clearPrsInfo = function () {
         $('#names').find('p').text('');

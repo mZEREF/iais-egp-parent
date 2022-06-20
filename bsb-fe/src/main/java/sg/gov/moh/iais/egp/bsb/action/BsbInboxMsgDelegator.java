@@ -22,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgContentDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.MsgMaskParam;
 import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
@@ -55,6 +56,7 @@ public class BsbInboxMsgDelegator {
     private static final String KEY_MESSAGE_PAGE = "msgPage";
     public static final String KEY_INBOX = "inbox";
     public static final String KEY_ARCHIVE = "archive";
+    private static final String KEY_AFTER_ARCHIVE = "AFTER_ARCHIVE";
 
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
@@ -101,14 +103,6 @@ public class BsbInboxMsgDelegator {
             log.warn("get inbox message API doesn't return ok, the response is {}", resultDto);
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
-        }
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
-        if (Boolean.TRUE.equals(needShowError)) {
-            Map<String,String> errorMap = Maps.newHashMapWithExpectedSize(1);
-            errorMap.put("archiveInfo","Please select a message");
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValueAsString(errorMap);
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, mapper);
         }
         // get select options
         ParamUtil.setRequestAttr(request, "msgTypeOps", MasterCodeHolder.MSG_TYPE.allOptions());
@@ -213,22 +207,27 @@ public class BsbInboxMsgDelegator {
         }
     }
 
-    public void doArchive(BaseProcessClass bpc){
+    public void doArchive(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String[] maskedMsgIds = ParamUtil.getStrings(request,"chkChild");
+        String[] maskedMsgIds = ParamUtil.getStrings(request, "chkChild");
         //validate
-        if(maskedMsgIds != null && maskedMsgIds.length > 0){
+        if (maskedMsgIds != null && maskedMsgIds.length > 0) {
             //update archive
-            List<String> msgIds = CollectionUtils.listMapping(new ArrayList<>(Arrays.asList(maskedMsgIds)),i->MaskUtil.unMaskValue(KEY_ACTION_VALUE,i));
-            if(KEY_ARCHIVE.equals(actionValue)){
-                inboxClient.updateInboxMsgStatusRead(msgIds);
-            }else if(KEY_INBOX.equals(actionValue)){
-                inboxClient.updateInboxMsgStatusArchive(msgIds);
+            List<String> msgIds = CollectionUtils.listMapping(new ArrayList<>(Arrays.asList(maskedMsgIds)), i -> MaskUtil.unMaskValue(KEY_ACTION_VALUE, i));
+            ValidationResultDto validationResultDto = inboxClient.validateInboxMsgArchive(msgIds);
+            if (validationResultDto.isPass()) {
+                if (KEY_ARCHIVE.equals(actionValue)) {
+                    inboxClient.updateInboxMsgStatusRead(msgIds);
+                } else if (KEY_INBOX.equals(actionValue)) {
+                    inboxClient.updateInboxMsgStatusArchive(msgIds);
+                    ParamUtil.setRequestAttr(request, KEY_AFTER_ARCHIVE, "true");
+                }
+            } else {
+//                ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
+//                ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+                ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             }
-        }else{
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
         }
     }
 

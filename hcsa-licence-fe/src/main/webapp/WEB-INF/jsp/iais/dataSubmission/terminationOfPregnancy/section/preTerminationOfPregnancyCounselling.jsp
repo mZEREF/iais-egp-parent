@@ -170,31 +170,29 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
                 </iais:value>
             </iais:row>
-            <%--<div id="counsellingPlaceAge" <c:if test="${preTerminationDto.counsellingAge < 16}">style="display: none"</c:if> >--%>
+            <div id="counsellingPlaceAge" <c:if test="${preTerminationDto.counsellingAge < 16}">style="display: none"</c:if> >
                 <iais:row id = "counsellingPlaceRow">
                     <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
                     <iais:value width="7" id="counsellingPlaceDiv" cssClass="col-md-7">
                         <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                     value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
-                        <iais:select name="counsellingPlace" firstOption="Please Select" value="${preTerminationDto.counsellingPlace}"
+                        <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
                                      id="counsellingPlaces" cssClass="counsellingPlace"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlaceError"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
                         <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
                     </iais:value>
                 </iais:row>
-            <%--</div>--%>
-            <%--<div id="counsellingPlaceAges" <c:if test="${preTerminationDto.counsellingAge == null || preTerminationDto.counsellingAge >= 16 }">style="display: none"</c:if> >
+            </div>
+            <div id="counsellingPlaceAges" <c:if test="${preTerminationDto.counsellingAge == null || preTerminationDto.counsellingAge >= 16 }">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        &lt;%&ndash;<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
-                                    value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>&ndash;%&gt;
-                        <iais:select name="counsellingPlace" options="CounsellingPlacea" value="${preTerminationDto.counsellingPlace}"
-                                     id="counsellingPlaces" cssClass="counsellingPlace"/>
-                        &lt;%&ndash;<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>&ndash;%&gt;
+                        <iais:select name="counsellingPlaceAge" options="CounsellingPlacea" value="${preTerminationDto.counsellingPlace}"
+                                     id="counsellingPlaceAge" cssClass="counsellingPlace"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
                     </iais:value>
                 </iais:row>
-            </div>--%>
+            </div>
             <iais:row>
                 <label class="col-xs-5 col-md-4 control-label">Result of Counselling
                     <span id="counsellingResult" class="mandatory">
@@ -312,7 +310,7 @@
         $('#counsellingResults,input[name=counsellingGiven]').change(function () {
             counselling();
         });
-        $('#counsellingPlaces,input[name=counsellingGiven]').change(function () {
+        $('#counsellingPlaceAge,input[name=counsellingGiven]').change(function () {
             counsellingPlace();
         });
         $('#counsellingResults').change(function () {
@@ -322,13 +320,13 @@
             secCounsellingDate();
             secCounsellingResult();
         });
-        /*$("#counsellingGivenDate").change(function () {
+        /*$("#counsellingGivenDate").on('blur, change', function () {
             age();
         })*/
-        checkDate();
+        /*checkDate();
         $("#counsellingGivenDate").change(function () {
             checkDate();
-        })
+        })*/
     });
     function counsellingNo() {
         var counsellingNo = $('#counsellingNo').val();
@@ -374,7 +372,7 @@
                 $('#numCounsellingGivens').hide();
                 $('#numCounsellingGivenAge').hide();
                 $('#numCounsellingGivenDoc').hide();
-                fillValue($('#counsellingPlaces'),null);
+                fillValue($('#counsellingPlaceAge'),null);
             }
             if ($('#counsellingYes').prop('checked')) {
                 $('#noCounsReason').hide();
@@ -400,7 +398,7 @@
         }
     }
     function counsellingPlace() {
-        var counsellingPlace = $('#counsellingPlaces').val();
+        var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
         var maritalStatus = $('#maritalStatus').val();
         var patientAge = $('#patientAge').val();
         if($('#counsellingYes').prop('checked')){
@@ -481,6 +479,14 @@
         console.log("counsellingAge");
         $('#counsellingAge').html(data.selection.counsellingAge);
         $('#counselling').val(data.selection.counsellingAge);
+        if(data.selection.counsellingAge < 16){
+            $('#counsellingPlaceAge').hide();
+            $('#counsellingPlaceAges').show();
+        }else {
+            $('#counsellingPlaceAges').hide();
+            $('#counsellingPlaceAge').show();
+
+        }
     }
     /*$(document).ready(function(){
         // Initialize select2
@@ -489,15 +495,9 @@
     });*/
     /*function age(){
         var counsellingAge = $('#counselling').val();
-        if(counsellingAge < 16){
-            $('#counsellingPlaceAge').show();
-            $('#counsellingPlaceAges').hide();
-        }else {
-            $('#counsellingPlaceAges').show();
-            $('#counsellingPlaceAge').hide();
-        }
+
     }*/
-    function checkDate(){
+    /*function checkDate(){
         var counsellingGivenDate = $("#counsellingGivenDate").val();
         var counsellingPlace = $("#counsellingPlaces").val();
         if(counsellingGivenDate != "" || counsellingPlace != "" ){
@@ -520,5 +520,5 @@
             });
             dismissWaiting();
         }
-    }
+    }*/
 </script>

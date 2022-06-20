@@ -14,7 +14,9 @@ import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 public class InboxAppSearchDto extends PagingAndSortingDto {
     private String searchAppNo;
     private String searchProcessType;
+    private String searchFacilityName;
     private String searchStatus;
+    private String searchAppType;
     private String searchSubmissionDateFrom;
     private String searchSubmissionDateTo;
 }

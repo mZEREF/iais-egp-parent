@@ -258,7 +258,7 @@
                                                         <c:out value="${donorSample.ageNumber}"/>
                                                         <c:if test="${donorSample.ageNumber>donorResultSize}">
                                                             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                                               title="<span style='font-size: 2 rem;'>${donorMessageTip}</span>"
+                                                               title="&lt;p&gt;${donorMessageTip}&lt;/p&gt;"
                                                                style="z-index: 10"
                                                                data-original-title="">i</a>
                                                         </c:if>

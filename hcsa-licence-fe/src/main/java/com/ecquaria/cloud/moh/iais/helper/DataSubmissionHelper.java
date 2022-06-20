@@ -56,6 +56,7 @@ public final class DataSubmissionHelper {
     public static void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
@@ -75,7 +76,6 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
-        session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
         session.removeAttribute(DataSubmissionConstant.LDT_IS_GUIDE);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID);

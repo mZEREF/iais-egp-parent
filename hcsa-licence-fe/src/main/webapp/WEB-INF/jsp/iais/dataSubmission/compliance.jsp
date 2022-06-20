@@ -9,29 +9,21 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="title" value="Data Submission" />
+<c:set var="title" value="New Data Submission" />
 
 <%@ include file="assistedReproduction/common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <div class="row">
-    <div class="container">
+    <div class="container center-content">
       <div class="col-xs-12">
         <h3>MODULES SELECTED</h3>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="container">
       <div class="col-xs-12">
         <ul><li style=""><span><Strong>${complianceDto.submissionTypeDisplay}</Strong></span></li></ul>
         <h3>Before You Begin</h3>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="container">
       <div class="col-xs-12">
         <ul>
           <li style=""><span>This form will take approximately ${complianceDto.mins} mins to complete. You may save your progress at anytime and resume your submission later</span></li>
@@ -41,7 +33,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="container">
+    <div class="container center-content">
       <div class="col-xs-12">
         <div class="application-tab-footer">
           <div class="col-xs-12 col-sm-4 col-md-2 text-left">
@@ -51,9 +43,9 @@
           </div>
           <div class="col-xs-12 col-sm-8 col-md-10">
             <div class="button-group">
-              <a class="btn btn-primary next premiseId" id="proceed"  onclick="submit('${complianceDto.submissionType}')">PROCEED</a></div>
+              <a class="btn btn-primary next premiseId" id="proceed"  onclick="submit('${complianceDto.submissionType}')">PROCEED</a>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

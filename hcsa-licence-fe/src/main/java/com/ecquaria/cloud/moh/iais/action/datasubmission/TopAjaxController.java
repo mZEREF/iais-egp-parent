@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
@@ -12,11 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -128,7 +124,7 @@ public class TopAjaxController {
         return result;
     }
 
-   @PostMapping(value = "/check-date")
+  /* @PostMapping(value = "/check-date")
     public @ResponseBody
    AjaxResDto checkDate(HttpServletRequest request){
         AjaxResDto ajaxResDto = new AjaxResDto();
@@ -152,7 +148,7 @@ public class TopAjaxController {
         chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
         ajaxResDto.setResultJson(chargeTypeSelHtml);
         return ajaxResDto;
-    }
+    }*/
 
     private List<SelectOption> getSelect(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();

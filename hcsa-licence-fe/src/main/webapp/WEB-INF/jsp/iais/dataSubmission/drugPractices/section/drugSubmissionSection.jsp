@@ -49,8 +49,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="3" value="Doctor's Professional Registration No." mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
+                    <iais:field width="5" value="Doctor's Professional Registration No." mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-5" >
                         <iais:input maxLength="20" type="text" id="doctorRegnNo" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" onchange="clearDockerSelection();"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>
                         <span id="doctorRegnNoMsg" name="iaisErrorMsg" class="error-msg"></span>
@@ -91,28 +91,28 @@
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dName" value="${doctorInformationDto.name}" />
+                            <iais:input maxLength="66" type="text" name="dName" value="${doctorInformationDto.name}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <iais:input maxLength="100" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <iais:input maxLength="100" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Qualification" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <iais:input maxLength="100" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                         </iais:value>
                     </iais:row>
@@ -188,7 +188,7 @@
                     <iais:row>
                         <iais:field width="5" value="Diagnosis" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
+                            <textarea rows="" maxlength="1000" cols="28" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                             <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
@@ -255,7 +255,7 @@
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">CLOSE</button>
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
             </div>
         </div>
     </div>
@@ -322,6 +322,24 @@
                     <div class="col-md-12">
                         <span style="font-size: 2rem;" id="prsCloseMsg">
                             <iais:message key="GENERAL_ERR0066" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PRS_PRN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsPrn">
+                            <iais:message key="GENERAL_ERR0054" escape="false" />
                         </span>
                     </div>
                 </div>
@@ -433,11 +451,11 @@
             $('#nurse').show();
         }else if(('MED002' == medication && 'DPD002' == drugtype)){
             console.log('DPD002')
-            $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').show();
             $('#nurse').hide();
         } else{
-            $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
+            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
             $('#urineTest').hide();
             $('#nurse').hide();
         }
@@ -533,11 +551,18 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         $('#ELIS_SERVICE').modal('show');
-                    }else if(isEmpty(data.selections)){
+                    }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
-                    }
-                    if (data.hasException) {
+                    }else if (data.selection.hasException) {
+                        $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
+                    }else if ('401' == data.selection.statusCode) {
+                        $('#doctorInformations').val(true);
+                        $('#PRS_PRN').modal('show');
+                        $('#doctorInformation').hide();
+                        $('#doctorInformationText').show();
                     }
                 }
                 dismissWaiting();
@@ -589,7 +614,12 @@
         $('#START_DATE_OF_DISPENSING').modal('show');
     }
 
-    function cancel() {
+    function cancels() {
         $('#START_DATE_OF_DISPENSING').modal('hide');
+        $('#ELIS_SERVICE').modal('hide');
+        $('#NO_PRS_ELIS_SERVICE').modal('hide');
+        $('#PRS_SERVICE').modal('hide');
+        $('#PRS_CLOSE').modal('hide');
+        $('#PRS_PRN').modal('hide');
     }
 </script>

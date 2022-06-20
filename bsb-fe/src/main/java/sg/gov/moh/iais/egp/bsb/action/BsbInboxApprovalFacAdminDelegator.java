@@ -147,6 +147,7 @@ public class BsbInboxApprovalFacAdminDelegator {
         InboxApprovalSearchDto dto = getSearchDto(request);
         dto.setSearchApprovalNo(request.getParameter("searchApprovalNo"));
         dto.setSearchProcessType(request.getParameter("searchProcessType"));
+        dto.setSearchFacilityName(request.getParameter("searchFacilityName"));
         dto.setSearchStatus(request.getParameter("searchStatus"));
         dto.setSearchStartDateFrom(request.getParameter("searchStartDateFrom"));
         dto.setSearchStartDateTo(request.getParameter("searchStartDateTo"));

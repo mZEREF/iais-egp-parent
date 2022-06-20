@@ -1,6 +1,9 @@
+      <c:if test="${canCreateDs}">
         <li>
-            <a href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Submit Data</a>
+          <a href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Submit Data</a>
         </li>
+      </c:if>
+
        <c:if test="${dataSubARTPrivilege == 1}">
         <li>
             <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR Online Enquiry</a>
@@ -22,9 +25,9 @@
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Edit a Draft Submission</a>
         </li>
-        <li>
+        <%--<li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Withdraw Submission</a>
-        </li>
+        </li>--%>
 
 
 

@@ -114,6 +114,9 @@
                           <div class="col-xs-4 col-md-11 col-sm-4">Cord Blood Banking Service</div><br>
                           <div class="col-xs-4 col-md-11 col-sm-4">Nuclear Medicine Imaging</div><br>
                           <div class="col-xs-4 col-md-11 col-sm-4">Nuclear Medicine Assay</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Data Submission for Termination of Pregnancy (TOP) returns, Voluntary Sterilisation (VS) returns and Drug Practices</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Realtime Database for Assisted Reproduction (RDAR)</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Laboratory Developed Test</div>
                         </div>
                       </div>
                       <!--------------------->

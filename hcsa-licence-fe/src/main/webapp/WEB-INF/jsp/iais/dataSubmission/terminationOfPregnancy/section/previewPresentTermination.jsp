@@ -2,7 +2,7 @@
 <c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
 <c:set var="headingSign" value="${termination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
-    <div class="panel-heading <c:if test="${DeclarationsCheckBox != 'hide'}">${headingSign}</c:if>">
+    <div class="panel-heading <c:if test="${headingSigns != 'hide'}">${headingSign}</c:if>">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#terminationDetails">
                 Termination Of Pregnancy
@@ -90,7 +90,7 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <c:if test="${terminationDto.lateSubmit == true}">
+                    <c:if test="${topLateSubmit}">
                         <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:field width="5" value="Date of Termination of Pregnancy" info="${toolMsg}" style="width: 300px;"/>

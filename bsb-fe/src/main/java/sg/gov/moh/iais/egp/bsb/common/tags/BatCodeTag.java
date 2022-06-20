@@ -17,6 +17,9 @@ public class BatCodeTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException, IOException {
+        if (!StringUtils.hasLength(code)){
+            return;
+        }
         RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         String name = redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_BSB_BAT, code);
         if (!StringUtils.hasLength(name)) {
