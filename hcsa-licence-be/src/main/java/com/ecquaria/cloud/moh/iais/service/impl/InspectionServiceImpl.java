@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
@@ -143,6 +144,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
+
+    @Autowired
+    private ApplicationGroupService applicationGroupService;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -642,6 +646,7 @@ public class InspectionServiceImpl implements InspectionService {
         if(!Objects.isNull(adhocCheckListConifgDto)){
             adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             adhocCheckListConifgDto.setAllAdhocItem(IaisCommonUtils.genNewArrayList());
+            applicationClient.saveAdhocChecklist(adhocCheckListConifgDto);
             gatewayClient.callEicWithTrack(adhocCheckListConifgDto, gatewayClient::syncAdhocItemData, "rollBackAdhocCheck");
         }
         //rollBack Nc
@@ -652,6 +657,7 @@ public class InspectionServiceImpl implements InspectionService {
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(Collections.singletonList(appPremPreInspectionNcDto));
             inspRectificationSaveDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto);
             gatewayClient.callEicWithTrack(inspRectificationSaveDto, gatewayClient::beCreateNcData, "rollBackNc");
         }
         //rollBack InspectionSendRecJobHandler remind
@@ -661,14 +667,18 @@ public class InspectionServiceImpl implements InspectionService {
             systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
         }
 
+        // self assessment flag
         List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos = applicationClient.getAppPremisesSelfDeclByCorrelationId(premCorrId).getEntity();
         if(IaisCommonUtils.isNotEmpty(appPremisesSelfDeclChklDtos)){
             applicationDto.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
         } else {
             applicationDto.setSelfAssMtFlag(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
         }
-        //open submit pref insp date
-        applicationDto.setHasSubmitPrefDate(0);
+        //pref date flag
+        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        if(!Objects.isNull(applicationGroupDto) && (Objects.isNull(applicationGroupDto.getPrefInspStartDate()) || Objects.isNull(applicationGroupDto.getPrefInspEndDate()))){
+            applicationDto.setHasSubmitPrefDate(0);
+        }
     }
 
     @Override
