@@ -42,12 +42,12 @@
                                                     <%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
                                                     <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
                                                     <%--@elvariable id="maskedEditId" type="java.lang.String"--%>
-                                                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
-                                                                 compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
-                                                                 facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
-                                                                 batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                                                 classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
-                                                                 facilityInfoSelectJudge="true" batSelectJudge="true" docSelectJudge="true">
+                                                    <fac:rfi-preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
+                                                                     compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
+                                                                     facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
+                                                                     batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
+                                                                     classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
+                                                                     facilityInfoSelectJudge="true" batSelectJudge="true" docSelectJudge="true">
                                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
@@ -86,7 +86,7 @@
                                                 </div>
                                             </c:if>
                                         </jsp:attribute>
-                                                    </fac:preview>
+                                                    </fac:rfi-preview>
                                                         <div style="text-align: right"><button name="submitAppRfiBtn" id="submitAppRfiBtn" type="button" class="btn btn-primary">Submit</button></div>
                                                 </div>
                                             </div>

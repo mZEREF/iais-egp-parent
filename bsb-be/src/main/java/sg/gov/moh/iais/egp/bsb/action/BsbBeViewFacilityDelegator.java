@@ -76,6 +76,7 @@ public class BsbBeViewFacilityDelegator {
             if (appViewClient.hasCompletedRfi(appId, taskType)) {
                 FacilityRegisterDto oldFacRegDto = appViewClient.getOldFacilityRegistrationData(appId).getEntity();
                 appViewService.retrieveRfiFacReg(request, appId, oldFacRegDto);
+                ParamUtil.setRequestAttr(request, "isRFI", true);
             } else {
                 appViewService.retrieveFacReg(request, appId);
             }

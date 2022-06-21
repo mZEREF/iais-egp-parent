@@ -11,8 +11,6 @@ import java.io.Serializable;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeInfo implements Serializable {
-    // javers compare id, must be unique and non-empty
-    @Id
     @JsonProperty("id")
     private String entityId;
 
