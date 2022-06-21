@@ -123,7 +123,7 @@
                        <iais:row>
                            <iais:field width="5" value="Other Occupation" mandatory="true"/>
                            <iais:value width="7" cssClass="col-md-7">
-                               <iais:input maxLength="66" type="text" id="otherOccupation" name="otherOccupation"
+                               <iais:input maxLength="100" type="text" id="otherOccupation" name="otherOccupation"
                                            value="${patientInformationDto.otherOccupation}"/>
                                <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
                            </iais:value>
