@@ -14,7 +14,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <c:set var="hasError" value="${not empty errorMsg}" />
-<c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
+<c:set var="hasItems" value="${not empty SOVENOR_INVENTORY_LIST ? 1 : 0}" />
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 
 <%@ include file="common/dpHeader.jsp" %>
