@@ -103,7 +103,7 @@
                     </div>
                     <iais:row>
                       <div class="col-sm-7 col-md-8 col-xs-10 table-responsive">
-                        <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
+                        <textarea id="uploadRemarks" name="uploadRemarks" style="width: 100%;overflow: auto;word-break: break-all;" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
                         <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
                         <span class="error-msg"><c:out value="${inspecUserRecUploadDto.remarksMsg}"></c:out></span>
                       </div>

@@ -54,8 +54,7 @@
                                             </td>
                                             <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
                                             <td style="float:left;">
-                                                <textarea  name="reason${pool.viewCorrId}" maxlength="500" rows="10" style=" font-weight:normal;"
-                                                           cols="50" >${pool.reason}</textarea><br>
+                                                <textarea  name="reason${pool.viewCorrId}" maxlength="500"style="width: 100%;overflow: auto;word-break: break-all;font-weight:normal;" >${pool.reason}</textarea><br>
                                                 <span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
                                             </td>
                                             <td >

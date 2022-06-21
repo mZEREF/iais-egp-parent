@@ -186,7 +186,7 @@
             <iais:field width="7" value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
               <p>
-                <textarea  name="reason" maxlength="300" cols="60" >${reason}</textarea>
+                <textarea  name="reason" style="width: 100%;overflow: auto;word-break: break-all;" >${reason}</textarea>
                 <span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
               </p>
             </iais:value>

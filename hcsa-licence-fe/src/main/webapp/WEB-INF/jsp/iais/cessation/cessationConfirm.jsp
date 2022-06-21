@@ -233,13 +233,13 @@
                         <div class="form-group" id="${num.count}transferDetail${uid.count}" style="display: none;">
                           <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
-                            <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                            <textarea name="${num.count}transferDetail${uid.count}"  style="width: 100%;overflow: auto;word-break: break-all;" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
                           </div>
                         </div>
                         <div class="form-group" id="${num.count}transferredWhere${uid.count}" style="display: none;">
                           <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
-                            <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
+                            <textarea name="${num.count}transferredWhere${uid.count}"  style="width: 100%;overflow: auto;word-break: break-all;" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                           </div>
                         </div>
                         <%--<div class="form-group" id="${num.count}patNoConfirmID${uid.count}"

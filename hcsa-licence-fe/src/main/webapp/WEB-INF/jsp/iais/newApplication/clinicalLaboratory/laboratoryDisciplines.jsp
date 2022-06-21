@@ -144,7 +144,7 @@
                                                                             </c:choose>
                                                                         </c:forEach>
                                                                         <input type="hidden" name="needTextArea" value="1"/>
-                                                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" style="width: 100%;overflow: auto;word-break: break-all;" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
                                                                         <br/>
                                                                         <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                                                     </c:when>
@@ -214,7 +214,7 @@
                                                                                     </c:choose>
                                                                                 </c:forEach>
                                                                                 <input type="hidden" name="needTextArea" value="1"/>
-                                                                                <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                                                                <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" style="width: 100%;overflow: auto;word-break: break-all;" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
                                                                                 <br/>
                                                                                 <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                                                             </c:when>
@@ -279,7 +279,7 @@
                                                                                             </c:choose>
                                                                                         </c:forEach>
                                                                                         <input type="hidden" name="needTextArea" value="1"/>
-                                                                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                                                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" style="width: 100%;overflow: auto;word-break: break-all;" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
                                                                                         <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                                                                     </c:when>
                                                                                     <c:otherwise>

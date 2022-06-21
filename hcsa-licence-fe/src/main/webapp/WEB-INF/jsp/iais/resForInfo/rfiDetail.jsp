@@ -85,8 +85,7 @@
                                                 <iais:value width="18">
                                                     <label>
                                                         <textarea  maxlength="1000" name="userReply${infoReply.id}"
-                                                                   rows="8" style=" font-weight:normal;"
-                                                                   cols="130">${infoReply.userReply}</textarea>
+                                                                    style=" font-weight:normal;width: 100%;overflow: auto;word-break: break-all;">${infoReply.userReply}</textarea>
                                                     </label>
                                                     <span id="error_userReply${infoReply.id}" name="iaisErrorMsg"
                                                           class="error-msg"></span>

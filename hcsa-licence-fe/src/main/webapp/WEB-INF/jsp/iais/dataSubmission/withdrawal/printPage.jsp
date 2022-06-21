@@ -57,7 +57,7 @@
                             <h2>Remarks <span style="color: #ff0000"> *</span> </h2>
                             <div class="row">
                                 <div class="col-md-6">
-                                        <textarea name="withdrawnRemarks" cols="80" rows="5" id="withdrawnRemarks"
+                                        <textarea name="withdrawnRemarks" style="width: 100%;overflow: auto;word-break: break-all;" id="withdrawnRemarks"
                                                   title="content" maxlength="100" >${withdrawnRemarks}</textarea>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
