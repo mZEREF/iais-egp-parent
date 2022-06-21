@@ -188,7 +188,6 @@
                     <iais:row>
                         <iais:field width="5" value="Diagnosis" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <textarea rows="" maxlength="1000" cols="62" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                             <textarea rows="" maxlength="1000" style="width: 100%;overflow: auto;word-break: break-all;" name="diagnosis">${drugSubmission.diagnosis}</textarea>
                             <span id="error_diagnosis" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
