@@ -212,6 +212,9 @@ function modifyClonedNode(node, idx, separator) {
     } else if (node.nodeName === 'SPAN') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'data-err-ind', idx, separator);
+        if(node.className && node.className.match(/(\s|^)error-msg(\s|$)/)){
+            node.innerText = "";
+        }
     } else if (node.nodeName === 'INPUT') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'name', idx, separator);

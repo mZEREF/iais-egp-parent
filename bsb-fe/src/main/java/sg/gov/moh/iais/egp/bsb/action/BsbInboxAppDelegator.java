@@ -75,6 +75,7 @@ public class BsbInboxAppDelegator {
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApplications());
+            ParamUtil.setRequestAttr(request,"facilityNoNameMap",resultDto.getEntity().getFacilityNoNameMap());
         } else {
             log.warn("Search Inbox Application Fail");
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));

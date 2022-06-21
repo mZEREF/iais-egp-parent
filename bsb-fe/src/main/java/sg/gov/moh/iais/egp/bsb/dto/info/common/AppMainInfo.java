@@ -24,4 +24,7 @@ public class AppMainInfo extends AppBasicInfo {
     @JMap
     @JsonProperty("stage_id")
     private String stageId;
+
+    @JMap
+    private String facilityNo;
 }

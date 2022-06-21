@@ -93,7 +93,7 @@
             <name>info</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppResultDto</type>
+            <type>sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo</type>
         </attribute>
         <attribute>
             <name>attributeKey</name>
