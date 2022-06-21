@@ -166,7 +166,9 @@ public class FeUserManagement {
         } else {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) intranetUserService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),feUserDto.getLicenseeId(),feUserDto.getOrganization()));
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,
+                intranetUserService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable", false),
+                        feUserDto.getLicenseeId(), feUserDto.getOrganization()));
         ParamUtil.setSessionAttr(bpc.request, "feusertitle", "Edit");
         ParamUtil.setRequestAttr(bpc.request,FeUserConstants.SESSION_USER_UEN_NAME,feUserDto.getUenNo());
         ParamUtil.setRequestAttr(bpc.request,"organizationId",feUserDto.getOrgId());
