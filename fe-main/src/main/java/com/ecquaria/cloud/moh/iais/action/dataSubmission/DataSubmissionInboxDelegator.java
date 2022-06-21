@@ -180,6 +180,7 @@ public class DataSubmissionInboxDelegator {
 
 	private String getRfcType(List<String> privilegeIds){
 		StringBuilder rfcType = new StringBuilder();
+		rfcType.append(""+",");
 		privilegeIds.stream().forEach(privilegeId ->{
 			switch(privilegeId){
 				case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC :
