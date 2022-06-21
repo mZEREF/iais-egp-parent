@@ -111,10 +111,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 }
             }
         }else if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugType)){
-            if(StringUtil.isEmpty(drugSubmission.getDiagnosis())){
-                result = WebValidationHelper.validateProperty(drugSubmission,"DRUG_PRESCRIBED");
-                errorMap.putAll(result.retrieveAll());
-            }
+            result = WebValidationHelper.validateProperty(drugSubmission,"DRUG_PRESCRIBED");
+            errorMap.putAll(result.retrieveAll());
         }
         //validate the medication
         result = WebValidationHelper.validateProperty(drugSubmission, "medication");

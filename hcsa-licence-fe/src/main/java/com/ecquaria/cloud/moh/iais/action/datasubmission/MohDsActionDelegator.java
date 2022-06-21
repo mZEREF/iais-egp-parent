@@ -155,7 +155,7 @@ public class MohDsActionDelegator {
                 if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                     DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
                     DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
-                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_TOP);
+                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_DRP);
                     dpSuper.setDoctorInformationDto(doctorInformationDto);
                     drugSubmissionDto.setDoctorInformations("true");
                 }else {
@@ -340,7 +340,7 @@ public class MohDsActionDelegator {
                 if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                     DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
                     DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
-                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_TOP);
+                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_DRP);
                     dpSuper.setDoctorInformationDto(doctorInformationDto);
                     drugSubmissionDto.setDoctorInformations("true");
                 }else {
