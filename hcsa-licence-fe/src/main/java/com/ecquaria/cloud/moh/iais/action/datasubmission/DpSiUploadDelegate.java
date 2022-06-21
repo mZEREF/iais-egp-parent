@@ -100,6 +100,9 @@ public class DpSiUploadDelegate {
         session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+
+        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
     }
 
     /**
@@ -168,6 +171,10 @@ public class DpSiUploadDelegate {
             ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
             errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
             if (errorMap.isEmpty()) {
+                String fileName=fileEntry.getValue().getName();
+                if(!fileName.equals("Sovenor_Inventory_List")){
+                    errorMap.put("uploadFileError", "DS_ERR068");
+                }
                 List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
                 fileItemSize = sovenorInventoryExcelDtos.size();
                 if (fileItemSize == 0) {
@@ -188,6 +195,7 @@ public class DpSiUploadDelegate {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
                         errorMap.put("itemError", "itemError");
+                        errorMap.put("uploadFileError", "DS_ERR068");
                     }
                 }
             }
@@ -569,7 +577,7 @@ public class DpSiUploadDelegate {
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) {
         log.info(StringUtil.changeForLog("----- Export Patient Info File -----"));
         try {
-            String fileName = "Sovenor Inventory List";
+            String fileName = "Sovenor_Inventory_List";
             File inputFile = ResourceUtils.getFile("classpath:template/" + fileName + ".xlsx");
             if (!inputFile.exists() || !inputFile.isFile()) {
                 log.error("No File Template Found!");

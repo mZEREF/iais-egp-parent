@@ -28,10 +28,10 @@
                     <div class="document-info-list">
                         <ul>
                             <li>
-                                <p><iais:message key="GENERAL_ERR0043" replaceName="configNum" propertiesKey="iais.system.upload.file.limit"></iais:message></p>
+                                <p>The maximum file size for each upload is ${configFileSize}MB.</p>
                             </li>
                             <li>
-                                <p>Acceptable file formats are XLSX, CSV.</p>
+                                <p>Acceptable file format is XLSX, CSV.</p>
                             </li>
                             <li>
                                 <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/ds/dp/si-file" >here</a>.</p>
