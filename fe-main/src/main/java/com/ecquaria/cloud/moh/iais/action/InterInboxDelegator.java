@@ -1554,8 +1554,10 @@ public class InterInboxDelegator {
             Integer licActiveNum = inboxService.licActiveStatusNum(HcsaServiceCacheHelper.controlServices(2,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
             Integer appDraftNum = inboxService.appDraftNum(HcsaServiceCacheHelper.controlServices(1,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
             InterMessageSearchDto imsDto = HcsaServiceCacheHelper.controlServices(0,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos);
-            List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
-            imsDto.getServiceCodes().addAll(HalpSearchResultHelper.getDsTypes(privilegeIds));
+            if (imsDto != null && imsDto.getServiceCodes() != null) {
+                List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+                imsDto.getServiceCodes().addAll(HalpSearchResultHelper.getDsTypes(privilegeIds));
+            }
             Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(imsDto);
             ParamUtil.setRequestAttr(request, "unreadAndresponseNum", unreadAndresponseNum);
             ParamUtil.setRequestAttr(request, "licActiveNum", licActiveNum);

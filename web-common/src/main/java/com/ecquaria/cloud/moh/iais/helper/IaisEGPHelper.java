@@ -66,9 +66,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -82,7 +79,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 
@@ -981,7 +977,8 @@ public final class IaisEGPHelper extends EGPHelper {
             roles.add(RoleConsts.USER_ROLE_DS_DP);
             roles.add(RoleConsts.USER_ROLE_DS_DP_SUPERVISOR);
         }
-        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{DataSubmissionConsts.DS_LDT}))) {
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
+                AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY/*, DataSubmissionConsts.DS_LDT*/}))) {
             roles.add(RoleConsts.USER_ROLE_DS_LDT);
             roles.add(RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR);
         }
@@ -1006,27 +1003,6 @@ public final class IaisEGPHelper extends EGPHelper {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
-    }
-
-    public static Map<String, Object> beanToMap(Object obj) {
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
-            PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-            Stream.of(descriptors).forEach(descriptor -> {
-                if (!"class".equals(descriptor) && descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
-                    Method readMethod = descriptor.getReadMethod();
-                    try {
-                        map.put(descriptor.getName(), readMethod.invoke(obj));
-                    } catch (Exception e) {
-                        log.warn(StringUtil.changeForLog(e.getMessage()), e);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            log.warn(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        return map;
     }
 
 }

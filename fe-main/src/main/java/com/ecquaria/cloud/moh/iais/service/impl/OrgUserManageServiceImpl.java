@@ -660,23 +660,21 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(boolean fromDsCenter, String licenseeId, String orgId) {
+    public List<SelectOption> getRoleSelection(String licenseeId, String orgId) {
+        // ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false)
         List<String> data = IaisCommonUtils.genNewArrayList();
-        if (fromDsCenter) {
-            if (StringUtil.isNotEmpty(orgId)) {
-                log.info(StringUtil.changeForLog("The Org Id: " + orgId));
-                List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
-                if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
-                    dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
-                }
+        if (StringUtil.isNotEmpty(orgId)) {
+            log.info(StringUtil.changeForLog("The Org Id: " + orgId));
+            List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
+                dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
             }
-        } else {
-            if (StringUtil.isNotEmpty(licenseeId)) {
-                log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
-                List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
-                if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
-                    licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
-                }
+        }
+        if (StringUtil.isNotEmpty(licenseeId)) {
+            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
+            List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
+                licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));
             }
         }
         List<String> roles = IaisEGPHelper.getFeRoles(data);
@@ -690,7 +688,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public List<Role> getFeRoles() {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        map.put("userDomain", AppConsts.HALP_EGP_DOMAIN);
+        map.put("userDomains", AppConsts.HALP_EGP_DOMAIN);
         return roleServiceClient.search(map).getEntity();
     }
 

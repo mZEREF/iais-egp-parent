@@ -90,7 +90,8 @@ public class FeAdminManageDelegate {
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
             feAdminQueryDtoSearchResult.getRows().stream().forEach(item -> item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO));
             CrudHelper.doPaging(searchParam,bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,
+                    (Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId(), loginContext.getOrgId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult.getRows());
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
@@ -180,7 +181,7 @@ public class FeAdminManageDelegate {
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
             String active = ParamUtil.getString(request,"active");
             //admin role
-            String role   = ParamUtil.getString(request,"role");
+            String role = ParamUtil.getString(request,"role");
             String roles = ParamUtil.getStringsToString(request, "roles");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);

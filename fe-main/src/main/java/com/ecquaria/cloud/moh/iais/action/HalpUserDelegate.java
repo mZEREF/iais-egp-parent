@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class HalpUserDelegate {
     public ResponseEntity<List<Map<String, Object>>> getFeRoles() {
         log.info("Retrive FE Roles");
         List<Map<String, Object>> result = userManageService.getFeRoles().stream()
-                .map(role -> IaisEGPHelper.beanToMap(role))
+                .map(role -> IaisCommonUtils.beanToMap(role))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
