@@ -172,7 +172,7 @@ public class DpSiUploadDelegate {
             errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
             if (errorMap.isEmpty()) {
                 String fileName=fileEntry.getValue().getName();
-                if(!fileName.equals("Sovenor_Inventory_List.xlsx")||!fileName.equals("Sovenor_Inventory_List.csv")){
+                if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
                     errorMap.put("uploadFileError", "DS_ERR068");
                 }
                 List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
