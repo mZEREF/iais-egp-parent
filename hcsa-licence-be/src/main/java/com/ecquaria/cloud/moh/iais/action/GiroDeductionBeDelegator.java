@@ -152,6 +152,7 @@ public class GiroDeductionBeDelegator {
 
         SearchResult<GiroDeductionDto> body = giroDeductionBeService.giroDeductionDtoSearchResult(searchParam);
         List<GiroDeductionDto> giroDeductionDtos=body.getRows();
+        if(IaisCommonUtils.isNotEmpty(giroDeductionDtos))
         for (GiroDeductionDto giroDeductionDto:giroDeductionDtos
              ) {
             ApplicationGroupDto groupDto=applicationClient.getAppGrpByNo(giroDeductionDto.getAppGroupNo()).getEntity();
