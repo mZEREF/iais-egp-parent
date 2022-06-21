@@ -51,7 +51,7 @@
                         </div>
                         <c:if test="${not empty fileItemErrorMsgs}">
                             <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
-                                <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
+<%--                                <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>--%>
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
