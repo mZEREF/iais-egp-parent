@@ -1214,6 +1214,31 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+        if(professionalResponseDto!=null){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                if(!"true".equals(terminationDto.getTopDoctorInformations())){
+                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                    String doctorName = ParamUtil.getString(request, "names");
+                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                    String dQualification = ParamUtil.getString(request, "dQualifications");
+                    terminationDto.setDoctorName(doctorName);
+                    terminationDto.setSpecialty(dSpeciality);
+                    terminationDto.setSubSpecialty(dSubSpeciality);
+                    terminationDto.setQualification(dQualification);
+                    doctorInformationDto.setName(terminationDto.getDoctorName());
+                    doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
+                    doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
+                    doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
+                    doctorInformationDto.setQualification(terminationDto.getQualification());
+                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                }
+            }else {
+                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+            }
+        }
         if("true".equals(terminationDto.getTopDoctorInformations())){
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
@@ -1469,7 +1494,6 @@ public class TopDataSubmissionDelegator {
             ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 terminationDto.setTopDoctorInformations("true");
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().setTerminationDto(terminationDto);
             }
             topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         } catch (Exception e) {

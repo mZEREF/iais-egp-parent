@@ -189,7 +189,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="counsellingPlaceAge" options="CounsellingPlacea" value="${preTerminationDto.counsellingPlace}"
                                      id="counsellingPlaceAge" cssClass="counsellingPlace"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlaceAge"></span>
                     </iais:value>
                 </iais:row>
             </div>
