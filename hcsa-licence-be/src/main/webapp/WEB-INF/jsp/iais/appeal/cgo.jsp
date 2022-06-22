@@ -31,7 +31,7 @@
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
-                  <table aria-describedby="" class="assignContent control-grid" style="width:100%;">
+                  <table aria-describedby="" class="assignContent control-grid" style="width:100%;word-break:break-all">
                     <thead style="display: none">
                     <tr>
                       <th scope="col" ></th>
