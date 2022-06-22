@@ -408,6 +408,34 @@ function fileChanged(event) {
     //What ever else you want to do when File Chooser Changed
 }
 
+function getJqueryNode(elem) {
+    if (isEmpty(elem)) {
+        return;
+    }
+    var $target = $(elem);
+    if ($target.length == 0 && Object.prototype.toString.call(elem) === "[object String]") {
+        if (elem.indexOf('#') != 0 && elem.indexOf('.') != 0) {
+            $target = $('#' + elem);
+            if ($target.length == 0) {
+                $target = $('.' + elem);
+            }
+        }
+    }
+    if ($target.length == 0) {
+        return null;
+    }
+    return $target;
+}
+
+function updateSelectTag($sel) {
+    if ($sel.is('select[multiple]')) {
+        // mutiple select
+        $sel.trigger('change.multiselect');
+    } else {
+        $sel.niceSelect("update");
+    }
+}
+
 function toggleOnSelect(sel, val, elem) {
     if (isEmpty(sel)) {
         return;
@@ -650,22 +678,25 @@ function unDisableContent(targetSelector) {
 function refreshId(targetSelector) {
     $(targetSelector).each(function (k,v) {
         var $input = $(v);
+        if ($input.hasClass('not-refresh')) {
+            return;
+        }
         var orgId = $input.attr('id');
-        var result = /([a-zA-Z_]*)/g.exec(orgId);
+        if (isEmpty(orgId)) {
+            return;
+        }
+        var result = /(.*\D+)/g.exec(orgId);
         var id = !isEmpty(result) && result.length > 0 ? result[0] : orgId;
         $input.prop('id', id + k);
     });
 }
 
-
 function refreshIndex(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $target = getJqueryNode(targetSelector);
+    if (isEmpty($target)) {
         return;
     }
-    if ($(targetSelector).length == 0) {
-        return;
-    }
-    $(targetSelector).each(function (k,v) {
+    $target.each(function (k, v) {
         var $ele = $(v);
         var $selector;
         if ($ele.is(':input')) {
@@ -689,18 +720,19 @@ function refreshIndex(targetSelector) {
             if (isEmpty(orgName)) {
                 return;
             }
-            var result = /([a-zA-Z_]*)/g.exec(orgName);
+            var result = /(.*\D+)/g.exec(orgName);
             var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            $input.prop('name', name + k);
-            if (orgName == orgId) {
-                $input.prop('id', name + k);
+            var newName = name + k;
+            $input.prop('name', newName);
+            if (orgName == orgId || name == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+                $input.prop('id', newName);
             }
             var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
             if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + name + k);
+                $errorSpan.prop('id', 'error_' + newName);
             }
             if (tag == 'select') {
-                $input.niceSelect("update");
+                updateSelectTag($input);
             }
         });
     });
