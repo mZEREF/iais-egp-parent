@@ -25,6 +25,10 @@ import java.util.Map;
 public class SimpleCsvReader {
 
     public static <T> List<T> readToBean(final File file, final Class<T> clz, boolean defaultValueNull) {
+        return readToBean(file, clz, defaultValueNull, ',');
+    }
+
+    public static <T> List<T> readToBean(final File file, final Class<T> clz, boolean defaultValueNull, char delimiter) {
         if (file == null || !file.exists()) {
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -33,7 +37,7 @@ public class SimpleCsvReader {
         }
         List<T> result = new ArrayList<>();
         try {
-            Iterable<CSVRecord> csvRecord = CSVFormat.DEFAULT
+            Iterable<CSVRecord> csvRecord = CSVFormat.DEFAULT.withDelimiter(delimiter)
                     .withFirstRecordAsHeader()
                     .parse(new FileReader(file));
             Map<Integer, Method> methods = setMethods(clz);

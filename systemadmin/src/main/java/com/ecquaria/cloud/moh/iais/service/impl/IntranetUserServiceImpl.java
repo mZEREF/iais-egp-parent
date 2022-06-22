@@ -629,17 +629,17 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId) {
+    public List<SelectOption> getRoleSelection(String licenseeId, String orgId) {
+        // ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false)
         List<String> data = IaisCommonUtils.genNewArrayList();
-        if (fromDsCenter) {
+        if (StringUtil.isNotEmpty(orgId)) {
             log.info(StringUtil.changeForLog("The Org Id: " + orgId));
-            if (StringUtil.isNotEmpty(orgId)) {
-                List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
-                if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
-                    dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
-                }
+            List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
+                dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
             }
-        } else if (StringUtil.isNotEmpty(licenseeId)) {
+        }
+        if (StringUtil.isNotEmpty(licenseeId)) {
             log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
             List<LicenceDto> licenceDtos = hcsaLicenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
@@ -652,11 +652,6 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 .map(role -> new SelectOption(role, roleMap.get(role)))
                 .filter(opt -> Objects.nonNull(opt.getText()))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<SelectOption> getRoleSelection(String licenseeId) {
-        return getRoleSelection(false, licenseeId, null);
     }
 
     @Override

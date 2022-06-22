@@ -977,7 +977,8 @@ public final class IaisEGPHelper extends EGPHelper {
             roles.add(RoleConsts.USER_ROLE_DS_DP);
             roles.add(RoleConsts.USER_ROLE_DS_DP_SUPERVISOR);
         }
-        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{DataSubmissionConsts.DS_LDT}))) {
+        if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
+                AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY/*, DataSubmissionConsts.DS_LDT*/}))) {
             roles.add(RoleConsts.USER_ROLE_DS_LDT);
             roles.add(RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR);
         }

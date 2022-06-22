@@ -32,7 +32,11 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.CompareBATInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.CompareDocRecordInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.CompareFacilityOfficerDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
@@ -43,13 +47,13 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.ViewWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.util.CompareUtil;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 import sg.gov.moh.iais.egp.bsb.util.JaversUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +94,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_FACILITY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_FACILITY_OPERATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_FACILITY_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_MAIN_ADMIN;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_OFFICER_LIST;
 
 
 @Service
@@ -203,10 +206,8 @@ public class AppViewService {
         // retrieve app data of facility registration
         ResponseDto<FacilityRegisterDto> resultDto = appViewClient.getFacRegDtoByAppId(applicationId);
         if (resultDto.ok()) {
-            Javers javers = JaversBuilder.javers()
-                    .withListCompareAlgorithm(ListCompareAlgorithm.AS_SET)
-                    .build();
-            Map<String, Map<String, String>> sumDiffMap = Maps.newHashMapWithExpectedSize(10);
+            Javers javers = JaversBuilder.javers().withListCompareAlgorithm(ListCompareAlgorithm.AS_SET).build();
+            Map<String, Map<String, Object>> sumDiffMap = Maps.newHashMapWithExpectedSize(10);
 
             FacilityRegisterDto newFacRegDto = resultDto.getEntity();
             ParamUtil.setSessionAttr(request, KEY_FACILITY_REGISTRATION_DTO, newFacRegDto);
@@ -261,10 +262,23 @@ public class AppViewService {
             Diff alternativeAdminDiff = javers.compare(oldAlternativeAdmin, newAlternativeAdmin);
             JaversUtil.convert(KEY_ALTERNATIVE_ADMIN, alternativeAdminDiff, sumDiffMap);
             // compare officer list
-            List<EmployeeInfo> oldOfficerList = oldFacAdminAndOfficerDto.getOfficerList();
-            List<EmployeeInfo> newOfficerList = newFacAdminAndOfficerDto.getOfficerList();
-            Diff officerListDiff = javers.compareCollections(oldOfficerList, newOfficerList, EmployeeInfo.class);
-            JaversUtil.convertList(KEY_OFFICER_LIST, officerListDiff, sumDiffMap);
+            List<EmployeeInfo> oldOfficers = oldFacAdminAndOfficerDto.getOfficerList();
+            List<EmployeeInfo> newOfficers = newFacAdminAndOfficerDto.getOfficerList();
+
+            List<String> oldOfficerIdNoList = oldOfficers.stream().map(EmployeeInfo::getIdNumber).collect(Collectors.toList());
+            List<String> newOfficerIdNoList = newOfficers.stream().map(EmployeeInfo::getIdNumber).collect(Collectors.toList());
+            List<String> addListO = new ArrayList<>();
+            List<String> deleteListO = new ArrayList<>();
+            List<String> remainListO = new ArrayList<>();
+            CompareUtil.filterList(oldOfficerIdNoList, newOfficerIdNoList, addListO, deleteListO, remainListO);
+
+            List<CompareFacilityOfficerDto> compareFacilityOfficerDtoList = new ArrayList<>(oldOfficers.size() + newOfficers.size());
+            Map<String, EmployeeInfo> oldEmployeeInfoMap = CollectionUtils.uniqueIndexMap(oldOfficers, EmployeeInfo::getIdNumber);
+            Map<String, EmployeeInfo> newEmployeeInfoMap = CollectionUtils.uniqueIndexMap(newOfficers, EmployeeInfo::getIdNumber);
+            remainListO.forEach(s -> compareFacilityOfficerDtoList.add(new CompareFacilityOfficerDto(oldEmployeeInfoMap.get(s), newEmployeeInfoMap.get(s))));
+            deleteListO.forEach(s -> compareFacilityOfficerDtoList.add(new CompareFacilityOfficerDto(oldEmployeeInfoMap.get(s), new EmployeeInfo())));
+            addListO.forEach(s -> compareFacilityOfficerDtoList.add(new CompareFacilityOfficerDto(new EmployeeInfo(), newEmployeeInfoMap.get(s))));
+            ParamUtil.setRequestAttr(request, "compareFacilityOfficerDtoList", compareFacilityOfficerDtoList);
 
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, oldFacRegDto.getFacilityAdminAndOfficerDto());
 
@@ -290,8 +304,32 @@ public class AppViewService {
 
                 ParamUtil.setRequestAttr(request, NODE_NAME_AFC, oldFacRegDto.getAfcDto());
             } else if (isUcf) {
-                List<BiologicalAgentToxinDto> batList = new ArrayList<>(oldFacRegDto.getBiologicalAgentToxinMap().values());
-                ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
+                // compare bat (Premise: When the applicant does the RFI, the facilityActivity type cannot be changed)
+                List<BiologicalAgentToxinDto> oldBatList = new ArrayList<>(oldFacRegDto.getBiologicalAgentToxinMap().values());
+                List<BiologicalAgentToxinDto> newBatList = new ArrayList<>(newFacRegDto.getBiologicalAgentToxinMap().values());
+                Map<String, List<CompareBATInfoDto>> compareBatMap = Maps.newLinkedHashMapWithExpectedSize(oldBatList.size());
+                for (int i = 0; i < oldBatList.size(); i++) {
+                    List<BATInfo> oldBatInfos = oldBatList.get(i).getBatInfos();
+                    List<BATInfo> newBatInfos = newBatList.get(i).getBatInfos();
+
+                    List<String> oldBatNameList = oldBatInfos.stream().map(BATInfo::getBatName).collect(Collectors.toList());
+                    List<String> newBatNameList = newBatInfos.stream().map(BATInfo::getBatName).collect(Collectors.toList());
+                    List<String> addList = new ArrayList<>();
+                    List<String> deleteList = new ArrayList<>();
+                    List<String> remainList = new ArrayList<>();
+                    CompareUtil.filterList(oldBatNameList, newBatNameList, addList, deleteList, remainList);
+
+                    List<CompareBATInfoDto> compareBATInfoDtoList = new ArrayList<>(oldBatInfos.size() + newBatInfos.size());
+                    Map<String, BATInfo> oldBatInfoMap = CollectionUtils.uniqueIndexMap(oldBatInfos, BATInfo::getBatName);
+                    Map<String, BATInfo> newBatInfoMap = CollectionUtils.uniqueIndexMap(newBatInfos, BATInfo::getBatName);
+                    remainList.forEach(s -> compareBATInfoDtoList.add(new CompareBATInfoDto(oldBatInfoMap.get(s), newBatInfoMap.get(s))));
+                    deleteList.forEach(s -> compareBATInfoDtoList.add(new CompareBATInfoDto(oldBatInfoMap.get(s), new BATInfo())));
+                    addList.forEach(s -> compareBATInfoDtoList.add(new CompareBATInfoDto(new BATInfo(), newBatInfoMap.get(s))));
+
+                    String activityType = oldBatList.get(i).getActivityType();
+                    compareBatMap.put(activityType, compareBATInfoDtoList);
+                }
+                ParamUtil.setRequestAttr(request, "compareBatMap", compareBatMap);
             }
 
             OtherApplicationInfoDto otherAppInfoDto = oldFacRegDto.getOtherAppInfoDto();
@@ -302,24 +340,48 @@ public class AppViewService {
 
             List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
             ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
-            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(newFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, savedFiles);
-            Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet());
-            ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
+            PrimaryDocDto oldPrimaryDocDto = new PrimaryDocDto();
+            oldPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(oldFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> oldSavedFiles = oldPrimaryDocDto.getExistDocTypeMap();
+
+            PrimaryDocDto newPrimaryDocDto = new PrimaryDocDto();
+            newPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(newFacRegDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> newSavedFiles = newPrimaryDocDto.getExistDocTypeMap();
+            Set<String> newOtherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, newSavedFiles.keySet());
+            ParamUtil.setRequestAttr(request, KEY_FILE_MAP_SAVED, newSavedFiles);
+            ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, newOtherDocTypes);
+
+            // compare doc (Premise: When the applicant does the RFI, the doc type cannot be changed)
+            Map<String, List<CompareDocRecordInfoDto>> compareDocMap = Maps.newLinkedHashMapWithExpectedSize(oldSavedFiles.size());
+            Set<Map.Entry<String, List<DocRecordInfo>>> docSet = oldSavedFiles.entrySet();
+            for (Map.Entry<String, List<DocRecordInfo>> entry : docSet) {
+                String docType = entry.getKey();
+                List<DocRecordInfo> oldDocInfos = oldSavedFiles.get(docType);
+                List<DocRecordInfo> newDocInfos = newSavedFiles.get(docType);
+
+                List<String> oldDocRepoIdList = oldDocInfos.stream().map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+                List<String> newDocRepoIdList = newDocInfos.stream().map(DocRecordInfo::getRepoId).collect(Collectors.toList());
+                List<String> addList = new ArrayList<>();
+                List<String> deleteList = new ArrayList<>();
+                List<String> remainList = new ArrayList<>();
+                CompareUtil.filterList(oldDocRepoIdList, newDocRepoIdList, addList, deleteList, remainList);
+
+                List<CompareDocRecordInfoDto> compareDocRecordInfoDtoList = new ArrayList<>(oldDocInfos.size() + newDocInfos.size());
+                Map<String, DocRecordInfo> oldDocMap = CollectionUtils.uniqueIndexMap(oldDocInfos, DocRecordInfo::getRepoId);
+                Map<String, DocRecordInfo> newDocMap = CollectionUtils.uniqueIndexMap(newDocInfos, DocRecordInfo::getRepoId);
+                remainList.forEach(s -> compareDocRecordInfoDtoList.add(new CompareDocRecordInfoDto(oldDocMap.get(s), newDocMap.get(s))));
+                deleteList.forEach(s -> compareDocRecordInfoDtoList.add(new CompareDocRecordInfoDto(oldDocMap.get(s), new DocRecordInfo())));
+                addList.forEach(s -> compareDocRecordInfoDtoList.add(new CompareDocRecordInfoDto(new DocRecordInfo(), newDocMap.get(s))));
+
+                compareDocMap.put(docType, compareDocRecordInfoDtoList);
+            }
+            // compare other doc
+
+            ParamUtil.setRequestAttr(request, "compareDocMap", compareDocMap);
 
             ParamUtil.setRequestAttr(request, "diffMap", sumDiffMap);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
-        }
-    }
-
-    private void compareDiffDocRecordInfo(Collection<DocRecordInfo> oldInfos, Collection<DocRecordInfo> newInfos, String docType, HttpServletRequest request) {
-        List<String> oldRepoIdList = oldInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
-        List<String> newRepoIdList = newInfos.stream().filter(docRecordInfo -> docRecordInfo.getDocType().equals(docType)).map(DocRecordInfo::getRepoId).collect(Collectors.toList());
-        if (!oldRepoIdList.containsAll(newRepoIdList) || !newRepoIdList.containsAll(oldRepoIdList)) {
-            ParamUtil.setRequestAttr(request, docType, true);
         }
     }
 

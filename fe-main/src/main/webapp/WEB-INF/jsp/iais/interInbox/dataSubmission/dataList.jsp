@@ -307,6 +307,8 @@
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
             var rfcType = $("#rfcType").val();
+            console.log(rfcType);
+            console.log(selectAllTypeSub);
             /*if(selectAllTypeSub.indexOf('DSCL_012') < 0 ){*/
             if(rfcType.indexOf(selectAllTypeSub)>0){
                 $('#ds-amend').removeClass("disabled");

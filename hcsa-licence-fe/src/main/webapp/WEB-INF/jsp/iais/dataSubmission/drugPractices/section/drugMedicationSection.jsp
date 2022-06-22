@@ -39,7 +39,16 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>Strength (mg)&nbsp;<span class="mandatory">*</span></label>
+                        <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>
+                            <c:choose>
+                                <c:when test="${drugSubmission.medication == 'MED001'}">
+                                    Strength (&micro;g/hr)&nbsp;
+                                </c:when>
+                                <c:otherwise>
+                                    Strength (mg)&nbsp;
+                                </c:otherwise>
+                            </c:choose>
+                            <span class="mandatory">*</span></label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_strength"${index}></span>
@@ -100,7 +109,16 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>Strength (pg)&nbsp;<span class="mandatory">*</span></label>
+                            <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>
+                                <c:choose>
+                                    <c:when test="${drugSubmission.medication == 'MED001'}">
+                                        Strength (&micro;g/hr)&nbsp;
+                                    </c:when>
+                                    <c:otherwise>
+                                        Strength (mg)&nbsp;
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="mandatory">*</span></label>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
                             </iais:value>

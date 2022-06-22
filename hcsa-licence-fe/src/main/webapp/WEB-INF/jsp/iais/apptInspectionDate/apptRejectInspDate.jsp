@@ -46,7 +46,7 @@
                 <iais:row>
                   <iais:field value="Enter Reason" required="true"/>
                   <iais:value width="7">
-                    <textarea maxlength="300" id="apptRejectReason" name="apptRejectReason" cols="70" rows="7" ><c:out value="${apptFeConfirmDateDto.reason}"></c:out></textarea>
+                    <textarea maxlength="300" id="apptRejectReason" name="apptRejectReason" style="width: 100%;overflow: auto;word-break: break-all;" ><c:out value="${apptFeConfirmDateDto.reason}"></c:out></textarea>
                     <br><span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                   </iais:value>
                 </iais:row>

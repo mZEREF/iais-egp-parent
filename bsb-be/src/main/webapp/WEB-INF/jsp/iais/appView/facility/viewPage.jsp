@@ -29,6 +29,7 @@
 <%--@elvariable id="previewSubmit" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
 <%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
+<%--@elvariable id="compareDocMap" type="java.util.Map<java.lang.String, java.util.List<gov.moh.iais.egp.bsb.dto.register.facility.CompareDocRecordInfoDto>>"--%>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="maskedEditId" type="java.lang.String"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -44,13 +45,59 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
-                                                 compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
-                                                 facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
-                                                 batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                                 classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
-                                                 diffMap="${diffMap}">
+                                    <c:if test="${isRFI}">
+                                        <fac:rfi-preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
+                                                     compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
+                                                     facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
+                                                     batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
+                                                     classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
+                                                     diffMap="${diffMap}">
                                         <jsp:attribute name="docFrag">
+                                            <c:forEach var="doc" items="${docSettings}">
+                                                <div class="form-group">
+                                                    <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <c:forEach var="compareDocRecordInfoDto" items="${compareDocMap.get(doc.type)}" varStatus="status">
+                                                    <c:set var="oldFile" value="${compareDocRecordInfoDto.oldDocRecordInfo}"/>
+                                                    <c:set var="newFile" value="${compareDocRecordInfoDto.newDocRecordInfo}"/>
+                                                    <div class="form-group">
+                                                        <c:set var="oldRepoId"><iais:mask name="file" value="${oldFile.repoId}"/></c:set>
+                                                        <div class="col-xs-6"><p data-compare-old-doc="${doc.type}${status.index}" data-repo-id="${oldFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${oldRepoId}?filename=${oldFile.filename}">${oldFile.filename}</a>(<fmt:formatNumber value="${oldFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                        <c:set var="newRepoId"><iais:mask name="file" value="${newFile.repoId}"/></c:set>
+                                                        <div class="col-xs-6"><p class="compareTdStyle" style="display: none" data-compare-new-doc="${doc.type}${status.index}" data-repo-id="${newFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${newRepoId}?filename=${newFile.filename}">${newFile.filename}</a>(<fmt:formatNumber value="${newFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                </c:forEach>
+                                            </c:forEach>
+                                            <c:if test="${not empty otherDocTypes}">
+                                                <div class="form-group">
+                                                    <div class="col-10"><strong>Others</strong></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div>
+                                                    <c:forEach var="type" items="${otherDocTypes}">
+                                                        <c:set var="savedFileList" value="${savedFiles.get(type)}" />
+                                                        <c:forEach var="file" items="${savedFileList}">
+                                                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                            <div class="form-group">
+                                                                <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </c:forEach>
+                                                    </c:forEach>
+                                                </div>
+                                            </c:if>
+                                        </jsp:attribute>
+                                    </fac:rfi-preview>
+                                    </c:if>
+                                    <c:if test="${!isRFI}">
+                                        <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
+                                                     compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
+                                                     facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
+                                                     batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
+                                                     classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}">
+                                            <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
                                                 <c:if test="${not empty savedFileList}">
@@ -88,7 +135,8 @@
                                                 </div>
                                             </c:if>
                                         </jsp:attribute>
-                                    </fac:preview>
+                                        </fac:preview>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>

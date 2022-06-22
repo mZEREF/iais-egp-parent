@@ -29,7 +29,7 @@
             <%--<iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
                         mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>--%>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherContraMethod"  id="otherContraMethodText" value="${familyPlanDto.otherContraMethod}"/>
+                <iais:input maxLength="100" type="text" name="otherContraMethod"  id="otherContraMethodText" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
         </iais:row>
         </div>
@@ -128,7 +128,7 @@
         <iais:row>
             <iais:field width="5" value="Other Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
+                <iais:input maxLength="1000" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
             </iais:value>
         </iais:row>
     </div>

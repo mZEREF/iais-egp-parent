@@ -62,7 +62,6 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class DpSiUploadDelegate {
 
-    protected static final String ACTION_TYPE_PAGE = "page";
     protected static final String ACTION_TYPE_PREVIEW = "preview";
 
     private static final String FILE_ITEM_SIZE = "fileItemSize";
@@ -100,6 +99,9 @@ public class DpSiUploadDelegate {
         session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+
+        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
     }
 
     /**
@@ -114,7 +116,7 @@ public class DpSiUploadDelegate {
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
-            actionType = ACTION_TYPE_PAGE;
+            actionType = ACTION_TYPE_PREVIEW;
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
     }
@@ -126,7 +128,6 @@ public class DpSiUploadDelegate {
      */
     public void preparePage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PreparePage -----"));
-        preapreDate(DataSubmissionConstant.PAGE_STAGE_PAGE, bpc.request);
 
     }
 
@@ -150,68 +151,7 @@ public class DpSiUploadDelegate {
      */
     public void doPageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PageAction -----"));
-        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
-            clearSession(bpc.request);
-            return;
-        }
-        int fileItemSize = 0;
-        Map<String, String> errorMap = null;
-        boolean hasItems = AppConsts.YES.equals(ParamUtil.getString(bpc.request, "hasItems"));
-        log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
-        List<DpSovenorInventoryDto> dpSovenorInventoryDtos = (List<DpSovenorInventoryDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
-        if (dpSovenorInventoryDtos == null || !hasItems) {
-            // upload file (first time / error)
-            Entry<String, File> fileEntry = getFileEntry(bpc.request);
-            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-            ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
-            errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-            if (errorMap.isEmpty()) {
-                List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
-                fileItemSize = sovenorInventoryExcelDtos.size();
-                if (fileItemSize == 0) {
-                    errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
-                    errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
-                } else {
-                    dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
-                    Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
-                    List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(dpSovenorInventoryDtos, "file", fieldCellMap);
 
-                    for (int i = 1; i <= fileItemSize; i++) {
-                        DpSovenorInventoryDto siDto=dpSovenorInventoryDtos.get(i-1);
-                        validSovenorInventory(errorMsgs, siDto, fieldCellMap, i);
-                    }
-                    if (!errorMsgs.isEmpty()) {
-                        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                        errorMap.put("itemError", "itemError");
-                    }
-                }
-            }
-            //crudype = ACTION_TYPE_PAGE;
-        } else {
-            // To submission
-            // crudype = "submission";
-        }
-        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
-        if (errorMap != null && !errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            clearSession(bpc.request);
-            fileItemSize = 0;
-            crudype = ACTION_TYPE_PAGE;
-        } else {
-            if (dpSovenorInventoryDtos != null) {
-                fileItemSize = dpSovenorInventoryDtos.size();
-            }
-            bpc.request.getSession().setAttribute(SOVENOR_INVENTORY_LIST, dpSovenorInventoryDtos);
-            crudype = ACTION_TYPE_PREVIEW;
-        }
-        ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
-        log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
 
     private void validSovenorInventory(List<FileErrorMsg> errorMsgs,DpSovenorInventoryDto siDto,Map<String, ExcelPropertyDto> fieldCellMap,int i){
@@ -474,12 +414,72 @@ public class DpSiUploadDelegate {
         dataSubmissionDto.setDeclaration(declaration);
         DataSubmissionHelper.setCurrentDpDataSubmission(superDataSubmissionDto, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if (StringUtil.isIn(crudype, new String[]{ACTION_TYPE_PAGE, "back"})) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
+            clearSession(bpc.request);
             return;
         }
+        int fileItemSize = 0;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        boolean hasItems = AppConsts.YES.equals(ParamUtil.getString(bpc.request, "hasItems"));
+        log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
+        List<DpSovenorInventoryDto> dpSovenorInventoryDtos = (List<DpSovenorInventoryDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
+        if (dpSovenorInventoryDtos == null || !hasItems) {
+            // upload file (first time / error)
+            Entry<String, File> fileEntry = getFileEntry(bpc.request);
+            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
+            ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
+            errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
+            if (errorMap.isEmpty()) {
+                String fileName=fileEntry.getValue().getName();
+                if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
+                    errorMap.put("uploadFileError", "DS_ERR068");
+                }
+                List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
+                fileItemSize = sovenorInventoryExcelDtos.size();
+                if (fileItemSize == 0) {
+                    errorMap.put("uploadFileError", "PRF_ERR006");
+                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
+                    errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
+                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
+                } else {
+                    dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
+                    Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
+                    List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(dpSovenorInventoryDtos, "file", fieldCellMap);
+
+                    for (int i = 1; i <= fileItemSize; i++) {
+                        DpSovenorInventoryDto siDto=dpSovenorInventoryDtos.get(i-1);
+                        validSovenorInventory(errorMsgs, siDto, fieldCellMap, i);
+                    }
+                    if (!errorMsgs.isEmpty()) {
+                        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
+                        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
+                        errorMap.put("itemError", "itemError");
+                        errorMap.put("uploadFileError", "DS_ERR068");
+                    }
+                }
+            }
+            //crudype = ACTION_TYPE_PAGE;
+        } else {
+            // To submission
+            // crudype = "submission";
+        }
+        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
+        if (errorMap != null && !errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, "hasError",true);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            clearSession(bpc.request);
+            fileItemSize = 0;
+            crudype = ACTION_TYPE_PREVIEW;
+        } else {
+            if (dpSovenorInventoryDtos != null) {
+                fileItemSize = dpSovenorInventoryDtos.size();
+            }
+            bpc.request.getSession().setAttribute(SOVENOR_INVENTORY_LIST, dpSovenorInventoryDtos);
+        }
+        ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
+        log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         if (StringUtil.isEmpty(declaration)) {
             errorMap.put("declaration", "GENERAL_ERR0006");
         }
@@ -569,7 +569,7 @@ public class DpSiUploadDelegate {
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) {
         log.info(StringUtil.changeForLog("----- Export Patient Info File -----"));
         try {
-            String fileName = "Sovenor Inventory List";
+            String fileName = "Sovenor_Inventory_List";
             File inputFile = ResourceUtils.getFile("classpath:template/" + fileName + ".xlsx");
             if (!inputFile.exists() || !inputFile.isFile()) {
                 log.error("No File Template Found!");

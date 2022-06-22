@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.rbac.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Description manage licnesee and user
@@ -34,9 +36,12 @@ public class HalpUserDelegate {
     }
 
     @GetMapping(value = "/fe-roles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Role>> getFeRoles() {
+    public ResponseEntity<List<Map<String, Object>>> getFeRoles() {
         log.info("Retrive FE Roles");
-        return ResponseEntity.ok(userManageService.getFeRoles());
+        List<Map<String, Object>> result = userManageService.getFeRoles().stream()
+                .map(role -> IaisCommonUtils.beanToMap(role))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
 }

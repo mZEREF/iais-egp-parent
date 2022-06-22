@@ -85,7 +85,7 @@ public interface OrgUserManageService {
       */
     String getActiveUserAndRoleFlag(FeUserDto userSession);
 
-    List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId);
+    List<SelectOption> getRoleSelection(String licenseeId, String orgId);
 
     List<Role> getFeRoles();
 

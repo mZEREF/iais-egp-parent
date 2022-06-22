@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CounsellingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
@@ -74,28 +73,6 @@ public class DsLicenceServiceImpl implements DsLicenceService {
             List<String> svcNames = new ArrayList<>();
             //TODO
             //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
-            return licenceClient.getLatestPremisesByConds(getLicenseeId(orgId), svcNames, false).getEntity();
-        }
-    }
-
-    @Override
-    public List<PremisesDto> getLdtCenterPremiseList(String orgId) {
-        if (tempCenterEnable) {
-            List<PremisesDto> premisesDtos = IaisCommonUtils.genNewArrayList();
-            if (StringUtil.isEmpty(DataSubmissionConsts.DS_LDT)) {
-                return premisesDtos;
-            }
-            List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(orgId, DataSubmissionConsts.DS_LDT).getEntity();
-            if (centerDtos == null || centerDtos.isEmpty()) {
-                return premisesDtos;
-            }
-            for (DsCenterDto dsCenterDto : centerDtos) {
-                premisesDtos.add(transfer(dsCenterDto, dsCenterDto.getOrganizationId()));
-            }
-            return premisesDtos;
-        } else {
-            List<String> svcNames = new ArrayList<>();
-            svcNames.add(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
             return licenceClient.getLatestPremisesByConds(getLicenseeId(orgId), svcNames, false).getEntity();
         }
     }

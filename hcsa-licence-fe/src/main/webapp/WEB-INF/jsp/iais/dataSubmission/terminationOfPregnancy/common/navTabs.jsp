@@ -9,7 +9,7 @@
         <c:if test="${config.status == 0}">
             <c:set var="stepStatus" value="incomplete"/>
         </c:if>
-        <c:if test="${config.status == 1}">
+        <c:if test="${config.status == 1 || config.status == 2 || config.status == 3 || config.status == 4 || config.status == 5}">
             <c:set var="stepStatus" value="complete"/>
         </c:if>
         <c:if test="${config.active}">
@@ -17,10 +17,7 @@
         </c:if>
         <c:if test="${config.canShow}">
             <li id="${config.name}li" role="presentation" class="${stepStatus}">
-                <a id="${config.name}" aria-controls="${config.name}Tab" role="tab" data-toggle="tab"
-                   data-config-click="${config.canClick}" data-config-code="${config.code}">
-                    <c:out value="${config.text}" escapeXml="false"/>
-                </a>
+                <a id="${config.name}" aria-controls="${config.name}Tab" role="tab" data-toggle="tab" data-config-click="${config.canClick}" data-config-code="${config.code}"><c:out value="${config.text}" escapeXml="false"/></a>
             </li>
         </c:if>
     </c:forEach>
@@ -33,10 +30,7 @@
             </c:if>
             <c:if test="${config.canShow}">
                 <div class="swiper-slide " >
-                    <a href="#${config.name}" aria-controls="${config.name}Tab" role="tab" data-toggle="tab"
-                       data-config-click="${config.canClick}">
-                        <c:out value="${config.text}" escapeXml="false"/>
-                    </a>
+                    <a href="#${config.name}" aria-controls="${config.name}Tab" role="tab" data-toggle="tab" data-config-click="${config.canClick}"><c:out value="${config.text}" escapeXml="false"/></a>
                 </div>
             </c:if>
         </c:forEach>

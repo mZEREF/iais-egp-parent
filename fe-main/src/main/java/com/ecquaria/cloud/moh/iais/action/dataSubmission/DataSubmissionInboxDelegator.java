@@ -36,6 +36,12 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,11 +49,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -179,6 +180,7 @@ public class DataSubmissionInboxDelegator {
 
 	private String getRfcType(List<String> privilegeIds){
 		StringBuilder rfcType = new StringBuilder();
+		rfcType.append(""+",");
 		privilegeIds.stream().forEach(privilegeId ->{
 			switch(privilegeId){
 				case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC :
@@ -632,6 +634,9 @@ public class DataSubmissionInboxDelegator {
 								}
 							}
 						}
+					}
+					if(dpSuperDataSubmissionDto.getCycleDto().equals(DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY)){
+						return 14;
 					}
 				}
 			}else if(actionValue.equals(AMENDED)){

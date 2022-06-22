@@ -14,7 +14,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___DOProcessWithdrawn___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbWithDrawnAppDelegatorBE";
+	private static final String DELEGATOR ="doProcessWithdrawalDelegator";
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}

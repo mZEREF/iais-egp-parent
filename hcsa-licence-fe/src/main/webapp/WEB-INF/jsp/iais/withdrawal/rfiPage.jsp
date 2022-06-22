@@ -151,7 +151,7 @@
                                     <div class="center-content">
                                         <div class="col-md-6">
                                             <div class="file-upload-gp">
-                                            <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
+                                            <textarea name="withdrawnRemarks" style="width: 100%;overflow: auto;word-break: break-all;" id="withdrawnRemarks"
                                                       title="content"
                                                       maxlength="500">${rfiWithdrawDto.withdrawnRemarks}</textarea>
                                             </div>
