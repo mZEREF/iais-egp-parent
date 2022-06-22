@@ -11,7 +11,7 @@ RUN deluser --remove-home egpcloud
 RUN adduser -D -u 1000 iais
 RUN chown -R iais:iais /usr/local/tomcat
 
-COPY --chown=iais:iais target/main-web /usr/local/tomcat/webapps/bsb-web
+COPY --chown=iais:iais target/bsb-web /usr/local/tomcat/webapps/bsb-web
 
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json
