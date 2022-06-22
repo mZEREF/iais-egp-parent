@@ -330,9 +330,12 @@ public abstract class DpCommonDelegator {
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
-
         try {
-            sendMsgAndEmail(serverName,licenseeId, licenseeDtoName, submissionNo);
+            if(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+                sendRfcMsgAndEmail(licenseeId, licenseeDtoName, submissionNo);
+            }else {
+                sendMsgAndEmail(serverName,licenseeId, licenseeDtoName, submissionNo);
+            }
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -525,6 +528,36 @@ public abstract class DpCommonDelegator {
         log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));
     }
 
+    private void sendRfcMsgAndEmail(String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("dataSupervisor", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("submissionId", submissionNo);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setRefId(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setSubject(subject);
+        notificationHelper.sendNotification(msgParam);
+        log.info(StringUtil.changeForLog("***************** send VSS Notification  end *****************"));
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_EMAIL);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
+        log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));
+    }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
             String failedCrudActionType, List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {
