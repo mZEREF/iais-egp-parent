@@ -155,7 +155,7 @@
                                            name="roles"
                                            value="${value}"
                                            id="role${value}"
-                                           <c:if test="${StringUtil.stringContain(roles,value)}">checked</c:if>
+                                           <c:if test="${StringUtil.isIn(value, roles)}">checked</c:if>
                                            aria-invalid="false" >
                                     <label class="form-check-label"
                                            for="role${value}"><span
@@ -195,7 +195,7 @@
                                                name="service"
                                                value="${value}"
                                                id="service${status.index}"
-                                               <c:if test="${StringUtil.stringContain(selectServices,value)}">checked</c:if>
+                                               <c:if test="${StringUtil.isIn(value, selectServices)}">checked</c:if>
                                                aria-invalid="false"   <c:if test="${!empty selectServices && (allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0)}">disabled</c:if>
                                                onchange="mutualExclusionServiceCheckBox('${value}',${serviceSize})">
                                         <label class="form-check-label"

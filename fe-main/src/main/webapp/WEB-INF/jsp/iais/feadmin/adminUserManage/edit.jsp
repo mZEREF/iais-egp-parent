@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts" %>
@@ -68,14 +67,10 @@
                                                          <c:set var="roles" value="${inter_user_attr.roles}"/>
                                                          <div class="form-check col-xs-7" style="padding-left: 0px;">
                                                              <input class="form-check-input" type="checkbox"
-                                                                    name="roles"
-                                                                    value="${value}"
-                                                                    id="role${value}"
-                                                                    <c:if test="${StringUtil.stringContain(roles,value)}">checked</c:if>
+                                                                    name="roles" value="${value}" id="role${value}"
+                                                                    <c:if test="${StringUtil.isIn(value, roles)}">checked</c:if>
                                                                     aria-invalid="false" >
-                                                             <label class="form-check-label"
-                                                                    for="role${value}"><span
-                                                                     class="check-square"></span>
+                                                             <label class="form-check-label" for="role${value}"><span class="check-square"></span>
                                                                  <c:out value="${role.text}"/></label>
                                                          </div>
                                                  </c:forEach>
@@ -112,10 +107,8 @@
                                                         <c:set var="value" value="${service.value}"/>
                                                         <div class="form-check col-xs-12" style="padding-left: 0px;">
                                                             <input class="form-check-input" type="checkbox"
-                                                                   name="service"
-                                                                   value="${value}"
-                                                                   id="service${status.index}"
-                                                                   <c:if test="${StringUtil.stringContain(selectServices,value)}">checked</c:if>
+                                                                   name="service" value="${value}" id="service${status.index}"
+                                                                   <c:if test="${StringUtil.isIn(value, selectServices)}">checked</c:if>
                                                                    aria-invalid="false"   <c:if test="${!empty selectServices && (allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0)}">disabled</c:if>
                                                                    onchange="mutualExclusionServiceCheckBox('${value}',${serviceSize})">
                                                             <label class="form-check-label"
