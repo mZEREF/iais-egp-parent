@@ -6,7 +6,7 @@ public class AppViewConstants {
     // mask param used by appView
     public static final String MASK_PARAM_APP_ID                            = "appId";
     public static final String MASK_PARAM_APP_VIEW_MODULE_TYPE              = "appViewModuleType";
-    public static final String KEY_TASK_TYPE                         = "taskType";
+    public static final String KEY_TASK_TYPE                                = "taskType";
     public static final String KEY_APP_VIEW_URL                             = "appViewUrl";
 
     public static final String KEY_APP_VIEW_URL_FACILITY                    = "/bsb-web/eservice/INTRANET/BsbBeViewFacilityRegistration";
@@ -63,4 +63,16 @@ public class AppViewConstants {
     public static final String MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS       = "viewInspectionFollowUpItems";
 
     public static final String KEY_VIEW_DATA_SUBMISSION                     = "dataSubInfo";
+
+    // facility compare
+    public static final String COMPARE_FAC_PROFILE                          = "compareFacProfile";
+    public static final String COMPARE_FAC_OPERATOR                         = "compareFacOperator";
+    public static final String COMPARE_MAIN_ADMIN                           = "compareMainAdmin";
+    public static final String COMPARE_ALTER_ADMIN                          = "compareAlterAdmin";
+    public static final String COMPARE_OFFICERS                             = "compareOfficers";
+    public static final String COMPARE_BIO_SAFETY_COMMITTEE_IS_DIFFERENT    = "compareBioSafetyCommitteeIsDifferent";
+    public static final String COMPARE_AUTHORIZER_IS_DIFFERENT              = "compareAuthorizerIsDifferent";
+    public static final String COMPARE_AFC                                  = "compareAfc";
+    public static final String COMPARE_BAT_MAP                              = "compareBatMap";
+    public static final String COMPARE_DOC_MAP                              = "compareDocMap";
 }
