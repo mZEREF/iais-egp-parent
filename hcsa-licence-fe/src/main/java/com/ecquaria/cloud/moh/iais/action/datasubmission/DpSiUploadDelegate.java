@@ -99,9 +99,7 @@ public class DpSiUploadDelegate {
         session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
-        int configFileSize = systemParamConfig.getUploadFileLimit();
 
-        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
     }
 
     /**
