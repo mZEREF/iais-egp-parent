@@ -141,7 +141,7 @@ public abstract class DpCommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSubmission";
+        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareCompliance";
         if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
             URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         }

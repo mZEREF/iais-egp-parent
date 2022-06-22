@@ -1607,7 +1607,7 @@ public class TopDataSubmissionDelegator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if (topSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getAppType())) {
-            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)

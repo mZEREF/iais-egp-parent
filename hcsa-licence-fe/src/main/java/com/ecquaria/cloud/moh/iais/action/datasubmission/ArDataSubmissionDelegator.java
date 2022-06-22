@@ -265,7 +265,7 @@ public class ArDataSubmissionDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

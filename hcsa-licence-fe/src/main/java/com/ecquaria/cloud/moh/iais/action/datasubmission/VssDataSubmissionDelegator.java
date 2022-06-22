@@ -740,7 +740,7 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if (vssSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(vssSuperDataSubmissionDto.getAppType())) {
-            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
