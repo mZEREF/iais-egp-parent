@@ -18,10 +18,11 @@
                 <a href="/hcsa-licence-web/eservice/INTERNET/MohLabDevelopedTestsEnquiry">LDT Online Enquiry</a>
             </li>
         </c:if>
-
+      <c:if test="${canAmendDs}">
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Amend a Submission</a>
         </li>
+        </c:if>
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Edit a Draft Submission</a>
         </li>

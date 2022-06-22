@@ -99,24 +99,45 @@ public final class FeInboxHelper {
             return getCaseWhenSql(list,replaceArea,tabCol,renameTabCol,sql,true);
     }
 
-    public static boolean canCreate(List<String> privilegeIds){
+    public static boolean canCreateDs(List<String> privilegeIds){
         log.info(StringUtil.changeForLog("The canCreate start ..."));
-        boolean result = false;
         List<String> createPrivilegeList = IaisCommonUtils.genNewArrayList();
         createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_AR_CRE);
         createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_DP_CRE);
         createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_TOP_CRE);
         createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_LDT_CRE);
         createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_VSS_CRE);
-        if(IaisCommonUtils.isNotEmpty(privilegeIds)){
-            List<String> intersection = privilegeIds.stream().filter(createPrivilegeList::contains).collect(Collectors.toList());
-            log.info(StringUtil.changeForLog("The canCreate intersection -->:"+intersection));
+        boolean result = hasIntersection(privilegeIds,createPrivilegeList);
+        log.info(StringUtil.changeForLog("The canCreate result -->:"+result));
+        log.info(StringUtil.changeForLog("The canCreate end ..."));
+        return result;
+    }
+
+    public static boolean canAmendDs(List<String> privilegeIds){
+        log.info(StringUtil.changeForLog("The canAmendDs start ..."));
+        List<String> createPrivilegeList = IaisCommonUtils.genNewArrayList();
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_TOP_RFC);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_LDT_RFC);
+        createPrivilegeList.add(PrivilegeConsts.USER_PRIVILEGE_DS_VSS_RFC);
+        boolean result = hasIntersection(privilegeIds,createPrivilegeList);
+        log.info(StringUtil.changeForLog("The canAmendDs result -->:"+result));
+        log.info(StringUtil.changeForLog("The canAmendDs end ..."));
+        return result;
+    }
+
+    private static boolean hasIntersection(List<String> privilegeIds,List<String> PrivilegeList){
+        log.info(StringUtil.changeForLog("The hasIntersection start ..."));
+        boolean result = false;
+        if(IaisCommonUtils.isNotEmpty(privilegeIds) && IaisCommonUtils.isNotEmpty(PrivilegeList)){
+            List<String> intersection = privilegeIds.stream().filter(PrivilegeList::contains).collect(Collectors.toList());
+            log.info(StringUtil.changeForLog("The  intersection -->:"+intersection));
             if(intersection.size() >0){
                 result = true;
             }
         }
-        log.info(StringUtil.changeForLog("The canCreate result -->:"+result));
-        log.info(StringUtil.changeForLog("The canCreate end ..."));
+        log.info(StringUtil.changeForLog("The hasIntersection end ..."));
         return result;
     }
 
