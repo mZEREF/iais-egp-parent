@@ -573,15 +573,9 @@ public class DpSiUploadDelegate {
                 log.error("No File Template Found!");
                 return;
             }
-            final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
-            File outFile = MiscUtil.generateFile(postFileName);
-            boolean b = inputFile.renameTo(outFile);
-            if (b) {
-                FileUtils.writeFileResponseContent(response, outFile);
-                FileUtils.deleteTempFile(outFile);
-            } else {
-                FileUtils.writeFileResponseContent(response, inputFile);
-            }
+
+            FileUtils.writeFileResponseContent(response, inputFile);
+
             FileUtils.deleteTempFile(inputFile);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
