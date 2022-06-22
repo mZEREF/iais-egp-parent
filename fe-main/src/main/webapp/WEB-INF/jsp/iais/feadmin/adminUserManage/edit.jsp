@@ -110,7 +110,7 @@
                                                     <c:set var="allServicesSelect" value="${selectServices == 'All_Services'}"/>
                                                     <c:forEach var="service" items="${AllServicesForHcsaRole}" varStatus="status">
                                                         <c:set var="value" value="${service.value}"/>
-                                                        <div class="form-check col-xs-7" style="padding-left: 0px;">
+                                                        <div class="form-check col-xs-12" style="padding-left: 0px;">
                                                             <input class="form-check-input" type="checkbox"
                                                                    name="service"
                                                                    value="${value}"
@@ -126,7 +126,7 @@
                                                     </c:forEach>
                                                 </iais:value>
                                                 <iais:value width="4" cssClass="col-md-4"/>
-                                                <iais:value width="3" cssClass="col-md-3">
+                                                <iais:value width="7" cssClass="col-md-7">
                                                     <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
                                                 </iais:value>
                                             </iais:row>
