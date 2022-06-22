@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -893,8 +892,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
-        // clear session
-        DealSessionUtil.clearSession(bpc.request);
+
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
