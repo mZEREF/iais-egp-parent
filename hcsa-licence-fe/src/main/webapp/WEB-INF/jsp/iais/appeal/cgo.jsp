@@ -57,7 +57,7 @@
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
                             <div id="control--runtime--" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
+                              <div class=" form-group form-horizontal formgap" style="width:194%;" >
                                 <div class="col-sm-4 control-label formtext control">
                                   <div class="cgo-header">
                                     <strong>Clinical Governance Officer </strong>
