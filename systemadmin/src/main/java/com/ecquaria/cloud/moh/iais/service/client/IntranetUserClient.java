@@ -40,7 +40,7 @@ public interface IntranetUserClient {
     FeignResponseEntity<Void> createOrgUserDto(@RequestBody OrgUserDto user);
 
     @PostMapping(value = "/iais-orguser-be/user-management-internet", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<OrgUserDto> createIntrenetUser(@RequestBody OrgUserDto user);
+    FeignResponseEntity<FeUserDto> saveIntrenetUser(@RequestBody FeUserDto feUserDto);
 
     @PostMapping(value = "/iais-orguser-be/users-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> createOrgUserDtos(@RequestBody List<OrgUserDto> orgUserDtos);

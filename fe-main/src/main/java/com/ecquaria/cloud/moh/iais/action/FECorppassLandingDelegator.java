@@ -5,7 +5,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -294,11 +296,18 @@ public class FECorppassLandingDelegator {
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         if (Optional.ofNullable(userSession).isPresent()){
             FeLoginHelper.writeUserField(request, userSession);
-            if(StringUtil.isEmpty(userSession.getRoles())){ userSession.setRoles("PASSVAL");}
+            if (StringUtil.isEmpty(userSession.getRoles())) {
+                userSession.setRoles(RoleConsts.USER_ROLE_ORG_USER);
+            }
+            if (StringUtil.isEmpty(userSession.getUserRole())) {
+                userSession.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
+            }
+            if (StringUtil.isEmpty(userSession.getSelectServices())) {
+                userSession.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
+            }
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
-            if("PASSVAL".equalsIgnoreCase(userSession.getRoles())){ userSession.setRoles(null);ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);}
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

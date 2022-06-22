@@ -255,28 +255,28 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setAccountDeactivateDatetime(calendar.getTime());
             userClient.createClientUser(clientUser);
         }
-
-        OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
-        EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-        String roleName = userRoleDto.getRoleName();
-        egpUserRole.setUserId(userId);
-        egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-        egpUserRole.setRoleId(roleName);
-        egpUserRole.setPermission("A");
-        //assign role
-        feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-        //corppass
-        if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName)){
-            EgpUserRoleDto role = new EgpUserRoleDto();
-            role.setUserId(userId);
-            role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            role.setPermission("A");
-            role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
-            //assign role
-            feMainRbacClient.createUerRoleIds(role).getEntity();
+        // roles
+        List<String> roleList = IaisCommonUtils.genNewArrayList();
+        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(userDto.getUserRole())) {
+            roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
         }
-
+        if (StringUtil.isNotEmpty(userDto.getRoles())) {
+            roleList.addAll(Arrays.asList(userDto.getRoles().split("#")));
+        }
+        Optional<String> optional = Optional.ofNullable(userDto.getUserRoleDto()).map(OrgUserRoleDto::getRoleName);
+        if (optional.isPresent()) {
+            IaisCommonUtils.addToList(optional.get(), roleList);
+        }
+        roleList.stream()
+                .map(roleName -> {
+                    EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                    egpUserRole.setUserId(userId);
+                    egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                    egpUserRole.setRoleId(roleName);
+                    egpUserRole.setPermission("A");
+                    return egpUserRole;
+                })
+                .forEach(feMainRbacClient::createUerRoleIds);
     }
 
     @Override

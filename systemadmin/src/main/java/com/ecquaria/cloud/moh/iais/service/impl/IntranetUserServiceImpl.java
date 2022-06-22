@@ -82,13 +82,17 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public OrgUserDto createIntrenetUser(OrgUserDto orgUserDto) {
-        return intranetUserClient.createIntrenetUser(orgUserDto).getEntity();
+    public void createIntranetUsers(List<OrgUserDto> orgUserDtos) {
+        intranetUserClient.createOrgUserDtos(orgUserDtos);
     }
 
     @Override
-    public void createIntranetUsers(List<OrgUserDto> orgUserDtos) {
-        intranetUserClient.createOrgUserDtos(orgUserDtos);
+    public FeUserDto saveIntrenetUser(FeUserDto feUserDto) {
+        if (feUserDto == null) {
+            log.info("No data to be saved.");
+            return feUserDto;
+        }
+        return intranetUserClient.saveIntrenetUser(feUserDto).getEntity();
     }
 
     @Override
