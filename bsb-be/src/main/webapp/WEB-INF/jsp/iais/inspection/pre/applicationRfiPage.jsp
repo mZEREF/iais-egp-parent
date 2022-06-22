@@ -42,51 +42,50 @@
                                                     <%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
                                                     <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
                                                     <%--@elvariable id="maskedEditId" type="java.lang.String"--%>
-                                                    <fac:rfi-preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
+                                                    <fac:preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
                                                                      compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
                                                                      facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                                                      batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
                                                                      classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
                                                                      facilityInfoSelectJudge="true" batSelectJudge="true" docSelectJudge="true">
-                                                        <jsp:attribute name="docFrag">
-                                            <c:forEach var="doc" items="${docSettings}">
-                                                <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
-                                                <c:if test="${not empty savedFileList}">
-                                                    <div class="form-group">
-                                                        <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
-                                                        <div class="clear"></div>
-                                                    </div>
-                                                    <div>
-                                                        <c:forEach var="file" items="${savedFileList}">
-                                                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                        <jsp:attribute name="docFrag"/>
+                                                        <c:forEach var="doc" items="${docSettings}">
+                                                            <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
+                                                            <c:if test="${not empty savedFileList}">
+                                                                <div class="form-group">
+                                                                    <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div>
+                                                                    <c:forEach var="file" items="${savedFileList}">
+                                                                        <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                    </c:forEach>
+                                                                </div>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        <c:if test="${not empty otherDocTypes}">
                                                             <div class="form-group">
-                                                                <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                <div class="col-10"><strong>Others</strong></div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                        </c:forEach>
-                                                    </div>
-                                                </c:if>
-                                            </c:forEach>
-                                            <c:if test="${not empty otherDocTypes}">
-                                                <div class="form-group">
-                                                    <div class="col-10"><strong>Others</strong></div>
-                                                    <div class="clear"></div>
-                                                </div>
-                                                <div>
-                                                    <c:forEach var="type" items="${otherDocTypes}">
-                                                        <c:set var="savedFileList" value="${savedFiles.get(type)}" />
-                                                        <c:forEach var="file" items="${savedFileList}">
-                                                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
-                                                            <div class="form-group">
-                                                                <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
-                                                                <div class="clear"></div>
+                                                            <div>
+                                                                <c:forEach var="type" items="${otherDocTypes}">
+                                                                    <c:set var="savedFileList" value="${savedFiles.get(type)}" />
+                                                                    <c:forEach var="file" items="${savedFileList}">
+                                                                        <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                    </c:forEach>
+                                                                </c:forEach>
                                                             </div>
-                                                        </c:forEach>
-                                                    </c:forEach>
-                                                </div>
-                                            </c:if>
-                                        </jsp:attribute>
-                                                    </fac:rfi-preview>
+                                                        </c:if>
+                                                    </fac:preview>\
                                                         <div style="text-align: right"><button name="submitAppRfiBtn" id="submitAppRfiBtn" type="button" class="btn btn-primary">Submit</button></div>
                                                 </div>
                                             </div>

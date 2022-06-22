@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -11,11 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * AdminValidator
@@ -36,9 +34,6 @@ public class UserValidator implements CustomizeValidator {
 
     @Autowired
     IntranetUserService intranetUserService;
-
-    @Autowired
-    private OrganizationClient organizationClient;
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -70,11 +65,6 @@ public class UserValidator implements CustomizeValidator {
             }
         }
 
-
-            /*if (StringUtil.isEmpty(dto.getOrgId())) {
-                map.put("organizationId", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }*/
-
         if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
             map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
         }
@@ -90,6 +80,16 @@ public class UserValidator implements CustomizeValidator {
                 map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
+        // roles
+        String roles = dto.getRoles();
+        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(dto.getUserRole()) && StringUtil.isNotEmpty(roles)) {
+            if (Stream.of(roles.split("#")).noneMatch(role -> RoleConsts.USER_ROLE_ORG_USER.equals(role))) {
+                Map<String, String> roleMap = intranetUserService.getFeRoleMap();
+                // USER_ERR024 - The {role} is mandatory, please check it.
+                map.put("roles", MessageUtil.replaceMessage("USER_ERR024", roleMap.get(RoleConsts.USER_ROLE_ORG_USER), "role"));
+            }
+        }
+
         String idNo = dto.getIdentityNo();
         String idType = dto.getIdType();
         if (!StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(idType)) {

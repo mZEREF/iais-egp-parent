@@ -1,11 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -14,10 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -48,7 +45,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -225,9 +221,7 @@ public class FeUserManagement {
             userAttr.setStatus(active);
             userAttr.setRoles(roles);
             userAttr.setAccountActivateDatetime(new Date());
-            List<OrgUserRoleDto> orgUserRoleDtoList = IaisCommonUtils.genNewArrayList();
 
-            OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
             ParamUtil.setSessionAttr(request,FeUserConstants.SESSION_USER_DTO,userAttr);
             if ("Edit".equals(title)) {
@@ -247,25 +241,22 @@ public class FeUserManagement {
                 if (StringUtil.isEmpty(uenNo)){
                     validationResult.addMessage(FeUserConstants.SESSION_USER_UEN_NAME, "GENERAL_ERR0006");
                     validationResult.setHasErrors(true);
-                }else {
-                        //save orgid when create
-                        OrganizationDto organizationDto = intranetUserService.getByUenNoAndStatus(uenNo,AppConsts.COMMON_STATUS_ACTIVE);
-                        if( organizationDto == null){
-                            validationResult.addMessage(FeUserConstants.SESSION_USER_UEN_NAME, "USER_ERR020");
-                            validationResult.setHasErrors(true);
-                        }else {
-                            userDto.setOrgId(organizationDto.getId());
-                            userAttr.setOrgId(organizationDto.getId());
-                        }
+                } else {
+                    //save orgid when create
+                    OrganizationDto organizationDto = intranetUserService.getByUenNoAndStatus(uenNo, AppConsts.COMMON_STATUS_ACTIVE);
+                    if (organizationDto == null) {
+                        validationResult.addMessage(FeUserConstants.SESSION_USER_UEN_NAME, "USER_ERR020");
+                        validationResult.setHasErrors(true);
+                    } else {
+                        userAttr.setOrgId(organizationDto.getId());
+                    }
                 }
             }
             // set user id
             if (userAttr.isCorpPass() && !userAttr.isSolo()) {
                 userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
-                userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
             } else {
                 userAttr.setUserId(idNo);
-                userDto.setUserId(idNo);
             }
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
@@ -283,37 +274,14 @@ public class FeUserManagement {
                     AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                     att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                     AuditTrailHelper.callSaveAuditTrail(att);
-
-                    Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
-                    successMap.put("save","suceess");
+                    userAttr.setAuditTrailDto(att);
 
                     //save be
-                    userDto.setAuditTrailDto(att);
-                    String useId;
-                    //save client
-                    if("Edit".equals(title)) {
-                        intranetUserService.updateOrgUser(userDto);
-                        useId = userAttr.getId();
-                        intranetUserService.removeRoleByAccount(userAttr.getId());
-                    }else{
-                        OrgUserDto orgUserDto = intranetUserService.createIntrenetUser(userDto);
-                        userAttr.setId(orgUserDto.getId());
-                        useId = userAttr.getId();
+                    if (StringUtil.isEmpty(userAttr.getSelectServices())) {
+                        userAttr.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
                     }
-                    final String userAccId = useId;
-                    if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(role)) {
-                        addOrgUserByRoleName(orgUserRoleDtoList, RoleConsts.USER_ROLE_ORG_ADMIN, selectServices, userAccId, att);
-                    }
-                    if (StringUtil.isNotEmpty(userAttr.getRoles())) {
-                        Stream.of(userAttr.getRoles().split("#")).forEach(r -> {
-                            String service = null;
-                            if (RoleConsts.USER_ROLE_ORG_USER.equals(r)) {
-                                service = selectServices;
-                            }
-                            addOrgUserByRoleName(orgUserRoleDtoList, r, service, userAccId, att);
-                        });
-                    }
-                    intranetUserService.assignRole(orgUserRoleDtoList);
+                    intranetUserService.saveIntrenetUser(userAttr);
+                    // sync
                     syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
                 }else {
@@ -323,17 +291,6 @@ public class FeUserManagement {
                 }
             }
         }
-    }
-
-    private void addOrgUserByRoleName(List<OrgUserRoleDto> orgUserRoleDtoList, String roleName, String selectServices,
-            String uesrId, AuditTrailDto att) {
-        OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
-        orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        orgUserRoleDto.setRoleName(roleName);
-        orgUserRoleDto.setUserAccId(uesrId);
-        orgUserRoleDto.setSelectServices(selectServices);
-        orgUserRoleDto.setAuditTrailDto(att);
-        orgUserRoleDtoList.add(orgUserRoleDto);
     }
 
     public void syncFeUserWithTrack(FeUserDto userAttr) {

@@ -30,9 +30,13 @@ import java.util.Map;
  * @date 2019/12/25 17:40
  */
 public interface IntranetUserService {
+
     void createIntranetUser(OrgUserDto orgUserDto);
-    OrgUserDto createIntrenetUser(OrgUserDto orgUserDto);
+
     void createIntranetUsers(List<OrgUserDto> orgUserDtos);
+
+    FeUserDto saveIntrenetUser(FeUserDto feUserDto);
+
     List<FeUserDto> getUserListByNricAndIdType(String nric, String idType);
     List<FeUserDto> getUserListByNricAndIdTypeWithDel(String nric, String idType);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
@@ -98,4 +102,5 @@ public interface IntranetUserService {
     List<Role> getFeRoles();
 
     Map<String, String> getFeRoleMap();
+
 }

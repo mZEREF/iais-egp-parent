@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * AdminValidator
@@ -84,11 +85,20 @@ public class UserValidator implements CustomizeValidator {
             }
         }
 
-        if (RoleConsts.USER_ROLE_ORG_USER.equals(dto.getUserRole())) {
+        // roles
+        if (!RoleConsts.USER_ROLE_ORG_ADMIN.equals(dto.getUserRole())) {
             List<FeUserDto> feUserDtoList = feUserClient.getAdminAccountByOrgId(dto.getOrgId()).getEntity();
-            if (!StringUtil.isEmpty(dto.getId()) && feUserDtoList.size() == 1 && dto.getId().equals(
-                    feUserDtoList.get(0).getId())) {
+            if (!StringUtil.isEmpty(dto.getId()) && feUserDtoList.size() == 1
+                    && dto.getId().equals(feUserDtoList.get(0).getId())) {
                 map.put("userRole", MessageUtil.getMessageDesc("USER_ERR017"));
+            }
+        }
+        String roles = dto.getRoles();
+        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(dto.getUserRole()) && StringUtil.isNotEmpty(roles)) {
+            if (Stream.of(roles.split("#")).noneMatch(role -> RoleConsts.USER_ROLE_ORG_USER.equals(role))) {
+                Map<String, String> roleMap = orgUserManageService.getFeRoleMap();
+                // USER_ERR024 - The {role} is mandatory, please check it.
+                map.put("roles", MessageUtil.replaceMessage("USER_ERR024", roleMap.get(RoleConsts.USER_ROLE_ORG_USER), "role"));
             }
         }
 

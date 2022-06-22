@@ -4,7 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -263,7 +265,7 @@ public class FESingpassLandingDelegator {
             clearInfo(request);
             return;
         }
-        if( !reLoadMyInfoData(request)){
+        if(!reLoadMyInfoData(request)){
             FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             if (Optional.ofNullable(userSession).isPresent()){
                 setRequestDto(request,userSession);
@@ -287,10 +289,8 @@ public class FESingpassLandingDelegator {
                     FeLoginHelper.initUserInfo(request, createdUser);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 }
-
                 log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(userSession)));
             }
-
             log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] END ...."));
         }
     }
@@ -340,6 +340,15 @@ public class FESingpassLandingDelegator {
         LicenseeDto licenseeDto =  (LicenseeDto) ParamUtil.getSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION);
         if(licenseeDto == null){
             licenseeDto = new LicenseeDto();
+        }
+        if (StringUtil.isEmpty(userSession.getRoles())) {
+            userSession.setRoles(RoleConsts.USER_ROLE_ORG_USER);
+        }
+        if (StringUtil.isEmpty(userSession.getUserRole())) {
+            userSession.setUserRole("user");
+        }
+        if (StringUtil.isEmpty(userSession.getSelectServices())) {
+            userSession.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
         }
         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
         userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));

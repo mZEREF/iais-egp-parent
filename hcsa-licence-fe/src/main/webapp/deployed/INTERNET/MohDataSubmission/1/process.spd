@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="MohDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="14" minorVersion="0" name="MohDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="240">
@@ -95,7 +95,7 @@
     <JavaCode defClass="" executor="" methodName="prepareCompliance_OnStepProcess_0" name="prepareCompliance_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Back" x="1070" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="860" y="60">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -173,9 +173,6 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/TP" style="oblique">
    <position>{(1160,430)(1320,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDataSubmissionSelect" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(1320,260)(1315,16)(314,27)(260,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompliance" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/DataSubmissionSelectPage" style="rectanular">
    <position>{(440,260)(460,390)}</position>
   </SynchronousLink>
@@ -186,10 +183,13 @@
    <position>{(680,390)(650,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(880,260)(928,521)(1090,500)}</position>
+   <position>{(880,260)(880,80)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
-   <position>{(1090,500)(1237,426)(1320,260)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompliance" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1320,260)(1318,655)(489,658)(460,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDataSubmissionSelect" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
+   <position>{(880,80)(317,79)(260,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

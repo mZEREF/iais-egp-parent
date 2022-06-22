@@ -33,7 +33,7 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     }
 
     @Override
-    public FeignResponseEntity<OrgUserDto> createIntrenetUser(OrgUserDto user) {
+    public FeignResponseEntity<FeUserDto> saveIntrenetUser(FeUserDto feUserDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

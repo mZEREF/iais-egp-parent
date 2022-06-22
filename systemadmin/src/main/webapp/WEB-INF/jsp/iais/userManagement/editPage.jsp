@@ -150,12 +150,12 @@
                             <c:forEach var="role" items="${SESSION_NAME_ROLES}" >
                                 <c:set var="value" value="${role.value}"/>
                                 <c:set var="roles" value="${inter_user_attr.roles}"/>
-                                <div class="form-check col-xs-7  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}" style="padding-left: 0px;">
+                                <div class="form-check col-xs-12  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}" style="padding-left: 0px;">
                                     <input class="form-check-input" type="checkbox"
                                            name="roles"
                                            value="${value}"
                                            id="role${value}"
-                                           <c:if test="${StringUtil.stringContain(roles,value)}">checked</c:if>
+                                           <c:if test="${StringUtil.isIn(value, roles)}">checked</c:if>
                                            aria-invalid="false" >
                                     <label class="form-check-label"
                                            for="role${value}"><span
@@ -165,7 +165,7 @@
                             </c:forEach>
                             </iais:value>
                             <iais:value width="4" cssClass="col-md-4"/>
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="7" cssClass="col-md-7">
                                 <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
@@ -195,7 +195,7 @@
                                                name="service"
                                                value="${value}"
                                                id="service${status.index}"
-                                               <c:if test="${StringUtil.stringContain(selectServices,value)}">checked</c:if>
+                                               <c:if test="${StringUtil.isIn(value, selectServices)}">checked</c:if>
                                                aria-invalid="false"   <c:if test="${!empty selectServices && (allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0)}">disabled</c:if>
                                                onchange="mutualExclusionServiceCheckBox('${value}',${serviceSize})">
                                         <label class="form-check-label"

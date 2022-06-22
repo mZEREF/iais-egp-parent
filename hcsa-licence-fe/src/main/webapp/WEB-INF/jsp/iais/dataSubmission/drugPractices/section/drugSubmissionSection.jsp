@@ -540,7 +540,7 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data.selection)) {
+                if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();

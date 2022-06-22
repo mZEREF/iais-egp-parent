@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ComplianceDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -47,6 +49,10 @@ public class DataSubmissionDelegator {
     public void prepareCompliance(BaseProcessClass bpc) {
         bpc.request.setAttribute("title","New Data Submission");
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+        if(StringUtil.isEmpty(crud_action_type_ds) || "back".equals(crud_action_type_ds)){
+            crud_action_type_ds = (String)ParamUtil.getSessionAttr(bpc.request,"DsModleSelect");
+        }
+        ParamUtil.setSessionAttr(bpc.request,"DsModleSelect",crud_action_type_ds);
         ComplianceDto  complianceDto = new ComplianceDto();
         complianceDto.setSubmissionType(crud_action_type_ds);
         switch (crud_action_type_ds){

@@ -26,10 +26,10 @@
                     <div class="document-info-list">
                         <ul>
                             <li>
-                                <p>The maximum file size for each upload is ${configFileSize}MB.</p>
+                                <p><iais:message key="GENERAL_ERR0043" replaceName="configNum" propertiesKey="iais.system.upload.file.limit"></iais:message></p>
                             </li>
                             <li>
-                                <p>Acceptable file format is XLSX, CSV.</p>
+                                <p>Acceptable file formats are XLSX, CSV.</p>
                             </li>
                             <li>
                                 <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/ds/dp/si-file" >here</a>.</p>
@@ -99,8 +99,23 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="common/dpDeclaration.jsp" %>
                 </div>
-                <%@include file="common/dpFooter.jsp" %>
+                <div class="application-tab-footer">
+                    <div class="col-xs-12 col-sm-4 col-md-2 text-left">
+                        <a style="padding-left: 5px;" class="back" id="backBtn">
+                            <em class="fa fa-angle-left">&nbsp;</em> Back
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-sm-8 col-md-10">
+                        <div class="button-group">
+                            <a class="btn btn-primary next premiseId" id="submitBtn" onclick="submit('submission')" >Submit</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+            <%@ include file="../common/formHidden.jsp" %>
+
         </div>
     </div>
     <%@ include file="../../appeal/FeFileCallAjax.jsp" %>

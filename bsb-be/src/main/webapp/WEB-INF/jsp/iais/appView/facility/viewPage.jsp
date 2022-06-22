@@ -47,25 +47,24 @@
                                 <div id="previewSubmitPanel" role="tabpanel">
                                     <c:if test="${isRFI}">
                                         <fac:rfi-preview isCfJudge="${isCertifiedFacility}" isUcfJudge="${isUncertifiedFacility}" isRfJudge="${isRegisteredFacility}" isFifthRfJudge="${isSPFifthRegisteredFacility}" isPvRfJudge="${isPolioVirusRegisteredFacility}"
-                                                     compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}"
-                                                     facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
-                                                     batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                                     classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
-                                                     diffMap="${diffMap}">
+                                                         compProfile="${organizationAddress}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
+                                                         classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
+                                                         compareFacProfile="${compareFacProfile}" compareFacOperator="${compareFacOperator}" compareMainAdmin="${compareMainAdmin}" compareAlterAdmin="${compareAlterAdmin}" compareOfficers="${compareOfficers}"
+                                                         compareBioSafetyCommitteeIsDifferent="${compareBioSafetyCommitteeIsDifferent}" compareAuthorizerIsDifferent="${compareAuthorizerIsDifferent}" compareAfc="${compareAfc}" compareBatMap="${compareBatMap}">
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <div class="form-group">
                                                     <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
                                                     <div class="clear"></div>
                                                 </div>
-                                                <c:forEach var="compareDocRecordInfoDto" items="${compareDocMap.get(doc.type)}" varStatus="status">
-                                                    <c:set var="oldFile" value="${compareDocRecordInfoDto.oldDocRecordInfo}"/>
-                                                    <c:set var="newFile" value="${compareDocRecordInfoDto.newDocRecordInfo}"/>
+                                                <c:forEach var="compareWrap" items="${compareDocMap.get(doc.type)}" varStatus="status">
+                                                    <c:set var="oldFile" value="${compareWrap.oldDto}"/>
+                                                    <c:set var="newFile" value="${compareWrap.newDto}"/>
                                                     <div class="form-group">
                                                         <c:set var="oldRepoId"><iais:mask name="file" value="${oldFile.repoId}"/></c:set>
-                                                        <div class="col-xs-6"><p data-compare-old-doc="${doc.type}${status.index}" data-repo-id="${oldFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${oldRepoId}?filename=${oldFile.filename}">${oldFile.filename}</a>(<fmt:formatNumber value="${oldFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                        <div class="col-xs-6"><p data-compare-old="${doc.type}${status.index}" data-val="${oldFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${oldRepoId}?filename=${oldFile.filename}">${oldFile.filename}</a>(<fmt:formatNumber value="${oldFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                                                         <c:set var="newRepoId"><iais:mask name="file" value="${newFile.repoId}"/></c:set>
-                                                        <div class="col-xs-6"><p class="compareTdStyle" style="display: none" data-compare-new-doc="${doc.type}${status.index}" data-repo-id="${newFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${newRepoId}?filename=${newFile.filename}">${newFile.filename}</a>(<fmt:formatNumber value="${newFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                        <div class="col-xs-6"><p data-compare-new="${doc.type}${status.index}" data-val="${newFile.repoId}" class="compareTdStyle" style="display: none"><a href="/bsb-web/ajax/doc/download/repo/${newRepoId}?filename=${newFile.filename}">${newFile.filename}</a>(<fmt:formatNumber value="${newFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                                                         <div class="clear"></div>
                                                     </div>
                                                 </c:forEach>

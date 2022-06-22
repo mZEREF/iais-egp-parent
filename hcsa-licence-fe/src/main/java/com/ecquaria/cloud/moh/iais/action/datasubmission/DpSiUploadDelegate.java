@@ -11,10 +11,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInven
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
@@ -99,9 +99,7 @@ public class DpSiUploadDelegate {
         session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
-        int configFileSize = systemParamConfig.getUploadFileLimit();
 
-        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
     }
 
     /**
@@ -575,16 +573,9 @@ public class DpSiUploadDelegate {
                 log.error("No File Template Found!");
                 return;
             }
-            final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
-            File outFile = MiscUtil.generateFile(postFileName);
-            boolean b = inputFile.renameTo(outFile);
-            if (b) {
-                FileUtils.writeFileResponseContent(response, outFile);
-                FileUtils.deleteTempFile(outFile);
-            } else {
-                FileUtils.writeFileResponseContent(response, inputFile);
-            }
-            FileUtils.deleteTempFile(inputFile);
+
+            FileUtils.writeFileResponseContent(response, inputFile);
+
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
         }

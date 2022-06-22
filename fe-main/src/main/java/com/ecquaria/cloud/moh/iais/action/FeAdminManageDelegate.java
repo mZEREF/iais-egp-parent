@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -245,9 +245,10 @@ public class FeAdminManageDelegate {
                     AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                     att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                     AuditTrailHelper.callSaveAuditTrail(att);
-
-                    Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
-                    successMap.put("save","suceess");
+                    feUserDto.setAuditTrailDto(att);
+                    if (StringUtil.isEmpty(feUserDto.getSelectServices())) {
+                        feUserDto.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
+                    }
                     orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,reSetMyInfoData(feUserDto,myInfoDto),false);
                     if(licenseeHave){
                         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
@@ -258,7 +259,6 @@ public class FeAdminManageDelegate {
                         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
                     }
                 }
-
         } else {
             repalceFeUserDtoByMyinfo(request);
         }

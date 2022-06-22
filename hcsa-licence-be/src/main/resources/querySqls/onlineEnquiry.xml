@@ -1202,7 +1202,7 @@
                 dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,ddi.NAME DOCTOR_NAME ,dds.SUBMIT_DT
               FROM ds_dp_prescribed_dispensed ddpd
             join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
-            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE='DSCL_005'
+            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE in ('DSCL_005','DSCL_0014')
             join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
             left join ds_doctor_information ddi on ddi.DOCTOR_REIGN_NO =ddpd.DOCTOR_REIGN_NO
             where 1 = 1 and dds.STATUS not in ('DS002')

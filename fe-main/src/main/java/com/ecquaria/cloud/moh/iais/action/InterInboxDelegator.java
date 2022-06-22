@@ -1680,6 +1680,7 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             ParamUtil.setSessionAttr(bpc.request,"canCreateDs",false);
+            ParamUtil.setSessionAttr(bpc.request,"canEditDs",false);
         }else{
             AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(), bpc.request.getSession().getId());
             InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
@@ -1696,8 +1697,12 @@ public class InterInboxDelegator {
 
             List<String> privilegeIds = AccessUtil.getLoginUser(bpc.request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
             //for new
-            boolean canCreate =  FeInboxHelper.canCreate(privilegeIds);
-            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",canCreate);
+            boolean canCreateDs =  FeInboxHelper.canCreateDs(privilegeIds);
+            ParamUtil.setSessionAttr(bpc.request,"canCreateDs",canCreateDs);
+            //for Amend
+            boolean canAmendDs =  FeInboxHelper.canAmendDs(privilegeIds);
+            ParamUtil.setSessionAttr(bpc.request,"canAmendDs",canAmendDs);
+
             return interInboxUserDto;
         }
 

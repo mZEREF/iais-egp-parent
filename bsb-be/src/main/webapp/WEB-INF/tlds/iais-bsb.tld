@@ -122,34 +122,4 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
-    <tag>
-        <description>Display diffMap on the page</description>
-        <name>compare-display</name>
-        <tag-class>sg.gov.moh.iais.egp.common.tags.CompareTdStyleDisplayTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>diffMap</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.util.Map</type>
-        </attribute>
-        <attribute>
-            <name>key</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>replaceWith</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <name>needUnMaskedCode</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-    </tag>
 </taglib>
