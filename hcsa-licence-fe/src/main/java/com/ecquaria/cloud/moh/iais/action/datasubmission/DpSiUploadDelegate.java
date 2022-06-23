@@ -433,7 +433,7 @@ public class DpSiUploadDelegate {
             if (errorMap.isEmpty()) {
                 String fileName=fileEntry.getValue().getName();
                 if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
-                    errorMap.put("uploadFileError", "MCUPERR004");
+                    errorMap.put("uploadFileError", "Please change the file name.");
                 }
                 List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
                 fileItemSize = sovenorInventoryExcelDtos.size();
