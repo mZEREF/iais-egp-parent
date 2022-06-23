@@ -178,6 +178,8 @@ public class ApptInspectionDateDelegator {
             validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
         } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
             validateRollBack(bpc, errorMap);
+        }else if (StringUtil.isEmpty(processDec)){
+            errorMap.put("nextStage", "GENERAL_ERR0006");
         }
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
