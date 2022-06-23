@@ -660,18 +660,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(String licenseeId, String orgId) {
+    public List<SelectOption> getRoleSelection(String licenseeId) {
         // ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false)
         List<String> data = IaisCommonUtils.genNewArrayList();
-        if (StringUtil.isNotEmpty(orgId)) {
-            log.info(StringUtil.changeForLog("The Org Id: " + orgId));
-            List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+        if (StringUtil.isNotEmpty(licenseeId)) {
+            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
+            List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
                 dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
             }
-        }
-        if (StringUtil.isNotEmpty(licenseeId)) {
-            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
             List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
                 licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));

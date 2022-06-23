@@ -91,7 +91,7 @@ public class FeAdminManageDelegate {
             feAdminQueryDtoSearchResult.getRows().stream().forEach(item -> item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO));
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,
-                    (Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId(), loginContext.getOrgId()));
+                    (Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult.getRows());
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
