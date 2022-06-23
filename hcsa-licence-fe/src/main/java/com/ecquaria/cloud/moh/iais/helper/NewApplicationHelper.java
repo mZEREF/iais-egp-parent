@@ -4127,7 +4127,7 @@ public class NewApplicationHelper {
         List<String> selectValList = operationHoursReloadDto.getSelectValList();
         if (!IaisCommonUtils.isEmpty(selectValList)) {
             String[] selectArr = (String[]) selectValList.toArray(new String[selectValList.size()]);
-            String phSelect = ParamUtil.getStringsToString(selectArr);
+            String phSelect = StringUtil.arrayToString(selectArr);
             operationHoursReloadDto.setSelectVal(phSelect);
         }
         Time startTime = operationHoursReloadDto.getStartFrom();
