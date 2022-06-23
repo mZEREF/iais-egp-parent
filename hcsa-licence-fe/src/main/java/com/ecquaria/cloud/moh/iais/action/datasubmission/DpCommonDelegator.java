@@ -270,6 +270,9 @@ public abstract class DpCommonDelegator {
         PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
         cycle.setPatientCode(patientDto.getPatientCode());
         cycle.setStatus(status);
+        if (StringUtil.isNotEmpty(patientDto.getName())) {
+            patientDto.setName(patientDto.getName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
         if(drugPrescribedDispensedDto != null){
             DrugSubmissionDto drugSubmissionDto = drugPrescribedDispensedDto.getDrugSubmission();

@@ -614,7 +614,10 @@ public class VssDataSubmissionDelegator {
         }
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
-
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        if (StringUtil.isNotEmpty(treatmentDto.getPatientName())) {
+            treatmentDto.setPatientName(treatmentDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         if(sexualSterilizationDto.getOperationDate() != null ) {
             try {
                 if(Formatter.compareDateByDay(dataSubmissionDto.getSubmitDt(),sexualSterilizationDto.getOperationDate())>30){
