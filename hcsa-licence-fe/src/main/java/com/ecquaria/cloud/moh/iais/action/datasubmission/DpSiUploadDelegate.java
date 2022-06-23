@@ -531,6 +531,7 @@ public class DpSiUploadDelegate {
                     dataSubmissionDto.setSubmissionNo(submissionNo);
                     dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
+                    formalizeNum(dto);
                     newDto.setDpSovenorInventoryDto(dto);
                     return newDto;
                 })
@@ -562,6 +563,24 @@ public class DpSiUploadDelegate {
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
+    }
+
+    private void formalizeNum(DpSovenorInventoryDto dto){
+        if(dto.getBatchNumber().endsWith(".0")){
+            dto.setBatchNumber(dto.getBatchNumber().replaceAll(".0",""));
+        }
+        if(dto.getDrugStrength().endsWith(".0")){
+            dto.setDrugStrength(dto.getDrugStrength().replaceAll(".0",""));
+        }
+        if(dto.getQuantityDrugPurchased().endsWith(".0")){
+            dto.setQuantityDrugPurchased(dto.getQuantityDrugPurchased().replaceAll(".0",""));
+        }
+        if(dto.getQuantityBalanceStock().endsWith(".0")){
+            dto.setQuantityBalanceStock(dto.getQuantityBalanceStock().replaceAll(".0",""));
+        }
+        if(dto.getQuantityExpiredStock().endsWith(".0")){
+            dto.setQuantityExpiredStock(dto.getQuantityExpiredStock().replaceAll(".0",""));
+        }
     }
 
     /**
