@@ -19,4 +19,9 @@ public class DoctorInfoClientFallback implements DoctorInfoClient {
     public FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(String doctorReignNo,String doctorSource) {
         return getFeignResponseEntity(doctorReignNo,doctorSource);
     }
+
+    @Override
+    public FeignResponseEntity<DoctorInformationDto> getRfcDoctorInformationDtoByConds(String doctorInformationId) {
+        return getFeignResponseEntity(doctorInformationId);
+    }
 }

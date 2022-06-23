@@ -26,4 +26,12 @@ public class DocInfoServiceImpl implements DocInfoService {
         }
         return doctorInfoClient.getDoctorInformationDtoByConds(doctorReignNo,doctorSource).getEntity();
     }
+
+    @Override
+    public DoctorInformationDto getRfcDoctorInformationDtoByConds(String doctorInformationId) {
+        if (StringUtil.isEmpty(doctorInformationId) ) {
+            return null;
+        }
+        return doctorInfoClient.getRfcDoctorInformationDtoByConds(doctorInformationId).getEntity();
+    }
 }

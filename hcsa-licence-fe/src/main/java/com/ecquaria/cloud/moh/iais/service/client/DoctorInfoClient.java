@@ -14,4 +14,7 @@ public interface DoctorInfoClient {
     @GetMapping(value = "/doc-common/doctor-information/doctorReignNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(@RequestParam("doctorReignNo") String doctorReignNo,
                                                                              @RequestParam("doctorSource") String doctorSource);
+
+    @GetMapping(value = "/doc-common/rfc-doctor-information/doctorInformationId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DoctorInformationDto> getRfcDoctorInformationDtoByConds(@RequestParam("doctorInformationId") String doctorInformationId);
 }
