@@ -65,8 +65,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                     for (IncompleteCycleDto incompleteCycleDto : overDayNotCompletedCycle) {
                         String LicenseeId = incompleteCycleDto.getLicenseeId();
                         DataSubmissionDto dataSubmissionDto = incompleteCycleDto.getDataSubmissionDto();
-                        String cycleId = dataSubmissionDto.getCycleId();
-                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(cycleId, INCOMPLETE_CYCLE_MESSAGE_KEY).getEntity();
+                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(dataSubmissionDto.getId(), INCOMPLETE_CYCLE_MESSAGE_KEY).getEntity();
                         String submissionerName = licenseeService.getLicenseeDtoById(LicenseeId).getName();
                         PatientInfoDto patientInfoDto = assistedReproductionService.patientInfoDtoBySubmissionId(dataSubmissionDto.getId());
                         if (patientInfoDto != null) {
@@ -76,14 +75,14 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                                 // send first
                                 String dateStr = Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
                                 sendFirstNotification(LicenseeId, submissionerName, patientName, submissionNo, dateStr);
-                                addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
+                                addJobRemindMsgTrack(jobRemindMsgTrackingDtos, dataSubmissionDto.getId());
                             } else {
                                 long current = DateHelper.getDays(new Date());
                                 long remind = DateHelper.getDays(jobRemindMsgTrackingDto.getCreateTime());
-                                if ((current - remind) >= 3) {
+                                if ((current - remind) >= preDays) {
                                     // send pre
                                     sendPertNotification(LicenseeId, submissionerName, patientName, submissionNo);
-                                    addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
+                                    addJobRemindMsgTrack(jobRemindMsgTrackingDtos, dataSubmissionDto.getId());
                                 }
                             }
                         } else {
