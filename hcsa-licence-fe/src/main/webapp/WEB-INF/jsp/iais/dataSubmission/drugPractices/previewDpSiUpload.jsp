@@ -48,30 +48,35 @@
                         </h3>
                         <div class="col-xs-12">
                             <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
+                            <c:if test="${DS_ERR068}">
+                                <span class="error-msg">
+                                    There are errors in the file uploaded, which can be found <a href="${pageContext.request.contextPath}/ds/dp/si-err-file" >here</a>. Please rectify the errors and re-upload the file.
+                                </span>
+                            </c:if>
                         </div>
-                        <c:if test="${not empty fileItemErrorMsgs}">
-                            <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
-<%--                                <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>--%>
-                                <table aria-describedby="" class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" >Row</th>
-                                        <th scope="col" >Field Name (Column)</th>
-                                        <th scope="col" >Error Message</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="item" items="${fileItemErrorMsgs}">
-                                        <tr>
-                                            <td>${item.row}</td>
-                                            <td>${item.cellName} (${item.colHeader})</td>
-                                            <td>${item.message}</td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </c:if>
+<%--                        <c:if test="${not empty fileItemErrorMsgs}">--%>
+<%--                            <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">--%>
+<%--&lt;%&ndash;                                <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>&ndash;%&gt;--%>
+<%--                                <table aria-describedby="" class="table">--%>
+<%--                                    <thead>--%>
+<%--                                    <tr>--%>
+<%--                                        <th scope="col" >Row</th>--%>
+<%--                                        <th scope="col" >Field Name (Column)</th>--%>
+<%--                                        <th scope="col" >Error Message</th>--%>
+<%--                                    </tr>--%>
+<%--                                    </thead>--%>
+<%--                                    <tbody>--%>
+<%--                                    <c:forEach var="item" items="${fileItemErrorMsgs}">--%>
+<%--                                        <tr>--%>
+<%--                                            <td>${item.row}</td>--%>
+<%--                                            <td>${item.cellName} (${item.colHeader})</td>--%>
+<%--                                            <td>${item.message}</td>--%>
+<%--                                        </tr>--%>
+<%--                                    </c:forEach>--%>
+<%--                                    </tbody>--%>
+<%--                                </table>--%>
+<%--                            </div>--%>
+<%--                        </c:if>--%>
                         <div id="uploadFileShowId">
                             <c:if test="${not empty showPatientFile && !hasError}">
                                 <div id="${showPatientFile.fileMapId}">
