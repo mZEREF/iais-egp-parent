@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
@@ -411,6 +412,8 @@ public class DpSiUploadDelegate {
         dataSubmissionDto.setDeclaration(declaration);
         DataSubmissionHelper.setCurrentDpDataSubmission(superDataSubmissionDto, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        String isUploadFile = ParamUtil.getString(bpc.request, DemoConstants.CRUD_ACTION_VALUE);
+
         if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
             clearSession(bpc.request);
@@ -487,14 +490,18 @@ public class DpSiUploadDelegate {
         }
         ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
-        if (StringUtil.isEmpty(declaration)) {
-            errorMap.put("declaration", "GENERAL_ERR0006");
-        }
-        if (!errorMap.isEmpty()) {
-            log.error("------No checked for declaration-----");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        if(StringUtil.isNotEmpty(isUploadFile)&&isUploadFile.equals("preview")){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
+            if (StringUtil.isEmpty(declaration)) {
+                errorMap.put("declaration", "GENERAL_ERR0006");
+            }
+            if (!errorMap.isEmpty()) {
+                log.error("------No checked for declaration-----");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
+            }
         }
     }
 
