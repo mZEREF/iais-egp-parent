@@ -2,19 +2,18 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
@@ -27,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
@@ -71,8 +71,7 @@ public class DpSiUploadDelegate {
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
-    @Autowired
-    private SystemParamConfig systemParamConfig;
+
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -431,7 +430,7 @@ public class DpSiUploadDelegate {
             if (errorMap.isEmpty()) {
                 String fileName=fileEntry.getValue().getName();
                 if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
-                    errorMap.put("uploadFileError", "DS_ERR068");
+                    errorMap.put("uploadFileError", "MCUPERR004");
                 }
                 List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
                 fileItemSize = sovenorInventoryExcelDtos.size();
@@ -451,9 +450,20 @@ public class DpSiUploadDelegate {
                     }
                     if (!errorMsgs.isEmpty()) {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
-                        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
+                        List<DsDrpSiErrRowsDto> errRowsDtos=IaisCommonUtils.genNewArrayList();
+                        for (FileErrorMsg fileErrorMsg:errorMsgs
+                             ) {
+                            DsDrpSiErrRowsDto rowsDto=new DsDrpSiErrRowsDto();
+                            rowsDto.setRow(fileErrorMsg.getRow()+"");
+                            rowsDto.setFieldName(fileErrorMsg.getCellName()+"("+fileErrorMsg.getColHeader()+")");
+                            rowsDto.setErrorMessage(fileErrorMsg.getMessage());
+                            errRowsDtos.add(rowsDto);
+                        }
+                        ParamUtil.setSessionAttr(bpc.request, "errRowsDtos", (Serializable) errRowsDtos);
+
                         errorMap.put("itemError", "itemError");
-                        errorMap.put("uploadFileError", "DS_ERR068");
+                        errorMap.put("uploadFileError68", "DS_ERR068");
+                        ParamUtil.setRequestAttr(bpc.request, "DS_ERR068", true);
                     }
                 }
             }
@@ -578,6 +588,21 @@ public class DpSiUploadDelegate {
 
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
+        }
+    }
+
+    @GetMapping(value = "/ds/dp/si-err-file")
+    @ResponseBody
+    public void exportErrMsg(HttpServletRequest request, HttpServletResponse response) {
+        log.info(StringUtil.changeForLog("----- Export Si err File -----"));
+        try {
+            List<DsDrpSiErrRowsDto> errRowsDtos= (List<DsDrpSiErrRowsDto>) ParamUtil.getSessionAttr(request, "errRowsDtos");
+            File file =  ExcelWriter.writerToExcel(errRowsDtos, DsDrpSiErrRowsDto.class ,"errors");
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("Export File has error - " + e.getMessage()), e);
         }
     }
 
