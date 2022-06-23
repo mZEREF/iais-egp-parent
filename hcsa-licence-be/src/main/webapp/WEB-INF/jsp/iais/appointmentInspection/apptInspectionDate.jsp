@@ -120,7 +120,7 @@
                             </div>
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
-                              <iais:value width="10">
+                              <iais:value width="10" display="true">
                                 <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
                                              firstOption="Please Select"
                                              options="nextStages"
@@ -130,7 +130,7 @@
 
                             <iais:row id="systemDateRow">
                               <iais:field value="Available Appointment Date" required="true" id="apptDateTitle"/>
-                              <iais:value width="10">
+                              <iais:value width="10" display="true">
                                 <ul>
                                   <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
                                     <li class="apptInspScheduleUl"><span style="font-size: 16px"><c:out
@@ -142,7 +142,7 @@
 
                             <iais:row id="specDateRow">
                               <iais:field value="Date" required="true"/>
-                              <iais:value width="10">
+                              <iais:value width="10" display="true">
                                 <div class="d-flex">
                                   <p>From</p>
                                   <div class="col-sm-4 col-md-3 col-xs-2">
@@ -169,7 +169,7 @@
 
                             <iais:row id="rollBackToRow">
                               <iais:field value="Roll Back To" required="true"/>
-                              <iais:value width="10">
+                              <iais:value width="10" display="true">
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
                                              options="rollBackOptions" needSort="true"
@@ -177,27 +177,27 @@
                               </iais:value>
                             </iais:row>
 
-                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
-                              <iais:row>
-                                <iais:field value="Licence Start Date"/>
-                                <iais:value width="10">
-                                  <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                    <span style="font-size: 16px"><fmt:formatDate
-                                            value='${applicationViewDto.recomLiceStartDate}'
-                                            pattern='dd/MM/yyyy'/></span>
-                                  </c:if>
-                                  <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                    <span style="font-size: 16px">-</span>
-                                  </c:if>
-                                </iais:value>
-                              </iais:row>
-                            </c:if>
+                            <iais:row>
+                              <iais:field value="Licence Start Date"/>
+                              <iais:value width="10" display="true">
+                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
+                                  <span style="font-size: 16px"><fmt:formatDate
+                                          value='${applicationViewDto.recomLiceStartDate}'
+                                          pattern='dd/MM/yyyy'/></span>
+                                </c:if>
+                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
+                                  <span style="font-size: 16px">-</span>
+                                </c:if>
+                              </iais:value>
+                            </iais:row>
 
                             <iais:row>
                               <iais:field value="Fast Tracking?"/>
-                              <iais:value width="10">
+                              <iais:value width="10" display="true">
+                                <p></p>
                                 <input disabled type="checkbox"
                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                                <p></p>
                               </iais:value>
                             </iais:row>
 
@@ -305,7 +305,18 @@
                 let nextStageOption = $("#nextStage option[value='']");
                 let systemDate = $("#nextStage option[value='REDECI017']");
                 let specificDate = $("#nextStage option[value='REDECI018']");
-                console.log('apptInspectionDateGetDate systemFlag is %s, specFlag is %s, system is %s, spec is %s', ajaxFlag, specButtonFlag, systemDate.length, specificDate.length)
+                if ('true' === specButtonFlag) {
+                  if (specificDate.length === 0) {
+                    nextStageOption.after("<option value='REDECI018'>Assign Specific Date</option>");
+                    nextStage.niceSelect('update');
+                  }
+                } else {
+                  if (specificDate.length > 0) {
+                    specificDate.remove();
+                    nextStage.niceSelect('update');
+                  }
+                }
+
                 if ('true' === ajaxFlag) {
                   if (systemDate.length === 0) {
                     nextStageOption.after("<option value='REDECI017'>Use System-Proposed Date</option>")
@@ -329,17 +340,6 @@
                   }
                 }
 
-                if ('true' === specButtonFlag) {
-                  if (specificDate.length === 0) {
-                    nextStageOption.after("<option value='REDECI018'>Assign Specific Date</option>");
-                    nextStage.niceSelect('update');
-                  }
-                } else {
-                  if (specificDate.length > 0) {
-                    specificDate.remove();
-                    nextStage.niceSelect('update');
-                  }
-                }
               }
       )
     }
