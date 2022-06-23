@@ -221,6 +221,7 @@ public class FeUserManagement {
             userAttr.setStatus(active);
             userAttr.setRoles(roles);
             userAttr.setAccountActivateDatetime(new Date());
+            userAttr.setSelectServices(selectServices);
 
             ValidationResult validationResult;
             ParamUtil.setSessionAttr(request,FeUserConstants.SESSION_USER_DTO,userAttr);
@@ -280,7 +281,7 @@ public class FeUserManagement {
                     if (StringUtil.isEmpty(userAttr.getSelectServices())) {
                         userAttr.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
                     }
-                    intranetUserService.saveIntrenetUser(userAttr);
+                    userAttr = intranetUserService.saveIntrenetUser(userAttr);
                     // sync
                     syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");

@@ -249,7 +249,8 @@ public class FeAdminManageDelegate {
                     if (StringUtil.isEmpty(feUserDto.getSelectServices())) {
                         feUserDto.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
                     }
-                    orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,reSetMyInfoData(feUserDto,myInfoDto),false);
+                    orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto, feUserDto,
+                            reSetMyInfoData(feUserDto, myInfoDto), false);
                     if(licenseeHave){
                         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
                     }

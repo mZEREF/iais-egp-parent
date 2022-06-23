@@ -76,7 +76,7 @@
                                                  </c:forEach>
                                                 </iais:value>
                                                 <iais:value width="4" cssClass="col-md-4"/>
-                                                <iais:value width="3" cssClass="col-md-3">
+                                                <iais:value width="7" cssClass="col-md-7">
                                                     <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
                                                 </iais:value>
                                             </iais:row>
