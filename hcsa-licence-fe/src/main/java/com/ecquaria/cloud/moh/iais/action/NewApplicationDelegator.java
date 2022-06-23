@@ -3816,7 +3816,7 @@ public class NewApplicationDelegator {
                     String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"onSiteWeekly",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"onSiteWeeklyAllDay",j));
                     //reload
-                    String weeklySelect = ParamUtil.StringsToString(weeklyVal);
+                    String weeklySelect = ParamUtil.getStringsToString(weeklyVal);
                     weeklyDto.setSelectVal(weeklySelect);
                     if(weeklyVal != null){
                         List<String> selectValList = Arrays.asList(weeklyVal);
@@ -3846,7 +3846,7 @@ public class NewApplicationDelegator {
                     String[] phVal = ParamUtil.getStrings(request,genPageName(premVal,"onSitePubHoliday",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"onSitePhAllDay",j));
                     //reload
-                    String phSelect = ParamUtil.StringsToString(phVal);
+                    String phSelect = ParamUtil.getStringsToString(phVal);
                     phDto.setSelectVal(phSelect);
                     if(phSelect != null){
                         List<String> selectValList = Arrays.asList(phVal);
@@ -3915,7 +3915,7 @@ public class NewApplicationDelegator {
                     String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"conveyanceWeekly",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"conveyanceWeeklyAllDay",j));
                     //reload
-                    String weeklySelect = ParamUtil.StringsToString(weeklyVal);
+                    String weeklySelect = ParamUtil.getStringsToString(weeklyVal);
                     weeklyDto.setSelectVal(weeklySelect);
                     if(weeklyVal != null){
                         List<String> selectValList = Arrays.asList(weeklyVal);
@@ -3945,7 +3945,7 @@ public class NewApplicationDelegator {
                     String[] phVal = ParamUtil.getStrings(request,genPageName(premVal,"conveyancePubHoliday",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"conveyancePhAllDay",j));
                     //reload
-                    String phSelect = ParamUtil.StringsToString(phVal);
+                    String phSelect = ParamUtil.getStringsToString(phVal);
                     phDto.setSelectVal(phSelect);
                     if(phSelect != null){
                         List<String> selectValList = Arrays.asList(phVal);
@@ -4011,7 +4011,7 @@ public class NewApplicationDelegator {
                     String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"offSiteWeekly",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"offSiteWeeklyAllDay",j));
                     //reload
-                    String weeklySelect = ParamUtil.StringsToString(weeklyVal);
+                    String weeklySelect = ParamUtil.getStringsToString(weeklyVal);
                     weeklyDto.setSelectVal(weeklySelect);
                     if(weeklyVal != null){
                         List<String> selectValList = Arrays.asList(weeklyVal);
@@ -4041,7 +4041,7 @@ public class NewApplicationDelegator {
                     String[] phVal = ParamUtil.getStrings(request,genPageName(premVal,"offSitePubHoliday",j));
                     String allDay = ParamUtil.getString(request,genPageName(premVal,"offSitePhAllDay",j));
                     //reload
-                    String phSelect = ParamUtil.StringsToString(phVal);
+                    String phSelect = ParamUtil.getStringsToString(phVal);
                     phDto.setSelectVal(phSelect);
                     if(phSelect != null){
                         List<String> selectValList = Arrays.asList(phVal);
