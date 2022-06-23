@@ -407,8 +407,13 @@ public class MohDsActionDelegator {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
             }*/
             DsConfigHelper.initTopConfig(request);
-            if(!StringUtil.isEmpty(topSuper.getTerminationOfPregnancyDto().getTerminationDto())){
-                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuper.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+            TerminationOfPregnancyDto terminationOfPregnancyDto=topSuper.getTerminationOfPregnancyDto();
+            TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+            DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId());
+            topSuper.setDoctorInformationDto(doctorInformationDto);
+            terminationDto.setTopDoctorInformations("true");
+            /*if(!StringUtil.isEmpty(topSuper.getTerminationOfPregnancyDto().getTerminationDto())){
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuper.getDoctorInformationDto().getDoctorReignNo());
                 if(professionalResponseDto==null){
                     professionalResponseDto=new ProfessionalResponseDto();
                 }
@@ -425,7 +430,7 @@ public class MohDsActionDelegator {
                     topSuper.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
 
                 }
-            }
+            }*/
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(topSuper));

@@ -1,3 +1,21 @@
+$(document).ready(function (){
+    var $content = $('.med');
+    refreshIndex($content);
+    $('select[class = "frequency"]').each(function(index, ele){
+        $(ele).unbind('change');
+        $(ele).on('change', function() {
+            toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
+        })
+    });
+    var drugMedicationLength = $content.length;
+    $('input[name="drugMedicationLength"]').val(drugMedicationLength);
+    $('.panel-main-content').children(":first");
+    var num=$('#medicationDiv').length;
+    if(num==0){
+        $('.removeMedications').hide();
+    }
+});
+
 $(function () {
     removeMedications();
 });
@@ -24,7 +42,18 @@ function removeMedications(){
 function refreshKeyAppointmentHolder() {
     console.log("refreshKeyAppointmentHolder start")
     var $content = $('.med');
+    var $meContent = $('.medicationContent > div:nth-of-type(2)');
+    console.log($meContent)
     refreshIndex($content);
+    refreshId($meContent);
+    var $frequencyContent = $('select[class = "frequency"]');
+    console.log($frequencyContent)
+    $('select[class = "frequency"]').each(function(index, ele){
+        $(ele).unbind('change');
+        $(ele).on('change', function() {
+            toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
+        })
+    });
     var drugMedicationLength = $content.length;
     $('input[name="drugMedicationLength"]').val(drugMedicationLength);
     $content.each(function (k,v) {
@@ -35,14 +64,18 @@ function refreshKeyAppointmentHolder() {
         }
     });
 }
-$(document).ready(function (){
-    var $content = $('.med');
-    refreshIndex($content);
-    var drugMedicationLength = $content.length;
-    $('input[name="drugMedicationLength"]').val(drugMedicationLength);
-    $('.panel-main-content').children(":first");
-    var num=$('#medicationDiv').length;
-    if(num==0){
-        $('.removeMedications').hide();
-    }
-});
+function refreshId(targetSelector) {
+    $(targetSelector).each(function (k,v) {
+        var $input = $(v);
+        if ($input.hasClass('not-refresh')) {
+            return;
+        }
+        var orgId = $input.attr('id');
+        if (isEmpty(orgId)) {
+            return;
+        }
+        var result = /(.*\D+)/g.exec(orgId);
+        var id = !isEmpty(result) && result.length > 0 ? result[0] : orgId;
+        $input.prop('id', id + k);
+    });
+}

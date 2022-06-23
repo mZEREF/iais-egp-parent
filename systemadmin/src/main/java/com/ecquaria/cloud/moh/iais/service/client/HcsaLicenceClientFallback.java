@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -42,6 +43,11 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByLicenseeId(String licenseeId) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
     }
 
     @Override

@@ -38,10 +38,10 @@ public class DocInfoAjaxController {
     Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        String doctorSource = ParamUtil.getString(request,"docSource");
+        /*String doctorSource = ParamUtil.getString(request,"docSource");*/
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
-        DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,doctorSource);
+        DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
         if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
             if(doctorInformationDto!=null){
                 professionalResponseDto.setName(doctorInformationDto.getName());

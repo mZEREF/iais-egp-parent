@@ -8,4 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformat
  */
 public interface DocInfoService {
     DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo,String doctorSource);
+
+    DoctorInformationDto getRfcDoctorInformationDtoByConds(String doctorInformationId);
 }

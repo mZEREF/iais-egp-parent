@@ -141,7 +141,7 @@ public abstract class DpCommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareCompliance";
+        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission";
         if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
             URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         }
@@ -270,6 +270,9 @@ public abstract class DpCommonDelegator {
         PatientDto patientDto =dpSuperDataSubmissionDto.getPatientDto() ==null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
         cycle.setPatientCode(patientDto.getPatientCode());
         cycle.setStatus(status);
+        if (StringUtil.isNotEmpty(patientDto.getName())) {
+            patientDto.setName(patientDto.getName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto();
         if(drugPrescribedDispensedDto != null){
             DrugSubmissionDto drugSubmissionDto = drugPrescribedDispensedDto.getDrugSubmission();

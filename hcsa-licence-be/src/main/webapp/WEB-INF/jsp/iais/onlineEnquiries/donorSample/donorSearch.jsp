@@ -89,7 +89,7 @@
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="No of Live Birth Events Recorded" />
-                                <div class="col-md-4 row ">
+                                <div class="col-md-8 col-sm-4 row ">
                                     <iais:value width="2" cssClass="col-md-2  row">
                                         <div class="form-check">
                                             <input class="form-check-input"
@@ -102,7 +102,7 @@
                                                     class="check-square"></span>0</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    name="birthEventsTotal1" id="birthEventsTotal1"
@@ -113,7 +113,7 @@
                                                     class="check-square"></span>1</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    name="birthEventsTotal2" id="birthEventsTotal2"
@@ -124,7 +124,7 @@
                                                     class="check-square"></span>2</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    name="birthEventsTotal3" id="birthEventsTotal3"
@@ -135,7 +135,7 @@
                                                     class="check-square"></span>3</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-2 row">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    name="birthEventsTotalMax" id="birthEventsTotalMax"
@@ -228,7 +228,7 @@
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <c:out value="${donorSample.ageNumber}"/>
-                                                            <c:if test="${donorSample.ageNumber>donorResultSize}">
+                                                            <c:if test="${donorSample.ageNumber >= donorResultSize}">
                                                                 <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                                                                    title="<span style='font-size: 2 rem;'>${donorMessageTip}</span>"
                                                                    style="z-index: 10"

@@ -992,7 +992,7 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{DataSubmissionConsts.DS_VSS}))) {
             roles.add(RoleConsts.USER_ROLE_DS_VSS);
-            roles.add(RoleConsts.USER_ROLE_DS_VSS_SUPERVISOR);
+            // roles.add(RoleConsts.USER_ROLE_DS_VSS_SUPERVISOR);
         }
         return roles;
     }

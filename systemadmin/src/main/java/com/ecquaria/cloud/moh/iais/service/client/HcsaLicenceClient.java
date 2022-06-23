@@ -16,21 +16,25 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/12/4 16:02
  */
-@FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class,
-        fallback = HcsaLicenceClientFallback.class)
+@FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = HcsaLicenceClientFallback.class)
 public interface HcsaLicenceClient {
+
     @GetMapping(value = "/hcsa-key-personnel/getEmailByRole/{role}")
     FeignResponseEntity<List<String>> getEmailByRole(@PathVariable(name = "role") String role);
 
     @GetMapping(value = "/hcsa-key-personnel/getMobileByRole/{role}")
     FeignResponseEntity<List<String>> getMobileByRole(@PathVariable(name = "role") String role);
 
-    @GetMapping(value = "/hcsa-licence/licence-dto-svc-name",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-licence/licence-dto-svc-name", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosBySvcName(@RequestParam("svcName") String svcName);
 
-    @GetMapping(value = "/lic-common/lic-licenseeId",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/lic-licenseeId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getActiveLicencesByLicenseeId(@RequestParam("licenseeId") String licenseeId);
 
-    @GetMapping(value = "/lic-common/ds-center-organizationId",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/licensee-ds-centers", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByLicenseeId(@RequestParam("licenseeId") String licenseeId);
+
+    @GetMapping(value = "/lic-common/organization-ds-centers", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrganizationId(@RequestParam("organizationId") String organizationId);
+
 }

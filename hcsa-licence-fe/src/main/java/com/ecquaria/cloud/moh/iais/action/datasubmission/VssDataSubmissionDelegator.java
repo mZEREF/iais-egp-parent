@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -112,6 +114,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
         ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_VSS);
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
@@ -611,7 +614,10 @@ public class VssDataSubmissionDelegator {
         }
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
-
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        if (StringUtil.isNotEmpty(treatmentDto.getPatientName())) {
+            treatmentDto.setPatientName(treatmentDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
         if(sexualSterilizationDto.getOperationDate() != null ) {
             try {
                 if(Formatter.compareDateByDay(dataSubmissionDto.getSubmitDt(),sexualSterilizationDto.getOperationDate())>30){

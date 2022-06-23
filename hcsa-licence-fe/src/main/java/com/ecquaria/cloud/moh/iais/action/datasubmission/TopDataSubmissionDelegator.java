@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -111,6 +113,7 @@ public class TopDataSubmissionDelegator {
         DsConfigHelper.initTopConfig(bpc.request);
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
@@ -1211,6 +1214,38 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+        if(professionalResponseDto!=null){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                if(!"true".equals(terminationDto.getTopDoctorInformations())){
+                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                    String doctorName = ParamUtil.getString(request, "names");
+                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                    String dQualification = ParamUtil.getString(request, "dQualifications");
+                    terminationDto.setDoctorName(doctorName);
+                    terminationDto.setSpecialty(dSpeciality);
+                    terminationDto.setSubSpecialty(dSubSpeciality);
+                    terminationDto.setQualification(dQualification);
+                    doctorInformationDto.setName(terminationDto.getDoctorName());
+                    doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
+                    doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
+                    doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
+                    doctorInformationDto.setQualification(terminationDto.getQualification());
+                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                }
+            }else {
+                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+                doctorInformationDto.setName(terminationDto.getDoctorName());
+                doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
+                doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
+                doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
+                doctorInformationDto.setQualification(terminationDto.getQualification());
+                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+            }
+        }
         if("true".equals(terminationDto.getTopDoctorInformations())){
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
@@ -1283,6 +1318,25 @@ public class TopDataSubmissionDelegator {
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
                 String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
                 errMap.put("dQualification", general_err0041);
+            }
+        }else {
+            if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                errMap.put("dSpecialitys", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                errMap.put("dSpecialitys", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                errMap.put("dSubSpecialitys", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                errMap.put("dSubSpecialitys", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                errMap.put("dQualifications", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                errMap.put("dQualifications", general_err0041);
             }
         }
         if(!errMap.isEmpty()){
@@ -1466,7 +1520,6 @@ public class TopDataSubmissionDelegator {
             ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 terminationDto.setTopDoctorInformations("true");
-                topSuperDataSubmissionDto.getTerminationOfPregnancyDto().setTerminationDto(terminationDto);
             }
             topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         } catch (Exception e) {
@@ -1483,7 +1536,12 @@ public class TopDataSubmissionDelegator {
         /*String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");*/
         try {
             /*sendNotification(licenseeDtoName, submissionNo, licenseeId, dateStr);*/
-            sendMsgAndEmail(licenseeId, "Termination Of Pregnancy", licenseeDtoName, submissionNo);
+            if(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+                sendRfcMsgAndEmail(licenseeId, licenseeDtoName, submissionNo);
+            }else {
+                sendMsgAndEmail(licenseeId, "Termination Of Pregnancy", licenseeDtoName, submissionNo);
+            }
+
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -1671,6 +1729,36 @@ public class TopDataSubmissionDelegator {
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
         emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
+        log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));
+    }
+    private void sendRfcMsgAndEmail(String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("dataSupervisor", submitterName);
+        msgContentMap.put("submissionId", submissionNo);
+        msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("submissionId", submissionNo);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(submissionNo);
+        msgParam.setReqRefNum(submissionNo);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setRefId(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setSubject(subject);
+        notificationHelper.sendNotification(msgParam);
+        log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));

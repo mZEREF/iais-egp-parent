@@ -176,7 +176,10 @@ public interface LicenceInboxClient {
     @GetMapping(value = "/ar-common/cycle-stage-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
 
-    @GetMapping(value = "/lic-common/ds-center-organizationId",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/licensee-ds-centers", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByLicenseeId(@RequestParam("licenseeId") String licenseeId);
+
+    @GetMapping(value = "/lic-common/organization-ds-centers",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrganizationId(@RequestParam("organizationId") String organizationId);
 
     @GetMapping(value = "/data-submission/change-data-submission-id-status", consumes = MediaType.APPLICATION_JSON_VALUE)

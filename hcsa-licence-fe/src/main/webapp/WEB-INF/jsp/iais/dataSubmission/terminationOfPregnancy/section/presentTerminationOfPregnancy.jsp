@@ -26,7 +26,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Surgical Procedure" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSpType" id="otherSpType" value="${terminationDto.otherSpType}" />
+                <iais:input maxLength="100" type="text" name="otherSpType" id="otherSpType" value="${terminationDto.otherSpType}" />
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherSpType"></span>
             </iais:value>
         </iais:row>
@@ -45,7 +45,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Anaesthesia" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherAnType" id ="otherAnType" value="${terminationDto.otherAnType}"/>
+                <iais:input maxLength="100" type="text" name="otherAnType" id ="otherAnType" value="${terminationDto.otherAnType}"/>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherAnType"></span>
             </iais:value>
         </iais:row>
@@ -63,7 +63,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Drug" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherDrugType" id="otherDrugType" value="${terminationDto.otherDrugType}" />
+                <iais:input maxLength="100" type="text" name="otherDrugType" id="otherDrugType" value="${terminationDto.otherDrugType}" />
             </iais:value>
         </iais:row>
     </div>
@@ -279,7 +279,7 @@
         <iais:row>
             <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherTopDrugPlace" id="otherTopDrugPlaceText" value="${terminationDto.otherTopDrugPlace}"/>
+                <iais:input maxLength="100" type="text" name="otherTopDrugPlace" id="otherTopDrugPlaceText" value="${terminationDto.otherTopDrugPlace}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -310,24 +310,49 @@
                     ${terminationDto.doctorName}
                 </iais:value>
             </iais:row>
-            <iais:row >
-                <iais:field width="5" value="Specialty"/>
-                <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
-                    ${terminationDto.specialty}
-                </iais:value>
-            </iais:row>
-            <iais:row >
-                <iais:field width="5" value="Sub-Specialty"/>
-                <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
-                    ${terminationDto.subSpecialty}
-                </iais:value>
-            </iais:row>
-            <iais:row >
-                <iais:field width="5" value="Qualification"/>
-                <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
-                    ${terminationDto.qualification}
-                </iais:value>
-            </iais:row>
+            <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                <iais:row >
+                    <iais:field width="5" value="Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                        ${terminationDto.specialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Sub-Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                        ${terminationDto.subSpecialty}
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                        ${terminationDto.qualification}
+                    </iais:value>
+                </iais:row>
+            </div>
+            <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+                <iais:row >
+                    <iais:field width="5" value="Specialty" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <iais:input maxLength="100" type="text" name="dSpecialitys" value="${terminationDto.specialty}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <iais:input maxLength="100" type="text" name="dSubSpecialitys" value="${terminationDto.subSpecialty}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row >
+                    <iais:field width="5" value="Qualification" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <iais:input maxLength="100" type="text" name="dQualifications" value="${terminationDto.qualification}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
+                    </iais:value>
+                </iais:row>
+            </div>
         </div>
     <div id="doctorInformationText" <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
         <iais:row>
@@ -748,8 +773,12 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         $('#ELIS_SERVICE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections)){
                         $('#PRS_SERVICE').modal('show');
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }else if (data.selection.hasException) {
                         $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');

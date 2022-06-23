@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsTopEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PostTerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -226,6 +228,18 @@ public class OnlineTopEnquiryDelegator {
             }
             if(StringUtil.isNotEmpty(terminationDto.getTopDrugPlace())&&premisesMap.containsKey(terminationDto.getTopDrugPlace())){
                 terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
+            }
+        }
+        PostTerminationDto postDto=topInfo.getTerminationOfPregnancyDto().getPostTerminationDto();
+        if(postDto!=null){
+            if(StringUtil.isNotEmpty(postDto.getCounsellingPlace())&&premisesMap.containsKey(postDto.getCounsellingPlace())){
+                postDto.setCounsellingPlace(premisesMap.get(postDto.getCounsellingPlace()).getPremiseLabel());
+            }
+        }
+        PreTerminationDto preDto=topInfo.getTerminationOfPregnancyDto().getPreTerminationDto();
+        if(preDto!=null){
+            if(StringUtil.isNotEmpty(preDto.getCounsellingPlace())&&premisesMap.containsKey(preDto.getCounsellingPlace())){
+                preDto.setCounsellingPlace(premisesMap.get(preDto.getCounsellingPlace()).getPremiseLabel());
             }
         }
         if(!StringUtil.isEmpty(topInfo.getTerminationOfPregnancyDto().getTerminationDto())){

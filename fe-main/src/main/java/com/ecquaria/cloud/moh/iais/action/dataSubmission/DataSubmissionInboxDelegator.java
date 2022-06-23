@@ -520,6 +520,7 @@ public class DataSubmissionInboxDelegator {
 			Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
 			InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = actionInboxDataSubmissionQueryDtos.get(0);
 			if (AMENDED.equals(actionValue)){
+				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());

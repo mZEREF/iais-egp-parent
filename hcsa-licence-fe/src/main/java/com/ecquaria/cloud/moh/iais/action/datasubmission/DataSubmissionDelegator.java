@@ -47,6 +47,7 @@ public class DataSubmissionDelegator {
      * @throws
      */
     public void prepareCompliance(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.MODULE_SELECT_DATA_SUBMISSION);
         bpc.request.setAttribute("title","New Data Submission");
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         if(StringUtil.isEmpty(crud_action_type_ds) || "back".equals(crud_action_type_ds)){

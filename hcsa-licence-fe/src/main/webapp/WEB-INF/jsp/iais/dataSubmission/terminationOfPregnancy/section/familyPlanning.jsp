@@ -145,7 +145,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
+                <iais:input maxLength="1000" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
             </iais:value>
         </iais:row>
     </div>

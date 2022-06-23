@@ -52,12 +52,17 @@ public final class FeInboxHelper {
     }
 
     public static List<SelectOption> getInboxStatuses(List<String> privilegeIds){
+        List<SelectOption> result = dataSubmissionStatusOptions;
          for(String privilegeId : privilegeIds){
              if(PrivilegeConsts.USER_PRIVILEGE_DS_AR.equalsIgnoreCase(privilegeId)){
                  return dataSubmissionStatusOptions;
              }
          }
-         return dataSubmissionStatusOptions.stream().filter( s-> !StringUtil.isIn(s.getValue(),dataSubmissionStatusesForArPrivate)).collect(Collectors.toList());
+        if(!FeInboxHelper.canAmendDs(privilegeIds)){
+            result = dataSubmissionStatusOptions.stream().filter( s-> !StringUtil.isIn(s.getValue(),DataSubmissionConsts.DS_STATUS_AMENDED)).collect(Collectors.toList());
+        }
+        result = result.stream().filter( s-> !StringUtil.isIn(s.getValue(),dataSubmissionStatusesForArPrivate)).collect(Collectors.toList());
+         return result;
     }
 
     public static List<SelectOption> getSubmissionTypes(List<String> privilegeIds){

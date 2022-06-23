@@ -73,7 +73,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Patient ID Type"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                    <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV"
                                                  cssClass="clearSel"   value="${dsEnquiryTopFilterDto.patientIdType}" />
                                 </iais:value>
                             </iais:row>

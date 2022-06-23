@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
@@ -411,6 +412,8 @@ public class DpSiUploadDelegate {
         dataSubmissionDto.setDeclaration(declaration);
         DataSubmissionHelper.setCurrentDpDataSubmission(superDataSubmissionDto, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        String isUploadFile = ParamUtil.getString(bpc.request, DemoConstants.CRUD_ACTION_VALUE);
+
         if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
             clearSession(bpc.request);
@@ -430,7 +433,7 @@ public class DpSiUploadDelegate {
             if (errorMap.isEmpty()) {
                 String fileName=fileEntry.getValue().getName();
                 if(!fileName.equals("Sovenor_Inventory_List.xlsx")&&!fileName.equals("Sovenor_Inventory_List.csv")){
-                    errorMap.put("uploadFileError", "MCUPERR004");
+                    errorMap.put("uploadFileError", "Please change the file name.");
                 }
                 List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
                 fileItemSize = sovenorInventoryExcelDtos.size();
@@ -487,14 +490,18 @@ public class DpSiUploadDelegate {
         }
         ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
-        if (StringUtil.isEmpty(declaration)) {
-            errorMap.put("declaration", "GENERAL_ERR0006");
-        }
-        if (!errorMap.isEmpty()) {
-            log.error("------No checked for declaration-----");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        if(StringUtil.isNotEmpty(isUploadFile)&&isUploadFile.equals("preview")){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
+            if (StringUtil.isEmpty(declaration)) {
+                errorMap.put("declaration", "GENERAL_ERR0006");
+            }
+            if (!errorMap.isEmpty()) {
+                log.error("------No checked for declaration-----");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
+            }
         }
     }
 
@@ -524,6 +531,7 @@ public class DpSiUploadDelegate {
                     dataSubmissionDto.setSubmissionNo(submissionNo);
                     dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
+                    formalizeNum(dto);
                     newDto.setDpSovenorInventoryDto(dto);
                     return newDto;
                 })
@@ -555,6 +563,24 @@ public class DpSiUploadDelegate {
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
+    }
+
+    private void formalizeNum(DpSovenorInventoryDto dto){
+        if(dto.getBatchNumber().endsWith(".0")){
+            dto.setBatchNumber(dto.getBatchNumber().substring(0,dto.getBatchNumber().length()-2));
+        }
+        if(dto.getDrugStrength().endsWith(".0")){
+            dto.setDrugStrength(dto.getDrugStrength().substring(0,dto.getDrugStrength().length()-2));
+        }
+        if(dto.getQuantityDrugPurchased().endsWith(".0")){
+            dto.setQuantityDrugPurchased(dto.getQuantityDrugPurchased().substring(0,dto.getQuantityDrugPurchased().length()-2));
+        }
+        if(dto.getQuantityBalanceStock().endsWith(".0")){
+            dto.setQuantityBalanceStock(dto.getQuantityBalanceStock().substring(0,dto.getQuantityBalanceStock().length()-2));
+        }
+        if(dto.getQuantityExpiredStock().endsWith(".0")){
+            dto.setQuantityExpiredStock(dto.getQuantityExpiredStock().substring(0,dto.getQuantityExpiredStock().length()-2));
+        }
     }
 
     /**

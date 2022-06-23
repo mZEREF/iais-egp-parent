@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -370,6 +371,11 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByLicenseeId(String licenseeId) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
     }
 
     @Override

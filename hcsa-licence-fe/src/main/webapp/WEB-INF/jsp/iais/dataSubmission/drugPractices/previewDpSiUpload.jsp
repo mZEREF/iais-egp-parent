@@ -16,6 +16,7 @@
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 <c:set var="hasItems" value="${not empty SOVENOR_INVENTORY_LIST ? 1 : 0}" />
 <%@ include file="common/dpHeader.jsp" %>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/drpSiUpload.js"></script>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
@@ -48,11 +49,12 @@
                         </h3>
                         <div class="col-xs-12">
                             <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
-                            <c:if test="${DS_ERR068}">
-                                <span class="error-msg">
+                            <div <c:if test="${!DS_ERR068}"> style="display: none" </c:if>>
+                                <span class="error-msg" name="iaisErrorMsg">
                                     There are errors in the file uploaded, which can be found <a href="${pageContext.request.contextPath}/ds/dp/si-err-file" >here</a>. Please rectify the errors and re-upload the file.
                                 </span>
-                            </c:if>
+                            </div>
+
                         </div>
 <%--                        <c:if test="${not empty fileItemErrorMsgs}">--%>
 <%--                            <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">--%>
@@ -104,27 +106,14 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="common/dpDeclaration.jsp" %>
                 </div>
-                <div class="application-tab-footer">
-                    <div class="col-xs-12 col-sm-4 col-md-2 text-left">
-                        <a style="padding-left: 5px;" class="back" id="backBtn">
-                            <em class="fa fa-angle-left">&nbsp;</em> Back
-                        </a>
-                    </div>
-                    <div class="col-xs-12 col-sm-8 col-md-10">
-                        <div class="button-group">
-                            <a class="btn btn-primary next premiseId" id="submitBtn" onclick="submit('submission')" >Submit</a>
-                        </div>
-                    </div>
-                </div>
+                <br/><br/>
+                <%@include file="common/dpFooter.jsp" %>
             </div>
 
-            <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-            <%@ include file="../common/formHidden.jsp" %>
 
         </div>
     </div>
     <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 
 </form>
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
 

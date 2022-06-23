@@ -18,9 +18,16 @@
                         <c:out value="${sexualSterilizationDto.doctorReignNo}"/>
                     </iais:value>
                 </iais:row>
+                <%--  <iais:row>
+                      <iais:field width="6" value="Name of Doctor who performed the sterilization" />
+                      <iais:value width="6" display="true" cssClass="col-md-6">
+                          <c:out value="${sexualSterilizationDto.doctorName}"/>
+                      </iais:value>
+                  </iais:row>--%>
+
                 <iais:row>
-                    <iais:field width="6" value="Name of Doctor who performed the sterilization"/>
-                    <iais:value width="6" cssClass="col-md-7" display="true" id="names">
+                    <iais:field width="5" value="Name of Doctor who performed the sterilization"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                         <c:if test="${sexualSterilizationDto.doctorInformations eq 'true'}">
                             <c:out value="${doctorInformationDto.name}"/>
                         </c:if>
@@ -30,8 +37,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row >
-                    <iais:field width="6" value="Specialty"/>
-                    <iais:value width="6" cssClass="col-md-7" display="true" id="specialty">
+                    <iais:field width="5" value="Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
                         <c:if test="${sexualSterilizationDto.doctorInformations eq 'true'}">
                             <c:out value="${doctorInformationDto.speciality}"/>
                         </c:if>
@@ -41,8 +48,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row >
-                    <iais:field width="6" value="Sub-Specialty"/>
-                    <iais:value width="6" cssClass="col-md-7" display="true" id="subSpecialty">
+                    <iais:field width="5" value="Sub-Specialty"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
                         <c:if test="${sexualSterilizationDto.doctorInformations eq 'true'}">
                             <c:out value="${doctorInformationDto.subSpeciality}"/>
                         </c:if>
@@ -52,8 +59,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row >
-                    <iais:field width="6" value="Qualification"/>
-                    <iais:value width="6" cssClass="col-md-7" display="true" id="qualification">
+                    <iais:field width="5" value="Qualification"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
                         <c:if test="${sexualSterilizationDto.doctorInformations eq 'true'}">
                             <c:out value="${doctorInformationDto.qualification}"/>
                         </c:if>
@@ -63,8 +70,8 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Other-Qualification" />
-                    <iais:value width="6" cssClass="col-md-7" display="true">
+                    <iais:field width="5" value="Other Qualification" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${sexualSterilizationDto.otherQualification}"/>
                     </iais:value>
                 </iais:row>
@@ -96,7 +103,7 @@
                 <iais:row>
                     <iais:field width="6" value="Name of Hospital" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <iais:code code="${sexualSterilizationDto.hecReviewedHospital}"/>
+                        <c:out value="${sexualSterilizationDto.hecReviewedHospital}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

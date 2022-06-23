@@ -106,7 +106,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public FeUserDto editUserAccount(FeUserDto feUserDto){
-        feUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if (feUserDto.getAuditTrailDto() == null) {
+            feUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }
         return feUserClient.editUserAccount(feUserDto).getEntity();
     }
 
@@ -377,14 +379,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,boolean amendLicensee ) {
+    public LicenseeDto saveMyinfoDataByFeUserDtoAndLicenseeDto(LicenseeDto licenseeDto, FeUserDto feUserDto, MyInfoDto myInfoDto,
+            boolean amendLicensee) {
         LicenseeEntityDto licenseeEntityDto;
         LicenseeIndividualDto licenseeIndividualDto;
-        if(licenseeDto == null) {
+        if (licenseeDto == null) {
             licenseeDto = new LicenseeDto();
             licenseeEntityDto = new LicenseeEntityDto();
-            licenseeIndividualDto= new LicenseeIndividualDto();
-        }else {
+            licenseeIndividualDto = new LicenseeIndividualDto();
+        } else {
             licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
             licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
         }
@@ -401,8 +404,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeDto.setStreetName(myInfoDto.getStreetName());
         }
         //fe user
-        FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
-        feUserDto.setId(feUserDtoCreate.getId());
+        feUserDto = editUserAccount(feUserDto);
         //egpcloud
         updateEgpUser(feUserDto);
 
@@ -418,7 +420,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             organizationDto.setLicenseeDto(licenseeDto);
         }
         organizationDto.setId(organizationById.getId());
-        if(amendLicensee){
+        if (amendLicensee) {
             //update licensee
             licenseeDto.setOrganizationId(organizationDto.getId());
             licenseeDto.setName(feUserDto.getDisplayName());
@@ -660,18 +662,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(String licenseeId, String orgId) {
+    public List<SelectOption> getRoleSelection(String licenseeId) {
         // ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false)
         List<String> data = IaisCommonUtils.genNewArrayList();
-        if (StringUtil.isNotEmpty(orgId)) {
-            log.info(StringUtil.changeForLog("The Org Id: " + orgId));
-            List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+        if (StringUtil.isNotEmpty(licenseeId)) {
+            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
+            List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(dsCenterDtos)) {
                 dsCenterDtos.stream().forEach(dsCenterDto -> IaisCommonUtils.addToList(dsCenterDto.getCenterType(), data));
             }
-        }
-        if (StringUtil.isNotEmpty(licenseeId)) {
-            log.info(StringUtil.changeForLog("The Licensee Id: " + licenseeId));
             List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
             if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
                 licenceDtos.stream().forEach(licenceDto -> IaisCommonUtils.addToList(licenceDto.getSvcName(), data));

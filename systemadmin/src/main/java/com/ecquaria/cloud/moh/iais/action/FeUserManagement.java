@@ -165,7 +165,7 @@ public class FeUserManagement {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO);
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,
-                intranetUserService.getRoleSelection(feUserDto.getLicenseeId(), feUserDto.getOrganization()));
+                intranetUserService.getRoleSelection(feUserDto.getLicenseeId()));
         ParamUtil.setSessionAttr(bpc.request, "feusertitle", "Edit");
         ParamUtil.setRequestAttr(bpc.request,FeUserConstants.SESSION_USER_UEN_NAME,feUserDto.getUenNo());
         ParamUtil.setRequestAttr(bpc.request,"organizationId",feUserDto.getOrgId());
@@ -221,6 +221,7 @@ public class FeUserManagement {
             userAttr.setStatus(active);
             userAttr.setRoles(roles);
             userAttr.setAccountActivateDatetime(new Date());
+            userAttr.setSelectServices(selectServices);
 
             ValidationResult validationResult;
             ParamUtil.setSessionAttr(request,FeUserConstants.SESSION_USER_DTO,userAttr);
@@ -280,7 +281,7 @@ public class FeUserManagement {
                     if (StringUtil.isEmpty(userAttr.getSelectServices())) {
                         userAttr.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
                     }
-                    intranetUserService.saveIntrenetUser(userAttr);
+                    userAttr = intranetUserService.saveIntrenetUser(userAttr);
                     // sync
                     syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
@@ -323,17 +324,15 @@ public class FeUserManagement {
 
     public List<SelectOption> checkUenAndRoleSelectOptions(String uenNo) {
         if (StringUtil.isEmpty(uenNo) || uenNo.length() < 5) {
-            return intranetUserService.getRoleSelection(null, null);
+            return intranetUserService.getRoleSelection(null);
         }
         String licenseeId = null;
-        String orgId = null;
         OrganizationDto organizationDto = intranetUserService.getByUenNoAndStatus(uenNo, AppConsts.COMMON_STATUS_ACTIVE);
         if (organizationDto != null) {
-            orgId = organizationDto.getId();
             licenseeId = Optional.ofNullable(organizationDto.getLicenseeDto())
                     .map(LicenseeDto::getId)
                     .orElse(null);
         }
-        return intranetUserService.getRoleSelection(licenseeId, orgId);
+        return intranetUserService.getRoleSelection(licenseeId);
     }
 }

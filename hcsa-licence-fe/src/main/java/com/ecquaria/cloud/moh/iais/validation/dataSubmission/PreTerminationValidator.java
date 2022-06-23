@@ -46,6 +46,7 @@ public class PreTerminationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
                 ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"counsellingPlace");
                 errorMap.putAll(result.retrieveAll());
+                errorMap.put("counsellingPlaceAge", "GENERAL_ERR0006");
             }
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingResult())){
                 ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"counsellingResult");
