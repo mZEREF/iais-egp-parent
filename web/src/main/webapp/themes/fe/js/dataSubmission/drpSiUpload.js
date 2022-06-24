@@ -41,3 +41,11 @@ function doActionWhenError(data) {
         $btns.trigger('click');
     }
 }
+function submit(action,value,additional){
+    $("[name='crud_type']").val(action);
+    $("[name='crud_action_value']").val(value);
+    $("[name='crud_action_additional']").val(additional);
+    var mainForm = document.getElementById('mainForm');
+    showWaiting();
+    mainForm.submit();
+}
