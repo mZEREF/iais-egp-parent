@@ -775,7 +775,7 @@
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
-                    }else if(isEmpty(data.selections)){
+                    }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
