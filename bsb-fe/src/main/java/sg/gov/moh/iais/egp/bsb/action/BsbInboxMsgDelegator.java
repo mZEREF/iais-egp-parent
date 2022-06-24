@@ -71,6 +71,7 @@ public class BsbInboxMsgDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_MSG_SEARCH_DTO);
         request.getSession().removeAttribute(KEY_MESSAGE_PAGE);
+        request.getSession().removeAttribute(KEY_DASHBOARD_UNREAD_MSG_AMT);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
     }
@@ -187,6 +188,7 @@ public class BsbInboxMsgDelegator {
     public void viewMsg(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         //get mask msg id
+        inboxService.retrieveDashboardData(request);
         String maskedMsgId = ParamUtil.getString(request,KEY_ACTION_VALUE);
         //unMasked msg id
         if(StringUtils.hasLength(maskedMsgId)){

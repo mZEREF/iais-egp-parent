@@ -12,7 +12,9 @@ import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
@@ -80,6 +82,7 @@ public class BsbSubmitInspectionReportDelegator {
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_DECISION);
         session.removeAttribute(KEY_APP_STATUS);
+        session.removeAttribute(InspectionConstants.KEY_HAS_NON_COMPLIANCE);
 
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
 
@@ -98,10 +101,12 @@ public class BsbSubmitInspectionReportDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) initDataDto.getProcessHistoryDtoList());
 
         // inspection processing
-        InsProcessDto processDto = new InsProcessDto();
+        InsReportProcessDto processDto = new InsReportProcessDto();
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
         ParamUtil.setSessionAttr(request, KEY_APP_STATUS, initDataDto.getSubmissionDetailsInfo().getApplicationStatus());
+
+        ParamUtil.setSessionAttr(request, InspectionConstants.KEY_HAS_NON_COMPLIANCE,initDataDto.getHasNonCompliance());
     }
 
     public void pre(BaseProcessClass bpc) {
@@ -121,7 +126,7 @@ public class BsbSubmitInspectionReportDelegator {
     public void handleSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionDOSubmitReportDecision(processDto, appId);
@@ -152,7 +157,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.skipInspection(appId,taskId,processDto);
     }
 
@@ -160,7 +165,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
 
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
@@ -182,7 +187,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.submitInspectionReportToAO(appId, taskId, processDto);
         String appStatus = (String) ParamUtil.getSessionAttr(request, KEY_APP_STATUS);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
@@ -194,7 +199,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.routeInspectionReportToApplicant(appId, taskId, processDto);
         String appStatus = (String) ParamUtil.getSessionAttr(request, KEY_APP_STATUS);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
@@ -206,7 +211,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsReportProcessDto processDto = (InsReportProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} taskId {} finalize inspection report", appId, taskId);
         String nextStatus = inspectionClient.finalizeInspectionReport(appId, taskId, processDto);
         String appStatus = (String) ParamUtil.getSessionAttr(request, KEY_APP_STATUS);
@@ -214,7 +219,7 @@ public class BsbSubmitInspectionReportDelegator {
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextStatus));
         if (nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION)) {
             ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
-        } else if (nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_DO)) {
+        } else if (nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_DO) || nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_DO_NC_EMAIL_DRAFT)) {
             ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
         }
     }

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class InsProcessDto implements Serializable {
+    private String ncEmailRequired;
     private String remark;
     private String decision;
     private String selectMohUser;
@@ -19,11 +20,13 @@ public class InsProcessDto implements Serializable {
         this.decision = decision;
     }
 
+    private static final String KEY_NC_EMAIL_REQUIRED   = "ncEmailRequired";
     private static final String KEY_DECISION            = "processingDecision";
     private static final String KEY_REMARK              = "remarks";
     private static final String KEY_SELECT_MOH_USER     = "selectMohUser";
 
     public void reqObjMapping(HttpServletRequest request) {
+        this.ncEmailRequired = ParamUtil.getString(request,KEY_NC_EMAIL_REQUIRED);
         this.decision = ParamUtil.getString(request, KEY_DECISION);
         this.remark = ParamUtil.getString(request, KEY_REMARK);
         this.selectMohUser = ParamUtil.getString(request, KEY_SELECT_MOH_USER);
