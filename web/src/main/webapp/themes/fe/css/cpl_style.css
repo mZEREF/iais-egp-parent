@@ -2752,6 +2752,7 @@ span.error-msg {
     .tab-gp .tab-nav-mobile {
         margin-left: 0;
         width: 100%;
+        overflow: hidden;
     }
 }
 .tab-gp.steps-tab .nav.nav-tabs li {
