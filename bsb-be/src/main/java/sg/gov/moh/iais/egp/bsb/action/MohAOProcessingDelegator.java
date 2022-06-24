@@ -71,7 +71,7 @@ public class MohAOProcessingDelegator {
         switch (processingDecision) {
             case MOH_PROCESSING_DECISION_APPROVE:
                 processClient.saveAoProcessingApprove(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESSING_DECISION_REJECT:

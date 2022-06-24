@@ -16,13 +16,13 @@
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 <c:set var="hasItems" value="${not empty SOVENOR_INVENTORY_LIST ? 1 : 0}" />
 <%@ include file="common/dpHeader.jsp" %>
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/drpSiUpload.js"></script>
+
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please upload patient information file</h3>
+                <h3>Please upload Sovenor Inventory file</h3>
                 <div class="tab-pane active" id="tabInbox" role="tabpanel">
                     <div class="document-info-list">
                         <ul>
@@ -117,3 +117,4 @@
 
 </form>
 
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/drpSiUpload.js"></script>

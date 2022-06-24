@@ -115,8 +115,8 @@
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="No of Live Birth Events Recorded" />
-                            <div class="col-md-4  row">
-                                <iais:value width="2" cssClass="col-md-2 row">
+                            <div class="col-md-8 col-sm-4 row ">
+                                <iais:value width="2" cssClass="col-md-2  row">
                                     <div class="form-check">
                                         <input class="form-check-input"
                                                type="checkbox"
@@ -128,7 +128,7 @@
                                                 class="check-square"></span>0</label>
                                     </div>
                                 </iais:value>
-                                <iais:value width="2" cssClass="col-md-2">
+                                <iais:value width="2" cssClass="col-md-2 row">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                name="birthEventsTotal1" id="birthEventsTotal1"
@@ -139,7 +139,7 @@
                                                 class="check-square"></span>1</label>
                                     </div>
                                 </iais:value>
-                                <iais:value width="2" cssClass="col-md-2">
+                                <iais:value width="2" cssClass="col-md-2 row">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                name="birthEventsTotal2" id="birthEventsTotal2"
@@ -150,7 +150,7 @@
                                                 class="check-square"></span>2</label>
                                     </div>
                                 </iais:value>
-                                <iais:value width="2" cssClass="col-md-2">
+                                <iais:value width="2" cssClass="col-md-2 row">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                name="birthEventsTotal3" id="birthEventsTotal3"
@@ -161,7 +161,7 @@
                                                 class="check-square"></span>3</label>
                                     </div>
                                 </iais:value>
-                                <iais:value width="2" cssClass="col-md-2">
+                                <iais:value width="2" cssClass="col-md-2 row">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                name="birthEventsTotalMax" id="birthEventsTotalMax"
@@ -240,21 +240,27 @@
                                                 <tr >
 
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                                                         <c:out value="${donorSample.arCentre}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Donor Sample Code / ID No.</p>
                                                         <c:out value="${donorSample.donorSampleCode}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Sample Type</p>
                                                         <iais:code code="${donorSample.sampleType}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Name of Bank / AR Centre where sample is collected</p>
                                                         <c:out value="${donorSample.sampleHciCode}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Donor's Name</p>
                                                         <c:out value="${donorSample.donorName}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>
                                                         <c:out value="${donorSample.ageNumber}"/>
                                                         <c:if test="${donorSample.ageNumber>=donorResultSize}">
                                                             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
@@ -264,6 +270,7 @@
                                                         </c:if>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Action</p>
                                                         <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                             View Full Details
                                                         </button>

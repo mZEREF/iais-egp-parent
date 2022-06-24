@@ -20,4 +20,5 @@ public class InsSubmitReportDataDto {
     private ReportDto reportDto;
     private List<ProcessHistoryDto> processHistoryDtoList;
     private List<SelectOption> selectRouteToMoh;
+    private String hasNonCompliance;
 }

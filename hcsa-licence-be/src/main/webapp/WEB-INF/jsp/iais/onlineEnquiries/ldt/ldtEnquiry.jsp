@@ -164,32 +164,41 @@
                                                            varStatus="status">
                                                     <tr >
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">S/N</p>
                                                             <c:out value="${status.index + 1+ (ldtParam.pageNo - 1) * ldtParam.pageSize}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Laboratory</p>
                                                             <c:out value="${ldt.laboratoryName}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of LDT Test</p>
                                                             <c:out value="${ldt.ldtTestName}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Intended Purpose of Test</p>
                                                             <c:out value="${ldt.intendedPurpose}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Date LDT was made or will be made available</p>
                                                             <fmt:formatDate
                                                                     value="${ldt.ldtDate}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Person responsible for the test</p>
                                                             <c:out value="${ldt.responsePerson}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Designation</p>
                                                             <c:out value="${ldt.designation}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Status of Test</p>
                                                             <c:out value="${ldt.testStatus}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Remarks</p>
                                                             <c:out value="${ldt.remarks}"/>
                                                         </td>
 

@@ -177,8 +177,8 @@
                                                            items="${topResult.rows}"
                                                            varStatus="status">
                                                     <tr id="advfilter${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}">
-
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Medical Clinic/Hospital</p>
                                                             <p style="white-space: nowrap;"><c:out value="${top.centerName}"/>
                                                                 <c:if test="${top.patientCount > 1}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}" onclick="getTopByIdType('${top.patientIdNo}','${top.patientIdType}','${(status.index + 1) + (topParam.pageNo - 1) * topParam.pageSize}')">
@@ -188,29 +188,37 @@
 
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                                             <a href="#" onclick="fullDetailsView('${top.submissionNo}')">${top.submissionNo}</a>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient Name</p>
                                                             <c:out value="${top.patientName}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID Type</p>
                                                             <iais:code code="${top.patientIdType}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID No.</p>
                                                             <c:out value="${top.patientIdNo}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient Date of Birth</p>
                                                             <fmt:formatDate
                                                                     value="${top.patientBirthday}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Doctor PRN</p>
                                                             <c:out value="${top.doctorRegnNo}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Doctor's Name</p>
                                                             <c:out value="${top.doctorName}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission Date</p>
                                                             <fmt:formatDate
                                                                     value="${top.submitDt}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>

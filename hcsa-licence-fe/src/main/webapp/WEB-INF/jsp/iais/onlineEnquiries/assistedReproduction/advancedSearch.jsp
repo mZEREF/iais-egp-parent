@@ -1294,7 +1294,7 @@
                                                 <tr id="advfilter${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}">
 
                                                     <td style="vertical-align:middle;">
-
+                                                        <p class="visible-xs visible-sm table-row-title">Patient Name</p>
                                                         <p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                                                             <c:if test="${not empty patient.cdPatientCode}">
                                                                 <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
@@ -1303,20 +1303,26 @@
                                                         </p>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Patient ID Type</p>
                                                         <iais:code code="${patient.patientIdType}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Patient ID No.</p>
                                                         <c:out value="${patient.patientIdNo}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Patient Date of Birth</p>
                                                         <fmt:formatDate
                                                                 value="${patient.patientDateBirth}"
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Patient Nationality</p>
                                                         <iais:code code="${patient.patientNationality}"/>
                                                     </td>
+
                                                     <td >
+                                                        <p class="visible-xs visible-sm table-row-title">Action</p>
                                                         <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                             View Full Details
                                                         </button>

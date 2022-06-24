@@ -68,51 +68,76 @@
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <iais:row >
-                        <iais:field width="5" value="Specialty"/>
-                        <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
-                            ${drugSubmission.specialty}
-                        </iais:value>
-                    </iais:row>
-                    <iais:row >
-                        <iais:field width="5" value="Sub-Specialty"/>
-                        <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
-                            ${drugSubmission.subSpecialty}
-                        </iais:value>
-                    </iais:row>
-                    <iais:row >
-                        <iais:field width="5" value="Qualification"/>
-                        <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
-                            ${drugSubmission.qualification}
-                        </iais:value>
-                    </iais:row>
+                    <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                        <iais:row >
+                            <iais:field width="5" value="Specialty"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
+                                ${drugSubmission.specialty}
+                            </iais:value>
+                        </iais:row>
+                        <iais:row >
+                            <iais:field width="5" value="Sub-Specialty"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true" id="subSpecialty">
+                                ${drugSubmission.subSpecialty}
+                            </iais:value>
+                        </iais:row>
+                        <iais:row >
+                            <iais:field width="5" value="Qualification"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true" id="qualification">
+                                ${drugSubmission.qualification}
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+                        <iais:row >
+                            <iais:field width="5" value="Specialty" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <iais:input maxLength="100" type="text" id="dSpecialitys" name="dSpecialitys" value="${drugSubmission.specialty}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row >
+                            <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <iais:input maxLength="100" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${drugSubmission.subSpecialty}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row >
+                            <iais:field width="5" value="Qualification" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <iais:input maxLength="100" type="text" id="dQualifications" name="dQualifications" value="${drugSubmission.qualification}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                 </div>
                 <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="66" type="text" name="dName" value="${doctorInformationDto.name}" />
+                            <iais:input maxLength="66" type="text" id="dNameText" name="dName" value="${doctorInformationDto.name}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dName"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <iais:input maxLength="100" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <iais:input maxLength="100" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Qualification" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <iais:input maxLength="100" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                         </iais:value>
                     </iais:row>
@@ -540,7 +565,19 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                if(isEmpty(data.selection) && isEmpty(data.selections)) {
+                    clearPrsInfoText();
+                    $('#doctorInformations').val(true);
+                    console.log("The return data is null");
+                    $('#doctorInformationText').show();
+                    $('#doctorInformation').hide();
+                }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
+                    clearPrsInfoElis();
+                    $('#ELIS_SERVICE').modal('show');
+                    $('#doctorInformationElis').show();
+                    $('#doctorInformationPrs').hide();
+                }else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                    clearPrsInfoText();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
@@ -550,10 +587,16 @@
                     $('#doctorInformations').val(false);
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
+                        clearPrsInfoElis();
                         $('#ELIS_SERVICE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }else if (data.selection.hasException) {
+                        clearPrsInfoElis();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -577,6 +620,20 @@
 
     var clearPrsInfo = function () {
         $('#names').find('p').text('');
+        $('#specialty').find('p').text('');
+        $('#subSpecialty').find('p').text('');
+        $('#qualification').find('p').text('');
+    };
+    var clearPrsInfoElis = function () {
+        $('#dSpecialitys').val(null);
+        $('#dSubSpecialitys').val(null);
+        $('#dQualifications').val(null);
+    };
+    var clearPrsInfoText = function () {
+        $('#dNameText').val(null);
+        $('#dSpecialityText').val(null);
+        $('#dSubSpecialityText').val(null);
+        $('#dQualificationText').val(null);
     };
     function loadingSp(data) {
         $('#doctorInformationText').hide();

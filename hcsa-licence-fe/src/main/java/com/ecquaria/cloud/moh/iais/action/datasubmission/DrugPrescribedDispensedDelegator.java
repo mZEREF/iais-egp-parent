@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,9 @@ import java.util.Optional;
 @Delegator("drugPrescribedDispensedDelegator")
 @Slf4j
 public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private PatientService patientService;
@@ -149,6 +154,38 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission = new DrugSubmissionDto();
         }
         ControllerHelper.get(request, drugSubmission);
+        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
+        if(professionalResponseDto!=null){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                if(!"true".equals(drugSubmission.getDoctorInformations())){
+                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                    String doctorName = ParamUtil.getString(request, "names");
+                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                    String dQualification = ParamUtil.getString(request, "dQualifications");
+                    drugSubmission.setDoctorName(doctorName);
+                    drugSubmission.setSpecialty(dSpeciality);
+                    drugSubmission.setSubSpecialty(dSubSpeciality);
+                    drugSubmission.setQualification(dQualification);
+                    doctorInformationDto.setName(drugSubmission.getDoctorName());
+                    doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
+                    doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
+                    doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
+                    doctorInformationDto.setQualification(drugSubmission.getQualification());
+                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                    currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+                }
+            }else {
+                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+                doctorInformationDto.setName(drugSubmission.getDoctorName());
+                doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
+                doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
+                doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
+                doctorInformationDto.setQualification(drugSubmission.getQualification());
+                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+            }
+        }
         if("true".equals(drugSubmission.getDoctorInformations())){
             String dName = ParamUtil.getString(bpc.request, "dName");
             String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
@@ -211,6 +248,25 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
                     String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
                     errorMap.put("dQualification", general_err0041);
+                }
+            } else {
+                if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                    errorMap.put("dSpecialitys", "GENERAL_ERR0006");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
+                    String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                    errorMap.put("dSpecialitys", general_err0041);
+                }
+                if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                    errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
+                    String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                    errorMap.put("dSubSpecialitys", general_err0041);
+                }
+                if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                    errorMap.put("dQualifications", "GENERAL_ERR0006");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
+                    String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                    errorMap.put("dQualifications", general_err0041);
                 }
             }
             verifyRfcCommon(request, errorMap);

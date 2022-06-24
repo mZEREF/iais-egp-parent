@@ -113,6 +113,24 @@
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <span data-err-ind="error_message" class="error-msg"></span>
+                                                            <c:if test="${hasNonCompliance eq 'Y'}">
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Draft NC Email? <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                        <div class="input-group">
+                                                                            <label>
+                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                            </label>
+                                                                            <span class="check-circle">Yes</span>
+                                                                            <label>
+                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                            </label>
+                                                                            <span class="check-circle">No</span>
+                                                                            <span data-err-ind="ncEmailRequired" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </c:if>
                                                             <div class="form-group">
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">

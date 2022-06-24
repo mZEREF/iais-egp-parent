@@ -147,6 +147,7 @@ public class DataSubmissionInboxDelegator {
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId()) || IaisCommonUtils.isEmpty((List<String>)ParamUtil.getSessionAttr(request,DS_TYPES))){
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				searchParam.addParam("fromCenter",ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false));
+				HalpAssessmentGuideDelegator.setParamByField(searchParam,"creatdBy",interInboxUserDto.getUserId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
 				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);

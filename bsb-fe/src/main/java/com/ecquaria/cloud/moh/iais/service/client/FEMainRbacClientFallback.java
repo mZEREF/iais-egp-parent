@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -9,13 +10,11 @@ import org.springframework.http.HttpHeaders;
  * @Date:2020/8/20
  */
 
-public class FEMainRbacClientFallback implements FEMainRbacClient{
+public class FEMainRbacClientFallback implements FEMainRbacClient {
+
     @Override
-    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String var3) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String... var3) {
+        return IaisEGPHelper.getFeignResponseEntity(var1, var2, var3);
     }
 
     @Override
@@ -25,4 +24,5 @@ public class FEMainRbacClientFallback implements FEMainRbacClient{
         entity.setHeaders(headers);
         return entity;
     }
+
 }

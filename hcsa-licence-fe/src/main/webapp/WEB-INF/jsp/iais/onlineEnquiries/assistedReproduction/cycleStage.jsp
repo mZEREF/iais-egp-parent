@@ -47,24 +47,28 @@
                                            varStatus="status">
                                     <tr id="advfilterCycle${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                         <td style="vertical-align:middle;">
-
+                                            <p class="visible-xs visible-sm table-row-title">Cycle No.</p>
                                             <p style="white-space: nowrap;"><c:out value="${ (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize - status.index+(cycleStageResult.rows.size())}"/>
                                                 <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdownCycle${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                 </a>
                                             </p>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Cycle Start Date</p>
                                             <fmt:formatDate
                                                     value="${cycleStage.cycleStartDate}"
                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p>
                                             <c:out value="${cycleStage.cycleType}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Last Stage Submitted</p>
                                             <iais:code code="${cycleStage.cycleStage}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Status</p>
                                             <iais:code code="${cycleStage.status}"/>
                                         </td>
                                     </tr>
@@ -120,24 +124,28 @@
                                            varStatus="status">
                                     <tr id="advfilterNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                         <td style="vertical-align:middle;">
-
+                                            <p class="visible-xs visible-sm table-row-title">Status</p>
                                             <p style="white-space: nowrap;"><c:out value="${(cycleStageParam.pageNo - 1) * cycleStageParam.pageSize - status.index+(noCycleResult.rows.size())}"/>
                                                 <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdownNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByNonCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                 </a>
                                             </p>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Cycle No.</p>
                                             <fmt:formatDate
                                                     value="${cycleStage.cycleStartDate}"
                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Cycle Start Date</p>
                                             <c:out value="${cycleStage.cycleType}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p>
                                             <iais:code code="${cycleStage.cycleStage}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Status</p>
                                             <iais:code code="${cycleStage.status}"/>
                                         </td>
                                     </tr>

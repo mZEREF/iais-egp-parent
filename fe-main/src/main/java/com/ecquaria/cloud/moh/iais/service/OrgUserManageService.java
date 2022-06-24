@@ -44,9 +44,7 @@ public interface OrgUserManageService {
 
     FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen);
 
-    void createClientUser(FeUserDto userDto);
-
-    void updateEgpUser(FeUserDto feUserDto);
+    void saveEgpUser(FeUserDto feUserDto);
 
     OrganizationDto findOrganizationByUen(String uen);
 

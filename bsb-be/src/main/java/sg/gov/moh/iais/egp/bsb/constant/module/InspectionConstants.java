@@ -26,6 +26,7 @@ public class InspectionConstants {
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
     public static final String KEY_INS_DTO_INS_LETTER = "letterDto";
+    public static final String KEY_INS_NC_EMAIL_DTO = "ncEmailDto";
     public static final String KEY_INS_FINDING = "insFindingList";
     public static final String KEY_INS_NON_COMPLIANCE = "insRectificationList";
     public static final String KEY_INS_OUTCOME = "insOutcome";
@@ -103,4 +104,6 @@ public class InspectionConstants {
     public static final String PARAM_PREPARE = "prepare";
     public static final String PARAM_NEXT = "next";
     public static final String PARAM_CAN_ACTION_ROLE = "canActionRole";
+
+    public static final String KEY_HAS_NON_COMPLIANCE = "hasNonCompliance";
 }

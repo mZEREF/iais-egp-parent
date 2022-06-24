@@ -160,7 +160,7 @@ public class DpSiUploadDelegate {
             if(siDto.getHciName().length()>256){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","256");
-                repMap.put("HCI Name","This field");
+                repMap.put("HCI Name","fieldNo");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hciName"), errMsg));
             }
@@ -172,7 +172,7 @@ public class DpSiUploadDelegate {
             if(siDto.getDrugName().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Drug Name","This field");
+                repMap.put("Drug Name","fieldNo");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsg));
             }
@@ -185,7 +185,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getBatchNumber().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Batch Number","This field");
+                    repMap.put("Batch Number","fieldNo");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsg));
                 }
@@ -202,7 +202,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getDrugStrength().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Drug Strength","This field");
+                    repMap.put("Drug Strength","fieldNo");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsg));
                 }
@@ -216,7 +216,7 @@ public class DpSiUploadDelegate {
             if(siDto.getQuantityDrugPurchased().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Quantity of Drug Purchased","This field");
+                repMap.put("Quantity of Drug Purchased","fieldNo");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsg));
             }
@@ -260,7 +260,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getQuantityBalanceStock().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Quantity of balance stock as at 31 Dec 2017","This field");
+                    repMap.put("Quantity of balance stock as at 31 Dec 2017","fieldNo");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsg));
                 }
@@ -276,7 +276,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getQuantityExpiredStock().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Quantity of expired stock as at 31 Dec 2017","This field");
+                    repMap.put("Quantity of expired stock as at 31 Dec 2017","fieldNo");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsg));
                 }
@@ -290,7 +290,7 @@ public class DpSiUploadDelegate {
             if(siDto.getRemarks().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Remarks","This field");
+                repMap.put("Remarks","fieldNo");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("remarks"), errMsg));
             }
