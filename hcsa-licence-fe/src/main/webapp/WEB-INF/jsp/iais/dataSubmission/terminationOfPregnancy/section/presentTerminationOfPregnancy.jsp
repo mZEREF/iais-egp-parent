@@ -793,6 +793,7 @@
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
                     }else if (data.selection.hasException) {
+                        clearPrsInfoElis();
                         $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
