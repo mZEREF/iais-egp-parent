@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -41,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -98,6 +100,9 @@ public class VssDataSubmissionDelegator {
     DsLicenceService dsLicenceService;
 
     @Autowired
+    private AppSubmissionService appSubmissionService;
+
+    @Autowired
     private LicenceClient licenceClient;
     /**
      * Step: Start
@@ -109,6 +114,7 @@ public class VssDataSubmissionDelegator {
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.initVssConfig(bpc.request);
         DataSubmissionHelper.clearSession(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "doctorInformationPE",null);
         ParamUtil.setSessionAttr(bpc.request, "vssFiles", null);
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile",null);
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
@@ -443,19 +449,37 @@ public class VssDataSubmissionDelegator {
         sexualSterilizationDto.setSubSpecialty(subSpecialty);
         sexualSterilizationDto.setQualification(qualification);
         sexualSterilizationDto.setDoctorInformations(doctorInformations);
-        if("true".equals(sexualSterilizationDto.getDoctorInformations())){
-            String dName = ParamUtil.getString(request, "dName");
-            String dSpeciality = ParamUtil.getString(request, "dSpeciality");
-            String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
-            String dQualification = ParamUtil.getString(request, "dQualification");
-            doctorInformationDto.setName(dName);
-            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
-            doctorInformationDto.setSubSpeciality(dSubSpeciality);
-            doctorInformationDto.setSpeciality(dSpeciality);
-            doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
-            sexualSterilizationDto.setDoctorName(dName);
-            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
+        if(professionalResponseDto!=null){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
+                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                    String names = ParamUtil.getString(request, "names");
+                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                    String dQualification = ParamUtil.getString(request, "dQualifications");
+                    sexualSterilizationDto.setDoctorName(names);
+                    sexualSterilizationDto.setSpecialty(dSpeciality);
+                    sexualSterilizationDto.setSubSpecialty(dSubSpeciality);
+                    sexualSterilizationDto.setQualification(dQualification);
+                    doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
+                    doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+                    doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
+                    doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
+                    doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
+                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+                    vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                }
+            }else {
+                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+                doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
+                doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+                doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
+                doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
+                doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
+                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+                vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+            }
         }
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
@@ -633,6 +657,10 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setFe(true);
         vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
         try {
+            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(vssSuperDataSubmissionDto.getVssTreatmentDto().getSexualSterilizationDto().getDoctorReignNo());
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                sexualSterilizationDto.setDoctorInformations("true");
+            }
              vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);

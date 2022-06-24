@@ -762,7 +762,18 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                if(isEmpty(data.selection) && isEmpty(data.selections)) {
+                    clearPrsInfoText();
+                    $('#doctorInformations').val(true);
+                    console.log("The return data is null");
+                    $('#doctorInformationText').show();
+                    $('#doctorInformation').hide();
+                }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
+                    clearPrsInfoElis();
+                    $('#ELIS_SERVICE').modal('show');
+                    $('#doctorInformationElis').show();
+                    $('#doctorInformationPrs').hide();
+                }else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     clearPrsInfoText();
                     $('#topDoctorInformations').val(true);
                     console.log("The return data is null");
