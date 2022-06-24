@@ -205,6 +205,7 @@ public class MohDsActionDelegator {
                     TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
                     topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
                     terminationDto.setTopDoctorInformations("true");
+                    terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                 }else {
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
