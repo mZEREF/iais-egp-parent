@@ -161,7 +161,7 @@
             <iais:row>
                 <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7 partial-search-container">
-                    <iais:select name="topPlace" id="topPlace" options="TopPlace" value="${terminationDto.topPlace}" cssClass="topPlace"/>
+                    <iais:select name="topPlace" id="topPlacePerformedOwnNo" options="TopPlace" value="${terminationDto.topPlace}" cssClass="topPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
             </iais:row>
@@ -214,7 +214,7 @@
             <iais:row>
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7 partial-search-container">
-                    <iais:select name="prescribeTopPlace" id="prescribeTopPlace" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
+                    <iais:select name="prescribeTopPlace" id="prescribeTopPlaceNo" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
                                  cssClass="prescribeTopPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_prescribeTopPlace"></span>
@@ -839,11 +839,11 @@
     }
     $(document).ready(function(){
         // Initialize select2
-        $("#topPlace").select2();
+        $("#topPlacePerformedOwnNo").select2();
         <c:if test="${!(terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true)}">
-        $("#prescribeTopPlace").select2();
+        $("#prescribeTopPlaceNo").select2();
         </c:if>
-        $("#prescribeTopPlace").select2();
+        $("#prescribeTopPlaceNo").select2();
         $("#otherTopDrugPlace").select2();
         $('.select2-container--default').attr('style','width:100%');
     });
