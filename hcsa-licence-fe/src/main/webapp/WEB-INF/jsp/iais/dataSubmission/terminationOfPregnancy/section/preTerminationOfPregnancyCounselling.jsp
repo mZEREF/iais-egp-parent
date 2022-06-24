@@ -177,7 +177,7 @@
                         <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                                     value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
                         <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
-                                     id="counsellingPlaces" cssClass="counsellingPlace"/>
+                                     id="counsellingPlaces" cssClass="counsellingPlace partial-search-container"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
                         <%--<iais:input maxLength="100" type="text" name="counsellingPlace" id="counsellingPlaceValue" value="${preTerminationDto.counsellingPlace}"/>--%>
                     </iais:value>
@@ -188,7 +188,7 @@
                     <iais:field width="5" value="Place Where Counselling Was Done" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="counsellingPlaceAge" options="CounsellingPlacea" value="${preTerminationDto.counsellingPlace}"
-                                     id="counsellingPlaceAge" cssClass="counsellingPlace"/>
+                                     id="counsellingPlaceAgeSelect" cssClass="counsellingPlace partial-search-container"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlaceAge"></span>
                     </iais:value>
                 </iais:row>
@@ -488,11 +488,13 @@
 
         }
     }
-    /*$(document).ready(function(){
+    $(document).ready(function(){
         // Initialize select2
         $("#counsellingPlaces").select2();
+        $("#counsellingPlaceAgeSelect").select2();
         $('.select2-container--default').attr('style','width:100%');
-    });*/
+        $('.partial-search-container').hide();
+    });
     /*function age(){
         var counsellingAge = $('#counselling').val();
 
