@@ -14,11 +14,14 @@
     .menuDropHeight{
         width:530px !important;
     }
-    <c:if test="${roleMenuForEServices == 2}">
-    .dashboard {
-        height: 425px;
+    @media only screen and (min-width: 375px) and (max-width: 992px){
+        .dashboard-gp .dashboard-tile-item {
+            width: calc((100% - 15px) / 2);
+        }
+        .tab-gp .tab-nav-mobile {
+            overflow: hidden;
+        }
     }
-    </c:if>
 </style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
