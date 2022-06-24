@@ -22,7 +22,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please upload patient information file</h3>
+                <h3>Please upload Sovenor Inventory file</h3>
                 <div class="tab-pane active" id="tabInbox" role="tabpanel">
                     <div class="document-info-list">
                         <ul>
