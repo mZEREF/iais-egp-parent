@@ -212,30 +212,37 @@
                                                     <tr >
 
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                                                             <c:out value="${donorSample.arCentre}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Donor Sample Code / ID No.</p>
                                                             <c:out value="${donorSample.donorSampleCode}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Sample Type</p>
                                                             <iais:code code="${donorSample.sampleType}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Bank / AR Centre where sample is collected</p>
                                                             <c:out value="${donorSample.sampleHciCode}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Donor's Name</p>
                                                             <c:out value="${donorSample.donorName}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">No of Live Birth Events Recorded</p>
                                                             <c:out value="${donorSample.ageNumber}"/>
-                                                            <c:if test="${donorSample.ageNumber >= donorResultSize}">
+                                                            <c:if test="${donorSample.ageNumber>=donorResultSize}">
                                                                 <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                                                   title="<span style='font-size: 2 rem;'>${donorMessageTip}</span>"
+                                                                   title="&lt;p&gt;${donorMessageTip}&lt;/p&gt;"
                                                                    style="z-index: 10"
                                                                    data-original-title="">i</a>
                                                             </c:if>
                                                         </td>
                                                         <td style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Action</p>
                                                             <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>

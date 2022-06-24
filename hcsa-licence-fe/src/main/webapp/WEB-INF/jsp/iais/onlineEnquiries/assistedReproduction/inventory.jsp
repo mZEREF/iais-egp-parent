@@ -30,27 +30,35 @@
                                    varStatus="status">
                             <tr>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                                     <c:out value="${patientInventory.key}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
                                     <c:out value="${patientInventory.value.frozenOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
                                     <c:out value="${patientInventory.value.thawedOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                                     <c:out value="${patientInventory.value.freshOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                                     <c:out value="${patientInventory.value.frozenEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
                                     <c:out value="${patientInventory.value.thawedEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
                                     <c:out value="${patientInventory.value.freshEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
+                                    <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                                     <c:out value="${patientInventory.value.frozenSpermNum}"/>
                                 </td>
 
@@ -190,24 +198,30 @@
                                            varStatus="status">
                                     <tr>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                                             <c:out value="${transaction.arCentre}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                             <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.submissionIdNo}')">${transaction.submissionIdNo}
                                             </a>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Date of Submission</p>
                                             <fmt:formatDate
                                                     value="${transaction.submissionDate}"
                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Stage</p>
                                             <iais:code code="${transaction.stage}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Cycle</p>
                                             <c:out value="${transaction.cycle}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Frozen Oocytes</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeFrozenOocytes }">-</c:when>
                                                 <c:when test="${transaction.changeFrozenOocytes == 0}">-</c:when>
@@ -215,6 +229,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Thawed Oocytes</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeThawedOocytes }">-</c:when>
                                                 <c:when test="${transaction.changeThawedOocytes == 0}">-</c:when>
@@ -222,6 +237,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Fresh Oocytes</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeFreshOocytes }">-</c:when>
                                                 <c:when test="${transaction.changeFreshOocytes == 0}">-</c:when>
@@ -229,6 +245,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Frozen Embryos</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeFrozenEmbryos }">-</c:when>
                                                 <c:when test="${transaction.changeFrozenEmbryos == 0}">-</c:when>
@@ -236,6 +253,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Thawed Embryos</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeThawedEmbryos }">-</c:when>
                                                 <c:when test="${transaction.changeThawedEmbryos == 0}">-</c:when>
@@ -243,6 +261,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Fresh Embryos</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeFreshEmbryos }">-</c:when>
                                                 <c:when test="${transaction.changeFreshEmbryos == 0}">-</c:when>
@@ -250,6 +269,7 @@
                                             </c:choose>
                                         </td>
                                         <td style="vertical-align:middle;">
+                                            <p class="visible-xs visible-sm table-row-title">Frozen Sperms</p>
                                             <c:choose>
                                                 <c:when test="${empty transaction.changeFrozenSperms }">-</c:when>
                                                 <c:when test="${transaction.changeFrozenSperms == 0}">-</c:when>

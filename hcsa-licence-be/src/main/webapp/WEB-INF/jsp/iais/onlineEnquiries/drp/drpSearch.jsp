@@ -158,6 +158,7 @@
                                                     <tr id="advfilter${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}">
 
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Medical Clinic/Hospital</p>
                                                             <p style="white-space: nowrap;"><c:out value="${drp.centerName}"/>
                                                                 <c:if test="${not empty drp.cdPatientCode}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}" onclick="getDrpByIdType('${drp.patientCode}','${(status.index + 1) + (drpParam.pageNo - 1) * drpParam.pageSize}')">
@@ -167,24 +168,30 @@
 
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                                             <a href="#" onclick="fullDetailsView('${drp.submissionNo}')">${drp.submissionNo}</a>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Patient</p>
                                                             <c:out value="${drp.patientName}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID Type</p>
                                                             <iais:code code="${drp.patientIdType}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID Number</p>
                                                             <c:out value="${drp.patientIdNo}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient Date of Birth</p>
                                                             <fmt:formatDate
                                                                     value="${drp.patientBirthday}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
                                                         
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission Date</p>
                                                             <fmt:formatDate
                                                                     value="${drp.submitDt}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>

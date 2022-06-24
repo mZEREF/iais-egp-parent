@@ -42,21 +42,26 @@
                     <tr>
 
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Name</p>
                             <c:out value="${patientInfoDto.patient.name}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
                             <iais:code code="${patientInfoDto.patient.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
                             <c:out value="${patientInfoDto.patient.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
                             <c:out value="${patientInfoDto.patient.birthDate}"/>
                             <c:if test="${ patientInfoDto.patient.getAgeFlag()!=''}">
                                 <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
                             <iais:code code="${patientInfoDto.patient.nationality}"/>
                         </td>
                     </tr>
@@ -134,21 +139,26 @@
                     <tr>
 
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Name</p>
                             <c:out value="${patientInfoDto.previous.name}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
                             <iais:code code="${patientInfoDto.previous.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
                             <c:out value="${patientInfoDto.previous.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
                             <c:out value="${patientInfoDto.previous.birthDate}"/>
                             <c:if test="${ patientInfoDto.previous.getAgeFlag()!=''}">
                                 <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
                             <iais:code code="${patientInfoDto.previous.nationality}"/>
                         </td>
                     </tr>

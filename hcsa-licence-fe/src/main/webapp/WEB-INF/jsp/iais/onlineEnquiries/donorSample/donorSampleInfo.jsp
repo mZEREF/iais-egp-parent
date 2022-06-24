@@ -178,8 +178,9 @@
                                                 </style>
                                                 <tr>
                                                     <td style="vertical-align:middle;">
+                                                        <p class="visible-xs visible-sm table-row-title">Age when Samples Collected</p>
                                                         <p style="width: 65px;">
-                                                            <c:out value="${donorSampleAge.age}"/>
+                                                        <c:out value="${donorSampleAge.age}"/>
                                                             <c:if test="${(donorSampleAge.age>40 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST003')}">
                                                                 <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
                                                                    data-toggle="tooltip"
@@ -195,6 +196,7 @@
                                                         </p>
                                                     </td>
                                                     <td style="vertical-align:middle;" class="col-md-12">
+                                                        <p class="visible-xs visible-sm table-row-title">Availability</p>
                                                         <iais:code code="${donorSampleAge.status}"/>
                                                     </td>
                                                 </tr>

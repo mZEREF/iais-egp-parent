@@ -40,7 +40,9 @@
                     </c:when>
                     <c:otherwise>
                         <tr>
+
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                                 <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
                                     <c:if test="${not empty arCentre}">
                                         <c:out value="${arCentre.getPremiseLabel()}"/><br>
@@ -48,21 +50,26 @@
                                 </c:forEach>
                             </td>
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">Name</p>
                                 <c:out value="${patientInfoDto.patient.name}"/>
                             </td>
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">ID Type</p>
                                 <iais:code code="${patientInfoDto.patient.idType}"/>
                             </td>
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">ID No.</p>
                                 <c:out value="${patientInfoDto.patient.idNumber}"/>
                             </td>
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
                                 <c:out value="${patientInfoDto.patient.birthDate}"/>
                                 <c:if test="${ patientInfoDto.patient.getAgeFlag()!=''}">
                                     <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                                 </c:if>
                             </td>
                             <td style="vertical-align:middle;">
+                                <p class="visible-xs visible-sm table-row-title">Nationality</p>
                                 <iais:code code="${patientInfoDto.patient.nationality}"/>
                             </td>
                         </tr>
@@ -140,7 +147,7 @@
                 <c:otherwise>
                     <tr>
                         <td style="vertical-align:middle;">
-
+                            <p class="visible-xs visible-sm table-row-title">AR Centre</p>
                             <c:forEach var="arCentre" items="${patientInfoDto.previous.arCentres}">
                                 <p>
                                     <c:out value="${arCentre.getPremiseLabel()}"/>
@@ -149,21 +156,26 @@
                             </c:forEach>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Name</p>
                             <c:out value="${patientInfoDto.previous.name}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID Type</p>
                             <iais:code code="${patientInfoDto.previous.idType}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">ID No.</p>
                             <c:out value="${patientInfoDto.previous.idNumber}"/>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Date of Birth</p>
                             <c:out value="${patientInfoDto.previous.birthDate}"/>
                             <c:if test="${ patientInfoDto.previous.getAgeFlag()!=''}">
                                 <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
+                            <p class="visible-xs visible-sm table-row-title">Nationality</p>
                             <iais:code code="${patientInfoDto.previous.nationality}"/>
                         </td>
                     </tr>

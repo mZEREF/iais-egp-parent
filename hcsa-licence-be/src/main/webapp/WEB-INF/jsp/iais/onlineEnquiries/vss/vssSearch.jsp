@@ -187,6 +187,7 @@
                                                     <tr id="advfilter${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}">
 
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Medical Clinic/Hospital</p>
                                                             <p style="white-space: nowrap;"><c:out value="${vss.centerName}"/>
                                                                 <c:if test="${vss.patientCount > 1}">
                                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}" onclick="getVssByIdType('${vss.patientIdNo}','${vss.patientIdType}','${(status.index + 1) + (vssParam.pageNo - 1) * vssParam.pageSize}')">
@@ -196,29 +197,37 @@
 
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                                             <a href="#" onclick="fullDetailsView('${vss.submissionNo}')">${vss.submissionNo}</a>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Name of Patient</p>
                                                             <c:out value="${vss.patientName}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID Type</p>
                                                             <iais:code code="${vss.patientIdType}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient ID Number</p>
                                                             <c:out value="${vss.patientIdNo}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Patient Date of Birth</p>
                                                             <fmt:formatDate
                                                                     value="${vss.patientBirthday}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Marital Status</p>
                                                             <iais:code code="${vss.maritalStatus}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Main Reason For Sterilisation</p>
                                                             <iais:code code="${vss.sterilisationReason}"/>
                                                         </td>
                                                         <td  style="vertical-align:middle;">
+                                                            <p class="visible-xs visible-sm table-row-title">Submission Date</p>
                                                             <fmt:formatDate
                                                                     value="${vss.submitDt}"
                                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
