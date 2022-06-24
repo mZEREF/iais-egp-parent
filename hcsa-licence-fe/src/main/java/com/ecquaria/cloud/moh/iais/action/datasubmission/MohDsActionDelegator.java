@@ -195,15 +195,15 @@ public class MohDsActionDelegator {
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
-                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+                DoctorInformationDto doctorInfoDto=docInfoService.getRfcDoctorInformationDtoByConds(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorInformationId());
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
                 if(professionalResponseDto==null){
                     professionalResponseDto=new ProfessionalResponseDto();
                 }
                 if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                     TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
                     TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DS_TOP);
-                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
                     terminationDto.setTopDoctorInformations("true");
                 }else {
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
