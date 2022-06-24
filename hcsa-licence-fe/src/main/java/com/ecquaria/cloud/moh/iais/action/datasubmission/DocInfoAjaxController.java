@@ -42,12 +42,14 @@ public class DocInfoAjaxController {
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
-        if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-            if(doctorInformationDto!=null){
-                professionalResponseDto.setName(doctorInformationDto.getName());
-                professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
-                professionalResponseDto.setQualification(Collections.singletonList(doctorInformationDto.getQualification()));
-                professionalResponseDto.setSubspecialty(Collections.singletonList(doctorInformationDto.getSubSpeciality()));
+        if(doctorInformationDto!=null){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                if(doctorInformationDto!=null){
+                    professionalResponseDto.setName(doctorInformationDto.getName());
+                    professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
+                    professionalResponseDto.setQualification(Collections.singletonList(doctorInformationDto.getQualification()));
+                    professionalResponseDto.setSubspecialty(Collections.singletonList(doctorInformationDto.getSubSpeciality()));
+                }
             }
         }
         result.put("selections", doctorInformationDto);
