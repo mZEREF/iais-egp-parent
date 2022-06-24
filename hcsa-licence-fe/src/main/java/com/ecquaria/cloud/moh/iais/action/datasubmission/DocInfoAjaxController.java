@@ -42,7 +42,7 @@ public class DocInfoAjaxController {
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
-        if(doctorInformationDto!=null){
+        if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 if(doctorInformationDto!=null){
                     professionalResponseDto.setName(doctorInformationDto.getName());
