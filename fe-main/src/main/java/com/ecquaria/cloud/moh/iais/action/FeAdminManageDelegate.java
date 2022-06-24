@@ -164,102 +164,105 @@ public class FeAdminManageDelegate {
      */
     public void editValidation(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String action = ParamUtil.getString(request,"action");
-        if("cancel".equals(action)){
+        String action = ParamUtil.getString(request, "action");
+        if ("cancel".equals(action)) {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
-            }else{
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+            if (loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+            } else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
-        } else if("clearInfo".equalsIgnoreCase(action)) {
-          clearInfo(request);
+        } else if ("clearInfo".equalsIgnoreCase(action)) {
+            clearInfo(request);
         } else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
-            String name = ParamUtil.getString(request,"name");
-            String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
-            String active = ParamUtil.getString(request,"active");
+            String name = ParamUtil.getString(request, "name");
+            String idNo = StringUtil.toUpperCase(ParamUtil.getString(request, "idNo"));
+            String active = ParamUtil.getString(request, "active");
             //admin role
-            String role = ParamUtil.getString(request,"role");
+            String role = ParamUtil.getString(request, "role");
             String roles = ParamUtil.getStringsToString(request, "roles");
-            String officeNo = ParamUtil.getString(bpc.request,"officeNo");
+            String officeNo = ParamUtil.getString(bpc.request, "officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String id = feUserDto.getId();
             String oldRoles = feUserDto.getRoles();
-            ControllerHelper.get(request,feUserDto);
-            if(StringUtil.isEmpty(id)){
-                if(feUserDto.isCorpPass()){
+            ControllerHelper.get(request, feUserDto);
+            if (StringUtil.isEmpty(id)) {
+                if (feUserDto.isCorpPass()) {
                     feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-                }else{
+                } else {
                     feUserDto.setUserId(idNo);
                 }
                 feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
                 feUserDto.setIdentityNo(idNo);
             }
-                feUserDto.setId(id);
-                feUserDto.setRoles(roles);
-                feUserDto.setOfficeTelNo(officeNo);
-                if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
-                    ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
-                }else {
-                    feUserDto.setDisplayName(name);
-                }
-                feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-                feUserDto.setAvailable(Boolean.TRUE);
+            feUserDto.setId(id);
+            feUserDto.setRoles(roles);
+            feUserDto.setOfficeTelNo(officeNo);
+            if (AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request, "loadMyInfoData"))) {
+                ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.YES);
+            } else {
+                feUserDto.setDisplayName(name);
+            }
+            feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            feUserDto.setAvailable(Boolean.TRUE);
 
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
-                    if("active".equals(active)){
-                        feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    }else{
-                        feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    }
-                    feUserDto.setUserRole(role);
-                    feUserDto.setSelectServices(ParamUtil.getStringsToString(bpc.request,"service"));
-                }else{
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
+                if ("active".equals(active)) {
                     feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    feUserDto.setUserRole("user");
-                    feUserDto.setRoles(oldRoles);
+                } else {
+                    feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 }
+                feUserDto.setUserRole(role);
+                feUserDto.setSelectServices(ParamUtil.getStringsToString(bpc.request, "service"));
+            } else {
+                feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
+                feUserDto.setRoles(oldRoles);
+            }
 
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
-                ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
-                if (validationResult.isHasErrors()){
-                    log.debug("****************Error");
-                    Map<String,String> errorMap = validationResult.retrieveAll();
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
-                    ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
-                }else{
-                    LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-                    MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
-                    boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
-                    boolean licenseeHave = licenseeDto!=null && licenseeDto.getLicenseeIndividualDto() != null;
-                    if (!needRefersh) {
-                        myInfoDto = null;
-                    }
-                    AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
-                    att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
-                    AuditTrailHelper.callSaveAuditTrail(att);
-                    feUserDto.setAuditTrailDto(att);
-                    if (StringUtil.isEmpty(feUserDto.getSelectServices())) {
-                        feUserDto.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
-                    }
-                    orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto, feUserDto,
-                            reSetMyInfoData(feUserDto, myInfoDto), false);
-                    if(licenseeHave){
-                        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
-                    }
-                    if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
-                        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
-                    }else{
-                        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
-                    }
+            if (validationResult.isHasErrors()) {
+                log.debug("****************Error");
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "back");
+            } else {
+                LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+                MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,
+                        MyinfoUtil.MYINFODTO_REFRESH + loginContext.getNricNum());
+                boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
+                boolean licenseeHave = licenseeDto != null && licenseeDto.getLicenseeIndividualDto() != null;
+                if (!needRefersh) {
+                    myInfoDto = null;
                 }
+                AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
+                att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
+                AuditTrailHelper.callSaveAuditTrail(att);
+                feUserDto.setAuditTrailDto(att);
+                if (StringUtil.isEmpty(feUserDto.getSelectServices())) {
+                    feUserDto.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
+                }
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto, feUserDto,
+                        reSetMyInfoData(feUserDto, myInfoDto), false);
+                if (licenseeHave) {
+                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,
+                            orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(),
+                                    licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
+                }
+                if (loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+                } else {
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+                }
+            }
         } else {
             repalceFeUserDtoByMyinfo(request);
         }

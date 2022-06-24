@@ -305,6 +305,9 @@ public class FECorppassLandingDelegator {
             if (StringUtil.isEmpty(userSession.getSelectServices())) {
                 userSession.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
             }
+            if (userSession.getAvailable() == null) {
+                userSession.setAvailable(Boolean.TRUE);
+            }
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
@@ -323,7 +326,7 @@ public class FECorppassLandingDelegator {
 
                 FeUserDto createdUser = orgUserManageService.createCorpPassUser(orgn);
                 //create egp user
-                orgUserManageService.createClientUser(createdUser);
+                orgUserManageService.saveEgpUser(createdUser);
                 FeLoginHelper.initUserInfo(request, createdUser);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }

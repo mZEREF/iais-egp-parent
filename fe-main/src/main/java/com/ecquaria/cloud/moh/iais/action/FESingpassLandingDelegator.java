@@ -285,7 +285,7 @@ public class FESingpassLandingDelegator {
 
                     FeUserDto createdUser = orgUserManageService.createSingpassAccount(orgn);
                     //create egp user
-                    orgUserManageService.createClientUser(createdUser);
+                    orgUserManageService.saveEgpUser(createdUser);
                     FeLoginHelper.initUserInfo(request, createdUser);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 }
@@ -345,10 +345,13 @@ public class FESingpassLandingDelegator {
             userSession.setRoles(RoleConsts.USER_ROLE_ORG_USER);
         }
         if (StringUtil.isEmpty(userSession.getUserRole())) {
-            userSession.setUserRole("user");
+            userSession.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
         }
         if (StringUtil.isEmpty(userSession.getSelectServices())) {
             userSession.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
+        }
+        if (userSession.getAvailable() == null) {
+            userSession.setAvailable(Boolean.TRUE);
         }
         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
         userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));

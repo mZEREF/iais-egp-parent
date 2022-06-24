@@ -207,169 +207,95 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return feUserClient.getInternetUserByNricAndIdType(nric, idType, uen).getEntity();
     }
 
-
-    @Override
-    public void createClientUser(FeUserDto userDto) {
-        if (userDto == null) {
-            return;
-        }
-        //TODO : simple create
-        FeignResponseEntity<ClientUser> result = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, userDto.getUserId());
-        int status = result.getStatusCode();
-
-        if (status != HttpStatus.SC_OK){
-            return;
-        }
-
-        String userId = userDto.getUserId();
-        ClientUser clientUser = result.getEntity();
-        if (clientUser != null){
-            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-            userClient.updateClientUser(clientUser);
-        } else {
-            String email = userDto.getEmail();
-            String salutation = userDto.getSalutation();
-            clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
-            clientUser.setId(userId);
-            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            clientUser.setSalutation(salutation);
-            clientUser.setEmail(email);
-
-            UserIdentifier userIdentifier = new UserIdentifier();
-            userIdentifier.setId(userId);
-            userIdentifier.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-
-            String randomStr = IaisEGPHelper.generateRandomString(6);
-            String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-            String chanQue = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-            String chanAn = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-
-            clientUser.setPassword(pwd);
-            clientUser.setPasswordChallengeQuestion(chanQue);
-            clientUser.setPasswordChallengeAnswer(chanAn);
-
-            Date activeDate = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(activeDate);
-            calendar.add(Calendar.DAY_OF_YEAR, 999);
-            clientUser.setAccountActivateDatetime(activeDate);
-            clientUser.setAccountDeactivateDatetime(calendar.getTime());
-            userClient.createClientUser(clientUser);
-        }
-        // roles
-        List<String> roleList = IaisCommonUtils.genNewArrayList();
-        if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(userDto.getUserRole())) {
-            roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
-        }
-        if (StringUtil.isNotEmpty(userDto.getRoles())) {
-            roleList.addAll(Arrays.asList(userDto.getRoles().split("#")));
-        }
-        Optional<String> optional = Optional.ofNullable(userDto.getUserRoleDto()).map(OrgUserRoleDto::getRoleName);
-        if (optional.isPresent()) {
-            IaisCommonUtils.addToList(optional.get(), roleList);
-        }
-        roleList.stream()
-                .map(roleName -> {
-                    EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-                    egpUserRole.setUserId(userId);
-                    egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                    egpUserRole.setRoleId(roleName);
-                    egpUserRole.setPermission("A");
-                    return egpUserRole;
-                })
-                .forEach(feMainRbacClient::createUerRoleIds);
-    }
-
     @Override
     public OrganizationDto findOrganizationByUen(String uen) {
         return feUserClient.findOrganizationByUen(uen).getEntity();
     }
 
     @Override
-    public void updateEgpUser(FeUserDto feUserDto) {
-        if(feUserDto != null){
-            String status = feUserDto.getStatus();
-            Character accountStatus = null;
-            if (AppConsts.COMMON_STATUS_DELETED.equals(status)) {
-                accountStatus = ClientUser.STATUS_TERMINATED;
-            } else if (AppConsts.COMMON_STATUS_IACTIVE.equals(status)) {
-                accountStatus = ClientUser.STATUS_INACTIVE;
-            } else if (AppConsts.COMMON_STATUS_ACTIVE.equals(status)) {
-                accountStatus = ClientUser.STATUS_ACTIVE;
-            }
+    public void saveEgpUser(FeUserDto feUserDto) {
+        if (feUserDto == null) {
+            return;
+        }
+        String userId = feUserDto.getUserId();
+        String status = feUserDto.getStatus();
+        Character accountStatus = null;
+        if (AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+            accountStatus = ClientUser.STATUS_TERMINATED;
+        } else if (AppConsts.COMMON_STATUS_IACTIVE.equals(status)) {
+            accountStatus = ClientUser.STATUS_INACTIVE;
+        } else if (AppConsts.COMMON_STATUS_ACTIVE.equals(status)) {
+            accountStatus = ClientUser.STATUS_ACTIVE;
+        }
 
-            ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
-            String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
-            if (clientUser != null){
-                clientUser.setSalutation(feUserDto.getSalutation());
-                clientUser.setEmail(feUserDto.getEmail());
-                clientUser.setDisplayName(feUserDto.getDisplayName());
-                clientUser.setIdentityNo(feUserDto.getIdentityNo());
-                clientUser.setMobileNo(feUserDto.getMobileNo());
-                clientUser.setContactNo(feUserDto.getOfficeTelNo());
-                clientUser.setAccountStatus(accountStatus);
-                //prevent history simple pwd throw 500
-                clientUser.setPassword(pwd);
-                userClient.updateClientUser(clientUser);
-                //delete egp role
+        ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, userId).getEntity();
+        String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+        if (clientUser != null) {
+            clientUser.setSalutation(feUserDto.getSalutation());
+            clientUser.setEmail(feUserDto.getEmail());
+            clientUser.setDisplayName(feUserDto.getDisplayName());
+            clientUser.setIdentityNo(feUserDto.getIdentityNo());
+            clientUser.setMobileNo(feUserDto.getMobileNo());
+            clientUser.setContactNo(feUserDto.getOfficeTelNo());
+            clientUser.setAccountStatus(accountStatus);
+            //prevent history simple pwd throw 500
+            clientUser.setPassword(pwd);
+            userClient.updateClientUser(clientUser);
+            //delete egp role
+            if (AppConsts.COMMON_STATUS_DELETED.equals(status)) {
                 List<String> roles = IaisEGPHelper.getFeRoles();
                 feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId(),
                         roles.toArray(new String[roles.size()]));
-            } else {
-                clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
-                clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                clientUser.setId(feUserDto.getUserId());
-                clientUser.setAccountStatus(accountStatus);
-                String email = feUserDto.getEmail();
-                String salutation = feUserDto.getSalutation();
-                clientUser.setSalutation(salutation);
-                clientUser.setEmail(email);
-                clientUser.setDisplayName(feUserDto.getDisplayName());
-
-
-                clientUser.setPassword(pwd);
-                String chanQue = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
-                String chanAn = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
-                clientUser.setPasswordChallengeQuestion(chanQue);
-                clientUser.setPasswordChallengeAnswer(chanAn);
-
-                Date activeDate = new Date();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(activeDate);
-                calendar.add(Calendar.DAY_OF_MONTH, 12);
-                clientUser.setAccountActivateDatetime(activeDate);
-                clientUser.setAccountDeactivateDatetime(calendar.getTime());
-
-                userClient.createClientUser(clientUser);
             }
+        } else {
+            clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
+            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            clientUser.setId(userId);
+            clientUser.setAccountStatus(accountStatus);
+            String email = feUserDto.getEmail();
+            String salutation = feUserDto.getSalutation();
+            clientUser.setSalutation(salutation);
+            clientUser.setEmail(email);
+            clientUser.setDisplayName(feUserDto.getDisplayName());
 
-            //assign role
-            if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
-                if(RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(feUserDto.getUserRole())){
-                    EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-                    String roleName = feUserDto.getUserRole();
-                    egpUserRole.setUserId(feUserDto.getUserId());
-                    egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                    egpUserRole.setRoleId(roleName);
-                    egpUserRole.setPermission("A");
-                    //assign role
-                    feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-                }
-                if(StringUtil.isNotEmpty(feUserDto.getRoles())){
-                    List<String> roles = Arrays.asList(feUserDto.getRoles().split("#"));
-                    roles.stream().forEach(o ->{
-                        EgpUserRoleDto role = new EgpUserRoleDto();
-                        role.setUserId(feUserDto.getUserId());
-                        role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                        role.setPermission("A");
-                        role.setRoleId(o);
-                        //assign role
-                        feMainRbacClient.createUerRoleIds(role).getEntity();
-                    });
-                }
+            clientUser.setPassword(pwd);
+            String chanQue = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+            String chanAn = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+            clientUser.setPasswordChallengeQuestion(chanQue);
+            clientUser.setPasswordChallengeAnswer(chanAn);
+
+            Date activeDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(activeDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 12);
+            clientUser.setAccountActivateDatetime(activeDate);
+            clientUser.setAccountDeactivateDatetime(calendar.getTime());
+
+            userClient.createClientUser(clientUser);
+        }
+        // roles
+        if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+            List<String> roleList = IaisCommonUtils.genNewArrayList();
+            if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserDto.getUserRole())) {
+                roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
             }
-
+            if (StringUtil.isNotEmpty(feUserDto.getRoles())) {
+                roleList.addAll(Arrays.asList(feUserDto.getRoles().split("#")));
+            }
+            Optional<String> optional = Optional.ofNullable(feUserDto.getUserRoleDto()).map(OrgUserRoleDto::getRoleName);
+            if (optional.isPresent()) {
+                IaisCommonUtils.addToList(optional.get(), roleList);
+            }
+            roleList.stream()
+                    .map(roleName -> {
+                        EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                        egpUserRole.setUserId(userId);
+                        egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                        egpUserRole.setRoleId(roleName);
+                        egpUserRole.setPermission("A");
+                        return egpUserRole;
+                    })
+                    .forEach(feMainRbacClient::createUerRoleIds);
         }
     }
 
@@ -406,7 +332,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         //fe user
         feUserDto = editUserAccount(feUserDto);
         //egpcloud
-        updateEgpUser(feUserDto);
+        saveEgpUser(feUserDto);
 
         //update be user
         OrganizationDto organizationById = getOrganizationById(feUserDto.getOrgId());
@@ -597,7 +523,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         FeUserDto feUserDtoRes = editUserAccount(feUserDto);
         // syncronize egp user
         log.info("Synchronize egp user");
-        updateEgpUser(feUserDto);
+        saveEgpUser(feUserDto);
         log.info("Synchronize FE user from BE end.");
         return feUserDtoRes;
     }
