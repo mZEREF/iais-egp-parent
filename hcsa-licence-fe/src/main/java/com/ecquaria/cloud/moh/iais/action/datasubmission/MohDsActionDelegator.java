@@ -411,6 +411,7 @@ public class MohDsActionDelegator {
             TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
             DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId());
             topSuper.setDoctorInformationDto(doctorInformationDto);
+            topSuper.getTerminationOfPregnancyDto().getTerminationDto().setDoctorRegnNo(doctorInformationDto.getDoctorReignNo());
             terminationDto.setTopDoctorInformations("true");
             /*if(!StringUtil.isEmpty(topSuper.getTerminationOfPregnancyDto().getTerminationDto())){
                 ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuper.getDoctorInformationDto().getDoctorReignNo());
