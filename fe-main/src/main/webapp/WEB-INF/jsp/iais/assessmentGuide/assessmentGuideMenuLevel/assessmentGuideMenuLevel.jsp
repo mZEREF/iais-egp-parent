@@ -2,7 +2,7 @@
     <c:if test="${privilege.id == 'HALP_HCSA_INBOX'}">
         <c:set var="hcsaPrivilege" value="1"/>
     </c:if>
-    <c:if test="${privilege.id == 'HALP_MOH_DS_LDT'}">
+    <c:if test="${privilege.id == 'HALP_MOH_DS_LDT_CRE'}">
         <c:set var="dataSubLDTPrivilege" value="1"/>
     </c:if>
     <c:set var="adminPersonnelPrivilege" value="1"/>
