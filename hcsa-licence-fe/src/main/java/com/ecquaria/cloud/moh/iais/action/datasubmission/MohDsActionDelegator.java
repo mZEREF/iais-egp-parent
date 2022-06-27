@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
@@ -47,14 +48,15 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionServi
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.privilege.Privilege;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDsAction
@@ -370,12 +372,19 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(ldtSuperDataSubmissionDto));
             ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            if (ldtSuperDataSubmissionDto.getDataSubmissionDto() != null) {
-                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            if (dataSubmissionDto != null) {
                 dataSubmissionDto.setDeclaration(null);
                 dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
+            }
+            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
+                    .map(LoginContext::getOrgId).orElse("");
+            ldtSuperDataSubmissionDto.setOrgId(orgId);
+            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, dataSubmissionDto.getId());
+            if (dataSubmissionDraft != null) {
+                uri += "&hasDraft=" + Boolean.TRUE;
             }
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);

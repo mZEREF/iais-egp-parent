@@ -118,13 +118,13 @@ public class LdtDataSubmissionDelegator {
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
-        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
+        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, null);
         if (dataSubmissionDraft != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_LDT);
 
-        String isGuide = ParamUtil.getString(bpc.request,DataSubmissionConstant.LDT_IS_GUIDE);
+        String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE, isGuide);
     }
 
@@ -141,6 +141,10 @@ public class LdtDataSubmissionDelegator {
         if (ldtSuperDataSubmissionDto != null) {
             if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftNo())) {
                 ldtSuperDataSubmissionDto.setDraftNo(ldtDataSubmissionService.getDraftNo());
+            }
+            if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getOrgId())) {
+                ldtSuperDataSubmissionDto.setOrgId(Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                        .map(LoginContext::getOrgId).orElse(""));
             }
             ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveDataSubmissionDraft(ldtSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
@@ -253,7 +257,7 @@ public class LdtDataSubmissionDelegator {
 
         //draft
         if (crud_action_type.equals("resume")) {
-            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId());
+            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), ldtSuperDataSubmissionDto.getDataSubmissionDto().getId());
             if (ldtSuperDataSubmissionDto == null) {
                 log.warn("Can't resume data!");
                 ldtSuperDataSubmissionDto = new LdtSuperDataSubmissionDto();
@@ -361,6 +365,11 @@ public class LdtDataSubmissionDelegator {
         if (dsLaboratoryDevelopTestDto == null) {
             dsLaboratoryDevelopTestDto = new DsLaboratoryDevelopTestDto();
             ldtSuperDataSubmissionDto.setDsLaboratoryDevelopTestDto(dsLaboratoryDevelopTestDto);
+        }
+
+        String hasDraft = ParamUtil.getString(bpc.request, "hasDraft");
+        if (StringUtil.isNotEmpty(hasDraft)) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
 
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
