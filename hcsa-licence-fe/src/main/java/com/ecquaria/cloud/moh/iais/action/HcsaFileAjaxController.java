@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
@@ -56,9 +57,9 @@ public class HcsaFileAjaxController {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    public static final String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
-    public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
-    public static final String GLOBAL_MAX_INDEX_SESSION_ATTR = "sessIon_GlObal__MaxINdex_Attr";
+    public static final String SEESION_FILES_MAP_AJAX = IaisEGPConstant.SEESION_FILES_MAP_AJAX;
+    public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX = IaisEGPConstant.SEESION_FILES_MAP_AJAX_MAX_INDEX;
+    public static final String GLOBAL_MAX_INDEX_SESSION_ATTR = IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR;
 
     @ResponseBody
     @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -82,7 +83,7 @@ public class HcsaFileAjaxController {
         String fileType = ParamUtil.getString(request, "_fileType");
         String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
         int maxSize = 0;
-        if (StringUtil.isDigit(fileMaxSize)) {
+        if (StringUtil.isNumber(fileMaxSize)) {
             maxSize = Integer.parseInt(fileMaxSize);
         }
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);

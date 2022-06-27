@@ -7,10 +7,18 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConst
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSpecServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -22,8 +30,9 @@ import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -45,20 +54,24 @@ import java.util.Map;
  */
 @Delegator(value = "inspectionNcCheckListDelegator")
 @Slf4j
-public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMethodDelegator{
+public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMethodDelegator {
 
-    private static final String SERLISTDTO="serListDto";
-    private static final String COMMONDTO="commonDto";
-    private static final String ADHOCLDTO="adchklDto";
-    private static final String TASKDTO="taskDto";
+    private static final String SERLISTDTO = "serListDto";
+    private static final String COMMONDTO = "commonDto";
+    private static final String ADHOCLDTO = "adchklDto";
+    private static final String TASKDTO = "taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String TASKDTOLIST = "InspectionNcCheckListDelegator_taskDtoList";
-    private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
+    private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR = "inspection_adhoc_checklist_list_attr";
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
     private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
     private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
     private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
+    private static final String PROCESS_DEC_OPTIONS = "processDecOption";
+    private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
+    private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
+
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -110,6 +123,16 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             return;
         }
         setCheckListUnFinishedTask(request,taskDto);
+
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION,InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, (Serializable) MasterCodeUtil.retrieveOptionsByCodes(processDess));
+
+        //set rollback select options
+        ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
+        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> selectOptionList = inspectionService.getRollBackSelectOptions(appViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
+        ParamUtil.setSessionAttr(request, ROLL_BACK_OPTIONS, (Serializable) selectOptionList);
+        ParamUtil.setSessionAttr(request, ROLL_BACK_VALUE_MAP, (Serializable) rollBackValueMap);
     }
 
     private void setCheckListUnFinishedTask(HttpServletRequest request,TaskDto taskDto){
@@ -222,6 +245,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = setActionRequestFroMulReq(request,mulReq);
+        String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
         InspectionFDtosDto serListDto;
         String viewChkFlag = ParamUtil.getString(mulReq,"viewchk");
         if(!StringUtil.isEmpty(viewChkFlag)){
@@ -238,8 +262,32 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
             ParamUtil.setSessionAttr(mulReq,ACTION_ADHOC_OWN,IaisEGPConstant.YES);
-        } else{
+        } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
+            String rollBackTo = ParamUtil.getString(bpc.request, "rollBackTo");
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            if (StringUtil.isEmpty(rollBackTo)) {
+                errMap.put("rollBackTo", "GENERAL_ERR0006");
+            }
             serListDto = getOtherInfo(mulReq);
+            if (!errMap.isEmpty()) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                serListDto.setCheckListTab("process");
+                ParamUtil.setSessionAttr(mulReq, SERLISTDTO, serListDto);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            } else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq, TASKDTO);
+                ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
+                Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(mulReq, ROLL_BACK_VALUE_MAP);
+                inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo));
+                ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","INSPE_ACK002");
+            }
+            serListDto.setProcessDec(processDec);
+            serListDto.setRollBackTo(rollBackTo);
+            ParamUtil.setSessionAttr(mulReq, SERLISTDTO, serListDto);
+        } else if (InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION.equals(processDec)){
+            serListDto = getOtherInfo(mulReq);
+            serListDto.setProcessDec(processDec);
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq,TASKDTO);
             InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(mulReq,COMMONDTO);
@@ -285,7 +333,16 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 fillupChklistService.saveOtherTasks((List<TaskDto>)ParamUtil.getSessionAttr(request,TASKDTOLIST),taskDto);
                 fillupChklistService.routingTask(taskDto,serListDto.getRemarksForHistory(),loginContext,flag);
             }
-       }
+       }else {
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("processDec", "GENERAL_ERR0006");
+            serListDto = getOtherInfo(mulReq);
+            serListDto.setProcessDec(processDec);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            serListDto.setCheckListTab("process");
+            ParamUtil.setSessionAttr(mulReq, SERLISTDTO, serListDto);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        }
 
     }
 

@@ -165,6 +165,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         ParamUtil.setRequestAttr(request, "selectVerified", verified);
                         if (StringUtil.isEmpty(verified)) {
                             errMap.put("verified", generalErrSix);
+                        }else if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
+                           String aoSelect = ParamUtil.getRequestString(request, "aoSelect");
+                            ParamUtil.setSessionAttr(request,"aoSelect",aoSelect);
+//                            if (StringUtil.isEmpty(aoSelect)) {
+//                                errMap.put("aoSelect", generalErrSix);
+//                                ParamUtil.setSessionAttr(request,"aoSelectError",generalErrSix);
+//                            }
                         }
                         // if role is AOS or PSO ,check verified's value
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
@@ -182,6 +189,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
                             errMap.put("rollBack", MessageUtil.replaceMessage("GENERAL_ERR0006","Route Back To", "field"));
+                        }
+                    }else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage)) {
+                        String rollBack = ParamUtil.getRequestString(request, "rollBackCr");
+                        ParamUtil.setRequestAttr(request, "selectRollBackCr", rollBack);
+                        if (StringUtil.isEmpty(rollBack)) {
+                            //Route Back To
+                            errMap.put("rollBackCr", MessageUtil.replaceMessage("GENERAL_ERR0006","Roll Back To", "field"));
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
                         //Prevent duplicate submissions

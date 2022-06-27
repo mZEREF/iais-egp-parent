@@ -7,6 +7,8 @@
         <h4>Processing Status Update</h4>
     </strong>
 </div>
+<%--@elvariable id="serListDto" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto"--%>
+<%--@elvariable id="applicationViewDto" type="com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto"--%>
 <iais:section title="" id = "process_Rectification">
     <div class="row">
         <div class="col-xs-12">
@@ -14,12 +16,26 @@
                 <iais:section title="">
                     <iais:row>
                         <iais:field value="Current Status" required="false"/>
-                        <iais:value width="10"><p><span style="font-size: 16px"><iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value></span></p>
+                        <iais:value width="10"><p><span style="font-size: 16px">
+                        <iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value></span></p>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Internal Remarks"/>
                         <iais:value width="10">
                             <textarea name="RemarksForHistory" cols="60" rows="7"maxlength="300"><c:out value="${serListDto.remarksForHistory}"/></textarea>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Processing Decision" required="true"/>
+                        <iais:value width="10">
+                            <iais:select name="processDec" cssClass="processDec" options="processDecOption"
+                                         firstOption="Please Select" value="${serListDto.processDec}" onchange="javascript:initRollBackToField()"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row id="rollBackToRow">
+                        <iais:field value="Roll Back To" required="true"/>
+                        <iais:value width="10">
+                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}"/>
                         </iais:value>
                     </iais:row>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">

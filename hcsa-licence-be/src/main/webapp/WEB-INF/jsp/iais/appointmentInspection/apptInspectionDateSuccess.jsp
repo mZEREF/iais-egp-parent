@@ -4,7 +4,7 @@
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
-          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+          (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
@@ -13,11 +13,16 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <c:if test="${'APTY007' eq applicationViewDto.applicationDto.applicationType}">
-              <h2><iais:message key="LOLEV_ACK041" escape="true"></iais:message></h2>
+            <c:if test="${'true' eq isRollBack}">
+              <h2><iais:message key="INSPE_ACK002" escape="true"/></h2>
             </c:if>
-            <c:if test="${'APTY007' ne applicationViewDto.applicationDto.applicationType}">
-              <h2><iais:message key="LOLEV_ACK040" escape="true"></iais:message></h2>
+            <c:if test="${'true' ne isRollBack}">
+              <c:if test="${'APTY007' eq applicationViewDto.applicationDto.applicationType}">
+                <h2><iais:message key="LOLEV_ACK041" escape="true"/></h2>
+              </c:if>
+              <c:if test="${'APTY007' ne applicationViewDto.applicationDto.applicationType}">
+                <h2><iais:message key="LOLEV_ACK040" escape="true"/></h2>
+              </c:if>
             </c:if>
           </div>
         </div>

@@ -22,7 +22,10 @@
   .check-square:before{
     color: #999999 !important;
   }
-
+  table {
+    table-layout: fixed;
+    word-break: break-all;
+  }
 </style>
 <div class="panel-main-content service-pannel">
 <input style="display: none" value="${NOT_VIEW}" id="view">

@@ -80,7 +80,7 @@ public class AdhocWriteMultipartFileAjaxController {
                     //size
                     if(!map.get("fileSize")){
                         doc.setPassDocValidate(false);
-                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax");
+                        errUploadFile= MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax");
                     }
                     //type
                     if(!map.get("fileType")){

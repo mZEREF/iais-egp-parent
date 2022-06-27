@@ -319,7 +319,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)){
             for(DashWorkTeamAjaxQueryDto dashWorkTeamAjaxQueryDto : dashWorkTeamAjaxQueryDtos){
                 //get hciName / address
-                AppGrpPremisesDto appGrpPremisesDto = premMap.get(dashWorkTeamAjaxQueryDto.getId());
+                AppGrpPremisesDto appGrpPremisesDto = premMap.get(dashWorkTeamAjaxQueryDto.getAppPremId());
                 String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashWorkTeamAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
@@ -1113,9 +1113,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 appGrpNums = IaisCommonUtils.genNewArrayList(1);
                 appGrpNums.add(groupNo);
             } else {
-                searchParam.addParam("groupNoIn", SqlHelper.constructInCondition("T7.GROUP_NO", appGrpNums.size()));
+                searchParam.addParam("groupNoIn", SqlHelper.constructInCondition("T4.GROUP_NO", appGrpNums.size()));
                 for (int i = 0; i < appGrpNums.size(); i++) {
-                    searchParam.addFilter("T7.GROUP_NO" + i, appGrpNums.get(i));
+                    searchParam.addFilter("T4.GROUP_NO" + i, appGrpNums.get(i));
                 }
             }
             List<ApplicationGroupDto> applicationGroupDtos = applicationMainClient.getGroupsByNos(appGrpNums).getEntity();
@@ -1127,10 +1127,10 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupIds(grpIds).getEntity();
             List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T4.REF_NO", appCorrId_list.size());
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
             searchParam.addParam("appCorrId_list", appPremCorrId);
             for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T4.REF_NO" + i, appCorrId_list.get(i));
+                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){

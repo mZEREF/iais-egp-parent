@@ -12,17 +12,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * DrugPrescribedDispensedValidator
@@ -179,7 +178,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 errorMap.put("batchNo"+i, "GENERAL_ERR0006");
             }
             if(!StringUtil.isEmpty(drugMedicationDto.getBatchNo())&&drugMedicationDto.getBatchNo().length()>20){
-                String general_err0041 = NewApplicationHelper.repLength("Batch No", "20");
+                String general_err0041 = AppValidatorHelper.repLength("Batch No", "20");
                 errorMap.put("batchNo"+i, general_err0041);
             }
             if(StringUtil.isEmpty(drugMedicationDto.getStrength())){
@@ -221,7 +220,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 if(StringUtil.isEmpty(drugMedicationDto.getOtherFrequency())){
                     errorMap.put("otherFrequency"+i, "GENERAL_ERR0006");
                 }else if(drugMedicationDto.getOtherFrequency().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Other-Frequency", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Other-Frequency", "100");
                     errorMap.put("otherFrequency"+i, general_err0041);
                 }
             }

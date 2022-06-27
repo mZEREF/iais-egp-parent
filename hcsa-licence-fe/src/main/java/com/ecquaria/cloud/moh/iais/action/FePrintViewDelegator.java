@@ -4,7 +4,15 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -13,8 +21,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +76,7 @@ public class FePrintViewDelegator {
         }
         ParamUtil.setRequestAttr(request,"serviceNameMiss",ParamUtil.getRequestString(request,"serviceNameMiss"));
         if(StringUtil.isEmpty(appType)){
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
                 AppSubmissionDto newAppSubmissionDto = null;
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -110,10 +120,13 @@ public class FePrintViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
                     if(appSubmissionDtos.size()==1){
                         if (StringUtil.isEmpty(viewPrint)) {
-                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                            AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(request,
+                                    ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                             appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
-                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
-                            appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,request);
+                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(
+                                    AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
+                            AppDataHelper.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),
+                                    ApplicationConsts.APPLICATION_TYPE_RENEWAL, request);
                         }
                     }
                     appSubmissionDtoList.addAll(appSubmissionDtos);
@@ -139,8 +152,8 @@ public class FePrintViewDelegator {
             //set primary doc
             if(appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size() > 0){
                 List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtoList.get(0).getSvcComDocId());
-                ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, primaryDocConfig);
-                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appGrpPrimaryDocDtoList);
+                ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, primaryDocConfig);
+                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appGrpPrimaryDocDtoList);
                 appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -158,12 +171,13 @@ public class FePrintViewDelegator {
                     List<AppSvcPrincipalOfficersDto> reloadPoList = IaisCommonUtils.genNewArrayList();
                     List<AppSvcPrincipalOfficersDto> reloadDpoList = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-                        NewApplicationHelper.assignPoDpoDto(appSvcPrincipalOfficersDtos,reloadPoList,reloadDpoList);
+                        ApplicationHelper.assignPoDpoDto(appSvcPrincipalOfficersDtos,reloadPoList,reloadDpoList);
                     }
                     appSvcRelatedInfoDto.setReloadPoDtoList(reloadPoList);
                     appSvcRelatedInfoDto.setReloadDpoList(reloadDpoList);
                     //set allocation
-                    Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                    Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap =
+                            ApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                     appSvcRelatedInfoDto.setReloadDisciplineAllocationMap(reloadDisciplineAllocationMap);
                     //set step
                     List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
@@ -201,7 +215,7 @@ public class FePrintViewDelegator {
                         appSvcClinicalDirectorDtos.addAll(appSvcClinicalDirectorDtos1);
                     }
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
-                    Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
+                    Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
@@ -213,15 +227,14 @@ public class FePrintViewDelegator {
 
     @RequestMapping(value = "/init-print", method = RequestMethod.POST)
     public @ResponseBody String initPrint(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
-                NewApplicationDelegator.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO);
         if (appSubmissionDto != null) {
             log.info(StringUtil.changeForLog("init-print"));
             appSubmissionDto.setAppDeclarationMessageDto(
-                    appSubmissionService.getAppDeclarationMessageDto(request, appSubmissionDto.getAppType()));
+                    AppDataHelper.getAppDeclarationMessageDto(request, appSubmissionDto.getAppType()));
             appSubmissionDto.setAppDeclarationDocDtos(
-                    appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
-            ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+                    AppDataHelper.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
+            ParamUtil.setSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
             String verifyInfoCheckbox = ParamUtil.getString(request, "verifyInfoCheckbox");
             appSubmissionDto.setUserAgreement(AppConsts.YES.equals(verifyInfoCheckbox));
             String effectiveDateStr = ParamUtil.getString(request, "rfcEffectiveDate");

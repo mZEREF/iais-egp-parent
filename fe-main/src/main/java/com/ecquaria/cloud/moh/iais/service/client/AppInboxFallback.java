@@ -89,14 +89,6 @@ public class AppInboxFallback implements AppInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

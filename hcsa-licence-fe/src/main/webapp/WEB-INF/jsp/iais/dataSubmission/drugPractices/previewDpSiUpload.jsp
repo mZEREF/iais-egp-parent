@@ -49,8 +49,8 @@
                         </h3>
                         <div class="col-xs-12">
                             <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
-                            <div <c:if test="${!DS_ERR068}"> style="display: none" </c:if>>
-                                <span class="error-msg" name="iaisErrorMsg">
+                            <div id="iaisErrorMsgDS_ERR068" <c:if test="${!DS_ERR068}"> style="display: none" </c:if>>
+                                <span class="error-msg" >
                                     There are errors in the file uploaded, which can be found <a href="${pageContext.request.contextPath}/ds/dp/si-err-file" >here</a>. Please rectify the errors and re-upload the file.
                                 </span>
                             </div>
@@ -91,7 +91,7 @@
                         <input id="uploadFile" name="selectedFile"
                                class="uploadFile commDoc" style="display: none;"
                                type="file" aria-label="uploadFile"
-                               onclick="fileClicked(event)"
+                               onclick="$('#iaisErrorMsgDS_ERR068').hide();fileClicked(event)"
                                onchange="ajaxCallUploadForMax('mainForm', 'uploadFile', false);"/>
                         <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
                         <input type="hidden" id="hasItems" name="hasItems" value="${hasItems}" />
@@ -117,4 +117,50 @@
 
 </form>
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/drpSiUpload.js"></script>
+<script type="text/javascript" >
+    $(document).ready(function () {
+        $('#_needReUpload').val(0);
+        $('#_fileType').val("XLSX, CSV");
+
+        $('#saveDraftBtn').remove();
+        $('#backBtn').unbind('click');
+        $('#backBtn').click(function () {
+            showWaiting();
+            submit('back');
+        });
+    });
+
+    function cloneUploadFile() {
+        var fileId= '#uploadFile';
+        $(fileId).after( $( fileId).clone().val(""));
+        $(fileId).remove();
+        var $btns = $('#uploadFileShowId').find('button');
+        if ($btns.length >= 2) {
+            $btns.not(':last').trigger('click');
+        }
+        $('#hasItems').val('0');
+        $('#itemSize').html('0');
+        $('#nextBtn').html('Submit');
+        clearErrorMsg();
+        $('#iaisErrorMsgDS_ERR068').hide();
+        $('.itemErrorTableDiv').remove();
+        submit('submission','preview');
+
+    }
+
+    function deleteFileFeAjax(id,fileIndex) {
+        $('#hasItems').val('0');
+        $('#itemSize').html('0');
+        $('#nextBtn').html('Submit');
+        callAjaxDeleteFile(id,fileIndex);
+    }
+
+    function doActionWhenError(data) {
+        $('#uploadFileShowId div').hide();
+        var $btns = $('#uploadFileShowId').find('button');
+        if ($btns.length >= 0) {
+            $btns.trigger('click');
+        }
+    }
+
+</script>

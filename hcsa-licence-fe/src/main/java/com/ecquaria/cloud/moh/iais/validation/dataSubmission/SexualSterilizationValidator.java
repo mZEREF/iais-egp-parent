@@ -13,12 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SexualSterilizationValidator implements CustomizeValidator {
     @Override
@@ -54,27 +52,27 @@ public class SexualSterilizationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(doctorInformationDto.getName())){
                 erMap.put("dName", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getName())&&doctorInformationDto.getName().length()>66){
-                    String general_err0041 = NewApplicationHelper.repLength("Name of Doctor who performed the sterilization", "66");
+                    String general_err0041 = AppValidatorHelper.repLength("Name of Doctor who performed the sterilization", "66");
                     erMap.put("dName", general_err0041);
             }
             if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
                 erMap.put("dSpeciality", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                 erMap.put("dSpeciality", general_err0041);
             }
 
             if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
                 erMap.put("dSubSpeciality", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                 erMap.put("dSubSpeciality", general_err0041);
             }
 
             if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
                 erMap.put("dQualification", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                 erMap.put("dQualification", general_err0041);
             }
 
@@ -82,19 +80,19 @@ public class SexualSterilizationValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 erMap.put("dSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                 erMap.put("dSpecialitys", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                 erMap.put("dSubSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                 erMap.put("dSubSpecialitys", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                 erMap.put("dQualifications", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                 erMap.put("dQualifications", general_err0041);
             }
         }

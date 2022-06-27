@@ -215,7 +215,15 @@
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
+                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"/>
+                              </iais:value>
+                            </iais:row>
+                            <iais:row id="rollBackToRow">
+                              <iais:field value="Roll Back To" required="true"/>
+                              <iais:value width="10">
+                                <iais:select name="rollBackTo" id="rollBackTo"
+                                             firstOption="Please Select"
+                                             options="rollBackToOptions" needSort="true"/>
                               </iais:value>
                             </iais:row>
                             <iais:row id="indicateCondRemarks">
@@ -273,6 +281,11 @@
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
+
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');inspectorProRecSubmit('rollBack')" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
     $(document).ready(function() {
         var value = $("#processDec").val();
@@ -301,6 +314,7 @@
             inspectorProRecJump(validateShowPage);
         }
         doInspectorProRecCheck();
+        showRollBackToRow();
     })
 
     function inspectorProRecJump(ackValue){
@@ -343,7 +357,8 @@
     }
 
     function inspectorProRecSubmit(action){
-        $("[name='InspectorProRectificationType']").val(action);
+      showWaiting();
+      $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
         mainPoolForm.submit();
     }
@@ -367,6 +382,17 @@
             $("#processRec").show();
             $("#processRecRfi").hide();
         }
+        showRollBackToRow();
+    }
+
+    function showRollBackToRow(){
+      const pd = $("#processDec").val();
+      const rollBackRow = $('#rollBackToRow');
+      if('REDECI027' === pd){
+        rollBackRow.show();
+      }else {
+        rollBackRow.hide();
+      }
     }
 
     function doInspectorProRecView() {
@@ -376,7 +402,6 @@
     }
 
     function doInspectorProRecSubmit() {
-        showWaiting();
         var processDec = $("#processDec").val();
         if("REDECI006" == processDec){
             $("#actionValue").val('accept');
@@ -387,6 +412,9 @@
         } else if("REDECI007" == processDec) {
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
+        } else if('REDECI027' === processDec){
+            $("#actionValue").val('rollBack');
+            $('#confirmTag').modal('show');
         } else {
             var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);

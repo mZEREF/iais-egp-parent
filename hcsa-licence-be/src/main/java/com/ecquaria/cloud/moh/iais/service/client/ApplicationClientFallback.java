@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -347,7 +348,15 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> updateStatus(String status) {
+    public FeignResponseEntity<Void> updateStatus(Map<String, List<String>> map) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> checkPendToFeAppGrps() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -1045,14 +1054,16 @@ public class ApplicationClientFallback implements ApplicationClient{
 
     @Override
     public FeignResponseEntity<Map<String, String>> checkApplicationByAppGrpNo(String appGrpNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity(appGrpNo);
     }
 
     @Override
     public FeignResponseEntity<MonitoringSheetsDto> getMonitoringAppSheetsDto() {
+        return IaisEGPHelper.getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Void> rollBackInspection(String premId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

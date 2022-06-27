@@ -3,7 +3,7 @@
     <div class="panel-heading"><strong>Licensee Details</strong></div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="table-gp">
+            <div class="table-gp" style="word-break:break-all">
                 <table aria-describedby="" class="table table-bordered">
                     <thead style="display: none">
                     <tr>
@@ -36,7 +36,7 @@
     <div class="panel-heading"><strong>Company Details</strong></div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="table-gp">
+            <div class="table-gp" style="word-break:break-all">
                 <table aria-describedby="" class="table table-bordered" >
                     <thead style="display: none">
                     <tr><th scope="col"></th></tr>
@@ -88,7 +88,7 @@
             <div class="panel-heading"><strong>Board Members</strong></div>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="table-gp">
+                    <div class="table-gp" style="word-break:break-all">
                         <table aria-describedby="" class="table table-bordered">
                             <thead style="display: none">
                             <tr>
@@ -134,7 +134,7 @@
             <div class="panel-heading"><strong>Board Members</strong></div>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="table-gp">
+                    <div class="table-gp" style="word-break:break-all">
                         <table aria-describedby="" class="table table-bordered">
                             <thead style="display: none">
                             <tr>
@@ -181,7 +181,7 @@
         <div class="panel-heading"><strong>Licensee</strong></div>
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-gp">
+                <div class="table-gp" style="word-break:break-all">
                     <table aria-describedby="" class="table table-bordered">
                         <thead style="display: none">
                         <tr>

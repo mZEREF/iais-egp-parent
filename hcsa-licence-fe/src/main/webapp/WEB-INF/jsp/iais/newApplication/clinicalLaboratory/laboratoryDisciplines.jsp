@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:if test="${AppSubmissionDto.needEditController}">
     <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
         <c:if test="${'APPSPN01' == clickEditPage}">
@@ -65,7 +67,7 @@
             </strong>
         </p>
         <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
-        <div class="wrapper">
+        <div <%--class="wrapper"--%>>
             <div class="form-inner-content editableMode">
                 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
                 <div class="canvasContent">
@@ -74,7 +76,7 @@
                         <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
                             <div id="control--runtime--0" class="page control control-area  container-p-1">
                                 <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-                                <table aria-describedby="" class="control-grid">
+                                <table aria-describedby="" class="control-grid" width="100%">
                                     <thead style="display: none">
                                     <tr><th scope="col"></th></tr>
                                     </thead>
@@ -85,7 +87,7 @@
                                         </div>
                                         <div class="control-input-span control-set-alignment">
                                             <div class="normal-indicator">
-                                                <table aria-describedby="" class="check-${premIndexNo}">
+                                                <table aria-describedby="" class="check-${premIndexNo}" width="100%">
                                                     <thead style="display: none">
                                                     <tr><th scope="col"></th></tr>
                                                     </thead>

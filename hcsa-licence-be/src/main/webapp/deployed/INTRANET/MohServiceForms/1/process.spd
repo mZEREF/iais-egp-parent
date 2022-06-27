@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/SubStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohServiceForms" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="SubStart" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="subStart_OnStepProcess_0" name="subStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="230" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareServiceLoad" x="460" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareServiceLoad_OnStepProcess_0" name="prepareServiceLoad_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareJump" x="490" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doServiceformSave" x="830" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doServiceformSave_OnStepProcess_0" name="doServiceformSave_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="return" x="620" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step1" processname="MohServiceRelatedInformation" project="INTRANET" version="-1" x="610" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+ </Steps>
+ <Pages/>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/SubStart" style="oblique">
+   <position>{(120,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="oblique">
+   <position>{(250,120)(370,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareServiceLoad" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(370,120)(480,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareJump" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(370,120)(510,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doServiceformSave" style="oblique">
+   <position>{(850,140)(607,437)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="oblique">
+   <position>{(510,220)(640,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareServiceLoad" style="oblique">
+   <position>{(480,70)(630,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doServiceformSave" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Step1" style="oblique">
+   <position>{(630,70)(850,140)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PrepareJump" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="350" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareServiceLoad" value="&quot;serviceForms&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value=""/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

@@ -400,7 +400,6 @@
 
         reLoadChange();
 
-        showSpecialty();
 
         doEdit();
 
@@ -426,18 +425,7 @@
         $('input[type="text"]').prop('disabled',true);
     }
 
-    var showSpecialty = function () {
-        $('.specialty').change(function () {
-            $specialtyEle = $(this).closest('.specialtyContent');
-            var val = $(this).val();
 
-            if('other' == val){
-                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            }else{
-                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-            }
-        });
-    }
 
     var reLoadChange = function () {
         var i=0;
@@ -468,7 +456,6 @@
                     data = "<hr/>" + data;
                 }
                 $('.assignContent:last').after(data);
-                showSpecialty();
                 initNationality('div.cgo-content:last', 'select[name="idType"]', '.nationalityDiv');
                 $('select.assignSel').change(function () {
                     $parentEle = $(this).closest('td.first');
@@ -509,31 +496,15 @@
         });
 
     }
+
     function initNationality(parent, idTypeTag, nationalityDiv) {
       $(parent).find(idTypeTag).on('change', function () {
         var $content = $(this).closest(parent.replace(':last', ''));
-        toggleIdType(this, $content.find(nationalityDiv));
+        toggleOnSelect(this, 'IDTYPE003', $content.find(nationalityDiv));
       });
       $(parent).each(function (index, ele) {
-        toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
+        toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
       });
     }
 
-    function toggleIdType(sel, elem) {
-      if (isEmpty(sel) || isEmpty(elem)) {
-        return;
-      }
-      var $sel = $(sel);
-      var $elem = $(elem);
-      if ($sel.length == 0 || $elem.length == 0) {
-        return;
-      }
-      console.log($sel.val());
-      if ($sel.val() == 'IDTYPE003') {
-        $elem.removeClass('hidden');
-      } else {
-        $elem.addClass('hidden');
-        clearFields($elem);
-      }
-    }
 </script>

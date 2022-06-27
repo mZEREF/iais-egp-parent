@@ -23,6 +23,10 @@
     <input type="hidden" name="draftNo"/>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="container">
+        <br>
+        <div class="row">
+            <%@ include file="../common/dashboardDropDown.jsp" %>
+        </div>
         <div class="row">
             <div class="col-xs-3">
             </div>

@@ -2,18 +2,16 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -31,7 +29,7 @@ public class DsLaboratoryDevelopTestValidator implements CustomizeValidator {
                 if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
                     map.put("amendReasonOther", "GENERAL_ERR0006");
                 } else if (dataSubmissionDto.getAmendReasonOther().length() > 50) {
-                    map.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
+                    map.put("amendReasonOther", AppValidatorHelper.repLength("Reason for Amendment (Others)", "50"));
                 }
             }
         }

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -54,7 +55,7 @@ public class SubmitInspectionDateDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest servletRequest = bpc.request;
 
-        ParamUtil.setRequestAttr(servletRequest,"DashboardTitle","Indicate Preferred Inspection Date");
+        ParamUtil.setRequestAttr(servletRequest, HcsaAppConst.DASHBOARDTITLE,"Indicate Preferred Inspection Date");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
         if(appSubmissionDto == null){
             return;

@@ -31,17 +31,6 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
@@ -54,6 +43,15 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohARPatientInfoUpload
@@ -317,8 +315,7 @@ public class PatientUploadDelegate {
         File file = fileEntry.getValue();
         PageShowFileDto pageShowFileDto = new PageShowFileDto();
         String index = fileEntry.getKey().substring(FILE_APPEND.length());
-        SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
-        String fileMd5 = singeFileUtil.getFileMd5(file);
+        String fileMd5 = FileUtils.getFileMd5(file);
         pageShowFileDto.setIndex(index);
         pageShowFileDto.setFileName(file.getName());
         pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);

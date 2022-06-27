@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -88,7 +89,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                     }
             }else {
                 if(patientDto.getPostalCode().length()>20){
-                    String general_err0041 = NewApplicationHelper.repLength("Postal Code", "20");
+                    String general_err0041 = AppValidatorHelper.repLength("Postal Code", "20");
                     errorMap.put("postalCode", general_err0041);
                 }
             }
@@ -115,7 +116,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
             if("ECGP004".equals(patientDto.getEthnicGroup()) && StringUtil.isEmpty(patientDto.getEthnicGroupOther())){
                 errorMap.put("ethnicGroupOther", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(patientDto.getEthnicGroupOther())&&patientDto.getEthnicGroupOther().length()>20){
-                String general_err0041 = NewApplicationHelper.repLength("Other Ethnic Group", "20");
+                String general_err0041 = AppValidatorHelper.repLength("Other Ethnic Group", "20");
                 errorMap.put("ethnicGroupOther", general_err0041);
             }
         }

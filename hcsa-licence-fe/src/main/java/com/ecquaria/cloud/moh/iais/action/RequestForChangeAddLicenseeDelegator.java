@@ -7,8 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import java.util.Map;
@@ -71,7 +73,7 @@ public class RequestForChangeAddLicenseeDelegator {
      */
     public void validate(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator validate start..."));
-        SubLicenseeDto subLicenseeDto = NewApplicationDelegator.getSubLicenseeDtoDetailFromPage(bpc.request);
+        SubLicenseeDto subLicenseeDto = AppDataHelper.getSubLicenseeDtoDetailFromPage(bpc.request);
         subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
         subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -84,7 +86,7 @@ public class RequestForChangeAddLicenseeDelegator {
             ParamUtil.setRequestAttr(bpc.request,"crud_action_type_switch2","save");
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
-        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator validate end..."));
     }
     /**

@@ -11,7 +11,7 @@
 <div class="form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
-            <strong class="app-font-size-22 premHeader">Licensee Details</strong>
+            <p class="app-title">Licensee Details</p>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
@@ -22,10 +22,10 @@
             </c:if>
         </iais:value>
     </iais:row>
-    <c:if test="${canEdit}">
+    <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
-    </c:if>
+    </c:if>--%>
     <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
@@ -103,7 +103,6 @@
             disableContent('div.licensee-detail');
             $('.retrieveAddr').addClass('hidden');
         }
-        //toggleIdType('#idType', '.nationalityDiv');
     }
 
     function checkLicenseeType() {
@@ -145,18 +144,18 @@
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         }
-        toggleIdType('#idType', '.nationalityDiv');
+        toggleOnSelect('#idType', 'IDTYPE003', '.nationalityDiv');
     }
 
     function editContent() {
         $('#isEditHiddenVal').val('1');
-        <c:if test="${isNewApp && not empty dto.licenseeType}">
+        <c:if test="${isNewApp}">
         unDisableContent('div.assignSelectRow');
         unDisableContent('div.licenseeType');
         unDisableContent('div.licensee-detail');
         $('.retrieveAddr').removeClass('hidden');
         </c:if>
-        <c:if test="${!isNewApp && not empty dto.licenseeType}">
+        <c:if test="${!isNewApp}">
         unDisableContent('div.licensee-detail');
         $('.retrieveAddr').removeClass('hidden');
         disableContent('div.ind-no');

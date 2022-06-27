@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -10,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -51,33 +49,35 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -135,7 +135,7 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private LicenceClient licenceClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
@@ -150,6 +150,8 @@ public class AppealServiceImpl implements AppealService {
     private ComFileRepoClient comFileRepoClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public String submitData(HttpServletRequest request) {
@@ -193,8 +195,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
@@ -376,7 +377,7 @@ public class AppealServiceImpl implements AppealService {
             String serviceName = appSubmissionDto.getServiceName();
             request.getSession().setAttribute("serviceName", serviceName);
             HcsaServiceDto serviceDto= HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-            ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE,serviceDto.getSvcCode());
+            ParamUtil.setSessionAttr(request, HcsaAppConst.CURRENTSVCCODE,serviceDto.getSvcCode());
             String amountStr = appSubmissionDto.getAmountStr();
             try {
                 AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
@@ -438,12 +439,12 @@ public class AppealServiceImpl implements AppealService {
                     request.getSession().setAttribute("GovernanceOfficersList", appSvcCgoDto);
                     LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+                    ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
                     List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
                     Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
-                    Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-                    ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-                    List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
+                    Map<String, AppSvcPersonAndExtDto> personMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+                    ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+                    List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
                     ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
                     List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
                     ParamUtil.setSessionAttr(request, "IdTypeSelect", (Serializable) idTypeSelOp);
@@ -622,7 +623,7 @@ public class AppealServiceImpl implements AppealService {
 
             List<String> list = IaisCommonUtils.genNewArrayList();
             list.add(serviceId);
-            List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
+            List<HcsaServiceDto> entity = configCommClient.getHcsaService(list).getEntity();
             for (int i = 0; i < entity.size(); i++) {
                 String svcName = entity.get(i).getSvcName();
                 request.getSession().setAttribute("serviceName", svcName);
@@ -716,7 +717,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public ProfessionalResponseDto prsFlag(String regNo) {
-        return appSubmissionService.retrievePrsInfo(regNo);
+        return appCommService.retrievePrsInfo(regNo);
     }
 
     @Override
@@ -742,8 +743,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
@@ -928,7 +928,7 @@ public class AppealServiceImpl implements AppealService {
             validateFile(pageShowFileDtos.get(i),map,i);
         }
         req.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-        String errLen=MessageUtil.getMessageDesc("GENERAL_ERR0022");
+        String errLen= MessageUtil.getMessageDesc("GENERAL_ERR0022");
         if (file != null && file.getSize() > 0) {
             int configFileSize = systemParamConfig.getUploadFileLimit();
             String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
@@ -1003,175 +1003,113 @@ public class AppealServiceImpl implements AppealService {
             map.put("reason", MessageUtil.replaceMessage("GENERAL_ERR0006","Reason For Appeal","field"));
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.PERSONSELECTMAP);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
                 if(IaisCommonUtils.isEmpty(appSvcCgoList)){
                     //todo
                     map.put("addCgo",  MessageUtil.replaceMessage("GENERAL_ERR0006","Add Another Clinical Governance Officer ","field"));
                 }
-                String designationMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
-                StringBuilder stringBuilder = new StringBuilder();
+                List<String> stringList = new ArrayList<>();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
-                    StringBuilder stringBuilder1 = new StringBuilder();
                     String assignSelect = appSvcCgoList.get(i).getAssignSelect();
                     if ("-1".equals(assignSelect)) {
                         map.put("assignSelect" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
                     } else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
-                        String nationality  = appSvcCgoList.get(i).getNationality();
+                        String idNo = appSvcCgoList.get(i).getIdNo();
+                        String nationality = appSvcCgoList.get(i).getNationality();
 
-                        if ("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)) {
-                            map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
-                        }else if("IDTYPE003".equals(idTyp)){
-                            if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
-                                map.put("nationality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Country of issuance","field"));
+                        String keyIdType = "idTyp" + i;
+                        String keyIdNo = "idNo" + i;
+                        String keyNationality = "nationality" + i;
+                        boolean isValid = AppValidatorHelper.validateId(nationality, idTyp, idNo, keyNationality, keyIdType, keyIdNo, map);
+                        // check duplicated
+                        if (isValid) {
+                            String personKey = ApplicationHelper.getPersonKey(nationality, idTyp, idNo);
+                            boolean licPerson = appSvcCgoList.get(i).isLicPerson();
+                            String idTypeNoKey = "idTypeNo" + i;
+                            isValid = AppValidatorHelper.doPsnCommValidate(map, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
+                            if (isValid) {
+                                if (stringList.contains(personKey)) {
+                                    map.put(keyIdNo, "NEW_ERR0012");
+                                } else {
+                                    stringList.add(personKey);
+                                }
                             }
-
                         }
+
                         String salutation = appSvcCgoList.get(i).getSalutation();
                         if (StringUtil.isEmpty(salutation)) {
-                            map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
+                            map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                         }
-
                         String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {
-                            map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
+                            map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type ", "field"));
                         }
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
-                            map.put("designation" + i, designationMsg);
-                        }else if("DES999".equals(designation)){
+                            map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                        } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
                             String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
                             if (StringUtil.isEmpty(otherDesignation)) {
-                                map.put("otherDesignation" + i, designationMsg);
+                                map.put("otherDesignation" + i,
+                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
                             } else if (otherDesignation.length() > 100) {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                                repMap.put("maxlength", "100");
-                                repMap.put("field", "Other Designation");
-                                map.put("otherDesignation" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                                String general_err0041 = AppValidatorHelper.repLength("Others Designation", "100");
+                                map.put("otherDesignation" + i, general_err0041);
                             }
+
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
+                        if (!StringUtil.isEmpty(professionRegoNo) && professionRegoNo.length() > 20) {
+                            String general_err0041 = AppValidatorHelper.repLength("Professional Regn. No.", "20");
+                            map.put("professionRegoNo" + i, general_err0041);
+                        }
+                        String specialty = appSvcCgoList.get(i).getSpeciality();
                         String otherQualification = appSvcCgoList.get(i).getOtherQualification();
-                        if(StringUtil.isEmpty(appSvcCgoList.get(i).getQualification())&&StringUtil.isEmpty(otherQualification)){
-                            map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
-                        }
-                         if(StringUtil.isNotEmpty(otherQualification)&&otherQualification.length()>100){
-                            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                            repMap.put("maxlength","100");
-                            repMap.put("field","Other Qualification");
-                            map.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0041",repMap));
-
-                        }
-                        if (StringUtil.isEmpty(professionRegoNo)) {
-/*
-                            map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
-*/
-                        } else {
-                            if (professionRegoNo.length() > 20) {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                                repMap.put("maxlength", "20");
-                                repMap.put("field", "Professional Regn. No.");
-                                map.put("professionRegoNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
-                            }
-                            ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo);
-                            if (professionalResponseDto != null) {
-                                if (professionalResponseDto.isHasException()) {
-                                    map.put("professionRegoNo" + i, "GENERAL_ERR0048");
-                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
-                                    map.put("professionRegoNo" + i, "GENERAL_ERR0054");
-                                } else {
-                                    List<String> specialty = professionalResponseDto.getSpecialty();
-                                    if (IaisCommonUtils.isEmpty(specialty)) {
-                                        map.put("professionRegoNo" + i, "GENERAL_ERR0042");
-                                    }
-                                }
+                        if (StringUtil.isEmpty(professionRegoNo) || StringUtil.isEmpty(specialty)) {
+                            if (StringUtil.isEmpty(otherQualification)) {
+                                map.put("otherQualification" + i,
+                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
                             }
                         }
-
-                        String idNo = appSvcCgoList.get(i).getIdNo();
-                        //to do
-                        if (StringUtil.isEmpty(idNo)) {
-                            map.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.  ","field"));
-                        } else {
-                            if (OrganizationConstants.ID_TYPE_FIN.equals(idTyp)) {
-                                boolean b = SgNoValidator.validateFin(idNo);
-                                if (!b) {
-                                    map.put("idNo" + i, "RFC_ERR0012");
-                                }
-                                stringBuilder1.append(idTyp).append(idNo);
-                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
-                                if(map1!=null){
-                                    map1.forEach((k,v)->{
-                                        if(v.equals(idNo)){
-                                            map.put("idNo", "NEW_ERR0012");
-                                        }
-                                    });
-                                }
-                            } else if (OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)) {
-                                boolean b1 = SgNoValidator.validateNric(idNo);
-                                if (!b1) {
-                                    map.put("idNo" + i, "RFC_ERR0012");
-                                }
-                                stringBuilder1.append(idTyp).append(idNo);
-                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
-                                if(map1!=null){
-                                    map1.forEach((k,v)->{
-                                        if(v.equals(idNo)){
-                                            map.put("idNo", "NEW_ERR0012");
-                                        }
-                                    });
-                                }
-                            }
-                            if (idNo.length() > 20) {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                                repMap.put("maxlength", "20");
-                                repMap.put("field", "ID No.");
-                                map.put("idNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
-                            }
-
+                        // GENERAL_ERR0036 - GENERAL_ERR0041
+                        if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
+                            map.put("otherQualification" + i, AppValidatorHelper.repLength("Other Qualification", "100"));
                         }
-                        //to do
-
-
 
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
                             map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
-                        } else if (name.length() > 110) {
-                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                            repMap.put("maxlength", "110");
-                            repMap.put("field", "Name");
-                            map.put("name" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                        } else {
+                            if (name.length() > 110) {
+                                String general_err0041 = AppValidatorHelper.repLength("Name", "110");
+                                map.put("name" + i, general_err0041);
+                            }
                         }
 
                         String mobileNo = appSvcCgoList.get(i).getMobileNo();
                         if (StringUtil.isEmpty(mobileNo)) {
-                            map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
+                            map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
                         } else if (!StringUtil.isEmpty(mobileNo)) {
+                            if (mobileNo.length() > 8) {
+                                String general_err0041 = AppValidatorHelper.repLength("Mobile No.", "8");
+                                map.put("mobileNo" + i, general_err0041);
+                            }
                             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                                 map.put("mobileNo" + i, "GENERAL_ERR0007");
                             }
                         }
                         String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                         if (StringUtil.isEmpty(emailAddr)) {
-                            map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
-                        } else if (!StringUtil.isEmpty(emailAddr)) {
+                            map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                        } else {
+                            if (emailAddr.length() > 320) {
+                                String general_err0041 = AppValidatorHelper.repLength("Email Address", "320");
+                                map.put("emailAddr" + i, general_err0041);
+                            }
                             if (!ValidationUtils.isEmail(emailAddr)) {
                                 map.put("emailAddr" + i, "GENERAL_ERR0014");
-                            } else if (emailAddr.length() > 320) {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                                repMap.put("maxlength", "320");
-                                repMap.put("field", "Email Address");
-                                map.put("emailAddr" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
-                            }
-                        }
-                        String s = stringBuilder.toString();
-                        if (!StringUtil.isEmpty(stringBuilder1.toString())) {
-                            if (s.contains(stringBuilder1.toString())) {
-                                map.put("idNo", "NEW_ERR0012");
-                            } else {
-                                String str=stringBuilder1.toString();
-                                stringBuilder.append(str);
                             }
                         }
                     }
@@ -1289,7 +1227,7 @@ public class AppealServiceImpl implements AppealService {
                 applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
                 Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
                 appNo=entity1.getApplicationNo();
-                params.put("appNo", entity1.getApplicationNo());
+                params.put("appNo", appNo);
                 List<AppPremisesRoutingHistoryDto> hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
                 if (hisList != null) {
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
@@ -1311,7 +1249,7 @@ public class AppealServiceImpl implements AppealService {
                 request.getSession().setAttribute("rfiApplication", entity1);
                 applicationFeClient.updateApplication(entity1);
             }
-            HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
+            HcsaServiceDto hcsaServiceDto = configCommClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
             applicationDto.setServiceId(hcsaServiceDto.getId());
             applicationDto.setApplicationNo(s);
             applicationDto.setOriginLicenceId(licenceDto.getId());
@@ -1450,7 +1388,7 @@ public class AppealServiceImpl implements AppealService {
         //info
 
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto hcsaServiceDto = configCommClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
         applicationDto1.setServiceId(hcsaServiceDto.getId());
         applicationDto1.setBaseServiceId(applicationDto.getBaseServiceId());
         applicationDto1.setVersion(1);
@@ -1601,16 +1539,16 @@ public class AppealServiceImpl implements AppealService {
                 }
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-                ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+                ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
                 List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
                 Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
-                Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-                ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-                List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
+                Map<String, AppSvcPersonAndExtDto> personMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+                ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+                List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
                 ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
                 ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
                 HcsaServiceDto serviceDto= HcsaServiceCacheHelper.getServiceById(entity.getServiceId());
-                ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE,serviceDto.getSvcCode());
+                ParamUtil.setSessionAttr(request, HcsaAppConst.CURRENTSVCCODE,serviceDto.getSvcCode());
                 List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
                 ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelOp);
                 List<SelectOption> list = AppealDelegator.genSpecialtySelectList(serviceDto.getSvcCode());
@@ -1650,8 +1588,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
@@ -1787,14 +1724,14 @@ public class AppealServiceImpl implements AppealService {
         HcsaServiceDto activeHcsaServiceDtoById = serviceConfigService.getActiveHcsaServiceDtoById(serviceId);
         if(activeHcsaServiceDtoById!=null){
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationFeClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
-            List<HcsaServiceStepSchemeDto> list = appConfigClient.getServiceStepsByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
+            List<HcsaServiceStepSchemeDto> list = configCommClient.getServiceStepsByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
             if(list!=null){
                 Optional<HcsaServiceStepSchemeDto> any = list.stream().filter(v -> HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(v.getStepCode())).findAny();
                 if(!any.isPresent()){
                    return false;
                 }
             }
-            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = configCommClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
@@ -1847,7 +1784,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private void validateCgoIdNo(ApplicationDto applicationDto,Map<String,String> map){
-        AppSubmissionDto entity = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        AppSubmissionDto entity = appCommService.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo());
         if(entity!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){

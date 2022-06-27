@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
@@ -30,10 +30,8 @@
             </div>
         </div>
     </div>
-</c:if>
 
-<c:if test="${applicationDto.applicationType == 'APTY008'}">
-    <%@include file="../newApplication/cessationViewApp.jsp" %>
+    <jsp:include page="/WEB-INF/jsp/iais/newApplication/cessationViewApp.jsp" />
 </c:if>
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
@@ -56,11 +54,13 @@
                                                 <div class="panel-group" id="accordion" role="tablist"
                                                      aria-multiselectable="true" style="margin-top: 40px" >
                                                     <c:if test="${applicationDto.applicationType != 'APTY008'}">
-                                                        <%@include file="../newApplication/inboxView/inboxLicensee.jsp" %>
-                                                        <%@include file="../newApplication/inboxView/inboxPremise.jsp" %>
-                                                        <%@include file="../newApplication/inboxView/inboxPrimary.jsp" %>
-                                                        <%@include file="../newApplication/inboxView/viewForm.jsp" %>
-                                                        <%@include file="../common/declarations.jsp"%>
+                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxLicensee.jsp"/>
+                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxPremise.jsp" />
+                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxPrimary.jsp" />
+                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/viewForm.jsp" />
+                                                        <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
+                                                            <%@include file="../common/declarations.jsp"%>
+                                                        </c:if>
                                                     </c:if>
                                                 </div>
                                             </div>

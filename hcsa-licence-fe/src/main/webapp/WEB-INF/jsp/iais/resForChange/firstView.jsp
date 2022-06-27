@@ -16,8 +16,8 @@
         font-size: 16px;
     }
 </style>
-<c:set var="isRfi" value="${requestInformationConfig != null}" />
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="isRfi" value="${requestInformationConfig != null}" scope="request"/>
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>

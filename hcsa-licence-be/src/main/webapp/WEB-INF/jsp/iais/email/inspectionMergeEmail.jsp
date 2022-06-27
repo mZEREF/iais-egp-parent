@@ -103,6 +103,13 @@
                                                             </span>
                                                         </iais:value>
                                                     </iais:row>
+                                                    <iais:row id="rollBackToRow">
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Route Back To<span class="mandatory">*</span></label>
+                                                        <iais:value width="6">
+                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
+                                                        </iais:value>
+                                                    </iais:row>
                                                     <iais:row style="display: none" id="selectReviseNc">
                                                         <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span class="mandatory">*</span></label>
                                                         <iais:value width="6" >
@@ -156,17 +163,27 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        showRollBackToRow();
+    });
+
     function doPreview() {
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
 
     function doSend() {
         var f =$('#decision_merge_email option:selected').val();
+        $('#err_rollBackTo').hide();
         if (f == null || f == "") {
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
+        }else if('REDECI027' === f){
+            $('#confirmTag').modal('show');
         } else {
             $("#selectDecisionMsg").hide();
             if ($('#decision_merge_email option:selected').val() == "REDECI005") {
@@ -197,15 +214,35 @@
     }
 
     function thisTime() {
-
         if ($('#decision_merge_email option:selected').val() == "REDECI005") {
             $("#selectReviseNc").show();
         } else {
             $("#selectReviseNc").hide();
         }
+        showRollBackToRow();
     }
 
+    function rollBackSubmit(){
+        const rollBackTo = $('#rollBackTo').val();
+        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+            $('#err_rollBackTo').show();
+            //close fangDuoJi in has error
+            $('#fangDuoJiconfirmTag').val(null);
+        }else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "send");
+        }
+    }
 
+    function showRollBackToRow(){
+        const f = $('#decision_merge_email option:selected').val();
+        const row = $('#rollBackToRow')
+        if('REDECI027' === f){
+            row.show();
+        }else {
+            row.hide();
+        }
+    }
 </script>
 
 

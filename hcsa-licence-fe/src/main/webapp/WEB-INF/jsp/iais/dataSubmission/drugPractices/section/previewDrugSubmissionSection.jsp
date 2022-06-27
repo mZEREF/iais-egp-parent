@@ -184,6 +184,13 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Business Name of Healthcare Service provider" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <%--<iais:code code="${drugSubmission.hspBusinessName}"/>--%>
+                        <iais:optionText value="${drugSubmission.hspBusinessName}" selectionOptions="hspSelectList"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

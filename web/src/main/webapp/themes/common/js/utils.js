@@ -204,8 +204,7 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
     });
 }
 
-function getQueryVariable(variable)
-{
+function getQueryVariable(variable)  {
     let query = window.location.search.substring(1);
     let vars = query.split("&");
     for (let i = 0; i< vars.length; i++) {
@@ -353,24 +352,24 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
 }
 
 function ajaxCallSelectCheckbox(){
-        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
-        if (this.checked) {
-            destUrl += '?action=checked'
-          }else{
-            destUrl += '?action=unchecked'
-          }
-        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
-        $.ajax({
-                'url': destUrl,
-                'type': 'GET',
-                'traditional':true,
-                'async': true,
-                'success': function (data) {
-                },
-                'error': function () {
-                }
-        });
-    }
+    let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+    if (this.checked) {
+        destUrl += '?action=checked'
+      }else{
+        destUrl += '?action=unchecked'
+      }
+    destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+    $.ajax({
+            'url': destUrl,
+            'type': 'GET',
+            'traditional':true,
+            'async': true,
+            'success': function (data) {
+            },
+            'error': function () {
+            }
+    });
+}
 
 //This is All Just For Logging:
 var debugFile = true;//true: add debug logs when cloning
@@ -437,7 +436,30 @@ function updateSelectTag($sel) {
 }
 
 function toggleOnSelect(sel, val, elem) {
-    if (isEmpty(sel)) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
+        return;
+    }
+    if ($selector.val() == val) {
+        $target.show();
+        $target.removeClass('hidden');
+    } else {
+        $target.hide();
+        $target.addClass('hidden');
+        clearFields($target);
+    }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            updateSelectTag($(ele));
+        }
+    });
+}
+
+function toggleOnCheck(sel, elem, hide) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
         return;
     }
     var $selector = $(sel);
@@ -485,9 +507,11 @@ function toggleOnCheck(sel, elem, hide) {
     if ($selector.is(':checked')) {
         if (hide) {
             $target.hide();
+            $target.addClass('hidden');
             clearFields($target);
         } else {
             $target.show();
+            $target.removeClass('hidden');
         }
     } else {
         if (hide) {
@@ -515,6 +539,23 @@ function checkMantory(sel, targetLabel, val) {
     }
     if ($selector.length <= 0 || $target.length <= 0) {
         console.log("Tags error in checkMantory!");
+            $target.removeClass('hidden');
+    } else {
+        $target.hide();
+        $target.addClass('hidden');
+        clearFields($target);
+    }
+    $target.each(function(i, ele) {
+        if ('select' == ele.tagName.toLowerCase()) {
+            updateSelectTag($(ele));
+        }
+    });
+}
+
+function checkMantory(sel, targetLabel, val) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(targetLabel);
+    if (isEmpty($selector) || isEmpty($target)) {
         return;
     }
     $target.find('.mandatory').remove();
@@ -528,15 +569,15 @@ function isEmpty(str) {
 }
 
 function clearFields(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
         $selector.find("span[name='iaisErrorMsg']").each(function () {
             $(this).html("");
         });
-        $selector = $(targetSelector).find(':input[class!="not-clear"]');
+        $selector = $selector.find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {
         return;
@@ -552,21 +593,17 @@ function clearFields(targetSelector) {
                 this.checked = false;
             } else if (tag == 'select') {
                 this.selectedIndex = 0;
-                $(this).niceSelect("update");
+                updateSelectTag($(this));
             }
         }
     });
 }
 
 function fillValue(targetSelector, data, includeHidden){
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
-    if ($selector.length <= 0) {
-        return;
-    }
-    console.info("data - " + data);
     if (isEmpty(data)) {
         clearFields($selector);
         return;
@@ -596,7 +633,7 @@ function fillValue(targetSelector, data, includeHidden){
                 $selector[0].selectedIndex = 0;
             }
             if ($selector.val() != oldVal) {
-                $selector.niceSelect("update");
+                updateSelectTag($selector);
             }
         } else {
             $selector.val(data);
@@ -626,18 +663,18 @@ function fillValue(targetSelector, data, includeHidden){
 }
 
 function disableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
     }
     $selector.each(function(i, ele) {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -645,24 +682,24 @@ function disableContent(targetSelector) {
         $input.css('border-color','#ededed');
         $input.css('color','#999');
         if (tag == 'select') {
-            $input.niceSelect("update");
+            updateSelectTag($input);
         }
     });
 }
 
 function unDisableContent(targetSelector) {
-    if (isEmpty(targetSelector)) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmpty($selector)) {
         return;
     }
-    var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
-        $selector = $(targetSelector).find(':input[type!="hidden"]');
+        $selector = $selector.find(':input');
     }
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function() {
-        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+    $selector.each(function(i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
@@ -670,7 +707,7 @@ function unDisableContent(targetSelector) {
         $input.css('border-color','');
         $input.css('color','');
         if (tag == 'select') {
-            $input.niceSelect("update");
+            updateSelectTag($input);
         }
     });
 }
@@ -795,5 +832,3 @@ function getContextPath() {
     var result = pathName.substr(0,index+1);
     return result;
 }
-
-

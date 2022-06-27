@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
@@ -84,7 +84,7 @@ public class ApptConfirmSpecificDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", null);
         ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "appType", null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ApptConfirmSpecificDateDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Inspector Assigns Specific Date");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Inspector Assigns Specific Date");
     }
 
     /**

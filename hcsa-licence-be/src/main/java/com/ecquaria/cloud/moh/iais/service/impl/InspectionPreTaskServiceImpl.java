@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -153,7 +154,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     static private String[] processDec = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
             InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY,
+            InspectionConstants.PROCESS_DECI_ROLL_BACK};
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -163,7 +165,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getProcessDecOption(ApplicationDto applicationDto) {
+    public List<SelectOption> getProcessDecOption(ApplicationDto applicationDto, String appGrpNo) {
         String appType = applicationDto.getApplicationType();
         String[] processDecArr;
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
@@ -173,14 +175,15 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         } else {
             Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
                     ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            if(rfiCount==0){
+            Map<String, String> map = applicationService.checkApplicationByAppGrpNo(appGrpNo);
+            String canEdit = map.get(HcsaAppConst.CAN_RFI);
+            if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 processDecArr = processDec;
             } else {
-                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, InspectionConstants.PROCESS_DECI_ROLL_BACK};
             }
         }
-        List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
-        return processDecOption;
+        return MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
     }
 
     @Override
@@ -668,6 +671,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryMap = IaisCommonUtils.genNewHashMap();
         //get history to route back
         if(applicationViewDto != null){
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
@@ -682,6 +686,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                             preInspRbOption.add(selectOption);
                             userIdMap.put(index + "", actionUserId);
                             roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                            rollBackHistoryMap.put(index + "", appPremisesRoutingHistoryDto);
                             index++;
                         }
                     }
@@ -691,40 +696,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
         inspectionPreTaskDto.setStageRoleMap(roleIdMap);
+        inspectionPreTaskDto.setRollBackHistoryMap(rollBackHistoryMap);
         return inspectionPreTaskDto;
-    }
-
-    @Override
-    public ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto) {
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appType = applicationDto.getApplicationType();
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-            appEditSelectDto.setLicenseeEdit(true);
-            appEditSelectDto.setServiceEdit(true);
-            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appEditSelectDto.setPoEdit(true);
-            appEditSelectDto.setDocEdit(true);
-            appEditSelectDto.setMedAlertEdit(true);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setApplicationId(applicationDto.getId());
-            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        }  else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            String applicationNo = applicationDto.getApplicationNo();
-            List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
-            List<String> list = IaisCommonUtils.genNewArrayList();
-            if (applicationDtosByApplicationNo != null) {
-                for (ApplicationDto applicationDto1 : applicationDtosByApplicationNo) {
-                    list.add(applicationDto1.getId());
-                }
-            }
-            List<AppEditSelectDto> appEditSelectDtosByAppIds = applicationService.getAppEditSelectDtosByAppIds(list);
-            if (!appEditSelectDtosByAppIds.isEmpty()) {
-                applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
-            }
-        }
-        return applicationViewDto;
     }
 
     @Override

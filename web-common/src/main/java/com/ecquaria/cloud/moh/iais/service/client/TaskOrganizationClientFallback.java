@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
@@ -197,6 +198,22 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
 
     @Override
     public FeignResponseEntity<List<OrgUserDto>> getCurrentTaskAssignedInspectorInfo(Map<String, Object> params) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> updateTasks(List<AppPremisesCorrelationDto> appPremisesCorrelations) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(String appNo, String roleId, String wrkGrpId, String userId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
@@ -61,6 +62,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Delegator("ldtDataSubmissionDelegator")
 public class LdtDataSubmissionDelegator {
+
+    @Autowired
+    private LicCommClient licCommClient;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -114,13 +118,13 @@ public class LdtDataSubmissionDelegator {
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
-        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
+        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, null);
         if (dataSubmissionDraft != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_LDT);
 
-        String isGuide = ParamUtil.getString(bpc.request,DataSubmissionConstant.LDT_IS_GUIDE);
+        String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE, isGuide);
     }
 
@@ -137,6 +141,10 @@ public class LdtDataSubmissionDelegator {
         if (ldtSuperDataSubmissionDto != null) {
             if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftNo())) {
                 ldtSuperDataSubmissionDto.setDraftNo(ldtDataSubmissionService.getDraftNo());
+            }
+            if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getOrgId())) {
+                ldtSuperDataSubmissionDto.setOrgId(Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                        .map(LoginContext::getOrgId).orElse(""));
             }
             ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveDataSubmissionDraft(ldtSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
@@ -197,7 +205,7 @@ public class LdtDataSubmissionDelegator {
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
+        List<LicenceDto> licenceDtoList = licCommClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
         if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
             LicenceDto licenceDto = licenceDtoList.get(0);
             licenceId = licenceDto.getId();
@@ -249,7 +257,7 @@ public class LdtDataSubmissionDelegator {
 
         //draft
         if (crud_action_type.equals("resume")) {
-            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId());
+            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), ldtSuperDataSubmissionDto.getDataSubmissionDto().getId());
             if (ldtSuperDataSubmissionDto == null) {
                 log.warn("Can't resume data!");
                 ldtSuperDataSubmissionDto = new LdtSuperDataSubmissionDto();
@@ -298,7 +306,7 @@ public class LdtDataSubmissionDelegator {
         String cannotCLT = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
-            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
             String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
             if ("true".equals(isGuide)){
@@ -359,6 +367,11 @@ public class LdtDataSubmissionDelegator {
             ldtSuperDataSubmissionDto.setDsLaboratoryDevelopTestDto(dsLaboratoryDevelopTestDto);
         }
 
+        String hasDraft = ParamUtil.getString(bpc.request, "hasDraft");
+        if (StringUtil.isNotEmpty(hasDraft)) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+        }
+
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_PAGE);
     }
@@ -370,7 +383,7 @@ public class LdtDataSubmissionDelegator {
             return;
         }
         String licenseeId = loginContext.getLicenseeId();
-        List<AppGrpPremisesDto> entity = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
+        List<AppGrpPremisesDto> entity = licCommClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(entity)) {
             ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(

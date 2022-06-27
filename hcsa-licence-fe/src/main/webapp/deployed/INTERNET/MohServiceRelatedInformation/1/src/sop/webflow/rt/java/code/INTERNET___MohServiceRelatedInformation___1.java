@@ -15,8 +15,9 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="clinicalLaboratoryDelegator";
-	private static final String NEWAPPLICATIONDELEGATOR ="newApplicationDelegator";
+    
+    private static final String DELEGATOR = "serviceInfoDelegator";
+    private static final String NEWAPPLICATIONDELEGATOR = "newApplicationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess

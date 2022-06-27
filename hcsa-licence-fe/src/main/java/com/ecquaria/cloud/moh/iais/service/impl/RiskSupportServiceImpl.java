@@ -18,7 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.RiskSupportService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
     @Autowired
     ApplicationFeClient applicationFeClient;
     @Autowired
-    AppConfigClient appConfigClient;
+    ConfigCommClient configCommClient;
 
     public static final Double DEFAULTSCORE = 1.25;
     public List<LicAppCorrelationDto> getLicDtoByLicId(String licId){
@@ -99,7 +99,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
             //callApi
             if(lstInpDto!=null){
                 lstInpDto.setSvcCode(svcCode);
-                lstInpDto = appConfigClient.getLastAndSecRiskScore(lstInpDto).getEntity();
+                lstInpDto = configCommClient.getLastAndSecRiskScore(lstInpDto).getEntity();
             }else{
                 lstInpDto = new HcsaLastInspectionDto();
                 lstInpDto.setSvcCode(svcCode);
@@ -150,9 +150,9 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         String svcCode = temp.getSvcCode();
         resultDto.setSvcCode(svcCode);
         resultDto.setRequirement(true);
-        HcsaRiskGlobalDto riskGlobalDto = appConfigClient.getRiskGolbalRiskMatraixBySvcCode(temp.getSvcCode()).getEntity();
+        HcsaRiskGlobalDto riskGlobalDto = configCommClient.getRiskGolbalRiskMatraixBySvcCode(temp.getSvcCode()).getEntity();
         String golId = riskGlobalDto.getId();
-        List<HcsaRiskGolbalExtDto> golExtList = appConfigClient.getRiskGolbalextDtoById(golId).getEntity();
+        List<HcsaRiskGolbalExtDto> golExtList = configCommClient.getRiskGolbalextDtoById(golId).getEntity();
         if(golExtList!=null &&!golExtList.isEmpty()){
             for(HcsaRiskGolbalExtDto golExt:golExtList){
                 if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(golExt.getAppType())){
@@ -180,7 +180,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         RiskResultDto riskResultDto = getRiskResult(dto,svcCode);
         if(riskResultDto!=null){
             if(riskResultDto.getScore()>1){
-                HcsaRiskGlobalDto riskGlobalDto = appConfigClient.getRiskGolbalRiskMatraixBySvcCode(svcCode).getEntity();
+                HcsaRiskGlobalDto riskGlobalDto = configCommClient.getRiskGolbalRiskMatraixBySvcCode(svcCode).getEntity();
                 if(RiskConsts.YEAR.equals(riskResultDto.getDateType())){
                     if(riskGlobalDto.getLastInpectTh()>riskResultDto.getTimeCount()){
                         resultDto.setPreInspection(false);
@@ -226,7 +226,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         accDto.setSecondLastInspectionScore(dto.getSecLastScore());
         accDto.setApptype(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         riskAcceptiionDtoList.add(accDto);
-        List<RiskResultDto> riskResult = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+        List<RiskResultDto> riskResult = configCommClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         if(!IaisCommonUtils.isEmpty(riskResult)){
             return riskResult.get(0);
         }
@@ -238,9 +238,9 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         String svcCode = temp.getSvcCode();
         resultDto.setSvcCode(svcCode);
         resultDto.setRequirement(true);
-        HcsaRiskGlobalDto riskGlobalDto = appConfigClient.getRiskGolbalRiskMatraixBySvcCode(temp.getSvcCode()).getEntity();
+        HcsaRiskGlobalDto riskGlobalDto = configCommClient.getRiskGolbalRiskMatraixBySvcCode(temp.getSvcCode()).getEntity();
         String golId = riskGlobalDto.getId();
-        List<HcsaRiskGolbalExtDto> golExtList = appConfigClient.getRiskGolbalextDtoById(golId).getEntity();
+        List<HcsaRiskGolbalExtDto> golExtList = configCommClient.getRiskGolbalextDtoById(golId).getEntity();
         if(golExtList!=null &&!golExtList.isEmpty()){
             for(HcsaRiskGolbalExtDto golExt:golExtList){
                 if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(golExt.getAppType())){
@@ -270,7 +270,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
                 }
 
             }
-            riskResult = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+            riskResult = configCommClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         }
         return riskResult;
     }
@@ -293,7 +293,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
         String licId = temp.getId();
         String svcName = temp.getSvcName();
         AutoRenewDto adto = null;
-        String svcCode = appConfigClient.getServiceCodeByName(svcName).getEntity();
+        String svcCode = configCommClient.getServiceCodeByName(svcName).getEntity();
         List<RecommendInspectionDto> recommendInspectionDtoList = IaisCommonUtils.genNewArrayList();
         RecommendInspectionDto dto = new RecommendInspectionDto();
         dto.setLicId(licId);
@@ -316,7 +316,7 @@ public class RiskSupportServiceImpl implements RiskSupportService {
 
     private AutoRenewDto getAutoDto(String svcCode) {
         AutoRenewDto autoRenewDto = new AutoRenewDto();
-        HcsaRiskGlobalDto riskGlobalDto = appConfigClient.getRiskGolbalRiskMatraixBySvcCode(svcCode).getEntity();
+        HcsaRiskGlobalDto riskGlobalDto = configCommClient.getRiskGolbalRiskMatraixBySvcCode(svcCode).getEntity();
         if(riskGlobalDto.isAutoRenewal()){
             autoRenewDto.setRenew(true);
         }else{

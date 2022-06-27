@@ -55,7 +55,7 @@
                                                 <div class="panel-heading"><strong>Submission Details</strong></div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <div class="table-gp">
+                                                        <div class="table-gp" style="word-break:break-all">
                                                             <table aria-describedby="" class="table table-bordered">
                                                                 <thead style="display: none">
                                                                 <tr>
@@ -112,7 +112,7 @@
                                                 <div class="panel-heading"><strong>Applicant Details</strong></div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <div class="table-gp">
+                                                        <div class="table-gp" style="word-break:break-all">
                                                             <table aria-describedby="" class="table table-bordered">
                                                                 <thead style="display: none">
                                                                 <tr>
@@ -157,7 +157,7 @@
 
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <div class="table-gp">
+                                                        <div class="table-gp" style="word-break:break-all">
                                                             <table aria-describedby="" class="table table-bordered">
                                                                 <thead style="display: none">
                                                                 <tr>
@@ -225,7 +225,7 @@
                                                 <div class="panel-heading"><strong>Service Related</strong></div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <div class="table-gp">
+                                                        <div class="table-gp" style="word-break:break-all">
                                                             <table aria-describedby="" class="table table-bordered">
                                                                 <thead style="display: none">
                                                                 <tr>
@@ -310,7 +310,7 @@
                                                         <div class="panel-heading"><strong>Key Appointment Holder </strong></div>
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <div class="table-gp">
+                                                                <div class="table-gp" style="word-break:break-all">
                                                                     <table aria-describedby="" class="table table-bordered">
                                                                         <thead style="display: none">
                                                                         <tr>

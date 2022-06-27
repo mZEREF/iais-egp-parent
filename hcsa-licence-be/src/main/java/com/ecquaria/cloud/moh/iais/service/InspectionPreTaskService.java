@@ -39,7 +39,7 @@ public interface InspectionPreTaskService {
       * @return: List<SelectOption>
       * @Descripation: get Processing Decision Option
       */
-    List<SelectOption> getProcessDecOption(ApplicationDto applicationDto);
+    List<SelectOption> getProcessDecOption(ApplicationDto applicationDto, String appGrpNo);
 
     /**
       * @author: shicheng
@@ -114,15 +114,6 @@ public interface InspectionPreTaskService {
       * @Descripation: get history stage with appNo
       */
     InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto);
-
-    /**
-      * @author: shicheng
-      * @Date 2020/6/2
-      * @Param: applicationViewDto
-      * @return: ApplicationViewDto
-      * @Descripation: set Application RFI Info
-      */
-    ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto);
 
     int preInspRfiTogether(ApplicationDto applicationDto);
 

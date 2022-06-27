@@ -34,6 +34,7 @@
                                         </div>
                                         <div class="tab-pane " id="tabLetter" role="tabpanel">
                                             <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+                                            <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
                                             <table aria-describedby="" class="table">
                                                 <thead style="display: none">
                                                 <tr>
@@ -118,6 +119,19 @@
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
+                                                <iais:row id="rollBackToRow">
+                                                    <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                    <iais:value width="7">
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row id="ao1SelectRow">
+                                                    <iais:field value="Select Approving Officer" required="false"/>
+                                                    <iais:value width="7" id = "showAoDiv">
+                                                        <iais:select name="aoSelect" firstOption="By System"/>
+                                                    </iais:value>
+                                                </iais:row>
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <iais:row>
                                                         <iais:field value="Licence Start Date" />
@@ -161,7 +175,52 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("#ao1SelectRow").hide();
+        $("#decision-revise-email").change(function () {
+            var fv = $('#decision-revise-email option:selected').val();
+            if (fv == 'REDECI003') {
+                showWaiting();
+                var data = {
+                    'verified':fv
+                };
+                $.ajax({
+                    'url':'${pageContext.request.contextPath}/check-ao',
+                    'dataType':'json',
+                    'data':data,
+                    'type':'POST',
+                    'success':function (data) {
+                        if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                            $("#error_aoSelect").html('');
+                            $("#showAoDiv").html(data.resultJson + '');
+                            $("#aoSelect").niceSelect();
+                            $("#ao1SelectRow").show();
+                        }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                            $("#error_aoSelect").html(data.resultJson + '');
+                            $("#ao1SelectRow").hide();
+                        }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                            $("#error_aoSelect").html('');
+                            $("#ao1SelectRow").hide();
+                        }
+                        // setValue();
+                    },
+                    'error':function () {
+
+                    }
+                });
+                dismissWaiting();
+            } else {
+                $("#ao1SelectRow").hide();
+            };
+            showRollBackToRow();
+        });
+        showRollBackToRow();
+    });
 
     function doSend() {
         var f = $('#decision-revise-email option:selected').val();
@@ -174,13 +233,33 @@
         if(remark.length>300){
             $("#remarksMsg").show();
         }
-        if(f != null && f != ""  &&remark.length<=300){
+        if('REDECI027' === f){
+            $('#confirmTag').modal('show');
+        }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }
 
+    function rollBackSubmit(){
+        const rollBackTo = $('#rollBackTo').val();
+        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+            $('#err_rollBackTo').show();
+        }else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "rollBack");
+        }
+    }
 
+    function showRollBackToRow(){
+        const f = $('#decision-revise-email option:selected').val();
+        const row = $('#rollBackToRow')
+        if('REDECI027' === f){
+            row.show();
+        }else {
+            row.hide();
+        }
+    }
 </script>
 
 

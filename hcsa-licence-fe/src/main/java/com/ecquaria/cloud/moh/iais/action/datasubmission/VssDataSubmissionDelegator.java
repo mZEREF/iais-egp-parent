@@ -38,25 +38,20 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -65,6 +60,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
 
@@ -100,7 +99,7 @@ public class VssDataSubmissionDelegator {
     DsLicenceService dsLicenceService;
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private AppCommService appSubmissionService;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -481,6 +480,22 @@ public class VssDataSubmissionDelegator {
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
+        if("true".equals(sexualSterilizationDto.getDoctorInformations())){
+            String dName = ParamUtil.getString(request, "dName");
+            String dSpeciality = ParamUtil.getString(request, "dSpeciality");
+            String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
+            String dQualification = ParamUtil.getString(request, "dQualification");
+            doctorInformationDto.setName(dName);
+            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+            doctorInformationDto.setSubSpeciality(dSubSpeciality);
+            doctorInformationDto.setSpeciality(dSpeciality);
+            doctorInformationDto.setQualification(dQualification);
+            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+            sexualSterilizationDto.setDoctorName(dName);
+            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }else {
+            sexualSterilizationDto.setDoctorName(doctorName);
+        }
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }
@@ -525,7 +540,7 @@ public class VssDataSubmissionDelegator {
                     vssDocumentDto.setDocName(v.getName());
                     long size = v.length() / 1024;
                     vssDocumentDto.setDocSize(Integer.parseInt(String.valueOf(size)));
-                    String md5Code = SingeFileUtil.getInstance().getFileMd5(v);
+                    String md5Code = FileUtils.getFileMd5(v);
                     vssDocumentDto.setMd5Code(md5Code);
                     vssDocumentDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
                     vssDocumentDto.setSubmitDt(date);

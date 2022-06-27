@@ -22,11 +22,8 @@ import java.util.List;
  * @author Jinhua
  * @date 2019/12/10 19:53
  */
-@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = AppPremisesCorrClientFallback.class)
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class, fallback = AppPremisesCorrClientFallback.class)
 public interface AppPremisesCorrClient {
-    @GetMapping(value = "/iais-apppremisescorrelation-be/AppPremisesCorrelations/{appGropId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> getGroupAppsByNo(@PathVariable("appGropId") String appGropId);
 
     @GetMapping(value = "/iais-apppremisescorrelation-be/app-premises-correlations/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(@PathVariable("appId") String appId);

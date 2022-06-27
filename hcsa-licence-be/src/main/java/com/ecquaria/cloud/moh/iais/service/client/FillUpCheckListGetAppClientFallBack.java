@@ -343,6 +343,14 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
     }
 
     @Override
+    public FeignResponseEntity<Void> rollBackPreInspect(String appPreCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremisesPreInspectChklDto>> getPremInsChkls(String appPremId, String configId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
