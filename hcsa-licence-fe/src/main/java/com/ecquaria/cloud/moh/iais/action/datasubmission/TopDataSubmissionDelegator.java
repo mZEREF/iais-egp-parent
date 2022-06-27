@@ -1217,7 +1217,7 @@ public class TopDataSubmissionDelegator {
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                if(!"true".equals(terminationDto.getTopDoctorInformations())){
+                if("false".equals(terminationDto.getTopDoctorInformations())){
                     ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
                     String doctorName = ParamUtil.getString(request, "names");
                     String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
@@ -1517,7 +1517,7 @@ public class TopDataSubmissionDelegator {
         }
         topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
         try {
-            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorRegnNo());
+            ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(topSuperDataSubmissionDto.getDoctorInformationDto().getDoctorReignNo());
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 terminationDto.setTopDoctorInformations("true");
             }

@@ -172,7 +172,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                     doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
                     doctorInformationDto.setQualification(drugSubmission.getQualification());
-                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
                     currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
                 }
             }else {
@@ -182,7 +182,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                 doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
                 doctorInformationDto.setQualification(drugSubmission.getQualification());
-                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
                 currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
             }
         }
