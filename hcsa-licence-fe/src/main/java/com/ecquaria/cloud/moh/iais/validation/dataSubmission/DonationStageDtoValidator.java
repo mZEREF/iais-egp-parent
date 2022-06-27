@@ -6,12 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageD
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * DonationStageDtoValidator
@@ -69,7 +69,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForTreatNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForTreatNumStr().length()>2){
-                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    String general_err0041= AppValidatorHelper.repLength("This field","2");
                     errorMap.put("donResForTreatNum", general_err0041);
                 }
             }else {
@@ -92,7 +92,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForCurCenNotTreatNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForCurCenNotTreatNumStr().length()>2){
-                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    String general_err0041= AppValidatorHelper.repLength("This field","2");
                     errorMap.put("donResForCurCenNotTreatNum", general_err0041);
                 }
             }else {
@@ -123,7 +123,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("trainingNum", errMsg023);
                 }
                 if(donationStageDto.getTrainingNumStr().length()>2){
-                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    String general_err0041= AppValidatorHelper.repLength("This field","2");
                     errorMap.put("trainingNum", general_err0041);
                 }
             }else {
@@ -146,7 +146,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("treatNum", errMsg023);
                 }
                 if(donationStageDto.getTreatNumStr().length()>2){
-                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    String general_err0041= AppValidatorHelper.repLength("This field","2");
                     errorMap.put("treatNum", general_err0041);
                 }
             }else {

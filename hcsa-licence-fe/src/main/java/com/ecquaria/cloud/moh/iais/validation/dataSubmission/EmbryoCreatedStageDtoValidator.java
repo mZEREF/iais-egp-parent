@@ -6,14 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * EmbryoCreatedStageDtoValidator
@@ -53,7 +52,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             errorMap.put("transEmbrFreshOccNum", errMsg);
         }else {
             if(embryoCreatedStageDto.getTransEmbrFreshOccNumStr().length()>2){
-                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                String general_err0041= AppValidatorHelper.repLength("This field","2");
                 errorMap.put("transEmbrFreshOccNum", general_err0041);
             }
             totalFreshNum+=embryoCreatedStageDto.getTransEmbrFreshOccNum();
@@ -74,7 +73,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             errorMap.put("poorDevFreshOccNum", errMsg);
         }else {
             if(embryoCreatedStageDto.getPoorDevFreshOccNumStr().length()>2){
-                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                String general_err0041= AppValidatorHelper.repLength("This field","2");
                 errorMap.put("poorDevFreshOccNum", general_err0041);
             }
             totalFreshNum+=embryoCreatedStageDto.getPoorDevFreshOccNum();
@@ -94,7 +93,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             errorMap.put("transEmbrThawOccNum", errMsg);
         }else {
             if(embryoCreatedStageDto.getTransEmbrThawOccNumStr().length()>2){
-                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                String general_err0041= AppValidatorHelper.repLength("This field","2");
                 errorMap.put("transEmbrThawOccNum", general_err0041);
             }
             totalThawedNum+=embryoCreatedStageDto.getTransEmbrThawOccNum();
@@ -115,7 +114,7 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             errorMap.put("poorDevThawOccNum", errMsg);
         }else {
             if(embryoCreatedStageDto.getPoorDevThawOccNumStr().length()>2){
-                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                String general_err0041= AppValidatorHelper.repLength("This field","2");
                 errorMap.put("poorDevThawOccNum", general_err0041);
             }
             totalThawedNum+=embryoCreatedStageDto.getPoorDevThawOccNum();

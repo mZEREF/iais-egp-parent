@@ -10,15 +10,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -91,7 +90,7 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
                 if (StringUtil.isEmpty(transferInOutStageDto.getTransOutToOthers())) {
                     errorMap.put("transOutToOthers", "GENERAL_ERR0006");
                 } else if (transferInOutStageDto.getTransOutToOthers().length() > 20) {
-                    String general_err0041 = NewApplicationHelper.repLength("Transfer Out To (Others)", "20");
+                    String general_err0041 = AppValidatorHelper.repLength("Transfer Out To (Others)", "20");
                     errorMap.put("transOutToOthers", general_err0041);
                 }
             }

@@ -6,12 +6,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageD
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * DisposalStageDtoValidator
@@ -75,7 +74,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("immature", errMsg023);
                         }
                         if(disposalStageDto.getImmatureString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("immature", general_err0041);
                         }
                     }else {
@@ -97,7 +96,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("abnormallyFertilised", errMsg023);
                         }
                         if(disposalStageDto.getAbnormallyFertilisedString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("abnormallyFertilised", general_err0041);
                         }
                     }else {
@@ -119,7 +118,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("unfertilised", errMsg023);
                         }
                         if(disposalStageDto.getUnfertilisedString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("unfertilised", general_err0041);
                         }
                     }else {
@@ -142,7 +141,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("atretic", errMsg023);
                         }
                         if(disposalStageDto.getAtreticString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("atretic", general_err0041);
                         }
                     }else {
@@ -163,7 +162,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("damaged", errMsg023);
                         }
                         if(disposalStageDto.getDamagedString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("damaged", general_err0041);
                         }
                     }else {
@@ -185,7 +184,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("lysedOrDegenerated", errMsg023);
                         }
                         if(disposalStageDto.getLysedOrDegeneratedString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("lysedOrDegenerated", general_err0041);
                         }
                     }else {
@@ -210,7 +209,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                             errorMap.put("unhealthyNum", errMsg023);
                         }
                         if(disposalStageDto.getUnhealthyNumString().length()>2){
-                            String general_err0041= NewApplicationHelper.repLength("This field","2");
+                            String general_err0041= AppValidatorHelper.repLength("This field","2");
                             errorMap.put("unhealthyNum", general_err0041);
                         }
                     }else {
@@ -249,7 +248,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("otherDiscardedReason", errMsg);
                 }
                 if(disposalStageDto.getOtherDiscardedNumString().length()>2){
-                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    String general_err0041= AppValidatorHelper.repLength("This field","2");
                     errorMap.put("otherDiscardedNum", general_err0041);
                 }
             }

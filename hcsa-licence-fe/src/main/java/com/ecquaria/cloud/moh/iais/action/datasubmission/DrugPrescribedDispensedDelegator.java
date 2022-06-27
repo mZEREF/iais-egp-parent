@@ -4,7 +4,13 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,20 +20,23 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -41,7 +50,7 @@ import java.util.Optional;
 public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private AppCommService appSubmissionService;
 
     @Autowired
     private PatientService patientService;
@@ -228,44 +237,44 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 if(StringUtil.isEmpty(doctorInformationDto.getName())){
                     errorMap.put("dName", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
-                    String general_err0041 = NewApplicationHelper.repLength("Doctor's Name", "66");
+                    String general_err0041 = AppValidatorHelper.repLength("Doctor's Name", "66");
                     errorMap.put("dName", general_err0041);
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
                     errorMap.put("dSpeciality", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                     errorMap.put("dSpeciality", general_err0041);
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
                     errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                     errorMap.put("dSubSpeciality", general_err0041);
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
                     errorMap.put("dQualification", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                     errorMap.put("dQualification", general_err0041);
                 }
             } else {
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpecialitys", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                     errorMap.put("dSpecialitys", general_err0041);
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                     errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                     errorMap.put("dSubSpecialitys", general_err0041);
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                     errorMap.put("dQualifications", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                    String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                     errorMap.put("dQualifications", general_err0041);
                 }
             }

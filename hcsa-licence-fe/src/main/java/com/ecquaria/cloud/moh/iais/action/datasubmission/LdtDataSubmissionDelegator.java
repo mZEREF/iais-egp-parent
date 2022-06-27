@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
@@ -61,6 +62,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Delegator("ldtDataSubmissionDelegator")
 public class LdtDataSubmissionDelegator {
+
+    @Autowired
+    private LicCommClient licCommClient;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -197,7 +201,7 @@ public class LdtDataSubmissionDelegator {
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         String licenceId = "";
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
+        List<LicenceDto> licenceDtoList = licCommClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
         if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
             LicenceDto licenceDto = licenceDtoList.get(0);
             licenceId = licenceDto.getId();
@@ -370,7 +374,7 @@ public class LdtDataSubmissionDelegator {
             return;
         }
         String licenseeId = loginContext.getLicenseeId();
-        List<AppGrpPremisesDto> entity = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
+        List<AppGrpPremisesDto> entity = licCommClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(entity)) {
             ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(

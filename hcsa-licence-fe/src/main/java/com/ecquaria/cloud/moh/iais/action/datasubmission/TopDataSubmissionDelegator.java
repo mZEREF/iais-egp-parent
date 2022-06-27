@@ -33,26 +33,21 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -61,6 +56,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohNEWTOPDataSumission
@@ -83,7 +82,7 @@ public class TopDataSubmissionDelegator {
     private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private AppCommService appSubmissionService;
     //private static String COUNSELLING = null;
 
     @Autowired
@@ -1298,44 +1297,44 @@ public class TopDataSubmissionDelegator {
             if (StringUtil.isEmpty(doctorInformationDto.getName())) {
                 errMap.put("dName", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
-                String general_err0041 = NewApplicationHelper.repLength("Name of Doctor", "66");
+                String general_err0041 = AppValidatorHelper.repLength("Name of Doctor", "66");
                 errMap.put("dName", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 errMap.put("dSpeciality", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                 errMap.put("dSpeciality", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                 errMap.put("dSubSpeciality", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                 errMap.put("dSubSpeciality", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                 errMap.put("dQualification", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                 errMap.put("dQualification", general_err0041);
             }
         }else {
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 errMap.put("dSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                 errMap.put("dSpecialitys", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                 errMap.put("dSubSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
                 errMap.put("dSubSpecialitys", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                 errMap.put("dQualifications", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                 errMap.put("dQualifications", general_err0041);
             }
         }
