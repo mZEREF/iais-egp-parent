@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
@@ -355,8 +354,7 @@ public class DpSiUploadDelegate {
         File file = fileEntry.getValue();
         PageShowFileDto pageShowFileDto = new PageShowFileDto();
         String index = fileEntry.getKey().substring(FILE_APPEND.length());
-        SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
-        String fileMd5 = singeFileUtil.getFileMd5(file);
+        String fileMd5 = FileUtils.getFileMd5(file);
         pageShowFileDto.setIndex(index);
         pageShowFileDto.setFileName(file.getName());
         pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);
