@@ -1200,12 +1200,12 @@
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS CENTER_NAME,
-                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddpd.DOCTOR_REIGN_NO ,ddi.NAME DOCTOR_NAME ,dds.SUBMIT_DT
+                dds.SUBMISSION_NO ,ddpd.DRUG_TYPE ,ddpd.MEDICATION ,ddi.DOCTOR_REIGN_NO ,ddi.NAME DOCTOR_NAME ,dds.SUBMIT_DT
               FROM ds_dp_prescribed_dispensed ddpd
             join ds_data_submission dds on dds.ID=ddpd.SUBMISSION_ID
-            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE in ('DSCL_005','DSCL_0014')
+            join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.CYCLE_TYPE in ('DSCL_005','DSCL_014')
             join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dc.DS_TYPE =dcen.CENTER_TYPE
-            left join ds_doctor_information ddi on ddi.DOCTOR_REIGN_NO =ddpd.DOCTOR_REIGN_NO
+            left join ds_doctor_information ddi on ddi.ID =ddpd.doctor_information_id
             where 1 = 1 and dds.STATUS not in ('DS002')
             <#if patientCode??> AND  :patientCode = dc.PATIENT_CODE</#if>
 
