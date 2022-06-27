@@ -480,6 +480,22 @@ public class VssDataSubmissionDelegator {
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
+        if("true".equals(sexualSterilizationDto.getDoctorInformations())){
+            String dName = ParamUtil.getString(request, "dName");
+            String dSpeciality = ParamUtil.getString(request, "dSpeciality");
+            String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
+            String dQualification = ParamUtil.getString(request, "dQualification");
+            doctorInformationDto.setName(dName);
+            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+            doctorInformationDto.setSubSpeciality(dSubSpeciality);
+            doctorInformationDto.setSpeciality(dSpeciality);
+            doctorInformationDto.setQualification(dQualification);
+            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+            sexualSterilizationDto.setDoctorName(dName);
+            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }else {
+            sexualSterilizationDto.setDoctorName(doctorName);
+        }
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }

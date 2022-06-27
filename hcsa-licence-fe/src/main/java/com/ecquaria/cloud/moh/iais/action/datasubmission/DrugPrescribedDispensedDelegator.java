@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
@@ -28,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -139,6 +142,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) getSourseList(bpc.request));
     }
 
     @Override
@@ -186,7 +190,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 }
             }else {
                 ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
-                doctorInformationDto.setName(drugSubmission.getDoctorName());
+                String doctorName = ParamUtil.getString(request, "names");
+                doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                 doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
@@ -290,7 +295,12 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }
-
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setDpPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
+    }
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);

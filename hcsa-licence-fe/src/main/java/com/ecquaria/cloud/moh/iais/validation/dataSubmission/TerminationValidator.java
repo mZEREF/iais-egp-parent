@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,7 @@ public class TerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+        DoctorInformationDto doctorInformationDto=topSuperDataSubmissionDto.getDoctorInformationDto();
         if(StringUtil.isEmpty(terminationDto)){
             terminationDto=new TerminationDto();
         }
@@ -113,6 +116,51 @@ public class TerminationValidator implements CustomizeValidator {
             if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
                 errorMap.put("showValidatePT", AppConsts.YES);
                 ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
+            }
+        }
+        if("true".equals(terminationDto.getTopDoctorInformations())) {
+            if (StringUtil.isEmpty(doctorInformationDto.getName())) {
+                errorMap.put("dName", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
+                String general_err0041 = NewApplicationHelper.repLength("Name of Doctor", "66");
+                errorMap.put("dName", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                errorMap.put("dSpeciality", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                errorMap.put("dSpeciality", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                errorMap.put("dSubSpeciality", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                errorMap.put("dQualification", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                errorMap.put("dQualification", general_err0041);
+            }
+        }else {
+            if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                errorMap.put("dSpecialitys", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Specialty", "100");
+                errorMap.put("dSpecialitys", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Sub-Specialty", "100");
+                errorMap.put("dSubSpecialitys", general_err0041);
+            }
+            if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                errorMap.put("dQualifications", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
+                String general_err0041 = NewApplicationHelper.repLength("Qualification", "100");
+                errorMap.put("dQualifications", general_err0041);
             }
         }
         return errorMap;

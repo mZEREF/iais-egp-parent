@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
@@ -47,14 +48,15 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionServi
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.privilege.Privilege;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDsAction
@@ -152,7 +154,9 @@ public class MohDsActionDelegator {
                 DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
                 DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorInformationId());
                 dpSuper.setDoctorInformationDto(doctorInformationDto);
-                drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                if (doctorInformationDto != null) {
+                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                }
                 drugSubmissionDto.setDoctorInformations("true");
             }
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
@@ -186,6 +190,7 @@ public class MohDsActionDelegator {
                     terminationDto.setTopDoctorInformations("true");
                     terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                 }else {
+                    topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
@@ -313,28 +318,32 @@ public class MohDsActionDelegator {
             if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PreparePatientInfo?crud_type=" +DataSubmissionConstant.CRUD_TYPE_RFC;
             } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuper.getSubmissionType())) {
-               /* ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
-                    if(professionalResponseDto==null){
-                        professionalResponseDto=new ProfessionalResponseDto();
-                    }
-                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                    DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
-                    DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
-                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(drugSubmissionDto.getDoctorReignNo(),DataSubmissionConsts.DS_DRP);
-                    dpSuper.setDoctorInformationDto(doctorInformationDto);
-                    drugSubmissionDto.setDoctorInformations("true");
-                }else {
-                    dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
-                    dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                    dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                    dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                }*/
                 DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
+                DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+                DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId());
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInformationDto.getDoctorReignNo());
+                if(professionalResponseDto==null){
+                    professionalResponseDto=new ProfessionalResponseDto();
+                }
+                if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+                    drugSubmissionDto.setDoctorName(doctorInformationDto.getName());
+                    drugSubmissionDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    drugSubmissionDto.setSubSpecialty(String.valueOf(doctorInformationDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    drugSubmissionDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                    drugSubmissionDto.setDoctorInformations("false");
+                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                }else {
+                    dpSuper.setDoctorInformationDto(doctorInformationDto);
+                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                    drugSubmissionDto.setDoctorInformations("true");
+                }
+                /*DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
                 DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
                 DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId());
                 dpSuper.setDoctorInformationDto(doctorInformationDto);
                 drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
-                drugSubmissionDto.setDoctorInformations("true");
+                drugSubmissionDto.setDoctorInformations("true");*/
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareDrugPrecribed?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSovenorInventory";
@@ -370,12 +379,19 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(ldtSuperDataSubmissionDto));
             ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            if (ldtSuperDataSubmissionDto.getDataSubmissionDto() != null) {
-                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            if (dataSubmissionDto != null) {
                 dataSubmissionDto.setDeclaration(null);
                 dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
+            }
+            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
+                    .map(LoginContext::getOrgId).orElse("");
+            ldtSuperDataSubmissionDto.setOrgId(orgId);
+            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, dataSubmissionDto.getId());
+            if (dataSubmissionDraft != null) {
+                uri += "&hasDraft=" + Boolean.TRUE;
             }
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
