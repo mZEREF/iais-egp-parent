@@ -364,6 +364,8 @@ public class OnlineDsAjaxController {
             queryList.forEach(i -> i.setMedicationType(MasterCodeUtil.getCodeDesc(i.getMedicationType())));
             queryList.forEach(i -> i.setDrugType(MasterCodeUtil.getCodeDesc(i.getDrugType())));
             queryList.forEach(i -> i.setDoctorName(i.getDoctorName()==null?"":i.getDoctorName()));
+            queryList.forEach(i -> i.setDoctorReignNo(i.getDoctorReignNo()==null?"":i.getDoctorReignNo()));
+            queryList.forEach(i -> i.setCenterName(i.getCenterName()==null?"":i.getCenterName()));
 
         }
         return searchResult;
