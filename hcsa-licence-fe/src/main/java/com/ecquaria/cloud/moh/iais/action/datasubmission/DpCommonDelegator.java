@@ -305,11 +305,10 @@ public abstract class DpCommonDelegator {
         dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto);
         try {
             if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType())){
-                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuperDataSubmissionDto.getDoctorInformationDto().getDoctorReignNo());
                 if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                     DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
                     drugSubmissionDto.setDoctorInformations("true");
-                    dpSuperDataSubmissionDto.getDrugPrescribedDispensedDto().setDrugSubmission(drugSubmissionDto);
                 }
             }
             dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperDataSubmissionDto);
