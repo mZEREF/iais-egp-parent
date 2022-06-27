@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
@@ -117,30 +116,6 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<List<PremisesDto>> getPremisesDto(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(List<String> licenceIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(String licenseeId, String serviceName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -383,6 +358,11 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(String licenceId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(String licenceId, Boolean checkSpec) {
         return getFeignResponseEntity();
     }
 

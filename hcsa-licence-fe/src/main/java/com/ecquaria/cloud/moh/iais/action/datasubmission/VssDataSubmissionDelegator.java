@@ -43,7 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -52,11 +52,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -65,6 +60,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
 
@@ -100,7 +99,7 @@ public class VssDataSubmissionDelegator {
     DsLicenceService dsLicenceService;
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private AppCommService appSubmissionService;
 
     @Autowired
     private LicenceClient licenceClient;

@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.api.util.FileUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -316,7 +315,7 @@ public class PatientUploadDelegate {
         File file = fileEntry.getValue();
         PageShowFileDto pageShowFileDto = new PageShowFileDto();
         String index = fileEntry.getKey().substring(FILE_APPEND.length());
-        String fileMd5 = FileUtil.getFileMd5(file);
+        String fileMd5 = FileUtils.getFileMd5(file);
         pageShowFileDto.setIndex(index);
         pageShowFileDto.setFileName(file.getName());
         pageShowFileDto.setFileMapId(FILE_APPEND + "Div" + index);

@@ -32,13 +32,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
@@ -47,15 +47,14 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionServi
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.cloud.privilege.Privilege;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDsAction
@@ -98,7 +97,7 @@ public class MohDsActionDelegator {
     private DpFeClient dpFeClient;
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private AppCommService appSubmissionService;
 
 
     /**
@@ -137,7 +136,7 @@ public class MohDsActionDelegator {
         String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
         String submissionType = ParamUtil.getString(bpc.request, "submissionType");
         if(StringUtil.isEmpty(submissionType)){
-            bpc.getSession().removeAttribute(HcsaLicenceFeConstant.DASHBOARDTITLE);
+            bpc.getSession().removeAttribute(HcsaAppConst.DASHBOARDTITLE);
         }
 
         if (DataSubmissionConsts.DS_AR.equals(dsType)) {

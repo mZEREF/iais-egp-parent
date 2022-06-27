@@ -18,7 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -163,7 +163,7 @@ public class ArWithdrawalDelegator {
                 break;
             default:break;
         }
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal Form");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Withdrawal Form");
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
         ParamUtil.setSessionAttr(bpc.request, "arWdDto", null);
