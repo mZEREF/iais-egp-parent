@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -981,14 +982,14 @@ public final class DataSubmissionHelper {
         }
         return premisesMap;
     }
-    public static Map<String, PremisesDto> setVssPremisesMap(HttpServletRequest request) {
+    public static Map<String, PremisesDto> setDpPremisesMap(HttpServletRequest request) {
         Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,
-                DataSubmissionConstant.VSS_PREMISES_MAP);
+                DataSubmissionConstant.DP_PREMISES_MAP);
         if (IaisCommonUtils.isEmpty(premisesMap)) {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String licenseeId = loginContext != null ? loginContext.getLicenseeId() : null;
-            premisesMap = SpringContextHelper.getContext().getBean(VssDataSubmissionService.class).getVssCenterPremises(licenseeId);
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_PREMISES_MAP, (Serializable) premisesMap);
+            premisesMap = SpringContextHelper.getContext().getBean(DpDataSubmissionService.class).getDpCenterPremises(licenseeId);
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_PREMISES_MAP, (Serializable) premisesMap);
         }
         return premisesMap;
     }
