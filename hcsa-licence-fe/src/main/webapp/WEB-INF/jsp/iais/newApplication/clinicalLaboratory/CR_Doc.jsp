@@ -1,3 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+    String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
+
 <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
 <c:if test="${requestInformationConfig == null}">
     <c:set var="isClickEdit" value="true"/>
@@ -87,7 +95,7 @@
     </c:choose>
 </c:forEach>
 
-<%@ include file="../../appeal/FeFileCallAjax.jsp" %>
+<%--<%@ include file="../../appeal/FeFileCallAjax.jsp" %>--%>
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
@@ -106,7 +114,7 @@
             var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
             $('input[name="uploadKey"]').val(index);
             clearFlagValueFEFile();
-            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('#selectFileDiv').html('<input id="' + index + '"  class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
             $('input[type="file"]').click();
         });
     });
@@ -127,21 +135,6 @@
     }
 
     <!-- 108635 end-->
-
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
-    };
-
-    /*$('.selectedFile').change(function () {
-        var file = $(this).val();
-        var documentDiv = $(this).closest('.document-upload-list');
-        documentDiv.find('.fileNameSpan').html(getFileName(file));
-        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>');
-        documentDiv.find('.delBtn').removeClass('hidden');
-        var $fileUploadContentEle = $(this).closest('div.file-upload-gp');
-        $fileUploadContentEle.find('.delBtn').removeClass('hidden');
-    });*/
 
     $('.delBtn').click(function () {
         var documentDiv = $(this).closest('.document-upload-list');
@@ -180,17 +173,53 @@
 
     });
 
-    function validateUploadSizeMaxOrEmpty(maxSize, $fileEle) {
-        var fileV = $fileEle.val();
-        var file = $fileEle.get(0).files[0];
+    function getFileTag(fileAppendId) {
+        var $file = $("#" + fileAppendId);
+        if ($file.length == 0) {
+            $file = $("input[type='file'][name='selectedFile']:first");
+        }
+        if ($file.length == 0) {
+            $file = $("input[type='file']:first");
+        }
+        return $file;
+    }
+
+    function reUploadFileFeAjax(fileAppendId, index, idForm) {
+        $("#reloadIndex").val(index);
+        $("#fileAppendId").val(fileAppendId);
+        $("#uploadFormId").val(idForm);
+        //$("#selectedFile").click();
+        getFileTag(fileAppendId).click();
+    }
+
+    function validateFileSizeMaxOrEmpty(maxSize) {
+        var $file = getFileTag($("#fileAppendId").val());
+        var fileV = $file.val();
+        var file = $file.get(0).files[0];
         if (fileV == null || fileV == "" || file == null || file == undefined) {
             return "E";
         }
         var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        //alert('fileSize:'+fileSize);
+        //alert('maxSize:'+maxSize);
         fileSize = parseInt(fileSize);
         if (fileSize >= maxSize) {
+            $file.after($file.clone().val(""));
+            $file.eq('0').remove();
             return "N";
         }
         return "Y";
+    }
+
+    function cloneUploadFile() {
+        var $file = getFileTag($("#fileAppendId").val());
+        $file.after($file.clone().val(""));
+        $file.remove();
+        if ('1' == $('#_singleUpload').val()) {
+            var $btns = $('#' + fileId + 'ShowId').find('button');
+            if ($btns.length >= 2) {
+                $btns.not(':last').trigger('click');
+            }
+        }
     }
 </script>

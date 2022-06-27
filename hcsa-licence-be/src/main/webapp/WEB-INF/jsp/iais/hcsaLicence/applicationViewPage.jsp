@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -191,6 +192,17 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
+                                                                        <div id="rollBackCrDropdown" class="hidden">
+                                                                            <iais:row>
+                                                                                <iais:field value="Roll Back To" required="true"/>
+                                                                                <iais:value width="10">
+                                                                                    <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
+                                                                                                 firstOption="Please Select"
+                                                                                                 options="rollBackValues"
+                                                                                                 value="${selectRollBack}"></iais:select>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
                                                                         <div id="rollBackDropdown" class="hidden">
                                                                             <iais:row>
                                                                                 <iais:field value="Route Back To" required="true"/>
@@ -198,7 +210,7 @@
                                                                                     <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
                                                                                                  firstOption="Please Select"
                                                                                                  options="routeBackValues"
-                                                                                                 value="${selectRollBack}"></iais:select>
+                                                                                                 value="${selectRollBackCr}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -220,11 +232,12 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Assign To" required="false"/>
                                                                                 <iais:value width="10" id="verifyCallAjaxDropDown">
-                                                                                    <iais:select cssClass="verified" name="verified"
+                                                                                    <iais:select cssClass="verified" name="verified" id="verified"
                                                                                                  options="verifiedValues"
                                                                                                  value="${selectVerified}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
+                                                                          <%@include file="aoSelect.jsp" %>
                                                                         </div>
 
                                                                         <div id="comments" class="hidden">
@@ -367,7 +380,7 @@
                                                                                                     <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                                            checked
                                                                                                     </c:if>
-                                                                                                           id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                                           ao2staff03                                                                                       id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
                                                                                                     <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
@@ -718,6 +731,7 @@
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
             $('#appealRecommendationDiv').removeClass('hidden');
@@ -732,7 +746,18 @@
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
+            $('#verifiedDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
+            checkAppealPso();
+        }else if (selectValue == "RollBack") {
+            $("#chooseInspectionBox").addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').removeClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
             $('#appealRecommendationDiv').removeClass('hidden');
@@ -742,6 +767,7 @@
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             $('#appealRecommendationDiv').addClass('hidden');
@@ -751,6 +777,7 @@
         } else {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
@@ -808,6 +835,7 @@
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
@@ -824,6 +852,7 @@
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
             $('#comments').addClass('hidden');
@@ -832,10 +861,21 @@
             checkAppealPso();
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
+        }else if (selectValue == "RollBack") {
+            $("#chooseInspectionBox").addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').removeClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
+            $('#verifiedDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
+            checkAppealPso();
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
@@ -850,6 +890,7 @@
             $("#chooseInspectionBox").addClass('hidden');
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#rollBackCrDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
@@ -999,6 +1040,8 @@
             $("#tucDate").val("");
         }
     }
+
+
 </script>
 
 

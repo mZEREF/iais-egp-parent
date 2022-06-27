@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%--
   Created by IntelliJ IDEA.
   User: ZiXian

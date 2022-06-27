@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>iais-egp-parent</artifactId>
+    <groupId>sg.gov.moh.iais-egp</groupId>
+    <version>0.1</version>
+  </parent>
+
+  <artifactId>hcsa-licence-web-comm</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>sg.gov.moh.iais-egp</groupId>
+      <artifactId>backbone</artifactId>
+      <version>${revision}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>sg.gov.moh.iais</groupId>
+      <artifactId>iais-common</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>sg.gov.moh.iais-egp</groupId>
+      <artifactId>web-common</artifactId>
+      <version>${revision}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.xhtmlrenderer</groupId>
+          <artifactId>core-renderer</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.xhtmlrenderer</groupId>
+      <artifactId>flying-saucer-pdf</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcmail-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>hcsa-licence-comm</finalName>
+  </build>
+</project>

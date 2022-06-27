@@ -33,11 +33,6 @@ public class INTRANET___MohApptInspectionDate___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "apptInspectionDatePre", this);
 	}
 
-	public void apptInspectionDateVali_OnStepProcess_0() throws Exception {
-	// 		apptInspectionDateVali->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "apptInspectionDateVali", this);
-	}
-
 	public void apptInspectionDateSuccess_OnStepProcess_0() throws Exception {
 	// 		apptInspectionDateSuccess->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "apptInspectionDateSuccess", this);
@@ -46,11 +41,6 @@ public class INTRANET___MohApptInspectionDate___1 extends BaseProcessClass {
 	public void apptInspectionDateStep1_OnStepProcess_0() throws Exception {
 	// 		apptInspectionDateStep1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "apptInspectionDateStep1", this);
-	}
-
-	public void apptInspectionDateSpec_OnStepProcess_0() throws Exception {
-	// 		apptInspectionDateSpec->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "apptInspectionDateSpec", this);
 	}
 
 }

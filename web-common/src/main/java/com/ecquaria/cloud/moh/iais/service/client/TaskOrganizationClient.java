@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
@@ -98,4 +99,11 @@ public interface TaskOrganizationClient {
 
     @PostMapping(value = "/iais-task/assigned/current-task/inspector-info",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserDto>> getCurrentTaskAssignedInspectorInfo(@RequestBody Map<String, Object> params);
+
+    @PostMapping(value = "/iais-task/tasks/app-correlations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> updateTasks(@RequestBody List<AppPremisesCorrelationDto> appPremisesCorrelations);
+
+    @GetMapping(value = "/iais-task/get-task-by-app-role-wrkGrp-user",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskByAppNoAndRoleIdAndWrkGrpIdAndUserId(@RequestParam("appNo") String appNo,@RequestParam("roleId") String roleId,@RequestParam("wrkGrpId") String wrkGrpId,@RequestParam("userId") String userId);
+
 }

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
 import java.util.Map;
@@ -227,4 +229,21 @@ public interface InspectionService {
     HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds);
 
     List<String> getSuperPoolAppGrpIdByResult(SearchResult<InspectionSubPoolQueryDto> searchResult);
+
+    /**
+     * cr iais22-13
+     * get rollBack select options
+     *
+     * @param rollBackHistoryList Roll Back History List
+     * @return select options
+     */
+    List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole);
+
+    void rollBackInspectionRecord(String premCorrId, ApplicationDto applicationDto);
+
+    /**
+     * cr iais22-13
+     * rollBack to History
+     */
+    void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto);
 }

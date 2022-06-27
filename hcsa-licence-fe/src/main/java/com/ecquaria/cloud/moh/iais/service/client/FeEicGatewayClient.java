@@ -120,6 +120,7 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
                 ProfessionalResponseDto.class);
     }
+
     /**
     * @author: yichen
     * @description: route to BE db

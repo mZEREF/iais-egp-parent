@@ -1,15 +1,19 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-
-
+    String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
 %>
+
 <webui:setLayout name="iais-internet"/>
+
+<script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
+
 <%@ include file="./dashboard.jsp" %>
+
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
-    <%--<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
     <input type="hidden" name="paramController" id="paramController"
            value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity"
@@ -137,7 +141,7 @@
     </c:if>--%>
     <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-    <%@ include file="../appeal/FeFileCallAjax.jsp" %>
+    <%--<%@ include file="../appeal/FeFileCallAjax.jsp" %>--%>
     <input type="hidden" name="pageCon" value="valPremiseList">
     <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
         <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft"
@@ -175,22 +179,8 @@
             submit('serviceForms', "next", null);
         });
 
-        $('.commDoc').change(function () {
-            var maxFileSize = $('#sysFileSize').val();
-            var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
-            if (error == "N") {
-                $(this).closest('.file-upload-gp').find('.error-msg').html($("#fileMaxMBMessage").val());
-                $(this).closest('.file-upload-gp').find('span.delBtn').trigger('click');
-                dismissWaiting();
-            } else {
-                $(this).closest('.file-upload-gp').find('.error-msg').html('');
-                dismissWaiting();
-            }
-
-        });
-
-
         doEdit();
+
         if($("#errorMapIs").val()=='error'){
             $('#edit').trigger("click");
         }
@@ -200,7 +190,7 @@
             $('input[name="uploadKey"]').val(index);
             clearFlagValueFEFile();
             //68932
-            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('#selectFileDiv').html('<input id="' + index + '" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
             $('input[type="file"]').click();
         });
     });
@@ -218,28 +208,6 @@
             }
         }
     }
-
-
-    function validateUploadSizeMaxOrEmpty(maxSize, $fileEle) {
-        var fileV = $fileEle.val();
-        var file = $fileEle.get(0).files[0];
-        if (fileV == null || fileV == "" || file == null || file == undefined) {
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if (fileSize >= maxSize) {
-            return "N";
-        }
-        return "Y";
-    }
-
-
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
-    }
-
 
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');

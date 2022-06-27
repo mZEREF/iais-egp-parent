@@ -20,6 +20,9 @@
               <c:when test="${'requestForInfo' eq successPage}">
                 <h2><c:out value="${successInfo}"></c:out></h2>
               </c:when>
+              <c:when test="${'rollBack' eq successPage}">
+                <h2><iais:message key="INSPE_ACK002" escape="true"/></h2>
+              </c:when>
               <c:otherwise>
                 <h2><iais:message key="LOLEV_ACK029" escape="true"></iais:message></h2>
               </c:otherwise>

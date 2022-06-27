@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -130,7 +130,7 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "buttonFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", null);
         ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
     }
 
     /**
@@ -166,7 +166,7 @@ public class InspecUserRecUploadDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", submitButtonFlag);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"List of Rectifications");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"List of Rectifications");
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
     }
 
@@ -449,6 +449,6 @@ public class InspecUserRecUploadDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Acknowledgement");
+        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Acknowledgement");
     }
 }

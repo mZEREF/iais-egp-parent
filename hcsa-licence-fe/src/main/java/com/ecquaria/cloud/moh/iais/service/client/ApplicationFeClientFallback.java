@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
@@ -19,14 +18,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -42,11 +39,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDt
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -227,22 +225,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(String correId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    
-    @Override
-    public FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -668,32 +650,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(AppGroupMiscDto appGroupMiscDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(String groupNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<ApplicationDto> updateApplicationDto(ApplicationDto applicationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> getAppByLicIdAndExcludeNew(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -734,23 +691,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<Boolean> isApplicationWithdrawal(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -776,6 +717,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(List<ApplicationDto> applicationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> invalidApplicationDtos(List<ApplicationDto> applicationDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -839,14 +788,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<AppSubmissionDto> saveRfcCessationSubmision(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -872,37 +813,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId, String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId, String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -949,21 +859,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(String appGrpId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppSvcDocDto>> getMaxSeqNumSvcDocList(String appGrpId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 
     @Override
     public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
@@ -1015,14 +910,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

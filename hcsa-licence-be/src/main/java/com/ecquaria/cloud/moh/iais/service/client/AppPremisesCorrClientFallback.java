@@ -17,13 +17,7 @@ import java.util.List;
  * @date 2019/12/10 19:54
  */
 public class AppPremisesCorrClientFallback implements AppPremisesCorrClient{
-    @Override
-    public FeignResponseEntity<List<AppPremisesCorrelationDto>> getGroupAppsByNo(String appGropId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
+
     @Override
     public FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

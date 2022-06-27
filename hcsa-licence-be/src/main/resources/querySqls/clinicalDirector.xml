@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="clinicalDirector">
+    <sql key="generateClinicalDirectorHtml" cached="no" remarks="generate Vehicle Html">
+        <![CDATA[
+            <div class="clinicalDirectorContent">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${cdSuffix}" value="1"/>
+                <input type="hidden" name="cdIndexNo${cdSuffix}" value=""/>
+                <input class="licPerson" type="hidden" name="licPerson${cdSuffix}" value="0"/>
+                <div class="col-md-12 col-xs-12">
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">
+                                    <div class="cgo-header">
+                                        <strong>${singleName} <label class="assign-psn-item">${cdLength}</label></strong>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right">
+                                <div class="">
+                                    <h4 class="text-danger">
+                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <#-- Assigned person dropdown list -->
+                <div class="col-md-12 col-xs-12">
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Assign a ${singleName} Person</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7" id="assignSelect">
+                                    <div class="">
+                                        ${personalSelect}
+                                        <span id="error_assignSelect${cdSuffix}" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-xs-12 person-detail hidden">
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
+                                <label class="control-label control-set-font control-font-label">Professional Board</label>
+                                <#if (svcCode =='EAS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                ${proBoardSel}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
+                                <label class="control-label control-set-font control-font-label">Professional Regn. No.</label>
+                                <#if (svcCode =='EAS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" class="profRegNo" name="profRegNo${cdSuffix}" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <#if (svcCode =='MTS')>
+                        <div class="row control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="control-label formtext col-md-5 col-xs-5">
+                                    <label class="control-label control-set-font control-font-label">Not registered with a Professional Board</label>
+                                </div>
+                                <div class="control-label formtext col-md-7 col-xs-7 noRegWithProfBoardDiv">
+                                    <label class="control-label control-set-font control-font-label">
+                                        <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${cdSuffix}" value="">
+                                        <div class="control-item-container parent-form-check" >
+                                            <input type="checkbox" id="noRegWithProfBoard${cdSuffix}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" >
+                                            <label for="noRegWithProfBoard${cdSuffix}" class="control-label control-set-font control-font-normal">
+                                                <span class="check-square"></span>
+                                            </label>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </#if>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Name</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                ${salutationSel}
+                            </div>
+                            <div class="col-sm-4 col-xs-12">
+                                <input type="text" class="name field-name" name="name${cdSuffix}" maxlength="66" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">ID No.</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <div class="">
+                                    ${idTypeSel}
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-xs-12">
+                                <input type="text" name="idNo${cdSuffix}" class="idNoVal idNo" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal nationalityDiv">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Country of issuance</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                ${nationality}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label  class="control-label control-set-font control-font-label"></label>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Designation</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12" id="designation">
+                                ${designationSel}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal hidden other-designation">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" name="otherDesignation${cdSuffix}" class="otherDesignation" maxlength="100" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Specialty</label>
+                            </div>
+                            <div class="control-label formtext col-md-7 col-xs-12">
+                                <label class="control-label control-set-font control-font-label specialty-label specialityField">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
+                                <label class="control-label control-set-font control-font-label">
+                                    Date when specialty was obtained
+                                </label>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" autocomplete="off" class="date_picker form-control specialtyGetDate" name="specialtyGetDate${cdSuffix}"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Type of Registration Date</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" name="typeOfCurrRegi${cdSuffix}" class="typeOfCurrRegi" value="" maxlength="50" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Current Registration Date</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <input type="text" autocomplete="off" class="date_picker form-control currRegiDate" name="currRegiDate${cdSuffix}" id="-602217100012100" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <input type="text" autocomplete="off" class="date_picker form-control praCerEndDate" name="praCerEndDate${cdSuffix}"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Type of Register</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" class="typeOfRegister" name="typeOfRegister${cdSuffix}" maxlength="50" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5 relevantExperienceLabel">
+                                <label class="control-label control-set-font control-font-label">Relevant Experience</label>
+                                <#if (svcCode =='MTS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" name="relevantExperience${cdSuffix}" class="relevantExperience" value="" maxlength="180" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap holdCerByEMSDiv">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop&nbsp;<span class="mandatory">*</span></label>
+                            </div>
+                            <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${cdSuffix}" value="">
+                            <div class="form-check col-md-3 col-xs-3">
+                                <input class="form-check-input holdCerByEMS" type="radio" name="holdCerByEMS${cdSuffix}" value="1" aria-invalid="false">
+                                <label class="form-check-label"><span class="check-circle"></span>Yes</label>
+                            </div>
+                            <div class="form-check col-md-3 col-xs-3">
+                                <input class="form-check-input holdCerByEMS" type="radio" name="holdCerByEMS${cdSuffix}" value="0" aria-invalid="false">
+                                <label class="form-check-label"><span class="check-circle"></span>No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Expiry Date (ACLS)</label>
+                                <#if (svcCode =='EAS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <input type="text" autocomplete="off" class="date_picker form-control aclsExpiryDate" name="aclsExpiryDate${cdSuffix}" id="" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <#if (svcCode =='MTS')>
+                        <div class="row control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="control-label formtext col-md-5 col-xs-5">
+                                    <label class="control-label control-set-font control-font-label">Expiry Date (BCLS and AED)</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-md-3 col-xs-12">
+                                    <input type="text" autocomplete="off" class="date_picker form-control bclsExpiryDate" name="bclsExpiryDate${cdSuffix}" id="" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                    </#if>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Mobile No.</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" class="mobileNo" name="mobileNo${cdSuffix}" maxlength="8" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <label class="control-label control-set-font control-font-label">Email Address</label>
+                                <span class="mandatory">*</span>
+                            </div>
+                            <div class="col-md-7 col-xs-12">
+                                <input type="text" class="emailAddr" name="emailAddr${cdSuffix}" maxlength="320" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                </div>
+            </div>
+        ]]>
+    </sql>
+</sqls>
+
+

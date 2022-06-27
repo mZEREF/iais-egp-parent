@@ -271,7 +271,7 @@ public class ProfessionalInformationDelegator {
 		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO));
 		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, ApplicationConsts.PERSONNEL_PSN_TYPE_PO));
 		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO));
-		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT, ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT));
+		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP));
 
 		ParamUtil.setRequestAttr(request, "psnType", psnType);
 

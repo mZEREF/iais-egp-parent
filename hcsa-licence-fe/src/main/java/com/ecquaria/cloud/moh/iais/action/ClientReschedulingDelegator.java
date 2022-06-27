@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
@@ -37,7 +38,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
@@ -87,7 +88,7 @@ public class ClientReschedulingDelegator {
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
@@ -103,7 +104,7 @@ public class ClientReschedulingDelegator {
     }
 
     public void init(BaseProcessClass bpc)  {
-        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Scheduled Appointments");
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Scheduled Appointments");
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
@@ -125,7 +126,8 @@ public class ClientReschedulingDelegator {
         dateRange =calendar.getTime();
         //rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(dateRange, SystemAdminBaseConstants.DATE_FORMAT)+"') )");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
-        HalpSearchResultHelper.setParamByFieldOrSearch(rescheduleParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"appt.code");
+        HalpSearchResultHelper.setParamByFieldOrSearch(rescheduleParam,"appServicesShow",
+                HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos),"appt.code");
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
         String repalceService = getRepalceService();
         rescheduleParam.setMainSql(rescheduleParam.getMainSql().replace("repalceService",repalceService));
@@ -242,7 +244,7 @@ public class ClientReschedulingDelegator {
 
     public void doReschedule(BaseProcessClass bpc)  {
         String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
-        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Appointment Rescheduling");
+        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Appointment Rescheduling");
 
         if(keyIds==null){
             keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
@@ -340,7 +342,7 @@ public class ClientReschedulingDelegator {
             msgParam.setTemplateContent(emailMap);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_MSG);
 
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+            HcsaServiceDto svcDto = configCommClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
             msgParam.setSvcCodeList(svcCode);

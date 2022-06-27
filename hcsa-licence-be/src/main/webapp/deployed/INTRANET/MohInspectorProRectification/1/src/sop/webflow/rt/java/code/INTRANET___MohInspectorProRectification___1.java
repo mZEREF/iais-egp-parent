@@ -73,4 +73,9 @@ public class INTRANET___MohInspectorProRectification___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "InspectorProRecCheckListStep", this);
 	}
 
+	public void rollback_OnStepProcess_0() throws Exception {
+	// 		Rollback->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rollBack", this);
+	}
+
 }

@@ -25,7 +25,7 @@
                 <div class="row form-horizontal">
                   <iais:row>
                     <iais:value width="6">
-                      <strong class="app-font-size-22 premHeader">Licensee Details:</strong>
+                      <p class="app-title">Licensee Details:</p>
                     </iais:value>
                   </iais:row>
                 <%@ include file="/WEB-INF/jsp/iais/common/licenseeDetailContent.jsp" %>

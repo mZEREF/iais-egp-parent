@@ -53,21 +53,19 @@ public interface RequestForChangeService {
 
     List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 
-    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
+    List<AppSubmissionDto> getAppSubmissionDtosByLicenceIds(List<String> licenceIds);
 
     List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
 
     LicenceDto getLicenceDtoByLicenceId(String licenceId);
 
-    public LicenceDto getLicDtoById(String licenceId) ;
+    LicenceDto getLicDtoById(String licenceId) ;
 
     LicenseeIndividualDto getLicIndByNRIC(String nric);
 
     LicenseeDto getLicenseeByUenNo(String uenNo);
 
-
     SearchResult<PersonnelQueryDto> psnDoQuery(SearchParam searchParam);
-
 
     void sendEmail(String appGrpId,String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId,String subject,String aoName) throws Exception;
     List<LicenceDto> getLicenceDtoByPremisesId(String premisesId);
@@ -81,12 +79,6 @@ public interface RequestForChangeService {
     List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto,
             String... excludeNos);
 
-    List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
-
-    List<String> getPersonnelIdsByIdNo(String idNo);
-
-    String getIdNoByLicId(String licId);
-
     List<PersonnelListDto> getPersonnelListDto(PersonnelTypeDto personnelTypeDto);
 
     List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);
@@ -95,33 +87,15 @@ public interface RequestForChangeService {
 
     List<String> getAdminEmail(String orgId);
 
-    Boolean isOtherOperation(String licenceId);
-
-    Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
-            List<String> premisesHciList, boolean isRfi, boolean checkOthers);
-
-    void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
-    void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
     void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
-    boolean eqChangeConfigPresmiseType(List<LicenceDto> list,List<String> presmiseType);
-    List<AppSvcDocDto> updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos) throws Exception;
-    void changeDocToNewVersion(AppSubmissionDto appSubmissionDto) throws  Exception;
+
     void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto);
     void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
     String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
-
-    Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-            double amount, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
-            List<AppSubmissionDto> appSubmissionDtos) throws Exception;
-
-    Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
-            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
-
-    List<AppSubmissionDto> getAlginAppSubmissionDtos(String licenceId, boolean checkSpec);
 
 }

@@ -63,4 +63,9 @@ public class INTRANET___MohInspectionPreInspector___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "inspectionPreInspectorBack", this);
 	}
 
+	public void inspectionPreInspectorRollBack_OnStepProcess_0() throws Exception {
+	// 		InspectionPreInspectorRollBack->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspectionPreInspectorRollBack", this);
+	}
+
 }

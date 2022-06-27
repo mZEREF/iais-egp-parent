@@ -52,11 +52,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
         return licenceClient.getPremises(licenseeId).getEntity();
     }
-
-    @Override
-    public ApplicationDto getApplicationByLicenceId(String licenceId) {
-        return applicationClient.getApplicaitonByLicenceId(licenceId).getEntity();
-    }
     
     @Override
     public AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto, Process process) {

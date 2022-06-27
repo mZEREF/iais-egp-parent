@@ -1,111 +1,18 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.ConfigHelper;
-import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.job.executor.util.SpringHelper;
-import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
-import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
- * NewApplicationHelper
+ * ApplicationHelper
  *
  * @author suocheng
  * @date 2/24/2020
@@ -2774,7 +2681,7 @@ public class NewApplicationHelper {
 
     }
 
-    public static String genBankUrl(HttpServletRequest request, String payMethod, Map<String, String> fieldMap,
+   public static String genBankUrl(HttpServletRequest request, String payMethod, Map<String, String> fieldMap,
             PmtReturnUrlDto pmtReturnUrlDto) throws Exception {
         String url = "";
         switch (payMethod) {
@@ -4492,12 +4399,14 @@ public class NewApplicationHelper {
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                 psnName = HcsaConsts.SERVICE_PERSONNEL;
+=======
+>>>>>>> origin/SZ_Dev
                 break;
-            case ApplicationConsts.DUP_FOR_PERSON_CD:
-                psnName = HcsaConsts.CLINICAL_DIRECTOR;
+            case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                url = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getNetsRetUrl());
                 break;
-            case ApplicationConsts.DUP_FOR_PERSON_SL:
-                psnName = HcsaConsts.SECTION_LEADER;
+            case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                url = GatewayPayNowAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getPayNowRetUrl());
                 break;
             default:
                 break;
@@ -5301,37 +5210,9 @@ public class NewApplicationHelper {
                     premises.setExistingData(AppConsts.NO);
                 }*/
             }
+            url = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getOtherRetUrl());
         }
-        setAppSubmissionDto(appSubmissionDto, request);
-    }
-
-    /**
-     * maybe 2 records: one is modified, one is from DB
-     *
-     * @param premises
-     * @param map
-     * @return
-     */
-    private static List<Map.Entry<String, AppGrpPremisesDto>> getPremisesFromMap(AppGrpPremisesDto premises,
-            Map<String, AppGrpPremisesDto> map) {
-        return getList(map.entrySet().stream()
-                .filter(e -> Objects.equals(premises.getPremisesIndexNo(), e.getValue().getPremisesIndexNo()))
-                .collect(Collectors.toList()));
-    }
-
-    public static void clearPremisesMap(HttpServletRequest request) {
-        request.getSession().removeAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
-        request.getSession().removeAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
-        request.getSession().removeAttribute("premisesSelect");
-        request.getSession().removeAttribute("conveyancePremSel");
-        request.getSession().removeAttribute("offSitePremSel");
-        request.getSession().removeAttribute("easMtsPremSel");
-    }
-
-    public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
-        log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
-        Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
-        return (AppGrpPremisesDto) CopyUtil.copyMutableObject(premisesDtoMap.get(premSelectVal));
+        return url;
     }
 
 }

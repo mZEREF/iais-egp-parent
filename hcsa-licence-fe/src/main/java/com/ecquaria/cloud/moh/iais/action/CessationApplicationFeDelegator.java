@@ -22,19 +22,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
@@ -59,25 +57,13 @@ public class CessationApplicationFeDelegator {
 
     @Autowired
     private CessationFeService cessationFeService;
-    @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
+
     @Autowired
     private LicenceClient licenceClient;
+
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    @Autowired
-    private AppSubmissionService appSubmissionService;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Value("${moh.halp.prs.enable}")
-    private String prsFlag;
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
     private static final String PRELIMINARYQUESTIONKINDLY = "preliminaryQuestionKindly";
@@ -323,8 +309,9 @@ public class CessationApplicationFeDelegator {
         appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryquestionkindly);
         appDeclarationMessageDto.setPreliminaryQuestionItem1(isbefore);
         appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);
-        List<AppDeclarationDocDto> cessationDocData = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
-        appSubmissionService.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+        List<AppDeclarationDocDto> cessationDocData = AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,
+                bpc.request);
+        AppDataHelper.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
@@ -521,7 +508,8 @@ public class CessationApplicationFeDelegator {
             errorMap.put(PRELIMINARYQUESTIONKINDLY, otherError);
         }else{
             if (AppConsts.NO.equals(preliminaryquestionkindly)){
-                List<AppDeclarationDocDto> cessationDocData = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+                List<AppDeclarationDocDto> cessationDocData = AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,
+                        bpc.request);
                 if (cessationDocData == null){
                     errorMap.put(SELECTEDFILEERROR, otherError);
                 }
@@ -541,7 +529,7 @@ public class CessationApplicationFeDelegator {
        /* if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
             errorMap.put(i + PATIENTSELECT + j, MessageUtil.replaceMessage(ERROR, "Who will take over your patients' case records", "field"));
         }*/
-        String general_err0041= NewApplicationHelper.repLength("this","1000");
+        String general_err0041= AppValidatorHelper.repLength("this","1000");
         if ("yes".equals(patRadio)) {
             if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
                 errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);

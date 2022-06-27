@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div class="panel panel-default">
     <div class="panel-heading" id="headingPremise" role="tab">
         <h4 class="panel-title"><a role="button" class="collapsed" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Mode of Service Delivery</a></h4>

@@ -151,6 +151,13 @@ public class GiroDeductionBeDelegator {
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
 
         SearchResult<GiroDeductionDto> body = giroDeductionBeService.giroDeductionDtoSearchResult(searchParam);
+        List<GiroDeductionDto> giroDeductionDtos=body.getRows();
+        if(IaisCommonUtils.isNotEmpty(giroDeductionDtos))
+        for (GiroDeductionDto giroDeductionDto:giroDeductionDtos
+             ) {
+            ApplicationGroupDto groupDto=applicationClient.getAppGrpByNo(giroDeductionDto.getAppGroupNo()).getEntity();
+            giroDeductionDto.setAppGroupStatus(groupDto.getStatus());
+        }
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
         String saveRetriggerOK = (String) ParamUtil.getSessionAttr(bpc.request,"saveRetriggerOK");

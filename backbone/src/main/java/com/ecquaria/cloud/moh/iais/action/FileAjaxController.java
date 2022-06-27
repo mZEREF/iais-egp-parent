@@ -15,27 +15,6 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +26,31 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HEAD;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @Auther chenlei on 4/19/2022.
+ * @Auther wangyu and chenlei on 4/19/2022.
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("/file")
 public class FileAjaxController {
@@ -67,7 +66,7 @@ public class FileAjaxController {
             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal) {
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX
-                        + fileAppendId);
+                + fileAppendId);
         int size = 0;
         if (needMaxGlobal && ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
             size = (int) ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
@@ -158,18 +157,55 @@ public class FileAjaxController {
             ;
         }
         messageCode.setDescription(stringBuilder.toString());
+        boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
+        log.info(StringUtil.changeForLog("isBackend: " + isBackend));
+        String cssClass;
+        if (isBackend) {
+            cssClass = "btn btn-secondary-del btn-sm";
+        } else {
+            cssClass = "btn btn-secondary btn-sm";
+        }
+
+        StringBuilder data = new StringBuilder();
+        if (originalFileName != null) {
+            String[] fileSplit = originalFileName.split("\\.");
+            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(size).append("' >")
+                    .append("<a href=\"").append(request.getContextPath())
+                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
+                    .append("&fileIndexDown=").append(size)
+                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
+                    .append("\" title=\"Download\" class=\"downloadFile\">")
+                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
+                    .append('.').append(fileSplit[fileSplit.length - 1])
+                    .append("</a>")
+                    .append(" <button type=\"button\" class=\"").append(cssClass)
+                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
+                    .append(fileAppendId).append("', ").append(size)
+                    .append("');\">Delete</button>");
+            if (!AppConsts.NO.equals(needReUpload)) {
+                data.append(" <button type=\"button\" class=\"")
+                        .append(cssClass)
+                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
+                        .append(fileAppendId).append("', ").append(size)
+                        .append(", '").append(uploadFormId)
+                        .append("');\">ReUpload</button>");
+            }
+            data.append("</div>");
+        }
+        messageCode.setDescription(data.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.parseToJson(messageCode);
     }
 
-    @ResponseBody
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     public String deleteFeCallFile(HttpServletRequest request) {
         log.info("-----------deleteFeCallFile start------------");
         String fileAppendId = ParamUtil.getString(request, "fileAppendId");
         String index = ParamUtil.getString(request, "fileIndex");
         if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                    IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
@@ -194,7 +230,7 @@ public class FileAjaxController {
         }
         log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
         List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
-        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024l));
+        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
         Boolean fileSize = booleanMap.get("fileSize");
         Boolean fileType = booleanMap.get("fileType");
         //size
@@ -219,7 +255,6 @@ public class FileAjaxController {
         return "";
     }
 
-    @ResponseBody
     @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
     public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
@@ -228,7 +263,8 @@ public class FileAjaxController {
         String index = ParamUtil.getString(request, "fileIndexDown");
 
         if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                    IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
@@ -316,7 +352,6 @@ public class FileAjaxController {
         }
     }
 
-    @ResponseBody
     @PostMapping("/init")
     public String initFileData(HttpServletRequest request) {
         Map<String, String> data = new HashMap<>();

@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
-import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,33 +119,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     String name = file.getName();
                     String path = file.getPath();
                     log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
-                    try (InputStream is = newInputStream(file.toPath());
-                         ByteArrayOutputStream by=new ByteArrayOutputStream();) {
-                        int count;
-                        byte [] size=new byte[1024];
-                        count=is.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= is.read(size);
-                        }
 
-                        byte[] bytes = by.toByteArray();
-                        String s = FileUtil.genMd5FileChecksum(bytes);
-                        s = s + AppServicesConsts.ZIP_NAME;
-                        if( !s.equals(name)){
-                            log.info(StringUtil.changeForLog(s+" not equals "+name));
-                            v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
-                            try {
-                                applicationClient.updateProcessFileTrack(v);
-                            }catch (Exception e){
-                                log.info("error updateProcessFileTrack");
-                            }
-                            continue;
-                        }
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                        continue;
-                    }
                     /**************/
                     String refId = v.getRefId();
                     CheckedInputStream cos=null;
@@ -384,29 +357,39 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     private List<ExcelSheetDto> getExcelSheetDtos(MonitoringSheetsDto sheetsDto) {
         List<AppGroupExcelDto> groupExcelDtos= IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String,AppGroupExcelDto> entry:sheetsDto.getAppGroupExcelDtoMap().entrySet()
-             ) {
-            groupExcelDtos.add(entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppGroupExcelDtoMap())){
+            for (Map.Entry<String,AppGroupExcelDto> entry:sheetsDto.getAppGroupExcelDtoMap().entrySet()
+            ) {
+                groupExcelDtos.add(entry.getValue());
+            }
         }
         List<ApplicationExcelDto> applicationExcelDtos= IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String,ApplicationExcelDto> entry:sheetsDto.getApplicationExcelDtoMap().entrySet()
-        ) {
-            applicationExcelDtos.add(entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getApplicationExcelDtoMap())){
+            for (Map.Entry<String,ApplicationExcelDto> entry:sheetsDto.getApplicationExcelDtoMap().entrySet()
+            ) {
+                applicationExcelDtos.add(entry.getValue());
+            }
         }
         List<AppProcessFileTrackExcelDto> appProcessFileTrackExcelDtos= IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String,AppProcessFileTrackExcelDto> entry:sheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
-        ) {
-            appProcessFileTrackExcelDtos.add(entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppProcessFileTrackExcelDtoMap())){
+            for (Map.Entry<String,AppProcessFileTrackExcelDto> entry:sheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
+            ) {
+                appProcessFileTrackExcelDtos.add(entry.getValue());
+            }
         }
         List<LicenceExcelDto> licenceExcelDtos= IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String,LicenceExcelDto> entry:sheetsDto.getLicenceExcelDtoMap().entrySet()
-        ) {
-            licenceExcelDtos.add(entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getLicenceExcelDtoMap())){
+            for (Map.Entry<String,LicenceExcelDto> entry:sheetsDto.getLicenceExcelDtoMap().entrySet()
+            ) {
+                licenceExcelDtos.add(entry.getValue());
+            }
         }
         List<UserAccountExcelDto> userAccountExcelDtos= IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String,UserAccountExcelDto> entry:sheetsDto.getUserAccountExcelDtoMap().entrySet()
-        ) {
-            userAccountExcelDtos.add(entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getUserAccountExcelDtoMap())){
+            for (Map.Entry<String,UserAccountExcelDto> entry:sheetsDto.getUserAccountExcelDtoMap().entrySet()
+            ) {
+                userAccountExcelDtos.add(entry.getValue());
+            }
         }
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
         int sheetAt = 0;
@@ -528,52 +511,60 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
         monitoringSheetsDto.setAppProcessFileTrackExcelDtoMap(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
 
-        for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
-        ) {
-            if(monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
-                ApplicationExcelDto excelDto=monitoringSheetsDto.getApplicationExcelDtoMap().get(entry.getKey());
-                excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
-                excelDto.setStatusBe(entry.getValue().getStatusBe());
-                excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-            }else {
-                monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
+        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getApplicationExcelDtoMap())){
+            for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
+            ) {
+                if(monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
+                    ApplicationExcelDto excelDto=monitoringSheetsDto.getApplicationExcelDtoMap().get(entry.getKey());
+                    excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
+                    excelDto.setStatusBe(entry.getValue().getStatusBe());
+                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                }else {
+                    monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }
             }
         }
-        for (Map.Entry<String, LicenceExcelDto> entry:monitoringAppSheetsDto.getLicenceExcelDtoMap().entrySet()
-        ) {
-            if(monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
-                LicenceExcelDto excelDto=monitoringSheetsDto.getLicenceExcelDtoMap().get(entry.getKey());
-                excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
-                excelDto.setStatusBe(entry.getValue().getStatusBe());
-                excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getLicenceExcelDtoMap())){
+            for (Map.Entry<String, LicenceExcelDto> entry:monitoringAppSheetsDto.getLicenceExcelDtoMap().entrySet()
+            ) {
+                if(monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
+                    LicenceExcelDto excelDto=monitoringSheetsDto.getLicenceExcelDtoMap().get(entry.getKey());
+                    excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
+                    excelDto.setStatusBe(entry.getValue().getStatusBe());
+                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
 
-            }else {
-                monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }else {
+                    monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }
             }
         }
-        for (Map.Entry<String, AppGroupExcelDto> entry:monitoringAppSheetsDto.getAppGroupExcelDtoMap().entrySet()
-        ) {
-            if(monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
-                AppGroupExcelDto excelDto=monitoringSheetsDto.getAppGroupExcelDtoMap().get(entry.getKey());
-                excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
-                excelDto.setStatusBe(entry.getValue().getStatusBe());
-                excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppGroupExcelDtoMap())){
+            for (Map.Entry<String, AppGroupExcelDto> entry:monitoringAppSheetsDto.getAppGroupExcelDtoMap().entrySet()
+            ) {
+                if(monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
+                    AppGroupExcelDto excelDto=monitoringSheetsDto.getAppGroupExcelDtoMap().get(entry.getKey());
+                    excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
+                    excelDto.setStatusBe(entry.getValue().getStatusBe());
+                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
 
-            }else {
-                monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }else {
+                    monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }
             }
         }
-        for (Map.Entry<String, UserAccountExcelDto> entry:monitoringAppSheetsDto.getUserAccountExcelDtoMap().entrySet()
-        ) {
-            if(monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
-                UserAccountExcelDto excelDto=monitoringSheetsDto.getUserAccountExcelDtoMap().get(entry.getKey());
-                excelDto.setDisplayNameBe(entry.getValue().getDisplayNameBe());
-                excelDto.setStatusBe(entry.getValue().getStatusBe());
-                excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
+        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getUserAccountExcelDtoMap())){
+            for (Map.Entry<String, UserAccountExcelDto> entry:monitoringAppSheetsDto.getUserAccountExcelDtoMap().entrySet()
+            ) {
+                if(monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
+                    UserAccountExcelDto excelDto=monitoringSheetsDto.getUserAccountExcelDtoMap().get(entry.getKey());
+                    excelDto.setDisplayNameBe(entry.getValue().getDisplayNameBe());
+                    excelDto.setStatusBe(entry.getValue().getStatusBe());
+                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                    excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
 
-            }else {
-                monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }else {
+                    monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
+                }
             }
         }
 

@@ -136,7 +136,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
+                        <p class="app-title premHeader">Mode of Service Delivery ${status.index+1}</p>
                     </div>
                     <div class="col-xs-12 col-md-4 text-right">
                         <c:choose>
@@ -454,7 +454,7 @@
                         <iais:field value="Email" mandatory="true" width="4"/>
                         <iais:value width="5" cssClass="col-md-5">
                             <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="onSiteEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_onSiteEmail${status.index}"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_email${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -977,7 +977,7 @@
                         <iais:field value="Address Type" mandatory="true" width="4"/>
                         <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                             <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select"  value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddrType${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -1553,7 +1553,7 @@
                         <iais:field value="Address Type" mandatory="true" width="4"/>
                         <iais:value id="offSiteAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                             <iais:select name="offSiteAddrType" cssClass="offSiteAddressType" id="offSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.offSiteAddressType}"></iais:select>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteAddressType${status.index}"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteAddrType${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -1597,7 +1597,7 @@
                                                 <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
                                             </iais:value>
                                         </div>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_OffFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -2135,7 +2135,7 @@
                             <iais:field value="Address Type" mandatory="true" width="4"/>
                             <iais:value id="easMtsAddrType${premValue}" width="7" cssClass="col-md-5">
                                 <iais:select name="easMtsAddrType" cssClass="easMtsAddressType" id="easMtsAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.easMtsAddressType}"></iais:select>
-                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsAddressType${status.index}"></span>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsAddrType${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -2233,8 +2233,9 @@
                         <iais:row>
                             <iais:field value="Public Email" mandatory="true" width="4"/>
                             <iais:value width="7" cssClass="col-md-5">
-                                <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
-                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubEmail${status.index}"></span>
+                                <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"
+                                            value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsEmail${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>

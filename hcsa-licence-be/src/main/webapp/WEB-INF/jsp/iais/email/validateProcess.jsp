@@ -112,8 +112,17 @@
                                                 <iais:row>
                                                     <iais:field value="Processing Decision" required="true"/>
                                                     <iais:value width="7">
-                                                        <iais:select id="decision-validate-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
+                                                        <iais:select id="decision-validate-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"
+                                                                     onchange="javascript:showRollBackToRow();"/>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
+                                                    </iais:value>
+                                                </iais:row>
+
+                                                <iais:row id="rollBackToRow">
+                                                    <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                    <iais:value width="7">
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
 
@@ -159,11 +168,21 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
+    $(document).ready(function (){
+        showRollBackToRow();
+    })
 
     function doSend() {
         var f = $('#decision-validate-email option:selected').val();
         var remark = $('#Remarks').val();
+        $("#selectDecisionMsg").hide();
+        $("#remarksMsg").hide();
+        $('#err_rollBackTo').hide();
 
         if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
@@ -172,13 +191,33 @@
         if(remark.length>300){
             $("#remarksMsg").show();
         }
-        if(f != null && f != ""  &&remark.length<=300){
+        if('REDECI027' === f){
+            $('#confirmTag').modal('show');
+        }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }
 
+    function rollBackSubmit(){
+        const rollBackTo = $('#rollBackTo').val();
+        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+            $('#err_rollBackTo').show();
+        }else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "rollBack");
+        }
+    }
 
+    function showRollBackToRow(){
+        const f = $('#decision-validate-email option:selected').val();
+        const row = $('#rollBackToRow')
+        if('REDECI027' === f){
+            row.show();
+        }else {
+            row.hide();
+        }
+    }
 </script>
 
 

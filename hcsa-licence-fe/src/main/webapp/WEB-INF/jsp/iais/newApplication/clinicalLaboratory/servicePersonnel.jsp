@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
@@ -646,15 +648,15 @@
         if (isEmpty(data)) {
           console.log("The return data is null for PRS");
         } else if('-1' == data.statusCode || '-2' == data.statusCode) {
-          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0042" escape="false" />');
+          $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
           $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
         } else if (data.hasException) {
-          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0048" escape="false" />');
+          $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
           $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
         } else if ('401' == data.statusCode) {
-          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0054" escape="false" />');
+          $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
           $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
         } else {

@@ -133,7 +133,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
         String refNo = taskDto.getRefNo();
-        ApplicationViewDto viewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
+        ApplicationViewDto viewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo, taskDto.getRoleId());
         return viewDto;
     }
 
@@ -798,7 +798,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
         if(StringUtil.isEmpty(workGrp))  workGrp = taskDto.getWkGrpId();
-        createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create task
         TaskDto updatedtaskDto = completedTask(taskDto);
         updatedtaskDto.setId(null);

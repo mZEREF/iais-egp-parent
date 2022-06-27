@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -36,27 +37,21 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author Shicheng
@@ -84,12 +79,17 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
+    @Autowired
+    private InspectionService inspectionService;
+
     private static final String SERLISTDTO ="serListDto";
     private static final String COMMONDTO ="commonDto";
     private static final String ADHOCLDTO ="adchklDto";
     private static final String TASKDTO ="taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
+    private static final String ROLL_BACK_OPTIONS = "rollBackToOptions";
+    private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
 
     @Autowired
     private InspectionRectificationProDelegator(ApplicationViewService applicationViewService, TaskService taskService, InspectionRectificationProService inspectionRectificationProService){
@@ -137,6 +137,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", null);
         ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", null);
         ParamUtil.setSessionAttr(bpc.request,"licenceDto", null);
+        ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_OPTIONS, null);
+        ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_VALUE_MAP, null);
     }
 
     /**
@@ -153,7 +155,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
             taskDto = taskService.getTaskById(taskDto.getId());
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
             //get vehicle no
@@ -204,6 +206,10 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        //init roll back params
+        Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
+        ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_OPTIONS,(Serializable) inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap, taskDto.getRoleId()));
+        ParamUtil.setSessionAttr(bpc.request,ROLL_BACK_VALUE_MAP, (Serializable) historyDtoMap);
     }
 
     private InspecUserRecUploadDto setNcDataByItemId(InspecUserRecUploadDto iDto, String itemId, List<ChecklistItemDto> checklistItemDtos) {
@@ -235,28 +241,6 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             }
         }
         return iDto;
-    }
-
-    @RequestMapping(value = "/file-repo-popup", method = RequestMethod.GET)
-    public @ResponseBody
-    void filePopUpDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug(StringUtil.changeForLog("filePopUpDownload start ...."));
-        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
-        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-        if (StringUtil.isEmpty(fileRepoId)) {
-            log.debug(StringUtil.changeForLog("file-repo-popup id is empty"));
-            return;
-        }
-        byte[] fileData = inspectionRectificationProService.downloadFile(fileRepoId);
-        response.setContentType("application/OCTET-STREAM");
-        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
-        response.addHeader("Content-Length", "" + fileData.length);
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
-        log.debug(StringUtil.changeForLog("filePopUpDownload end ...."));
     }
 
     /**
@@ -291,6 +275,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         } else if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)) {
+            inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
         } else {
             inspectionPreTaskDto.setSelectValue(null);
@@ -338,6 +324,19 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
                     ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_ACK);
                 }
             } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            }
+        } else if("rollBack".equals(actionValue)){
+            String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+            if(StringUtil.isEmpty(rollBackTo)){
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+                errorMap.put("rollBackTo", "GENERAL_ERR0006");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                ParamUtil.setRequestAttr(bpc.request, "validateShowPage", InspectionConstants.SWITCH_ACTION_ACK);
+            }else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) || InspectionConstants.SWITCH_ACTION_VIEW.equals(actionValue) ||
@@ -515,5 +514,24 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
      */
     public void InspectorProRecCheckListStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectorProRecCheckListStep start ...."));
+    }
+
+    /**
+     * StartStep: RollBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rollBack(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the rollBack start ...."));
+        HttpServletRequest request = bpc.request;
+
+        String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request, "taskDto");
+        Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLL_BACK_VALUE_MAP);
+
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+        ParamUtil.setRequestAttr(bpc.request, "isRollBack",AppConsts.TRUE);
     }
 }

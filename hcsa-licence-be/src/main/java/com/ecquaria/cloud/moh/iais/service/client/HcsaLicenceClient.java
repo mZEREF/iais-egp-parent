@@ -14,8 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceAppRiskInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -58,9 +58,8 @@ import java.util.Map;
         fallback = HcsaLicenceClientFallback.class)
 public interface HcsaLicenceClient {
 
-    @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
-
+    @GetMapping(value = "/lic-common/active-licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable(name="licenceId") String licenceId);
     
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@RequestParam("hciCode") String hciCode,@RequestParam("serviceCode") String serviceCode);
@@ -99,9 +98,6 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<List<LicenceDto>> getBaseOrSpecLicence(@RequestParam("licenceId") String licenceId);
     @GetMapping(value = "/hcsa-licence/licence-id-premises-dto",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId);
-
-    @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable(name="licenceId") String licenceId);
 
     @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
@@ -193,6 +189,9 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/hcsa-licence/licId-premises", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicPremisesDto>> getPremisesByLicIds(@RequestBody List<String> licenceIds);
 
+    @PostMapping(value = "/hcsa-licence/lic-premises", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicPremisesDto>> saveLicPremises(@RequestBody List<LicPremisesDto> licPremisesDtos);
+
     @GetMapping(path= "/hcsa-licence/application-licence-correlation/{licId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getAppIdsByLicId(@PathVariable("licId") String licId);
 
@@ -228,11 +227,8 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/hcsa-licence/application-view-by-address",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationViewHciNameDto>> getApplicationViewHciNameDtoByAddress(@RequestBody Map<String,String> map);
 
-    @GetMapping(value = "/hcsa-licence/licence-submission", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/licence-submission", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId" ) String licenceId);
-
-    @GetMapping(value = "/hcsa-licence/licence-view-submission", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto> viewAppSubmissionDto(@RequestParam(value = "licenceId" ) String licenceId);
 
     @GetMapping(value = "/hcsa-licence/find-newest-licId")
     FeignResponseEntity<String> findNewestLicId(@RequestParam("licenceId") String licenceId);
@@ -257,10 +253,6 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/save-lic-app-risk-by-licdtos",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceAppRiskInfoDto>> saveLicenceAppRiskInfoDtosByLicIds(@RequestBody List<LicenceDto> licenceDtos);
-
-    @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
-                                                                                                 @PathVariable("originLicenceId") String originLicenceId);
 
     @GetMapping(value = "/hcsa-licence/licence-orgId-corrId/get-postInsGroupDto",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostInsGroupDto> getPostInsGroupDto(@RequestParam(name = "licId") String licId, @RequestParam(name = "corrId") String  corrId);
@@ -295,7 +287,9 @@ public interface HcsaLicenceClient {
     @PostMapping(value = "/vss-common/vssDocument/treatmentId/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateVssDocumentStatusByTreId(@RequestParam("treatmentId") String treatmentId, @RequestParam("status") String status);
 
+    @PostMapping(value = "/hcsa-licence/licence-change-tcu-date", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<LicPremisesQueryDto>> searchLicencesInChangeTCUDate(@RequestBody SearchParam searchParam);
+
     @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
-
 }

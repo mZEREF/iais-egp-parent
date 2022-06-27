@@ -196,7 +196,7 @@
         $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
-        toggleIdType($CurrentPsnEle.find('select[name="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
+        toggleOnSelect($CurrentPsnEle.find('select[name="idType"]'), 'IDTYPE003', $CurrentPsnEle.find('.nationalityDiv'));
 
         $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);

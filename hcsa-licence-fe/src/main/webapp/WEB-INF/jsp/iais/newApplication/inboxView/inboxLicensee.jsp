@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
 
@@ -17,7 +19,7 @@
             <div class="panel-main-content form-horizontal min-row">
                 <iais:row>
                     <iais:value width="10">
-                        <strong class="app-font-size-22 premHeader">Licensee Details</strong>
+                        <p class="app-title">Licensee Details</p>
                     </iais:value>
                 </iais:row>
                 <c:if test="${subLicenseeDto.licenseeType ne soloType}">

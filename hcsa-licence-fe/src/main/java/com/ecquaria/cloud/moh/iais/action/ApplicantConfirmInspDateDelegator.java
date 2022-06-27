@@ -17,7 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -98,7 +98,7 @@ public class ApplicantConfirmInspDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", null);
         ParamUtil.setSessionAttr(bpc.request, "hoursFeOption", null);
         ParamUtil.setSessionAttr(bpc.request, "amPmFeOption", null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
     }
 
     /**
@@ -126,7 +126,7 @@ public class ApplicantConfirmInspDateDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Appointment Scheduling");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Appointment Scheduling");
     }
 
     /**
@@ -196,7 +196,7 @@ public class ApplicantConfirmInspDateDelegator {
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Appointment Scheduling");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Appointment Scheduling");
     }
 
     /**
@@ -209,7 +209,7 @@ public class ApplicantConfirmInspDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmInspDateRe start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         apptFeConfirmDateDto = applicantConfirmInspDateService.getApptNewSystemDate(apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Recomputing of Dates");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Recomputing of Dates");
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
@@ -277,7 +277,7 @@ public class ApplicantConfirmInspDateDelegator {
             inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Recomputing of Dates");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Recomputing of Dates");
     }
 
     /**
@@ -292,7 +292,7 @@ public class ApplicantConfirmInspDateDelegator {
         List<SelectOption> amPm = applicantConfirmInspDateService.getAmPmOption();
         ParamUtil.setSessionAttr(bpc.request, "amPmFeOption", (Serializable) amPm);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Requests a Particular Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Requests a Particular Date");
     }
 
     /**
@@ -376,7 +376,7 @@ public class ApplicantConfirmInspDateDelegator {
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Requests a Particular Date");
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Requests a Particular Date");
     }
 
     private Date getSaveDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {

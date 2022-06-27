@@ -57,4 +57,8 @@ public class HcsaLicenceBeConstant {
     public static final String EDIT_VEHICLE_FLAG = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ InspectionConstants.SWITCH_ACTION_EDIT;
 
     public static final String REPORT_ACK_CLARIFICATION_FLAG = "askType";
+
+    public static final String  SEARCH_PARAM_CHANGE_TUC_DATE = "licencePremiseParam";
+    public static final String  SEARCH_RESULT_CHANGE_TUC_DATE = "licencePremiseResult";
+    public static final String  KEY_SVC_TYPE_OPTIONS = "licSvcTypeOption";
 }

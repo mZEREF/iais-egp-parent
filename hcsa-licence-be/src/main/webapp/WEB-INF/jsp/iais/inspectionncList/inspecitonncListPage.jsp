@@ -29,11 +29,11 @@
                         <div class="tab-gp dashboard-tab">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                 <li id="infoli" class="<c:choose>
-                                            <c:when test="${serListDto.checkListTab=='chkList'}">
-                                                   complete
+                                            <c:when test="${serListDto.checkListTab!='chkList' && serListDto.checkListTab!='process'}">
+                                                   active
                                                 </c:when>
                                                 <c:otherwise>
-                                                    active
+                                                    complete
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                                 <li id="documentsli" class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
@@ -47,7 +47,14 @@
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                                                 data-toggle="tab">Checklist</a></li>
-                                <li id="processingli" class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
+                                <li id="processingli" class="<c:choose>
+                                            <c:when test="${serListDto.checkListTab=='process'}">
+                                                   active
+                                                </c:when>
+                                                <c:otherwise>
+                                                    complete
+                                                </c:otherwise>
+                                            </c:choose>" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
                                                                             data-toggle="tab">Processing</a></li>
                             </ul>
                             <div class="tab-nav-mobile visible-xs visible-sm">
@@ -61,7 +68,7 @@
                                 <div class="swiper-button-next"></div>
                             </div>
                             <div class="tab-content">
-                                <div class="tab-pane  <c:if test="${serListDto.checkListTab!='chkList'}">active</c:if>" id="tabInfo" role="tabpanel">
+                                <div class="tab-pane  <c:if test="${serListDto.checkListTab!='chkList' && serListDto.checkListTab!='process'}">active</c:if>" id="tabInfo" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp"%>
                                 </div>
                                 <div class="tab-pane" id="tabDocuments" role="tabpanel">
@@ -83,7 +90,7 @@
                                     <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="Processing" role="tabpanel">
+                                <div class="tab-pane <c:if test="${serListDto.checkListTab=='process'}">active</c:if>" id="Processing" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/inspecProcessing.jsp"%>
                                 </div>
                             </div>
@@ -100,7 +107,16 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp"%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+              callBack="$('#confirmTag').modal('hide');showWaiting();SOP.Crud.cfxSubmit('mainForm', 'next');" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
+
 <script type="text/javascript">
+    $(document).ready(function () {
+        initRollBackToField();
+    });
+
     function doViewCheckList(){
         $("#viewchk").val("viewchk");
         SOP.Crud.cfxSubmit("mainForm", "vewChkl");
@@ -110,9 +126,14 @@
         SOP.Crud.cfxSubmit("mainForm", "listAhoc");
     }
     function doSubmit(){
+        let processDecValue = $('#processDec').val();
         $("#viewchk").val("");
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "next");
+        if('REDECI027' === processDecValue){
+            $('#confirmTag').modal('show');
+        }else {
+            showWaiting();
+            SOP.Crud.cfxSubmit("mainForm", "next");
+        }
     }
     function showCheckBox(str){
         var name = str;
@@ -151,4 +172,13 @@
         $(this).parent().children('input delFlag').val('N');*/
     });
 
+    function initRollBackToField() {
+        let processDecValue = $('#processDec').val();
+        let rollBackToRow = $('#rollBackToRow');
+        if('REDECI027' === processDecValue){
+            rollBackToRow.show();
+        }else {
+            rollBackToRow.hide();
+        }
+    }
 </script>

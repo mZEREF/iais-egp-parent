@@ -38,6 +38,17 @@ function deleteFileFeAjax(id, fileIndex) {
     callAjaxDeleteFile(id, fileIndex);
 }
 
+function _getFileTag(fileAppendId) {
+    var $file = $("#" + fileAppendId);
+    if ($file.length == 0) {
+        $file = $("input[type='file'][name='selectedFile']:first");
+    }
+    if ($file.length == 0) {
+        $file = $("input[type='file']:first");
+    }
+    return $file;
+}
+
 function reUploadFileFeAjax(fileAppendId, index, idForm) {
     $("#reloadIndex").val(index);
     $("#fileAppendId").val(fileAppendId);
@@ -47,6 +58,12 @@ function reUploadFileFeAjax(fileAppendId, index, idForm) {
 
 function deleteFileFeDiv(id) {
     $("#" + id).remove();
+    //$("#selectedFile").click();
+    _getFileTag(fileAppendId).click();
+}
+
+function deleteFileFeAjax(id, fileIndex) {
+    callAjaxDeleteFile(id, fileIndex);
 }
 
 function callAjaxDeleteFile(repoId, fileIndex) {
@@ -62,6 +79,10 @@ function callAjaxDeleteFile(repoId, fileIndex) {
             dismissWaiting();
         }
     )
+}
+
+function deleteFileFeDiv(id) {
+    $("#" + id).remove();
 }
 
 function ajaxCallUpload(idForm, fileAppendId) {
@@ -140,8 +161,7 @@ function clearFlagValueFEFile() {
 }
 
 function validateFileSizeMaxOrEmpty(maxSize) {
-    var fileId = $("#fileAppendId").val();
-    var $file = $('#' + fileId);
+    var $file = _getFileTag($("#fileAppendId").val());
     var fileV = $file.val();
     var file = $file.get(0).files[0];
     if (fileV == null || fileV == "" || file == null || file == undefined) {
@@ -160,8 +180,7 @@ function validateFileSizeMaxOrEmpty(maxSize) {
 }
 
 function cloneUploadFile() {
-    var fileId = $("#fileAppendId").val();
-    var $file = $('#' + fileId);
+    var $file = _getFileTag($("#fileAppendId").val());
     $file.after($file.clone().val(""));
     $file.remove();
     if ('1' == $('#_singleUpload').val()) {

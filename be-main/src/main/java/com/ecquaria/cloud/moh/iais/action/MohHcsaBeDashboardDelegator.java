@@ -66,7 +66,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -104,6 +103,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -115,6 +119,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "mohHcsaBeDashboardDelegator")
 @Slf4j
 public class MohHcsaBeDashboardDelegator {
+    private static final String CAN_APPROVE_API_URL = "http://hcsa-licence-web/hcsa-licence-web/canApproveValidation";
 
     @Autowired
     private TaskService taskService;
@@ -166,6 +171,10 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
+
+    @Autowired
+    @Qualifier(value = "iaisRestTemplate")
+    private RestTemplate restTemplate;
 
     /**
      * StartStep: hcsaBeDashboardStart
@@ -352,6 +361,12 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao1 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        Map<String,String> errMap = validateCanApprove(applicationViewDto);
+                        if (IaisCommonUtils.isNotEmpty(errMap)) {
+                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                            return;
+                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao1 approve end ...."));
                     }else{
@@ -384,6 +399,13 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("the do ao2 approve start ...."));
                         ParamUtil.setSessionAttr(bpc.request,"bemainAo1Ao2Approve","Y");
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        Map<String,String> errMap = validateCanApprove(applicationViewDto);
+                        log.info("AO2 approve validation rslt ==> {}", errMap);
+                        if (IaisCommonUtils.isNotEmpty(errMap)) {
+                            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                            ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                            return;
+                        }
                         routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                         log.info(StringUtil.changeForLog("the do ao2 approve end ...."));
                     }else{
@@ -420,6 +442,12 @@ public class MohHcsaBeDashboardDelegator {
                         }
                     }else{
                         successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                    }
+                    Map<String,String> errMap = validateCanApprove(applicationViewDto);
+                    if (IaisCommonUtils.isNotEmpty(errMap)) {
+                        ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.FALSE);
+                        ParamUtil.setRequestAttr(bpc.request,"successInfo", errMap.get("nextStage"));
+                        return;
                     }
                     log.info(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
@@ -1291,49 +1319,6 @@ public class MohHcsaBeDashboardDelegator {
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
-            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
-
-                if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
-                    mohHcsaBeDashboardService.updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
-                }
-
-                if(applicationDto.isFastTracking()){
-                    TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
-                    broadcastOrganizationDto.setCreateTask(newTaskDto);
-                }
-                List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-                applicationDtoList = beDashboardSupportService.removeFastTrackingAndTransfer(applicationDtoList);
-                List<ApplicationDto> flagApplicationDtoList = IaisCommonUtils.genNewArrayList();
-                CopyUtil.copyMutableObjectList(applicationDtoList,flagApplicationDtoList);
-                flagApplicationDtoList = beDashboardSupportService.removeCurrentApplicationDto(flagApplicationDtoList,applicationDto.getId());
-                boolean flag = taskService.checkCompleteTaskByApplicationNo(flagApplicationDtoList,newCorrelationId);
-
-                log.info(StringUtil.changeForLog("isAllSubmit is " + flag));
-                if(flag){
-                    List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
-                    CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
-                    //update current application status in db search result
-                    Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "BackendInboxReturnFee");
-                    beDashboardSupportService.updateCurAppStatusByLicensee(returnFee, saveApplicationDtoList,licenseeId);
-                    List<ApplicationDto> ao2AppList = beDashboardSupportService.getStatusAppList(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                    List<ApplicationDto> ao3AppList = beDashboardSupportService.getStatusAppList(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
-                    //routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
-                    if(IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)){
-                        creatTaskApplicationList = ao3AppList;
-                    }else{
-                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
-                        roleId = RoleConsts.USER_ROLE_AO2;
-                    }
-
-                    // send the task to Ao3 or ao2
-                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
-                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
-                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-                }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
@@ -1350,7 +1335,7 @@ public class MohHcsaBeDashboardDelegator {
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
             }
             //add history for next stage start
-            if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus))&&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
+            if(!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = mohHcsaBeDashboardService.getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
                         taskDto.getWkGrpId(),null,null,null,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
@@ -2158,5 +2143,12 @@ public class MohHcsaBeDashboardDelegator {
             }
         }
         return colour;
+    }
+
+    private Map<String, String> validateCanApprove(ApplicationViewDto applicationViewDto) {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity entity = new HttpEntity<>(applicationViewDto);
+        return restTemplate.postForObject(CAN_APPROVE_API_URL, applicationViewDto, Map.class);
     }
 }

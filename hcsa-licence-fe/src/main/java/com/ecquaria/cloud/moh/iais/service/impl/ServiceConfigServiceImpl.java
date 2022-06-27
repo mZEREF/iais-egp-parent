@@ -44,15 +44,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
@@ -84,11 +85,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Autowired
     private FileRepoClient fileRepoClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private ApplicationFeClient applicationFeClient;
-    @Autowired
-    private LicenceClient licenceClient;
+
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
     @Autowired
@@ -104,16 +104,21 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private LicCommService licCommService;
+
+    @Autowired
+    private AppCommService appCommService;
+
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
-
-        return   appConfigClient.getHcsaService(ids).getEntity();
+        return   configCommClient.getHcsaService(ids).getEntity();
     }
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-
-        return   appConfigClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
+        return   configCommClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
     }
 
     @Override
@@ -126,7 +131,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("code", svcCode);
 
-        return   appConfigClient.getServiceIdByCode(svcCode).getEntity();
+        return   configCommClient.getServiceIdByCode(svcCode).getEntity();
     }
 
     @Override
@@ -155,7 +160,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             docMap.put("common", "0");
         }
         String docMapJson = JsonUtil.parseToJson(docMap);
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos =  configCommClient.getHcsaSvcDocConfig(docMapJson).getEntity();
         return hcsaSvcDocConfigDtos;
     }
 
@@ -164,7 +169,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("svcId", serviceId);
 
-        return appConfigClient.listSubCorrelation(serviceId).getEntity();
+        return configCommClient.listSubCorrelation(serviceId).getEntity();
     }
 
 
@@ -174,7 +179,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
 
-        return  appConfigClient.getServiceType(serviceId,psnType).getEntity();
+        return  configCommClient.getServiceType(serviceId,psnType).getEntity();
     }
 
 
@@ -197,12 +202,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceDto> getAllService(){
-        return appConfigClient.allHcsaService().getEntity();
+        return configCommClient.allHcsaService().getEntity();
     }
 
     @Override
     public List<HcsaServiceDto> getServicesInActive(){
-        return appConfigClient.getActiveServices().getEntity();
+        return configCommClient.getActiveServices().getEntity();
     }
 
     @Override
@@ -210,7 +215,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if (StringUtil.isEmpty(serviceId)) {
             return new ArrayList<>();
         }
-        List<HcsaServiceStepSchemeDto> stepDtos = appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        List<HcsaServiceStepSchemeDto> stepDtos = configCommClient.getServiceStepsByServiceId(serviceId).getEntity();
         if (stepDtos != null && !stepDtos.isEmpty()) {
             stepDtos.stream()
                     .filter(dto -> HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(dto.getStepCode()))
@@ -224,7 +229,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if (StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stepCode)) {
             return null;
         }
-        List<HcsaServiceStepSchemeDto> stepDtos = appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        List<HcsaServiceStepSchemeDto> stepDtos = configCommClient.getServiceStepsByServiceId(serviceId).getEntity();
         if (stepDtos == null || stepDtos.isEmpty()) {
             return null;
         }
@@ -237,7 +242,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){
-        return appConfigClient.serviceCorrelation().getEntity();
+        return configCommClient.serviceCorrelation().getEntity();
     }
 
     @Override
@@ -275,7 +280,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         specicalPersonDto.setServiceId(svcId);
         specicalPersonDto.setType(psnTypes);
         specicalPersonDtos.add(specicalPersonDto);
-        return appConfigClient.getServiceSpecificPerson(specicalPersonDtos).getEntity();
+        return configCommClient.getServiceSpecificPerson(specicalPersonDtos).getEntity();
     }
 
     @Override
@@ -290,12 +295,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(List<String> svcIds) {
-        return appConfigClient.getServiceStepsByServiceIds(svcIds).getEntity();
+        return configCommClient.getServiceStepsByServiceIds(svcIds).getEntity();
     }
 
     @Override
     public List<HcsaServiceDto> getHcsaServiceByNames(List<String> names) {
-        return appConfigClient.getHcsaServiceByNames(names).getEntity();
+        return configCommClient.getHcsaServiceByNames(names).getEntity();
     }
 
     @Override
@@ -316,7 +321,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public HcsaServiceDto getHcsaServiceDtoById(String id) {
-        return appConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
+        return configCommClient.getHcsaServiceDtoByServiceId(id).getEntity();
     }
 
     @Override
@@ -326,11 +331,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName) {
-        return appConfigClient.getActiveHcsaServiceDtoByName(svcName).getEntity();
+        return configCommClient.getActiveHcsaServiceDtoByName(svcName).getEntity();
     }
     @Override
     public HcsaServiceDto getActiveHcsaServiceDtoById(String serviceId){
-       return appConfigClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
+       return configCommClient.getActiveHcsaServiceDtoById(serviceId).getEntity();
     }
     @Override
     public ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto appGrp) {
@@ -344,7 +349,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if(version != null){
             ver = String.valueOf(version);
         }
-        return appConfigClient.getPrimaryDocConfigByVersion(ver).getEntity();
+        return configCommClient.getPrimaryDocConfigByVersion(ver).getEntity();
     }
 
     @Override
@@ -756,13 +761,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public String getGiroAccountByGroupNo(String groupNo){
 
-        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(groupNo+"-01");
         if( applicationDto == null){
             return "";
         }
         if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
             List<String> licIds = Collections.singletonList(applicationDto.getOriginLicenceId());
-            List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
+            List<GiroAccountInfoDto> giroAccountInfoDtos = licCommService.getGiroAccountsByLicIds(licIds);
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
                 orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
@@ -779,7 +784,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     private List<String> getGiroAccountAndBICByGroupNo(String groupNo){
-        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(groupNo+"-01");
         if( applicationDto == null){
             return null;
         }
@@ -790,7 +795,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private List<String> getGiroAccountAndBICByLicId(String licId){
         if(StringUtil.isNotEmpty(licId)){
             List<String> licIds = Collections.singletonList(licId);
-            List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
+            List<GiroAccountInfoDto> giroAccountInfoDtos = licCommService.getGiroAccountsByLicIds(licIds);
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
                 orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
@@ -1136,7 +1141,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
         List<HcsaServiceCorrelationDto> newHcsaServiceCorrelationDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtos)){
             List<String> baseSpecIdList = IaisCommonUtils.genNewArrayList();
@@ -1154,13 +1159,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList) {
-        return appConfigClient.getSvcSubtypeOrSubsumedByIdList(idList).getEntity();
+        return configCommClient.getSvcSubtypeOrSubsumedByIdList(idList).getEntity();
     }
 
     @Override
     public List<HcsaServiceDto> getActiveHcsaSvcByNames(List<String> names) {
         List<HcsaServiceDto> result = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> hcsaServiceDtos = appConfigClient.getHcsaServiceByNames(names).getEntity();
+        List<HcsaServiceDto> hcsaServiceDtos = configCommClient.getHcsaServiceByNames(names).getEntity();
         if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
             for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
                 if(AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())){

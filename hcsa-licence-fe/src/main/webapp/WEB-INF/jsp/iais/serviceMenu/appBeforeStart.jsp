@@ -26,14 +26,14 @@
       <input type="hidden" name="crud_action_additional" value="">
       <c:set var="loginContext" value="${iais_Login_User_Info_Attr}"/>
       <br>
-          <div class="navigation-gp">
-            <%@ include file="../common/dashboardDropDown.jsp" %>
-              <div class="col-xs-12">
-                <div class="dashboard-page-title">
-                  <h1>New Licence Application</h1>
-                </div>
-              </div>
-      </div>
+      <div class="navigation-gp">
+        <%@ include file="../common/dashboardDropDown.jsp" %>
+          <div class="col-xs-12">
+            <div class="dashboard-page-title">
+              <h1>New Licence Application</h1>
+            </div>
+          </div>
+       </div>
 
 
       <div class="instruction-content center-content">

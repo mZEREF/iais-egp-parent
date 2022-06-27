@@ -14,17 +14,18 @@
                 <div class="intranet-content">
                     <div class="bg-title">
                         <h2>
-                            <c:if test="${COMPLETED}" >
-                                <iais:message key="LOLEV_ACK039" escape="true" />
-                            </c:if>
-                            <c:if test="${!COMPLETED}">
-                                <c:if test="${LEADER_SEND}" >
-                                    <iais:message key="LOLEV_ACK053" escape="true" />
-                                </c:if>
-                                <c:if test="${!LEADER_SEND}">
-                                    <iais:message key="LOLEV_ACK035" escape="true"/>
-                                </c:if>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${isRollBack}"><iais:message key="INSPE_ACK002" escape="true" /></c:when>
+                                <c:when test="${COMPLETED}"><iais:message key="LOLEV_ACK039" escape="true" /></c:when>
+                                <c:otherwise>
+                                    <c:if test="${LEADER_SEND}" >
+                                        <iais:message key="LOLEV_ACK053" escape="true" />
+                                    </c:if>
+                                    <c:if test="${!LEADER_SEND}">
+                                        <iais:message key="LOLEV_ACK035" escape="true"/>
+                                    </c:if>
+                                </c:otherwise>
+                            </c:choose>
                         </h2>
                     </div>
                 </div>

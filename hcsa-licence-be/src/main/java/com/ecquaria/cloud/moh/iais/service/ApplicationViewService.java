@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationViewService {
 
@@ -46,4 +47,5 @@ public interface ApplicationViewService {
     void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 
     boolean noContainsFlagByStageList(List<SelectOption> nextStageList);
+
 }
