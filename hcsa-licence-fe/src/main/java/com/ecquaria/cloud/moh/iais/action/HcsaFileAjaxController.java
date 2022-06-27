@@ -83,7 +83,7 @@ public class HcsaFileAjaxController {
         String fileType = ParamUtil.getString(request, "_fileType");
         String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
         int maxSize = 0;
-        if (StringUtil.isDigit(fileMaxSize)) {
+        if (StringUtil.isNumber(fileMaxSize)) {
             maxSize = Integer.parseInt(fileMaxSize);
         }
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
