@@ -186,7 +186,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 }
             }else {
                 ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
-                doctorInformationDto.setName(drugSubmission.getDoctorName());
+                String doctorName = ParamUtil.getString(request, "names");
+                doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                 doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());

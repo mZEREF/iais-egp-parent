@@ -154,7 +154,9 @@ public class MohDsActionDelegator {
                 DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
                 DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorInformationId());
                 dpSuper.setDoctorInformationDto(doctorInformationDto);
-                drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                if (doctorInformationDto != null) {
+                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                }
                 drugSubmissionDto.setDoctorInformations("true");
             }
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
