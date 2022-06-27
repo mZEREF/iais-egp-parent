@@ -298,7 +298,7 @@ public class LdtDataSubmissionDelegator {
         String cannotCLT = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
-            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
             String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
             if ("true".equals(isGuide)){
