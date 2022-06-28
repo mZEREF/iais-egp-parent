@@ -36,7 +36,6 @@
                 <div class="tab-content">
                     <div id="lics" class="tab-pane fade in active">
                         <ul class="subnav-list">
-                            </c:if>
                 <menu:iterate id="inbox-top-menus" var="item" varStatus="status" >
                 <c:choose>
                     <c:when test="${!status.last and status.next.depth > 1}">
@@ -130,6 +129,7 @@
                         </c:choose>
                         </c:if>
                         </menu:iterate>
+                 </c:if>
             </ul>
         </div>
     </div>
