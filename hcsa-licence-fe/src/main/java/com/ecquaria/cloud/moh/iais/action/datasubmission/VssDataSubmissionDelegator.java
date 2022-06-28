@@ -55,6 +55,7 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -355,8 +356,8 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setSessionAttr(request, "vssFiles", null);
-        ParamUtil.setSessionAttr(request,"seesion_files_map_ajax_feselectedVssFile",null);
         ParamUtil.setSessionAttr(request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
+        ParamUtil.setSessionAttr(request, "_fileType","PDF,DOC,XLS");
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
@@ -378,7 +379,6 @@ public class VssDataSubmissionDelegator {
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-        guardianAppliedPartDto.setVssDocumentDto( IaisCommonUtils.isNotEmpty(guardianAppliedPartDto.getVssDocumentDto()) ? guardianAppliedPartDto.getVssDocumentDto() : IaisCommonUtils.genNewArrayList());
         setFiles(guardianAppliedPartDto,request);
         vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
@@ -526,7 +526,7 @@ public class VssDataSubmissionDelegator {
     }
 
     private void setFiles(GuardianAppliedPartDto guardianAppliedPartDto,HttpServletRequest request){
-        List<VssDocumentDto> vssDoc = guardianAppliedPartDto.getVssDocumentDto();
+        List<VssDocumentDto> vssDoc = new ArrayList<>();
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX+"selectedVssFile");
         IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
@@ -561,6 +561,10 @@ public class VssDataSubmissionDelegator {
             });
             vssDoc.sort(Comparator.comparing(VssDocumentDto :: getSeqNum));
         }
+        if (IaisCommonUtils.isNotEmpty(guardianAppliedPartDto.getVssDocumentDto())) {
+            guardianAppliedPartDto.getVssDocumentDto().clear();
+        }
+        guardianAppliedPartDto.setVssDocumentDto(vssDoc);
         request.getSession().setAttribute("vssFiles", vssDoc);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile", map);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile_MaxIndex", vssDoc.size());
