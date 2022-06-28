@@ -13,10 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -227,24 +227,13 @@ public class OnlineVssEnquiryDelegator {
                 vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSterilizationHospital(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()).getPremiseLabel());
             }
         }
-        ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDoctorReignNo());
-        if(professionalResponseDto==null){
-            professionalResponseDto=new ProfessionalResponseDto();
-        }
-        if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-            VssTreatmentDto vssTreatmentDto=vssInfo.getVssTreatmentDto();
-            SexualSterilizationDto sterilizationDto=vssTreatmentDto.getSexualSterilizationDto();
-            DoctorInformationDto doctorInformationDto=assistedReproductionClient.getDoctorInformationDtoByConds(sterilizationDto.getDoctorReignNo(),DataSubmissionConsts.DS_VSS).getEntity();
-            vssInfo.setDoctorInformationDto(doctorInformationDto);
-            sterilizationDto.setDoctorInformations("true");
-            vssTreatmentDto.setSexualSterilizationDto(sterilizationDto);
-            vssInfo.setVssTreatmentDto(vssTreatmentDto);
-        }else {
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setDoctorName(professionalResponseDto.getName());
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
-        }
+        VssTreatmentDto vssTreatmentDto=vssInfo.getVssTreatmentDto();
+        SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(treatmentDto.getDoctorInformationId()).getEntity();
+        vssInfo.setDoctorInformationDto(doctorInformationDto);
+        sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+        sexualSterilizationDto.setDoctorInformations("true");
         ParamUtil.setRequestAttr(request,"vssSuperDataSubmissionDto",vssInfo);
     }
 }

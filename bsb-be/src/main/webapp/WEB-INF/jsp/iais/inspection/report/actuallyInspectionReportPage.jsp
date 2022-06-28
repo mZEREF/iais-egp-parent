@@ -19,7 +19,7 @@
 
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
-<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
+<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportProcessDto"--%>
 
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>

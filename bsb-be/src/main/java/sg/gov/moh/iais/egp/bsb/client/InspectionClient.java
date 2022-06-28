@@ -77,6 +77,9 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/ao-review-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionAOReviewDecision(@RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/validate/hm-handle-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionHMApprovalDecision(@RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/actual/validate/approval-letter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInsApprovalLetter(@RequestBody InsApprovalLetterDto dto);
 
@@ -168,7 +171,7 @@ public interface InspectionClient {
 
     /************************************* report *************************************/
     @GetMapping(value = "/inspection/actual/report", produces = MediaType.APPLICATION_JSON_VALUE)
-    InsSubmitReportDataDto getInitInsSubmitReportData(@RequestParam("appId") String appId);
+    InsSubmitReportDataDto getInitInsSubmitReportData(@RequestParam("appId") String appId,@RequestParam("roleId") String roleId);
 
     @PostMapping(value = "/inspection/actual/validate/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionReport(@RequestBody ReportDto reportDto);
@@ -186,10 +189,26 @@ public interface InspectionClient {
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/report/hm/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionReportHMApprove(@RequestParam("appId") String appId,
+                                       @RequestParam("taskId") String taskId,
+                                       @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/report/hm/reject", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionReportHMReject(@RequestParam("appId") String appId,
+                                         @RequestParam("taskId") String taskId,
+                                         @RequestBody InsProcessDto processDto);
+
+
     @PostMapping(value = "/inspection/actual/report/ao/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionReportRouteBackToDO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/report/ao/to-hm", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionReportRouteToHM(@RequestParam("appId") String appId,
+                                         @RequestParam("taskId") String taskId,
+                                         @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/report/do/to-applicant", consumes = MediaType.APPLICATION_JSON_VALUE)
     void routeInspectionReportToApplicant(@RequestParam("appId") String appId,

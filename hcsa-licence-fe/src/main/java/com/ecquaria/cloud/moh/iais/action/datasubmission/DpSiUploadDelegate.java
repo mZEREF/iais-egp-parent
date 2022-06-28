@@ -159,7 +159,7 @@ public class DpSiUploadDelegate {
             if(siDto.getHciName().length()>256){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","256");
-                repMap.put("HCI Name","fieldNo");
+                repMap.put("fieldNo","HCI Name");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("hciName"), errMsg));
             }
@@ -171,7 +171,7 @@ public class DpSiUploadDelegate {
             if(siDto.getDrugName().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Drug Name","fieldNo");
+                repMap.put("fieldNo","Drug Name");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugName"), errMsg));
             }
@@ -184,7 +184,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getBatchNumber().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Batch Number","fieldNo");
+                    repMap.put("fieldNo","Batch Number");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("batchNumber"), errMsg));
                 }
@@ -201,7 +201,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getDrugStrength().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Drug Strength","fieldNo");
+                    repMap.put("fieldNo","Drug Strength");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("drugStrength"), errMsg));
                 }
@@ -215,7 +215,7 @@ public class DpSiUploadDelegate {
             if(siDto.getQuantityDrugPurchased().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Quantity of Drug Purchased","fieldNo");
+                repMap.put("fieldNo","Quantity of Drug Purchased");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityDrugPurchased"), errMsg));
             }
@@ -259,7 +259,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getQuantityBalanceStock().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Quantity of balance stock as at 31 Dec 2017","fieldNo");
+                    repMap.put("fieldNo","Quantity of balance stock as at 31 Dec 2017");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityBalanceStock"), errMsg));
                 }
@@ -275,7 +275,7 @@ public class DpSiUploadDelegate {
                 if(siDto.getQuantityExpiredStock().length()>50){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("number","50");
-                    repMap.put("Quantity of expired stock as at 31 Dec 2017","fieldNo");
+                    repMap.put("fieldNo","Quantity of expired stock as at 31 Dec 2017");
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("quantityExpiredStock"), errMsg));
                 }
@@ -289,7 +289,7 @@ public class DpSiUploadDelegate {
             if(siDto.getRemarks().length()>50){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","50");
-                repMap.put("Remarks","fieldNo");
+                repMap.put("fieldNo","Remarks");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("remarks"), errMsg));
             }

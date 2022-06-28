@@ -163,7 +163,14 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Patient ID Number</p>
-                                        <iais:code code="${inboxDataSubmissionQuery.patientIdNumber}"/>
+                                        <c:choose>
+                                            <c:when test="${inboxDataSubmissionQuery.patientIdNumber ==null}">
+                                                -
+                                            </c:when>
+                                            <c:otherwise>
+                                                <iais:code code="${inboxDataSubmissionQuery.patientIdNumber}"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>

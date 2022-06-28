@@ -68,7 +68,7 @@
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty"/>
                             <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -88,7 +88,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
@@ -256,7 +256,7 @@
                     <iais:field width="5" value="Business Name of Healthcare Service provider" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="hspBusinessName" name="hspBusinessName" options="hspSelectList"
-                                     firstOption="Please Select" value="${drugSubmission.hspBusinessName}"/>
+                                     value="${drugSubmission.hspBusinessName}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -274,6 +274,7 @@
     <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
+<input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${drugSubmission.doctorInformationPE}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -580,6 +581,7 @@
                     $('#doctorInformation').hide();
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
+                    $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
@@ -595,10 +597,12 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
+                        $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();

@@ -10,16 +10,16 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___MohFacilityApprovalDORecommendation___1 extends BaseProcessClass {
+import sop.webflow.rt.api.BaseProcessClass;
 
-	private static final String DELEGATOR ="facilityApprovalOfficerDelegator";
+public class INTRANET___MohBsbInsReportHMApproval___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbInspectionReportHMApprovalDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "startDO", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
@@ -44,27 +44,17 @@ public class INTRANET___MohFacilityApprovalDORecommendation___1 extends BaseProc
 
 	public void approve_OnStepProcess_0() throws Exception {
 	// 		Approve->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "approveByDO", this);
+		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
 	public void reject_OnStepProcess_0() throws Exception {
 	// 		Reject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "rejectByDO", this);
+		EngineHelper.delegate(DELEGATOR, "reject", this);
 	}
 
-	public void rfi_OnStepProcess_0() throws Exception {
-	// 		Rfi->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "rfiByDO", this);
-	}
-
-	public void prepareRfi_OnStepProcess_0() throws Exception {
-	// 		PrepareRfi->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareRfi", this);
-	}
-
-	public void doRfi_OnStepProcess_0() throws Exception {
-	// 		DoRfi->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doRfi", this);
+	public void handleSaveReport_OnStepProcess_0() throws Exception {
+		// 		HandleSaveReport->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleSaveReport", this);
 	}
 
 }
