@@ -357,7 +357,6 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setSessionAttr(request, "vssFiles", null);
         ParamUtil.setSessionAttr(request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
-        ParamUtil.setSessionAttr(request, "_fileType","PDF,DOC,XLS");
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
