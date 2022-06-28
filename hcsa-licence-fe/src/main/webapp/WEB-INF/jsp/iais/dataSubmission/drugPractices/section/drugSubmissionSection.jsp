@@ -256,7 +256,7 @@
                     <iais:field width="5" value="Business Name of Healthcare Service provider" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="hspBusinessName" name="hspBusinessName" options="hspSelectList"
-                                     firstOption="Please Select" value="${drugSubmission.hspBusinessName}"/>
+                                     value="${drugSubmission.hspBusinessName}"/>
                     </iais:value>
                 </iais:row>
             </div>
