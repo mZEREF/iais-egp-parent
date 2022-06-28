@@ -14,48 +14,47 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBsbInspectionAOReview___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbAOReviewInspectionReport";
-	
+public class INTRANET___MohBsbInsReportHMApproval___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbInspectionReportHMApprovalDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
+	// 		Init->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void pre_OnStepProcess_0() throws Exception {
+	// 		Pre->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "pre", this);
 	}
 
 	public void bindAction_OnStepProcess_0() throws Exception {
+	// 		BindAction->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "bindAction", this);
 	}
 
 	public void handleSubmit_OnStepProcess_0() throws Exception {
+	// 		HandleSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
-	public void revision_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "revision", this);
-	}
-
 	public void approve_OnStepProcess_0() throws Exception {
+	// 		Approve->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
-	public void routeToHM_OnStepProcess_0() throws Exception {
-		// 		RouteToHM->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "routeToHM", this);
-	}
-
-	public void skip_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "skip", this);
+	public void reject_OnStepProcess_0() throws Exception {
+	// 		Reject->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "reject", this);
 	}
 
 	public void handleSaveReport_OnStepProcess_0() throws Exception {
+		// 		HandleSaveReport->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "handleSaveReport", this);
 	}
+
 }

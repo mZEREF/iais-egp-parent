@@ -89,6 +89,9 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_DO_CONFIRM_INSPECTION_DATE = "BSBAPST045";
     public static final String APP_STATUS_PEND_DO_NC_EMAIL_DRAFT        = "BSBAPST046";
     public static final String APP_STATUS_PEND_AO_NC_EMAIL_REVIEW       = "BSBAPST047";
+    public static final String APP_STATUS_PEND_HM_REPORT_APPROVAL       = "BSBAPST048";
+    public static final String APP_STATUS_HM_RESPONDED                  = "BSBAPST049";
+
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
     public static final Set<String> UNAVAILABLE_APP_STATUS;
@@ -299,6 +302,7 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
     public static final String MOH_PROCESSING_DECISION_SKIP_INSPECTION = "MOHPRO029";
     public static final String MOH_PROCESSING_DECISION_ROUTE_TO_AO = "MOHPRO030";
+    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW = "MOHPRO031";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";

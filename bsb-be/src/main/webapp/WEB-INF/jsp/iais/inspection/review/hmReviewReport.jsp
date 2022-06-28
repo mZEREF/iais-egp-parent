@@ -19,7 +19,8 @@
 
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
-<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportProcessDto"--%>
+<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
+<%--@elvariable id="prevOfficerNote" type="sg.gov.moh.iais.egp.bsb.dto.inspection.common.PrevOfficerNoteDto"--%>
 
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -38,8 +39,8 @@
                             <div class="subcontent col-12">
                                 <div class="tab-gp dashboard-tab">
                                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                        <li <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_SUBMIT_INTO}">class="active"</c:if> id="info" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_SUBMIT_INTO}" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
+                                        <li <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">class="active"</c:if> id="info" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_FAC_INFO}" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
                                         </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
@@ -47,8 +48,8 @@
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">class="active"</c:if> id="insReport" role="presentation">
                                             <a href="#${InspectionConstants.TAB_INS_REPORT}" id="doInsReport" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                         </li>
-                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAIL}">class="active"</c:if> id="facDetails" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_FAC_DETAIL}" id="doFacDetails" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Application Recommendations</a>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">class="active"</c:if> id="facDetails" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_FAC_DETAILS}" id="doFacDetails" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Application Recommendations</a>
                                         </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">class="active"</c:if> id="process" role="presentation">
                                             <a href="#${InspectionConstants.TAB_PROCESSING}" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -57,7 +58,7 @@
                                     <div class="tab-nav-mobile visible-xs visible-sm">
                                         <div class="swiper-wrapper" role="tablist">
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_SUBMIT_INTO}" aria-controls="tabInfo" role="tab" data-toggle="tab">Information</a>
+                                                <a href="#${InspectionConstants.TAB_FAC_INFO}" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
                                             </div>
                                             <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
@@ -66,7 +67,7 @@
                                                 <a href="#${InspectionConstants.TAB_INS_REPORT}" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                             </div>
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_FAC_DETAIL}" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Application Recommendations</a>
+                                                <a href="#${InspectionConstants.TAB_FAC_DETAILS}" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Application Recommendations</a>
                                             </div>
                                             <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_PROCESSING}" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -74,16 +75,16 @@
                                         </div>
                                     </div>
                                     <div class="tab-content">
-                                        <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_SUBMIT_INTO}">active</c:if>" id="${InspectionConstants.TAB_SUBMIT_INTO}" role="tabpanel">
+                                        <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">active</c:if>" id="${InspectionConstants.TAB_FAC_INFO}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">active</c:if>" id="${InspectionConstants.TAB_INS_REPORT}" role="tabpanel">
-                                            <%@include file="inspectionReport.jsp"%>
+                                            <%@include file="../report/inspectionReport.jsp"%>
                                         </div>
-                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAIL}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAIL}" role="tabpanel">
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAILS}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">active</c:if>" id="${InspectionConstants.TAB_PROCESSING}" role="tabpanel">
@@ -103,6 +104,34 @@
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
+                                                                <label class="col-xs-12 col-md-4 control-label">AO Recommendation</label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <p><iais:code code="${prevOfficerNote.recommendation}"/></p>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-xs-12 col-md-4 control-label">AO Remarks</label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <p><c:out value="${prevOfficerNote.remark}"/></p>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <div class="input-group">
+                                                                        <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
+                                                                            <option value="">Please Select</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
+                                                                        </select>
+                                                                        <span data-err-ind="decision" class="error-msg" ></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
@@ -113,58 +142,7 @@
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <span data-err-ind="error_message" class="error-msg"></span>
-                                                            <c:if test="${hasNonCompliance eq 'Y'}">
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Draft NC Email? <span style="color: red">*</span></label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
-                                                                        <div class="input-group">
-                                                                            <label>
-                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
-                                                                            </label>
-                                                                            <span class="check-circle">Yes</span>
-                                                                            <label>
-                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'N'}">checked="checked"</c:if> value="N"/>
-                                                                            </label>
-                                                                            <span class="check-circle">No</span>
-                                                                            <span data-err-ind="ncEmailRequired" class="error-msg" ></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </c:if>
-                                                            <div class="form-group">
-                                                                <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <div class="input-group">
-                                                                        <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
-                                                                            <option value="">Please Select</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
-                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_REPORT_FINALISATION}">
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}">selected="selected"</c:if>>Mark report as final</option>
-                                                                            </c:if>
-                                                                            <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
-                                                                        </select>
-                                                                        <span data-err-ind="decision" class="error-msg" ></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
-                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
-                                                                <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <div class="input-group">
-                                                                        <select name="selectMohUser" class="selectMohUserDropdown" id="selectMohUser">
-                                                                            <option value="">Please Select</option>
-                                                                            <c:forEach var="selection" items="${selectRouteToMoh}">
-                                                                                <option value="${selection.value}" <c:if test="${processDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
-                                                                            </c:forEach>
-                                                                        </select>
-                                                                        <span data-err-ind="selectMohUser" class="error-msg" ></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
-                                                            <span data-err-ind="commitReport" class="error-msg" ></span>
+
                                                         </div>
                                                         <div style="text-align: right">
                                                             <a class="back" href="/bsb-web/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>

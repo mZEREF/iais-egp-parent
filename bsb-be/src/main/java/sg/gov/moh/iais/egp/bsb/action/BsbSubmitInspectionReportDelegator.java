@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
@@ -87,7 +88,7 @@ public class BsbSubmitInspectionReportDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
 
         // judge whether we need to send email
-        InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId);
+        InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId, RoleConstants.ROLE_BSB_DO);
 
         // submission details info
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
