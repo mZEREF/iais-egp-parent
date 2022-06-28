@@ -200,6 +200,7 @@
                                                                                                  firstOption="Please Select"
                                                                                                  options="rollBackValues"
                                                                                                  value="${selectRollBack}"></iais:select>
+                                                                                    <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -464,6 +465,10 @@
 
         </form>
         <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
+
+    <iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
+                  cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
+                  callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -710,18 +715,36 @@
 
 
     $("#submitButton").click(function () {
-        var selectDetail = $('#selectDetail').html();
-        if(selectDetail != null && selectDetail != ''){
-            $('#rfiSelectValue').val(selectDetail);
+        var selectValue = $("[name='nextStage']").val();
+        $('#err_rollBackTo').hide();
+        if('RollBack' ===selectValue){
+            $('#confirmTag').modal('show');
+        }else {
+            var selectDetail = $('#selectDetail').html();
+            if(selectDetail != null && selectDetail != ''){
+                $('#rfiSelectValue').val(selectDetail);
+            }
+            if(rfiValidate()){
+                showWaiting();
+                document.getElementById("mainForm").submit();
+                $("#submitButton").attr("disabled", true);
+            }else{
+                return;
+            }
         }
-        if(rfiValidate()){
+    });
+    function rollBackSubmit(){
+        const rollBackTo = $('#rollBackCr').val();
+        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+            $('#err_rollBackTo').show();
+            //close fangDuoJi in has error
+            $('#fangDuoJiconfirmTag').val(null);
+        }else {
             showWaiting();
             document.getElementById("mainForm").submit();
             $("#submitButton").attr("disabled", true);
-        }else{
-            return;
         }
-    });
+    }
 
     function check(){
         var selectValue = $("[name='nextStage']").val();
