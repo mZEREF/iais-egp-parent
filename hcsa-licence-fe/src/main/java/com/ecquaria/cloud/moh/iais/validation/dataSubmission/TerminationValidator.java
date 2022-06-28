@@ -12,12 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-
-import com.ecquaria.cloud.moh.iais.validation.NewAppValidator;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 public class TerminationValidator implements CustomizeValidator {
     @Override
@@ -124,13 +121,13 @@ public class TerminationValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(doctorInformationDto.getName())) {
                 errorMap.put("dName", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
-                String general_err0041 = .repLength("Name of Doctor", "66");
+                String general_err0041 = AppValidatorHelper.repLength("Name of Doctor", "66");
                 errorMap.put("dName", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 errorMap.put("dSpeciality", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                String general_err0041 = NewAppValidator.repLength("Specialty", "100");
+                String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
                 errorMap.put("dSpeciality", general_err0041);
             }
             if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
