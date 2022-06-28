@@ -148,13 +148,15 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Diagnosis" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${drugSubmission.diagnosis}"/>
-                    </iais:value>
-                </iais:row>
-                <div class="" <c:if test="${drugSubmission.medication != 'MED002' and drugSubmission.drugType!='DPD002'}">style="display: none;"</c:if>>
+                <div <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="Diagnosis" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${drugSubmission.diagnosis}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <c:if test="${drugSubmission.drugType=='DPD002' && drugSubmission.medication =='MED002'}">
                     <iais:row>
                         <iais:field width="5" value="Urine Test Type" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
@@ -167,7 +169,7 @@
                             <iais:code code="${drugSubmission.urineTestResult}"/>
                         </iais:value>
                     </iais:row>
-                </div>
+                </c:if>
                 <div class="" <c:if test="${drugSubmission.medication != 'MED001'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Nurse/Pharmacist's Registration No." />
@@ -182,6 +184,13 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Business Name of Healthcare Service provider" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <%--<iais:code code="${drugSubmission.hspBusinessName}"/>--%>
+                        <iais:optionText value="${drugSubmission.hspBusinessName}" selectionOptions="hspSelectList"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
