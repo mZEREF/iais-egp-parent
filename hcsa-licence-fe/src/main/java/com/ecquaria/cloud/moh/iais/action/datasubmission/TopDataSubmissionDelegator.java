@@ -1196,36 +1196,39 @@ public class TopDataSubmissionDelegator {
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
-                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
-                    String doctorName = ParamUtil.getString(request, "names");
-                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
-                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
-                    String dQualification = ParamUtil.getString(request, "dQualifications");
-                    terminationDto.setDoctorName(doctorName);
-                    terminationDto.setSpecialty(dSpeciality);
-                    terminationDto.setSubSpecialty(dSubSpeciality);
-                    terminationDto.setQualification(dQualification);
-                    doctorInformationDto.setName(terminationDto.getDoctorName());
-                    doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
-                    doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
-                    doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
-                    doctorInformationDto.setQualification(terminationDto.getQualification());
-                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
-                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    if("true".equals(terminationDto.getDoctorInformationPE())){
+                        String TOPE="TOPE";
+                        String doctorName = ParamUtil.getString(request, "names");
+                        String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                        String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                        String dQualification = ParamUtil.getString(request, "dQualifications");
+                        terminationDto.setDoctorName(doctorName);
+                        terminationDto.setSpecialty(dSpeciality);
+                        terminationDto.setSubSpecialty(dSubSpeciality);
+                        terminationDto.setQualification(dQualification);
+                        doctorInformationDto.setName(terminationDto.getDoctorName());
+                        doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
+                        doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
+                        doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
+                        doctorInformationDto.setQualification(terminationDto.getQualification());
+                        doctorInformationDto.setDoctorSource(TOPE);
+                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    }
                 }
-            }else {
-                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+            }else if("false".equals(terminationDto.getDoctorInformationPE())){
+                String TOPP="TOPP";
                 String doctorName = ParamUtil.getString(request, "names");
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
                 doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(terminationDto.getQualification());
-                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                doctorInformationDto.setDoctorSource(TOPP);
                 topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(terminationDto.getTopDoctorInformations())){
+            String TOPT="TOPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -1235,7 +1238,7 @@ public class TopDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+            doctorInformationDto.setDoctorSource(TOPT);
             terminationDto.setDoctorName(dName);
             topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }else {

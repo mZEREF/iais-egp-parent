@@ -180,15 +180,15 @@
                     </iais:value>
                 </iais:row>
                 <c:if test="${terminationDto.topDoctorInformations eq 'false'}">
-                    <c:if test="${doctorInformationPE eq 'true'}">
+                    <c:if test="${terminationDto.doctorInformationPE eq 'true'}">
                         <c:set var="toolMsg"><iais:message key="GENERAL_ERR0063" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
-                    <c:if test="${doctorInformationPE eq 'false'}">
+                    <c:if test="${terminationDto.doctorInformationPE eq 'false'}">
                         <c:set var="toolMsg"><iais:message key="GENERAL_ERR0064" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                 </c:if>
                 <c:if test="${terminationDto.topDoctorInformations eq 'true'}">
-                    <c:set var="toolMsg"><iais:message key="GENERAL_ERR0065" paramKeys="1" paramValues="counsellor"/></c:set>
+                    <c:set var="toolMsg"><iais:message key="GENERAL_ERR0065" paramKeys="1" paramValues="counsellor" escape="false"/></c:set>
                 </c:if>
                 <iais:row>
                     <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}"/>
