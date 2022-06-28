@@ -230,9 +230,10 @@ public class HalpSearchResultHelper {
         }
     }
 
-    public static InterMessageSearchDto initInterDssSearchDto(HttpServletRequest request,String licenseeId){
+    public static InterMessageSearchDto initInterDssSearchDto(HttpServletRequest request,String licenseeId,String createdBy){
         InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
         interMessageSearchDto.setLicenseeId(licenseeId);
+        interMessageSearchDto.setCreatBy(createdBy);
         interMessageSearchDto.setServiceCodes(getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 
         return interMessageSearchDto;

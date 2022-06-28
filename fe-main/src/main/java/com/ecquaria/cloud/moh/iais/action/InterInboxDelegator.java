@@ -1565,7 +1565,8 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request, "unreadAndresponseNum", unreadAndresponseNum);
             ParamUtil.setRequestAttr(request, "licActiveNum", licActiveNum);
             ParamUtil.setRequestAttr(request, "appDraftNum", appDraftNum);
-            ParamUtil.setRequestAttr(request, "dssDraftNum", inboxService.dssDraftNum(HalpSearchResultHelper.initInterDssSearchDto(request,interInboxUserDto.getLicenseeId())));
+            ParamUtil.setRequestAttr(request, "dssDraftNum", inboxService.dssDraftNum(
+                    HalpSearchResultHelper.initInterDssSearchDto(request,interInboxUserDto.getLicenseeId(),interInboxUserDto.getUserId())));
         }
     }
     /**
