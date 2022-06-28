@@ -461,7 +461,8 @@
         $CurrentPsnEle.find('input[name="mobileNo"]').css('color','#999');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('border-color','#ededed');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('color','#999');
-
+        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
       }
 
         if($('.designationSel').val()=='DES999'){
@@ -503,6 +504,8 @@
         } else {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
+          $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+          $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
           var arr = $(this).val().split(',');
           var nationality = arr[0];
           var idType = arr[1];

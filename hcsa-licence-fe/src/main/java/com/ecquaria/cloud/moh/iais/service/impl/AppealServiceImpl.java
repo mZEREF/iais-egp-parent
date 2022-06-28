@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -49,19 +50,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -78,6 +78,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -104,6 +105,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
 
 /**
  * @author Wenkang
@@ -1003,113 +1006,186 @@ public class AppealServiceImpl implements AppealService {
             map.put("reason", MessageUtil.replaceMessage("GENERAL_ERR0006","Reason For Appeal","field"));
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
-                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.PERSONSELECTMAP);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
                 if(IaisCommonUtils.isEmpty(appSvcCgoList)){
                     //todo
                     map.put("addCgo",  MessageUtil.replaceMessage("GENERAL_ERR0006","Add Another Clinical Governance Officer ","field"));
                 }
-                List<String> stringList = new ArrayList<>();
+                String designationMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
+                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
+                    StringBuilder stringBuilder1 = new StringBuilder();
                     String assignSelect = appSvcCgoList.get(i).getAssignSelect();
                     if ("-1".equals(assignSelect)) {
                         map.put("assignSelect" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
                     } else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
-                        String idNo = appSvcCgoList.get(i).getIdNo();
-                        String nationality = appSvcCgoList.get(i).getNationality();
+                        String nationality  = appSvcCgoList.get(i).getNationality();
 
-                        String keyIdType = "idTyp" + i;
-                        String keyIdNo = "idNo" + i;
-                        String keyNationality = "nationality" + i;
-                        boolean isValid = AppValidatorHelper.validateId(nationality, idTyp, idNo, keyNationality, keyIdType, keyIdNo, map);
-                        // check duplicated
-                        if (isValid) {
-                            String personKey = ApplicationHelper.getPersonKey(nationality, idTyp, idNo);
-                            boolean licPerson = appSvcCgoList.get(i).isLicPerson();
-                            String idTypeNoKey = "idTypeNo" + i;
-                            isValid = AppValidatorHelper.doPsnCommValidate(map, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
-                            if (isValid) {
-                                if (stringList.contains(personKey)) {
-                                    map.put(keyIdNo, "NEW_ERR0012");
+                        if ("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)) {
+                            map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
+                        }else if("IDTYPE003".equals(idTyp)){
+                            if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
+                                map.put("nationality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Country of issuance","field"));
+                            }
+
+                        }
+                        String salutation = appSvcCgoList.get(i).getSalutation();
+                        if (StringUtil.isEmpty(salutation)) {
+                            map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
+                        }
+
+                        String professionType = appSvcCgoList.get(i).getProfessionType();
+                        if (StringUtil.isEmpty(professionType)) {
+                            map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
+                        }
+                        String designation = appSvcCgoList.get(i).getDesignation();
+                        if (StringUtil.isEmpty(designation)) {
+                            map.put("designation" + i, designationMsg);
+                        }else if("DES999".equals(designation)){
+                            String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
+                            if (StringUtil.isEmpty(otherDesignation)) {
+                                map.put("otherDesignation" + i, designationMsg);
+                            } else if (otherDesignation.length() > 100) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "100");
+                                repMap.put("field", "Other Designation");
+                                map.put("otherDesignation" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                            }
+                        }
+                        String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
+                        String otherQualification = appSvcCgoList.get(i).getOtherQualification();
+                        if(StringUtil.isEmpty(appSvcCgoList.get(i).getQualification())&&StringUtil.isEmpty(otherQualification)){
+                            map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
+                        }
+                        if(StringUtil.isNotEmpty(otherQualification)&&otherQualification.length()>100){
+                            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                            repMap.put("maxlength","100");
+                            repMap.put("field","Other Qualification");
+                            map.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0041",repMap));
+
+                        }
+                        if (StringUtil.isEmpty(professionRegoNo)) {
+/*
+                            map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
+*/
+                        } else {
+                            if (professionRegoNo.length() > 20) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "20");
+                                repMap.put("field", "Professional Regn. No.");
+                                map.put("professionRegoNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                            }
+                            ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo);
+                            if (professionalResponseDto != null) {
+                                if (professionalResponseDto.isHasException()) {
+                                    map.put("professionRegoNo" + i, "GENERAL_ERR0048");
+                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                                    map.put("professionRegoNo" + i, "GENERAL_ERR0054");
                                 } else {
-                                    stringList.add(personKey);
+                                    List<String> specialty = professionalResponseDto.getSpecialty();
+                                    if (IaisCommonUtils.isEmpty(specialty)) {
+                                        map.put("professionRegoNo" + i, "GENERAL_ERR0042");
+                                    }
                                 }
                             }
                         }
 
-                        String salutation = appSvcCgoList.get(i).getSalutation();
-                        if (StringUtil.isEmpty(salutation)) {
-                            map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
-                        }
-                        String professionType = appSvcCgoList.get(i).getProfessionType();
-                        if (StringUtil.isEmpty(professionType)) {
-                            map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type ", "field"));
-                        }
-                        String designation = appSvcCgoList.get(i).getDesignation();
-                        if (StringUtil.isEmpty(designation)) {
-                            map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
-                        } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
-                            String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
-                            if (StringUtil.isEmpty(otherDesignation)) {
-                                map.put("otherDesignation" + i,
-                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
-                            } else if (otherDesignation.length() > 100) {
-                                String general_err0041 = AppValidatorHelper.repLength("Others Designation", "100");
-                                map.put("otherDesignation" + i, general_err0041);
+                        String idNo = appSvcCgoList.get(i).getIdNo();
+                        //to do
+                        if (StringUtil.isEmpty(idNo)) {
+                            map.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.  ","field"));
+                        } else {
+                            if (OrganizationConstants.ID_TYPE_FIN.equals(idTyp)) {
+                                boolean b = SgNoValidator.validateFin(idNo);
+                                if (!b) {
+                                    map.put("idNo" + i, "RFC_ERR0012");
+                                }
+                                stringBuilder1.append(idTyp).append(idNo);
+                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
+                                if(map1!=null){
+                                    map1.forEach((k,v)->{
+                                        if(v.equals(idNo)){
+                                            map.put("idNo", "NEW_ERR0012");
+                                        }
+                                    });
+                                }
+                            } else if (OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)) {
+                                boolean b1 = SgNoValidator.validateNric(idNo);
+                                if (!b1) {
+                                    map.put("idNo" + i, "RFC_ERR0012");
+                                }
+                                stringBuilder1.append(idTyp).append(idNo);
+                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
+                                if(map1!=null){
+                                    map1.forEach((k,v)->{
+                                        if(v.equals(idNo)){
+                                            map.put("idNo", "NEW_ERR0012");
+                                        }
+                                    });
+                                }
+                            }
+                            if (idNo.length() > 20) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "20");
+                                repMap.put("field", "ID No.");
+                                map.put("idNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                            }
+                            String personKey = ApplicationHelper.getPersonKey(nationality, idTyp, idNo);
+                            DealSessionUtil.setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(request), null, request);
+                            String licPerson=ParamUtil.getString(request,"licPerson");
+                            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, LICPERSONSELECTMAP);
+                            if (licPersonMap != null && !StringUtil.isEmpty(personKey) && !StringUtil.isEmpty(
+                                    idNo) && licPerson.equals("0")) {
+                                AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
+                                if (appSvcPersonAndExtDto != null) {
+                                    map.put("idNo", MessageUtil.replaceMessage("NEW_ERR0006", idNo, "ID No."));
+                                }
                             }
 
                         }
-                        String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
-                        if (!StringUtil.isEmpty(professionRegoNo) && professionRegoNo.length() > 20) {
-                            String general_err0041 = AppValidatorHelper.repLength("Professional Regn. No.", "20");
-                            map.put("professionRegoNo" + i, general_err0041);
-                        }
-                        String specialty = appSvcCgoList.get(i).getSpeciality();
-                        String otherQualification = appSvcCgoList.get(i).getOtherQualification();
-                        if (StringUtil.isEmpty(professionRegoNo) || StringUtil.isEmpty(specialty)) {
-                            if (StringUtil.isEmpty(otherQualification)) {
-                                map.put("otherQualification" + i,
-                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
-                            }
-                        }
-                        // GENERAL_ERR0036 - GENERAL_ERR0041
-                        if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
-                            map.put("otherQualification" + i, AppValidatorHelper.repLength("Other Qualification", "100"));
-                        }
+                        //to do
+
+
 
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
                             map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
-                        } else {
-                            if (name.length() > 110) {
-                                String general_err0041 = AppValidatorHelper.repLength("Name", "110");
-                                map.put("name" + i, general_err0041);
-                            }
+                        } else if (name.length() > 110) {
+                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                            repMap.put("maxlength", "110");
+                            repMap.put("field", "Name");
+                            map.put("name" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                         }
 
                         String mobileNo = appSvcCgoList.get(i).getMobileNo();
                         if (StringUtil.isEmpty(mobileNo)) {
-                            map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
+                            map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                         } else if (!StringUtil.isEmpty(mobileNo)) {
-                            if (mobileNo.length() > 8) {
-                                String general_err0041 = AppValidatorHelper.repLength("Mobile No.", "8");
-                                map.put("mobileNo" + i, general_err0041);
-                            }
                             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                                 map.put("mobileNo" + i, "GENERAL_ERR0007");
                             }
                         }
                         String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                         if (StringUtil.isEmpty(emailAddr)) {
-                            map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
-                        } else {
-                            if (emailAddr.length() > 320) {
-                                String general_err0041 = AppValidatorHelper.repLength("Email Address", "320");
-                                map.put("emailAddr" + i, general_err0041);
-                            }
+                            map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
+                        } else if (!StringUtil.isEmpty(emailAddr)) {
                             if (!ValidationUtils.isEmail(emailAddr)) {
                                 map.put("emailAddr" + i, "GENERAL_ERR0014");
+                            } else if (emailAddr.length() > 320) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "320");
+                                repMap.put("field", "Email Address");
+                                map.put("emailAddr" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                            }
+                        }
+                        String s = stringBuilder.toString();
+                        if (!StringUtil.isEmpty(stringBuilder1.toString())) {
+                            if (s.contains(stringBuilder1.toString())) {
+                                map.put("idNo", "NEW_ERR0012");
+                            } else {
+                                String str=stringBuilder1.toString();
+                                stringBuilder.append(str);
                             }
                         }
                     }
