@@ -57,4 +57,14 @@ public class INTRANET___MohFacilityApprovalDORecommendation___1 extends BaseProc
 		EngineHelper.delegate(DELEGATOR, "rfiByDO", this);
 	}
 
+	public void prepareRfi_OnStepProcess_0() throws Exception {
+	// 		PrepareRfi->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareRfi", this);
+	}
+
+	public void doRfi_OnStepProcess_0() throws Exception {
+	// 		DoRfi->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doRfi", this);
+	}
+
 }
