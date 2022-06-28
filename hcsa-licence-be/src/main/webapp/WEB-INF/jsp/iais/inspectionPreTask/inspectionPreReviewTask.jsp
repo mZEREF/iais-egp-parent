@@ -194,6 +194,8 @@
                               <iais:value width="7">
                                 <iais:select name="checkRbStage" options="rollBackOptions" firstOption="Please Select"
                                              value="${inspectionPreTaskDto.checkRbStage}"/>
+                                <span id="error_rollBackTo1" class="error-msg"
+                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row id="rfiCheckBox">
@@ -418,7 +420,9 @@
 
     function doInspectionPreTaskSubmit() {
         showWaiting();
-        var actionValue = $("#processDec").val();
+        clearErrorMsg();
+      $("#error_rollBackTo1").hide();
+      var actionValue = $("#processDec").val();
         if("REDECI002" == actionValue){
             $("#actionValue").val('approve');
             inspectionPreTaskSubmit("approve");
@@ -429,9 +433,14 @@
             $("#actionValue").val('routeB');
             inspectionPreTaskSubmit("apso");
         } else if ("REDECI027" == actionValue) {
-          $("#actionValue").val('routeB');
+          const rollBackToVal = $("#checkRbStage").val();
           dismissWaiting();
-          $('#confirmTag').modal('show');
+          if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
+            $("#error_rollBackTo1").show();
+          } else {
+            $("#actionValue").val('routeB');
+            $('#confirmTag').modal('show');
+          }
         } else {
             var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);
