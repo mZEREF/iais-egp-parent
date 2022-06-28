@@ -46,6 +46,12 @@ function refreshKeyAppointmentHolder() {
     console.log($meContent)
     refreshIndex($content);
     refreshId($meContent);
+    $meContent.each(function (k,v) {
+        var $input = $(v);
+        if(k>=1){
+            $input.attr("style","display: none")
+        }
+    });
     var $frequencyContent = $('select[class = "frequency"]');
     console.log($frequencyContent)
     $('select[class = "frequency"]').each(function(index, ele){
