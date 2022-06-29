@@ -219,7 +219,8 @@ public class OnlineTopEnquiryDelegator {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
-        TerminationDto terminationDto=topInfo.getTerminationOfPregnancyDto().getTerminationDto();
+        TerminationOfPregnancyDto terminationOfPregnancyDto=topInfo.getTerminationOfPregnancyDto();
+        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
         if(terminationDto!=null){
             if(StringUtil.isNotEmpty(terminationDto.getTopPlace())&&premisesMap.containsKey(terminationDto.getTopPlace())){
                 terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
@@ -231,42 +232,41 @@ public class OnlineTopEnquiryDelegator {
                 terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
             }
         }
-        PostTerminationDto postDto=topInfo.getTerminationOfPregnancyDto().getPostTerminationDto();
+        PostTerminationDto postDto=terminationOfPregnancyDto.getPostTerminationDto();
         if(postDto!=null){
             if(StringUtil.isNotEmpty(postDto.getCounsellingPlace())&&premisesMap.containsKey(postDto.getCounsellingPlace())){
                 postDto.setCounsellingPlace(premisesMap.get(postDto.getCounsellingPlace()).getPremiseLabel());
             }
         }
-        PreTerminationDto preDto=topInfo.getTerminationOfPregnancyDto().getPreTerminationDto();
+        PreTerminationDto preDto=terminationOfPregnancyDto.getPreTerminationDto();
         if(preDto!=null){
             if(StringUtil.isNotEmpty(preDto.getCounsellingPlace())&&premisesMap.containsKey(preDto.getCounsellingPlace())){
                 preDto.setCounsellingPlace(premisesMap.get(preDto.getCounsellingPlace()).getPremiseLabel());
             }
         }
-        if(!StringUtil.isEmpty(topInfo.getTerminationOfPregnancyDto().getTerminationDto())){
-            if(!StringUtil.isEmpty(topInfo.getTerminationOfPregnancyDto().getTerminationDto())){
-                DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(topInfo.getTerminationOfPregnancyDto().getTerminationDto().getDoctorInformationId()).getEntity();
+        if(!StringUtil.isEmpty(terminationOfPregnancyDto.getTerminationDto())){
+            if(!StringUtil.isEmpty(terminationOfPregnancyDto.getTerminationDto())&&StringUtil.isNotEmpty(terminationOfPregnancyDto.getTerminationDto().getDoctorInformationId())){
+                DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(terminationOfPregnancyDto.getTerminationDto().getDoctorInformationId()).getEntity();
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
                     if(professionalResponseDto==null){
                         professionalResponseDto=new ProfessionalResponseDto();
                     }
                     if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                        TerminationOfPregnancyDto terminationOfPregnancyDto=topInfo.getTerminationOfPregnancyDto();
                         terminationDto=terminationOfPregnancyDto.getTerminationDto();
                         topInfo.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setTopDoctorInformations("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     }else {
-                        topInfo.getTerminationOfPregnancyDto().getTerminationDto().setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
-                        topInfo.getTerminationOfPregnancyDto().getTerminationDto().setDoctorName(professionalResponseDto.getName());
-                        topInfo.getTerminationOfPregnancyDto().getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                        topInfo.getTerminationOfPregnancyDto().getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-                        topInfo.getTerminationOfPregnancyDto().getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationOfPregnancyDto.getTerminationDto().setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
+                        terminationOfPregnancyDto.getTerminationDto().setDoctorName(professionalResponseDto.getName());
+                        terminationOfPregnancyDto.getTerminationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationOfPregnancyDto.getTerminationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationOfPregnancyDto.getTerminationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     }
                 }
             }
         }
-        ParamUtil.setRequestAttr(request,"topInfo",topInfo);
+        ParamUtil.setRequestAttr(request,"topSuperDataSubmissionDto",topInfo);
     }
 }
