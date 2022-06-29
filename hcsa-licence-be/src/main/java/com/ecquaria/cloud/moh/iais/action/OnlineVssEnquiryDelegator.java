@@ -231,8 +231,10 @@ public class OnlineVssEnquiryDelegator {
         SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(treatmentDto.getDoctorInformationId()).getEntity();
-        vssInfo.setDoctorInformationDto(doctorInformationDto);
-        sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+        if(doctorInformationDto!=null){
+            vssInfo.setDoctorInformationDto(doctorInformationDto);
+            sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+        }
         sexualSterilizationDto.setDoctorInformations("true");
         ParamUtil.setRequestAttr(request,"vssSuperDataSubmissionDto",vssInfo);
     }
