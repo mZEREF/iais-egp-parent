@@ -1194,7 +1194,7 @@ public class TopDataSubmissionDelegator {
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
                     if("true".equals(terminationDto.getDoctorInformationPE())){
                         String TOPE="TOPE";

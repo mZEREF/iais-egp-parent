@@ -115,6 +115,7 @@ public class TopAjaxController {
         String counsellingGiven = ParamUtil.getString(request, "counsellingGiven");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
         if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0 || StringUtil.isEmpty(counsellingGiven)) {
+            result.put("birthDate", Boolean.TRUE);
             return result;
         }
         int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
