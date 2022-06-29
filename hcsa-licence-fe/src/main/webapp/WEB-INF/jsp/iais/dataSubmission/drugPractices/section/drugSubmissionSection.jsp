@@ -606,8 +606,14 @@
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                    }else if (data.selection.hasException) {
+                    }else if (data.selection.hasException && !isEmpty(data.selections)) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
+                        $('#ELIS_SERVICE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
+                    }else if(data.selection.hasException && isEmpty(data.selections)){
+                        clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -617,6 +623,11 @@
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                    }else if(!isEmpty(data.selections)){
+                        console.log('tnull');
+                        $('#doctorInformationPE').val(false);
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }
                 }
                 dismissWaiting();
