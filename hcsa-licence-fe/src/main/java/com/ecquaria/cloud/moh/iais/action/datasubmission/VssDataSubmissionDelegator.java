@@ -197,7 +197,7 @@ public class VssDataSubmissionDelegator {
         }
         retrieveHciCode(bpc.request, vssSuperDataSubmissionDto);
         initVssSuperDataSubmissionDto(bpc.request,vssSuperDataSubmissionDto);
-
+        ParamUtil.setSessionAttr(bpc.request,"hcSelectList",(Serializable) getSourseList(bpc.request));
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
@@ -253,6 +253,14 @@ public class VssDataSubmissionDelegator {
                 vssSuperDataSubmissionDto.setPremisesDto(v)
         );*/
     }
+
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setVsPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
+    }
+
     /**
      * Step: DoStep
      *
