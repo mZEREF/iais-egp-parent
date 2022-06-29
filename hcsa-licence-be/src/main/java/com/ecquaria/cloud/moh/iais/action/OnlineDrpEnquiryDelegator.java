@@ -214,12 +214,14 @@ public class OnlineDrpEnquiryDelegator {
         if("DP_TP002".equals(dpSuper.getSubmissionType())){
             DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
             DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
-            DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorInformationId()).getEntity();
-            dpSuper.setDoctorInformationDto(doctorInformationDto);
-            if (doctorInformationDto != null) {
-                drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+            if(drugSubmissionDto!=null&&StringUtil.isNotEmpty(drugSubmissionDto.getDoctorInformationId())){
+                DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId()).getEntity();
+                dpSuper.setDoctorInformationDto(doctorInformationDto);
+                if (doctorInformationDto != null) {
+                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                }
+                drugSubmissionDto.setDoctorInformations("true");
             }
-            drugSubmissionDto.setDoctorInformations("true");
         }
         ParamUtil.setRequestAttr(request,"dpSuperDataSubmissionDto",dpSuper);
     }

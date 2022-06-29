@@ -13,8 +13,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public class TerminationValidator implements CustomizeValidator {
     @Override
@@ -142,7 +143,7 @@ public class TerminationValidator implements CustomizeValidator {
                 String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                 errorMap.put("dQualification", general_err0041);
             }
-        }else {
+        }else if("false".equals(terminationDto.getTopDoctorInformations())){
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 errorMap.put("dSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){

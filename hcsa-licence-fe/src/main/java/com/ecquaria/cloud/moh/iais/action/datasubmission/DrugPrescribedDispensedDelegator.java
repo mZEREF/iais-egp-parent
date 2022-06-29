@@ -159,7 +159,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         ControllerHelper.get(request, drugSubmission);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(drugSubmission.getDoctorInformations())){
                     if("true".equals(drugSubmission.getDoctorInformationPE())){
                         String DRPE="DRPE";
@@ -256,7 +256,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                     errorMap.put("dQualification", general_err0041);
                 }
-            } else {
+            } else if("false".equals(drugSubmission.getDoctorInformations())){
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpecialitys", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){

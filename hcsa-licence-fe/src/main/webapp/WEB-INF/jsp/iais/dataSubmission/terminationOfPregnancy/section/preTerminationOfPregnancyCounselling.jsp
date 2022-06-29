@@ -472,7 +472,7 @@
     });
     function checkBirthDateCallbacks(data) {
         console.log("counselling");
-        if (isEmpty(data.selection.counsellingAge) || isEmpty(data)) {
+        if (isEmpty(data) || data.birthDate) {
             $('#counsellingAge').html(null);
             return;
         }

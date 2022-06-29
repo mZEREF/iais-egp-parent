@@ -197,7 +197,7 @@ public class VssDataSubmissionDelegator {
         }
         retrieveHciCode(bpc.request, vssSuperDataSubmissionDto);
         initVssSuperDataSubmissionDto(bpc.request,vssSuperDataSubmissionDto);
-
+        ParamUtil.setSessionAttr(bpc.request,"hcSelectList",(Serializable) getSourseList(bpc.request));
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
@@ -253,6 +253,14 @@ public class VssDataSubmissionDelegator {
                 vssSuperDataSubmissionDto.setPremisesDto(v)
         );*/
     }
+
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setVsPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
+    }
+
     /**
      * Step: DoStep
      *
@@ -425,6 +433,7 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto=new DoctorInformationDto();
         }
         String doctorName = ParamUtil.getString(request,"names");
+        String doctorInformationPE = ParamUtil.getString(request,"doctorInformationPE");
         String specialty = ParamUtil.getString(request,"specialty");
         String subSpecialty = ParamUtil.getString(request,"subSpecialty");
         String qualification = ParamUtil.getString(request,"qualification");
@@ -446,12 +455,14 @@ public class VssDataSubmissionDelegator {
         sexualSterilizationDto.setSpecialty(specialty);
         sexualSterilizationDto.setSubSpecialty(subSpecialty);
         sexualSterilizationDto.setQualification(qualification);
+        sexualSterilizationDto.setDoctorInformationPE(doctorInformationPE);
         sexualSterilizationDto.setDoctorInformations(doctorInformations);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
-                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
+                if("false".equals(sexualSterilizationDto.getDoctorInformations())){
+                    if("true".equals(sexualSterilizationDto.getDoctorInformationPE())){
+                    String DRPE="DRPE";
                     String names = ParamUtil.getString(request, "names");
                     String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                     String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
@@ -465,21 +476,23 @@ public class VssDataSubmissionDelegator {
                     doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                     doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                     doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+                    doctorInformationDto.setDoctorSource(DRPE);
                     vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    }
                 }
-            }else {
-                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+            } if("false".equals(sexualSterilizationDto.getDoctorInformationPE())){
+                String DRPP="DRPP";
                 doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
                 doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+                doctorInformationDto.setDoctorSource(DRPP);
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(sexualSterilizationDto.getDoctorInformations())){
+            String DRPT="DRPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -489,7 +502,7 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_VSS);
+            doctorInformationDto.setDoctorSource(DRPT);
             sexualSterilizationDto.setDoctorName(dName);
             vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }else {

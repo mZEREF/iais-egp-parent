@@ -146,6 +146,9 @@ public final class ControllerHelper {
             value = ParamUtil.getDouble(request, name, 0);
         } else if (Integer.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
+            if(value == null){
+                return null;
+            }
             if (StringUtil.isDigit((String) value)) {
                 return Integer.valueOf((String) value);
             }
