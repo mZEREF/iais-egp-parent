@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
@@ -73,6 +72,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
@@ -89,16 +94,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceViewServiceDelegator
@@ -576,7 +575,7 @@ public class LicenceViewServiceDelegator {
                     if (complaintDtos == null) {
                         complaintDtos = new ArrayList<>();
                         List<ComplaintDto> complaintDtoList = addMoneySymbol(disciplinaryRecordResponseDto.getComplaints());
-                        complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
+                        complaintDtos.addAll(complaintDtoList);
                         listHashMap.put(disciplinaryRecordResponseDto.getRegno(), complaintDtos);
                     } else {
                         complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
@@ -696,7 +695,8 @@ public class LicenceViewServiceDelegator {
             hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            request.setAttribute("beEicGatewayClient", "Not able to connect to HERIMS at this moment!");
+             //GENERAL_ERR0068 - Not able to connect to HERIMS at this moment!
+            request.setAttribute("beEicGatewayClient", MessageUtil.getMessageDesc("GENERAL_ERR0068"));
             log.error("------>this have error<----- Not able to connect to HERIMS at this moment!");
         }
         HashMap<String, List<HfsmsDto>> hashMap = IaisCommonUtils.genNewHashMap();
