@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -31,7 +32,7 @@ public class FacilityCertifierAdmin extends BaseEntity {
 
 	private String emailAddr;
 
-	private Date employmentStartDt;
+	private LocalDate employmentStartDt;
 
 	private String nationality;
 
