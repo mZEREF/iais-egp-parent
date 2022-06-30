@@ -3158,6 +3158,7 @@ public class HcsaApplicationDelegator {
 
         //status by
         switch (roleId){
+            case RoleConsts.USER_ROLE_AO1:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;break;
             case RoleConsts.USER_ROLE_AO2:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;break;
             case RoleConsts.USER_ROLE_AO3:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;break;
             case RoleConsts.USER_ROLE_PSO:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;break;
