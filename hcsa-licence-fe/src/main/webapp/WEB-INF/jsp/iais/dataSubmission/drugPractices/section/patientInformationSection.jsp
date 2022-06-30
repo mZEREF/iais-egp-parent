@@ -106,7 +106,7 @@
                 </iais:row>
                 <iais:row>
                     <%--<iais:field width="5" value="Block No." />--%>
-                    <label class="col-xs-5 col-md-4 control-label">Block No.
+                    <label class="col-xs-5 col-md-4 control-label">Blk No.
                         <span id="blkNoStar" class="mandatory">
                                 <c:if test="${patientDto.addrType =='ADDTY001'}">*</c:if>
                         </span>
