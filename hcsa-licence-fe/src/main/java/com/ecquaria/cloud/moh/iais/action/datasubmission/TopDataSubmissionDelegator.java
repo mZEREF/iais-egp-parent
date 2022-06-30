@@ -1185,12 +1185,26 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
         String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        String topDates = ParamUtil.getString(request, "topDate");
         try {
             if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
                 ParamUtil.setRequestAttr(request, "topLateSubmit", Boolean.TRUE);
             }
         }catch (Exception e){
             log.error(e.getMessage(),e);
+        }
+        if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+            if(StringUtil.isNotEmpty(topDates)){
+                try {
+                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<2){
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                    }else {
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         if(professionalResponseDto!=null){
