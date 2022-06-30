@@ -181,7 +181,7 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <iais:field value="Processing Decision" required="true"/>
+                              <iais:field value="Processing Decision test" required="true"/>
                               <iais:value width="7">
                                 <iais:select name="selectValue" cssClass="nextStage" options="processDecOption"
                                              firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}"
@@ -190,10 +190,21 @@
                               </iais:value>
                             </iais:row>
                             <iais:row id="rbCheckStage">
-                              <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                              <iais:field value="Route Back To" required="true"/>
                               <iais:value width="7">
-                                <iais:select name="checkRbStage" options="rollBackOptions" firstOption="Please Select"
+                                <iais:select name="checkRbStage" options="preInspRbOption" firstOption="Please Select"
+                                             needSort="true"
                                              value="${inspectionPreTaskDto.checkRbStage}"/>
+                              </iais:value>
+                            </iais:row>
+                            <iais:row id="rollBackToRow">
+                              <iais:field value="Roll Back To" required="true"/>
+                              <iais:value width="10" display="true">
+                                <iais:select name="rollBackTo"
+                                             firstOption="Please Select"
+                                             options="rollBackOptions"
+                                             needSort="true"
+                                             value=""/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
@@ -321,15 +332,16 @@
         } else if("REDECI021" == selectValue){
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").show();
+            $('#rollBackToRow').hide();
         }else if("REDECI027" == selectValue){
           $("#rfiCheckBox").hide();
-          $("#rbCheckStage").show();
+          $("#rbCheckStage").hide();
+          $('#rollBackToRow').show();
         } else {
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").hide();
+            $('#rollBackToRow').hide();
         }
-
-      initBackToLabel();
     });
 
     function inspectionPreTaskJump(value){
@@ -404,18 +416,20 @@
             $("#rbCheckStage").show();
             $("#preInspRfiComments").addClass('hidden');
             $("#rfiSelect").addClass('hidden');
+            $('#rollBackToRow').hide();
         } else if("REDECI027" == value){
           $("#rfiCheckBox").hide();
-          $("#rbCheckStage").show();
+          $("#rbCheckStage").hide();
+          $('#rollBackToRow').show();
           $("#preInspRfiComments").addClass('hidden');
           $("#rfiSelect").addClass('hidden');
         } else {
-            $("#rfiCheckBox").hide();
-            $("#rbCheckStage").hide();
-            $("#preInspRfiComments").addClass('hidden');
-            $("#rfiSelect").addClass('hidden');
+          $("#rfiCheckBox").hide();
+          $("#rbCheckStage").hide();
+          $("#rollBackToRow").hide();
+          $("#preInspRfiComments").addClass('hidden');
+          $("#rfiSelect").addClass('hidden');
         }
-        initBackToLabel();
     }
 
     function doInspectionPreTaskSubmit() {
@@ -433,7 +447,7 @@
             $("#actionValue").val('routeB');
             inspectionPreTaskSubmit("apso");
         } else if ("REDECI027" == actionValue) {
-          const rollBackToVal = $("#checkRbStage").val();
+          const rollBackToVal = $("#rollBackTo").val();
           dismissWaiting();
           if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
             $("#error_rollBackTo1").show();
@@ -446,16 +460,6 @@
             $("#error_selectValue").text(errMsg);
             dismissWaiting();
         }
-    }
-
-    function initBackToLabel() {
-      const actionValue = $("#processDec").val();
-      const backToLabel = $("#backToLabel");
-      if ("REDECI021" === actionValue) {
-        backToLabel.html("Route Back To");
-      } else {
-        backToLabel.html("Roll Back To");
-      }
     }
 </script>
 

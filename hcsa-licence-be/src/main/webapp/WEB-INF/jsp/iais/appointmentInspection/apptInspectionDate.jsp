@@ -172,7 +172,8 @@
                               <iais:value width="10" display="true">
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
-                                             options="rollBackOptions" needSort="true"
+                                             options="rollBackOptions"
+                                             needSort="true"
                                              value=""/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>

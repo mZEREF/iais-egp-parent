@@ -330,15 +330,7 @@ public class InspectionPreDelegator {
                 }
             }
         } else if(InspectionConstants.SWITCH_ACTION_ROUTE_BACK.equals(actionValue)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"preback");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-            }
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_SELF.equals(actionValue)){
@@ -511,7 +503,8 @@ public class InspectionPreDelegator {
                 ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto) ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(inspectionPreTaskDto.getCheckRbStage()));
+        String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
         ParamUtil.setRequestAttr(bpc.request, "successPage", "rollBack");
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRollBack end ...."));
     }
