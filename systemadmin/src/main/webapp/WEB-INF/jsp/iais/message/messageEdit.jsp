@@ -61,7 +61,6 @@
                 <div class="col-xs-5 col-md-3">
                     <iais:select name="status" id="status" disabled="true" codeCategory="CATE_ID_COMMON_STATUS"
                                  firstOption="Select Status" value="${msgRequestDto.status}" filterValue="CMSTAT002,CMSTAT004"></iais:select>
-                    <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 

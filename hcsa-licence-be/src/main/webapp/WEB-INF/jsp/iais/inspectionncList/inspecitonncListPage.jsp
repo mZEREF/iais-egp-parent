@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -126,10 +125,17 @@
         SOP.Crud.cfxSubmit("mainForm", "listAhoc");
     }
     function doSubmit(){
+        clearErrorMsg();
+        $("#error_rollBackTo1").hide();
         let processDecValue = $('#processDec').val();
         $("#viewchk").val("");
         if('REDECI027' === processDecValue){
-            $('#confirmTag').modal('show');
+            const rollBackToVal = $("#rollBackTo").val();
+            if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
+                $("#error_rollBackTo1").show();
+            } else {
+                $('#confirmTag').modal('show');
+            }
         }else {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "next");
