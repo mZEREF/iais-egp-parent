@@ -16,12 +16,17 @@ import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
 
 /**
  * DrugPrescribedDispensedValidator
@@ -109,7 +114,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
                 }
             }
-        }else if(DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugType)){
+        }else if(DRUG_PRESCRIBED.equals(drugType)){
             result = WebValidationHelper.validateProperty(drugSubmission,"DRUG_PRESCRIBED");
             errorMap.putAll(result.retrieveAll());
         }
@@ -157,10 +162,10 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         int m=0;
         //validate the Medication
         List<DrugMedicationDto> drugMedicationDtos = drugPrescribedDispensed.getDrugMedicationDtos();
-        result = WebValidationHelper.validateProperty(drugMedicationDtos, profile);
-        if (result != null) {
-            errorMap.putAll(result.retrieveAll());
-        }
+//        result = WebValidationHelper.validateProperty(drugMedicationDtos, profile);
+//        if (result != null) {
+//            errorMap.putAll(result.retrieveAll());
+//        }
         //
         Map<String,Double> preDrugMedicationMap = null ;
         Map<String,Double> drugMedicationMap = null;
@@ -172,14 +177,24 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,oldDrugMedicationDtos);
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
         }
+        //The amount of medication that already took
+        double totalGet = 0;
+        if (!CollectionUtils.isEmpty(drugMedicationMap)) {
+            for (Double value : drugMedicationMap.values()) {
+                totalGet = totalGet + value;
+            }
+        }
+        List<String> quantityMatchS = new ArrayList<>(drugMedicationDtos.size());
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
             log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos i-->:"+i));
-            if(StringUtil.isEmpty(drugMedicationDto.getBatchNo())){
-                errorMap.put("batchNo"+i, "GENERAL_ERR0006");
-            }
-            if(!StringUtil.isEmpty(drugMedicationDto.getBatchNo())&&drugMedicationDto.getBatchNo().length()>20){
-                String general_err0041 = AppValidatorHelper.repLength("Batch No", "20");
-                errorMap.put("batchNo"+i, general_err0041);
+            if (!DRUG_PRESCRIBED.equals(drugType)) {
+                if (StringUtil.isEmpty(drugMedicationDto.getBatchNo())) {
+                    errorMap.put("batchNo" + i, "GENERAL_ERR0006");
+                }
+                if (!StringUtil.isEmpty(drugMedicationDto.getBatchNo()) && drugMedicationDto.getBatchNo().length() > 20) {
+                    String general_err0041 = AppValidatorHelper.repLength("Batch No", "20");
+                    errorMap.put("batchNo" + i, general_err0041);
+                }
             }
             if(StringUtil.isEmpty(drugMedicationDto.getStrength())){
                 errorMap.put("strength"+i, "GENERAL_ERR0006");
@@ -202,14 +217,24 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
             }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
                if(drugMedicationMap != null && preDrugMedicationMap != null){
-                   Double preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   ArrayList<Double> doubles = new ArrayList<>(preDrugMedicationMap.values());
+                   Double preCount;
+                   if (!CollectionUtils.isEmpty(doubles)) {
+                       preCount = doubles.get(0);
+                   } else {
+                       preCount = null;
+                   }
                    Double nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
-                   if(preCount ==  null || nowCount > preCount){
-                       errorMap.put("quantity"+i, "DS_ERR062");
+                   if(preCount ==  null || nowCount > (preCount - totalGet)){
+                       drugMedicationDto.setExcess("Y");
+                       quantityMatchS.add("No");
+                   }else {
+                       drugMedicationDto.setExcess("N");
+                       quantityMatchS.add("Yes");
                    }
-
+                   totalGet = totalGet + nowCount;
                }
             }
 
@@ -225,6 +250,9 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 }
             }
             i++;
+        }
+        if (!CollectionUtils.isEmpty(quantityMatchS) && quantityMatchS.contains("No")){
+            ParamUtil.setRequestAttr(request, "quantityMatch", "No");
         }
         return errorMap;
     }

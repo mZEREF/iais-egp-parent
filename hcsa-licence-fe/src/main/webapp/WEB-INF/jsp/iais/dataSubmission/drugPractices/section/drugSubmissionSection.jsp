@@ -275,6 +275,9 @@
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
 <input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${drugSubmission.doctorInformationPE}">
+<input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
+<input type="hidden" name="action" id="action" value="">
+<input type="hidden" name="haveError" id="haveError" value="${haveError}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -383,6 +386,24 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="QUANTITY_NOT_MATCH" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="quantityNotMatch">
+                            <iais:message key="DS_ERR062" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="closeQuantityNotMatchModal()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
@@ -393,6 +414,7 @@
         $('#drugType').change(function () {
             drugTypeChange();
             diagnosi();
+            disableControl();
         });
         $('#drugType,#medication').change(function (){
             changeStrength();
@@ -406,7 +428,13 @@
         disableContent('div.drugType');
         </c:if>
 
-        checkPrescriptionSubmissionId();
+        // checkPrescriptionSubmissionId();
+        disableControl();
+        var quantityMatch = $('input[name="quantityMatch"]').val();
+        if (quantityMatch == "No"){
+            console.log("quantityMatch :" + quantityMatch);
+            $('#QUANTITY_NOT_MATCH').modal('show');
+        }
     });
     function diagnosi(){
         var drugtype= $('#drugType option:selected').val();
@@ -417,6 +445,24 @@
         }
     }
 
+    function disableControl(){
+        var drugtype= $('#drugType option:selected').val();
+        if(drugtype == "DPD001"){
+            $('#batchNo').hide();
+            $('#addMore').hide();
+            $('#deleteIcon').hide();
+            // $('#medicationDiv').hide();
+        } else if(drugtype == "DPD002"){
+            $('#batchNo').show();
+            $('#addMore').show();
+            $('#deleteIcon').show();
+            // $('#medicationDiv').show();
+        } else {
+            $('#batchNo').hide();
+            $('#addMore').hide();
+            $('#deleteIcon').hide();
+        }
+    }
 
     function drugTypeChange(){
         var drugtype= $('#drugType option:selected').val();
@@ -426,6 +472,8 @@
             $('#prescriptionDate').show();
             unDisableContent('div.medication');
             fillValue($('#medication'),null);
+            $('#medicationDiv .med').remove();
+            $('input[name="drugMedicationLength"]').val(1);
         } else if(drugtype == "DPD002"){
             $('#dispensingDate').show();
             $('#ddEndDate').show();
@@ -700,5 +748,14 @@
         $('#PRS_SERVICE').modal('hide');
         $('#PRS_CLOSE').modal('hide');
         $('#PRS_PRN').modal('hide');
+    }
+
+    function closeQuantityNotMatchModal() {
+        $('#QUANTITY_NOT_MATCH').modal('hide');
+        var haveError = $('input[name="haveError"]').val();
+        if (haveError == "No") {
+            $('input[name="action"]').val("confirm");
+            $('#nextBtn').click();
+        }
     }
 </script>

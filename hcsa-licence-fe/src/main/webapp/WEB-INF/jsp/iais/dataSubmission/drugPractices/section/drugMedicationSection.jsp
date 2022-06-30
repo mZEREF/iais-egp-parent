@@ -1,5 +1,5 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_drugMedication.js"></script>
-<div class="panel panel-default">
+<div class="panel panel-default" id="medicationSection">
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
@@ -17,12 +17,12 @@
                 <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="0" end="0" varStatus="idxStatus">
                     <c:set var="index" value="${idxStatus.index}" />
                    <iais:row id="test">
-                           <div class="col-sm-6 control-label formtext col-md-8">
-                               <div class="cgo-header">
-                                   <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
-                               </div>
+                       <div class="col-sm-6 control-label formtext col-md-8">
+                           <div class="cgo-header">
+                               <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
                            </div>
-                       <div class="col-md-4 col-xs-7 text-right">
+                       </div>
+                       <div class="col-md-4 col-xs-7 text-right" id="deleteIcon">
                            <a class="removeMedications"  onclick="" style="text-decoration:none;" href="javascript:void(0)">
                                <h4 class="text-danger">
                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -31,7 +31,7 @@
                        </div>
 
                     </iais:row>
-                    <iais:row>
+                    <iais:row id="batchNo">
                         <iais:field width="5" value="Batch No." mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="20" type="text" name="batchNo${index}" value="${drugMedicationDto.batchNo}"/>
@@ -153,7 +153,7 @@
                     </c:forEach>
 
                 </div>
-                <iais:row >
+                <iais:row id="addMore">
                     <iais:value width="5" cssClass="col-md-5" display="true">
                         <a class="addMedication" onclick="addMedications()" style="text-decoration:none;">+ Add Medication</a>
                     </iais:value>
