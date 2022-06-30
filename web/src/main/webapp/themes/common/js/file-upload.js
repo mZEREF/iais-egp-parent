@@ -34,10 +34,6 @@ function _initFileData(data) {
     }
 }
 
-function deleteFileFeAjax(id, fileIndex) {
-    callAjaxDeleteFile(id, fileIndex);
-}
-
 function _getFileTag(fileAppendId) {
     var $file = $("#" + fileAppendId);
     if ($file.length == 0) {
@@ -53,11 +49,6 @@ function reUploadFileFeAjax(fileAppendId, index, idForm) {
     $("#reloadIndex").val(index);
     $("#fileAppendId").val(fileAppendId);
     $("#uploadFormId").val(idForm);
-    $("#selectedFile").click();
-}
-
-function deleteFileFeDiv(id) {
-    $("#" + id).remove();
     //$("#selectedFile").click();
     _getFileTag(fileAppendId).click();
 }
