@@ -171,10 +171,11 @@ function validateFileSizeMaxOrEmpty(maxSize) {
 }
 
 function cloneUploadFile() {
-    var $file = _getFileTag($("#fileAppendId").val());
+    var fileId = $("#fileAppendId").val();
+    var $file = _getFileTag(fileId);
     $file.after($file.clone().val(""));
     $file.remove();
-    if ('1' == $('#_singleUpload').val()) {
+    if ('1' == $('#_singleUpload').val() && $('#' + fileId + 'ShowId').length > 0) {
         var $btns = $('#' + fileId + 'ShowId').find('button');
         if ($btns.length >= 2) {
             $btns.not(':last').trigger('click');
