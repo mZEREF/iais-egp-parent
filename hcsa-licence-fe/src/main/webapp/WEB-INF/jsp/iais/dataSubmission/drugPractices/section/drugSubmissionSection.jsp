@@ -408,7 +408,6 @@
     $(document).ready(function() {
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.patient');
-        $('#retrieveDataDiv').hide();
         </c:if>
         ifClickValidateButton();
         $('#drugType').change(function () {
