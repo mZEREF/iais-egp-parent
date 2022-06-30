@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,4 +74,6 @@ public interface DpFeClient {
     FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(@RequestParam(name = "pSubmissionNo") String pSubmissionNo,
                                                                                                 @RequestParam(name = "dSubmissionNo") String dSubmissionNo);
 
+    @GetMapping(value = "/dp-common/patient/{submissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientDto> getPatientDtoBySubmissionId(@PathVariable("submissionId") String submissionId);
 }

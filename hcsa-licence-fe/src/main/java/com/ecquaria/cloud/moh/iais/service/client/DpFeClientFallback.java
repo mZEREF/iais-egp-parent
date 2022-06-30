@@ -91,5 +91,8 @@ public class DpFeClientFallback implements DpFeClient {
         return getFeignResponseEntity(pSubmissionNo,dSubmissionNo);
     }
 
-
+    @Override
+    public FeignResponseEntity<PatientDto> getPatientDtoBySubmissionId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
 }

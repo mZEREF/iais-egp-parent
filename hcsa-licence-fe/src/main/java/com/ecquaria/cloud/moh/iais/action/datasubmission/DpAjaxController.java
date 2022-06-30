@@ -70,6 +70,7 @@ public class DpAjaxController {
             PatientDto db = patientService.getDpPatientDto(idType, idNo, nationality, orgId);
             if (db != null) {
                 patient = db;
+                ParamUtil.setRequestAttr(request,"enteredPatient",db);
             }
             result.put("selection", patient);
         }

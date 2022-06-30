@@ -105,4 +105,12 @@ public class PatientServiceImpl implements PatientService {
         return arFeClient.patientInfoDtoByPatientCode(patientCode).getEntity();
     }
 
+    @Override
+    public PatientDto getPatientDtoBySubmissionId(String submissionId) {
+        log.info(StringUtil.changeForLog("----- Param: " + submissionId));
+        if (StringUtil.isEmpty(submissionId)) {
+            return null;
+        }
+        return dpFeClient.getPatientDtoBySubmissionId(submissionId).getEntity();
+    }
 }

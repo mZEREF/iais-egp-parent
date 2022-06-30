@@ -6,12 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -20,7 +22,10 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +46,9 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
     public static final String PRS_SERVICE_DOWN = "PRS_SERVICE_DOWN";
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
+
+    @Autowired
+    private PatientService patientService;
 
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
@@ -64,9 +72,11 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
         }
         if(!"true".equals(drugSubmission.getDoctorInformations())){
-            if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
-                errorMap.put("showValidateVD", AppConsts.YES);
-                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+            if (StringUtil.isNotEmpty(drugSubmission.getDoctorReignNo())) {
+                if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                    errorMap.put("showValidateVD", AppConsts.YES);
+                    ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+                }
             }
         }
         //validate the Submission
@@ -112,6 +122,15 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
                 }else{
                     drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
+                    //judge whether a prescription belongs to the patient
+                    LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+                    String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+                    PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(), drugSubmission.getNationality(), orgId);
+                    String submissionId = drugPrescribedDispensedDto.getDrugSubmission().getSubmissionId();
+                    PatientDto patientDto = patientService.getPatientDtoBySubmissionId(submissionId);
+                    if (patient!=null && patientDto!=null && !patient.getId().equals(patientDto.getId())){
+                        errorMap.put("prescriptionSubmissionId", "The entered prescription submission ID could not be found for this patient.");
+                    }
                 }
             }
         }else if(DRUG_PRESCRIBED.equals(drugType)){
