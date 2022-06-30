@@ -135,6 +135,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -234,6 +235,7 @@ public class HcsaApplicationDelegator {
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
+    private static final List<String> ROLE = Arrays.asList(RoleConsts.USER_ROLE_ASO,RoleConsts.USER_ROLE_PSO,RoleConsts.USER_ROLE_INSPECTIOR,RoleConsts.USER_ROLE_AO1,RoleConsts.USER_ROLE_AO2,RoleConsts.USER_ROLE_AO3);
 
 
     @PostMapping(value = "/check-ao")
@@ -4205,7 +4207,7 @@ public class HcsaApplicationDelegator {
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                if(user != null) {
+                if(user != null&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)) {
                     String actionBy = user.getDisplayName();
                     rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
                     String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());

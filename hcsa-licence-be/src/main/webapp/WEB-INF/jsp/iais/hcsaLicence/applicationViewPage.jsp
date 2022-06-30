@@ -718,7 +718,14 @@
         var selectValue = $("[name='nextStage']").val();
         $('#err_rollBackTo').hide();
         if('RollBack' ===selectValue){
-            $('#confirmTag').modal('show');
+            const rollBackTo = $('#rollBackCr').val();
+            if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+                $('#err_rollBackTo').show();
+                //close fangDuoJi in has error
+                $('#fangDuoJiconfirmTag').val(null);
+            }else {
+                $('#confirmTag').modal('show');
+            }
         }else {
             var selectDetail = $('#selectDetail').html();
             if(selectDetail != null && selectDetail != ''){
@@ -734,16 +741,9 @@
         }
     });
     function rollBackSubmit(){
-        const rollBackTo = $('#rollBackCr').val();
-        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
-            $('#err_rollBackTo').show();
-            //close fangDuoJi in has error
-            $('#fangDuoJiconfirmTag').val(null);
-        }else {
-            showWaiting();
-            document.getElementById("mainForm").submit();
-            $("#submitButton").attr("disabled", true);
-        }
+        showWaiting();
+        document.getElementById("mainForm").submit();
+        $("#submitButton").attr("disabled", true);
     }
 
     function check(){
