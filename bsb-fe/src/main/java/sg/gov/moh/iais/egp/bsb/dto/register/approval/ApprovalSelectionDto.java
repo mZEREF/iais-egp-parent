@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -13,10 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalSelectionDto implements Serializable{
     private boolean isEnteredInbox;

@@ -31,7 +31,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
@@ -51,7 +50,6 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -330,6 +328,7 @@ public class ApprovalBatAndActivityService {
         // data display
         ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         String facilityId = approvalSelectionDto.getFacilityId();
+        // facilityProfileDto changes according to the facility selected earlier, so the facilityProfileDto has to be queried again each time it enters
         FacProfileDto facProfileDto = getFacProfileDtoByFacilityId(facilityId);
         ParamUtil.setSessionAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
     }

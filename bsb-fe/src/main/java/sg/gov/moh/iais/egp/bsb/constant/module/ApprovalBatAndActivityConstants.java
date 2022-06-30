@@ -12,7 +12,6 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_APPROVAL_TO_ACTIVITY_DTO = "approvalToActivityDto";
     public static final String KEY_BAT_INFO = "batInfo";
     public static final String KEY_FAC_AUTHORISED_DTO = "facAuthorisedDto";
-    public static final String KEY_APPROVAL_DTO = "approvalDto";
     public static final String KEY_FACILITY_ID = "facId";
 
 
@@ -20,13 +19,13 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST = "notExistFacActivityTypeApprovalList";
 
-    public static final String KEY_DOC_SETTINGS            = "docSettings";
-    public static final String KEY_OTHER_DOC_TYPES         = "otherDocTypes";
-    public static final String NODE_NAME_BEGIN = "begin";
+    public static final String KEY_DOC_SETTINGS             = "docSettings";
+    public static final String KEY_OTHER_DOC_TYPES          = "otherDocTypes";
+    public static final String NODE_NAME_BEGIN              = "begin";
     public static final String NODE_NAME_APPROVAL_SELECTION = "approvalSelection";
-    public static final String NODE_NAME_COMPANY_INFO        = "companyInfo";
-    public static final String KEY_DOC_TYPES_JSON            = "docTypeOpsJson";
-    public static final String KEY_OPTIONS_DOC_TYPES       = "docTypeOps";
+    public static final String NODE_NAME_COMPANY_INFO       = "companyInfo";
+    public static final String KEY_DOC_TYPES_JSON           = "docTypeOpsJson";
+    public static final String KEY_OPTIONS_DOC_TYPES        = "docTypeOps";
 
     public static final String KEY_APP_NO                  = "appNo";
     public static final String KEY_APP_DT                  = "appDt";
@@ -78,22 +77,9 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_OPTIONS_NATIONALITY     = "nationalityOps";
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
-    public static final String KEY_OPTION_SALUTATION       = "salutationOps";
-    public static final String KEY_COUNTRY_OPTIONS         = "countryOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
     public static final String KEY_ORG_ADDRESS             = "organizationAddress";
-
-
-
-    //RFC
-    //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
-    public static final String KEY_OLD_APPROVAL_APP_DTO = "oldApprovalAppDto";
-    public static final String KEY_APPROVE_NO = "approveNo";
-
-    //view special constant
-    public static final String KEY_APP_ID = "appId";
-    public static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
 
     public static final String KEY_ACTION_SAVE_AS_DRAFT = "draft";
 

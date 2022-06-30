@@ -13,10 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalToActivityDto extends ValidatableNodeValue {
     private List<String> facActivityTypes;

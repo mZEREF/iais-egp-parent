@@ -13,14 +13,15 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTERNET___MohBsbViewCertRegApplication___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbViewCertRegAppDelegator";
+public class INTERNET___MohBsbViewApprovalBatAndActivity___1 extends BaseProcessClass {
+
+	private static final String DELEGATOR ="viewApprovalBatAndActivityDelegator";
 	
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
-	
+
 	public void init_OnStepProcess_0() throws Exception {
 	// 		Init->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "init", this);

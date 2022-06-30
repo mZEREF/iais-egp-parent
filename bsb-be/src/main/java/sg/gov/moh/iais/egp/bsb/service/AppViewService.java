@@ -73,6 +73,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FACIL
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FILE_MAP_SAVED;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_INSPECTION_FOLLOW_UP_ITEMS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_CF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_FIFTH_RF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_PV_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_UCF;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_ORG_ADDRESS;
@@ -161,6 +163,10 @@ public class AppViewService {
             ParamUtil.setRequestAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
             boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
             ParamUtil.setRequestAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
+            ParamUtil.setRequestAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+            ParamUtil.setRequestAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
 
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facilityRegisterDto.getFacilityProfileDto());
             if (isCf || isUcf) {
@@ -224,6 +230,10 @@ public class AppViewService {
             ParamUtil.setRequestAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
             boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
             ParamUtil.setRequestAttr(request, KEY_IS_RF, isRf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
+            ParamUtil.setRequestAttr(request, KEY_IS_FIFTH_RF, isFifthRf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isPvRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(selectionDto.getActivityTypes().get(0));
+            ParamUtil.setRequestAttr(request, KEY_IS_PV_RF, isPvRf ? Boolean.TRUE : Boolean.FALSE);
 
             // compare facilityProfile
             CompareWrap<FacilityProfileDto> compareFacProfile = new CompareWrap<>(oldFacRegDto.getFacilityProfileDto(), newFacRegDto.getFacilityProfileDto());

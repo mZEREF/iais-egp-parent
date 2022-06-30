@@ -30,9 +30,11 @@ public class AppViewConstants {
     public static final String KEY_OTHER_DOC_TYPES                          = "otherDocTypes";
     public static final String KEY_FILE_MAP_SAVED                           = "savedFiles";
 
-    public static final String KEY_IS_CF                                    = "isCertifiedFacility";
-    public static final String KEY_IS_UCF                                   = "isUncertifiedFacility";
-    public static final String KEY_IS_RF                                    = "isRegisteredFacility";
+    public static final String KEY_IS_CF                   = "isCertifiedFacility";
+    public static final String KEY_IS_UCF                  = "isUncertifiedFacility";
+    public static final String KEY_IS_RF                   = "isRegisteredFacility";
+    public static final String KEY_IS_FIFTH_RF             = "isSPFifthRegisteredFacility";
+    public static final String KEY_IS_PV_RF                = "isPolioVirusRegisteredFacility";
 
     public static final String KEY_APPROVAL_PROFILE_LIST                    = "approvalProfileList";
 

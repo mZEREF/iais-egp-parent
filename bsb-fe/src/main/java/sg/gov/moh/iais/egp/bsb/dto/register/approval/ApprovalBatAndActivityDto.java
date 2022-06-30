@@ -7,22 +7,16 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
 @Data
 @NoArgsConstructor
 public class ApprovalBatAndActivityDto implements Serializable {
