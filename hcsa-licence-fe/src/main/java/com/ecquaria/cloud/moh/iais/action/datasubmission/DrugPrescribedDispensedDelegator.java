@@ -5,7 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,7 +21,11 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -30,6 +40,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -65,7 +77,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
                     getDrugMedicationDtoBySubmissionNo(prescriptionSubmissionId);
             if(drugPrescribedDispensedDto == null ||
-                    IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos()) || !DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
+                    IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos()) || !DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
                 errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
             }else{
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
@@ -82,9 +94,24 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
-        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage("Submission"));
-        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage("Medication"));
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
+        ParamUtil.setRequestAttr(request, "ageMsg", DataSubmissionHelper.getAgeMessage("Submission"));
+        ParamUtil.setRequestAttr(request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage("Medication"));
+
+        String quantityMatch = (String) ParamUtil.getRequestAttr(request, "quantityMatch");
+        String action = ParamUtil.getString(request,"action");
+        String errMsg = (String) ParamUtil.getRequestAttr(request, IntranetUserConstant.ERRORMSG);
+        if (StringUtil.isNotEmpty(errMsg)){
+            ParamUtil.setRequestAttr(request, "haveError", "Yes");
+        } else {
+            ParamUtil.setRequestAttr(request, "haveError", "No");
+        }
+        if (StringUtil.isEmpty(action) && "No".equals(quantityMatch)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        } else if ("confirm".equals(action)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+        }
     }
 
     @Override
@@ -210,7 +237,10 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission.setDoctorName(doctorName);
         }
         drugPrescribedDispensed.setDrugSubmission(drugSubmission);
-        List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request);
+        List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request,drugSubmission.getDrugType());
+        if (DRUG_PRESCRIBED.equals(drugSubmission.getDrugType())) {
+            drugMedicationDtos.get(0).setBatchNo(null);
+        }
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
         if(currentDpDataSubmission.getPatientDto() ==null){
             PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
@@ -343,18 +373,20 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         }
 
     }
-    private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request) {
+    private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request, String drugType) {
         List<DrugMedicationDto> drugMedicationDtos=IaisCommonUtils.genNewArrayList();
         int drugMedicationLength = ParamUtil.getInt(request,"drugMedicationLength");
         DrugMedicationDto drugMedication;
         for(int i = 0; i < drugMedicationLength; i++){
             drugMedication = new DrugMedicationDto();
-            String batchNo = ParamUtil.getString(request,"batchNo"+i);
+            if (!DRUG_PRESCRIBED.equals(drugType)) {
+                String batchNo = ParamUtil.getString(request, "batchNo" + i);
+                drugMedication.setBatchNo(batchNo);
+            }
             String strength = ParamUtil.getString(request,"strength"+i);
             String quantity = ParamUtil.getString(request,"quantity"+i);
             String frequency = ParamUtil.getString(request,"frequency"+i);
             String otherFrequency = ParamUtil.getString(request,"otherFrequency"+i);
-            drugMedication.setBatchNo(batchNo);
             drugMedication.setStrength(strength);
             drugMedication.setQuantity(quantity);
             drugMedication.setFrequency(frequency);

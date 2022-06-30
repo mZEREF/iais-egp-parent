@@ -1,13 +1,13 @@
 <%@tag description="Preview page of approval app" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 
 <%@attribute name="facProfileDto" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto" %>
 <%@attribute name="batInfo" required="true" type="java.lang.Object" %>
 <%@attribute name="facAuthorisedList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto>" %>
-<%@attribute name="processType" type="java.lang.String" %>
+<%@attribute name="processType" required="true" type="java.lang.String" %>
 
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
@@ -40,12 +40,12 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Facility Name</label>
-                                        <div class="col-xs-6"><p>${facProfileDto.facilityName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfileDto.facilityName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Facility Classification:</label>
-                                        <div class="col-xs-6"><p>${facProfileDto.facilityClassification}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facProfileDto.facilityClassification}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -527,12 +527,8 @@
                                                 <div class="clear"></div>
                                             </div>
                                         </c:forEach>
-
-
-
                                     </div>
 
-                                    <%--@elvariable id="facAuthorised" type="sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto"--%>
                                     <c:forEach var="facAuthorised" items="${facAuthorisedList}" varStatus="status">
                                         <div class="panel-main-content form-horizontal min-row">
                                             <div class="form-group" style="margin-top: 10px">

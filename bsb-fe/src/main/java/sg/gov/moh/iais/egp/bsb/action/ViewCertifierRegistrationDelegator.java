@@ -2,25 +2,31 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
-import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
-import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
+import sg.gov.moh.iais.egp.bsb.service.ViewAppService;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ADMINISTRATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_COMPANY_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_FACILITY_CERTIFIER_REGISTER;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 /**
  * @author YiMing
@@ -30,10 +36,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 @Delegator(value = "bsbViewCertRegAppDelegator")
 @Slf4j
 public class ViewCertifierRegistrationDelegator {
-    private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
-    private static final String KEY_APP_ID = "appId";
-    private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
+    private static final String MODULE_NAME = "Facility Certifier Registration";
+    private static final String FUNCTION_NAME = "View Application";
 
     private final FacCertifierRegisterClient certifierRegisterClient;
     private final DocSettingService docSettingService;
@@ -44,47 +48,44 @@ public class ViewCertifierRegistrationDelegator {
         this.docSettingService = docSettingService;
     }
 
-
+    public void start(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_APP_ID);
+        session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
+        session.removeAttribute(KEY_FACILITY_CERTIFIER_REGISTER);
+        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+    }
 
     public void init(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        //get maskAppId
-        String maskedAppId = request.getParameter(KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue("id",maskedAppId);
-        if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
-            throw new IaisRuntimeException("Invalid App ID");
-        }
-        ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
-
-        // check if this app is editable
-        String maskedEditAppId = request.getParameter(KEY_EDIT_APP_ID);
-        String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
-        if (maskedEditAppId != null && editAppId != null &&
-                !maskedEditAppId.equals(editAppId) && appId.equals(editAppId)) {
-            ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
-        }
-
+        ViewAppService.init(bpc);
     }
 
-    public void prepareData(BaseProcessClass bpc){
+    public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getRequestAttr(request, KEY_APP_ID);
+        FacilityCertifierRegisterDto facilityCertifierRegisterDto = getFacilityCertifierRegisterDto(request, appId);
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, facilityCertifierRegisterDto.getProfileDto());
+        ParamUtil.setRequestAttr(request, NODE_NAME_CERTIFYING_TEAM_DETAIL, facilityCertifierRegisterDto.getCertifyingTeamDto());
+        ParamUtil.setRequestAttr(request, NODE_NAME_ADMINISTRATOR, facilityCertifierRegisterDto.getAdministratorDto());
 
-        // retrieve app data of facility registration
-        ResponseDto<FacilityCertifierRegisterDto> resultDto = certifierRegisterClient.getCertifierRegistrationAppData(appId);
-        if (resultDto.ok()) {
-            NodeGroup facRegRoot = resultDto.getEntity().toFacilityCertRegisterGroup(KEY_ROOT_NODE_GROUP);
-            ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
-            ParamUtil.setRequestAttr(request, NODE_NAME_CERTIFYING_TEAM_DETAIL, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue());
-            ParamUtil.setRequestAttr(request, NODE_NAME_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ADMINISTRATOR)).getValue());
-
-            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
-            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_SUPPORTING_DOCUMENT)).getValue();
-            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        } else {
-            throw new IaisRuntimeException("Fail to retrieve app data");
-        }
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(facilityCertifierRegisterDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
     }
 
+    public FacilityCertifierRegisterDto getFacilityCertifierRegisterDto(HttpServletRequest request, String appId) {
+        FacilityCertifierRegisterDto facilityCertifierRegisterDto = (FacilityCertifierRegisterDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_CERTIFIER_REGISTER);
+        if (facilityCertifierRegisterDto == null) {
+            ResponseDto<FacilityCertifierRegisterDto> resultDto = certifierRegisterClient.getCertifierRegistrationAppData(appId);
+            if (!resultDto.ok()) {
+                throw new IaisRuntimeException("Fail to retrieve app data");
+            }
+            facilityCertifierRegisterDto = resultDto.getEntity();
+            ParamUtil.setSessionAttr(request, KEY_FACILITY_CERTIFIER_REGISTER, facilityCertifierRegisterDto);
+        }
+        return facilityCertifierRegisterDto;
+    }
 }

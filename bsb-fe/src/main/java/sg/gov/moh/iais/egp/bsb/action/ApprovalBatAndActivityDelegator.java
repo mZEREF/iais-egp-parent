@@ -20,11 +20,9 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 
 import sop.webflow.rt.api.BaseProcessClass;
@@ -58,9 +56,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SHOW_ERROR_SWITCH;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APP_INFO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_LARGE_BAT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_POSSESS_BAT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto.KEY_USER_ID_FACILITY_AUTH_MAP;

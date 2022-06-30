@@ -32,7 +32,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
-                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}"
+                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}" processType="${processType}"
                                                          facProfileEditJudge="true" batListEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">

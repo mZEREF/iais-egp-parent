@@ -71,7 +71,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Block No." />
+                    <iais:field width="6" value="Blk No." />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.blkNo}"/>
                     </iais:value>

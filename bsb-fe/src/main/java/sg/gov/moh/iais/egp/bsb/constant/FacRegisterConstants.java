@@ -115,11 +115,6 @@ public class FacRegisterConstants {
     public static final String ACTION_LOAD_DRAFT = "action_load_draft";
     public static final String HAVE_SUITABLE_DRAFT_DATA = "haveSuitableDraftData";
 
-    //view application special constant
-    public static final String KEY_APP_ID                 = "appId";
-    public static final String KEY_MASKED_EDIT_APP_ID     = "maskedEditId";
-    public static final String KEY_APPROVE_NO             = "approveNo";
-
     //rfc special constant
     public static final String KEY_PROCESS_TYPE                          = "processType";
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)

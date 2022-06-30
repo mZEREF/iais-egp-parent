@@ -34,10 +34,6 @@ function _initFileData(data) {
     }
 }
 
-function deleteFileFeAjax(id, fileIndex) {
-    callAjaxDeleteFile(id, fileIndex);
-}
-
 function _getFileTag(fileAppendId) {
     var $file = $("#" + fileAppendId);
     if ($file.length == 0) {
@@ -53,11 +49,6 @@ function reUploadFileFeAjax(fileAppendId, index, idForm) {
     $("#reloadIndex").val(index);
     $("#fileAppendId").val(fileAppendId);
     $("#uploadFormId").val(idForm);
-    $("#selectedFile").click();
-}
-
-function deleteFileFeDiv(id) {
-    $("#" + id).remove();
     //$("#selectedFile").click();
     _getFileTag(fileAppendId).click();
 }
@@ -180,10 +171,11 @@ function validateFileSizeMaxOrEmpty(maxSize) {
 }
 
 function cloneUploadFile() {
-    var $file = _getFileTag($("#fileAppendId").val());
+    var fileId = $("#fileAppendId").val();
+    var $file = _getFileTag(fileId);
     $file.after($file.clone().val(""));
     $file.remove();
-    if ('1' == $('#_singleUpload').val()) {
+    if ('1' == $('#_singleUpload').val() && $('#' + fileId + 'ShowId').length > 0) {
         var $btns = $('#' + fileId + 'ShowId').find('button');
         if ($btns.length >= 2) {
             $btns.not(':last').trigger('click');

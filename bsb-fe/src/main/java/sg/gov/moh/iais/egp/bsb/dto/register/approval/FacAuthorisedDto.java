@@ -15,10 +15,6 @@ import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
 
 @Data
 @EqualsAndHashCode(callSuper = false)

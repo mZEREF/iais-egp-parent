@@ -155,18 +155,19 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="app" items="${dataList}" varStatus="status">
+                                                        <iais-bsb:app-action info="${app}" attributeKey="actionAvailable"/>
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                                 <c:choose>
                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001'}">
-                                                                        <a href="/bsb-web/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.processType eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
+                                                                        <a href="/bsb-web/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='appId' value='${app.id}'/><c:if test="${AppEditableJudge}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
                                                                     </c:when>
-                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004')}">
-                                                                        <a href="/bsb-web/eservice/INTERNET/MohViewApprovalPossessApplication?appId=<iais:mask name='id' value='${app.id}'/>&processType=${app.processType}<c:if test="${app.processType eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004' or app.processType eq 'PROTYPE012')}">
+                                                                        <a href="/bsb-web/eservice/INTERNET/MohBsbViewApprovalBatAndActivity?appId=<iais:mask name='appId' value='${app.id}'/><c:if test="${AppEditableJudge}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
                                                                     </c:when>
                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005'}">
-                                                                        <a href="/bsb-web/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.processType eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
+                                                                        <a href="/bsb-web/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='appId' value='${app.id}'/><c:if test="${AppEditableJudge}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.appNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:out value="${app.appNo}"/>
@@ -195,7 +196,6 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <iais-bsb:app-action info="${app}" attributeKey="actionAvailable"/>
                                                                 <c:choose>
                                                                     <c:when test="${not actionAvailable}">
                                                                         <select  class="naDropdown" disabled="disabled">
@@ -210,8 +210,8 @@
                                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001'}">
                                                                                         <option value="/bsb-web/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                                     </c:when>
-                                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004')}">
-                                                                                        <option value="/bsb-web/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Edit</option>
+                                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004' or app.processType eq 'PROTYPE012')}">
+                                                                                        <option value="/bsb-web/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                                     </c:when>
                                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005'}">
                                                                                         <option value="/bsb-web/eservice/INTERNET/MohBsbFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>

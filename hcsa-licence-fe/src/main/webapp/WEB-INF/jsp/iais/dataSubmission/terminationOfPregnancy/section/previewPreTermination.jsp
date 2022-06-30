@@ -90,7 +90,10 @@
                     </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
                     <c:if test="${counsellingLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                    <c:if test="${topDates}">
+                        <c:set var="toolMsg"><iais:message key="Termionation of Pregnancy was carried within the 2 days cooling period from date of Pre-Termination of Pregnancy counselling" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
                         <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>
@@ -116,9 +119,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
+                <div <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge==null}">style="display: none"</c:if> >
+                    <c:if test="${preTerminationDto.counsellingGiven == true && preTerminationDto.counsellingAge<16 && patientInformationDto.maritalStatus !='TOPMS002' && preTerminationDto.counsellingPlace != 'AR_SC_001'}">
+                        <c:set var="toolMsgNum"><iais:message key="This patient is below 16 years old, not married and pre-counselling is not done at Health Promotion Board Counselling Centre or Student Health Centre" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"/>
+                        <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" info="${toolMsgNum}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.preCounsNoCondReason}"/>
                         </iais:value>
