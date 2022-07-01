@@ -124,22 +124,22 @@
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <div class="col-sm-5 control-label">
-                                                                            <label for="activityStartDate--v--${status.index}">Start Date</label>
+                                                                            <label for="activityStartDt--v--${status.index}">Start Date</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <input type="text" autocomplete="off" name="activityStartDate--v--${status.index}" id="activityStartDate--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${activity.activityStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
-                                                                            <span data-err-ind="activityStartDate--v--${status.index}" class="error-msg"></span>
+                                                                            <input type="text" autocomplete="off" name="activityStartDt--v--${status.index}" id="activityStartDt--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${activity.activityStartDt}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                                                                            <span data-err-ind="activityStartDt--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <div class="col-sm-5 control-label">
-                                                                            <label for="activityEndDate--v--${status.index}">End Date</label>
+                                                                            <label for="activityEndDt--v--${status.index}">End Date</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <input type="text" autocomplete="off" name="activityEndDate--v--${status.index}" id="activityEndDate--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${activity.activityEndDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
-                                                                            <span data-err-ind="activityEndDate--v--${status.index}" class="error-msg"></span>
+                                                                            <input type="text" autocomplete="off" name="activityEndDt--v--${status.index}" id="activityEndDt--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${activity.activityEndDt}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                                                                            <span data-err-ind="activityEndDt--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group ">

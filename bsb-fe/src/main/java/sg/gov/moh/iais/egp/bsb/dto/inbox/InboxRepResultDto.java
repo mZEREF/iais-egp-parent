@@ -26,7 +26,7 @@ public class InboxRepResultDto {
 
         private String facAddress;
 
-        private String incidentEntityDate;
+        private String incidentDt;
 
         private String batName;
 

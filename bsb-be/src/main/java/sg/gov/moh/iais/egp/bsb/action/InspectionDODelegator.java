@@ -236,7 +236,7 @@ public class InspectionDODelegator {
                                         answerForDifDto.setFollowupItem(answer.getFollowupItem());
                                         answerForDifDto.setFollowupAction(answer.getFollowupAction());
                                         answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
-                                        answerForDifDto.setDueDate(answer.getDueDate());
+                                        answerForDifDto.setDueDate(answer.getDueDt());
                                         answerForDifDtoMaps.put(officer.getId(),answerForDifDto);
                                     }
                                 }
@@ -276,7 +276,7 @@ public class InspectionDODelegator {
                                         answerForDifDto.setFollowupItem(answer.getFollowupItem());
                                         answerForDifDto.setFollowupAction(answer.getFollowupAction());
                                         answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
-                                        answerForDifDto.setDueDate(answer.getDueDate());
+                                        answerForDifDto.setDueDate(answer.getDueDt());
                                         answerForDifDtoMaps.put(officer.getId(),answerForDifDto);
                                     }
                                 }
@@ -481,7 +481,7 @@ public class InspectionDODelegator {
         }
         if(!IaisCommonUtils.isEmpty(answerDtos)){
             for(ChklstItemAnswerDto temp: answerDtos){
-                CheckListCommonValidate.verifyQuestionDto(temp.getAnswer(),temp.getActionRequired(),temp.getFindings(),temp.getFollowupItem(),temp.getObserveFollowup(),temp.getFollowupAction(),temp.getDueDate(), true,StringUtil.getNonNull(temp.getSectionId())+temp.getItemId()+userId,errMap);
+                CheckListCommonValidate.verifyQuestionDto(temp.getAnswer(),temp.getActionRequired(),temp.getFindings(),temp.getFollowupItem(),temp.getObserveFollowup(),temp.getFollowupAction(),temp.getDueDt(), true,StringUtil.getNonNull(temp.getSectionId())+temp.getItemId()+userId,errMap);
             }
         }
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
@@ -557,7 +557,7 @@ public class InspectionDODelegator {
                         answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
                         answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
                         answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
-                        answerDto.setDueDate(answerForDifDto.getDueDate());
+                        answerDto.setDueDt(answerForDifDto.getDueDate());
                         answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
                         answerDtoList.add(answerDto);
                     }else {
@@ -584,7 +584,7 @@ public class InspectionDODelegator {
                     answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
                     answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
                     answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
-                    answerDto.setDueDate(answerForDifDto.getDueDate());
+                    answerDto.setDueDt(answerForDifDto.getDueDate());
                     answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
                     answerDtoList.add(answerDto);
                 }else {
@@ -597,7 +597,7 @@ public class InspectionDODelegator {
         }
         if(!IaisCommonUtils.isEmpty(answerDtoList)){
             for(ChklstItemAnswerDto temp: answerDtoList){
-                CheckListCommonValidate.verifyQuestionDto(temp.getAnswer(),temp.getActionRequired(),temp.getFindings(),temp.getFollowupItem(),temp.getObserveFollowup(),temp.getFollowupAction(),temp.getDueDate(), true,StringUtil.getNonNull(temp.getSectionId())+temp.getItemId()+userId,errMap);
+                CheckListCommonValidate.verifyQuestionDto(temp.getAnswer(),temp.getActionRequired(),temp.getFindings(),temp.getFollowupItem(),temp.getObserveFollowup(),temp.getFollowupAction(),temp.getDueDt(), true,StringUtil.getNonNull(temp.getSectionId())+temp.getItemId()+userId,errMap);
             }
         }
 
@@ -1032,7 +1032,7 @@ public class InspectionDODelegator {
                     excelDto.setFollowupItem(ChecklistConstants.displayAnswer(dto.getFollowupItem()));
                     excelDto.setObserveFollowup(dto.getObserveFollowup());
                     excelDto.setFollowupAction(dto.getFollowupAction());
-                    excelDto.setDueDate(dto.getDueDate());
+                    excelDto.setDueDate(dto.getDueDt());
                 } else {
                     excelDto.setAnswer("");
                     excelDto.setFindings("");
@@ -1079,7 +1079,7 @@ public class InspectionDODelegator {
                 excelDto.setFollowupItem(ChecklistConstants.displayAnswer(dto.getFollowupItem()));
                 excelDto.setObserveFollowup(dto.getObserveFollowup());
                 excelDto.setFollowupAction(dto.getFollowupAction());
-                excelDto.setDueDate(dto.getDueDate());
+                excelDto.setDueDate(dto.getDueDt());
             } else {
                 excelDto.setAnswer("");
                 excelDto.setFindings("");
@@ -1129,7 +1129,7 @@ public class InspectionDODelegator {
         answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
         answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
         answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
-        answerDto.setDueDate(answerForDifDto.getDueDate());
+        answerDto.setDueDt(answerForDifDto.getDueDate());
         answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
 
         return answerDto;

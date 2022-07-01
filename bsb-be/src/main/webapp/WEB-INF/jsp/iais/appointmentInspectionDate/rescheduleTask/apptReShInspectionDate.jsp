@@ -72,7 +72,7 @@
                             <iais:row>
                               <iais:field value="Available Appointment Dates"/>
                               <iais:value width="7">
-                                <p><span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeSpecificDate}"/></span></p>
+                                <p><span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeSpecificDt}"/></span></p>
                               </iais:value>
                             </iais:row>
                             <iais:row>

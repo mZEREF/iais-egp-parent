@@ -113,7 +113,7 @@
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <span data-err-ind="error_message" class="error-msg"></span>
-                                                            <c:if test="${hasNonCompliance eq 'Y'}">
+                                                            <c:if test="${hasNonCompliance eq 'Y' && submissionDetailsInfo.applicationStatus eq 'BSBAPST029'}">
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Draft NC Email? <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10 control-label">

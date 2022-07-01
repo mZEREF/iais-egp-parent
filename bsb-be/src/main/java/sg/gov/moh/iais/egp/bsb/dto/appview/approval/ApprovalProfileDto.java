@@ -33,8 +33,8 @@ public class ApprovalProfileDto implements Serializable {
         private String prjName;
         private String principalInvestigatorName;
         private String workActivityIntended;
-        private String startDate;
-        private String endDate;
+        private String startDt;
+        private String endDt;
         private String processType;
     }
 

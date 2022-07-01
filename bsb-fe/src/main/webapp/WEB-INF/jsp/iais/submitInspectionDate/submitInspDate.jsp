@@ -28,16 +28,16 @@
                         <iais:row>
                             <iais:field value="Preferred date for inspection (Start)" required="true"/>
                             <iais:value width="18">
-                                <input type="text" autocomplete="off" name="specifyStartDate" id="specifyStartDate" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyStartDate}"/>
-                                <span data-err-ind="specifyStartDate" class="error-msg" ></span>
+                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyStartDt}"/>
+                                <span data-err-ind="specifyStartDt" class="error-msg" ></span>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Preferred date for inspection (End)" required="true"/>
                             <iais:value width="18">
-                                <input type="text" autocomplete="off" name="specifyEndDate" id="specifyEndDate" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyEndDate}"/>
-                                <span data-err-ind="specifyEndDate" class="error-msg" ></span>
+                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${inspectionDateDto.specifyEndDt}"/>
+                                <span data-err-ind="specifyEndDt" class="error-msg" ></span>
                             </iais:value>
                         </iais:row>
                     </iais:section>

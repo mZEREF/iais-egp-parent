@@ -96,7 +96,7 @@
                                                             </thead>
                                                             <tr>
                                                                 <td class="col-4">Date of Inspection</td>
-                                                                <td><c:out value="${reportDto.inspectionDate}"/></td>
+                                                                <td><c:out value="${reportDto.inspectionDt}"/></td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Purpose of Inspection</td>
@@ -266,7 +266,7 @@
                                                                                         <p><textarea id="actionRequired--v--${followUp.id}" name="actionRequired--v--${followUp.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${followUp.actionRequired}"/></textarea></p>
                                                                                         <span data-err-ind="actionRequired--v--${followUp.id}" class="error-msg"></span>
                                                                                     </td>
-                                                                                    <td><p><c:out value="${followUp.dueDate}"/></p></td>
+                                                                                    <td><p><c:out value="${followUp.dueDt}"/></p></td>
                                                                                 </tr>
                                                                             </c:forEach>
                                                                         </table>

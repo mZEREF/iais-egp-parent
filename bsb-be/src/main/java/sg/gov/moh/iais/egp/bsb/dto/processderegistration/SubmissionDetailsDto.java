@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 /**
  * @author : LiRan
- * @date : 2022/1/20
  */
 @Data
 public class SubmissionDetailsDto implements Serializable {
@@ -15,7 +14,7 @@ public class SubmissionDetailsDto implements Serializable {
     private String applicationNo;
     private String facilityType;
     private String processType;
-    private String submissionDate;
+    private String submissionDt;
     private String currentStatus;
 
     //applicant details

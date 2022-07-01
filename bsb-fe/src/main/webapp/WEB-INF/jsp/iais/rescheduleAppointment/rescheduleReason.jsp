@@ -59,11 +59,11 @@
                                                 <span data-err-ind="reason${apptView.maskedAppId}" class="error-msg"></span>
                                             </td>
                                             <td>
-                                                From :<input type="text" autocomplete="off" name="newStartDate${apptView.maskedAppId}" id="newStartDate${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newStartDate}"/>
-                                                <span data-err-ind="newStartDate${apptView.maskedAppId}" class="error-msg"></span>
+                                                From :<input type="text" autocomplete="off" name="newStartDt${apptView.maskedAppId}" id="newStartDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newStartDt}"/>
+                                                <span data-err-ind="newStartDt${apptView.maskedAppId}" class="error-msg"></span>
                                                 <br>
-                                                To :<input type="text" autocomplete="off" name="newEndDate${apptView.maskedAppId}" id="newEndDate${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newEndDate}"/>
-                                                <span data-err-ind="newEndDate${apptView.maskedAppId}" class="error-msg"></span>
+                                                To :<input type="text" autocomplete="off" name="newEndDt${apptView.maskedAppId}" id="newEndDt${apptView.maskedAppId}" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptView.newEndDt}"/>
+                                                <span data-err-ind="newEndDt${apptView.maskedAppId}" class="error-msg"></span>
                                                 <br>
                                             </td>
                                             <td>

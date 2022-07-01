@@ -61,7 +61,7 @@
                                                 <td class="col-md-2"><c:out value="${item.itemDescription}"/></td>
                                                 <td class="col-md-3"><c:out value="${item.observation}"/></td>
                                                 <td class="col-md-2"><c:out value="${item.actionRequired}"/></td>
-                                                <td class="col-md-2"><c:out value="${item.dueDate}"/></td>
+                                                <td class="col-md-2"><c:out value="${item.dueDt}"/></td>
                                                 <td class="col-md-2"><c:out value="${item.mohRemarks}"/></td>
                                             </tr>
                                         </c:forEach>

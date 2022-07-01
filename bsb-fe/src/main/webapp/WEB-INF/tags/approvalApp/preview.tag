@@ -518,12 +518,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Start Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">End Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">

@@ -60,7 +60,7 @@ public class BsbApptInspectionDateDto implements Serializable {
 
     private List<String> refShowNo;
 
-    private String apptFeSpecificDate;
+    private String apptFeSpecificDt;
 
     private String apptFeReason;
 

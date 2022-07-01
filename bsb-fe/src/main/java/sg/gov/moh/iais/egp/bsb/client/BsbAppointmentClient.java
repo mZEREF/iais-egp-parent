@@ -6,9 +6,13 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.appointment.*;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.InspectionDateDto;
+import sg.gov.moh.iais.egp.bsb.dto.appointment.SaveRescheduleDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
