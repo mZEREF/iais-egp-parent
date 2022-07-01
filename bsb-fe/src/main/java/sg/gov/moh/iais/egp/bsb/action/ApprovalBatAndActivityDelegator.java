@@ -74,7 +74,7 @@ public class ApprovalBatAndActivityDelegator {
         this.approvalBatAndActivityService = approvalBatAndActivityService;
     }
 
-    public void start(BaseProcessClass bpc){
+    public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APPROVAL_SELECTION_DTO);
@@ -88,10 +88,11 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(HAVE_SUITABLE_DRAFT_DATA);
+        session.removeAttribute("editApp");
         AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
     }
 
-    public void init(BaseProcessClass bpc){
+    public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         boolean newApprovalApp = true;
         // check if we are doing editing
@@ -101,6 +102,7 @@ public class ApprovalBatAndActivityDelegator {
                 log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
             }
             newApprovalApp = false;
+            ParamUtil.setSessionAttr(request, "editApp", true);
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
                 ApprovalBatAndActivityDto editDto = approvalBatAndActivityService.getEditDtoData(appId);
@@ -119,94 +121,93 @@ public class ApprovalBatAndActivityDelegator {
         approvalBatAndActivityService.retrieveOrgAddressInfo(request);
     }
 
-    public void preApprovalSelection(BaseProcessClass bpc){
+    public void preApprovalSelection(BaseProcessClass bpc) {
         approvalBatAndActivityService.preApprovalSelection(bpc);
     }
 
-    public void handleApprovalSelection(BaseProcessClass bpc){
+    public void handleApprovalSelection(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleApprovalSelection(bpc);
     }
 
-    public void preCompanyInfo(BaseProcessClass bpc){
+    public void preCompanyInfo(BaseProcessClass bpc) {
         // do nothing now
     }
 
-    public void handleCompanyInfo(BaseProcessClass bpc){
+    public void handleCompanyInfo(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleCompanyInfo(bpc);
     }
 
-    public void preFacProfile(BaseProcessClass bpc){
+    public void preFacProfile(BaseProcessClass bpc) {
         approvalBatAndActivityService.preFacProfile(bpc);
     }
 
-    public void handleFacProfile(BaseProcessClass bpc){
+    public void handleFacProfile(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleFacProfile(bpc);
     }
 
-    public void prePossessBatDetails(BaseProcessClass bpc){
+    public void prePossessBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.prePossessBatDetails(bpc);
     }
 
-    public void handlePossessBatDetails(BaseProcessClass bpc){
+    public void handlePossessBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.handlePossessBatDetails(bpc);
     }
 
-    public void preLargeBatDetails(BaseProcessClass bpc){
+    public void preLargeBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.preLargeBatDetails(bpc);
     }
 
-    public void handleLargeBatDetails(BaseProcessClass bpc){
+    public void handleLargeBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleLargeBatDetails(bpc);
     }
 
-    public void preSpecialBatDetails(BaseProcessClass bpc){
+    public void preSpecialBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.preSpecialBatDetails(bpc);
     }
 
-    public void handleSpecialBatDetails(BaseProcessClass bpc){
+    public void handleSpecialBatDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleSpecialBatDetails(bpc);
     }
 
-    public void preFacAuthorised(BaseProcessClass bpc){
+    public void preFacAuthorised(BaseProcessClass bpc) {
         approvalBatAndActivityService.preFacAuthorised(bpc);
     }
 
-    public void handleFacAuthorised(BaseProcessClass bpc){
+    public void handleFacAuthorised(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleFacAuthorised(bpc);
     }
 
-    public void preActivityDetails(BaseProcessClass bpc){
+    public void preActivityDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.preActivityDetails(bpc);
     }
 
-    public void handleActivityDetails(BaseProcessClass bpc){
+    public void handleActivityDetails(BaseProcessClass bpc) {
         approvalBatAndActivityService.handleActivityDetails(bpc);
     }
 
-
-    public void prePrimaryDoc(BaseProcessClass bpc){
+    public void prePrimaryDoc(BaseProcessClass bpc) {
         approvalBatAndActivityService.prePrimaryDoc(bpc);
     }
 
-    public void handlePrimaryDoc(BaseProcessClass bpc){
+    public void handlePrimaryDoc(BaseProcessClass bpc) {
         approvalBatAndActivityService.handlePrimaryDoc(bpc);
     }
 
-    public void prePreview(BaseProcessClass bpc){
-        approvalBatAndActivityService.preparePreviewData(bpc);
+    public void prePreview(BaseProcessClass bpc) {
+        approvalBatAndActivityService.prePreview(bpc);
     }
 
-    public void handlePreview(BaseProcessClass bpc){
+    public void handlePreview(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = approvalBatAndActivityService.getApprovalActivityRoot(request, null);
         String processType = (String) ParamUtil.getSessionAttr(request, ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE);
         SimpleNode previewNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PREVIEW);
         PreviewDto previewDto = (PreviewDto) previewNode.getValue();
         previewDto.reqObjMapping(request);
-        boolean isProcModeImport = (boolean) ParamUtil.getSessionAttr(request,"isProcModeImport");
-        if(isProcModeImport){
+        boolean isProcModeImport = (boolean) ParamUtil.getSessionAttr(request, "isProcModeImport");
+        if (isProcModeImport) {
             previewDto.setHasProcModeImport(ValidationConstants.YES);
-        }else{
+        } else {
             previewDto.setHasProcModeImport(ValidationConstants.NO);
         }
         request.getSession().removeAttribute("isProcModeImport");
@@ -224,14 +225,14 @@ public class ApprovalBatAndActivityDelegator {
 
                     log.info("Save approval application data");
                     ApprovalSelectionDto approvalSelectionDto = approvalBatAndActivityService.getApprovalSelectionDto(request);
-                    ApprovalBatAndActivityDto approvalBatAndActivityDto = ApprovalBatAndActivityDto.from(approvalSelectionDto,approvalAppRoot);
+                    ApprovalBatAndActivityDto approvalBatAndActivityDto = ApprovalBatAndActivityDto.from(approvalSelectionDto, approvalAppRoot);
                     ResponseDto<AppMainInfo> responseDto = approvalBatAndActivityClient.saveNewApplicationToApproval(approvalBatAndActivityDto);
                     log.info("save new application to approval response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
                     List<String> displayList;
-                    switch (processType){
+                    switch (processType) {
                         case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
                             displayList = approvalBatAndActivityDto.getApprovalToPossessDto().getBatInfos().stream().map(BATInfo::getBatName).collect(Collectors.toList());
                             break;
@@ -249,7 +250,7 @@ public class ApprovalBatAndActivityDelegator {
                             displayList = new ArrayList<>();
                             break;
                     }
-                    ParamUtil.setRequestAttr(request,"displayList",displayList);
+                    ParamUtil.setRequestAttr(request, "displayList", displayList);
                     try {
                         // delete docs
                         log.info("Delete already saved documents in file-repo");
@@ -277,19 +278,19 @@ public class ApprovalBatAndActivityDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void actionFilter(BaseProcessClass bpc){
-        approvalBatAndActivityService.actionFilter(bpc,MasterCodeConstants.APP_TYPE_NEW);
+    public void actionFilter(BaseProcessClass bpc) {
+        approvalBatAndActivityService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 
-    public void jumpFilter(BaseProcessClass bpc){
+    public void jumpFilter(BaseProcessClass bpc) {
         approvalBatAndActivityService.jumpFilter(bpc);
     }
 
-    public void preAcknowledge(BaseProcessClass bpc){
+    public void preAcknowledge(BaseProcessClass bpc) {
         approvalBatAndActivityService.preAcknowledge(bpc);
     }
 
-    public void print(BaseProcessClass bpc){
+    public void print(BaseProcessClass bpc) {
         approvalBatAndActivityService.print(bpc);
     }
 

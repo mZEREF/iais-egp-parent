@@ -1,6 +1,6 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="bat" tagdir="/WEB-INF/tags/bat" %>
-
+<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 
 <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
 <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
@@ -21,7 +21,8 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+        <appv:innerFooter editApp="${editApp}"/>
     </jsp:attribute>
     <jsp:attribute name="titleFrag">
         <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Details of Biological Agent</p>

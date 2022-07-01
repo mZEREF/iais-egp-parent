@@ -209,6 +209,13 @@ function loadDraftData() {
 $(function (){
     $("#continueB").click(function () {
         showWaiting();
+
+        $("#facilityId").removeAttr("disabled");
+        $("#approvalFacilityActivity").removeAttr("disabled");
+        $("#approvalPossess").removeAttr("disabled");
+        $("#approvalLarge").removeAttr("disabled");
+        $("#approvalSpecial").removeAttr("disabled");
+
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("next");
         $("#mainForm").submit();
