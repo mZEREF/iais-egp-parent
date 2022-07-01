@@ -286,11 +286,11 @@ public class ApprovalBatAndActivityDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
-        // do nothing now
+        approvalBatAndActivityService.preAcknowledge(bpc);
     }
 
     public void print(BaseProcessClass bpc){
-        approvalBatAndActivityService.preparePreviewData(bpc);
+        approvalBatAndActivityService.print(bpc);
     }
 
 }

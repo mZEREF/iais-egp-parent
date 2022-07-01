@@ -218,3 +218,7 @@ $(function (){
         $('#haveData').modal('show');
     }
 });
+
+function printApprovalApp(id) {
+    window.open("/bsb-web/eservice/INTERNET/MohApprovalBatAndActivity/1/Print?printId=" + id);
+}

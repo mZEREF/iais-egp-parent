@@ -100,6 +100,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_SCHEDULE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OTHER_DOC_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PRINT_MASKED_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PRINT_MASK_PARAM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_SCHEDULE_BAT_MAP;
@@ -333,7 +335,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
     }
 
-    public void handleFacProfile(BaseProcessClass bpc){
+    public void handleFacProfile(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
@@ -356,7 +358,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void prePossessBatDetails(BaseProcessClass bpc){
+    public void prePossessBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT;
@@ -373,7 +375,7 @@ public class ApprovalBatAndActivityService {
         loadAllowedScheduleAndBatOptions(request);
     }
 
-    public void handlePossessBatDetails(BaseProcessClass bpc){
+    public void handlePossessBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_POSSESS_BAT;
@@ -393,7 +395,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void preLargeBatDetails(BaseProcessClass bpc){
+    public void preLargeBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT;
@@ -410,7 +412,7 @@ public class ApprovalBatAndActivityService {
         loadAllowedScheduleAndBatOptions(request);
     }
 
-    public void handleLargeBatDetails(BaseProcessClass bpc){
+    public void handleLargeBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_LARGE_BAT;
@@ -430,7 +432,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void preSpecialBatDetails(BaseProcessClass bpc){
+    public void preSpecialBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT;
@@ -447,7 +449,7 @@ public class ApprovalBatAndActivityService {
         loadAllowedScheduleAndBatOptions(request);
     }
 
-    public void handleSpecialBatDetails(BaseProcessClass bpc){
+    public void handleSpecialBatDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_SPECIAL_BAT;
@@ -468,7 +470,7 @@ public class ApprovalBatAndActivityService {
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void preFacAuthorised(BaseProcessClass bpc){
+    public void preFacAuthorised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED;
@@ -503,7 +505,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request,"authPersonnelList",facAuthList);
     }
 
-    public void handleFacAuthorised(BaseProcessClass bpc){
+    public void handleFacAuthorised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_AUTHORISED;
@@ -523,7 +525,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void preActivityDetails(BaseProcessClass bpc){
+    public void preActivityDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY;
@@ -543,7 +545,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request, KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST, notExistFacActivityTypeApprovalList);
     }
 
-    public void handleActivityDetails(BaseProcessClass bpc){
+    public void handleActivityDetails(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY;
@@ -564,7 +566,7 @@ public class ApprovalBatAndActivityService {
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void prePrimaryDoc(BaseProcessClass bpc){
+    public void prePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String processType = (String) ParamUtil.getSessionAttr(request, KEY_PROCESS_TYPE);
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
@@ -594,7 +596,7 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request, KEY_DOC_TYPES_JSON, docTypeOpsJson);
     }
 
-    public void handlePrimaryDoc(BaseProcessClass bpc){
+    public void handlePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
@@ -613,6 +615,36 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
+    public void preAcknowledge(BaseProcessClass bpc) {
+        preparePrintMaskId(bpc.request);
+    }
+
+    public void print(BaseProcessClass bpc) {
+        validatePrintMaskId(bpc.request);
+        preparePreviewData(bpc);
+    }
+
+    /** Sets print if into request, used by js function in JSP */
+    public void preparePrintMaskId(HttpServletRequest request) {
+        NodeGroup approvalAppRoot = getApprovalActivityRoot(request, null);
+        String maskForPrint = MaskUtil.maskValue(KEY_PRINT_MASK_PARAM, String.valueOf(approvalAppRoot.hashCode()));
+        ParamUtil.setRequestAttr(request, KEY_PRINT_MASKED_ID, maskForPrint);
+    }
+
+    /** Validates if it is allowed to print the approval application details.
+     * If it is not allowed, an exception will be thrown */
+    public void validatePrintMaskId(HttpServletRequest request) {
+        String maskedId = ParamUtil.getString(request, "printId");
+        boolean allowToPrint = false;
+        if (org.springframework.util.StringUtils.hasLength(maskedId)) {
+            MaskUtil.unMaskValue(KEY_PRINT_MASK_PARAM, maskedId);
+            // if it can not be unmasked, an exception is thrown
+            allowToPrint = true;
+        }
+        if (!allowToPrint) {
+            throw new IaisRuntimeException("Invalid mask key, don't allow to print");
+        }
+    }
 
     public void actionFilter(BaseProcessClass bpc, String appType) {
         HttpServletRequest request = bpc.request;
@@ -1042,7 +1074,7 @@ public class ApprovalBatAndActivityService {
 
     public String getApprovalTypeByProcessType(String processType){
         String approvalType = "";
-        switch (processType){
+        switch (processType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
                 approvalType = MasterCodeConstants.APPROVAL_TYPE_POSSESS;
                 break;
@@ -1052,7 +1084,9 @@ public class ApprovalBatAndActivityService {
             case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
                 approvalType = MasterCodeConstants.APPROVAL_TYPE_SP_HANDLE;
                 break;
-            default:break;
+            default:
+                log.info("No such processType matches {}", StringUtils.normalizeSpace(processType));
+                break;
         }
         return approvalType;
     }
