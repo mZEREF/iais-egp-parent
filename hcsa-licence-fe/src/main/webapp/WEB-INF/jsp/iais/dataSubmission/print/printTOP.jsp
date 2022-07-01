@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 
 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
 <%--<c:set var="submissionType" value="${topSuperDataSubmissionDto.submissionType}"/>
