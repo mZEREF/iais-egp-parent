@@ -727,7 +727,8 @@ public class InspectionDODelegator {
         if (fileInfo == null) {
             errorMap.put(CHECK_LIST_DATA, MessageUtil.getMessageDesc(GENERAL_ERR0006));
         } else if (fileInfo.getSize() == 0) {
-            errorMap.put(CHECK_LIST_DATA, "Could not parse file content.");
+            // GENERAL_ERR0069 - Could not parse file content.
+            errorMap.put(CHECK_LIST_DATA, MessageUtil.getMessageDesc("GENERAL_ERR0069"));
         }  else if (!FileUtils.isExcel(fileInfo.getFilename())) {
             errorMap.put(CHECK_LIST_DATA, MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
@@ -740,7 +741,8 @@ public class InspectionDODelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put(CHECK_LIST_DATA, "Could not parse file content. Please download new template to do this.");
+                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+                errorMap.put(CHECK_LIST_DATA, MessageUtil.getMessageDesc("GENERAL_ERR0070"));
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {
