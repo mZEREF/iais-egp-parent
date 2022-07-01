@@ -983,7 +983,7 @@
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
-				        FROM hcsal.dbo.premises_operational_unit pou
+				        FROM premises_operational_unit pou
 				        WHERE pou.PREMISES_ID =Prem.ID
 				        ORDER BY SEQ_NUM ASC
 				        FOR XML path('')
