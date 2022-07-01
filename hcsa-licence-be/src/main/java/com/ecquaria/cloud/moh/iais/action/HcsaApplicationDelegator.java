@@ -55,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.healthhub.OperatingHour;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
@@ -137,6 +138,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -4191,6 +4193,22 @@ public class HcsaApplicationDelegator {
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
         applicationViewDto.setRollBack(rollBackMap);
+        rollBackStage.sort(new Comparator<SelectOption>() {
+            @Override
+            public int compare(SelectOption o1, SelectOption o2) {
+                String displayName = o1.getText();
+                String displayName2 = o2.getText();
+                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
+                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
+                if (diff > 0) {
+                    return 1;
+                } else if (diff < 0) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable) rollBackStage);
     }
 
@@ -4218,6 +4236,22 @@ public class HcsaApplicationDelegator {
         } else {
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
+        rollBackStage.sort(new Comparator<SelectOption>() {
+            @Override
+            public int compare(SelectOption o1, SelectOption o2) {
+                String displayName = o1.getText();
+                String displayName2 = o2.getText();
+                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
+                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
+                if (diff > 0) {
+                    return 1;
+                } else if (diff < 0) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         applicationViewDto.setRollBack(rollBackMap);
         ParamUtil.setSessionAttr(request, "rollBackValues", (Serializable) rollBackStage);
     }
