@@ -3814,7 +3814,7 @@ public class HcsaApplicationDelegator {
         //set DMS processingDecision value
         setDmsProcessingDecisionDropdownValue(request);
         //set route back dropdown value
-        setRouteBackDropdownValue(request, applicationViewDto);
+        setRouteBackDropdownValue(request, applicationViewDto,taskDto);
         //set roll back dropdown value
         setRollBackDropdownValue(request, applicationViewDto,taskDto);
         //set recommendation dropdown value
@@ -4166,7 +4166,7 @@ public class HcsaApplicationDelegator {
         return idTypeSelectList;
     }
 
-    public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+    public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
@@ -4179,7 +4179,7 @@ public class HcsaApplicationDelegator {
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                if(user != null) {
+                if(user != null&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)) {
                     String actionBy = user.getDisplayName();
                     rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
                     String maskRollBackValue = MaskUtil.maskValue("rollBack", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
