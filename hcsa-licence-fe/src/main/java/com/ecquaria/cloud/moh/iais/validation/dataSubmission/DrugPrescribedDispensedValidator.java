@@ -202,6 +202,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     totalGet = totalGet + value;
                 }
             }
+            log.info("The amount of medication that already took {},Prescription submissionNo is{}",totalGet,drugSubmission.getPrescriptionSubmissionId());
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
         }
         List<String> quantityMatchS = new ArrayList<>(drugMedicationDtos.size());
@@ -271,6 +272,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
             i++;
         }
+        log.info("End of counting drugs");
+        log.info("The total amount of medication that already took {}",totalGet);
         if (!CollectionUtils.isEmpty(quantityMatchS) && quantityMatchS.contains("No")){
             ParamUtil.setRequestAttr(request, "quantityMatch", "No");
         }
