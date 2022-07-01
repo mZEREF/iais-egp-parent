@@ -188,20 +188,21 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         //
         Map<String,Double> preDrugMedicationMap = null ;
         Map<String,Double> drugMedicationMap = null;
+        //The amount of medication that already took and nowCount
+        double totalGet = 0;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
             List<DrugMedicationDto> oldDrugMedicationDtos =  dpDataSubmissionService.
                     getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId(),
                             currentDpDataSubmission.getDataSubmissionDto().getSubmissionNo());
             preDrugMedicationMap = tidyDrugMedicationDto(null,preDrugMedicationDtos);
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,oldDrugMedicationDtos);
-            drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
-        }
-        //The amount of medication that already took
-        double totalGet = 0;
-        if (!CollectionUtils.isEmpty(drugMedicationMap)) {
-            for (Double value : drugMedicationMap.values()) {
-                totalGet = totalGet + value;
+            //get amount of medication that already took
+            if (!CollectionUtils.isEmpty(drugMedicationMap)) {
+                for (Double value : drugMedicationMap.values()) {
+                    totalGet = totalGet + value;
+                }
             }
+            drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
         }
         List<String> quantityMatchS = new ArrayList<>(drugMedicationDtos.size());
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
