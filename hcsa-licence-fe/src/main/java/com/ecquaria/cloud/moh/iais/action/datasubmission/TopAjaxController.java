@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -101,9 +102,13 @@ public class TopAjaxController {
         if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
             return result;
         }
-        int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        if(age<=10 || age>=65){
-            result.put("showAge", Boolean.TRUE);
+        boolean b = PreTerminationValidator.validateDate(birthDate);
+        boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
+        if (b && b1) {
+            int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
+            if (age <= 10 || age >= 65) {
+                result.put("showAge", Boolean.TRUE);
+            }
         }
         return result;
     }
@@ -118,10 +123,14 @@ public class TopAjaxController {
             result.put("birthDate", Boolean.TRUE);
             return result;
         }
-        int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        PreTerminationDto preTerminationDto=new PreTerminationDto();
-        preTerminationDto.setCounsellingAge(age);
-        result.put("selection", preTerminationDto);
+        boolean b = PreTerminationValidator.validateDate(birthDate);
+        boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
+        if (b && b1) {
+            int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
+            PreTerminationDto preTerminationDto = new PreTerminationDto();
+            preTerminationDto.setCounsellingAge(age);
+            result.put("selection", preTerminationDto);
+        }
         return result;
     }
 
