@@ -320,6 +320,7 @@
             secCounsellingDate();
             secCounsellingResult();
         });
+        changeDate();
         /*$("#counsellingGivenDate").on('blur, change', function () {
             age();
         })*/
@@ -436,7 +437,7 @@
     }
 
 
-    $("#counsellingGivenDate").on('blur', function () {
+    function changeDate(){
         var birthData = $('#birthData').val();
         var counsellingGiven = $('#counsellingGivenDate').val();
 
@@ -455,6 +456,10 @@
             }
             callCommonAjax(options, checkBirthDateCallbacks);
         }
+    }
+
+    $("#counsellingGivenDate").on('blur', function () {
+        changeDate();
     });
 
 

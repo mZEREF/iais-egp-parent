@@ -596,6 +596,17 @@ public class TopDataSubmissionDelegator {
         }
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        try {
+            String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
+            if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
+                String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
+                int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
+                terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(age);
+
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         request.getSession().setAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
