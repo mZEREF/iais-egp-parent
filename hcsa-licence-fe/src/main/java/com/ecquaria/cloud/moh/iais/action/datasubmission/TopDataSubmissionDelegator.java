@@ -818,7 +818,7 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        if(patientInformationDto.getPatientAge()<16 && !StringUtil.isEmpty(patientInformationDto.getPatientAge())){
+        if(!StringUtil.isEmpty(patientInformationDto.getPatientAge()) && patientInformationDto.getPatientAge()<16){
             familyPlanDto.setNeedHpbConsult(true);
         }
         terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
