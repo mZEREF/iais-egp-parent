@@ -194,10 +194,14 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                         String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                         String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
                         String dQualification = ParamUtil.getString(request, "dQualifications");
+                        String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
+
                         drugSubmission.setDoctorName(doctorName);
                         drugSubmission.setSpecialty(dSpeciality);
                         drugSubmission.setSubSpecialty(dSubSpeciality);
                         drugSubmission.setQualification(dQualification);
+                        drugSubmission.setOtherQualification(dOtherQualification);
+
                         doctorInformationDto.setName(drugSubmission.getDoctorName());
                         doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
                         doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
@@ -225,6 +229,14 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
             String dQualification = ParamUtil.getString(bpc.request, "dQualification");
+            String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
+
+            drugSubmission.setDoctorName(dName);
+            drugSubmission.setSpecialty(dSpeciality);
+            drugSubmission.setSubSpecialty(dSubSpeciality);
+            drugSubmission.setQualification(dQualification);
+            drugSubmission.setOtherQualification(dOtherQualification);
+
             doctorInformationDto.setName(dName);
             doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
