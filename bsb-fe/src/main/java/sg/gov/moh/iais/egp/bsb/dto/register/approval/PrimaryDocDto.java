@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -34,10 +33,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PrimaryDocDto extends ValidatableNodeValue {

@@ -225,7 +225,7 @@ public class ApprovalBatAndActivityDelegator {
 
                     log.info("Save approval application data");
                     ApprovalSelectionDto approvalSelectionDto = approvalBatAndActivityService.getApprovalSelectionDto(request);
-                    ApprovalBatAndActivityDto approvalBatAndActivityDto = ApprovalBatAndActivityDto.from(approvalSelectionDto, approvalAppRoot);
+                    ApprovalBatAndActivityDto approvalBatAndActivityDto = ApprovalBatAndActivityDto.from(approvalSelectionDto, approvalAppRoot, request);
                     ResponseDto<AppMainInfo> responseDto = approvalBatAndActivityClient.saveNewApplicationToApproval(approvalBatAndActivityDto);
                     log.info("save new application to approval response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();
