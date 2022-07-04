@@ -1026,7 +1026,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 //data sysn
                 try{
-                  saveAppGroupGiroSysnEic(applicationGroupDto);
+                    if(applicationGroupDto.getStatus().equals(ApplicationConsts.APPLICATION_SUCCESS_ZIP)){
+                        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                    }
+                    saveAppGroupGiroSysnEic(applicationGroupDto);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
