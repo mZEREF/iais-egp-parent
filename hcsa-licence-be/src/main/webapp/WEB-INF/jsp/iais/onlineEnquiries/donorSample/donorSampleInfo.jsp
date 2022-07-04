@@ -72,10 +72,10 @@
                                         <hr>
                                         <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown !='DIK001' }">
                                             <div class="row"  >
-                                                <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize > donorResultSize}">
+                                                <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize >= donorResultSize}">
                                                     <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code" info="${donorMessageTip}"/>
                                                 </c:if>
-                                                <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize <= donorResultSize}">
+                                                <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize < donorResultSize}">
                                                     <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
                                                 </c:if>
                                                 <div class="col-md-6">
@@ -96,10 +96,10 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize > donorResultSize}" >
+                                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize >= donorResultSize}" >
                                                 <iais:field width="6" cssClass="col-md-6" value="ID No."  info="${donorMessageTip}" />
                                             </c:if>
-                                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize <= donorResultSize}">
+                                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize < donorResultSize}">
                                                 <iais:field width="6" cssClass="col-md-6" value="ID No."   />
                                             </c:if>
                                             <div class="col-md-6">
