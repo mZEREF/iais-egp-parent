@@ -93,25 +93,7 @@ public class TopAjaxController {
         return result;
     }
 
-    @ResponseBody
-    @PostMapping(value = "/patient-age")
-    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
-        String birthDate = (String) ParamUtil.getSessionAttr(request, "birthDate");
-        String counsellingGiven = ParamUtil.getString(request, "counsellingGiven");
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
-        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
-            return result;
-        }
-        boolean b = PreTerminationValidator.validateDate(birthDate);
-        boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
-        if (b && b1) {
-            int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
-            if (age <= 10 || age >= 65) {
-                result.put("showAge", Boolean.TRUE);
-            }
-        }
-        return result;
-    }
+
 
     @ResponseBody
     @PostMapping(value = "/counselling-age")

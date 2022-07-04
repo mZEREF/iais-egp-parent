@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -1069,8 +1068,14 @@ public class TopDataSubmissionDelegator {
         }
         /*ParamUtil.setSessionAttr(request, "counsellingPlace",counsellingPlace);*/
         if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingDate())){
-            Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
-            preTerminationDto.setCounsellingAge(counsellingAge);
+            try {
+                Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
+                preTerminationDto.setCounsellingAge(counsellingAge);
+
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+
+            }
         }
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
@@ -1495,10 +1500,10 @@ public class TopDataSubmissionDelegator {
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 terminationDto.setTopDoctorInformations("true");
             }
-            topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
+        topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         if (!StringUtil.isEmpty(topSuperDataSubmissionDto.getDraftId())) {
             topDataSubmissionService.updateDataSubmissionDraftStatus(topSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
