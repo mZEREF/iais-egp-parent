@@ -1351,8 +1351,11 @@ public class AppealServiceImpl implements AppealService {
 
 
         if (appSvcCgoDtos != null && !appSvcCgoDtos.isEmpty()) {
+            log.info(StringUtil.changeForLog("appSvcCgoDtos json: " + JsonUtil.parseToJson(appSvcCgoDtos)));
             appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
+        }else {
+            log.info(StringUtil.changeForLog("appSvcCgoDtos isEmpty " ));
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
         AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -1536,8 +1539,11 @@ public class AppealServiceImpl implements AppealService {
         }
 
         if (appSvcCgoDtos != null && !appSvcCgoDtos.isEmpty()) {
+            log.info(StringUtil.changeForLog("appSvcCgoDtos json: " + JsonUtil.parseToJson(appSvcCgoDtos)));
             appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
+        }else {
+            log.info(StringUtil.changeForLog("appSvcCgoDtos isEmpty " ));
         }
         appealDto.setMaxFileIndex(maxFileIndex);
         AppealPageDto appealPageDto = applicationFeClient.submitAppeal(appealDto).getEntity();
