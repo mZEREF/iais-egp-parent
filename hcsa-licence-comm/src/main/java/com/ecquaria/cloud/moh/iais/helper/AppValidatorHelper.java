@@ -176,6 +176,8 @@ public final class AppValidatorHelper {
         //
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(bpc.request),
+                oldAppSubmissionDto, false, bpc.request);
         previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto, bpc);
         return previewAndSubmitMap;
     }
