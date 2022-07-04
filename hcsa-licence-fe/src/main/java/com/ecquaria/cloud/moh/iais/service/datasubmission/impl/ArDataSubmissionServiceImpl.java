@@ -268,18 +268,18 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public List<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
-                                                                                  String orgId, String hciCode, boolean onlyStage) {
+                                                                                  String orgId, String hciCode, boolean onlyStage, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + hciCode + " : " + idType
                 + " : " + idNumber + " : " + nationality + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
                 || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
             return null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode, onlyStage).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode, onlyStage,userId).getEntity();
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
@@ -287,7 +287,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             hciCode = null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode,userId).getEntity();
     }
 
     @Override

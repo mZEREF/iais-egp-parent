@@ -27,7 +27,7 @@ public interface LdtFeClient {
 
 
     @GetMapping(value = "/data-submission/ldt-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId, @RequestParam(name = "dataSubmissionId",required = false) String dataSubmissionId);
+    FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId, @RequestParam("userId") String userId, @RequestParam(name = "dataSubmissionId",required = false) String dataSubmissionId);
 
     @GetMapping(value = "/data-submission/draft-ldt-data-submission/{draftNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByDraftNo(@PathVariable("draftNo") String draftNo);

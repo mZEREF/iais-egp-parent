@@ -30,12 +30,14 @@ public interface TopFeClient {
 
     @GetMapping(value = "/data-submission/top-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
-                                                                                            @RequestParam("submissionType") String submissionType);
+                                                                                            @RequestParam("submissionType") String submissionType,
+                                                                                            @RequestParam("userId") String userId);
 
     @GetMapping(value = "/data-submission/rfc-top-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDtoRfcDraftByConds(@PathVariable("orgId") String orgId,
                                                                                                @RequestParam("submissionType") String submissionType,
-                                                                                               @RequestParam("dataSubmissionId") String dataSubmissionId);
+                                                                                               @RequestParam("dataSubmissionId") String dataSubmissionId,
+                                                                                               @RequestParam("userId") String userId);
     @DeleteMapping(value = "/data-submission/draft-top-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteTopSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
                                                                           @RequestParam(name = "submissionType") String submissionType,

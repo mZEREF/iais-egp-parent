@@ -136,17 +136,27 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
             if (crud_action_type.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
+                String orgId = "";
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    orgId = loginContext.getOrgId();
+                    userId = loginContext.getUserId();
+                }
                 if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
+                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if ("resume".equals(actionValue)) {
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
                 dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                        dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId(),userId);
                 if (dpSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();

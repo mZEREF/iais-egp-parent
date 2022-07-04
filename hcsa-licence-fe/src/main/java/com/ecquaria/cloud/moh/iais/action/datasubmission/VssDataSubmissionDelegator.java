@@ -122,9 +122,14 @@ public class VssDataSubmissionDelegator {
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_VSS);
 
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS,userId);
         if (vssSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
@@ -184,7 +189,12 @@ public class VssDataSubmissionDelegator {
         }
         //draft
         if (crud_action_type.equals("resume")) {
-            vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
+            String userId = "";
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            if (loginContext != null) {
+                userId = loginContext.getUserId();
+            }
+            vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType(),userId);
             if (vssSuperDataSubmissionDto == null) {
                 log.warn("Can't resume data!");
                 vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();

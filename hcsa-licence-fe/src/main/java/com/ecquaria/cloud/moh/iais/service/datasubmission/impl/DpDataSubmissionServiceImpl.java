@@ -131,24 +131,24 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
 
     @Override
     public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType,
-            String svcName, String hciCode) {
+            String svcName, String hciCode, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : "
                 + svcName + " : " + hciCode + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
             return null;
         }
-        return dpFeClient.getDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, svcName, hciCode).getEntity();
+        return dpFeClient.getDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, svcName, hciCode,userId).getEntity();
     }
 
     @Override
     public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType,
-                                                                            String svcName, String hciCode, String dataSubmissionId) {
+                                                                            String svcName, String hciCode, String dataSubmissionId, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : "
                 + svcName + " : " + hciCode + " : " + dataSubmissionId + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(dataSubmissionId)) {
             return null;
         }
-        return dpFeClient.getDpSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, svcName, hciCode, dataSubmissionId).getEntity();
+        return dpFeClient.getDpSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, svcName, hciCode, dataSubmissionId,userId).getEntity();
     }
 
     @Override

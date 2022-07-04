@@ -504,12 +504,17 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     private void hasDraft(HttpServletRequest request) {
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            userId = loginContext.getUserId();
+        }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         PatientDto patient = arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
         List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                 patient.getIdType(), patient.getIdNumber(), patient.getNationality(),
-                arSuperDataSubmissionDto.getOrgId(), arSuperDataSubmissionDto.getHciCode(), true);
+                arSuperDataSubmissionDto.getOrgId(), arSuperDataSubmissionDto.getHciCode(), true, userId);
         if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
             dataSubmissionDraftList = dataSubmissionDraftList.stream()
                     .filter(draft -> transferInOutStageDto.getBindSubmissionId().equals(draft.getTransferInOutStageDto().getBindSubmissionId()))

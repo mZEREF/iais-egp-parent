@@ -115,9 +115,14 @@ public class TopDataSubmissionDelegator {
         DataSubmissionHelper.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
 
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,userId);
         if (topSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
         }
@@ -149,16 +154,26 @@ public class TopDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "patientMotionless","motionles");
                 if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
                     DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
-                    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                            .map(LoginContext::getOrgId).orElse("");
-                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
+                    String orgId = "";
+                    String userId = "";
+                    LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                    if (loginContext != null) {
+                        orgId = loginContext.getOrgId();
+                        userId = loginContext.getUserId();
+                    }
+                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId(),userId) != null) {
                         ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
                     }
                 }
             }
             //draft
             if (crud_action_type.equals("resume")) {
-                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId(),userId);
                 if (topSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
@@ -272,7 +287,12 @@ public class TopDataSubmissionDelegator {
         if(DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
             //draft
             if (crud_action_type.equals("resume")) {
-                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(),userId);
                 if (topSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();

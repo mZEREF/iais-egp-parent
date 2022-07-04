@@ -40,9 +40,9 @@ public interface ArDataSubmissionService {
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     List<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
-            String hciCode, boolean onlyStage);
+            String hciCode, boolean onlyStage, String userId);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode, String userId);
 
     void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);

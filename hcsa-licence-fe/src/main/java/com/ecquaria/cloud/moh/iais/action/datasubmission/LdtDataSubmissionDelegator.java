@@ -103,7 +103,9 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
 
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             String licenseeId = loginContext.getLicenseeId();
             List<LicenceDto> licenceDtos = licenceClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
@@ -114,11 +116,11 @@ public class LdtDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, "Y");
                 ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_RETURN);
             }
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
         }
 
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, null);
+        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId,null);
         if (dataSubmissionDraft != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
@@ -257,7 +259,14 @@ public class LdtDataSubmissionDelegator {
 
         //draft
         if (crud_action_type.equals("resume")) {
-            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), ldtSuperDataSubmissionDto.getDataSubmissionDto().getId());
+            String orgId = "";
+            String userId = "";
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            if (loginContext != null) {
+                orgId = loginContext.getOrgId();
+                userId = loginContext.getUserId();
+            }
+            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId, ldtSuperDataSubmissionDto.getDataSubmissionDto().getId());
             if (ldtSuperDataSubmissionDto == null) {
                 log.warn("Can't resume data!");
                 ldtSuperDataSubmissionDto = new LdtSuperDataSubmissionDto();
