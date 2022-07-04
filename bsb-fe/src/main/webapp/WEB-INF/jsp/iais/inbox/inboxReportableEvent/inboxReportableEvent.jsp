@@ -64,9 +64,9 @@
                                     </div>
                                 </div>
                                 <div class="row" style="margin-bottom: 15px">
-                                    <label for="incidentDate" class="col-sm-3 col-md-2 control-label">Date of Incident:</label>
+                                    <label for="incidentDt" class="col-sm-3 col-md-2 control-label">Date of Incident:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <input type="text" autocomplete="off" name="incidentDate" id="incidentDate" data-date-start-date="01/01/1900" value="<c:out value="${inboxSearchDto.incidentDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                        <input type="text" autocomplete="off" name="incidentDt" id="incidentDt" data-date-start-date="01/01/1900" value="<c:out value="${inboxSearchDto.incidentDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
                                     </div>
                                 </div>
                                 <div class="row text-right text-center-mobile">
@@ -129,7 +129,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Date of Incident</p>
-                                                                <p><c:out value="${item.incidentEntityDate}"/></p>
+                                                                <p><c:out value="${item.incidentDt}"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Name of Agent or Toxin Involved</p>

@@ -10,10 +10,7 @@ import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PreviewDto extends ValidatableNodeValue {
     private String processType;
@@ -107,7 +104,7 @@ public class PreviewDto extends ValidatableNodeValue {
     private static final String KEY_DECLARE_3 = "declare3";
 
     public void reqObjMapping(HttpServletRequest request) {
-        setProcessType((String) ParamUtil.getSessionAttr(request,ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE));
+        setProcessType((String) ParamUtil.getSessionAttr(request, ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE));
         setRemarks(ParamUtil.getString(request, KEY_REMARKS));
         String[] declareArray1 = ParamUtil.getStrings(request, KEY_DECLARE_1);
         String[] declareArray2 = ParamUtil.getStrings(request, KEY_DECLARE_2);

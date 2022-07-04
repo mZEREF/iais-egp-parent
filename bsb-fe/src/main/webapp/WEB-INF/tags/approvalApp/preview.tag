@@ -20,6 +20,11 @@
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
+    <div class="row" id="printRow">
+        <div class="text-right" style="padding: 0 15px">
+            <p class="print"></p><div style="font-size: 16px;"><a onclick="printApprovalApp('${printApprovalAppId}');" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div><p></p>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
@@ -255,7 +260,7 @@
                                         <c:forEach var="activityType" items="${batInfo.facActivityTypes}">
                                             <div class="form-group">
                                                 <div class="col-10">
-                                                    <label for="facActivityTypes"></label><input type="checkbox" name="facActivityTypes" id="facActivityTypes" checked="checked" readonly/>
+                                                    <label for="facActivityTypes"></label><input type="checkbox" name="facActivityTypes" id="facActivityTypes" checked="checked" disabled/>
                                                     <iais:code code="${activityType}"/></div>
                                                 <div class="clear"></div>
                                             </div>
@@ -513,12 +518,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Start Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">End Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">

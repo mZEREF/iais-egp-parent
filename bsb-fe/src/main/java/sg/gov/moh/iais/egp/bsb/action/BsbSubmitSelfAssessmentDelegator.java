@@ -409,7 +409,8 @@ public class BsbSubmitSelfAssessmentDelegator {
         if (fileInfo == null) {
             errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
         } else if (fileInfo.getSize() == 0) {
-            errorMap.put("selfAssessmentData", "Could not parse file content.");
+            // GENERAL_ERR0069 - Could not parse file content.
+            errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0069"));
         } else if (!FileUtils.isExcel(fileInfo.getFilename())) {
             errorMap.put("selfAssessmentData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
@@ -421,7 +422,8 @@ public class BsbSubmitSelfAssessmentDelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put("selfAssessmentData", "Could not parse file content. Please download new template to do this.");
+                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+                errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {

@@ -1,6 +1,6 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="bat" tagdir="/WEB-INF/tags/bat" %>
-
+<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 
 <%--@elvariable id="firstScheduleOp" type="java.lang.String"--%>
 <%--@elvariable id="scheduleBatMap" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>"--%>
@@ -16,6 +16,7 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+        <appv:innerFooter editApp="${editApp}"/>
     </jsp:attribute>
 </bat:specialBatDetails>

@@ -1,7 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
@@ -14,13 +16,25 @@ import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import java.io.Serializable;
 import java.util.Collection;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APP_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_ACTIVITY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_AUTHORISED;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_LARGE_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_POSSESS_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_SPECIAL_BAT;
 
 
+@Slf4j
 @Data
 @NoArgsConstructor
 public class ApprovalBatAndActivityDto implements Serializable {
+    // differentiate new, rfc, renewal
     private String appType;
+    // used to determine whether it is a new app or an edit app
+    private String appId;
 
     private ApprovalSelectionDto approvalSelectionDto;
     private BiologicalAgentToxinDto approvalToPossessDto;
@@ -31,16 +45,18 @@ public class ApprovalBatAndActivityDto implements Serializable {
     private Collection<DocRecordInfo> docRecordInfos;
     private PreviewDto previewDto;
 
-    /** Convert data in this big DTO into a approvalAppRoot NodeGroup
-     *  This is needed when we want to view the saved data or edit it */
+    /**
+     * Convert data in this big DTO into a approvalAppRoot NodeGroup
+     * This is needed when we want to view the saved data or edit it
+     */
     public NodeGroup toApprovalAppRootGroup(String name) {
-      String processType = this.approvalSelectionDto.getProcessType();
+        String processType = this.approvalSelectionDto.getProcessType();
 
-        if(!StringUtils.hasLength(processType)){
+        if (!StringUtils.hasLength(processType)) {
             throw new IllegalArgumentException("process type is null");
         }
 
-      Node facProfileNode = new Node(NODE_NAME_FAC_PROFILE, new Node[0]);
+        Node facProfileNode = new Node(NODE_NAME_FAC_PROFILE, new Node[0]);
         NodeGroup appInfoNodeGroup = null;
         switch (processType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
@@ -65,11 +81,12 @@ public class ApprovalBatAndActivityDto implements Serializable {
                 appInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_APP_INFO).dependNodes(new Node[0]).addNode(facProfileNode).addNode(facActivityNode).build();
                 break;
             default:
+                log.info(StringUtil.changeForLog("no such processType " + org.apache.commons.lang.StringUtils.normalizeSpace(processType)));
                 break;
         }
 
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos,DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
 
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{appInfoNodeGroup});
         SimpleNode previewNode = new SimpleNode(previewDto, NODE_NAME_PREVIEW, new Node[]{appInfoNodeGroup, primaryDocNode});
@@ -81,15 +98,17 @@ public class ApprovalBatAndActivityDto implements Serializable {
                 .build();
     }
 
-    /** Write the approvalAppRoot NodeGroup into a DTO, then send the DTO to save the data. */
-    public static ApprovalBatAndActivityDto  from(ApprovalSelectionDto approvalSelectionDto,NodeGroup approvalAppRoot) {
+    /**
+     * Write the approvalAppRoot NodeGroup into a DTO, then send the DTO to save the data.
+     */
+    public static ApprovalBatAndActivityDto from(ApprovalSelectionDto approvalSelectionDto, NodeGroup approvalAppRoot) {
         ApprovalBatAndActivityDto approvalBatAndActivityDto = new ApprovalBatAndActivityDto();
         approvalBatAndActivityDto.setApprovalSelectionDto(approvalSelectionDto);
-       String processType  = approvalSelectionDto.getProcessType();
+        String processType = approvalSelectionDto.getProcessType();
 
-       if(!StringUtils.hasLength(processType)){
-           throw new IllegalArgumentException("process type is null");
-       }
+        if (!StringUtils.hasLength(processType)) {
+            throw new IllegalArgumentException("process type is null");
+        }
 
         switch (processType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
@@ -107,6 +126,7 @@ public class ApprovalBatAndActivityDto implements Serializable {
                 approvalBatAndActivityDto.setApprovalToActivityDto((ApprovalToActivityDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY)).getValue());
                 break;
             default:
+                log.info(StringUtil.changeForLog("no such processType " + org.apache.commons.lang.StringUtils.normalizeSpace(processType)));
                 break;
         }
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();

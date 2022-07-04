@@ -31,7 +31,7 @@ public class ReportDto implements Serializable {
     private String adminMobileNo;
     private String adminEmail;
     // Section B (Inspection Details)
-    private String inspectionDate;
+    private String inspectionDt;
     private String inspectionPurpose;
     private String facilityRepresentative;
     private String mohInspector;
@@ -48,7 +48,7 @@ public class ReportDto implements Serializable {
     private List<String> deficiency;
     private String outcome;
     private String recommendationRemarks;
-    private String facilityValidityDate;
+    private String facilityValidityDt;
     private String applicantRemarks;
     // Attachments
     private List<DocRecordInfo> docRecordInfo;
@@ -97,6 +97,6 @@ public class ReportDto implements Serializable {
 
         this.outcome = ParamUtil.getString(request, KEY_OUTCOME);
         this.recommendationRemarks = ParamUtil.getString(request, KEY_RECOMMENDATION_REMARKS);
-        this.facilityValidityDate = ParamUtil.getString(request, KEY_FACILITY_VALIDITY_DATE);
+        this.facilityValidityDt = ParamUtil.getString(request, KEY_FACILITY_VALIDITY_DATE);
     }
 }

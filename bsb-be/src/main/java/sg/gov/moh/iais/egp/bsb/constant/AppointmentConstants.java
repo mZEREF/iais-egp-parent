@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.constant;
 
 /**
  * @author tangtang
- * @date 2022/3/7 15:41
  */
 public class AppointmentConstants {
     private AppointmentConstants() {}
@@ -18,9 +17,9 @@ public class AppointmentConstants {
 
     public static final String PROCESS_DEC_CONFIRM_DATE = "confirm";
     public static final String PROCESS_DEC_SPECIFY_NEW_DATE = "specify";
-    public static final String KEY_SPECIFY_START_DATE = "specifyStartDate";
+    public static final String KEY_SPECIFY_START_DATE = "specifyStartDt";
     public static final String KEY_SPECIFY_START_HOUR = "specifyStartHour";
-    public static final String KEY_SPECIFY_END_DATE = "specifyEndDate";
+    public static final String KEY_SPECIFY_END_DATE = "specifyEndDt";
     public static final String KEY_SPECIFY_END_HOUR = "specifyEndHour";
 
     public static final String KEY_START_HOURS_OPTION = "startHoursOption";

@@ -320,6 +320,7 @@
             secCounsellingDate();
             secCounsellingResult();
         });
+        changeDate();
         /*$("#counsellingGivenDate").on('blur, change', function () {
             age();
         })*/
@@ -435,38 +436,7 @@
         }
     }
 
-    $("#counsellingGivenDate").on('blur', function () {
-        var birthData=$('#birthData').val();
-        var counsellingGiven=$('#counsellingGivenDate').val();
-        let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
-        let validC = reg.test(counsellingGiven);
-        let validB = reg.test(birthData);
-        console.log("validCounsellingGiven: "+validC);
-        console.log("validBirthData: "+validB);
-        if (validC && validB) {
-            showWaiting();
-            var url = $('#_contextPath').val() + '/top/patient-age';
-            var options = {
-                birthData: birthData,
-                counsellingGiven: counsellingGiven,
-                url: url
-            }
-            callCommonAjax(options, checkBirthDateCallback);
-        }
-    });
-
-    function checkBirthDateCallback(data) {
-        if (isEmpty(data) || isEmpty(data.showAge) || !data.showAge) {
-            return;
-        }
-        $('#PRS_SERVICE_DOWN').modal('show');
-    }
-
-    function cancels() {
-        $('#PRS_SERVICE_DOWN').modal('hide');
-    }
-
-    $("#counsellingGivenDate").on('blur', function () {
+    function changeDate(){
         var birthData = $('#birthData').val();
         var counsellingGiven = $('#counsellingGivenDate').val();
 
@@ -485,8 +455,24 @@
             }
             callCommonAjax(options, checkBirthDateCallbacks);
         }
+    }
+
+    $("#counsellingGivenDate").on('blur', function () {
+        changeDate();
     });
+
+
+    function cancels() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+
     function checkBirthDateCallbacks(data) {
+        if (isEmpty(data) ) {
+            return;
+        }
+        if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
         console.log("counselling");
         if (isEmpty(data) || data.birthDate) {
             $('#counsellingAge').html(null);

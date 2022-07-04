@@ -1,5 +1,6 @@
 <%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/common" %>
+<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
@@ -17,6 +18,7 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+        <appv:innerFooter editApp="${editApp}"/>
     </jsp:attribute>
 </fac:supportingDocuments>

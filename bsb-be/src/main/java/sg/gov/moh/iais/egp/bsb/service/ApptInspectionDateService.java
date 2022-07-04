@@ -31,7 +31,9 @@ import sg.gov.moh.iais.egp.bsb.dto.appointment.BsbApptInspectionDateDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SaveAppointmentDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.ApptAppInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.*;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AppInspectorCorrelationDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 
@@ -39,7 +41,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.CONFIRMED;
@@ -143,18 +154,18 @@ public class ApptInspectionDateService {
             dto.setSpecifyEndHour(null);
         }
         if (StringUtils.hasLength(specificStartDate)) {
-            dto.setSpecifyStartDate(specificStartDate);
+            dto.setSpecifyStartDt(specificStartDate);
         }
         if (StringUtils.hasLength(specificEndDate)) {
-            dto.setSpecifyEndDate(specificEndDate);
+            dto.setSpecifyEndDt(specificEndDate);
         }
         String startDate = getSpecificDate(specificStartDate, startHoursOptionMap, startHour);
         String endDate = getSpecificDate(specificEndDate, endHoursOptionMap, endHour);
         if (startDate != null) {
-            bsbSpecificApptDto.setStartDate(startDate);
+            bsbSpecificApptDto.setStartDt(startDate);
         }
         if (endDate != null) {
-            bsbSpecificApptDto.setEndDate(endDate);
+            bsbSpecificApptDto.setEndDt(endDate);
         }
         bsbApptInspectionDateDto.setBsbSpecificApptDto(bsbSpecificApptDto);
         ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, bsbApptInspectionDateDto);
@@ -193,12 +204,12 @@ public class ApptInspectionDateService {
         Date startDate = null;
         Date endDate = null;
         try {
-            startDate = sdf3.parse(specificApptDto.getStartDate());
+            startDate = sdf3.parse(specificApptDto.getStartDt());
         } catch (ParseException e) {
             log.info("startDate Conversion failure");
         }
         try {
-            endDate = sdf3.parse(specificApptDto.getStartDate());
+            endDate = sdf3.parse(specificApptDto.getStartDt());
         } catch (ParseException e) {
             log.info("endDate Conversion failure");
         }
@@ -291,16 +302,16 @@ public class ApptInspectionDateService {
         inspectionInfoDto.setApptRefNo(apptRefNo);
         inspectionInfoDto.setApptDateStatus(CONFIRMED);
 
-        if (bsbAppointmentDtoSave.getStartDate() != null) {
+        if (bsbAppointmentDtoSave.getStartDt() != null) {
             try {
-                inspectionInfoDto.setInsStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionInfoDto.setInsStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDt(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
         }
-        if (bsbAppointmentDtoSave.getEndDate() != null) {
+        if (bsbAppointmentDtoSave.getEndDt() != null) {
             try {
-                inspectionInfoDto.setInsEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionInfoDto.setInsEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDt(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
@@ -346,7 +357,7 @@ public class ApptInspectionDateService {
     }
 
     public void setStartEndDateNull(BsbAppointmentDto bsbAppointmentDto) {
-        String startDateStr = bsbAppointmentDto.getStartDate();
+        String startDateStr = bsbAppointmentDto.getStartDt();
         //Compares user specified time with the current time
         if (StringUtils.hasLength(startDateStr)) {
             Date today = new Date();
@@ -355,8 +366,8 @@ public class ApptInspectionDateService {
                 today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
                 Date startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                 if (startDate.before(today)) {
-                    bsbAppointmentDto.setStartDate(null);
-                    bsbAppointmentDto.setEndDate(null);
+                    bsbAppointmentDto.setStartDt(null);
+                    bsbAppointmentDto.setEndDt(null);
                 }
             } catch (ParseException e) {
                 log.info("AppointmentDto: start date conversion Error!!!!!");
@@ -408,8 +419,8 @@ public class ApptInspectionDateService {
     public boolean getStartEndDateFlag(BsbAppointmentDto bsbAppointmentDto) {
         Date today = new Date();
         String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
-        String startDateStr = bsbAppointmentDto.getStartDate();
-        String endDateStr = bsbAppointmentDto.getEndDate();
+        String startDateStr = bsbAppointmentDto.getStartDt();
+        String endDateStr = bsbAppointmentDto.getEndDt();
         Date startDate = null;
         Date endDate = null;
         try {
@@ -433,7 +444,7 @@ public class ApptInspectionDateService {
                 } else {
                     if (startDate.before(today)) {
                         startDate = new Date();
-                        bsbAppointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                        bsbAppointmentDto.setStartDt(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                     }
                 }
             }
@@ -443,7 +454,7 @@ public class ApptInspectionDateService {
             } else {
                 if (startDate.before(today)) {
                     startDate = new Date();
-                    bsbAppointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    bsbAppointmentDto.setStartDt(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                 }
             }
         }
@@ -451,7 +462,7 @@ public class ApptInspectionDateService {
     }
 
     public void setStartDtAndEndDt(BsbAppointmentDto bsbAppointmentDto) {
-        if (!StringUtils.hasLength(bsbAppointmentDto.getStartDate()) && !StringUtils.hasLength(bsbAppointmentDto.getEndDate())) {
+        if (!StringUtils.hasLength(bsbAppointmentDto.getStartDt()) && !StringUtils.hasLength(bsbAppointmentDto.getEndDt())) {
             Calendar startCal = Calendar.getInstance();
             startCal.setTime(new Date());
             startCal.add(Calendar.DAY_OF_YEAR, 7);
@@ -463,7 +474,7 @@ public class ApptInspectionDateService {
             startCal.set(Calendar.MINUTE, 0);
             startCal.set(Calendar.SECOND, 0);
             startCal.set(Calendar.MILLISECOND, 0);
-            bsbAppointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(), null));
+            bsbAppointmentDto.setStartDt(DateUtil.convertToString(startCal.getTime(), null));
 
             Calendar endCal = Calendar.getInstance();
             endCal.setTime(startCal.getTime());
@@ -476,7 +487,7 @@ public class ApptInspectionDateService {
             endCal.set(Calendar.MINUTE, 0);
             endCal.set(Calendar.SECOND, 0);
             endCal.set(Calendar.MILLISECOND, 0);
-            bsbAppointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(), null));
+            bsbAppointmentDto.setEndDt(DateUtil.convertToString(endCal.getTime(), null));
         }
     }
 
@@ -674,20 +685,20 @@ public class ApptInspectionDateService {
             reviewDataDto.setSpecifyEndHour(null);
         }
         if (StringUtils.hasLength(specificStartDate)) {
-            rescheduleDto.setSpecifyStartDate(specificStartDate);
-            reviewDataDto.setSpecifyStartDate(specificStartDate);
+            rescheduleDto.setSpecifyStartDt(specificStartDate);
+            reviewDataDto.setSpecifyStartDt(specificStartDate);
         }
         if (StringUtils.hasLength(specificEndDate)) {
-            rescheduleDto.setSpecifyEndDate(specificEndDate);
-            reviewDataDto.setSpecifyEndDate(specificEndDate);
+            rescheduleDto.setSpecifyEndDt(specificEndDate);
+            reviewDataDto.setSpecifyEndDt(specificEndDate);
         }
         String startDate = getSpecificDate(specificStartDate, startHoursOptionMap, startHour);
         String endDate = getSpecificDate(specificEndDate, endHoursOptionMap, endHour);
         if (startDate != null) {
-            bsbSpecificApptDto.setStartDate(startDate);
+            bsbSpecificApptDto.setStartDt(startDate);
         }
         if (endDate != null) {
-            bsbSpecificApptDto.setEndDate(endDate);
+            bsbSpecificApptDto.setEndDt(endDate);
         }
         ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, reviewDataDto);
         return bsbSpecificApptDto;
@@ -707,16 +718,16 @@ public class ApptInspectionDateService {
         inspectionInfoDto.setApptRefNo(apptRefNo);
         inspectionInfoDto.setApptDateStatus(CONFIRMED);
 
-        if (bsbAppointmentDtoSave.getStartDate() != null) {
+        if (bsbAppointmentDtoSave.getStartDt() != null) {
             try {
-                inspectionInfoDto.setInsStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionInfoDto.setInsStartDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getStartDt(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }
         }
-        if (bsbAppointmentDtoSave.getEndDate() != null) {
+        if (bsbAppointmentDtoSave.getEndDt() != null) {
             try {
-                inspectionInfoDto.setInsEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                inspectionInfoDto.setInsEndDate(Formatter.parseDateTime(bsbAppointmentDtoSave.getEndDt(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }

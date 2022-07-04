@@ -132,18 +132,18 @@ public class RescheduleAppointmentDelegator {
         boolean needNewDate = false;
         for (AppointmentViewDto appointmentViewDto : appointmentViewDtos) {
             //Gets the last specified time and compares it to the new time to determine whether the generation time is required
-            String newStartDate = appointmentViewDto.getNewStartDate();
-            String newEndDate = appointmentViewDto.getNewEndDate();
+            String newStartDate = appointmentViewDto.getNewStartDt();
+            String newEndDate = appointmentViewDto.getNewEndDt();
 
             String maskedAppId = appointmentViewDto.getMaskedAppId();
             String reason = ParamUtil.getString(request, "reason" + maskedAppId);
-            String startDateStr = ParamUtil.getString(request, "newStartDate" + maskedAppId);
-            String endDateStr = ParamUtil.getString(request, "newEndDate" + maskedAppId);
+            String startDateStr = ParamUtil.getString(request, "newStartDt" + maskedAppId);
+            String endDateStr = ParamUtil.getString(request, "newEndDt" + maskedAppId);
             String newDateStr = ParamUtil.getString(request, "newDate" + maskedAppId);
 
             appointmentViewDto.setReason(reason);
-            appointmentViewDto.setNewStartDate(startDateStr);
-            appointmentViewDto.setNewEndDate(endDateStr);
+            appointmentViewDto.setNewStartDt(startDateStr);
+            appointmentViewDto.setNewEndDt(endDateStr);
             appointmentViewDto.setModule("rescheduleAppointment");
 
             boolean changeStartDate = false;

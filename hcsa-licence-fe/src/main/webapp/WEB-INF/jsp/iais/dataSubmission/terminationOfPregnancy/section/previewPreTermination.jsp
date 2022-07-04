@@ -93,7 +93,7 @@
                         <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <c:if test="${topDates}">
-                        <c:set var="toolMsg"><iais:message key="Termionation of Pregnancy was carried within the 2 days cooling period from date of Pre-Termination of Pregnancy counselling" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsg"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
                         <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>

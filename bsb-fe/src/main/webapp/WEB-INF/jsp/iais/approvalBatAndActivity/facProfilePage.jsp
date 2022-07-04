@@ -12,6 +12,7 @@
         <%@include file="dashboard.jsp"%>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%@include file="InnerFooter.jsp" %>
+        <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+        <appv:innerFooter editApp="${editApp}"/>
     </jsp:attribute>
 </appv:facProfile>

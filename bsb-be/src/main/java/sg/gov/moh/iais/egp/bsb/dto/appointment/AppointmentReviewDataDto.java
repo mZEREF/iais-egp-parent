@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * @author tangtang
- * @date 2022/3/4 16:49
  */
 @Data
 public class AppointmentReviewDataDto implements Serializable {
@@ -25,14 +24,14 @@ public class AppointmentReviewDataDto implements Serializable {
     // doc
     private List<DocDisplayDto> docDisplayDtoList;
     // user specify new date
-    private String specifyStartDate;
-    private String specifyEndDate;
+    private String specifyStartDt;
+    private String specifyEndDt;
     private String specifyStartHour;
     private String specifyEndHour;
     // save
     private String apptRefNo;
     private String userId;
-    private String startDate;
-    private String endDate;
+    private String startDt;
+    private String endDt;
     private String module;
 }

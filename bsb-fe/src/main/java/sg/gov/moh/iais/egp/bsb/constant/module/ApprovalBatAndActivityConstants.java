@@ -30,6 +30,8 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_APP_NO                  = "appNo";
     public static final String KEY_APP_DT                  = "appDt";
 
+    public static final String KEY_PRINT_MASK_PARAM        = "printApprovalApp";
+    public static final String KEY_PRINT_MASKED_ID         = "printApprovalAppId";
 
     public static final String NODE_NAME_APP_INFO = "appInfo";
     public static final String NODE_NAME_FAC_PROFILE = "facProfile";

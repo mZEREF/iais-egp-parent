@@ -27,7 +27,7 @@
                         <td class="col-md-1"><c:out value="${status.index+1}"/></td>
                         <td class="col-md-2"><c:out value="${item.itemDescription}"/></td>
                         <td class="col-md-3"><c:out value="${item.observation}"/></td>
-                        <td class="col-md-2"><c:out value="${item.dueDate}"/></td>
+                        <td class="col-md-2"><c:out value="${item.dueDt}"/></td>
                         <td class="col-md-2"><c:out value="${item.applicantRemarks}"/></td>
                         <td class="col-md-2">
                             <c:if test="${not empty reviewFollowUpDto.followUpDocDisplayDtoList}">
@@ -64,7 +64,7 @@
                 <c:forEach items="${reviewFollowUpDto.followUpDisplayDtos}" var="item">
                     <tr>
                         <td class="col-md-3"><c:out value="${item.observation}"/></td>
-                        <td class="col-md-2"><c:out value="${item.dueDate}"/></td>
+                        <td class="col-md-2"><c:out value="${item.dueDt}"/></td>
                         <td class="col-md-2"><c:out value="${item.applicantRemarks}"/></td>
                         <td class="col-md-2">
                             <c:if test="${not empty reviewFollowUpDto.followUpDocDisplayDtoList}">

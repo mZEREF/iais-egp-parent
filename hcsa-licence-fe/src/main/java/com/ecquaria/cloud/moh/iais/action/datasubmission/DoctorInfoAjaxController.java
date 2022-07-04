@@ -25,7 +25,7 @@ import java.util.Map;
 @RequestMapping(value = "/doc")
 @RestController
 @Slf4j
-public class DocInfoAjaxController {
+public class DoctorInfoAjaxController {
 
     @Autowired
     private AppCommService appSubmissionService;

@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -47,7 +48,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+                                <appv:innerFooter editApp="${editApp}"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
