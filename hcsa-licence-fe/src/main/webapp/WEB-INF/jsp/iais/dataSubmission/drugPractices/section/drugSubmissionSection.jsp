@@ -278,6 +278,7 @@
 <input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
 <input type="hidden" name="action" id="action" value="">
 <input type="hidden" name="haveError" id="haveError" value="${haveError}">
+<input type="hidden" name="noChangeForRFC" id="noChangeForRFC" value="${RFC_NO_CHANGE_ERROR}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -752,7 +753,8 @@
     function closeQuantityNotMatchModal() {
         $('#QUANTITY_NOT_MATCH').modal('hide');
         var haveError = $('input[name="haveError"]').val();
-        if (haveError == "No") {
+        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
+        if (haveError == "No" && noChangeForRFC != "1") {
             $('input[name="action"]').val("confirm");
             $('#nextBtn').click();
         }

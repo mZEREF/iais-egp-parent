@@ -43,7 +43,7 @@ public class DoctorInfoAjaxController {
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()){
                 if(doctorInformationDto!=null){
                     professionalResponseDto.setName(doctorInformationDto.getName());
                     professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));
