@@ -1117,8 +1117,8 @@ public class TopDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+            if(preTerminationDto.getCounsellingGiven()!=null){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
@@ -1126,7 +1126,7 @@ public class TopDataSubmissionDelegator {
                    /* if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
                         ParamUtil.setSessionAttr(request, "counsellingPlaceError", "This is a mandatory field.");
                     }*/
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else {
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
