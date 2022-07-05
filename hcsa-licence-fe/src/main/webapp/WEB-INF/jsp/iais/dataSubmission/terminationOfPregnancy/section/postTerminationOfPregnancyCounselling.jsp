@@ -1,5 +1,5 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002' && preTerminationDto.counsellingResult!='TOPPCR003'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003' && preTerminationDto.counsellingResult!='TOPPCR003'}">
 
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
 <c:set var="postTerminationDto" value="${terminationOfPregnancyDto.postTerminationDto}" />
