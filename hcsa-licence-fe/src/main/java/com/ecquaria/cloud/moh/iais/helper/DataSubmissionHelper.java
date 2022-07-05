@@ -994,6 +994,18 @@ public final class DataSubmissionHelper {
         return premisesMap;
     }
 
+    public static Map<String, PremisesDto> setVsPremisesMap(HttpServletRequest request) {
+        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.VSS_PREMISES_MAP);
+        if (IaisCommonUtils.isEmpty(premisesMap)) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId = loginContext != null ? loginContext.getLicenseeId() : null;
+            premisesMap = SpringContextHelper.getContext().getBean(VssDataSubmissionService.class).getVssCenterPremises(licenseeId);
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_PREMISES_MAP, (Serializable) premisesMap);
+        }
+        return premisesMap;
+    }
+
     public static CycleDto initCycleDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = ldtSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {

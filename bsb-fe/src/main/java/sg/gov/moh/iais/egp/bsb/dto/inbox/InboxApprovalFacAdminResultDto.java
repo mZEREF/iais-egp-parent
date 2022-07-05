@@ -17,8 +17,8 @@ public class InboxApprovalFacAdminResultDto {
         private String approveNo;
         private String processType;
         private String status;
-        private String approvalStartDate;
-        private String approvalExpiryDate;
+        private String approvalStartDt;
+        private String approvalExpiryDt;
         private String renewable;
         private String facilityName;
         private String postalCode;

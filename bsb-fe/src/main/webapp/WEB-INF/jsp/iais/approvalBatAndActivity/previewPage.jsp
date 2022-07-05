@@ -4,8 +4,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%@ taglib prefix="approvalApp" tagdir="/WEB-INF/tags/approvalApp" %>
+<%@taglib prefix="appv" tagdir="/WEB-INF/tags/approvalApp" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -32,13 +31,13 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
-                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}"
+                                    <appv:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}" processType="${processType}"
                                                          facProfileEditJudge="true" batListEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
-                                            <approvalApp:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>
+                                            <appv:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" otherDocTypes="${otherDocTypes}"/>
                                         </jsp:attribute>
-                                    </approvalApp:preview>
+                                    </appv:preview>
                                     <div class="form-horizontal" style="padding: 30px 20px 10px;">
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
@@ -87,8 +86,8 @@
 
                                     </div>
                                 </div>
-
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
+                                <appv:innerFooter editApp="${editApp}"/>
                             </div>
                         </div>
                         <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>

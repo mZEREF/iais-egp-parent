@@ -172,8 +172,11 @@
                               <iais:value width="10" display="true">
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
-                                             options="rollBackOptions" needSort="true"
+                                             options="rollBackOptions"
+                                             needSort="true"
                                              value=""/>
+                                <span id="error_rollBackTo1" class="error-msg"
+                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
 
@@ -346,10 +349,17 @@
   }
 
   function submitButFun() {
+    clearErrorMsg();
+    $("#error_rollBackTo1").hide();
     let nextStageValue = $('#nextStage').find('option:selected').val();
     $("#processDec").val(nextStageValue);
     if ('REDECI027' === nextStageValue) {
-      $('#confirmTag').modal('show');
+      const rollBackToVal = $("#rollBackTo").val();
+      if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
+        $("#error_rollBackTo1").show();
+      } else {
+        $('#confirmTag').modal('show');
+      }
     } else {
       submit();
     }

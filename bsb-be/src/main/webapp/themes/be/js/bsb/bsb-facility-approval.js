@@ -14,10 +14,17 @@ $(function (){
     $("#processingDecision").change(function () {
         var decision = $("#processingDecision").val();
         var currentStatus = $("#currentStatus").val();
-        if(decision === 'MOHPRO007' && currentStatus === 'BSBAPST001' || decision === 'MOHPRO009' && currentStatus === 'BSBAPST002'){
+        if (decision === 'MOHPRO007' && currentStatus === 'BSBAPST001' || decision === 'MOHPRO009' && currentStatus === 'BSBAPST002') {
             $("#selectMohUserDiv").show();
-        }else{
+            $("#rfiDiv").hide();
+        } else if (decision === 'MOHPRO002') {
+            $("#rfiDiv").show();
             $("#selectMohUserDiv").hide();
+            var url = "/bsb-web/eservice/INTRANET/MohFacilityApprovalDORecommendation/1/PrepareRfi";
+            window.open(url,'_blank');
+        } else {
+            $("#selectMohUserDiv").hide();
+            $("#rfiDiv").hide();
         }
     })
 

@@ -15,6 +15,7 @@ $(document).ready(function () {
 
     // disabled <a>
     $('a').prop('disabled',true);
+    $('.btn-tooltip').css('display','none');
     if(isChrome){
         addPrintListener();
         window.print();

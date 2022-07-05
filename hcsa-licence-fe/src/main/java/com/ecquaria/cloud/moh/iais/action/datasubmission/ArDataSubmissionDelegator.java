@@ -142,8 +142,13 @@ public class ArDataSubmissionDelegator {
         if (reNew) {
             currentSuper = new ArSuperDataSubmissionDto();
         }
+        String orgId = "";
+        String userId = "";
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-        String orgId = loginContext.getOrgId();
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
         String licenseeId = loginContext.getLicenseeId();
         if (!map.isEmpty()) {
             actionType = "invalid";
@@ -156,7 +161,7 @@ public class ArDataSubmissionDelegator {
                 ArSuperDataSubmissionDto dataSubmissionDraft = null;
                 if (!DataSubmissionConsts.DS_METHOD_FILE_UPLOAD.equals(submissionMethod)) {
                     dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
-                            orgId, submissionType, hciCode);
+                            orgId, submissionType, hciCode, userId);
                 }
                 if (dataSubmissionDraft != null/* && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())*/) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
@@ -164,7 +169,7 @@ public class ArDataSubmissionDelegator {
                 }
             } else if ("resume".equals(actionValue)) {
                 currentSuper = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType,
-                        hciCode);
+                        hciCode, userId);
                 if (currentSuper == null) {
                     log.warn("Can't resume data!");
                     currentSuper = new ArSuperDataSubmissionDto();

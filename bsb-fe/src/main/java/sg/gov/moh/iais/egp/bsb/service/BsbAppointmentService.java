@@ -12,7 +12,10 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentViewDto;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author tangtang
@@ -36,8 +39,8 @@ public class BsbAppointmentService {
     public void getNewInsDate(List<AppointmentViewDto> appointmentViewDtos, Map<String, String> errorMap, boolean needNewDate) throws ParseException {
         if (needNewDate) {
             for (AppointmentViewDto appointmentViewDto : appointmentViewDtos) {
-                Date inspStDate = Formatter.parseDate(appointmentViewDto.getNewStartDate());
-                Date inspEndDate = Formatter.parseDate(appointmentViewDto.getNewEndDate());
+                Date inspStDate = Formatter.parseDate(appointmentViewDto.getNewStartDt());
+                Date inspEndDate = Formatter.parseDate(appointmentViewDto.getNewEndDt());
 
                 List<String> appNoList = new ArrayList<>(1);
                 appNoList.add(appointmentViewDto.getApplicationNo());

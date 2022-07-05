@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * @author tangtang
- * @date 2022/5/6 14:09
  */
 @Data
 public class BsbAppointmentDto implements Serializable {
@@ -20,12 +19,12 @@ public class BsbAppointmentDto implements Serializable {
     private List<String> appNoList;
     @JMap
     private String sysClientKey;
-    @JMap
-    private String startDate;
-    @JMap
-    private String endDate;
-    @JMap
-    private Date submitDt;
+    @JMap("startDate")
+    private String startDt;
+    @JMap("endDate")
+    private String endDt;
+    @JMap("submitDt")
+    private Date submitDate;
     @JMap
     private int resultNum;
     @JMap

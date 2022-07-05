@@ -47,7 +47,13 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec())){
             erMap.put("reviewedByHec", "GENERAL_ERR0006");
         }
-
+        String doctorName=sexualSterilizationDto.getDoctorName();
+        if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
+            if (erMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+                erMap.put("showValidateVD", AppConsts.YES);
+                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
+            }
+        }
         if("true".equals(sexualSterilizationDto.getDoctorInformations())){
             if(StringUtil.isEmpty(doctorInformationDto.getName())){
                 erMap.put("dName", "GENERAL_ERR0006");
@@ -76,7 +82,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                 erMap.put("dQualification", general_err0041);
             }
 
-        }else {
+        }else{
             if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                 erMap.put("dSpecialitys", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
@@ -107,13 +113,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
             }
 
         }
-        String doctorName=sexualSterilizationDto.getDoctorName();
-        if(!"true".equals(sexualSterilizationDto.getDoctorInformations())){
-            if (erMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
-                erMap.put("showValidateVD", AppConsts.YES);
-                ParamUtil.setRequestAttr(request, "showValidateVD", AppConsts.YES);
-            }
-        }
+
         return erMap;
     }
 }

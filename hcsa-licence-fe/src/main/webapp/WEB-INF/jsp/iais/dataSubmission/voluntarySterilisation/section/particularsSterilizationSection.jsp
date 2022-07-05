@@ -35,7 +35,7 @@
                    ${sexualSterilizationDto.doctorName}
                </iais:value>
            </iais:row>
-           <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+           <div id="doctorInformationPrs" <c:if test="${sexualSterilizationDto.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
                <iais:row >
                    <iais:field width="5" value="Specialty"/>
                    <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -55,7 +55,7 @@
                    </iais:value>
                </iais:row>
            </div>
-           <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+           <div id="doctorInformationElis" <c:if test="${sexualSterilizationDto.doctorInformationPE eq 'false' || sexualSterilizationDto.doctorInformationPE eq null}">style="display: none"</c:if>>
                <iais:row >
                    <iais:field width="5" value="Specialty" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
@@ -119,7 +119,8 @@
     <iais:row>
         <iais:field width="5" value="Hospital/Clinic where the sterilization was performed" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input type="text" name="sterilizationHospital" value="${sexualSterilizationDto.sterilizationHospital}" />
+            <iais:select name="sterilizationHospital" cssClass="sterilizationHospital"  options="hcSelectList"
+                         value="${sexualSterilizationDto.sterilizationHospital}"/>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -191,24 +192,7 @@
     <input type="hidden" name="qualification" id="qualificationHidden" value="${sexualSterilizationDto.qualification}">
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${sexualSterilizationDto.doctorInformations}">
-<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body" >
-                <div class="row">
-                    <div class="col-md-12">
-                        <span style="font-size: 2rem;" id="prsErrorMsg">
-                            <iais:message key="DS_MSG011" escape="false" />
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-            </div>
-        </div>
-    </div>
-</div>
+<input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${sexualSterilizationDto.doctorInformationPE}">
 <div class="modal fade" id="ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -313,7 +297,7 @@
 
         });
         if ("1" == $('#showValidateVD').val()) {
-            $('#PRS_SERVICE_DOWN').modal('show');
+            $('#validateVD').modal('show');
         }
     });
     var clearPrsInfo = function () {
@@ -352,7 +336,6 @@
         $('#qualificationHidden').val(data.selection.qualification);
     }
     function cancels() {
-        $('#PRS_SERVICE_DOWN').modal('hide');
         $('#ELIS_SERVICE').modal('hide');
         $('#NO_PRS_ELIS_SERVICE').modal('hide');
         $('#PRS_SERVICE').modal('hide');
@@ -403,6 +386,7 @@
                     $('#doctorInformation').hide();
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
+                    $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
@@ -418,11 +402,13 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
+                        $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
                     }else if (data.selection.hasException) {
@@ -436,6 +422,10 @@
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                    }else if(isEmpty(!data.selections)){
+                        $('#doctorInformationPE').val(false);
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }
 
                 }

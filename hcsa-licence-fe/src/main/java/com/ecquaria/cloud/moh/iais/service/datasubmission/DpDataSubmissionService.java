@@ -31,9 +31,9 @@ public interface DpDataSubmissionService {
     void updateDataSubmissionDraftStatus(String draftId, String status);
 
     DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName,
-            String hciCode);
+            String hciCode, String userId);
 
-    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String svcName, String hciCode, String dataSubmissionId);
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String svcName, String hciCode, String dataSubmissionId, String userId);
 
     void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 

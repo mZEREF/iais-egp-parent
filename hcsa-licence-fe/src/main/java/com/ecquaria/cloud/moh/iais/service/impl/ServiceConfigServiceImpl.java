@@ -1026,7 +1026,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 //data sysn
                 try{
-                  saveAppGroupGiroSysnEic(applicationGroupDto);
+                    saveAppGroupGiroSysnEic(applicationGroupDto);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
@@ -1131,6 +1131,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto) {
         try {
+            if(applicationGroupDto.getStatus().equals(ApplicationConsts.APPLICATION_SUCCESS_ZIP)){
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            }
             return feEicGatewayClient.callEicWithTrack(applicationGroupDto, feEicGatewayClient::saveAppGroupSysnEic,
                     "saveAppGroupSysnEic").getEntity();
         } catch (Exception e) {

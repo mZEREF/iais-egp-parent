@@ -55,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.healthhub.OperatingHour;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
@@ -137,6 +138,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1099,7 +1101,7 @@ public class HcsaApplicationDelegator {
         String stageId = result[0];
         String wrkGpId = result[1];
         String userId = result[2];
-        OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
+        OrgUserDto user = applicationViewService.getUserById(userId);
         userId=user.getId();
         //do roll back
         if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
@@ -1937,7 +1939,7 @@ public class HcsaApplicationDelegator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
                 getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS);
-        if (appPremisesRoutingHistoryDto == null || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)) {
+        if (appPremisesRoutingHistoryDto == null || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(appPremisesRoutingHistoryDto.getProcessDecision())) {
             ParamUtil.setRequestAttr(bpc.request, "isShowInspection", "N");
         } else {
             if (ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)) {
@@ -3160,6 +3162,7 @@ public class HcsaApplicationDelegator {
 
         //status by
         switch (roleId){
+            case RoleConsts.USER_ROLE_AO1:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;break;
             case RoleConsts.USER_ROLE_AO2:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;break;
             case RoleConsts.USER_ROLE_AO3:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;break;
             case RoleConsts.USER_ROLE_PSO:appStatus =ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;break;
@@ -3813,7 +3816,7 @@ public class HcsaApplicationDelegator {
         //set DMS processingDecision value
         setDmsProcessingDecisionDropdownValue(request);
         //set route back dropdown value
-        setRouteBackDropdownValue(request, applicationViewDto);
+        setRouteBackDropdownValue(request, applicationViewDto,taskDto);
         //set roll back dropdown value
         setRollBackDropdownValue(request, applicationViewDto,taskDto);
         //set recommendation dropdown value
@@ -4165,7 +4168,7 @@ public class HcsaApplicationDelegator {
         return idTypeSelectList;
     }
 
-    public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+    public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
@@ -4178,7 +4181,7 @@ public class HcsaApplicationDelegator {
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                if(user != null) {
+                if(user != null&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)) {
                     String actionBy = user.getDisplayName();
                     rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
                     String maskRollBackValue = MaskUtil.maskValue("rollBack", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
@@ -4190,6 +4193,22 @@ public class HcsaApplicationDelegator {
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
         applicationViewDto.setRollBack(rollBackMap);
+        rollBackStage.sort(new Comparator<SelectOption>() {
+            @Override
+            public int compare(SelectOption o1, SelectOption o2) {
+                String displayName = o1.getText();
+                String displayName2 = o2.getText();
+                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
+                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
+                if (diff > 0) {
+                    return 1;
+                } else if (diff < 0) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable) rollBackStage);
     }
 
@@ -4198,35 +4217,41 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getAppPremisesRoutingHistoryDtoList();
-
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
         if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)) {
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
 //                String displayName = applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
-                if(appPremisesRoutingHistoryDto.getStageId().equals(HcsaConsts.ROUTING_STAGE_INS)){
-                    displayName=RoleConsts.USER_ROLE_INSPECTIOR;
+                OrgUserDto user = applicationViewService.getUserById(userId);
+                if(user != null&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)) {
+                    String actionBy = user.getDisplayName();
+                    rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                    String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                    SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                    rollBackStage.add(selectOption);
                 }
-                if(StringUtil.isNotEmpty(displayName)&& ROLE.contains(displayName)&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)&&StringUtil.isNotEmpty(userId)&&StringUtil.isNotEmpty(wrkGrpId)){
-                    OrgUserDto user = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-                    if(user != null&&user.getUserRoles().contains(displayName)) {
-                        String actionBy = user.getDisplayName();
-                        if(!rollBackMap.containsKey(actionBy + " (" + displayName + ")")){
-                            rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                            String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                            SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
-                            rollBackStage.add(selectOption);
-                        }
-                    }
-                }
-
-
             }
         } else {
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
+        rollBackStage.sort(new Comparator<SelectOption>() {
+            @Override
+            public int compare(SelectOption o1, SelectOption o2) {
+                String displayName = o1.getText();
+                String displayName2 = o2.getText();
+                String role1=displayName.substring(displayName.lastIndexOf("("),displayName.lastIndexOf(")"));
+                String role2=displayName2.substring(displayName2.lastIndexOf("("),displayName2.lastIndexOf(")"));
+                int diff = ROLE.indexOf(role1) - ROLE.indexOf(role2);
+                if (diff > 0) {
+                    return 1;
+                } else if (diff < 0) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         applicationViewDto.setRollBack(rollBackMap);
         ParamUtil.setSessionAttr(request, "rollBackValues", (Serializable) rollBackStage);
     }

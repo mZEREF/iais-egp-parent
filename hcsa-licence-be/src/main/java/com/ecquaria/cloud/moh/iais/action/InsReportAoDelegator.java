@@ -232,7 +232,7 @@ public class InsReportAoDelegator  {
         SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
-        riskLevelResult.add(new SelectOption("rollBack", "Roll Back To"));
+        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
         return riskLevelResult;
     }
 

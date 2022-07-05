@@ -13,10 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsVssEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -207,6 +207,8 @@ public class OnlineVssEnquiryDelegator {
 
         VssSuperDataSubmissionDto vssInfo = assistedReproductionClient.getVssSuperDataSubmissionDto(submissionNo).getEntity();
         List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_VSS,"null","null").getEntity();
+        VssTreatmentDto vssTreatmentDto=vssInfo.getVssTreatmentDto();
+
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
             for (PremisesDto premisesDto : premisesDtos) {
@@ -222,28 +224,20 @@ public class OnlineVssEnquiryDelegator {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
-        if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto()!=null){
-            if(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()!=null&&premisesMap.containsKey(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital())){
-                vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSterilizationHospital(premisesMap.get(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getSterilizationHospital()).getPremiseLabel());
+        if(vssTreatmentDto.getSexualSterilizationDto()!=null){
+            if(vssTreatmentDto.getSexualSterilizationDto().getSterilizationHospital()!=null&&premisesMap.containsKey(vssTreatmentDto.getSexualSterilizationDto().getSterilizationHospital())){
+                vssTreatmentDto.getSexualSterilizationDto().setSterilizationHospital(premisesMap.get(vssTreatmentDto.getSexualSterilizationDto().getSterilizationHospital()).getPremiseLabel());
             }
         }
-        ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(vssInfo.getVssTreatmentDto().getSexualSterilizationDto().getDoctorReignNo());
-        if(professionalResponseDto==null){
-            professionalResponseDto=new ProfessionalResponseDto();
-        }
-        if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-            VssTreatmentDto vssTreatmentDto=vssInfo.getVssTreatmentDto();
-            SexualSterilizationDto sterilizationDto=vssTreatmentDto.getSexualSterilizationDto();
-            DoctorInformationDto doctorInformationDto=assistedReproductionClient.getDoctorInformationDtoByConds(sterilizationDto.getDoctorReignNo(),DataSubmissionConsts.DS_VSS).getEntity();
-            vssInfo.setDoctorInformationDto(doctorInformationDto);
-            sterilizationDto.setDoctorInformations("true");
-            vssTreatmentDto.setSexualSterilizationDto(sterilizationDto);
-            vssInfo.setVssTreatmentDto(vssTreatmentDto);
-        }else {
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setDoctorName(professionalResponseDto.getName());
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSpecialty(String.valueOf(professionalResponseDto.getSpecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setSubSpecialty(String.valueOf(professionalResponseDto.getSubspecialty()).replaceAll("(?:\\[|null|\\]| +)", ""));
-            vssInfo.getVssTreatmentDto().getSexualSterilizationDto().setQualification(String.valueOf(professionalResponseDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+        SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        if(treatmentDto!=null&&treatmentDto.getDoctorInformationId()!=null){
+            DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(treatmentDto.getDoctorInformationId()).getEntity();
+            if(doctorInformationDto!=null){
+                vssInfo.setDoctorInformationDto(doctorInformationDto);
+                sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+            }
+            sexualSterilizationDto.setDoctorInformations("true");
         }
         ParamUtil.setRequestAttr(request,"vssSuperDataSubmissionDto",vssInfo);
     }

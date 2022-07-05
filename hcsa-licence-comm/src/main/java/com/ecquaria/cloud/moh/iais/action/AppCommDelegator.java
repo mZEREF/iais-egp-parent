@@ -1144,8 +1144,8 @@ public abstract class AppCommDelegator {
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
             // validation
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-            List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
-                    bpc.request);
+            List<String> premisesHciList = ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi,
+                    oldAppSubmissionDto, false, bpc.request);
             Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
                     premisesHciList, isRfi, true);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
@@ -1184,35 +1184,6 @@ public abstract class AppCommDelegator {
             bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
-    }
-
-    private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
-            HttpServletRequest request) {
-        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
-        if (premisesHciList != null) {
-            return premisesHciList;
-        }
-        // if current is one of group new rfi, the premises will be only one, we need to check all apps in this group
-        List<HcsaServiceDto> hcsaServiceDtos = null;
-        if (isRfi) {
-            // init: this#loadingRfiGrpServiceConfig
-            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST);
-        }
-        if (hcsaServiceDtos == null) {
-            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
-        }
-        List<PremisesDto> excludePremisesList = null;
-        List<AppGrpPremisesDto> excludeAppPremList = null;
-        if (oldAppSubmissionDto != null) {
-            if (isRfi) {
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
-            }
-            excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        }
-        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
-                excludePremisesList, excludeAppPremList);
-        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-        return premisesHciList;
     }
 
     /**

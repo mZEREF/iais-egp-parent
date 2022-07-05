@@ -1,13 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.dto.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.time.LocalDate;
 

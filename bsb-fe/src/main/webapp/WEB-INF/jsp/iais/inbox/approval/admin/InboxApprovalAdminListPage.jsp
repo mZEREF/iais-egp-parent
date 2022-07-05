@@ -188,11 +188,11 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval Start Date</p>
-                                                                <p><c:out value='${approval.approvalStartDate}'/></p>
+                                                                <p><c:out value='${approval.approvalStartDt}'/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                                <p><c:out value='${approval.approvalExpiryDate}'/></p>
+                                                                <p><c:out value='${approval.approvalExpiryDt}'/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>

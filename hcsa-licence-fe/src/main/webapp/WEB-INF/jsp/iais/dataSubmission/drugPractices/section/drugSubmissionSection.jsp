@@ -68,7 +68,7 @@
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty"/>
                             <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -88,7 +88,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
@@ -256,7 +256,7 @@
                     <iais:field width="5" value="Business Name of Healthcare Service provider" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="hspBusinessName" name="hspBusinessName" options="hspSelectList"
-                                     firstOption="Please Select" value="${drugSubmission.hspBusinessName}"/>
+                                     value="${drugSubmission.hspBusinessName}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -274,6 +274,10 @@
     <input type="hidden" name="qualification" id="qualificationHidden" value="${drugSubmission.qualification}">
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
+<input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${drugSubmission.doctorInformationPE}">
+<input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
+<input type="hidden" name="action" id="action" value="">
+<input type="hidden" name="haveError" id="haveError" value="${haveError}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -382,16 +386,34 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="QUANTITY_NOT_MATCH" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="quantityNotMatch">
+                            <iais:message key="DS_ERR062" escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="closeQuantityNotMatchModal()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.patient');
-        $('#retrieveDataDiv').hide();
         </c:if>
         ifClickValidateButton();
         $('#drugType').change(function () {
             drugTypeChange();
             diagnosi();
+            disableControl();
         });
         $('#drugType,#medication').change(function (){
             changeStrength();
@@ -405,7 +427,13 @@
         disableContent('div.drugType');
         </c:if>
 
-        checkPrescriptionSubmissionId();
+        // checkPrescriptionSubmissionId();
+        disableControl();
+        var quantityMatch = $('input[name="quantityMatch"]').val();
+        if (quantityMatch == "No"){
+            console.log("quantityMatch :" + quantityMatch);
+            $('#QUANTITY_NOT_MATCH').modal('show');
+        }
     });
     function diagnosi(){
         var drugtype= $('#drugType option:selected').val();
@@ -416,6 +444,24 @@
         }
     }
 
+    function disableControl(){
+        var drugtype= $('#drugType option:selected').val();
+        if(drugtype == "DPD001"){
+            $('#batchNo').hide();
+            $('#addMore').hide();
+            $('#deleteIcon').hide();
+            // $('#medicationDiv').hide();
+        } else if(drugtype == "DPD002"){
+            $('#batchNo').show();
+            $('#addMore').show();
+            $('#deleteIcon').show();
+            // $('#medicationDiv').show();
+        } else {
+            $('#batchNo').hide();
+            $('#addMore').hide();
+            $('#deleteIcon').hide();
+        }
+    }
 
     function drugTypeChange(){
         var drugtype= $('#drugType option:selected').val();
@@ -425,6 +471,8 @@
             $('#prescriptionDate').show();
             unDisableContent('div.medication');
             fillValue($('#medication'),null);
+            $('#medicationDiv .med').remove();
+            $('input[name="drugMedicationLength"]').val(1);
         } else if(drugtype == "DPD002"){
             $('#dispensingDate').show();
             $('#ddEndDate').show();
@@ -580,6 +628,7 @@
                     $('#doctorInformation').hide();
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
+                    $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
@@ -595,15 +644,23 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
+                        $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                    }else if (data.selection.hasException) {
+                    }else if (data.selection.hasException && !isEmpty(data.selections)) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
+                        $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
+                    }else if(data.selection.hasException && isEmpty(data.selections)){
+                        clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -613,6 +670,11 @@
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                    }else if(!isEmpty(data.selections)){
+                        console.log('tnull');
+                        $('#doctorInformationPE').val(false);
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }
                 }
                 dismissWaiting();
@@ -685,5 +747,14 @@
         $('#PRS_SERVICE').modal('hide');
         $('#PRS_CLOSE').modal('hide');
         $('#PRS_PRN').modal('hide');
+    }
+
+    function closeQuantityNotMatchModal() {
+        $('#QUANTITY_NOT_MATCH').modal('hide');
+        var haveError = $('input[name="haveError"]').val();
+        if (haveError == "No") {
+            $('input[name="action"]').val("confirm");
+            $('#nextBtn').click();
+        }
     }
 </script>

@@ -26,7 +26,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: right">Submission Date</td>
-                        <td style="padding-left : 20px"><iais:code code="${submissionDetailsDto.submissionDate}"/></td>
+                        <td style="padding-left : 20px"><iais:code code="${submissionDetailsDto.submissionDt}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Current Status</td>

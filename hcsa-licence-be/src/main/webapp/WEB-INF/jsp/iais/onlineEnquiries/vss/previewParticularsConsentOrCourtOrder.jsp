@@ -90,7 +90,14 @@
                                                varStatus="ind">
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                                     <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
+                                                 <c:choose>
+                                                     <c:when test="${isPrintDoc eq 'yes'}">
+                                                         ${vssFile.docName}
+                                                     </c:when>
+                                                     <c:otherwise>
+                                                         <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
+                                                     </c:otherwise>
+                                                 </c:choose>
                                             </span>
                                         </div>
                                     </c:forEach>

@@ -1,16 +1,24 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Slf4j
 public class PreTerminationValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -40,8 +48,12 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingDate())){
-                ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"counsellingDate");
-                errorMap.putAll(result.retrieveAll());
+                if (validateDate(preTerminationDto.getCounsellingDate())){
+                    errorMap.put("counsellingDate", "Invalid date");
+                } else {
+                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto, "counsellingDate");
+                    errorMap.putAll(result.retrieveAll());
+                }
             }
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
                 ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"counsellingPlace");
@@ -55,9 +67,11 @@ public class PreTerminationValidator implements CustomizeValidator {
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
                 if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
                     if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
-                        if(patientInformationDto.getPatientAge()<16){
-                            if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
-                                errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+                        if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+                            if(preTerminationDto.getCounsellingAge()<16){
+                                if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
+                                    errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+                                }
                             }
                         }
                     }
@@ -105,5 +119,27 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
         return errorMap;
+    }
+
+    public static boolean validateDate(String dateStr) {
+        boolean b;
+        if (dateStr != null && !"".equals(dateStr.trim())) {
+            String pattern = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
+            Pattern r = Pattern.compile(pattern);
+            Matcher m = r.matcher(dateStr);
+            if (!m.find()) {
+                // format error
+                log.warn("Invalid Date: {}",dateStr);
+                b = false;
+            } else {
+                // format correct
+                log.warn("Valid Date: {}",dateStr);
+                b = true;
+            }
+        } else {
+            log.warn("Invalid Date: {}",dateStr);
+            b = false;
+        }
+        return b;
     }
 }

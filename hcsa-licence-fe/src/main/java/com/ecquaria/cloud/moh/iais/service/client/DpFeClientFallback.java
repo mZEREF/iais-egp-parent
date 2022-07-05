@@ -57,12 +57,12 @@ public class DpFeClientFallback implements DpFeClient {
 
     @Override
     public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type,
-            String svcName, String hciCode) {
+            String svcName, String hciCode, String userId) {
         return getFeignResponseEntity(orgId, type, svcName, hciCode);
     }
 
     @Override
-    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String type, String svcName, String hciCode, String dataSubmissionId) {
+    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoRfcDraftByConds(String orgId, String type, String svcName, String hciCode, String dataSubmissionId, String userId) {
         return getFeignResponseEntity(orgId, type, svcName, hciCode, dataSubmissionId);
     }
 
@@ -91,5 +91,8 @@ public class DpFeClientFallback implements DpFeClient {
         return getFeignResponseEntity(pSubmissionNo,dSubmissionNo);
     }
 
-
+    @Override
+    public FeignResponseEntity<PatientDto> getPatientDtoBySubmissionId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
 }

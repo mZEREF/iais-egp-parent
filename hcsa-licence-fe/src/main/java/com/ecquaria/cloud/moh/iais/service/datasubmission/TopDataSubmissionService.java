@@ -27,9 +27,9 @@ public interface TopDataSubmissionService {
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
 
-    TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
+    TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String userId);
 
-    TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String dataSubmissionId);
+    TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType, String dataSubmissionId, String userId);
 
     void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String appType);
 

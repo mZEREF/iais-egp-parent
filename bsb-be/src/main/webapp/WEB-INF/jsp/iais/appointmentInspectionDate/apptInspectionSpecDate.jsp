@@ -39,8 +39,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-xs-12 col-md-4">
-                                                <input type="text" autocomplete="off" name="specifyStartDate" id="specifyStartDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyStartDate}"/>
-                                                <span data-err-ind="specifyStartDate" class="error-msg" ></span>
+                                                <input type="text" autocomplete="off" name="specifyStartDt" id="specifyStartDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyStartDt}"/>
+                                                <span data-err-ind="specifyStartDt" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
                                                 <iais:select name="specifyStartHour" cssClass="specifyStartHourDropdown" options="startHoursOption" firstOption="--:--" value="${apptReviewData.specifyStartHour}"/>
@@ -65,8 +65,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-xs-12 col-md-4">
-                                                <input type="text" autocomplete="off" name="specifyEndDate" id="specifyEndDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyEndDate}"/>
-                                                <span data-err-ind="specifyEndDate" class="error-msg" ></span>
+                                                <input type="text" autocomplete="off" name="specifyEndDt" id="specifyEndDt" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${apptReviewData.specifyEndDt}"/>
+                                                <span data-err-ind="specifyEndDt" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
                                                 <iais:select name="specifyEndHour" cssClass="specifyEndHourDropdown" options="endHoursOption" firstOption="--:--" value="${apptReviewData.specifyEndHour}"/>

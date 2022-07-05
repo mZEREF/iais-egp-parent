@@ -29,17 +29,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -75,7 +77,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.
                     getDrugMedicationDtoBySubmissionNo(prescriptionSubmissionId);
             if(drugPrescribedDispensedDto == null ||
-                    IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos()) || !DataSubmissionConsts.DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
+                    IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos()) || !DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
                 errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
             }else{
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
@@ -92,9 +94,24 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
-        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage("Submission"));
-        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage("Medication"));
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
+        ParamUtil.setRequestAttr(request, "ageMsg", DataSubmissionHelper.getAgeMessage("Submission"));
+        ParamUtil.setRequestAttr(request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage("Medication"));
+
+        String quantityMatch = (String) ParamUtil.getRequestAttr(request, "quantityMatch");
+        String action = ParamUtil.getString(request,"action");
+        String errMsg = (String) ParamUtil.getRequestAttr(request, IntranetUserConstant.ERRORMSG);
+        if (StringUtil.isNotEmpty(errMsg)){
+            ParamUtil.setRequestAttr(request, "haveError", "Yes");
+        } else {
+            ParamUtil.setRequestAttr(request, "haveError", "No");
+        }
+        if (StringUtil.isEmpty(action) && "No".equals(quantityMatch)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        } else if ("confirm".equals(action)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+        }
     }
 
     @Override
@@ -119,17 +136,27 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
             if (crud_action_type.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
+                String orgId = "";
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    orgId = loginContext.getOrgId();
+                    userId = loginContext.getUserId();
+                }
                 if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
+                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if ("resume".equals(actionValue)) {
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
                 dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                        dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId(),userId);
                 if (dpSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
@@ -169,55 +196,73 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         ControllerHelper.get(request, drugSubmission);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
-                if(!"true".equals(drugSubmission.getDoctorInformations())){
-                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
-                    String doctorName = ParamUtil.getString(request, "names");
-                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
-                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
-                    String dQualification = ParamUtil.getString(request, "dQualifications");
-                    drugSubmission.setDoctorName(doctorName);
-                    drugSubmission.setSpecialty(dSpeciality);
-                    drugSubmission.setSubSpecialty(dSubSpeciality);
-                    drugSubmission.setQualification(dQualification);
-                    doctorInformationDto.setName(drugSubmission.getDoctorName());
-                    doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
-                    doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
-                    doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
-                    doctorInformationDto.setQualification(drugSubmission.getQualification());
-                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
-                    currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
+                if("false".equals(drugSubmission.getDoctorInformations())){
+                    if("true".equals(drugSubmission.getDoctorInformationPE())){
+                        String DRPE="DRPE";
+                        String doctorName = ParamUtil.getString(request, "names");
+                        String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                        String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                        String dQualification = ParamUtil.getString(request, "dQualifications");
+                        String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
+
+                        drugSubmission.setDoctorName(doctorName);
+                        drugSubmission.setSpecialty(dSpeciality);
+                        drugSubmission.setSubSpecialty(dSubSpeciality);
+                        drugSubmission.setQualification(dQualification);
+                        drugSubmission.setOtherQualification(dOtherQualification);
+
+                        doctorInformationDto.setName(drugSubmission.getDoctorName());
+                        doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
+                        doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
+                        doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
+                        doctorInformationDto.setQualification(drugSubmission.getQualification());
+                        doctorInformationDto.setDoctorSource(DRPE);
+                        currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+                    }
                 }
-            }else {
-                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+            }else if("false".equals(drugSubmission.getDoctorInformationPE())){
                 String doctorName = ParamUtil.getString(request, "names");
+                String DRPP="DRPP";
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                 doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
                 doctorInformationDto.setQualification(drugSubmission.getQualification());
-                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
+                doctorInformationDto.setDoctorSource(DRPP);
                 currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(drugSubmission.getDoctorInformations())){
+            String DRPT="DRPT";
             String dName = ParamUtil.getString(bpc.request, "dName");
             String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
             String dQualification = ParamUtil.getString(bpc.request, "dQualification");
+            String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
+
+            drugSubmission.setDoctorName(dName);
+            drugSubmission.setSpecialty(dSpeciality);
+            drugSubmission.setSubSpecialty(dSubSpeciality);
+            drugSubmission.setQualification(dQualification);
+            drugSubmission.setOtherQualification(dOtherQualification);
+
             doctorInformationDto.setName(dName);
             doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_DRP);
+            doctorInformationDto.setDoctorSource(DRPT);
             currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
         }else {
             String doctorName = ParamUtil.getString(bpc.request, "names");
             drugSubmission.setDoctorName(doctorName);
         }
         drugPrescribedDispensed.setDrugSubmission(drugSubmission);
-        List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request);
+        List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request,drugSubmission.getDrugType());
+        if (DRUG_PRESCRIBED.equals(drugSubmission.getDrugType())) {
+            drugMedicationDtos.get(0).setBatchNo(null);
+        }
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
         if(currentDpDataSubmission.getPatientDto() ==null){
             PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
@@ -263,7 +308,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
                     errorMap.put("dQualification", general_err0041);
                 }
-            } else {
+            } else if("false".equals(drugSubmission.getDoctorInformations())){
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpecialitys", "GENERAL_ERR0006");
                 }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
@@ -350,18 +395,20 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         }
 
     }
-    private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request) {
+    private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request, String drugType) {
         List<DrugMedicationDto> drugMedicationDtos=IaisCommonUtils.genNewArrayList();
         int drugMedicationLength = ParamUtil.getInt(request,"drugMedicationLength");
         DrugMedicationDto drugMedication;
         for(int i = 0; i < drugMedicationLength; i++){
             drugMedication = new DrugMedicationDto();
-            String batchNo = ParamUtil.getString(request,"batchNo"+i);
+            if (!DRUG_PRESCRIBED.equals(drugType)) {
+                String batchNo = ParamUtil.getString(request, "batchNo" + i);
+                drugMedication.setBatchNo(batchNo);
+            }
             String strength = ParamUtil.getString(request,"strength"+i);
             String quantity = ParamUtil.getString(request,"quantity"+i);
             String frequency = ParamUtil.getString(request,"frequency"+i);
             String otherFrequency = ParamUtil.getString(request,"otherFrequency"+i);
-            drugMedication.setBatchNo(batchNo);
             drugMedication.setStrength(strength);
             drugMedication.setQuantity(quantity);
             drugMedication.setFrequency(frequency);

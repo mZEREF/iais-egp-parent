@@ -26,7 +26,7 @@
                     <p><c:out value="${item.remarks}"/></p>
                 </td>
                 <td>
-                    <p><c:out value="${item.requestExtensionOfDueDate}"/></p>
+                    <p><c:out value="${item.requestExtensionOfDueDt}"/></p>
                 </td>
                 <td>
                     <p><c:out value="${item.reasonForExtension}"/></p>

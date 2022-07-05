@@ -122,7 +122,7 @@
                                                 <iais:row id="rollBackToRow">
                                                     <iais:field value="Route Back To" required="true" id="backToLabel"/>
                                                     <iais:value width="7">
-                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
                                                     </iais:value>
                                                 </iais:row>
@@ -225,7 +225,8 @@
     function doSend() {
         var f = $('#decision-revise-email option:selected').val();
         var remark = $('#Remarks').val();
-
+        clearErrorMsg();
+        $('#err_rollBackTo').hide();
         if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
         }
@@ -234,7 +235,12 @@
             $("#remarksMsg").show();
         }
         if('REDECI027' === f){
-            $('#confirmTag').modal('show');
+            const rollBackTo = $('#rollBackTo').val();
+            if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+                $('#err_rollBackTo').show();
+            }else {
+                $('#confirmTag').modal('show');
+            }
         }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
@@ -242,13 +248,8 @@
     }
 
     function rollBackSubmit(){
-        const rollBackTo = $('#rollBackTo').val();
-        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
-            $('#err_rollBackTo').show();
-        }else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "rollBack");
-        }
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "rollBack");
     }
 
     function showRollBackToRow(){

@@ -15,7 +15,7 @@ import java.util.Map;
 public class ExcelSheetDto implements Serializable {
 
     private String sheetName;
-    private int sheetAt;
+    private Integer sheetAt;
     private int startRowIndex;
     private boolean block;
     private Map<Integer, List<Integer>> unlockCellMap;

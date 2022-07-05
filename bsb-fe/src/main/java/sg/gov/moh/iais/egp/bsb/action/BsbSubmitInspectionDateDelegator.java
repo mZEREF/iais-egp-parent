@@ -27,8 +27,8 @@ public class BsbSubmitInspectionDateDelegator {
     public static final String MASK_PARAM_APP_ID = "indicateInsDateAppId";
 
     public static final String PARAM_INSPECTION_DATE_DTO = "inspectionDateDto";
-    public static final String PARAM_SPECIFY_START_DATE = "specifyStartDate";
-    public static final String PARAM_SPECIFY_END_DATE = "specifyEndDate";
+    public static final String PARAM_SPECIFY_START_DATE = "specifyStartDt";
+    public static final String PARAM_SPECIFY_END_DATE = "specifyEndDt";
     public static final String PARAM_BACK_URL = "backUrl";
     public static final String PARAM_INBOX_URL = "/bsb-web/eservice/INTERNET/MohBSBInboxMsg";
     public static final String PARAM_ACK_MSG = "ackMsg";
@@ -75,8 +75,8 @@ public class BsbSubmitInspectionDateDelegator {
 
         InspectionDateDto dto = getInspectionDateDto(request);
         dto.setModule("specifyInsDate");
-        dto.setSpecifyStartDate(startDate);
-        dto.setSpecifyEndDate(endDate);
+        dto.setSpecifyStartDt(startDate);
+        dto.setSpecifyEndDt(endDate);
 
         String actionType;
         ValidationResultDto validationResultDto = bsbAppointmentClient.validateAppointmentData(dto);

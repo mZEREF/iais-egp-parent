@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * @author tangtang
- * @date 2022/3/29 13:37
  */
 @Data
 public class AppointmentViewDto implements Serializable {
@@ -27,8 +26,8 @@ public class AppointmentViewDto implements Serializable {
     private String address;
     //user entered data
     private String reason;
-    private String newStartDate;
-    private String newEndDate;
+    private String newStartDt;
+    private String newEndDt;
 
     //system generated date
     private Date inspNewDate;

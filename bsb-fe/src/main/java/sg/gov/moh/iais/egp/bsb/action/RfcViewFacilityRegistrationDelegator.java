@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
@@ -16,15 +17,28 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_EDIT_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN_OFFICER;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APPROVE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 @Delegator(value = "rfcViewFacRegAppDelegator")
 @Slf4j
@@ -33,15 +47,13 @@ public class RfcViewFacilityRegistrationDelegator {
     private static final String FUNCTION_NAME = "RFC View Application";
 
     private final FacilityRegisterClient facRegClient;
-    private final DocSettingService docSettingService;
 
     @Autowired
-    public RfcViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, DocSettingService docSettingService) {
+    public RfcViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
         this.facRegClient = facRegClient;
-        this.docSettingService = docSettingService;
     }
 
-    public void start(BaseProcessClass bpc) { // NOSONAR
+    public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
         request.getSession().removeAttribute(KEY_APPROVE_NO);
@@ -50,17 +62,16 @@ public class RfcViewFacilityRegistrationDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter(KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue("id", maskedAppId);
-        if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
-            throw new IaisRuntimeException("Invalid App ID");
-        }
+        String appId = MaskHelper.unmask("id", maskedAppId);
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
+
         // check if this app is editable
         String maskedEditAppId = request.getParameter(KEY_EDIT_APP_ID);
-        String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
-        if (maskedEditAppId != null && editAppId != null &&
-                !maskedEditAppId.equals(editAppId) && appId.equals(editAppId)) {
-            ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
+        if (StringUtils.hasLength(maskedEditAppId)) {
+            String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
+            if (appId.equals(editAppId)) {
+                ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
+            }
         }
 
         //rfc dashbord processType
@@ -92,7 +103,6 @@ public class RfcViewFacilityRegistrationDelegator {
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
 
-//            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
             PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
             ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);

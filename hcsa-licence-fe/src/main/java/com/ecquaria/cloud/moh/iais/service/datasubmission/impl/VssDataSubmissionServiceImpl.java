@@ -132,12 +132,12 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
     }
 
     @Override
-    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        return vssFeClient.getVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType).getEntity();
+        return vssFeClient.getVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType, userId).getEntity();
     }
 
     @Override

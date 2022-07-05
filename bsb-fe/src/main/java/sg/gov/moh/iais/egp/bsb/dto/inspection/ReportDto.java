@@ -30,7 +30,7 @@ public class ReportDto implements Serializable {
     private String adminMobileNo;
     private String adminEmail;
     // Section B (Inspection Details)
-    private String inspectionDate;
+    private String inspectionDt;
     private String inspectionPurpose;
     private String facilityRepresentative;
     private String mohInspector;
@@ -47,7 +47,7 @@ public class ReportDto implements Serializable {
     private List<String> deficiency;
     private String outcome;
     private String recommendationRemarks;
-    private String facilityValidityDate;
+    private String facilityValidityDt;
     private String applicantRemarks;
     // Attachments
     private List<DocRecordInfo> docRecordInfo;

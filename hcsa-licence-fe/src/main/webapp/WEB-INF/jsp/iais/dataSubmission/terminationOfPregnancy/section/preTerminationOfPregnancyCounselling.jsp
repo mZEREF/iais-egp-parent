@@ -206,7 +206,7 @@
                 </iais:value>
             </iais:row>
         </div>
-            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
+            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -310,7 +310,7 @@
         $('#counsellingResults,input[name=counsellingGiven]').change(function () {
             counselling();
         });
-        $('#counsellingPlaceAge,input[name=counsellingGiven]').change(function () {
+        $('#counsellingPlaceAge,input[name=counsellingGiven],#counsellingGivenDate').change(function () {
             counsellingPlace();
         });
         $('#counsellingResults').change(function () {
@@ -320,6 +320,7 @@
             secCounsellingDate();
             secCounsellingResult();
         });
+        changeDate();
         /*$("#counsellingGivenDate").on('blur, change', function () {
             age();
         })*/
@@ -400,10 +401,11 @@
     function counsellingPlace() {
         var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
         var maritalStatus = $('#maritalStatus').val();
-        var patientAge = $('#patientAge').val();
+        var patientAge = $('#counselling').val();
+        var counsellingGivenDate = $('#counsellingGivenDate').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='') {
+            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='' || patientAge==''|| counsellingGivenDate==null) {
                 $('#preCounsNoCondReasons').hide();
             }else {
                 console.log("1");
@@ -434,45 +436,47 @@
         }
     }
 
-    $("#counsellingGivenDate").on('blur, change', function () {
-        showWaiting();
-        var birthData=$('#birthData').val();
-        var counsellingGiven=$('#counsellingGivenDate').val();
-        var url = $('#_contextPath').val() + '/top/patient-age';
-        var options = {
-            birthData: birthData,
-            counsellingGiven: counsellingGiven,
-            url: url
+
+    function changeDate(){
+        var birthData = $('#birthData').val();
+        var counsellingGiven = $('#counsellingGivenDate').val();
+
+        let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+        let validC = reg.test(counsellingGiven);
+        let validB = reg.test(birthData);
+        console.log("validCounsellingGiven: "+validC);
+        console.log("validBirthData: "+validB);
+        if (validC && validB) {
+            showWaiting();
+            var url = $('#_contextPath').val() + '/top/counselling-age';
+            var options = {
+                birthData: birthData,
+                counsellingGiven: counsellingGiven,
+                url: url
+            }
+            callCommonAjax(options, checkBirthDateCallbacks);
         }
-        callCommonAjax(options, checkBirthDateCallback);
+    }
+
+    $("#counsellingGivenDate").on('blur', function () {
+        changeDate();
     });
 
-    function checkBirthDateCallback(data) {
-        if (isEmpty(data) || isEmpty(data.showAge) || !data.showAge) {
-            return;
-        }
-        $('#PRS_SERVICE_DOWN').modal('show');
-    }
 
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
 
-    $("#counsellingGivenDate").on('blur, change', function () {
-        showWaiting();
-        var birthData=$('#birthData').val();
-        var counsellingGiven=$('#counsellingGivenDate').val();
-        var url = $('#_contextPath').val() + '/top/counselling-age';
-        var options = {
-            birthData: birthData,
-            counsellingGiven: counsellingGiven,
-            url: url
-        }
-        callCommonAjax(options, checkBirthDateCallbacks);
-    });
+
     function checkBirthDateCallbacks(data) {
+        if (isEmpty(data) ) {
+            return;
+        }
+        if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
         console.log("counselling");
-        if (isEmpty(data.selection.counsellingAge) || isEmpty(data)) {
+        if (isEmpty(data) || data.birthDate) {
             $('#counsellingAge').html(null);
             return;
         }

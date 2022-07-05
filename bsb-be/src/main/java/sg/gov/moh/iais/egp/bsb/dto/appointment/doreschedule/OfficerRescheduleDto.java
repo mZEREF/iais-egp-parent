@@ -18,8 +18,8 @@ public class OfficerRescheduleDto implements Serializable {
     private String refNo;
     private String processDec;
     // user specify new date
-    private String specifyStartDate;
-    private String specifyEndDate;
+    private String specifyStartDt;
+    private String specifyEndDt;
     private String specifyStartHour;
     private String specifyEndHour;
 

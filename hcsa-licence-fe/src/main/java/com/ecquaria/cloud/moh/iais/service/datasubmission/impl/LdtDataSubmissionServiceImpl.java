@@ -62,11 +62,11 @@ public class LdtDataSubmissionServiceImpl implements LdtDataSubmissionService {
     }
 
     @Override
-    public LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDraftByConds(String orgId, String dataSubmissionId) {
+    public LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDraftByConds(String orgId, String userId, String dataSubmissionId) {
         if (StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return ldtFeClient.getLdtSuperDataSubmissionDtoDraftByConds(orgId, dataSubmissionId).getEntity();
+        return ldtFeClient.getLdtSuperDataSubmissionDtoDraftByConds(orgId, userId, dataSubmissionId).getEntity();
     }
 
     @Override

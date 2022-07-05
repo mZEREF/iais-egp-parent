@@ -25,6 +25,7 @@
             <br/>
             <!--todo: The facility value will be obtained from another method, and the JSP will be deleted -->
             <%--@elvariable id="isEnteredInbox" type="java.lang.Boolean"--%>
+            <%--@elvariable id="editApp" type="java.lang.Boolean"--%>
             <c:if test="${!isEnteredInbox}">
                 <div class="row">
                     <div class="form-group form-horizontal formgap">
@@ -37,7 +38,7 @@
                                 <%--@elvariable id="approvalSelectionDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto"--%>
                                 <%--@elvariable id="selectionFacilityId" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                             <input type="hidden" id="facilityName" name="facilityName" value="${approvalSelectionDto.facilityName}">
-                            <select name="facilityId" id="facilityId" class="facilityIdDropdown">
+                            <select name="facilityId" id="facilityId" class="facilityIdDropdown" <c:if test="${editApp}">disabled</c:if>>
                                 <option value="">Please Select</option>
                                 <c:forEach items="${selectionFacilityId}" var="facSelect">
                                     <c:set var="maskedFacilityId"><iais:mask name="facilityId" value="${facSelect.value}"/></c:set>
@@ -54,19 +55,19 @@
                 <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Please select the type of approval</p>
                 <div class="form-check-gp">
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" name="processType" id="approvalFacilityActivity" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE}"/>
+                        <input type="radio" class="form-check-input" name="processType" id="approvalFacilityActivity" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE}">checked="checked"</c:if> <c:if test="${editApp}">disabled</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE}"/>
                         <label for="approvalFacilityActivity" class="form-check-label"><span class="check-circle"></span>Approval for Facility Activity Type</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" name="processType" id="approvalPossess" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS}"/>
+                        <input type="radio" class="form-check-input" name="processType" id="approvalPossess" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS}">checked="checked"</c:if> <c:if test="${editApp}">disabled</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS}"/>
                         <label for="approvalPossess" class="form-check-label"><span class="check-circle"></span>Approval to Possess</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" name="processType" id="approvalLarge" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP}"/>
+                        <input type="radio" class="form-check-input" name="processType" id="approvalLarge" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP}">checked="checked"</c:if> <c:if test="${editApp}">disabled</c:if> value="${MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP}"/>
                         <label for="approvalLarge" class="form-check-label"><span class="check-circle"></span>Approval to Large Scale Produce</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" name="processType" id="approvalSpecial" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE}"/>
+                        <input type="radio" class="form-check-input" name="processType" id="approvalSpecial" <c:if test="${approvalSelectionDto.processType eq MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE}">checked="checked"</c:if> <c:if test="${editApp}">disabled</c:if> value="${MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE}"/>
                         <label for="approvalSpecial" class="form-check-label"><span class="check-circle"></span>Special Approval to Handle</label>
                     </div>
                     <div>

@@ -310,7 +310,7 @@
                     ${terminationDto.doctorName}
                 </iais:value>
             </iais:row>
-            <div id="doctorInformationPrs" <c:if test="${doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+            <div id="doctorInformationPrs" <c:if test="${terminationDto.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
                 <iais:row >
                     <iais:field width="5" value="Specialty"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -330,7 +330,7 @@
                     </iais:value>
                 </iais:row>
             </div>
-            <div id="doctorInformationElis" <c:if test="${doctorInformationPE eq 'false' || doctorInformationPE eq null}">style="display: none"</c:if>>
+            <div id="doctorInformationElis" <c:if test="${terminationDto.doctorInformationPE eq 'false' || terminationDto.doctorInformationPE eq null}">style="display: none"</c:if>>
                 <iais:row >
                     <iais:field width="5" value="Specialty" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
@@ -508,6 +508,7 @@
     <input type="hidden" name="qualification" id="qualificationHidden" value="${terminationDto.qualification}">
 </div>
 <input type="hidden" name="topDoctorInformations" id="topDoctorInformations" value="${terminationDto.topDoctorInformations}">
+<input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${terminationDto.doctorInformationPE}">
 <script>
     $(document).ready(function() {
         $('#topType').change(function () {
@@ -764,12 +765,13 @@
             'success': function (data) {
                 if(isEmpty(data.selection) && isEmpty(data.selections)) {
                     clearPrsInfoText();
-                    $('#doctorInformations').val(true);
+                    $('#topDoctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
+                    $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
@@ -785,15 +787,23 @@
                     loadingSp(data);
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
+                        $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                    }else if (data.selection.hasException) {
+                    }else if(data.selection.hasException && !isEmpty(data.selections)){
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
+                        $('#ELIS_SERVICE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
+                    }else if (data.selection.hasException && isEmpty(data.selections)) {
+                        clearPrsInfoText();
                         $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -803,8 +813,14 @@
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                    }else if(!isEmpty(data.selections)){
+
+                        $('#doctorInformationPE').val(false);
+                        $('#doctorInformationElis').hide();
+                        $('#doctorInformationPrs').show();
                     }
                 }
+
                 dismissWaiting();
             },
             'error': function () {
@@ -868,11 +884,12 @@
     $(document).ready(function(){
         // Initialize select2
         $("#topPlacePerformedOwnNo").select2();
+        $("#prescribeTopPlaceNo").select2();
         <c:if test="${!(terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true)}">
         $("#prescribeTopPlaceNo").select2();
         </c:if>
-        $("#prescribeTopPlaceNo").select2();
         $("#otherTopDrugPlace").select2();
         $('.select2-container--default').attr('style','width:100%');
+        $('.select2-search__field').attr('maxLength','100');
     });
 </script>

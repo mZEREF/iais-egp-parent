@@ -89,7 +89,10 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Date of Termination of Pregnancy"/>
+                    <c:if test="${topLateSubmit}">
+                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                    <iais:field width="5" value="Date of Termination of Pregnancy" info="${toolMsg}" style="width: 300px;"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.topDate}"/>
                     </iais:value>
@@ -109,7 +112,7 @@
                 </div>
                 <div <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Place of Surgical Termination of Pregnancy"/>
+                        <iais:field width="5" value="Place of Surgical Termination of Pregnancy" info="${MessageUtil.getMessageDesc('DS_MSG029')}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:if test="${terminationDto.performedOwn == true}">${'unknown'}</c:if>
                             <c:if test="${terminationDto.performedOwn == false}"><iais:optionText value="${terminationDto.topPlace}" selectionOptions="TopPlace"/></c:if>
@@ -171,7 +174,23 @@
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <strong>Doctor who Performed the Termination of Pregnancy</strong>
+                    </iais:value>
+                </iais:row>
+                <c:if test="${terminationDto.topDoctorInformations eq 'false'}">
+                    <c:if test="${doctorInformationPE eq 'true'}">
+                        <c:set var="toolMsg"><iais:message key="GENERAL_ERR0063" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                    <c:if test="${doctorInformationPE eq 'false'}">
+                        <c:set var="toolMsg"><iais:message key="GENERAL_ERR0064" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                </c:if>
+                <c:if test="${terminationDto.topDoctorInformations eq 'true'}">
+                    <c:set var="toolMsg"><iais:message key="GENERAL_ERR0065" paramKeys="1" paramValues="counsellor"/></c:set>
+                </c:if>
+                <iais:row>
+                    <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.doctorRegnNo}"/>
                     </iais:value>
@@ -204,7 +223,7 @@
                 </div>
                 <div <c:if test="${terminationDto.topDoctorInformations eq 'false' || terminationDto.topDoctorInformations eq null}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Doctor's Name" />
+                        <iais:field width="5" value="Name of Doctor" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${doctorInformationDto.name}"/>
                         </iais:value>

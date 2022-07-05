@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePref
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -37,6 +38,9 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
     @Autowired
     private ConfigCommClient configCommClient;
+
+    @Autowired
+    private ServiceConfigService serviceConfigService;
 
     @Override
     public ApplicationGroupDto getApplicationGroupByGroupId(String groupId) {
@@ -98,9 +102,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         return c.getTime();
     }
 
-    public void savePrefStatDateAndEndDateToBe(ApplicationGroupDto applicationGroupDto) {
-        feEicGatewayClient.callEicWithTrack(applicationGroupDto, feEicGatewayClient::saveAppGroupSysnEic, "saveAppGroupSysnEic");
-    }
+
 
     @Override
     public void submitInspStartDateAndEndDate(String groupId, Date sDate, Date eDate) {
@@ -113,7 +115,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         applicationFeClient.doUpDate(applicationGroupDto);
 
         try {
-            savePrefStatDateAndEndDateToBe(applicationGroupDto);
+            serviceConfigService.saveAppGroupGiroSysnEic(applicationGroupDto);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("encounter failure when savePrefStatDateAndEndDateToBe"), e);
         }

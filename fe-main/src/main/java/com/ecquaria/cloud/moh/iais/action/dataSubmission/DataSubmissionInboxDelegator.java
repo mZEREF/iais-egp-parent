@@ -160,7 +160,7 @@ public class DataSubmissionInboxDelegator {
 				//for RFC
 				String rfcType =getRfcType(privilegeIds);
 				log.info(StringUtil.changeForLog("The rfcType is -->:"+rfcType));
-                ParamUtil.setRequestAttr(request,"rfcType",rfcType);
+                ParamUtil.setSessionAttr(request,"rfcType",rfcType);
                 /*//for new
 				boolean canCreate =  FeInboxHelper.canCreate(privilegeIds);
 				ParamUtil.setRequestAttr(request,"canCreate",canCreate);*/
@@ -409,7 +409,7 @@ public class DataSubmissionInboxDelegator {
 	 private void toShowMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
-	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+			  ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
 	      	ParamUtil.setRequestAttr(request,"selectAllTypeSub",ParamUtil.getString(request,"selectAllTypeSub"));
 	      	setShowPopMsg(request,actionValue);
 		  }else {

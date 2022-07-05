@@ -19,4 +19,6 @@ public interface PatientService {
     String getPatientCode(String patientCode);
 
     PatientInfoDto getPatientInfoDto(String patientCode);
+
+    PatientDto getPatientDtoBySubmissionId(String submissionId);
 }

@@ -15,24 +15,24 @@ public class InboxRepSearchDto implements Serializable {
     private String referenceNo;
     private String facilityName;
     private String incidentType;
-    private String incidentDate;
+    private String incidentDt;
 
 
     private static final String KEY_REFERENCE_NO = "referenceNo";
     private static final String KEY_FACILITY_NAME = "facilityName";
     private static final String KEY_INCIDENT_TYPE = "incidentType";
-    private static final String KEY_INCIDENT_DATE = "incidentDate";
+    private static final String KEY_INCIDENT_DATE = "incidentDt";
     public void reqObjMapping(HttpServletRequest request){
         this.referenceNo = ParamUtil.getString(request,KEY_REFERENCE_NO);
         this.facilityName = ParamUtil.getString(request,KEY_FACILITY_NAME);
         this.incidentType = ParamUtil.getString(request,KEY_INCIDENT_TYPE);
-        this.incidentDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);
+        this.incidentDt = ParamUtil.getString(request,KEY_INCIDENT_DATE);
     }
 
     public void clear(){
         this.referenceNo = "";
         this.facilityName = "";
         this.incidentType = "";
-        this.incidentDate = "";
+        this.incidentDt = "";
     }
 }

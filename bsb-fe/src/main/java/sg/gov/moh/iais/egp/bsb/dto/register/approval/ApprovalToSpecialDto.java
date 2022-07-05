@@ -28,8 +28,8 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
     @NoArgsConstructor
     public static class WorkActivity implements Serializable {
         private String intendedWorkActivity;
-        private String activityStartDate;
-        private String activityEndDate;
+        private String activityStartDt;
+        private String activityEndDt;
         private String activityRemarks;
     }
 
@@ -123,8 +123,8 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
     private static final String SEPARATOR                                     = "--v--";
     private static final String KEY_SECTION_IDXES                             = "sectionIdx";
     private static final String KEY_PREFIX_INTENDED_WORK_ACTIVITY             = "intendedWorkActivity";
-    private static final String KEY_PREFIX_START_DATE                         = "activityStartDate";
-    private static final String KEY_PREFIX_END_DATE                           = "activityEndDate";
+    private static final String KEY_PREFIX_START_DATE                         = "activityStartDt";
+    private static final String KEY_PREFIX_END_DATE                           = "activityEndDt";
     private static final String KEY_PREFIX_ACTIVITY_REMARKS                   = "activityRemarks";
     private static final String KEY_PREFIX_BAT_NAME                           = "batName";
     private static final String KEY_PREFIX_PROJECT_NAME                       = "projectName";
@@ -137,8 +137,8 @@ public class ApprovalToSpecialDto extends ValidatableNodeValue {
         for (String idx : idxArr) {
             WorkActivity activity = new WorkActivity();
             activity.setIntendedWorkActivity(ParamUtil.getString(request, KEY_PREFIX_INTENDED_WORK_ACTIVITY + SEPARATOR +idx));
-            activity.setActivityStartDate(ParamUtil.getString(request, KEY_PREFIX_START_DATE + SEPARATOR +idx));
-            activity.setActivityEndDate(ParamUtil.getString(request, KEY_PREFIX_END_DATE + SEPARATOR +idx));
+            activity.setActivityStartDt(ParamUtil.getString(request, KEY_PREFIX_START_DATE + SEPARATOR +idx));
+            activity.setActivityEndDt(ParamUtil.getString(request, KEY_PREFIX_END_DATE + SEPARATOR +idx));
             activity.setActivityRemarks(ParamUtil.getString(request, KEY_PREFIX_ACTIVITY_REMARKS + SEPARATOR +idx));
             addWorkActivity(activity);
         }

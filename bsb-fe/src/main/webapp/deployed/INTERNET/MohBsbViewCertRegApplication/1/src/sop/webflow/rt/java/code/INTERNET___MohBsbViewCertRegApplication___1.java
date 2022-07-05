@@ -15,10 +15,12 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___MohBsbViewCertRegApplication___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbViewCertRegAppDelegator";
-	public void step1_OnStepProcess_1() throws Exception {
-		// 		Step1->OnStepProcess
+	
+	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
-
+	
 	public void init_OnStepProcess_0() throws Exception {
 	// 		Init->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "init", this);

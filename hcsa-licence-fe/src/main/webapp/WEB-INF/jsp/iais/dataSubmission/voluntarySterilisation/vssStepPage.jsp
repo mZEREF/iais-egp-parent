@@ -72,4 +72,6 @@
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>
+<iais:confirm msg="DS_MSG011" callBack="$('#validateVD').modal('hide');" popupOrder="validateVD" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
 <input type="hidden" id="showValidateVD" name="showValidateVD" value="${showValidateVD}"/>

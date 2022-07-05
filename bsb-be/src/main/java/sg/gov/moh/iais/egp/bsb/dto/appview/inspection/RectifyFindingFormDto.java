@@ -22,7 +22,7 @@ public class RectifyFindingFormDto implements Serializable {
         private String remarks;
         private String deadline;
         //follow-up items special field
-        private String requestExtensionOfDueDate;
+        private String requestExtensionOfDueDt;
         private String reasonForExtension;
     }
 }

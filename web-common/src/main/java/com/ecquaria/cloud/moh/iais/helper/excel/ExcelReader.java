@@ -269,16 +269,16 @@ public final class ExcelReader {
         try (InputStream in = Files.newInputStream(file.toPath())) {
             workBook = new XSSFWorkbook(in);
             for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
-                int sheetAt = excelSheetDto.getSheetAt();
-                Sheet sheet = workBook.getSheetAt(sheetAt);
+                Sheet sheet = null;
+                Integer sheetAt = excelSheetDto.getSheetAt();
+                if (sheetAt != null) {
+                    sheet = workBook.getSheetAt(sheetAt);
+                }
+                if (sheet == null) {
+                    sheet = workBook.getSheet(excelSheetDto.getSheetName());
+                }
                 if (sheet == null) {
                     log.info(StringUtil.changeForLog("excel sheet name error"));
-                    continue;
-                }
-                String sheetName = sheet.getSheetName();
-                String name = excelSheetDto.getSheetName();
-                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
-                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
                     continue;
                 }
                 List<?> ans = parseSheetToList(sheet, excelSheetDto);

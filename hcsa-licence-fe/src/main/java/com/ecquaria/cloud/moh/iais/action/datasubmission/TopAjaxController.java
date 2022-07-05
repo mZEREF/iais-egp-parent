@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -92,21 +93,7 @@ public class TopAjaxController {
         return result;
     }
 
-    @ResponseBody
-    @PostMapping(value = "/patient-age")
-    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
-        String birthDate = (String) ParamUtil.getSessionAttr(request, "birthDate");
-        String counsellingGiven = ParamUtil.getString(request, "counsellingGiven");
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
-        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
-            return result;
-        }
-        int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        if(age<=10 || age>=65){
-            result.put("showAge", Boolean.TRUE);
-        }
-        return result;
-    }
+
 
     @ResponseBody
     @PostMapping(value = "/counselling-age")
@@ -115,12 +102,17 @@ public class TopAjaxController {
         String counsellingGiven = ParamUtil.getString(request, "counsellingGiven");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
         if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0 || StringUtil.isEmpty(counsellingGiven)) {
+            result.put("birthDate", Boolean.TRUE);
             return result;
         }
-        int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-        PreTerminationDto preTerminationDto=new PreTerminationDto();
-        preTerminationDto.setCounsellingAge(age);
-        result.put("selection", preTerminationDto);
+        boolean b = PreTerminationValidator.validateDate(birthDate);
+        boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
+        if (b && b1) {
+            int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
+            PreTerminationDto preTerminationDto = new PreTerminationDto();
+            preTerminationDto.setCounsellingAge(age);
+            result.put("selection", preTerminationDto);
+        }
         return result;
     }
 

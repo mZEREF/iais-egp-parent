@@ -13,8 +13,11 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
                 <c:set var="postTerminationDto" value="${terminationOfPregnancyDto.postTerminationDto}" />
+                <c:if test="${postTerminationDto.givenPostCounselling == false }">
+                    <c:set var="afterConsultation"><iais:message key="No Post-Termination of Pregnancy counselling was done for this patient" paramKeys="1" paramValues="counsellor"/></c:set>
+                </c:if>
                 <iais:row>
-                    <iais:field width="6" value="Whether Given Counselling"/>
+                    <iais:field width="6" value="Whether Given Counselling" info="${afterConsultation}"/>
                     <iais:value width="6" display="true">
                         <c:if test="${postTerminationDto.givenPostCounselling == true }">
                             Yes

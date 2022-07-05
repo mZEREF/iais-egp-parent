@@ -96,7 +96,7 @@ public class OnlineApptAjaxController {
                 }
                 //specific date dto
                 BsbAppointmentDto bsbSpecificApptDto = new BsbAppointmentDto();
-                bsbSpecificApptDto.setSubmitDt(bsbAppointmentDto.getSubmitDt());
+                bsbSpecificApptDto.setSubmitDate(bsbAppointmentDto.getSubmitDate());
                 bsbSpecificApptDto.setUsers(bsbAppointmentDto.getUsers());
                 bsbSpecificApptDto.setSysClientKey(bsbAppointmentDto.getSysClientKey());
                 bsbApptInspectionDateDto.setBsbSpecificApptDto(bsbSpecificApptDto);

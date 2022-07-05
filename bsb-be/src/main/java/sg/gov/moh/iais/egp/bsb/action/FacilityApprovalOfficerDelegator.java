@@ -242,4 +242,12 @@ public class FacilityApprovalOfficerDelegator {
         facApprovalClient.facApprovalReject(processDto, StageConstants.ROLE_HM);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
+
+    public void prepareRfi(BaseProcessClass bpc){
+        // prepare RFI
+    }
+
+    public void doRfi(BaseProcessClass bpc){
+        // DO RFI
+    }
 }

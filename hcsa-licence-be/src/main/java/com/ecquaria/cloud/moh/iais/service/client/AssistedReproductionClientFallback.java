@@ -254,4 +254,12 @@ public class AssistedReproductionClientFallback implements AssistedReproductionC
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<DoctorInformationDto> getRfcDoctorInformationDtoByConds(String doctorInformationId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

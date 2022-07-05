@@ -1,6 +1,7 @@
 <c:set var="drugPrescribedDispensedDto" value="${dpSuperDataSubmissionDto.drugPrescribedDispensedDto}" />
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <c:set var="drugMedication" value="${drugPrescribedDispensedDto.drugMedication}" />
+<c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4  class="panel-title" >
@@ -21,12 +22,14 @@
                             </div>
                         </div>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Batch No."/>
-                        <iais:value width="7" display="true">
-                            <c:out value="${drugMedicationDto.batchNo}" />
-                        </iais:value>
-                    </iais:row>
+                    <c:if test="${drugSubmission.drugType != 'DPD001'}">
+                        <iais:row>
+                            <iais:field width="5" value="Batch No."/>
+                            <iais:value width="7" display="true">
+                                <c:out value="${drugMedicationDto.batchNo}" />
+                            </iais:value>
+                        </iais:row>
+                    </c:if>
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label" >
                             <c:choose>
@@ -42,8 +45,11 @@
                             <c:out value="${drugMedicationDto.strength}" />
                         </iais:value>
                     </iais:row>
+                    <c:if test="${drugMedicationDto.excess eq 'Y'}">
+                        <c:set var="toolMsg"><iais:message key="DS_ERR062"/></c:set>
+                    </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Quantity"/>
+                        <iais:field width="5" value="Quantity" info="${toolMsg}"/>
                         <iais:value width="7" display="true">
                             <c:out value="${drugMedicationDto.quantity}" />
                         </iais:value>
@@ -62,7 +68,6 @@
                     </iais:row>
 
                 </c:forEach>
-                <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
                 <iais:row>
                     <iais:field width="5" value="Remarks"/>
                     <iais:value width="7" display="true">

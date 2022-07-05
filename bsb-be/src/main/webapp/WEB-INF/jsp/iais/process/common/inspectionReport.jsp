@@ -70,7 +70,7 @@
                             </thead>
                             <tr>
                                 <td class="col-4">Date of Inspection</td>
-                                <td><c:out value="${reportDto.inspectionDate}"/></td>
+                                <td><c:out value="${reportDto.inspectionDt}"/></td>
                             </tr>
                             <tr>
                                 <td>Purpose of Inspection</td>
@@ -211,7 +211,7 @@
                                                     <td><c:out value="${followUp.itemDescription}"/></td>
                                                     <td><c:out value="${followUp.observation}"/></td>
                                                     <td><c:out value="${followUp.actionRequired}"/></td>
-                                                    <td><c:out value="${followUp.dueDate}"/></td>
+                                                    <td><c:out value="${followUp.dueDt}"/></td>
                                                 </tr>
                                             </c:forEach>
                                         </table>
@@ -276,7 +276,7 @@
                             </tr>
                             <tr>
                                 <td>Facility Validity Date</td>
-                                <td><c:out value="${reportDto.facilityValidityDate}"/></td>
+                                <td><c:out value="${reportDto.facilityValidityDt}"/></td>
                             </tr>
                         </table>
                     </div>

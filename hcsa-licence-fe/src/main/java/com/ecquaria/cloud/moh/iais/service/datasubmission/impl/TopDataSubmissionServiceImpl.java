@@ -139,21 +139,21 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     }
 
     @Override
-    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        return topFeClient.getTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType).getEntity();
+        return topFeClient.getTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType, userId).getEntity();
     }
 
     @Override
-    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType,String dataSubmissionId) {
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoRfcDraftByConds(String orgId, String submissionType,String dataSubmissionId, String userId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + dataSubmissionId +"-----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        return topFeClient.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, dataSubmissionId).getEntity();
+        return topFeClient.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId, submissionType, dataSubmissionId, userId).getEntity();
     }
 
     @Override

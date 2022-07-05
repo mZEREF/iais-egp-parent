@@ -119,6 +119,8 @@
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="SUBMISSION_NO"
                                              value="Submission ID"  isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="Patient_Name"
+                                             value="Patient Name"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="Patient_Id_Number"
                                              value="Patient ID Number"  isFE="true"/>
                         <iais:sortableHeader needSort="true" field="typeDesc" value="Type"  isFE="true"/>
@@ -162,8 +164,26 @@
                                         <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
+                                        <p class="visible-xs visible-sm table-row-title">Patient Name</p>
+                                        <c:choose>
+                                            <c:when test="${inboxDataSubmissionQuery.patientName == null || inboxDataSubmissionQuery.patientName == ''}">
+                                                -
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${inboxDataSubmissionQuery.patientName}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
                                         <p class="visible-xs visible-sm table-row-title">Patient ID Number</p>
-                                        <iais:code code="${inboxDataSubmissionQuery.patientIdNumber}"/>
+                                        <c:choose>
+                                            <c:when test="${inboxDataSubmissionQuery.patientIdNumber == null || inboxDataSubmissionQuery.patientIdNumber == ''}">
+                                                -
+                                            </c:when>
+                                            <c:otherwise>
+                                                <iais:code code="${inboxDataSubmissionQuery.patientIdNumber}"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>

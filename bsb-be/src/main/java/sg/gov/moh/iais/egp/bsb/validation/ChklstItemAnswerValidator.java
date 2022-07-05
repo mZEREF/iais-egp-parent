@@ -27,7 +27,7 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ChklstItemAnswerDto answerDto = (ChklstItemAnswerDto) obj;
         try {
-            String dueDate = answerDto.getDueDate();
+            String dueDate = answerDto.getDueDt();
             if (!CommonValidator.isDate(dueDate) || !CommonValidator.isFileDate(dueDate)) {
                 errorMap.put("dueDate", MessageUtil.getMessageDesc("GENERAL_ERR0033"));
             } else if (!StringUtil.isEmpty(dueDate) && Formatter.compareDateByDay(dueDate) <= 0) {
@@ -60,7 +60,7 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(answerDto.getFollowupAction())) {
                 errorMap.put("followupAction", messageCommon);
             }
-            if (StringUtil.isEmpty(answerDto.getDueDate())) {
+            if (StringUtil.isEmpty(answerDto.getDueDt())) {
                 errorMap.put("dueDate", messageCommon);
             }
         } else if (!StringUtil.isEmpty(answerDto.getFollowupItem())) {

@@ -1,13 +1,13 @@
 <%@tag description="Preview page of approval app" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 
 <%@attribute name="facProfileDto" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto" %>
 <%@attribute name="batInfo" required="true" type="java.lang.Object" %>
 <%@attribute name="facAuthorisedList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto>" %>
-<%@attribute name="processType" type="java.lang.String" %>
+<%@attribute name="processType" required="true" type="java.lang.String" %>
 
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
@@ -20,6 +20,11 @@
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
+    <div class="row" id="printRow">
+        <div class="text-right" style="padding: 0 15px">
+            <p class="print"></p><div style="font-size: 16px;"><a onclick="printApprovalApp('${printApprovalAppId}');" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div><p></p>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
@@ -40,12 +45,12 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Facility Name</label>
-                                        <div class="col-xs-6"><p>${facProfileDto.facilityName}</p></div>
+                                        <div class="col-xs-6"><p><c:out value="${facProfileDto.facilityName}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Facility Classification:</label>
-                                        <div class="col-xs-6"><p>${facProfileDto.facilityClassification}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facProfileDto.facilityClassification}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -255,7 +260,7 @@
                                         <c:forEach var="activityType" items="${batInfo.facActivityTypes}">
                                             <div class="form-group">
                                                 <div class="col-10">
-                                                    <label for="facActivityTypes"></label><input type="checkbox" name="facActivityTypes" id="facActivityTypes" checked="checked" readonly/>
+                                                    <label for="facActivityTypes"></label><input type="checkbox" name="facActivityTypes" id="facActivityTypes" checked="checked" disabled/>
                                                     <iais:code code="${activityType}"/></div>
                                                 <div class="clear"></div>
                                             </div>
@@ -513,12 +518,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Start Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityStartDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">End Date:</label>
-                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDate}"/></p></div>
+                                                <div class="col-xs-6"><p><c:out value="${activity.activityEndDt}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
@@ -527,12 +532,8 @@
                                                 <div class="clear"></div>
                                             </div>
                                         </c:forEach>
-
-
-
                                     </div>
 
-                                    <%--@elvariable id="facAuthorised" type="sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto"--%>
                                     <c:forEach var="facAuthorised" items="${facAuthorisedList}" varStatus="status">
                                         <div class="panel-main-content form-horizontal min-row">
                                             <div class="form-group" style="margin-top: 10px">

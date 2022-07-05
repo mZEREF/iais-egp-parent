@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <%--<c:set var="submissionType" value="${topSuperDataSubmissionDto.submissionType}"/>
 <c:choose>
     <c:when test="${submissionType == 'TOP_TP002'}">

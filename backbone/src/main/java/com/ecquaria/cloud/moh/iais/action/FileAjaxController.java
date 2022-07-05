@@ -15,20 +15,6 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +28,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther wangyu and chenlei on 4/19/2022.
@@ -58,7 +57,6 @@ public class FileAjaxController {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    @ResponseBody
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String ajaxUpload(HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile,
             @RequestParam("fileAppendId") String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
@@ -123,40 +121,6 @@ public class FileAjaxController {
 
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
 
-        StringBuilder stringBuilder = new StringBuilder();
-        String suffix = "Div" + size;
-        String deleteButtonString = "      <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
-                "                                                    onclick=\"javascript:deleteFileFeAjax('replaceForDelete',indexReplace);\">\n" +
-                "                                                Delete</button>";
-
-        String reUploadButtonString = "";
-        if (!AppConsts.NO.equals(needReUpload)) {
-            reUploadButtonString = "  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
-                    "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
-                    "                                               ReUpload</button>";
-        }
-        String originalFileName = selectedFile.getOriginalFilename();
-        if (originalFileName != null) {
-            String[] fileSplit = originalFileName.split("\\.");
-            //name
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            String url = "<a href=\"pageContext.request.contextPath/file/download-session-file?fileAppendIdDown" +
-                    "=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-            fileName = url + fileName + "</a>";
-            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", request.getContextPath())
-                            .replace("replaceFileAppendIdDown", fileAppendId)
-                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
-                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
-                    replace("indexReplace", String.valueOf(size)))
-                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
-                            replace("replaceForUpload", fileAppendId).
-                            replace("indexReplace", String.valueOf(size))
-                    ).append("</Div>")
-            ;
-        }
-        messageCode.setDescription(stringBuilder.toString());
         boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
         log.info(StringUtil.changeForLog("isBackend: " + isBackend));
         String cssClass;
@@ -167,6 +131,7 @@ public class FileAjaxController {
         }
 
         StringBuilder data = new StringBuilder();
+        String originalFileName = selectedFile.getOriginalFilename();
         if (originalFileName != null) {
             String[] fileSplit = originalFileName.split("\\.");
             String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
@@ -182,7 +147,7 @@ public class FileAjaxController {
                     .append(" <button type=\"button\" class=\"").append(cssClass)
                     .append("\" onclick=\"javascript:deleteFileFeAjax('")
                     .append(fileAppendId).append("', ").append(size)
-                    .append("');\">Delete</button>");
+                    .append(");\">Delete</button>");
             if (!AppConsts.NO.equals(needReUpload)) {
                 data.append(" <button type=\"button\" class=\"")
                         .append(cssClass)

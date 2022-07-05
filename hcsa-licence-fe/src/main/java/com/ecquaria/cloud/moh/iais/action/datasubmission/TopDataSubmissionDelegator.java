@@ -8,20 +8,38 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PostTerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
@@ -37,7 +55,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Process: MohNEWTOPDataSumission
@@ -93,9 +115,14 @@ public class TopDataSubmissionDelegator {
         DataSubmissionHelper.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
 
-        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                .map(LoginContext::getOrgId).orElse("");
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,userId);
         if (topSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
         }
@@ -127,16 +154,26 @@ public class TopDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "patientMotionless","motionles");
                 if(!crud_action_type.equals("resume") && !crud_action_type.equals("delete")){
                     DataSubmissionDto dataSubmissionDto=topSuperDataSubmissionDto.getDataSubmissionDto();
-                    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                            .map(LoginContext::getOrgId).orElse("");
-                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId()) != null) {
+                    String orgId = "";
+                    String userId = "";
+                    LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                    if (loginContext != null) {
+                        orgId = loginContext.getOrgId();
+                        userId = loginContext.getUserId();
+                    }
+                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId(),userId) != null) {
                         ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
                     }
                 }
             }
             //draft
             if (crud_action_type.equals("resume")) {
-                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId());
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(), topSuperDataSubmissionDto.getDataSubmissionDto().getId(),userId);
                 if (topSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
@@ -250,7 +287,12 @@ public class TopDataSubmissionDelegator {
         if(DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
             //draft
             if (crud_action_type.equals("resume")) {
-                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    userId = loginContext.getUserId();
+                }
+                topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType(),userId);
                 if (topSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
@@ -574,6 +616,17 @@ public class TopDataSubmissionDelegator {
         }
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        try {
+            String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
+            if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
+                String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
+                int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
+                terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(age);
+
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         request.getSession().setAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
@@ -795,7 +848,7 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        if(patientInformationDto.getPatientAge()<16 && !StringUtil.isEmpty(patientInformationDto.getPatientAge())){
+        if(!StringUtil.isEmpty(patientInformationDto.getPatientAge()) && patientInformationDto.getPatientAge()<16){
             familyPlanDto.setNeedHpbConsult(true);
         }
         terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
@@ -1046,8 +1099,14 @@ public class TopDataSubmissionDelegator {
         }
         /*ParamUtil.setSessionAttr(request, "counsellingPlace",counsellingPlace);*/
         if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingDate())){
-            Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
-            preTerminationDto.setCounsellingAge(counsellingAge);
+            try {
+                Integer counsellingAge = ParamUtil.getInt(request, "counsellingAge");
+                preTerminationDto.setCounsellingAge(counsellingAge);
+
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+
+            }
         }
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
@@ -1185,6 +1244,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
         String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+        String topDates = ParamUtil.getString(request, "topDate");
         try {
             if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
                 ParamUtil.setRequestAttr(request, "topLateSubmit", Boolean.TRUE);
@@ -1192,40 +1252,56 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+        if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+            if(StringUtil.isNotEmpty(topDates)){
+                try {
+                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<2){
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                    }else {
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
-                    ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.TRUE);
-                    String doctorName = ParamUtil.getString(request, "names");
-                    String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
-                    String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
-                    String dQualification = ParamUtil.getString(request, "dQualifications");
-                    terminationDto.setDoctorName(doctorName);
-                    terminationDto.setSpecialty(dSpeciality);
-                    terminationDto.setSubSpecialty(dSubSpeciality);
-                    terminationDto.setQualification(dQualification);
-                    doctorInformationDto.setName(terminationDto.getDoctorName());
-                    doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
-                    doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
-                    doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
-                    doctorInformationDto.setQualification(terminationDto.getQualification());
-                    doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
-                    topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    if("true".equals(terminationDto.getDoctorInformationPE())){
+                        String TOPE="TOPE";
+                        String doctorName = ParamUtil.getString(request, "names");
+                        String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+                        String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+                        String dQualification = ParamUtil.getString(request, "dQualifications");
+                        terminationDto.setDoctorName(doctorName);
+                        terminationDto.setSpecialty(dSpeciality);
+                        terminationDto.setSubSpecialty(dSubSpeciality);
+                        terminationDto.setQualification(dQualification);
+                        doctorInformationDto.setName(terminationDto.getDoctorName());
+                        doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
+                        doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
+                        doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
+                        doctorInformationDto.setQualification(terminationDto.getQualification());
+                        doctorInformationDto.setDoctorSource(TOPE);
+                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+                    }
                 }
-            }else {
-                ParamUtil.setSessionAttr(request, "doctorInformationPE", Boolean.FALSE);
+            }else if("false".equals(terminationDto.getDoctorInformationPE())){
+                String TOPP="TOPP";
                 String doctorName = ParamUtil.getString(request, "names");
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
                 doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(terminationDto.getQualification());
-                doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+                doctorInformationDto.setDoctorSource(TOPP);
                 topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(terminationDto.getTopDoctorInformations())){
+            String TOPT="TOPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -1235,7 +1311,7 @@ public class TopDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DataSubmissionConsts.DS_TOP);
+            doctorInformationDto.setDoctorSource(TOPT);
             terminationDto.setDoctorName(dName);
             topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }else {
@@ -1455,10 +1531,10 @@ public class TopDataSubmissionDelegator {
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())){
                 terminationDto.setTopDoctorInformations("true");
             }
-            topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
+        topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
         if (!StringUtil.isEmpty(topSuperDataSubmissionDto.getDraftId())) {
             topDataSubmissionService.updateDataSubmissionDraftStatus(topSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);

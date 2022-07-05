@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -39,5 +39,5 @@ public class FacilityOperatorDto extends BaseEntityDto {
 
     private String email;
 
-    private Date employmentStartDate;
+    private LocalDate employmentStartDate;
 }

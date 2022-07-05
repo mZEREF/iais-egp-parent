@@ -30,6 +30,8 @@ public class FacApprovalProcessDto implements Serializable {
 
     private String processingDecision;
 
+    private String commentsToApplicant;
+
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
@@ -52,6 +54,8 @@ public class FacApprovalProcessDto implements Serializable {
     private static final String KEY_REMARKS = "remarks";
     private static final String KEY_PROCESSING_DECISION = "processingDecision";
     private static final String KEY_SELECT_MOH_USER = "selectMohUser";
+    private static final String KEY_COMMENTS_TO_APPLICANT = "commentsToApplicant";
+
     public void reqObjMapping(HttpServletRequest request){
         FacilityDetailsInfo facilityDetailsInfo = (FacilityDetailsInfo) ParamUtil.getSessionAttr(request, ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO);
         for (FacilityBiologicalAgentInfo info : facilityDetailsInfo.getFacilityBiologicalAgentInfoList()) {
@@ -60,5 +64,6 @@ public class FacApprovalProcessDto implements Serializable {
         this.remarks = ParamUtil.getString(request,KEY_REMARKS);
         this.processingDecision = ParamUtil.getString(request,KEY_PROCESSING_DECISION);
         this.selectMohUser = ParamUtil.getString(request,KEY_SELECT_MOH_USER);
+        this.commentsToApplicant = ParamUtil.getString(request,KEY_COMMENTS_TO_APPLICANT);
     }
 }
