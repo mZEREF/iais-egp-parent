@@ -224,6 +224,8 @@
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
                                              options="rollBackToOptions" needSort="true"/>
+                                <span id="error_rollBackTo1" class="error-msg"
+                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row id="indicateCondRemarks">
@@ -359,8 +361,8 @@
     function inspectorProRecSubmit(action){
       showWaiting();
       $("[name='InspectorProRectificationType']").val(action);
-        var mainPoolForm = document.getElementById('mainReviewForm');
-        mainPoolForm.submit();
+      var mainPoolForm = document.getElementById('mainReviewForm');
+      mainPoolForm.submit();
     }
 
     function doInspectorProRecChange(value) {
@@ -403,7 +405,10 @@
 
     function doInspectorProRecSubmit() {
         var processDec = $("#processDec").val();
-        if("REDECI006" == processDec){
+      clearErrorMsg();
+      $("#error_rollBackTo1").hide();
+      $("#error_rollBackTo1").hide();
+      if("REDECI006" == processDec){
             $("#actionValue").val('accept');
             inspectorProRecSubmit("accept");
         } else if ("REDECI001" == processDec){
@@ -413,8 +418,13 @@
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
         } else if('REDECI027' === processDec){
+          const rollBackTo = $('#rollBackTo').val();
+          if (rollBackTo===''||rollBackTo===undefined||rollBackTo===null) {
+            $("#error_rollBackTo1").show();
+          }else {
             $("#actionValue").val('rollBack');
             $('#confirmTag').modal('show');
+          }
         } else {
             var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);

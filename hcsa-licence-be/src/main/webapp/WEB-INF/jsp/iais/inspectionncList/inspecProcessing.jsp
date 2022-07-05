@@ -35,7 +35,9 @@
                     <iais:row id="rollBackToRow">
                         <iais:field value="Roll Back To" required="true"/>
                         <iais:value width="10">
-                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}"/>
+                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}" needSort="true"/>
+                            <span id="error_rollBackTo1" class="error-msg"
+                                  style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                         </iais:value>
                     </iais:row>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">

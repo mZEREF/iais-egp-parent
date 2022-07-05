@@ -80,8 +80,7 @@
                                                             file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
                                                 </div>
                                                 <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
-                                                    <jsp:include
-                                                            page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"></jsp:include>
+                                                    <jsp:include page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"/>
                                                 </div>
                                                 <div class="${processClassBelow}" id="tabProcessing" role="tabpanel">
                                                     <div class="col-xs-12">
@@ -135,9 +134,11 @@
                                                                     </iais:row>
                                                                   </c:if>
                                                                     <iais:row id="backToRow">
-                                                                        <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                                        <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                                         <iais:value width="7">
-                                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
+                                                                            <span id="error_rollBackTo1" class="error-msg"
+                                                                                  style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
@@ -213,57 +214,7 @@
                                                                        onclick="insSubmit()" name="submitBtn">SUBMIT</a>
                                                                 </iais:action>
                                                             </div>
-                                                            <br/>
-                                                            <div class="alert alert-info" role="alert">
-                                                                <strong>
-                                                                    <h4>Processing History</h4>
-                                                                </strong>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-xs-12">
-                                                                    <div class="table-gp">
-                                                                        <table aria-describedby="" class="table">
-                                                                            <thead>
-                                                                            <tr>
-                                                                                <th scope="col" >Username</th>
-                                                                                <th scope="col" >Working Group</th>
-                                                                                <th scope="col" >Status Update</th>
-                                                                                <th scope="col" >Remarks</th>
-                                                                                <th scope="col" >Last Updated</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                            <c:forEach
-                                                                                    items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
-                                                                                    var="appPremisesRoutingHistoryDto">
-                                                                                <tr>
-                                                                                    <td>
-                                                                                        <p><c:out
-                                                                                                value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <p><c:out
-                                                                                                value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <p><c:out
-                                                                                                value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <p><c:out
-                                                                                                value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <p><c:out
-                                                                                                value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </c:forEach>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -335,13 +286,20 @@
 
 </c:if>
     function insSubmit() {
+        clearErrorMsg();
+        $("#error_rollBackTo1").hide();
         const s = $("#processSubmit").val();
-        if (s == "" || s == null) {
+        if (s === "" || s == null) {
             $("#error_submit").show();
-        } else if ("submit" == s) {
+        } else if ("submit" === s) {
             mysubmit();
-        }else if("rollBack" == s){
-            $('#confirmTag').modal('show');
+        }else if("rollBack" === s){
+            const rollBackToVal = $("#rollBackTo").val();
+            if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
+                $("#error_rollBackTo1").show();
+            } else {
+                $('#confirmTag').modal('show');
+            }
         }
     }
 
@@ -360,6 +318,5 @@
             backToRow.hide();
         }
     }
-
 </script>
 

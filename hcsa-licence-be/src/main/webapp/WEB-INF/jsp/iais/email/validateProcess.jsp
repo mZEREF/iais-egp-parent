@@ -114,15 +114,15 @@
                                                     <iais:value width="7">
                                                         <iais:select id="decision-validate-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"
                                                                      onchange="javascript:showRollBackToRow();"/>
-                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" ><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
 
                                                 <iais:row id="rollBackToRow">
-                                                    <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                    <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                     <iais:value width="7">
-                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
-                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
+                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" ><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
 
@@ -192,7 +192,12 @@
             $("#remarksMsg").show();
         }
         if('REDECI027' === f){
-            $('#confirmTag').modal('show');
+            const rollBackTo = $('#rollBackTo').val();
+            if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
+                $('#err_rollBackTo').show();
+            }else {
+                $('#confirmTag').modal('show');
+            }
         }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
@@ -200,13 +205,8 @@
     }
 
     function rollBackSubmit(){
-        const rollBackTo = $('#rollBackTo').val();
-        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
-            $('#err_rollBackTo').show();
-        }else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "rollBack");
-        }
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "rollBack");
     }
 
     function showRollBackToRow(){

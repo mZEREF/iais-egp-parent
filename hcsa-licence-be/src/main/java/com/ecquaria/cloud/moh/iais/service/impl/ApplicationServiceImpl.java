@@ -1100,6 +1100,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 taskDto.getWkGrpId(), null, null, null, roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
+        //set AppInspectionStatusDto, because old AppInspectionStatusDto delete in rollback cord
+        AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
+        appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
+        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE);
+        broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
+
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

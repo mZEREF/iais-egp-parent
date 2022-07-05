@@ -77,8 +77,7 @@
                                                 </div>
                                                 <div class="${reportClassBelow}" id="tabInspectionReport"
                                                      role="tabpanel">
-                                                    <jsp:include
-                                                            page="/WEB-INF/jsp/iais/report/ao1Report.jsp"></jsp:include>
+                                                    <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"/>
                                                 </div>
                                                 <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                     <div class="col-xs-12">
@@ -119,7 +118,9 @@
                                                                                          cssClass="nice-select nextStage"
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                                            <span id="error_submit" class="error-msg" style="display:none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
+                                                                            <span id="error_submit" class="error-msg"
+                                                                                  style="display:none;"><iais:message
+                                                                                    key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <iais:row id="rollBackToRow">
@@ -331,6 +332,7 @@
         var s = $("#processingDecision").val();
         $("#error_submit").hide();
         $("#error_rollback").hide();
+        clearErrorMsg();
         if (s == "" || s == null) {
             $("#error_submit").show();
         } else if ("Approval" == s || "submit" == s) {
@@ -341,30 +343,28 @@
             $("[name='action_type']").val('back');
             showWaiting();
             $("#mainForm").submit();
-        } else if("rollBack" === s){
-            $("[name='action_type']").val('rollBack');
-            $('#confirmTag').modal('show')
+        } else if ("rollBack" === s) {
+            const rollBackTo = $('#rollBackTo').val();
+            if (rollBackTo === "" || rollBackTo === undefined || rollBackTo === null) {
+                $("#error_rollback").show();
+            } else {
+                $("[name='action_type']").val('rollBack');
+                $('#confirmTag').modal('show')
+            }
         }
     }
 
     function realSubmit() {
-        const rollBackTo = $('#rollBackTo').val();
-        if(rollBackTo === "" || rollBackTo === undefined || rollBackTo === null){
-            //close fangDuoJi in has error
-            $('#fangDuoJiconfirmTag').val(null);
-            $("#error_rollback").show();
-        }else {
-            showWaiting();
-            $("#mainForm").submit();
-        }
+        showWaiting();
+        $("#mainForm").submit();
     }
 
     function showRollBackToRow() {
         const processDec = $('#processingDecision option:selected').val();
         const rollBackToRow = $('#rollBackToRow');
-        if(processDec === 'rollBack'){
+        if (processDec === 'rollBack') {
             rollBackToRow.show();
-        }else {
+        } else {
             rollBackToRow.hide();
         }
     }
