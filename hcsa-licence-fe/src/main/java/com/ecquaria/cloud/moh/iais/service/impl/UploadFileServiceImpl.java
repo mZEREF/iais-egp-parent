@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
@@ -346,7 +346,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
         List<AppGrpPersonnelExtDto> appGrpPersonnelExt = applicationListDto.getAppGrpPersonnelExt();
-        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
+        List<AppGrpPremisesDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListDto.getAppGrpPrimaryDoc();
         List<ApplicationDto> application = applicationListDto.getApplication();
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
@@ -382,7 +382,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
                 Set<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewHashSet();
                 Set<ApplicationDto> applicationDtos=IaisCommonUtils.genNewHashSet();
-                Set<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewHashSet();
+                Set<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewHashSet();
                 Set<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewHashSet();
                 Set<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewHashSet();
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList=IaisCommonUtils.genNewArrayList();
@@ -459,7 +459,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                         }
                     }
                 }
-                for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
+                for(AppGrpPremisesDto appliGrpPremisesDto:appGrpPremises){
                     String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
                     if(groupId.equals(grpPremisesDtoAppGrpId)){
                         appGrpPremisesDtos.add(appliGrpPremisesDto);
@@ -662,7 +662,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 applicationDtoList.addAll(applicationDtos);
                 applicationListFileDto.setApplication( applicationDtoList);
-                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtoList=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPremisesDto> appGrpPremisesEntityDtoList=IaisCommonUtils.genNewArrayList();
                 appGrpPremisesEntityDtoList.addAll(appGrpPremisesDtos);
                 applicationListFileDto.setAppGrpPremises(appGrpPremisesEntityDtoList);
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList=IaisCommonUtils.genNewArrayList();

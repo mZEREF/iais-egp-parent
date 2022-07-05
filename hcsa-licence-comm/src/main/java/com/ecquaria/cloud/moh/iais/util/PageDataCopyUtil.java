@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -17,12 +17,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -31,173 +31,26 @@ import java.util.stream.StreamSupport;
 
 public class PageDataCopyUtil {
 
-    public static List<AppGrpPremisesDto> copyAppGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList) {
-        List<AppGrpPremisesDto> cpoyList=new ArrayList<>(appGrpPremisesDtoList.size());
-        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            AppGrpPremisesDto copy = copyAppGrpPremisesDto(appGrpPremisesDto);
-            cpoyList.add( copy);
-        }
-        return cpoyList;
-    }
-
-    public static AppGrpPremisesDto copyAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto){
-        AppGrpPremisesDto copy = new AppGrpPremisesDto();
-        copy.setPremisesType(appGrpPremisesDto.getPremisesType());
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            copy.setPostalCode(appGrpPremisesDto.getPostalCode());
-            copy.setAddrType(appGrpPremisesDto.getAddrType());
-            copy.setBlkNo(appGrpPremisesDto.getBlkNo());
-            copy.setFloorNo(appGrpPremisesDto.getFloorNo());
-            copy.setUnitNo(appGrpPremisesDto.getUnitNo());
-            copy.setStreetName(appGrpPremisesDto.getStreetName());
-            copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
-            copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
-            copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
-            copy.setOnsiteStartHH(appGrpPremisesDto.getOnsiteStartHH());
-            copy.setOnsiteEndHH(appGrpPremisesDto.getOnsiteEndHH());
-
-            copy.setHciName(appGrpPremisesDto.getHciName());
-            copy.setOffTelNo(appGrpPremisesDto.getOffTelNo());
-            copy.setLocateWithOthers(appGrpPremisesDto.getLocateWithOthers());
-            copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
-            copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
-            if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                copy.setCertIssuedDtStr(null);
-            } else {
-                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
-            }
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
-            copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
-            copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
-            copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-            copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-            copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
-            copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-            copy.setOffSiteStartHH(appGrpPremisesDto.getOffSiteStartHH());
-            copy.setOffSiteStartMM(appGrpPremisesDto.getOffSiteStartMM());
-            copy.setOffSiteEndHH(appGrpPremisesDto.getOffSiteEndHH());
-            copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
-
-            copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-
-            copy.setOffSiteEmail(appGrpPremisesDto.getOffSiteEmail());
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            //EASMTS
-            copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
-            copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
-            copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-            copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
-            copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
-            copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
-            copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
-            copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-            copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
-            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
-            copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
-            copy.setEasMtsCoLocation(appGrpPremisesDto.getEasMtsCoLocation());
-        } else {
-            copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
-            copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-            copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
-            copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-            copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-            copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
-            copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-            copy.setConStartHH(appGrpPremisesDto.getConStartHH());
-            copy.setConStartMM(appGrpPremisesDto.getConStartMM());
-            copy.setConEndHH(appGrpPremisesDto.getConEndHH());
-            copy.setConEndMM(appGrpPremisesDto.getConEndMM());
-
-            copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
-            copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
-
-            copy.setConveyanceEmail(appGrpPremisesDto.getConveyanceEmail());
-        }
-
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-        copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos=new ArrayList<>();
-        if(appPremPhOpenPeriodList!=null){
-            for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                AppPremPhOpenPeriodDto premPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
-                premPhOpenPeriodDto.setConvEndToMM(appPremPhOpenPeriodDto.getConvEndToMM());
-                premPhOpenPeriodDto.setConvEndToHH(appPremPhOpenPeriodDto.getConvEndToHH());
-                premPhOpenPeriodDto.setConvStartFromHH(appPremPhOpenPeriodDto.getConvStartFromHH());
-                premPhOpenPeriodDto.setConvStartFromMM(appPremPhOpenPeriodDto.getConvStartFromMM());
-                premPhOpenPeriodDto.setOnsiteStartFromMM(appPremPhOpenPeriodDto.getOnsiteStartFromMM());
-                premPhOpenPeriodDto.setOnsiteStartFromHH(appPremPhOpenPeriodDto.getOnsiteStartFromHH());
-                premPhOpenPeriodDto.setOnsiteEndToHH(appPremPhOpenPeriodDto.getOnsiteEndToHH());
-                premPhOpenPeriodDto.setOnsiteEndToMM(appPremPhOpenPeriodDto.getOnsiteEndToMM());
-                premPhOpenPeriodDto.setPhDate(appPremPhOpenPeriodDto.getPhDate());
-                premPhOpenPeriodDto.setPhDateStr(appPremPhOpenPeriodDto.getPhDateStr());
-                premPhOpenPeriodDto.setStartFrom(appPremPhOpenPeriodDto.getStartFrom());
-                premPhOpenPeriodDto.setEndTo(appPremPhOpenPeriodDto.getEndTo());
-                appPremPhOpenPeriodDtos.add(premPhOpenPeriodDto);
-            }
-
-        }
-        copy.setEventDtoList(copyEvent(appGrpPremisesDto.getEventDtoList()));
-        copy.setWeeklyDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getWeeklyDtoList()));
-        copy.setPhDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getPhDtoList()));
-        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
-        return copy;
-    }
-
     public static AppGrpPremisesDto copyAppGrpPremisesDtoForAutoField(AppGrpPremisesDto appGrpPremisesDto) {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
         copy.setPremisesType(appGrpPremisesDto.getPremisesType());
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            copy.setAddrType(appGrpPremisesDto.getAddrType());
-            copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-
-            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
-            copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
-            copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
-            copy.setOnsiteStartHH(appGrpPremisesDto.getOnsiteStartHH());
-            copy.setOnsiteEndHH(appGrpPremisesDto.getOnsiteEndHH());
-
-            copy.setOffTelNo(appGrpPremisesDto.getOffTelNo());
-            copy.setLocateWithOthers(appGrpPremisesDto.getLocateWithOthers());
-            copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
-            copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
-            if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                copy.setCertIssuedDtStr(null);
-            } else {
-                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
-            }
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-
-            copy.setOffSiteStartHH(appGrpPremisesDto.getOffSiteStartHH());
-            copy.setOffSiteStartMM(appGrpPremisesDto.getOffSiteStartMM());
-            copy.setOffSiteEndHH(appGrpPremisesDto.getOffSiteEndHH());
-            copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
-
-            copy.setOffSiteEmail(appGrpPremisesDto.getOffSiteEmail());
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            //EASMTS
-            copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-            copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-
-            copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
-            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
-            copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
-            copy.setEasMtsCoLocation(appGrpPremisesDto.getEasMtsCoLocation());
+        copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
+        copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
+        if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
+            copy.setCertIssuedDtStr(null);
         } else {
-            copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-            copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-
-            copy.setConStartHH(appGrpPremisesDto.getConStartHH());
-            copy.setConStartMM(appGrpPremisesDto.getConStartMM());
-            copy.setConEndHH(appGrpPremisesDto.getConEndHH());
-            copy.setConEndMM(appGrpPremisesDto.getConEndMM());
-
-            copy.setConveyanceEmail(appGrpPremisesDto.getConveyanceEmail());
+            copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
         }
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+        copy.setAddrType(appGrpPremisesDto.getAddrType());
+        copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+        copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
+        copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
+        copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
+        copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
+        copy.setLocateWtihNonHcsa(appGrpPremisesDto.getLocateWtihNonHcsa());
+        copy.setAppPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),
+                AppPremNonLicRelationDto.class));
+        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = new ArrayList<>();
         if (appPremPhOpenPeriodList != null) {
             for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
@@ -220,7 +73,7 @@ public class PageDataCopyUtil {
         copy.setEventDtoList(copyEvent(appGrpPremisesDto.getEventDtoList()));
         copy.setWeeklyDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getWeeklyDtoList()));
         copy.setPhDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getPhDtoList()));
-        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);*/
         return copy;
     }
 
@@ -282,7 +135,7 @@ public class PageDataCopyUtil {
 
             list.add(primaryDocDto);
         }
-        Collections.sort(list, Comparator.comparing(AppGrpPrimaryDocDto::getMd5Code));
+        list.sort(Comparator.comparing(AppGrpPrimaryDocDto::getMd5Code));
         return list;
     }
 
@@ -330,7 +183,7 @@ public class PageDataCopyUtil {
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
         }
-        Collections.sort(appSvcDocDtos, Comparator.comparing(AppSvcDocDto::getMd5Code));
+        appSvcDocDtos.sort(Comparator.comparing(AppSvcDocDto::getMd5Code));
         return appSvcDocDtos;
     }
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
@@ -419,16 +272,16 @@ public class PageDataCopyUtil {
             AppSvcVehicleDto o = new AppSvcVehicleDto();
             o.setVehicleName(Optional.ofNullable(v.getVehicleName())
                     .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
-                    .orElseGet(() -> ""));
+                    .orElse(""));
             o.setChassisNum(Optional.ofNullable(v.getChassisNum())
                     .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
-                    .orElseGet(() -> ""));
+                    .orElse(""));
             o.setEngineNum(Optional.ofNullable(v.getEngineNum())
                     .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
-                    .orElseGet(() -> ""));
+                    .orElse(""));
             o.setVehicleNum(Optional.ofNullable(v.getVehicleNum())
                     .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
-                    .orElseGet(() -> ""));
+                    .orElse(""));
             list.add(o);
         });
         list.sort(Comparator.comparing(AppSvcVehicleDto::getVehicleName));
@@ -478,9 +331,7 @@ public class PageDataCopyUtil {
             return new ArrayList<>(1);
         }
         List<AppSvcPrincipalOfficersDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
-        appSvcClinicalDirectorDtos.forEach((v)->{
-            list.add(copyKeyPersonnel(v));
-        });
+        appSvcClinicalDirectorDtos.forEach((v) -> list.add(copyKeyPersonnel(v)));
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
@@ -492,9 +343,9 @@ public class PageDataCopyUtil {
     /**
      * Copy Key Personnel
      *
-     * @param person
+     * @param person target person
      * @param status 0: all fields; 1: key fields; 2: special fields for affected person
-     * @return
+     * @return new person dto
      */
     public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person, int status) {
         if (person == null) {

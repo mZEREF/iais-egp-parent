@@ -32,7 +32,7 @@ public class NewAppValidator implements CustomizeValidator {
         for(int i=0;i<list.size();i++ ){
             String premisesType = list.get(i).getPremisesType();
             if(!StringUtil.isEmpty(premisesType)){
-                if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+                if(ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premisesType)){
                      if(StringUtil.isEmpty(list.get(i).getHciName())){
                          map.put("hciName"+i,"cannot be blank ");
                      }
@@ -62,30 +62,30 @@ public class NewAppValidator implements CustomizeValidator {
                             }
                         }
                     }
-                    if(StringUtil.isEmpty(list.get(i).getOffTelNo())){
+                   /* if(StringUtil.isEmpty(list.get(i).getOffTelNo())){
                         map.put("offTelNo"+i,"cannot be blank");
                     }else {
                         if( !list.get(i).getOffTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)){
                             map.put("offTelNo"+i,"GENERAL_ERR0015");
                         }
-                    }
+                    }*/
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
-                        if(StringUtil.isEmpty( list.get(i).getConveyanceVehicleNo())){
+                        if(StringUtil.isEmpty( list.get(i).getVehicleNo())){
                             map.put("vehicleNo"+i,"cannot be blank ");
                         }else {
 
                         }
-                        if(StringUtil.isEmpty(list.get(i).getConveyanceStreetName())){
+                        if(StringUtil.isEmpty(list.get(i).getStreetName())){
                             map.put("conveyanceStreetName"+i,"cannot be blank");
                         }
-                    String addrType = list.get(i).getConveyanceAddressType();
+                    String addrType = list.get(i).getAddrType();
                     if(StringUtil.isEmpty(addrType)){
                         map.put("conveyanceAddressType"+i, "can not is null");
                     }else {
                         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                            boolean empty = StringUtil.isEmpty(list.get(i).getConveyanceFloorNo());
-                            boolean empty1 = StringUtil.isEmpty(list.get(i).getConveyanceBlockNo());
-                            boolean empty2 = StringUtil.isEmpty(list.get(i).getConveyanceUnitNo());
+                            boolean empty = StringUtil.isEmpty(list.get(i).getFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(list.get(i).getBlkNo());
+                            boolean empty2 = StringUtil.isEmpty(list.get(i).getUnitNo());
                             if (empty) {
                                 map.put("conveyanceFloorNo"+i, "can not is null");
                             }

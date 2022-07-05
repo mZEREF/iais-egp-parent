@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -71,9 +70,9 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
@@ -345,10 +344,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licCommService.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames);
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appCommService.getPendAppPremises(appPremisesDoQueryDto);
-            log.debug("licence record size {}",premisesDtos.size());
-            log.debug("pending application record size {}",appGrpPremisesEntityDtos.size());
-            if(IaisCommonUtils.isEmpty(premisesDtos) && IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appCommService.getPendAppPremises(appPremisesDoQueryDto);
+            log.debug("licence record size {}", premisesDtos.size());
+            log.debug("pending application record size {}", appGrpPremisesDtos.size());
+            if (IaisCommonUtils.isEmpty(premisesDtos) && IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                 canCreateEasOrMts = true;
             }
         }
@@ -1187,10 +1186,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
-                    Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
+                    /*Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
                     if(premisessTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
                         licenceFeeDto.setExistOnsite(existingOnSiteLic);
-                    }
+                    }*/
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
@@ -1397,14 +1396,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppGrpPremisesDto> getAppGrpPremisesDto(String appNo) {
-        List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByAppGroId(appNo).getEntity();
-        return entity;
-    }
-
-    @Override
     public AppFeeDetailsDto saveAppFeeDetails(AppFeeDetailsDto appFeeDetailsDto) {
-        return   applicationFeClient.saveAppFeeDetails(appFeeDetailsDto).getEntity();
+        return applicationFeClient.saveAppFeeDetails(appFeeDetailsDto).getEntity();
     }
 
     @Override
@@ -1500,13 +1493,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return true;
     }
     private String getHciName(AppGrpPremisesDto appGrpPremisesDto){
-        String hciName = "";
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
-            hciName = appGrpPremisesDto.getHciName();
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-            hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-        }
-        return hciName;
+        return appGrpPremisesDto.getHciName();
     }
 
     private AppSvcLaboratoryDisciplinesDto getDisciplinesDto(List<AppSvcLaboratoryDisciplinesDto> disciplinesDto,String hciName){

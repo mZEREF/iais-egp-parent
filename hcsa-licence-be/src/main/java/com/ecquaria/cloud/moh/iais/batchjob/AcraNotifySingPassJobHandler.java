@@ -6,7 +6,7 @@ import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -18,11 +18,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -66,6 +66,9 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
 
     @Autowired
     ApplicationClient applicationClient;
+
+    @Autowired
+    AppCommService appCommService;
 
     @Autowired
     HcsaConfigClient hcsaConfigClient;
@@ -142,13 +145,11 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
         List<ApplicationDto> applicationList = applicationClient.getAppDtosByAppGrpId(applicationGroup.getId()).getEntity();
         if (IaisCommonUtils.isNotEmpty(applicationList)){
             for (ApplicationDto app : applicationList){
-                AppGrpPremisesEntityDto appGrpPremisesEntity = applicationClient.getPremisesByAppNo(app.getApplicationNo()).getEntity();
-                if (Optional.ofNullable(appGrpPremisesEntity).isPresent()){
+                AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(app.getApplicationNo());
+                if (Optional.ofNullable(appGrpPremisesDto).isPresent()){
                     Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                    templateContent.put("HCI_Name", appGrpPremisesEntity.getHciName());
-                    String address = MiscUtil.getAddressForApp(appGrpPremisesEntity.getBlkNo(),appGrpPremisesEntity.getStreetName(),
-                            appGrpPremisesEntity.getBuildingName(),appGrpPremisesEntity.getFloorNo(),appGrpPremisesEntity.getUnitNo(),appGrpPremisesEntity.getPostalCode()
-                            ,appGrpPremisesEntity.getAppPremisesOperationalUnitDtos());
+                    templateContent.put("HCI_Name", appGrpPremisesDto.getHciName());
+                    String address = IaisCommonUtils.getAddress(appGrpPremisesDto);
                     templateContent.put("HCI_Address", address);
                     log.info(StringUtil.changeForLog("HCI_Address = " + address));
                     templateContent.put("UEN_No", uen);

@@ -383,17 +383,6 @@ public class RequestForChangeDelegator {
     public void prepareFirstView(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if(appGrpPremisesDtoList!=null){
-            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                if(appPremPhOpenPeriodList!=null){
-                    for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                        appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
-                    }
-                }
-            }
-        }
         // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
         // set doc info
@@ -965,7 +954,6 @@ public class RequestForChangeDelegator {
 
                 // set premises
                 for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    ApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
                     appGrpPremisesDto.setExistingData(AppConsts.NO);
                 }

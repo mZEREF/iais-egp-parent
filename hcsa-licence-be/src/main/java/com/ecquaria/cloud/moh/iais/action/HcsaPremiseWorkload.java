@@ -55,8 +55,8 @@ public class HcsaPremiseWorkload {
      */
     public void preLoad(BaseProcessClass bpc){
         List<SelectOption> primiseSelection = IaisCommonUtils.genNewArrayList();
-        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));
-        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_OFF_SITE,ApplicationConsts.PREMISES_TYPE_OFF_SITE_SHOW));
+//        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));
+//        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_OFF_SITE,ApplicationConsts.PREMISES_TYPE_OFF_SITE_SHOW));
         primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
         primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
         ParamUtil.setRequestAttr(bpc.request,"primiseType",primiseSelection);
@@ -86,12 +86,12 @@ public class HcsaPremiseWorkload {
     private String getType(String type){
         String res = "";
         switch (type){
-            case ApplicationConsts.PREMISES_TYPE_ON_SITE:
+            /*case ApplicationConsts.PREMISES_TYPE_ON_SITE:
                 res = ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW;
                 break;
             case ApplicationConsts.PREMISES_TYPE_OFF_SITE:
                 res = "Offsite";
-                break;
+                break;*/
             case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
                 res = "Conveyance";
                 break;

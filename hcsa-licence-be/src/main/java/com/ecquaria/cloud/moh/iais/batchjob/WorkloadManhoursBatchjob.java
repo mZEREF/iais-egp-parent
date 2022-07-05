@@ -58,12 +58,12 @@ public class WorkloadManhoursBatchjob {
                 case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
                     conveyance ++;
                     break;
-                case ApplicationConsts.PREMISES_TYPE_ON_SITE:
+                /*case ApplicationConsts.PREMISES_TYPE_ON_SITE:
                     onsite ++;
                     break;
                 case ApplicationConsts.PREMISES_TYPE_OFF_SITE:
                     offsite ++;
-                    break;
+                    break;*/
                 default:
                         break;
             }

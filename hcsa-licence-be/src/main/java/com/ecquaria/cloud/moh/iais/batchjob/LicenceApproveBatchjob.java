@@ -11,11 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -43,9 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorre
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
@@ -92,6 +86,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -101,13 +103,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -882,12 +877,12 @@ public class LicenceApproveBatchjob {
                     String appType = applicationDto.getApplicationType();
                     log.debug(StringUtil.changeForLog("The appType is -->:" + appType));
                     //create Premises
-                    List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
-                    if (appGrpPremisesEntityDtos == null || appGrpPremisesEntityDtos.size() == 0) {
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = applicationListDto.getAppGrpPremisesDtos();
+                    if (appGrpPremisesDtos == null || appGrpPremisesDtos.size() == 0) {
                         errorMessage = "The AppGrpPremises is null for ApplicationNo" + applicationDto.getApplicationNo();
                         break;
                     }
-                    log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;" + appGrpPremisesEntityDtos.size()));
+                    log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;" + appGrpPremisesDtos.size()));
                     //create lic_premises
                     List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
                     //create LicPremisesScopeDto
@@ -896,7 +891,7 @@ public class LicenceApproveBatchjob {
                     List<AppGrpPersonnelDto> appGrpPersonnelDtosE = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtosE = applicationListDto.getAppSvcKeyPersonnelDtos();
 
-                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
+                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
                     if (!IaisCommonUtils.isEmpty(premisesGroupDtos1)) {
                         premisesGroupDtos.addAll(premisesGroupDtos1);
@@ -1063,7 +1058,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 //create Premises
-                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
+                List<AppGrpPremisesDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesDtos();
                 if (appGrpPremisesEntityDtos == null || appGrpPremisesEntityDtos.size() == 0) {
                     errorMessage = "The AppGrpPremises is null for ApplicationNo" + applicationDto.getApplicationNo();
                     break;
@@ -1229,17 +1224,17 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private String getHciCodeFromSameApplicaitonGroup(ApplicationLicenceDto applicationLicenceDto, AppGrpPremisesEntityDto appGrpPremisesEntityDto) {
+    private String getHciCodeFromSameApplicaitonGroup(ApplicationLicenceDto applicationLicenceDto, AppGrpPremisesDto appGrpPremisesDto) {
         log.info(StringUtil.changeForLog("The getHciCodeFromSameApplicaitonGroup start ..."));
         String hciCode = null;
-        if (applicationLicenceDto != null && appGrpPremisesEntityDto != null) {
+        if (applicationLicenceDto != null && appGrpPremisesDto != null) {
             List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
             if (!IaisCommonUtils.isEmpty(applicationListDtoList)) {
                 for (ApplicationListDto applicationListDto : applicationListDtoList) {
-                    List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
+                    List<AppGrpPremisesDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesDtos();
                     if (!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
-                        for (AppGrpPremisesEntityDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos) {
-                            if (appGrpPremisesEntityDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
+                        for (AppGrpPremisesDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos) {
+                            if (appGrpPremisesDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
                                     !StringUtil.isEmpty(appGrpPremisesEntityDto1.getHciCode())) {
                                 hciCode = appGrpPremisesEntityDto1.getHciCode();
                                 break;
@@ -1277,7 +1272,7 @@ public class LicenceApproveBatchjob {
 
     private List<PremisesGroupDto> getPremisesGroupDto(ApplicationListDto applicationListDto,
                                                        ApplicationLicenceDto applicationLicenceDto,
-                                                       List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
+                                                       List<AppGrpPremisesDto> appGrpPremisesDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
                                                        List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,
                                                        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
@@ -1288,28 +1283,28 @@ public class LicenceApproveBatchjob {
                                                        Integer isPostInspNeeded) {
         log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto start ..."));
         List<PremisesGroupDto> reuslt = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             return reuslt;
         }
-        for (AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremisesEntityDtos) {
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
             boolean isNewHciCode = false;
             //premises
-            String premisesId = appGrpPremisesEntityDto.getId();
+            String premisesId = appGrpPremisesDto.getId();
             AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
             if(appPremisesCorrelationDto != null) {
                 String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 if (!StringUtil.isEmpty(licHciCode)) {
-                    appGrpPremisesEntityDto.setHciCode(licHciCode);
+                    appGrpPremisesDto.setHciCode(licHciCode);
                 }
             }
-            String hciCode = appGrpPremisesEntityDto.getHciCode();
+            String hciCode = appGrpPremisesDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
             if (StringUtil.isEmpty(hciCode)) {
-                hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesEntityDto);
+                hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesDto);
                 if (StringUtil.isEmpty(hciCode)) {
-                    PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesEntityDto);
+                    PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesDto);
                     if(hciCodePremisesDto != null){
                         hciCode = hciCodePremisesDto.getHciCode();
                     }else {
@@ -1321,15 +1316,15 @@ public class LicenceApproveBatchjob {
                 }
                 log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
                 isNewHciCode = true;
-                appGrpPremisesEntityDto.setHciCode(hciCode);
+                appGrpPremisesDto.setHciCode(hciCode);
             }
-            PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesEntityDto, PremisesDto.class);
+            PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesDto, PremisesDto.class);
             premisesDto.setHciCode(hciCode);
             premisesDto.setNewHciCode(isNewHciCode);
             premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesEntityDto.getAppPremPhOpenPeriodDtoList();
+            /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodDtoList();
             List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
                 log.info(StringUtil.changeForLog("The licence Generate appPremPhOpenPeriodDtos.size() is -->:"+appPremPhOpenPeriodDtos.size()));
@@ -1339,8 +1334,8 @@ public class LicenceApproveBatchjob {
                     licPremPhOpenPeriodDto.setPremId(null);
                     licPremPhOpenPeriodDtos.add(licPremPhOpenPeriodDto);
                 }
-            }
-            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos();
+            }*/
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             List<PremisesOperationalUnitDto> premisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
                 log.info(StringUtil.changeForLog("The licence Generate appPremisesOperationalUnitDtos.size() is -->:"+appPremisesOperationalUnitDtos.size()));
@@ -1351,8 +1346,8 @@ public class LicenceApproveBatchjob {
                     premisesOperationalUnitDtos.add(premisesOperationalUnitDto);
                 }
             }
-            //weekly
-            List<AppPremOpenPeriodDto> appWeeklyDtos = appGrpPremisesEntityDto.getWeeklyDtos();
+            /*//weekly
+            List<AppPremOpenPeriodDto> appWeeklyDtos = appGrpPremisesDto.getWeeklyDtos();
             List<LicPremOpenPeriodDto> licWeeklyDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appWeeklyDtos)){
                 log.info(StringUtil.changeForLog("The licence Generate appWeeklyDtos.size() is -->:"+appWeeklyDtos.size()));
@@ -1365,7 +1360,7 @@ public class LicenceApproveBatchjob {
             }
 
             //event
-            List<AppPremEventPeriodDto> appEventDtos = appGrpPremisesEntityDto.getEventDtos();
+            List<AppPremEventPeriodDto> appEventDtos = appGrpPremisesDto.getEventDtos();
             List<LicPremEventPeriodDto> licEventDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appEventDtos)){
                 log.info(StringUtil.changeForLog("The licence Generate appEventDtos.size() is -->:"+appEventDtos.size()));
@@ -1377,10 +1372,10 @@ public class LicenceApproveBatchjob {
                 }
             }
 
-            premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);
-            premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
             premisesDto.setWeeklyDtos(licWeeklyDtos);
             premisesDto.setEventDtos(licEventDtos);
+            premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);*/
+            premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
             //String premisesId = appGrpPremisesEntityDto.getId();

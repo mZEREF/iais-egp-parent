@@ -409,7 +409,7 @@ function fileChanged(event) {
 
 function getJqueryNode(elem) {
     if (isEmpty(elem)) {
-        return;
+        return null;
     }
     var $target = $(elem);
     if ($target.length == 0 && Object.prototype.toString.call(elem) === "[object String]") {
@@ -433,6 +433,22 @@ function updateSelectTag($sel) {
     } else {
         $sel.niceSelect("update");
     }
+}
+
+function showTag(ele) {
+    var $ele = getJqueryNode(ele);
+    if (isEmpty(ele)) {
+        return;
+    }
+    $ele.show();
+    $ele.removeClass('hidden');
+}
+
+function hideTag(ele) {
+    var $ele = getJqueryNode(ele);
+    $ele.hide();
+    $ele.addClass('hidden');
+    clearFields($ele);
 }
 
 function toggleOnSelect(sel, val, elem) {
@@ -568,6 +584,20 @@ function isEmpty(str) {
     return typeof str === 'undefined' || str == null || str == '' || str == 'undefined';
 }
 
+function capitalize(str){
+    if (isEmpty(str) || Object.prototype.toString.call(elem) !== "[object String]") {
+        return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function uncapitalize(str){
+    if (isEmpty(str) || Object.prototype.toString.call(elem) !== "[object String]") {
+        return str;
+    }
+    return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
 function clearFields(targetSelector) {
     var $selector = getJqueryNode(targetSelector);
     if (isEmpty($selector)) {
@@ -597,6 +627,39 @@ function clearFields(targetSelector) {
             }
         }
     });
+}
+
+function fillForm(ele, data, prefix, suffix) {
+    var $selector = getJqueryNode(ele);
+    if (isEmpty($selector)) {
+        return;
+    }
+    if (isEmpty(data)) {
+        clearFields($selector);
+        return;
+    }
+    if (isEmpty(prefix)) {
+        prefix = "";
+    }
+    if (isEmpty(suffix)) {
+        suffix = "";
+    }
+    for (var i in data) {
+        var val = data[i];
+        if (Object.prototype.toString.call(val) === "[object Object]") {
+            fillValue(ele, val, prefix, suffix);
+        }
+        var name = prefix + i + suffix;
+        var $input = $selector.find('[name="' + name + '"]');
+        if ($input.length == 0) {
+            name = prefix + capitalize(i) + suffix;
+            $input = $selector.find('[name="' + name + '"]');
+        }
+        if ($input.length == 0) {
+            continue;
+        }
+        fillValue($input, data[i], true);
+    }
 }
 
 function fillValue(targetSelector, data, includeHidden){
@@ -745,37 +808,46 @@ function refreshIndex(targetSelector) {
             return;
         }
         $selector.each(function () {
-            if ($(this).hasClass('not-refresh')) {
-                return;
-            }
-            var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
-            var orgName = $input.attr('name');
-            var orgId = $input.attr('id');
-            if (isEmpty(orgName)) {
-                orgName = orgId;
-            }
-            if (isEmpty(orgName)) {
-                return;
-            }
-            var result = /(.*\D+)/g.exec(orgName);
-            var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            var newName = name + k;
-            $input.prop('name', newName);
-            if (orgName == orgId || name == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
-                $input.prop('id', newName);
-            }
-            var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
-            if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + newName);
-            }
-            if (tag == 'select') {
-                updateSelectTag($input);
-            }
+            resetIndex(this, k);
         });
     });
 }
 
-function callCommonAjax(options, callback) {
+function resetIndex(targetTag, index) {
+    var $target = getJqueryNode(targetTag);
+    if (isEmpty($target) || $target.hasClass('not-refresh')) {
+        return;
+    }
+    var tag = $target[0].tagName.toLowerCase();
+    if ($target.is(':input')) {
+        var orgName = $target.attr('name');
+        var orgId = $target.attr('id');
+        if (isEmpty(orgName)) {
+            orgName = orgId;
+        }
+        if (isEmpty(orgName)) {
+            return;
+        }
+        var result = /(.*\D+)/g.exec(orgName);
+        var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+        var newName = name + index;
+        $target.prop('name', newName);
+        if (orgName == orgId || name == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+            $target.prop('id', newName);
+        }
+        var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+        if ($errorSpan.length > 0) {
+            $errorSpan.prop('id', 'error_' + newName);
+        }
+        if (tag == 'select') {
+            updateSelectTag($target);
+        }
+    } else {
+        //
+    }
+}
+
+function callCommonAjax(options, callback, others) {
     if (isEmpty(options)) {
         options = {};
     }
@@ -804,9 +876,9 @@ function callCommonAjax(options, callback) {
         type: type,
         success: function (data) {
             if (typeof callback === 'function') {
-                callback(data);
+                callback(data, others);
             } else if (!isEmpty(callback)) {
-                callFunc(callback, data);
+                callFunc(callback, data, others);
             }
             dismissWaiting();
         },
@@ -832,3 +904,5 @@ function getContextPath() {
     var result = pathName.substr(0,index+1);
     return result;
 }
+
+

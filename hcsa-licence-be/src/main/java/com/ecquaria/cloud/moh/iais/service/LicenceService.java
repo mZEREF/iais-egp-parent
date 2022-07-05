@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -62,7 +61,7 @@ public interface LicenceService {
 
     List<LicAppCorrelationDto> getLicAppCorrelationDtosByApplicationIds(List<String> appIds);
 
-    PremisesDto getHciCode(AppGrpPremisesEntityDto appGrpPremisesEntityDto);
+    PremisesDto getHciCode(AppGrpPremisesDto appGrpPremisesDto);
 
     void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, String licenceNo, List<String> svcCodeList);
 

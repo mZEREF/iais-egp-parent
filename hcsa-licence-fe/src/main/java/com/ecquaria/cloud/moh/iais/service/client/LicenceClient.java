@@ -73,7 +73,7 @@ public interface LicenceClient {
 
     @GetMapping(path = "/hcsa-licence/latest-app-licence-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getLatestAppPremisesByConds(@PathVariable(value = "licenseeId") String licenseeId,
-                                                                             @RequestParam(value = "svcNames", required = false) List<String> svcNames, @RequestParam(value = "loadAll") boolean loadAll);
+                                                                             @RequestParam(value = "svcNames", required = false) List<String> svcNames);
 
     @GetMapping(path = "/hcsa-licence/latest-licence-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getLatestPremisesByConds(@PathVariable(value = "licenseeId") String licenseeId,

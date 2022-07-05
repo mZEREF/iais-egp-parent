@@ -209,7 +209,6 @@ public class LicCommServiceImpl implements LicCommService {
         }
         return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
                 .map(appGrpPremisesDto -> {
-                    ApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
                     appGrpPremisesDto.setFromDB(true);
                     return appGrpPremisesDto;

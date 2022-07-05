@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -122,8 +121,6 @@ public interface ApplicationFeClient {
 
     @PostMapping(path = "/iais-submission/save-RFC-renew-requestInformation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveRFCOrRenewRequestInformation(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
-    @GetMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}")
-    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/iais-application/application-premises-by-corr-id/{corrId}")
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesByCorrId(@PathVariable("corrId") String corrId);
@@ -157,12 +154,6 @@ public interface ApplicationFeClient {
 
     @GetMapping(value = "/iais-application/application/premises-scope/{correId}")
     FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(@PathVariable(name = "correId") String correId);
-
-    @GetMapping(value = "/iais-application/application/grp-premises/{appPreId}")
-    FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
-
-    @RequestMapping(path = "/iais-submission/appSubmissionDto/v2",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
-    FeignResponseEntity<AppSubmissionDto>  gainSubmissionDto(@RequestParam("appNo") String appNo);
 
     @GetMapping(path = "/iais-inspection-fe/itemids/{appPremCorrId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})

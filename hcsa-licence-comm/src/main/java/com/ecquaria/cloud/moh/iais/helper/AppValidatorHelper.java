@@ -9,11 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -200,10 +200,10 @@ public final class AppValidatorHelper {
         } else {
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
         }
-        if (errorList.contains(HcsaAppConst.SECTION_DOCUMENT)) {
-            coMap.put(HcsaAppConst.SECTION_DOCUMENT, "");
+        if (errorList.contains(HcsaAppConst.SECTION_SPECIALISED)) {
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
         } else {
-            coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_DOCUMENT);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
         }
         if (errorList.contains(HcsaAppConst.SECTION_SVCINFO)) {
             coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
@@ -244,7 +244,7 @@ public final class AppValidatorHelper {
             errorList.add(HcsaAppConst.SECTION_LICENSEE);
         }
         // premises
-        Map<String, String> premissMap = doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
+        Map<String, String> premissMap = doValidatePremises(appSubmissionDto, oldAppSubmissionDto,
                 premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
@@ -266,14 +266,7 @@ public final class AppValidatorHelper {
                 }
             }
         }
-        // primary document
-        Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
-        documentValid(appSubmissionDto, documentMap, false);
-        doCommomDocument(appSubmissionDto, documentMap, isRfi);
-        if (!documentMap.isEmpty()) {
-            errorMap.putAll(documentMap);
-            errorList.add(HcsaAppConst.SECTION_DOCUMENT);
-        }
+
         setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
                 appSubmissionDto.getLicenceNo());
         log.info(StringUtil.changeForLog("Error Message for App Submission Validation: " + errorMap));
@@ -636,7 +629,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+    public static Map<String, String> doValidatePremises(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             List<String> premisesHciList, boolean rfi, boolean checkOthers) {
         //do validate one premiss
         List<String> list = IaisCommonUtils.genNewArrayList();
@@ -682,7 +675,7 @@ public final class AppValidatorHelper {
                     String prefix = "";
                     String hciName = null;
                     String hciNameKey = "";
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
+                    /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         prefix = "onSite";
                         String locateWithOthers = appGrpPremisesDto.getLocateWithOthers();
                         if (StringUtil.isEmpty(locateWithOthers)) {
@@ -725,7 +718,7 @@ public final class AppValidatorHelper {
                                 errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
                             }
                         }
-                    }
+                    }*/
                     if (!StringUtil.isEmpty(prefix)) {
                         //weekly
                         validateWeek(appGrpPremisesDto, i, prefix, errorMap);
@@ -755,7 +748,7 @@ public final class AppValidatorHelper {
                 } else {
                     //premiseSelect = organization hci code
                     if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
+                        String conveyanceVehicleNo = appGrpPremisesDto.getVehicleNo();
                         validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
                     }
 
@@ -770,16 +763,16 @@ public final class AppValidatorHelper {
             }
             if (checkOthers) {
                 List<PremisesDto> premisesDtos =
-                        getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getActualHciName(),
+                        getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
                                 appGrpPremisesDto.getPremisesType(), licenseeId);
                 if (!IaisCommonUtils.isEmpty(premisesDtos)) {
-                    // The business name you have keyed in is currently in used.
+                    // NEW_ACK011 - The business name you have keyed in is currently in used.
                     errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                 }
                 String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
                 if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
                         dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, ApplicationHelper.getPremisesKey(dto)))) {
-                    // This is a repeated entry
+                    // NEW_ERR0012 - This is a repeated entry
                     errorMap.put("premisesHci" + i, "NEW_ERR0012");
                 } else {
                     HttpServletRequest request = MiscUtil.getCurrentRequest();
@@ -807,6 +800,7 @@ public final class AppValidatorHelper {
         }
         if (checkOthers) {
             //65116
+            // NEW_ACK004 - Records indicate another licensed entity is using this address. Do note co-location requirements may apply.
             String hciNameUsed = errorMap.get("hciNameUsed");
             String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
             if (needAppendMsg) {
@@ -866,6 +860,43 @@ public final class AppValidatorHelper {
         }
     }
 
+    private static void validateCoLocation(Map<String, String> errorMap, int index, String locateWtihHcsa, String locateWtihNonHcsa,
+            List<AppPremNonLicRelationDto> appPremNonLicRelationDtos) {
+        if (StringUtil.isEmpty(locateWtihHcsa)) {
+            errorMap.put("locateWtihNonHcsa" + index, "GENERAL_ERR0006");
+        }
+        if (StringUtil.isEmpty(locateWtihNonHcsa)) {
+            errorMap.put("locateWtihNonHcsa" + index, "GENERAL_ERR0006");
+        } else if (AppConsts.YES.equals(locateWtihNonHcsa)) {
+            if (IaisCommonUtils.isEmpty(appPremNonLicRelationDtos)) {
+                errorMap.put(index + "coBusinessName0", "GENERAL_ERR0006");
+                errorMap.put(index + "locateWtihNonHcsa0", "GENERAL_ERR0006");
+            } else {
+                int i = 0;
+                for (AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos) {
+                    String coBusinessName = appPremNonLicRelationDtos.get(i).getBusninessName();
+                    String coSvcName = appPremNonLicRelationDtos.get(i).getProvidedService();
+                    if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                        continue;
+                    }
+                    if (StringUtil.isEmpty(coBusinessName)) {
+                        errorMap.put(index + "coBusinessName" + i, "GENERAL_ERR0006");
+                    } else if (coBusinessName.length() > 100){
+                        errorMap.put(index + "coBusinessName" + i, repLength("Business Name", "100"));
+                    }
+                    if (StringUtil.isEmpty(coSvcName)) {
+                        errorMap.put(index + "coSvcName" + i, "GENERAL_ERR0006");
+                    } else if (coSvcName.length() > 100){
+                        errorMap.put(index + "coSvcName" + i, repLength("Services Provided", "100"));
+                    }
+                    i++;
+                }
+
+            }
+        }
+
+    }
+
     private static void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount,
             String conveyanceVehicleNo) {
         if (StringUtil.isEmpty(conveyanceVehicleNo)) {
@@ -902,9 +933,9 @@ public final class AppValidatorHelper {
         String premisesType = appGrpPremisesDto.getPremisesType();
         String blkNoKey = "";
         String easMtsUseOnly = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
+        if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premisesType)) {
             blkNoKey = "blkNo" + i;
-            String offTelNo = appGrpPremisesDto.getOffTelNo();
+            /*String offTelNo = appGrpPremisesDto.getOffTelNo();
             String offTelNoKey = ApplicationHelper.getParamName(prefix, "offTelNo" + i);
             if (StringUtil.isEmpty(offTelNo)) {
                 errorMap.put(offTelNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
@@ -917,32 +948,12 @@ public final class AppValidatorHelper {
                 if (!matches) {
                     errorMap.put(offTelNoKey, "GENERAL_ERR0015");
                 }
-            }
+            }*/
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
             prefix = "conveyance";
-            postalCode = appGrpPremisesDto.getConveyancePostalCode();
-            buildingName = appGrpPremisesDto.getConveyanceBuildingName();
-            streetName = appGrpPremisesDto.getConveyanceStreetName();
-            email = appGrpPremisesDto.getConveyanceEmail();
-            addrType = appGrpPremisesDto.getConveyanceAddressType();
-            blkNo = appGrpPremisesDto.getConveyanceBlockNo();
             blkNoKey = "conveyanceBlockNos" + i;
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-            prefix = "offSite";
-            postalCode = appGrpPremisesDto.getOffSitePostalCode();
-            buildingName = appGrpPremisesDto.getOffSiteBuildingName();
-            streetName = appGrpPremisesDto.getOffSiteStreetName();
-            email = appGrpPremisesDto.getOffSiteEmail();
-            addrType = appGrpPremisesDto.getOffSiteAddressType();
-            blkNo = appGrpPremisesDto.getOffSiteBlockNo();
-            blkNoKey = "offSiteBlockNo" + i;
         } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
             prefix = "easMts";
-            postalCode = appGrpPremisesDto.getEasMtsPostalCode();
-            buildingName = appGrpPremisesDto.getEasMtsBuildingName();
-            streetName = appGrpPremisesDto.getEasMtsStreetName();
-            addrType = appGrpPremisesDto.getEasMtsAddressType();
-            blkNo = appGrpPremisesDto.getEasMtsBlockNo();
             easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
             email = appGrpPremisesDto.getEasMtsPubEmail();
             String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
@@ -954,6 +965,16 @@ public final class AppValidatorHelper {
                 }
             } else if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
                 errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+            }
+            if (StringUtil.isEmpty(email)) {
+                if (!"UOT002".equals(easMtsUseOnly)) {
+                    errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Email ", "field"));
+                }
+            } else if (email.length() > 320) {
+                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), repLength("Email", "320"));
+            } else if (!ValidationUtils.isEmail(email)) {
+                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
         }
 
@@ -968,17 +989,6 @@ public final class AppValidatorHelper {
         } else if (streetName.length() > 32) {
             String general_err0041 = repLength("Street Name", "32");
             errorMap.put(ApplicationHelper.getParamName(prefix, "streetName" + i), general_err0041);
-        }
-
-        if (StringUtil.isEmpty(email)) {
-            if (!"UOT002".equals(easMtsUseOnly)) {
-                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Email ", "field"));
-            }
-        } else if (email.length() > 320) {
-            errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), repLength("Email", "320"));
-        } else if (!ValidationUtils.isEmail(email)) {
-            errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.getMessageDesc("GENERAL_ERR0014"));
         }
 
         if (StringUtil.isEmpty(addrType)) {
@@ -1039,38 +1049,11 @@ public final class AppValidatorHelper {
         String premisesType = appGrpPremisesDto.getPremisesType();
         String diff = "";
         String prefix = "";
-        String floorNo = null;
-        String blkNo = null;
-        String unitNo = null;
-        String addrType = null;
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-            floorNo = appGrpPremisesDto.getFloorNo();
-            unitNo = appGrpPremisesDto.getUnitNo();
-            blkNo = appGrpPremisesDto.getBlkNo();
-            addrType = appGrpPremisesDto.getAddrType();
-            appGrpPremisesDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo));
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-            prefix = "conveyance";
-            diff = "Conv";
-            floorNo = appGrpPremisesDto.getConveyanceFloorNo();
-            unitNo = appGrpPremisesDto.getConveyanceUnitNo();
-            blkNo = appGrpPremisesDto.getConveyanceBlockNo();
-            addrType = appGrpPremisesDto.getConveyanceAddressType();
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-            prefix = "offSite";
-            diff = "Off";
-            floorNo = appGrpPremisesDto.getOffSiteFloorNo();
-            unitNo = appGrpPremisesDto.getOffSiteUnitNo();
-            blkNo = appGrpPremisesDto.getOffSiteBlockNo();
-            addrType = appGrpPremisesDto.getOffSiteAddressType();
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
-            prefix = "easMts";
-            diff = "EasMts";
-            floorNo = appGrpPremisesDto.getEasMtsFloorNo();
-            unitNo = appGrpPremisesDto.getEasMtsUnitNo();
-            blkNo = appGrpPremisesDto.getEasMtsBlockNo();
-            addrType = appGrpPremisesDto.getEasMtsAddressType();
-        }
+        String floorNo = appGrpPremisesDto.getFloorNo();
+        String unitNo = appGrpPremisesDto.getUnitNo();
+        String blkNo = appGrpPremisesDto.getBlkNo();
+        String addrType = appGrpPremisesDto.getAddrType();
+        appGrpPremisesDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo));
         String floorNoKey = ApplicationHelper.getParamName(prefix, "floorNo" + i);
         String blkNoKey = ApplicationHelper.getParamName(prefix, "blkNo" + i);
         String unitNoKey = ApplicationHelper.getParamName(prefix, "unitNo" + i);
@@ -1161,38 +1144,9 @@ public final class AppValidatorHelper {
                         } else {
                             floorUnitList.add(floorUnitStr);
                         }
-                        String premisesType = appGrpPremisesDto.getPremisesType();
-                        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                            String blkNo = appGrpPremisesDto.getBlkNo();
-                            if (!StringUtil.isEmpty(blkNo)) {
-                                floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
-                            }
-                        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-                            String offSiteAddressType = appGrpPremisesDto.getOffSiteAddressType();
-                            if (!StringUtil.isEmpty(offSiteAddressType)) {
-                                String blkNo = appGrpPremisesDto.getOffSiteBlockNo();
-                                if (!StringUtil.isEmpty(blkNo)) {
-                                    floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
-                                }
-                            }
-
-                        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-                            String conveyanceAddressType = appGrpPremisesDto.getConveyanceAddressType();
-                            if (!StringUtil.isEmpty(conveyanceAddressType)) {
-                                String blkNo = appGrpPremisesDto.getConveyanceBlockNo();
-                                if (!StringUtil.isEmpty(blkNo)) {
-                                    floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
-                                }
-                            }
-
-                        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
-                            String easMtsAddressType = appGrpPremisesDto.getEasMtsAddressType();
-                            if (!StringUtil.isEmpty(easMtsAddressType)) {
-                                String blkNo = appGrpPremisesDto.getEasMtsBlockNo();
-                                if (!StringUtil.isEmpty(blkNo)) {
-                                    floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
-                                }
-                            }
+                        String blkNo = appGrpPremisesDto.getBlkNo();
+                        if (!StringUtil.isEmpty(blkNo)) {
+                            floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
                         }
 
                     }
@@ -1205,7 +1159,7 @@ public final class AppValidatorHelper {
 
     //event
     private static void validateEvent(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+        /*List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (!IaisCommonUtils.isEmpty(eventDtos)) {
             int j = 0;
@@ -1236,12 +1190,12 @@ public final class AppValidatorHelper {
                 }
                 j++;
             }
-        }
+        }*/
     }
 
     //ph
     private static void validatePh(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+        /*List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
         if (!IaisCommonUtils.isEmpty(phDtos)) {
             int j = 0;
             for (OperationHoursReloadDto phDto : phDtos) {
@@ -1254,12 +1208,12 @@ public final class AppValidatorHelper {
                 j++;
             }
             appGrpPremisesDto.setPhDtoList(phDtos);
-        }
+        }*/
     }
 
     //weekly
     private static void validateWeek(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+        /*List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (IaisCommonUtils.isEmpty(weeklyDtos)) {
             errorMap.put(prefix + "Weekly" + i + 0, emptyErrMsg);
@@ -1277,12 +1231,12 @@ public final class AppValidatorHelper {
                 j++;
             }
             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
-        }
+        }*/
     }
 
     private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto, Map<String, String> errorMap,
             Map<String, String> errNameMap, String count, boolean isMandatory) {
-        boolean isEmpty = false;
+        /*boolean isEmpty = false;
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
         String selectVal = operationHoursReloadDto.getSelectVal();
@@ -1333,7 +1287,7 @@ public final class AppValidatorHelper {
                 }
 
             }
-        }
+        }*/
     }
 
     public static boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto,
@@ -2021,7 +1975,7 @@ public final class AppValidatorHelper {
     }
 
     public static void validatePH(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if (appGrpPremisesDtoList != null) {
             for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                 String premisesType = appGrpPremisesDtoList.get(i).getPremisesType();
@@ -2040,7 +1994,7 @@ public final class AppValidatorHelper {
                 validate(weeklyDtoList, errorMap, i, s + "Weekly");
                 validateEvent(eventDtoList, errorMap, i, s + "Event");
             }
-        }
+        }*/
     }
 
     public static void validate(List<OperationHoursReloadDto> list, Map<String, String> errorMap, int index, String errorId) {
@@ -2324,8 +2278,8 @@ public final class AppValidatorHelper {
         if (errorList.contains(HcsaAppConst.SECTION_PREMISES)) {
             msg.append(HcsaAppConst.TITLE_MODE_OF_SVCDLVY).append(", ");
         }
-        if (errorList.contains(HcsaAppConst.SECTION_DOCUMENT)) {
-            msg.append(HcsaAppConst.TITLE_DOCUMENT).append(", ");
+        if (errorList.contains(HcsaAppConst.SECTION_SPECIALISED)) {
+            msg.append(HcsaAppConst.TITLE_SPECIALISED).append(", ");
         }
         if (errorList.contains(HcsaAppConst.SECTION_SVCINFO)) {
             msg.append(HcsaAppConst.TITLE_SVCINFO);

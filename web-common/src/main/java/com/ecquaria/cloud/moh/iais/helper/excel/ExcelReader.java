@@ -65,21 +65,38 @@ public final class ExcelReader {
 
         int startCellIndex = property.startRowIndex();
         int sheetAt = property.sheetAt();
-        Sheet sheet = parseFile(file, sheetAt);
 
-        if (sheet == null){
-            throw new IaisRuntimeException("excel sheet name error");
+        List<List<String>> result = readerToList(file, startCellIndex, sheetAt, property.sheetName());
+        if (result == null) {
+            return IaisCommonUtils.genNewArrayList();
         }
-
-        String sheetName = sheet.getSheetName();
-        if (!property.sheetName().equals(sheetName)){
-            throw new IaisRuntimeException("excel sheet name error");
-        }
-
-
-        List<List<String>> result = sequentialParse(sheet, startCellIndex);
-
         return (List<T>) result.stream().map(x -> setField(clz, x, defaultValueNull)).collect(Collectors.toList());
+    }
+
+    public static List<List<String>> readerToList(final File file, final int startCellIndex, Integer sheetAt, String sheetName)
+            throws Exception {
+        if (file == null || !file.exists()) {
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
+        Workbook workBook = null;
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            workBook = new XSSFWorkbook(in);
+            Sheet sheet = null;
+            if (sheetAt != null) {
+                sheet = workBook.getSheetAt(sheetAt);
+            }
+            if (sheet == null) {
+                sheet = workBook.getSheet(sheetName);
+            }
+            if (sheet == null) {
+                return null;
+            }
+            return sequentialParse(sheet, startCellIndex);
+        } finally {
+            if (workBook != null) {
+                workBook.close();
+            }
+        }
     }
 
     public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {

@@ -295,28 +295,6 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     /**
-     * StartStep: PrepareDocuments
-     *
-     * @param bpc
-     * @throws
-     */
-    @Override
-    public void prepareDocuments(BaseProcessClass bpc) {
-        super.prepareDocuments(bpc);
-    }
-
-    /**
-     * StartStep: DoDocument
-     *
-     * @param bpc
-     * @throws
-     */
-    @Override
-    public void doDocument(BaseProcessClass bpc) throws IOException {
-        super.doDocument(bpc);
-    }
-
-    /**
      * StartStep: PrepareForms
      *
      * @param bpc

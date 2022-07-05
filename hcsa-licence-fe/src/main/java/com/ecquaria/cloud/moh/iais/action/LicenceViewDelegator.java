@@ -102,14 +102,6 @@ public class LicenceViewDelegator {
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                    for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
-                        ApplicationHelper.setWrkTime(appGrpPremisesDto);
-                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                        //set ph name
-                        ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
-                    }
-                }
                 if(appSvcRelatedInfoDto != null){
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSvcRelatedInfoDto.getServiceName());
                     if(hcsaServiceDto != null){

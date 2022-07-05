@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -40,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
@@ -88,6 +88,9 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     private ApplicationMainClient applicationMainClient;
 
     @Autowired
+    private HcsaAppClient hcsaAppClient;
+
+    @Autowired
     private OrganizationMainClient organizationClient;
 
     @Autowired
@@ -134,22 +137,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             appGrpPremisesDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
         }
         setAddressByGroupPremises(appGrpPremisesDto);
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
-            appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
-            appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
-            appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
-            appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
-            appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
-        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            appGrpPremisesDto.setOffSiteBlockNo(appGrpPremisesDto.getBlkNo());
-            appGrpPremisesDto.setOffSiteStreetName(appGrpPremisesDto.getStreetName());
-            appGrpPremisesDto.setOffSiteBuildingName(appGrpPremisesDto.getBuildingName());
-            appGrpPremisesDto.setOffSiteFloorNo(appGrpPremisesDto.getFloorNo());
-            appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
-            appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
-        }
-
         return appGrpPremisesDto;
     }
 
@@ -177,10 +164,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     @Override
     public String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         String result = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+        if (StringUtil.isNotEmpty(appGrpPremisesDto.getPremisesType())) {
             if(hcsaTaskAssignDto != null && hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap() != null) {
                 Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
                 result = appPremisesAllUnitNoStrMap.get(appGrpPremisesDto.getId());
@@ -189,7 +173,8 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                 if (IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
                     appPremisesOperationalUnitDtos = applicationMainClient.getUnitNoAndFloorByPremisesId(appGrpPremisesDto.getId()).getEntity();
                 }
-                result = MiscUtil.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                result = IaisCommonUtils.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(),
+                        appGrpPremisesDto.getBuildingName(),
                         appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode(), appPremisesOperationalUnitDtos);
             }
         }
@@ -618,7 +603,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
         for(ApplicationDto applicationDto : applicationDtos){
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationMainClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppGrpPremisesDto appGrpPremisesEntityDto = hcsaAppClient.getActivePremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());

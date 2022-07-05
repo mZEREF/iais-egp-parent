@@ -24,10 +24,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Slf4j
@@ -123,9 +124,8 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppGrpPremisesDto>> getLatestAppPremisesByConds(String licenseeId, List<String> svcNames,
-            boolean loadAll) {
-        return getFeignResponseEntity(licenseeId, svcNames, loadAll);
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getLatestAppPremisesByConds(String licenseeId, List<String> svcNames) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId, svcNames);
     }
 
     @Override

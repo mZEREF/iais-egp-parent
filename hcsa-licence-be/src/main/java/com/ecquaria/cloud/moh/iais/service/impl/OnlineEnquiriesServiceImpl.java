@@ -321,9 +321,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 appIds.add(appCorrelationDto.getApplicationId());
                 AppGrpPremisesDto appGrpPremisesDto= cessationClient.getAppGrpPremisesDtoByAppId(appCorrelationDto.getApplicationId()).getEntity();
                 switch (appGrpPremisesDto.getPremisesType()){
-                    case ApplicationConsts.PREMISES_TYPE_ON_SITE:complianceHistoryDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);break;
+//                    case ApplicationConsts.PREMISES_TYPE_ON_SITE:complianceHistoryDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);break;
                     case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:complianceHistoryDto.setInspectionTypeName("Conveyance Inspection");break;
-                    case ApplicationConsts.PREMISES_TYPE_OFF_SITE:complianceHistoryDto.setInspectionTypeName("Off-Site Inspection");break;
+//                    case ApplicationConsts.PREMISES_TYPE_OFF_SITE:complianceHistoryDto.setInspectionTypeName("Off-Site Inspection");break;
                     case ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE:complianceHistoryDto.setInspectionTypeName("Conveyance (in a mobile clinic / ambulance) Inspection");break;
                     default:complianceHistoryDto.setInspectionTypeName("-");
                 }
@@ -432,8 +432,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         for (PremisesDto appGrpPremise:licPremisesDto
         ) {
-            String adderss = MiscUtil.getAddressForApp(appGrpPremise.getUnitNo(), appGrpPremise.getStreetName()
-                    ,appGrpPremise.getBuildingName(),appGrpPremise.getFloorNo(),appGrpPremise.getUnitNo(),appGrpPremise.getPostalCode(),null);
+            String adderss = IaisCommonUtils.getAddress(appGrpPremise);
             if(adderss.equals(appInsRepDto.getHciAddress())){
                 inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
             }

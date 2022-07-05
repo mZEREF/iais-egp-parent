@@ -21,7 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -56,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -151,6 +152,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     private EmailHistoryCommonClient emailHistoryCommonClient;
 
+    @Autowired
+    private AppCommService appCommService;
 
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
@@ -533,7 +536,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationGroup.forEach(grp-> grp.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED));
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
         List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
-        List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
+        List<AppGrpPremisesDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         for(ApplicationDto applicationDto : application){
             String id = applicationDto.getId();
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelation){
@@ -544,7 +547,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
                     hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
                     hcsaRiskScoreDto.setGrpLic(applicationDto.isGrpLic());
-                    for(AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremises){
+                    for(AppGrpPremisesDto appGrpPremisesEntityDto : appGrpPremises){
                         if(appPremisesCorrelationDto.getAppGrpPremId().equalsIgnoreCase(appGrpPremisesEntityDto.getId())){
                             hcsaRiskScoreDto.setHcicode(appGrpPremisesEntityDto.getHciCode());
                             break;
@@ -693,13 +696,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("officer_name", orgUserDto.getDisplayName());
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
                             emailMap.put("ApplicationNumber", oldAppDto.getApplicationNo());
-                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(oldAppDto.getApplicationNo()).getEntity();
-                            emailMap.put("hci_name", premisesDto.getHciName());
+                            AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(oldAppDto.getApplicationNo());
+                            emailMap.put("hci_name", appGrpPremisesDto.getHciName());
                             emailMap.put("submission_date", Formatter.formatDate(k.getSubmitDt()));
                             emailMap.put("licensee_name", licenseeDto.getName());
-                            String address = MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName()
-                                    ,premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()
-                                    ,premisesDto.getAppPremisesOperationalUnitDtos());
+                            String address = IaisCommonUtils.getAddress(appGrpPremisesDto);
                             emailMap.put("address", address);
                             if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
                                 emailMap.put("already", "already");

@@ -347,10 +347,8 @@ public class RequestForChangeMenuDelegator {
             if (rfi == null) {
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList) && premisesListQueryDto != null) {
                     String premType = premisesListQueryDto.getPremisesType();
-                    String premHciOrConvName = "";
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)) {
-                        premHciOrConvName = premisesListQueryDto.getHciName();
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
+                    String premHciOrConvName = premisesListQueryDto.getHciName();
+                    if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
                         premHciOrConvName = premisesListQueryDto.getVehicleNo();
                     }
                     appGrpPremisesDto = getAppGrpPremisesDtoFromAppGrpPremisesDtoList(appGrpPremisesDtoList, premType, premHciOrConvName);
@@ -383,11 +381,11 @@ public class RequestForChangeMenuDelegator {
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
-                if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+                /*if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
                     for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
                         ApplicationHelper.setWrkTime(appGrpPremisesDto1);
                     }
-                }
+                }*/
             }
         }
         AppSubmissionDto oldAppSubmissionDto ;
@@ -537,7 +535,7 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
 
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, null,
+        Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, oldAppSubmissionDto, null,
                 isRfi, true);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
@@ -1756,64 +1754,35 @@ public class RequestForChangeMenuDelegator {
 
     private String getPremisesVal(AppGrpPremisesDto appGrpPremisesDto) {
         String premisesVal = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            premisesVal = appGrpPremisesDto.getVehicleNo();
+        } else {
             premisesVal = appGrpPremisesDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            premisesVal = appGrpPremisesDto.getConveyanceVehicleNo();
         }
         return premisesVal;
     }
-
-  /*  private String getPremisesVal(PremisesListQueryDto premisesListQueryDto) {
-        String premisesVal = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
-            premisesVal = premisesListQueryDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            premisesVal = premisesListQueryDto.getVehicleNo();
-        }
-        return premisesVal;
-    }*/
 
     private AppGrpPremisesDto genAppGrpPremisesDto(PremisesListQueryDto premisesListQueryDto, HttpServletRequest request) {
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         String premisesType = premisesListQueryDto.getPremisesType();
         appGrpPremisesDto.setPremisesType(premisesType);
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-            String postalCode = ParamUtil.getString(request, "postalCode");
-            String blkNo = ParamUtil.getString(request, "blkNo");
-            String streetName = ParamUtil.getString(request, "streetName");
-            String floorNo = ParamUtil.getString(request, "floorNo");
-            String unitNo = ParamUtil.getString(request, "unitNo");
-            String buildingName = ParamUtil.getString(request, "buildingName");
-            String siteAddressType = ParamUtil.getString(request, "siteAddressType");
-            String scdfRefNo = ParamUtil.getString(request, "scdfRefNo");
-            appGrpPremisesDto.setHciName(premisesListQueryDto.getHciName());
-            appGrpPremisesDto.setPostalCode(postalCode);
-            appGrpPremisesDto.setBlkNo(blkNo);
-            appGrpPremisesDto.setStreetName(streetName);
-            appGrpPremisesDto.setFloorNo(floorNo);
-            appGrpPremisesDto.setUnitNo(unitNo);
-            appGrpPremisesDto.setBuildingName(buildingName);
-            appGrpPremisesDto.setAddrType(siteAddressType);
-            appGrpPremisesDto.setScdfRefNo(scdfRefNo);
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-            String conPostalCode = ParamUtil.getString(request, "conveyancePostalCode");
-            String conBlkNo = ParamUtil.getString(request, "conveyanceBlockNo");
-            String conStreetName = ParamUtil.getString(request, "conveyanceStreetName");
-            String conFloorNo = ParamUtil.getString(request, "conveyanceFloorNo");
-            String conUnitNo = ParamUtil.getString(request, "conveyanceUnitNo");
-            String conBuildingName = ParamUtil.getString(request, "conveyanceBuildingName");
-            String conSiteAddressType = ParamUtil.getString(request, "conveyanceAddrType");
-            appGrpPremisesDto.setConveyanceVehicleNo(premisesListQueryDto.getVehicleNo());
-            appGrpPremisesDto.setConveyancePostalCode(conPostalCode);
-            appGrpPremisesDto.setConveyanceBlockNo(conBlkNo);
-            appGrpPremisesDto.setConveyanceStreetName(conStreetName);
-            appGrpPremisesDto.setConveyanceFloorNo(conFloorNo);
-            appGrpPremisesDto.setConveyanceUnitNo(conUnitNo);
-            appGrpPremisesDto.setConveyanceUnitNo(conUnitNo);
-            appGrpPremisesDto.setConveyanceBuildingName(conBuildingName);
-            appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType);
-        }
+        String postalCode = ParamUtil.getString(request, "postalCode");
+        String blkNo = ParamUtil.getString(request, "blkNo");
+        String streetName = ParamUtil.getString(request, "streetName");
+        String floorNo = ParamUtil.getString(request, "floorNo");
+        String unitNo = ParamUtil.getString(request, "unitNo");
+        String buildingName = ParamUtil.getString(request, "buildingName");
+        String siteAddressType = ParamUtil.getString(request, "siteAddressType");
+        String scdfRefNo = ParamUtil.getString(request, "scdfRefNo");
+        appGrpPremisesDto.setHciName(premisesListQueryDto.getHciName());
+        appGrpPremisesDto.setPostalCode(postalCode);
+        appGrpPremisesDto.setBlkNo(blkNo);
+        appGrpPremisesDto.setStreetName(streetName);
+        appGrpPremisesDto.setFloorNo(floorNo);
+        appGrpPremisesDto.setUnitNo(unitNo);
+        appGrpPremisesDto.setBuildingName(buildingName);
+        appGrpPremisesDto.setAddrType(siteAddressType);
+        appGrpPremisesDto.setScdfRefNo(scdfRefNo);
         return appGrpPremisesDto;
     }
 
@@ -1827,35 +1796,8 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
-        String newHciName = "";
-        String oldHciName = "";
-        String newVehicleNo="";
-        String oldVehicleNo="";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getHciName();
-            oldVehicleNo=premisesListQueryDto.getVehicleNo();
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
-            oldHciName = premisesListQueryDto.getHciName();
-        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
-            oldHciName=premisesListQueryDto.getHciName();
-        }
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getConveyanceHciName();
-            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
-            newHciName=appGrpPremisesDto.getOffSiteHciName();
-        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
-            newHciName=appGrpPremisesDto.getEasMtsHciName();
-        }
-        if (!newHciName.equals(oldHciName)||!newVehicleNo.equals(oldVehicleNo)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(appGrpPremisesDto.getHciName(), premisesListQueryDto.getHciName())
+                && Objects.equals(appGrpPremisesDto.getVehicleNo(), premisesListQueryDto.getVehicleNo());
     }
 
     private AppSubmissionDto setPersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto) {
@@ -1943,22 +1885,8 @@ public class RequestForChangeMenuDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
 
             if (appSubmissionDto != null) {
-                String appGrpNo = appSubmissionDto.getAppGrpNo();
-                //List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
                 appSubmissionDto.setNeedEditController(true);
-                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    ApplicationHelper.setWrkTime(appGrpPremisesDto1);
-                }
-//                if (appSubmissionDtoByGroupNo != null) {
-              /*  for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
-                    appSubmissionDto1.setNeedEditController(true);
-                    for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto1.getAppGrpPremisesDtoList()) {
-                        ApplicationHelper.setWrkTime(appGrpPremisesDto1);
-                    }
-                }*/
-//                }
-
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                AppSubmissionDto oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, "test");

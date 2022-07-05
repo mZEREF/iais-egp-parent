@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -131,6 +132,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public void sendMailForAuditPlanerForSms(String emailKey) {
@@ -510,7 +514,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDto.setServiceId(StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId());
                 hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-                AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(taskDto.getApplicationNo()).getEntity();
+                AppGrpPremisesDto appGrpPremisesEntityDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
                 hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                 hcsaSvcStageWorkingGroupDtos = taskHcsaConfigClient.getWrkGrp(hcsaSvcStageWorkingGroupDtos).getEntity();

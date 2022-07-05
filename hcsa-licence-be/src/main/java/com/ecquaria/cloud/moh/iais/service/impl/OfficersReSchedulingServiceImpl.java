@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQue
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -44,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -53,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
@@ -150,6 +149,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Autowired
     private EmailHistoryCommonClient emailHistoryCommonClient;
 
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -925,14 +926,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Override
     public void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        AppGrpPremisesEntityDto appGrpPremisesEntityDto=applicationClient.getPremisesByAppNo(appNo).getEntity();
+        AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(appNo);
         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         emailMap.put("InspectorName", orgUserDto.getDisplayName());
         emailMap.put("DDMMYYYY", Formatter.formatDate(new Date()));
         emailMap.put("time", Formatter.formatTime(new Date()));
-        emailMap.put("HCI_Name", appGrpPremisesEntityDto.getHciName());
-        emailMap.put("HCI_Code", appGrpPremisesEntityDto.getHciCode());
-        String add = MiscUtil.getAddressForApp(appGrpPremisesEntityDto.getBlkNo(),appGrpPremisesEntityDto.getStreetName(),appGrpPremisesEntityDto.getBuildingName(),appGrpPremisesEntityDto.getFloorNo(),appGrpPremisesEntityDto.getUnitNo(),appGrpPremisesEntityDto.getPostalCode(),appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
+        emailMap.put("HCI_Name", appGrpPremisesDto.getHciName());
+        emailMap.put("HCI_Code", appGrpPremisesDto.getHciCode());
+        String add = IaisCommonUtils.getAddress(appGrpPremisesDto);
         emailMap.put("premises_address", add);
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
@@ -1656,13 +1657,13 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
         for(ApplicationDto applicationDto : applicationDtos){
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            if(appGrpPremisesEntityDto != null){
-                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
+            if(appGrpPremisesDto != null){
+                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesDto.getPremisesType());
             }else{
                 log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
             }

@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -881,44 +880,6 @@ public final class ApplicationHelper {
         return appGrpPremisesDto;
     }
 
-    public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto) {
-        if (appGrpPremisesDto == null) {
-            return appGrpPremisesDto;
-        }
-        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
-        if (!IaisCommonUtils.isEmpty(weeklyDtos)) {
-            for (OperationHoursReloadDto weeklyDto : weeklyDtos) {
-                setReloadTime(weeklyDto);
-            }
-        }
-
-        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
-        if (!IaisCommonUtils.isEmpty(phDtos)) {
-            for (OperationHoursReloadDto phDto : phDtos) {
-                setReloadTime(phDto);
-            }
-        }
-
-        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
-        if (!IaisCommonUtils.isEmpty(eventDtos)) {
-            for (AppPremEventPeriodDto eventDto : eventDtos) {
-                Date start = eventDto.getStartDate();
-                if (start != null) {
-                    eventDto.setStartDateStr(Formatter.formatDate(start));
-                }
-                Date end = eventDto.getEndDate();
-                if (end != null) {
-                    eventDto.setEndDateStr(Formatter.formatDate(end));
-                }
-            }
-        }
-        if (appGrpPremisesDto.getCertIssuedDt() != null) {
-            String certIssuedDtStr = Formatter.formatDate(appGrpPremisesDto.getCertIssuedDt());
-            appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
-        }
-        return appGrpPremisesDto;
-    }
-
     public static List<AppSvcPrincipalOfficersDto> transferCgoToPsnDtoList(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos) {
         List<AppSvcPrincipalOfficersDto> psnDtos = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
@@ -1561,10 +1522,11 @@ public final class ApplicationHelper {
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.APP_PREMISES_MAP);
         Map<String, String> target = IaisCommonUtils.genNewHashMap(4);
-        target.put(ApplicationConsts.PREMISES_TYPE_ON_SITE, "premisesSelect");
+        target.put(ApplicationConsts.PREMISES_TYPE_PERMANENT, "permanentSelect");
         target.put(ApplicationConsts.PREMISES_TYPE_CONVEYANCE, "conveyancePremSel");
-        target.put(ApplicationConsts.PREMISES_TYPE_OFF_SITE, "offSitePremSel");
         target.put(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, "easMtsPremSel");
+        target.put(ApplicationConsts.PREMISES_TYPE_MOBILE, "mobilePremSel");
+        target.put(ApplicationConsts.PREMISES_TYPE_REMOTE, "remotePremSel");
         String addtional = " (Pending MOH Approval)";
         target.forEach((premiseType, sessionKey) -> {
             List<SelectOption> premisesSelect = getPremisesSel(appType);
@@ -1638,20 +1600,7 @@ public final class ApplicationHelper {
     }
 
     public static String getPremisesKey(AppGrpPremisesDto appGrpPremisesDto) {
-        return MiscUtil.getPremisesKey(appGrpPremisesDto);
-    }
-
-    public static String getPremisesKey(AppGrpPremisesEntityDto rfiPremises) {
-        if (rfiPremises == null) {
-            return "";
-        }
-        String additional = rfiPremises.getPremisesType() + ApplicationConsts.DELIMITER + rfiPremises.getHciName();
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
-            additional += ApplicationConsts.DELIMITER + rfiPremises.getVehicleNo();
-        }
-        return MiscUtil.getPremisesKey(additional, rfiPremises.getPostalCode(), rfiPremises.getBlkNo(),
-                rfiPremises.getStreetName(), rfiPremises.getBuildingName(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo(),
-                rfiPremises.getAppPremisesOperationalUnitDtos());
+        return IaisCommonUtils.getPremisesKey(appGrpPremisesDto);
     }
 
     public static String getPremisesKey(PremisesListQueryDto premisesListQueryDto) {
@@ -1662,78 +1611,25 @@ public final class ApplicationHelper {
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
             additional += ApplicationConsts.DELIMITER + premisesListQueryDto.getVehicleNo();
         }
-        return MiscUtil.getPremisesKey(additional, premisesListQueryDto.getPostalCode(), premisesListQueryDto.getBlkNo(),
+        return IaisCommonUtils.getPremisesKey(additional, premisesListQueryDto.getPostalCode(), premisesListQueryDto.getBlkNo(),
                 premisesListQueryDto.getStreetName(), premisesListQueryDto.getBuildingName(), premisesListQueryDto.getFloorNo(),
                 premisesListQueryDto.getUnitNo(), premisesListQueryDto.getPremisesFloorUnits());
     }
 
     public static String getPremisesKey(PremisesDto premisesDto) {
-        return MiscUtil.getPremisesKey(premisesDto);
+        return IaisCommonUtils.getPremisesKey(premisesDto);
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto premisesDto) {
-        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
-        if (premisesDto != null) {
-            String premisesHciPre = "";
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre =
-                        premisesDto.getHciName() + premisesDto.getConveyanceVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }
-            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
-            List<AppPremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getAppPremisesOperationalUnitDtos();
-            if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
-                for (AppPremisesOperationalUnitDto operationalUnitDto : operationalUnitDtos) {
-                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
-                }
-            }
-        }
-        return premisesHciList;
+        return IaisCommonUtils.getPremisesHciList(premisesDto);
     }
 
     public static List<String> genPremisesHciList(PremisesDto premisesDto) {
-        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
-        if (premisesDto != null) {
-            String premisesHciPre = "";
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())) {
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }
-            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
-            List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
-            if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
-                for (PremisesOperationalUnitDto operationalUnitDto : operationalUnitDtos) {
-                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
-                }
-            }
-        }
-        return premisesHciList;
+        return IaisCommonUtils.getPremisesHciList(premisesDto);
     }
 
     public static String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        String hciName = "";
-        if (appGrpPremisesDto == null) {
-            hciName = null;
-        } else if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getOffSiteHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getConveyanceHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getEasMtsHciName();
-        }
-        return hciName;
+        return StringUtil.getNonNull(appGrpPremisesDto.getHciName());
     }
 
     public static boolean checkIsRfi(HttpServletRequest request) {
@@ -1896,7 +1792,7 @@ public final class ApplicationHelper {
         } else {
             additional = item.getHciName();
         }
-        return MiscUtil.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
+        return IaisCommonUtils.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
                 item.getBuildingName(), item.getFloorNo(), item.getUnitNo(),
                 MiscUtil.transferEntityDtos(item.getPremisesOperationalUnitDtos(),
                         AppPremisesOperationalUnitDto.class));
@@ -3797,7 +3693,7 @@ public final class ApplicationHelper {
      * @return
      */
     public static String handleFloorNo(String floorNo) {
-        return MiscUtil.getFloorNo(floorNo);
+        return IaisCommonUtils.getFloorNo(floorNo);
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, HttpServletRequest request) {
@@ -4045,7 +3941,7 @@ public final class ApplicationHelper {
             return;
         }
         if (!StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
-            Map<String, String> errorMap = AppValidatorHelper.doValidatePremiss(appSubmissionDto, null, null, false, false);
+            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, null, false, false);
             if (errorMap != null && !errorMap.isEmpty()) {
                 log.info(StringUtil.changeForLog("------ Has Error ------"));
                 return;

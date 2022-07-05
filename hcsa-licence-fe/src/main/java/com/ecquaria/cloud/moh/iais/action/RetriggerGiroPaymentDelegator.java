@@ -218,7 +218,7 @@ public class RetriggerGiroPaymentDelegator {
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
         //set premises info
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+        /*if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 appGrpPremisesDto = ApplicationHelper.setWrkTime(appGrpPremisesDto);
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
@@ -226,7 +226,7 @@ public class RetriggerGiroPaymentDelegator {
                 ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
-        }
+        }*/
 
         //set doc name
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;

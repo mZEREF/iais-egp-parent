@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -116,7 +115,7 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APP_SUBMISSIONS;
 
 /**
- * egator
+ * Process: MohNewApplication
  *
  * @author suocheng
  * @date 9/23/2019
@@ -209,7 +208,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     HashMap<String, String> coMap = new HashMap<>(5);
                     coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
                     coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-                    coMap.put(HcsaAppConst.SECTION_DOCUMENT, "");
+                    coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
                     coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
                     coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
                     if (!stepColor.isEmpty()) {
@@ -218,8 +217,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
                                 coMap.put(HcsaAppConst.SECTION_LICENSEE, str);
                             } else if (HcsaAppConst.SECTION_PREMISES.equals(str)) {
                                 coMap.put(HcsaAppConst.SECTION_PREMISES, str);
-                            } else if (HcsaAppConst.SECTION_DOCUMENT.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_DOCUMENT, str);
+                            } else if (HcsaAppConst.SECTION_SPECIALISED.equals(str)) {
+                                coMap.put(HcsaAppConst.SECTION_SPECIALISED, str);
                             } else if (HcsaAppConst.SECTION_SVCINFO.equals(str)) {
                                 coMap.put(HcsaAppConst.SECTION_SVCINFO, str);
                             } else if (HcsaAppConst.SECTION_PREVIEW.equals(str)) {
@@ -384,83 +383,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     /**
-     * StartStep: Prepare
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepare(BaseProcessClass bpc) {
-        super.prepare(bpc);
-    }
-
-    /**
-     * Process: MohNewApplication
-     * Step: PrepareSubLicensee
-     * <p>
-     * Prepare licensee detail
-     *
-     * @param bpc
-     */
-    public void prepareSubLicensee(BaseProcessClass bpc) {
-        super.prepareSubLicensee(bpc);
-    }
-
-    /**
-     * Process: MohNewApplication
-     * Step: PrepareSubLicensee
-     * <p>
-     * Do licensee detail
-     *
-     * @param bpc
-     */
-    public void doSubLicensee(BaseProcessClass bpc) {
-        super.doSubLicensee(bpc);
-    }
-
-
-    /**
-     * StartStep: PreparePremises
-     *
-     * @param bpc
-     * @throws
-     */
-    public void preparePremises(BaseProcessClass bpc) {
-        super.preparePremises(bpc);
-    }
-
-    /**
-     * StartStep: PrepareDocuments
-     *
-     * @param bpc
-     * @throws
-     * @throwsdo
-     */
-    public void prepareDocuments(BaseProcessClass bpc) {
-        super.prepareDocuments(bpc);
-    }
-
-    /**
-     * StartStep: PrepareForms
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepareForms(BaseProcessClass bpc) {
-        super.prepareForms(bpc);
-    }
-
-    /**
-     * StartStep: PreparePreview
-     *
-     * @param bpc
-     * @throws
-     */
-    public void preparePreview(BaseProcessClass bpc) {
-        super.preparePreview(bpc);
-    }
-
-
-    /**
      * StartStep: PreparePayment
      *
      * @param bpc
@@ -534,10 +456,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     premTypes.add(appGrpPremisesDto.getPremisesType());
                 }
-                if (premTypes.size() == 1 && premTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)) {
-                    boolean flag = true;
-                    ParamUtil.setRequestAttr(bpc.request, "onlyOffsite", flag);
-                }
             }
         }
         String flag = bpc.request.getParameter("flag");
@@ -567,36 +485,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         super.doPremises(bpc);
-    }
-
-    /**
-     * StartStep: DoDocument
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doDocument(BaseProcessClass bpc) throws IOException {
-        super.doDocument(bpc);
-    }
-
-    /**
-     * StartStep: doForms
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doForms(BaseProcessClass bpc) {
-        super.doForms(bpc);
-    }
-
-    /**
-     * StartStep: doPreview
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doPreview(BaseProcessClass bpc) {
-        super.doPreview(bpc);
     }
 
     /**
@@ -812,16 +700,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     /**
-     * StartStep: preInvoke
-     *
-     * @param bpc
-     * @throws
-     */
-    public void preInvoke(BaseProcessClass bpc) throws IOException {
-        super.preInvoke(bpc);
-    }
-
-    /**
      * StartStep: doSaveDraft
      *
      * @param bpc
@@ -948,28 +826,21 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     appCessLicDto.setLicenceNo(licenceNo);
                     appCessLicDto.setSvcName(svcName);
                     AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
-                    AppGrpPremisesEntityDto appGrpPremisesEntityDto = appCommService.getPremisesByAppNo(applicationDto.getApplicationNo());
+                    AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
                     List<AppDeclarationMessageDto> appDeclarationMessageDtoList = applicationFeClient.getAppDeclarationMessageDto(
-                            appGrpPremisesEntityDto.getAppGrpId()).getEntity();
+                            appGrpPremisesDto.getAppGrpId()).getEntity();
                     List<AppDeclarationDocDto> appDeclarationDocDtoList = applicationFeClient.getAppDeclarationDocDto(
-                            appGrpPremisesEntityDto.getAppGrpId()).getEntity();
+                            appGrpPremisesDto.getAppGrpId()).getEntity();
                     if (appDeclarationMessageDtoList != null && appDeclarationMessageDtoList.size() > 0) {
                         appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDtoList.get(0));
                         appCessLicDto.setAppDeclarationDocDtos(appDeclarationDocDtoList);
                     }
                     //appSubmissionService.initDeclarationFiles(appDeclarationDocDtoList,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
-                    String blkNo = appGrpPremisesEntityDto.getBlkNo();
-                    String premisesId = appGrpPremisesEntityDto.getId();
-                    String streetName = appGrpPremisesEntityDto.getStreetName();
-                    String buildingName = appGrpPremisesEntityDto.getBuildingName();
-                    String floorNo = appGrpPremisesEntityDto.getFloorNo();
-                    String unitNo = appGrpPremisesEntityDto.getUnitNo();
-                    String postalCode = appGrpPremisesEntityDto.getPostalCode();
-                    String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,
-                            appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
+                    String premisesId = appGrpPremisesDto.getId();
+                    String hciAddress = IaisCommonUtils.getAddress(appGrpPremisesDto);
                     AppCessHciDto appCessHciDto = new AppCessHciDto();
-                    String hciName = appGrpPremisesEntityDto.getHciName();
-                    String hciCode = appGrpPremisesEntityDto.getHciCode();
+                    String hciName = appGrpPremisesDto.getHciName();
+                    String hciCode = appGrpPremisesDto.getHciCode();
                     appCessHciDto.setHciCode(hciCode);
                     appCessHciDto.setHciName(hciName);
                     appCessHciDto.setPremiseId(premisesId);
@@ -978,10 +849,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     String reason = appCessMiscDto.getReason();
                     String otherReason = appCessMiscDto.getOtherReason();
                     String patTransType = appCessMiscDto.getPatTransType();
-                    String patTransTo = appCessMiscDto.getPatTransTo();
                     Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
-                    String mobileNo = appCessMiscDto.getMobileNo();
-                    String emailAddress = appCessMiscDto.getEmailAddress();
                     appCessHciDto.setPatientSelect(patTransType);
                     appCessHciDto.setReason(reason);
                     appCessHciDto.setOtherReason(otherReason);
@@ -1165,9 +1033,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         appSubmissionDto, svcId);
                 ParamUtil.setRequestAttr(request, "reloadDisciplineAllocationMap", reloadDisciplineAllocationMap);
             }
-            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                ApplicationHelper.setWrkTime(appGrpPremisesDto);
-            }
         }
     }
 
@@ -1182,12 +1047,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if (appGrpPremisesDtoList != null) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if (appPremPhOpenPeriodList != null) {
                     for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
                         appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
                     }
-                }
+                }*/
                 String premises = appGrpPremisesDto.getPremisesIndexNo();
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
@@ -1234,18 +1099,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
         }
         return appSvcDisciplineAllocationDtos;
-    }
-
-
-    /**
-     * StartStep: doReDquestInformationSubmit
-     * prepare
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doRequestInformationSubmit(BaseProcessClass bpc) throws Exception {
-        super.doRequestInformationSubmit(bpc);
     }
 
     protected List<AppPremisesRoutingHistoryDto> getRoutingHistoryDtos(String appNo) {
@@ -1406,15 +1259,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doRenewSubmit end ...."));
     }
 
-    /**
-     * StartStep: doRequestForChangeSubmit
-     *
-     * @param bpc
-     */
-    public void doRequestForChangeSubmit(BaseProcessClass bpc) throws Exception {
-        super.doRequestForChangeSubmit(bpc);
-    }
-
     @Override
     protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, boolean isAutoRfc) {
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
@@ -1439,15 +1283,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 .map(AppSubmissionDto::getLicenceId)
                 .collect(Collectors.toList());
         appSubmissionService.updateDrafts(licenseeId, licenceIds, draftNo);
-    }
-
-
-    public void reSubmit(BaseProcessClass bpc) throws Exception {
-        super.reSubmit(bpc);
-    }
-
-    public void doPayValidate(BaseProcessClass bpc) throws Exception {
-        super.doPayValidate(bpc);
     }
 
     @Override
@@ -1667,25 +1502,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     /**
-     * StartStep: PrePareErrorAckPage
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepareErrorAck(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do prepareErrorAck start ...."));
-
-        log.info(StringUtil.changeForLog("the do prepareErrorAck end ...."));
-    }
-
-    public void doErrorAck(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do doErrorAck start ...."));
-
-
-        log.info(StringUtil.changeForLog("the do doErrorAck end ...."));
-    }
-
-    /**
      * StartStep: PrepareAckPage
      *
      * @param bpc
@@ -1737,7 +1553,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         String ackStatus = (String) ParamUtil.getRequestAttr(bpc.request, ACKSTATUS);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        if (isRfi && "error".equals(ackStatus)) {
+        if (isRfi && HcsaAppConst.ACK_STATUS_ERROR.equals(ackStatus)) {
             List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                     HcsaAppConst.RFI_REPLY_SVC_DTO);
             ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);

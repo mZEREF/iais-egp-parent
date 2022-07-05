@@ -699,16 +699,6 @@ public final class RfcHelper {
         String premisesType = appGrpPremisesDto.getPremisesType();
         String floorNo = null;
         String unitNo = null;
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-            floorNo = appGrpPremisesDto.getConveyanceFloorNo();
-            unitNo = appGrpPremisesDto.getConveyanceUnitNo();
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-            floorNo = appGrpPremisesDto.getOffSiteFloorNo();
-            unitNo = appGrpPremisesDto.getOffSiteUnitNo();
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
-            floorNo = appGrpPremisesDto.getEasMtsFloorNo();
-            unitNo = appGrpPremisesDto.getEasMtsUnitNo();
-        }
         if (StringUtil.isEmpty(floorNo) || StringUtil.isEmpty(unitNo)) {
             floorNo = appGrpPremisesDto.getFloorNo();
             unitNo = appGrpPremisesDto.getUnitNo();
@@ -765,11 +755,11 @@ public final class RfcHelper {
         String oldHciName = ApplicationHelper.getHciName(premisesListQueryDto);
         String oldVehicleNo = "";
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldVehicleNo = premisesListQueryDto.getConveyanceVehicleNo();
+            oldVehicleNo = premisesListQueryDto.getVehicleNo();
         }
         String newVehicleNo = "";
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            newVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
+            newVehicleNo = appGrpPremisesDto.getVehicleNo();
         }
 
         if (!newHciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)) {
@@ -809,8 +799,8 @@ public final class RfcHelper {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
                 if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())
-                        || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getConveyanceVehicleNo()),
-                        StringUtil.getNonNull(oldAppGrpPremisesDto.getConveyanceVehicleNo()))) {
+                        || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getVehicleNo()),
+                        StringUtil.getNonNull(oldAppGrpPremisesDto.getVehicleNo()))) {
                     return false;
                 }
             }

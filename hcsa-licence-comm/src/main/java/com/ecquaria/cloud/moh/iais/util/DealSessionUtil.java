@@ -100,6 +100,7 @@ public class DealSessionUtil {
         session.removeAttribute("viewPrint");
 
         //clear Session
+        session.removeAttribute(HcsaAppConst.ACTION);
         session.removeAttribute(HcsaAppConst.ALL_SVC_NAMES);
         session.removeAttribute(HcsaAppConst.APPSUBMISSIONDTO);
         session.removeAttribute(HcsaAppConst.HCSASERVICEDTO);
@@ -156,13 +157,13 @@ public class DealSessionUtil {
         if (withValue) {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            coMap.put(HcsaAppConst.SECTION_DOCUMENT, HcsaAppConst.SECTION_DOCUMENT);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
             coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
             coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
         } else {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
             coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-            coMap.put(HcsaAppConst.SECTION_DOCUMENT, "");
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
             coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
             coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
         }
@@ -225,15 +226,7 @@ public class DealSessionUtil {
 
             //set premises info
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto = ApplicationHelper.setWrkTime(appGrpPremisesDto);
-                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                    //set ph name
-                    ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
-                    appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
-                }
-            }
+
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             //set licseeId and psn drop down
             setLicseeAndPsnDropDown(appSubmissionDto.getLicenseeId(), appSvcRelatedInfoDtos, bpc.request);

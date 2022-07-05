@@ -116,7 +116,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             h.setMaxFileIndex(maxSeqNum);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
-            AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(h.getApplicationNo());
             transform(appSubmissionDto,licenseeId);
             appSubmissionDto.setAppGrpNo(grpNo);
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())+"-----appSubmissionDto-------"));
@@ -197,7 +197,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private void sendNMS(WithdrawnDto withdrawnDto,boolean isRfc,boolean charity){
         List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-        AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
+        AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(withdrawnDto.getApplicationNo());
         if (appSubmissionDto != null){
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
             ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();

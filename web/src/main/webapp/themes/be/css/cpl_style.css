@@ -5651,3 +5651,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .padding-left {
   padding-left: 0px;
 }
+
+.bold {
+  font-weight: bold;
+}

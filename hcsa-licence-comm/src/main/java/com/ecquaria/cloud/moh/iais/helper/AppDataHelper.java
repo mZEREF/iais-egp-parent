@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -148,12 +147,12 @@ public final class AppDataHelper {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
-        int count = 0;
-        String[] premisesType = ParamUtil.getStrings(request, "premType");
+        int count = ParamUtil.getInt(request, "premCount", 1);
+       /* String[] premisesType = ParamUtil.getStrings(request, "premCount");
         String[] hciName = ParamUtil.getStrings(request, "onSiteHciName");
         if (premisesType != null) {
             count = premisesType.length;
-        }
+        }*/
         if (!isMultiPremService) {
             count = 1;
         }
@@ -207,23 +206,21 @@ public final class AppDataHelper {
         String[] weeklyLengths = ParamUtil.getStrings(request, "weeklyLength");
         String[] eventLengths = ParamUtil.getStrings(request, "eventLength");
         for (int i = 0; i < count; i++) {
+            String premType = ParamUtil.getString(request, "premType" + i);
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = "";
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
-                premisesSel = premisesSelect[i];
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
-                premisesSel = conPremisesSelect[i];
-            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
-                premisesSel = offSitePremisesSelect[i];
-            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType[i])) {
-                premisesSel = easMtsPremisesSelect[i];
+            if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premType)) {
+                premisesSel = ParamUtil.getString(request, "permanentSel" + i);
+            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
+                premisesSel = ParamUtil.getString(request, "conveyanceSel" + i);
+            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)) {
+                premisesSel = ParamUtil.getString(request, "easMtsSel" + i);
+            } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premType)) {
+                premisesSel = ParamUtil.getString(request, "mobileSel" + i);
+            } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premType)) {
+                premisesSel = ParamUtil.getString(request, "remoteSel" + i);
             }
-            String premIndexNo = "";
-            try {
-                premIndexNo = premisesIndexNo[i];
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+            String premIndexNo = ParamUtil.getString(request, "premisesIndexNo" + i);
             if (StringUtil.isEmpty(premIndexNo)) {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
@@ -235,7 +232,7 @@ public final class AppDataHelper {
                         && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(chooseExistData[i])) {
                     AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
                     if (licPremise != null) {
-                        appGrpPremisesDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(licPremise);
+                        appGrpPremisesDto = CopyUtil.copyMutableObject(licPremise);
                     } else {
                         log.info(StringUtil.changeForLog("can not found this existing premises data ...."));
                     }
@@ -271,7 +268,7 @@ public final class AppDataHelper {
             appGrpPremisesDto.setExistingData(chooseExistData[i]);
             ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
-            appGrpPremisesDto.setPremisesType(premisesType[i]);
+            appGrpPremisesDto.setPremisesType(premType);
             //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
             List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
@@ -317,7 +314,7 @@ public final class AppDataHelper {
                 appGrpPremisesDto.setClickRetrieve(false);
             }
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
+            /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
                 String premVal = premValue[i];
                 String fireSafetyCertIssuedDateStr = ParamUtil.getString(request, premVal + "onSiteFireSafetyCertIssuedDate");
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
@@ -652,12 +649,12 @@ public final class AppDataHelper {
                 appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
                 addFloorNoAndUnitNo(premValue[i], "easMtsFloorNo", "easMtsUnitNo", opLength,
                         appPremisesOperationalUnitDtos, request);
-            }
+            }*/
             //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
-            appGrpPremisesDto.setWeeklyDtoList(weeklyDtoList);
+            /*appGrpPremisesDto.setWeeklyDtoList(weeklyDtoList);
             appGrpPremisesDto.setPhDtoList(phDtoList);
-            appGrpPremisesDto.setEventDtoList(eventList);
+            appGrpPremisesDto.setEventDtoList(eventList);*/
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||

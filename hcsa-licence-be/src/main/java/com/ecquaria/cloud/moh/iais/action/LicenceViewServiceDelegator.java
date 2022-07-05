@@ -15,8 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -57,7 +55,6 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -317,7 +314,7 @@ public class LicenceViewServiceDelegator {
                 String unitNo = appGrpPremisesDto.getUnitNo();
                 String postalCode = appGrpPremisesDto.getPostalCode();
                 String hciName = appGrpPremisesDto.getHciName();
-                String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
+                String conveyanceVehicleNo = appGrpPremisesDto.getVehicleNo();
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                 map.put("floorNo0",floorNo);
                 map.put("unitNo0",unitNo);
@@ -881,7 +878,7 @@ public class LicenceViewServiceDelegator {
     }
 
     private void formatDate(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<PublicHolidayDto> publicHolidayDtos)  {
-        if(appGrpPremisesDtoList!=null){
+        /*if(appGrpPremisesDtoList!=null){
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                 if(appPremPhOpenPeriodList!=null){
@@ -914,7 +911,7 @@ public class LicenceViewServiceDelegator {
                     appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -2032,7 +2029,6 @@ public class LicenceViewServiceDelegator {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(size+i).getPremisesType());
             appGrpPremisesDto.setPostalCode("");
-            appGrpPremisesDto.setOffTelNo("");
             appGrpPremisesDto.setScdfRefNo("");
             appGrpPremisesDto.setCertIssuedDtStr("");
             appGrpPremisesDto.setStreetName("");
@@ -2040,15 +2036,10 @@ public class LicenceViewServiceDelegator {
             appGrpPremisesDto.setUnitNo("");
             appGrpPremisesDto.setFloorNo("");
             appGrpPremisesDto.setHciName("");
-            appGrpPremisesDto.setOnsiteEndHH("");
-            appGrpPremisesDto.setOnsiteStartHH("");
-            appGrpPremisesDto.setOnsiteStartMM("");
-            appGrpPremisesDto.setOnsiteEndMM("");
             appGrpPremisesDto.setAddrType("");
             appGrpPremisesDto.setBuildingName("");
             appGrpPremisesDto.setEasMtsPubHotline("");
             appGrpPremisesDto.setEasMtsPubEmail("");
-            appGrpPremisesDto.setEasMtsCoLocation("");
             appGrpPremisesDto.setEasMtsUseOnly("");
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
@@ -2417,7 +2408,7 @@ public class LicenceViewServiceDelegator {
     private void publicPH(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
             return;
-        }
+        }/*
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
             List<AppPremPhOpenPeriodDto> oldAppPremPhOpenPeriodList = oldAppGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
@@ -2455,13 +2446,13 @@ public class LicenceViewServiceDelegator {
 
             }
 
-        }
+        }*/
     }
 
     private void event(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
             return;
-        }
+        }/*
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             List<AppPremEventPeriodDto> appPremEventPeriodDtos = appGrpPremisesDtoList.get(i).getEventDtoList();
             List<AppPremEventPeriodDto> oldAppPremEventPeriodDtos = oldAppGrpPremisesDtoList.get(i).getEventDtoList();
@@ -2499,13 +2490,13 @@ public class LicenceViewServiceDelegator {
 
             }
 
-        }
+        }*/
     }
 
     private void weekly(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
             return;
-        }
+        }/*
         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
             List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
             List<OperationHoursReloadDto> oldWeeklyDtoList = oldAppGrpPremisesDtoList.get(i).getWeeklyDtoList();
@@ -2537,7 +2528,7 @@ public class LicenceViewServiceDelegator {
 
             }
 
-        }
+        }*/
     }
 
     private OperationHoursReloadDto genOperationHoursReloadDto(OperationHoursReloadDto hoursReloadDto) {
@@ -2553,7 +2544,7 @@ public class LicenceViewServiceDelegator {
     private void ph(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
             return;
-        }
+        }/*
         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
             List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
             List<OperationHoursReloadDto> oldWeeklyDtoList = oldAppGrpPremisesDtoList.get(i).getPhDtoList();
@@ -2584,7 +2575,7 @@ public class LicenceViewServiceDelegator {
                 }
             }
 
-        }
+        }*/
     }
 
     private AppSvcPrincipalOfficersDto  generatePo(){

@@ -17,7 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -49,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -138,8 +136,8 @@ public class AppealApproveBatchjob {
                   List<PremisesDto> licPremisesDto = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
-                  List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
-                  List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesDto> rollBackAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
                   List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
                   List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
                   List<ApplicationGroupDto> appealApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
@@ -252,8 +250,8 @@ public class AppealApproveBatchjob {
                                    List<ApplicationDto> rollBackApplication,
                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
-                                   List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
-                                   List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
+                                   List<AppGrpPremisesDto> appealAppGrpPremisesDto,
+                                   List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,
                                    List<PremisesDto> licPremisesDto,
                                    List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
                                    List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
@@ -496,37 +494,33 @@ public class AppealApproveBatchjob {
     }
 
     //sync hciName
-    public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
-                                         List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,List<PremisesDto> licPremisesDto,
+    public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesDto> appealAppGrpPremisesDto,
+                                         List<AppGrpPremisesDto> rollBackAppGrpPremisesDto,List<PremisesDto> licPremisesDto,
                                          AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
-        AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
-        List<AppGrpPremisesEntityDto> otherAppGrpPremises = appealApproveDto.getOtherAppGrpPremises();
+        AppGrpPremisesDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesDto();
+        List<AppGrpPremisesDto> otherAppGrpPremises = appealApproveDto.getOtherAppGrpPremises();
         String hciName;
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
             hciName = appealDto.getNewHciName();
             if(!StringUtil.isEmpty(hciName)){
-                AppGrpPremisesEntityDto appGrpPremisesDto1 = (AppGrpPremisesEntityDto)
-                        CopyUtil.copyMutableObject(appGrpPremisesDto);
+                AppGrpPremisesDto appGrpPremisesDto1 = CopyUtil.copyMutableObject(appGrpPremisesDto);
                 appGrpPremisesDto1.setHciName(hciName);
-                appGrpPremisesDto1.setAuditTrailDto(intranet);
                 appealAppGrpPremisesDto.add(appGrpPremisesDto1);
                 if(!otherAppGrpPremises.isEmpty()){
-                    for (AppGrpPremisesEntityDto v : otherAppGrpPremises) {
+                    for (AppGrpPremisesDto v : otherAppGrpPremises) {
                         v.setHciName(hciName);
-                        v.setAuditTrailDto(intranet);
                         appealAppGrpPremisesDto.add(v);
                     }
                 }
                 ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
-                List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
+                List<AppGrpPremisesDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
                 appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
                 if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)&&!entity.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
-                    for (AppGrpPremisesEntityDto appPrem:appealAppGrpPremisesDto
-                         ) {
+                    for (AppGrpPremisesDto appPrem:appealAppGrpPremisesDto) {
                         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.getPremCorrDtoByAppGroupId(appPrem.getAppGrpId()).getEntity();
                         if(appPremisesCorrelationDtos!=null){
                             for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos
@@ -622,17 +616,19 @@ public class AppealApproveBatchjob {
 
         });
     }
-    private List<AppGrpPremisesEntityDto> otherChangeHciNameApp(String hciName,ApplicationDto applicationDto){
-        List<AppGrpPremisesEntityDto> entity = applicationClient.getOtherChangeHciNameApp(applicationDto).getEntity();
-        if(entity!=null&&!entity.isEmpty()){
-            Iterator<AppGrpPremisesEntityDto> iterator = entity.iterator();
-            while (iterator.hasNext()){
-                AppGrpPremisesEntityDto next = iterator.next();
+
+    private List<AppGrpPremisesDto> otherChangeHciNameApp(String hciName, ApplicationDto applicationDto) {
+        List<AppGrpPremisesDto> entity = applicationClient.getOtherChangeHciNameApp(applicationDto).getEntity();
+        if (entity != null && !entity.isEmpty()) {
+            Iterator<AppGrpPremisesDto> iterator = entity.iterator();
+            while (iterator.hasNext()) {
+                AppGrpPremisesDto next = iterator.next();
                 next.setHciName(hciName);
             }
         }
         return entity;
     }
+
     private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) {

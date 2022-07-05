@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -33,6 +32,11 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
+    public FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesById(String appPreId) {
+        return IaisEGPHelper.getFeignResponseEntity(appPreId);
+    }
+
+    @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId);
     }
@@ -48,12 +52,12 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto) {
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto) {
         return IaisEGPHelper.getFeignResponseEntity(JsonUtil.parseToJson(appPremisesDoQueryDto));
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(String appNo) {
+    public FeignResponseEntity<AppGrpPremisesDto> getActivePremisesByAppNo(String appNo) {
         return IaisEGPHelper.getFeignResponseEntity(appNo);
     }
 

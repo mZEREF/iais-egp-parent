@@ -4,23 +4,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.Process;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +40,8 @@ public interface AppCommService {
     List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId);
 
     Boolean isOtherOperation(String licenceId);
+
+    AppGrpPremisesDto getAppGrpPremisesById(String appPreId);
 
     List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId);
 
@@ -82,8 +77,8 @@ public interface AppCommService {
 
     AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
 
-    List<AppGrpPremisesEntityDto> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto);
+    List<AppGrpPremisesDto> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto);
 
-    AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
+    AppGrpPremisesDto getActivePremisesByAppNo(String appNo);
 
 }

@@ -2420,7 +2420,7 @@ public class HalpAssessmentGuideDelegator {
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
             additional += ApplicationConsts.DELIMITER + item.getVehicleNo();
         }
-        return MiscUtil.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
+        return IaisCommonUtils.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
                 item.getBuildingName(), item.getFloorNo(), item.getUnitNo(),
                 MiscUtil.transferEntityDtos(item.getPremisesOperationalUnitDtos(),
                         AppPremisesOperationalUnitDto.class));
@@ -2554,27 +2554,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private static List<String> genPremisesHciList(PremisesDto premisesDto){
-        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
-        if(premisesDto != null){
-            String premisesHciPre = "";
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }
-            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
-            List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
-            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
-                for(PremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
-                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
-                }
-            }
-        }
-        return premisesHciList;
+        return IaisCommonUtils.getPremisesHciList(premisesDto);
     }
 
     private List<String> transferToList(Set<String> targetSet){

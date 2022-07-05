@@ -12,9 +12,24 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +43,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Auther wangyu and chenlei on 4/19/2022.
@@ -120,45 +122,9 @@ public class FileAjaxController {
         saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
-
-        boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
-        log.info(StringUtil.changeForLog("isBackend: " + isBackend));
-        String cssClass;
-        if (isBackend) {
-            cssClass = "btn btn-secondary-del btn-sm";
-        } else {
-            cssClass = "btn btn-secondary btn-sm";
-        }
-
-        StringBuilder data = new StringBuilder();
-        String originalFileName = selectedFile.getOriginalFilename();
-        if (originalFileName != null) {
-            String[] fileSplit = originalFileName.split("\\.");
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(size).append("' >")
-                    .append("<a href=\"").append(request.getContextPath())
-                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
-                    .append("&fileIndexDown=").append(size)
-                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
-                    .append("\" title=\"Download\" class=\"downloadFile\">")
-                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
-                    .append('.').append(fileSplit[fileSplit.length - 1])
-                    .append("</a>")
-                    .append(" <button type=\"button\" class=\"").append(cssClass)
-                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
-                    .append(fileAppendId).append("', ").append(size)
-                    .append(");\">Delete</button>");
-            if (!AppConsts.NO.equals(needReUpload)) {
-                data.append(" <button type=\"button\" class=\"")
-                        .append(cssClass)
-                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
-                        .append(fileAppendId).append("', ").append(size)
-                        .append(", '").append(uploadFormId)
-                        .append("');\">ReUpload</button>");
-            }
-            data.append("</div>");
-        }
-        messageCode.setDescription(data.toString());
+        String html = IaisEGPHelper.getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, size, uploadFormId,
+                !AppConsts.NO.equals(needReUpload), request);
+        messageCode.setDescription(html);
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.parseToJson(messageCode);
     }
@@ -195,7 +161,7 @@ public class FileAjaxController {
         }
         log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
         List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
-        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
+        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024l));
         Boolean fileSize = booleanMap.get("fileSize");
         Boolean fileType = booleanMap.get("fileType");
         //size

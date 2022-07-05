@@ -87,8 +87,7 @@ public class FeMainEmailHelper {
                                     for(PremisesDto premises : licPremises){
                                         if(StringUtil.isNotEmpty(premises.getHciName())){
                                             String hciName = premises.getHciName();
-                                            String hciAddress = MiscUtil.getAddress(premises.getBlkNo(),premises.getStreetName(),
-                                                    premises.getBuildingName(),premises.getFloorNo(),premises.getUnitNo(),premises.getPostalCode(),premises.getPremisesOperationalUnitDtos());
+                                            String hciAddress = IaisCommonUtils.getAddress(premises);
                                             hciNameBuilder.append(hciName).append(',');
                                             hciAddressBuilder.append(hciAddress).append(',');
                                         }

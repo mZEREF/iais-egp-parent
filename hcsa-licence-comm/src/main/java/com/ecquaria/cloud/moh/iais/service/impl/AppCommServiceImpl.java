@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -206,6 +205,15 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
+    public AppGrpPremisesDto getAppGrpPremisesById(String appPreId) {
+        log.info(StringUtil.changeForLog("App Prem Id: " + appPreId));
+        if (StringUtil.isEmpty(appPreId)) {
+            return null;
+        }
+        return appCommClient.getAppGrpPremisesById(appPreId).getEntity();
+    }
+
+    @Override
     public Boolean isOtherOperation(String licenceId) {
         return appCommClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
@@ -222,7 +230,6 @@ public class AppCommServiceImpl implements AppCommService {
         }
         return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
                 .map(appGrpPremisesDto -> {
-                    ApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
                     appGrpPremisesDto.setFromDB(true);
                     /*List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
@@ -277,8 +284,7 @@ public class AppCommServiceImpl implements AppCommService {
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licCommService.getPremisesByLicseeIdAndSvcName(licenseeId, svcNames);
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appCommClient.getPendAppPremises(appPremisesDoQueryDto)
-                    .getEntity();
+            List<AppGrpPremisesDto> appGrpPremisesDtos = getPendAppPremises(appPremisesDoQueryDto);
             if (!IaisCommonUtils.isEmpty(premisesDtos)) {
                 for (PremisesDto premisesHciDto : premisesDtos) {
                     // rfi
@@ -294,8 +300,8 @@ public class AppCommServiceImpl implements AppCommService {
                     result.addAll(ApplicationHelper.genPremisesHciList(premisesHciDto));
                 }
             }
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
-                for (AppGrpPremisesEntityDto premisesEntityDto : appGrpPremisesEntityDtos) {
+            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                for (AppGrpPremisesDto premisesEntityDto : appGrpPremisesDtos) {
                     // rfi
                     if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
                             .anyMatch(dto -> Objects.equals(dto.getId(), premisesEntityDto.getId()))) {
@@ -465,7 +471,7 @@ public class AppCommServiceImpl implements AppCommService {
                             if (!StringUtil.isEmpty(titleName)) {
                                 for (HcsaSvcDocConfigDto svcDocConfigDto : svcDocConfigDtos) {
                                     if (titleName.equals(svcDocConfigDto.getDocTitle())) {
-                                        AppSvcDocDto newAppSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto);
+                                        AppSvcDocDto newAppSvcDocDto = CopyUtil.copyMutableObject(appSvcDocDto);
                                         newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
                                         newAppSvcDocDto.setDupForPerson(svcDocConfigDto.getDupForPerson());
                                         newAppSvcDocDto.setDupForPrem(svcDocConfigDto.getDupForPrem());
@@ -755,7 +761,7 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<AppGrpPremisesEntityDto> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto) {
+    public List<AppGrpPremisesDto> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto) {
         if (appPremisesDoQueryDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
@@ -763,12 +769,12 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public AppGrpPremisesEntityDto getPremisesByAppNo(String appNo) {
-        log.info(StringUtil.changeForLog("AppNo is " + appNo));
+    public AppGrpPremisesDto getActivePremisesByAppNo(String appNo) {
+        log.info(StringUtil.changeForLog("App No is " + appNo));
         if (StringUtil.isEmpty(appNo)) {
             return null;
         }
-        return appCommClient.getPremisesByAppNo(appNo).getEntity();
+        return appCommClient.getActivePremisesByAppNo(appNo).getEntity();
     }
 
 }

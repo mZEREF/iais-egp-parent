@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -800,11 +801,6 @@ public final class IaisEGPHelper extends EGPHelper {
         return order;
     }
 
-//    public static String getAddress(String blkNo, String streetName, String builderName, String floorNo, String unitNo, String postalCode){
-//        return  MiscUtil.getAddress(blkNo, streetName, builderName,
-//                floorNo, unitNo, postalCode);
-//    }
-
     public static String checkIdentityNoType(String identityNo){
         String upper = identityNo.toUpperCase();
         boolean b = SgNoValidator.validateNric(upper);
@@ -1030,5 +1026,45 @@ public final class IaisEGPHelper extends EGPHelper {
             return t.getEntity();
         }
         return null;
+    }
+
+    public static String getFileShowHtml(String fileName, String fileAppendId, int index, String uploadFormId,
+            boolean needReUpload, HttpServletRequest request) {
+        StringBuilder data = new StringBuilder();
+        if (fileName != null) {
+            boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
+            log.info(StringUtil.changeForLog("isBackend: " + isBackend));
+            String cssClass;
+            if (isBackend) {
+                cssClass = "btn btn-secondary-del btn-sm";
+            } else {
+                cssClass = "btn btn-secondary btn-sm";
+            }
+            String[] fileSplit = fileName.split("\\.");
+            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(index).append("' >")
+                    .append("<a href=\"").append(request.getContextPath())
+                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
+                    .append("&fileIndexDown=").append(index)
+                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
+                    .append("\" title=\"Download\" class=\"downloadFile\">")
+                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
+                    .append('.').append(fileSplit[fileSplit.length - 1])
+                    .append("</a>")
+                    .append(" <button type=\"button\" class=\"").append(cssClass)
+                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
+                    .append(fileAppendId).append("', ").append(index)
+                    .append(");\">Delete</button>");
+            if (needReUpload) {
+                data.append(" <button type=\"button\" class=\"")
+                        .append(cssClass)
+                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
+                        .append(fileAppendId).append("', ").append(index)
+                        .append(", '").append(uploadFormId)
+                        .append("');\">ReUpload</button>");
+            }
+            data.append("</div>");
+        }
+        return data.toString();
     }
 }

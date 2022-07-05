@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -31,7 +32,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -40,19 +43,24 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,6 +69,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +93,9 @@ public class ApplicationAjaxController {
 
     @Autowired
     private OrganizationService organizationService;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     /**
      * @param
@@ -131,7 +143,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("currentLength : " + currentLength));
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
-        Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
+        /*Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
         StringBuilder premTypeBuffer = new StringBuilder();
 
         for (String type : premType) {
@@ -250,7 +262,7 @@ public class ApplicationAjaxController {
         Integer premNo = Integer.parseInt(currentLength) + 1;
         sql = sql.replace("${premNo}", String.valueOf(premNo));
 
-        log.debug(StringUtil.changeForLog("the add premises html end ...."));
+        log.debug(StringUtil.changeForLog("the add premises html end ...."));*/
         return sql;
     }
     /**
@@ -516,7 +528,7 @@ public class ApplicationAjaxController {
         AppGrpPremisesDto appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premSelectVal, request);
         //set dayName
         if (appGrpPremisesDto != null) {
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+            /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
                 ApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
             }
@@ -598,22 +610,10 @@ public class ApplicationAjaxController {
                     eventHtml.append(sql);
                 }
                 appGrpPremisesDto.setEventHtml(eventHtml.toString());
-            }
+            }*/
 
             //for rfc new  renew choose other address ,if no this cannot choose other address from page
             boolean sameOne = premIndexNo != null && premIndexNo.equals(appGrpPremisesDto.getPremisesIndexNo());
-            /*
-            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-            if (oldAppSubmissionDto != null && !sameOne) {
-                String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                        .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                        .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .orElse(null);
-                sameOne = appGrpPremisesDto.getHciCode() != null && Objects.equals(hciCode, appGrpPremisesDto.getHciCode());
-            }
-            */
             log.info(StringUtil.changeForLog("--- The current one: " + sameOne));
             appGrpPremisesDto.setEqHciCode(String.valueOf(sameOne));
         } else {
@@ -869,7 +869,7 @@ public class ApplicationAjaxController {
 
     @PostMapping(value = "/premises-operational-html")
     public Map<String, Object> genPremOperationalHtml(HttpServletRequest request){
-        String premIndex = ParamUtil.getString(request,"premIndex");
+        /*String premIndex = ParamUtil.getString(request,"premIndex");
         String premType = ParamUtil.getString(request,"premType");
         String opCount = ParamUtil.getString(request,"opCount");
 
@@ -890,7 +890,8 @@ public class ApplicationAjaxController {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
         map.put("resultJson", sql);
-        return map;
+        return map;*/
+        return null;
     }
 
     @PostMapping(value = "/operation-weekly-html")
@@ -1418,7 +1419,7 @@ public class ApplicationAjaxController {
 
     private String getPremPrefixName(String premType){
         String premTypeStr = "";
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
+        /*if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
             premTypeStr = "onSite";
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
             premTypeStr = "conveyance";
@@ -1426,7 +1427,7 @@ public class ApplicationAjaxController {
             premTypeStr = "offSite";
         }else{
             premTypeStr = premType;
-        }
+        }*/
         return premTypeStr;
     }
 
@@ -1629,4 +1630,95 @@ public class ApplicationAjaxController {
                 !MasterCodeUtil.CATE_ID_NATIONALITY.equals(cateId));
     }
 
+    @GetMapping(value = "/co-non-hcsa-template")
+    public void downloadCoNonHcsaTemplate(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            File inputFile = ResourceUtils.getFile("classpath:template/Co-location_Template.xlsx");
+            if (!inputFile.exists() || !inputFile.isFile()) {
+                log.error("No File Template Found!");
+                return;
+            }
+            FileUtils.writeFileResponseContent(response, inputFile);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
+        }
+    }
+
+    @PostMapping(value = "co-non-hcsa-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Map<String, Object> handleCoNonHcsaFile(HttpServletRequest request, /*@RequestParam("selectedFile")
+    */MultipartFile selectedFile, @RequestParam("fileAppendId") String fileAppendId,
+            @RequestParam("uploadFormId") String uploadFormId) throws Exception {
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap();
+        String fileType = ParamUtil.getString(request, "_fileType");
+        String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
+        int maxSize = 0;
+        if (StringUtil.isDigit(fileMaxSize)) {
+            maxSize = Integer.parseInt(fileMaxSize);
+        }
+        String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
+        if (StringUtil.isNotEmpty(errorMessage)) {
+            result.put("error", errorMessage);
+        } else {
+            int index = 0;
+            String tempFolder = request.getSession().getId() + fileAppendId + index;
+            String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
+            File toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
+            List<List<String>> data = ExcelReader.readerToList(toFile, 1, 1, null);
+            if (IaisCommonUtils.isEmpty(data)) {
+                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+                result.put("error", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
+            } else if (IaisCommonUtils.isEmpty(data.get(0))) {
+                // PRF_ERR006 - No records found.
+                result.put("error", MessageUtil.getMessageDesc("PRF_ERR006"));
+            } else {
+                // page show it
+                Map<String, File> map = IaisCommonUtils.genNewHashMap(1);
+                map.put(fileAppendId + index, toFile);
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, maxSize);
+                String fileShowHtml = IaisEGPHelper.getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, index,
+                        uploadFormId, false, request);
+                result.put("fileShowHtml", fileShowHtml);
+
+            }
+        }
+        return result;
+    }
+
+
+    private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
+        if (selectedFile == null || selectedFile.isEmpty()) {
+            return MessageUtil.getMessageDesc("GENERAL_ACK018");
+        }
+        if (maxSize <= 0) {
+            maxSize = systemParamConfig.getUploadFileLimit();
+        }
+        if (StringUtil.isEmpty(fileTypesString)) {
+            fileTypesString = systemParamConfig.getUploadFileType();
+        }
+        log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
+        List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
+        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
+        Boolean fileSize = booleanMap.get("fileSize");
+        Boolean fileType = booleanMap.get("fileType");
+        //size
+        if (!fileSize) {
+            return MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize), "sizeMax");
+        }
+        //type
+        if (!fileType) {
+            String type = FileUtils.getFileTypeMessage(fileTypesString);
+            return MessageUtil.replaceMessage("GENERAL_ERR0018", type, "fileType");
+        }
+
+        //name
+        String orginName = selectedFile.getOriginalFilename();
+        if (orginName != null) {
+            String[] fileSplit = orginName.split("\\.");
+            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+            if (fileName.length() > 100) {
+                return MessageUtil.getMessageDesc("GENERAL_ERR0022");
+            }
+        }
+        return "";
+    }
 }

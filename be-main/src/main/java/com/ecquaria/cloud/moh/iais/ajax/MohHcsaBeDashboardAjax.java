@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
@@ -46,8 +46,8 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -93,7 +93,7 @@ public class MohHcsaBeDashboardAjax {
     private InspectionTaskMainClient inspectionTaskMainClient;
 
     @Autowired
-    private ApplicationMainClient applicationMainClient;
+    private HcsaAppClient hcsaAppClient;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -643,21 +643,14 @@ public class MohHcsaBeDashboardAjax {
             appCessLicDto.setSvcName(svcName);
             AppPremiseMiscDto appPremiseMiscDto = cessationMainClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
             AppCessMiscDto appCessMiscDto = MiscUtil.transferEntityDto(appPremiseMiscDto, AppCessMiscDto.class);
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationMainClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
-            String blkNo = appGrpPremisesEntityDto.getBlkNo();
-            String premisesId = appGrpPremisesEntityDto.getId();
-            String streetName = appGrpPremisesEntityDto.getStreetName();
-            String buildingName = appGrpPremisesEntityDto.getBuildingName();
-            String floorNo = appGrpPremisesEntityDto.getFloorNo();
-            String unitNo = appGrpPremisesEntityDto.getUnitNo();
-            String postalCode = appGrpPremisesEntityDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
+            AppGrpPremisesDto appGrpPremisesDto = hcsaAppClient.getActivePremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            String hciAddress = IaisCommonUtils.getAddress(appGrpPremisesDto);
             AppCessHciDto appCessHciDto = new AppCessHciDto();
-            String hciName = appGrpPremisesEntityDto.getHciName();
-            String hciCode = appGrpPremisesEntityDto.getHciCode();
+            String hciName = appGrpPremisesDto.getHciName();
+            String hciCode = appGrpPremisesDto.getHciCode();
             appCessHciDto.setHciCode(hciCode);
             appCessHciDto.setHciName(hciName);
-            appCessHciDto.setPremiseId(premisesId);
+            appCessHciDto.setPremiseId(appGrpPremisesDto.getId());
             appCessHciDto.setHciAddress(hciAddress);
             if (appCessMiscDto != null) {
                 Date effectiveDate = appCessMiscDto.getEffectiveDate();
@@ -741,15 +734,8 @@ public class MohHcsaBeDashboardAjax {
 
     public PremisesDto getPremiseByHciCodeName(String hciNameCode) {
         PremisesDto premisesDto = licenceClient.getPremiseDtoByHciCodeOrName(hciNameCode).getEntity();
-        if(premisesDto!=null){
-            String blkNo = premisesDto.getBlkNo();
-            String streetName = premisesDto.getStreetName();
-            String buildingName = premisesDto.getBuildingName();
-            String floorNo = premisesDto.getFloorNo();
-            String unitNo = premisesDto.getUnitNo();
-            String postalCode = premisesDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,premisesDto.getPremisesOperationalUnitDtos());
-            premisesDto.setHciAddress(hciAddress);
+        if (premisesDto != null) {
+            premisesDto.setHciAddress(IaisCommonUtils.getAddress(premisesDto));
         }
         return premisesDto;
     }

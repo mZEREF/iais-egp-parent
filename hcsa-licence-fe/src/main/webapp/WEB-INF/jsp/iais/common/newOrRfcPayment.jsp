@@ -147,16 +147,7 @@
                             </p>
                         </td>
                         <td>
-                            <p>
-                                <c:choose>
-                                    <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
-                                        <c:out value="$0"></c:out>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
-                                    </c:otherwise>
-                                </c:choose>
-                            </p>
+                            <p><c:out value="${baseSvcFeeExt.amountStr}"></c:out></p>
                         </td>
                     </tr>
                 </c:if>
@@ -260,9 +251,6 @@
                                 <p>
                                     <c:choose>
                                         <c:when test="${IsCharity && feeInfoStat.index>0}">
-                                            <c:out value="$0"></c:out>
-                                        </c:when>
-                                        <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
                                             <c:out value="$0"></c:out>
                                         </c:when>
                                         <c:otherwise>

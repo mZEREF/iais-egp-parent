@@ -498,19 +498,10 @@ public class WithdrawalDelegator {
                 withdrawnDto.setApplicationNo(appNo);
                 HcsaServiceDto hcsaServiceDto= hcsaConfigFeClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
                 withdrawnDto.setSvcName(hcsaServiceDto.getSvcName());
-                List<AppGrpPremisesDto> appGrpPremisesDtos=applicationFeClient.getAppGrpPremisesDtoByAppGroId(applicationDto.getApplicationNo()).getEntity();
-                if(appGrpPremisesDtos!=null&&appGrpPremisesDtos.size()!=0){
-                    AppGrpPremisesDto agp = appGrpPremisesDtos.get(0);
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(agp.getPremisesType())) {
-                        withdrawnDto.setHciName(agp.getHciName());
-                    } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(agp.getPremisesType())) {
-                        withdrawnDto.setHciName(agp.getOffSiteHciName());
-                    } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(agp.getPremisesType())) {
-                        withdrawnDto.setHciName(agp.getEasMtsHciName());
-                    } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(agp.getPremisesType())){
-                        withdrawnDto.setHciName(agp.getConveyanceHciName());
-                    }
-                }else {
+                AppGrpPremisesDto appGrpPremisesDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
+                if (appGrpPremisesDto != null) {
+                    withdrawnDto.setHciName(appGrpPremisesDto.getHciName());
+                } else {
                     withdrawnDto.setHciName("");
                 }
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);

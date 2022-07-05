@@ -15,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -423,9 +423,7 @@ public class LicenceServiceImpl implements LicenceService {
                                         //judge licence is singlepass
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                         templateContent.put("HCI_Name", premisesDto.getHciName());
-                                        String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),
-                                                premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),
-                                                premisesDto.getPremisesOperationalUnitDtos());
+                                        String address = IaisCommonUtils.getAddress(premisesDto);
                                         templateContent.put("HCI_Address", address);
                                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
                                         templateContent.put("UEN_No", uenNo);
@@ -1110,11 +1108,11 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public PremisesDto getHciCode(AppGrpPremisesEntityDto appGrpPremisesEntityDto) {
+    public PremisesDto getHciCode(AppGrpPremisesDto appGrpPremisesDto) {
         log.info(StringUtil.changeForLog("The getHciCode start ..."));
         PremisesDto result = null;
-        if(appGrpPremisesEntityDto != null){
-            result =  hcsaLicenceClient.getHciCodePremises(appGrpPremisesEntityDto).getEntity();
+        if(appGrpPremisesDto != null){
+            result =  hcsaLicenceClient.getHciCodePremises(appGrpPremisesDto).getEntity();
         }
         log.info(StringUtil.changeForLog("The getHciCode end ..."));
         return result;

@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -62,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -156,6 +156,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
@@ -1356,7 +1359,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
         for(ApplicationDto applicationDto : applicationDtos){
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppGrpPremisesDto appGrpPremisesEntityDto = appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
@@ -1464,21 +1467,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             appGrpPremisesDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
         }
         setAddressByGroupPremises(appGrpPremisesDto);
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
-            appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
-            appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
-            appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
-            appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
-            appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
-        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            appGrpPremisesDto.setOffSiteBlockNo(appGrpPremisesDto.getBlkNo());
-            appGrpPremisesDto.setOffSiteStreetName(appGrpPremisesDto.getStreetName());
-            appGrpPremisesDto.setOffSiteBuildingName(appGrpPremisesDto.getBuildingName());
-            appGrpPremisesDto.setOffSiteFloorNo(appGrpPremisesDto.getFloorNo());
-            appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
-            appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
-        }
         return appGrpPremisesDto;
     }
 
@@ -1506,17 +1494,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         String result = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+        if (StringUtil.isNotEmpty(appGrpPremisesDto.getPremisesType())) {
             if(hcsaTaskAssignDto != null && hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap() != null) {
                 Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
                 result = appPremisesAllUnitNoStrMap.get(appGrpPremisesDto.getId());
             } else {
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appPremisesCorrClient.getUnitNoAndFloorByPremisesId(appGrpPremisesDto.getId()).getEntity();
-                result = MiscUtil.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
-                        appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode(), appPremisesOperationalUnitDtos);
+                result = IaisCommonUtils.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(),
+                        appGrpPremisesDto.getBuildingName(), appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(),
+                        appGrpPremisesDto.getPostalCode(), appPremisesOperationalUnitDtos);
             }
         }
         return result;

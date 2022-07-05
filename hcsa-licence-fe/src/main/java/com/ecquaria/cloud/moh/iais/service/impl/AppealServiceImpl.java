@@ -1250,7 +1250,6 @@ public class AppealServiceImpl implements AppealService {
         List<AppGrpPremisesDto> premisesDtos = new ArrayList<>(1);
         if(!StringUtil.isEmpty(premisess)){
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(premisess.get(0), AppGrpPremisesDto.class);
-            appGrpPremisesDto.setOffTelNo(premisess.get(0).getHciContactNo());
             if(IaisCommonUtils.isNotEmpty(premisess.get(0).getPremisesOperationalUnitDtos())){
                 appGrpPremisesDto.setAppPremisesOperationalUnitDtos(MiscUtil.transferEntityDtos(premisess.get(0).getPremisesOperationalUnitDtos(), AppPremisesOperationalUnitDto.class));
             }

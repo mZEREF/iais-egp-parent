@@ -6032,3 +6032,7 @@ ul.v-numberlist li::before {
 .padding-left {
     padding-left: 0px;
 }
+
+.bold {
+    font-weight: bold;
+}

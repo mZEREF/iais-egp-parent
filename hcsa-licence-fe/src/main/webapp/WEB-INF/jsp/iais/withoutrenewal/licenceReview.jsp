@@ -77,7 +77,7 @@
                                                                     <c:if test="${isSingle == 'N'}">
                                                                         <h2 style='border-bottom:none;'>${AppSubmissionDto.serviceName}; Licence No. ${AppSubmissionDto.licenceNo}</h2>
                                                                     </c:if>
-                                                                    <%@include file="../common/previewLicensee.jsp"%>
+                                                                    <%@include file="../view/licensee/previewLicensee.jsp"%>
                                                                     <%@include file="../common/previewPremises.jsp"%>
                                                                     <%@include file="../common/previewPrimary.jsp"%>
                                                                     <div class="panel panel-default svc-content">

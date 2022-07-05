@@ -1,16 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -105,14 +103,14 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
+            List<AppGrpPremisesDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
             if(!IaisCommonUtils.isEmpty(premisesDtos)){
                 for(PremisesDto premisesHciDto:premisesDtos){
                     result.addAll(genPremisesHciList(premisesHciDto));
                 }
             }
             if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
-                for(AppGrpPremisesEntityDto premisesEntityDto:appGrpPremisesEntityDtos){
+                for(AppGrpPremisesDto premisesEntityDto:appGrpPremisesEntityDtos){
                     PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto,PremisesDto.class);
                     result.addAll(genPremisesHciList(premisesDto));
                 }
@@ -182,7 +180,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
             appPremisesDoQueryDto.setSvcIdList(svcIds);
             List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNames).getEntity();
-            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
+            List<AppGrpPremisesDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
             log.debug("licence record size {}",premisesDtos.size());
             log.debug("pending application record size {}",appGrpPremisesEntityDtos.size());
             if(IaisCommonUtils.isEmpty(premisesDtos) && IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
@@ -195,26 +193,6 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
 
 
     private static List<String> genPremisesHciList(PremisesDto premisesDto){
-        List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
-        if(premisesDto != null){
-            String premisesHciPre = "";
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
-            }
-            premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
-            List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
-            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
-                for(PremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
-                    premisesHciList.add(premisesHciPre + operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo());
-                }
-            }
-        }
-        return premisesHciList;
+        return IaisCommonUtils.getPremisesHciList(premisesDto);
     }
 }

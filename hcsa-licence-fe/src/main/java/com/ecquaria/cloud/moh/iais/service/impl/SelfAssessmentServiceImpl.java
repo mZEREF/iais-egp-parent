@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -24,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -33,10 +31,11 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -84,6 +83,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Autowired
     private LicenceClient licenceClient;
 
+    @Autowired
+    private AppCommService appCommService;
+
     @Value("${iais.email.sender}")
     private String mailSender;
 
@@ -126,10 +128,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             for (AppPremisesCorrelationDto correlation : correlationList) {
                 String corrId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
-                AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
-                String address = MiscUtil.getAddressForApp(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
-                        appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode(),appGrpPremises.getAppPremisesOperationalUnitDtos());
-
+                AppGrpPremisesDto appGrpPremises = appCommService.getAppGrpPremisesById(appGrpPremId);
+                String address = IaisCommonUtils.getAddress(appGrpPremises);
                 SelfAssessment selfAssessment = new SelfAssessment();
                 selfAssessment.setSvcId(svcId);
                 selfAssessment.setCorrId(corrId);
@@ -238,87 +238,82 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationFeClient.getApplicationByCorrId(s).getEntity();
-            if (Optional.ofNullable(applicationDto).isPresent()){
-                    String appNo = applicationDto.getApplicationNo();
-                    String originAppType = applicationDto.getApplicationType();
-                    String appType = MasterCodeUtil.getCodeDesc(originAppType);
-                    emailGroupId_003 = applicationDto.getAppGrpId();
-                    tlGroupNumber = appNo.substring(0, appNo.length() - 3);
-                    List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
+            if (Optional.ofNullable(applicationDto).isPresent()) {
+                String appNo = applicationDto.getApplicationNo();
+                String originAppType = applicationDto.getApplicationType();
+                String appType = MasterCodeUtil.getCodeDesc(originAppType);
+                emailGroupId_003 = applicationDto.getAppGrpId();
+                tlGroupNumber = appNo.substring(0, appNo.length() - 3);
+                AppGrpPremisesDto appGrpPremises = appCommService.getActivePremisesByAppNo(appNo);
+                if (appGrpPremises != null) {
+                    String address = IaisCommonUtils.getAddress(appGrpPremises);
+                    templateContent.put("hciName", appGrpPremises.getHciName());
+                    templateContent.put("hciCode", appGrpPremises.getHciCode());
+                    templateContent.put("hciAddress", address);
+                }
 
-                    if (Optional.ofNullable(appGrpPremisesList).isPresent()){
-                        AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
-                        if (Optional.ofNullable(appGrpPremises).isPresent()){
-                            String address = MiscUtil.getAddressForApp(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
-                                    appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode(),appGrpPremises.getAppPremisesOperationalUnitDtos());
-                            templateContent.put("hciName", appGrpPremises.getHciName());
-                            templateContent.put("hciCode", appGrpPremises.getHciCode());
-                            templateContent.put("hciAddress", address);
-                        }
+                String svcId = applicationDto.getServiceId();
+
+                Date appDate = applicationDto.getCreateAt();
+
+                tlAppType = appType;
+                tlDate = appDate;
+
+                templateContent.put("applicationNo", appNo);
+                templateContent.put("applicationType", appType);
+                templateContent.put("applicationDate", Formatter.formatDate(appDate));
+                templateContent.put("officer_name", "");
+
+                // get inspection from eic
+                HashMap<String, Object> reqParams = IaisCommonUtils.genNewHashMap();
+                reqParams.put("appPremId", s);
+                reqParams.put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                try {
+                    AppPremisesRecommendationDto appPremisesRecommendation =
+                            gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
+                    if (Optional.ofNullable(appPremisesRecommendation).isPresent()) {
+                        Date inspectionDate = appPremisesRecommendation.getRecomInDate();
+
+                        log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + inspectionDate));
+                        templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
                     }
 
-                    String svcId = applicationDto.getServiceId();
+                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(originAppType)) {
+                        String originLicId = applicationDto.getOriginLicenceId();
+                        LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
 
-                    Date appDate = applicationDto.getCreateAt();
+                        log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + licenceDto.getEndDate()));
 
-                    tlAppType = appType;
-                    tlDate = appDate;
-
-                    templateContent.put("applicationNo", appNo);
-                    templateContent.put("applicationType", appType);
-                    templateContent.put("applicationDate", Formatter.formatDate(appDate));
-                    templateContent.put("officer_name", "");
-
-                    // get inspection from eic
-                    HashMap<String, Object > reqParams = IaisCommonUtils.genNewHashMap();
-                    reqParams.put("appPremId",  s);
-                    reqParams.put("recomType", InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                    try {
-                        AppPremisesRecommendationDto appPremisesRecommendation=
-                                gatewayClient.getBeAppPremisesRecommendationByIdAndType(reqParams).getEntity();
-                        if (Optional.ofNullable(appPremisesRecommendation).isPresent()){
-                            Date inspectionDate = appPremisesRecommendation.getRecomInDate();
-
-                            log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + inspectionDate));
-                            templateContent.put("inspectionDate", Formatter.formatDate(inspectionDate));
-                        }
-
-                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(originAppType)){
-                            String originLicId = applicationDto.getOriginLicenceId();
-                            LicenceDto licenceDto = licenceClient.getLicBylicId(originLicId).getEntity();
-
-                            log.info(StringUtil.changeForLog("===>>>>>>>>inspectionDate>>>>>>> " + licenceDto.getEndDate()));
-
-                            Optional.ofNullable(licenceDto).ifPresent(i -> {
-                                templateContent.put("licenceDueDate", Formatter.formatDate( i.getEndDate()));
-                            });
-                        }
-                    }catch (Exception e){
-                        // this try catch will remove after test case
-                        log.error(e.getMessage(), e);
+                        Optional.ofNullable(licenceDto).ifPresent(i -> {
+                            templateContent.put("licenceDueDate", Formatter.formatDate(i.getEndDate()));
+                        });
                     }
+                } catch (Exception e) {
+                    // this try catch will remove after test case
+                    log.error(e.getMessage(), e);
+                }
 
 
-                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                    Optional.ofNullable(serviceDto).ifPresent(i -> {
-                        String svcName = serviceDto.getSvcName();
-                        templateContent.put("serviceName", svcName);
-                        svcNameList.add(svcName);
-                    });
+                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                Optional.ofNullable(serviceDto).ifPresent(i -> {
+                    String svcName = serviceDto.getSvcName();
+                    templateContent.put("serviceName", svcName);
+                    svcNameList.add(svcName);
+                });
 
-                    templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
-                    templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
+                templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
-                    EmailParam email_004 = new EmailParam();
-                    email_004.setTemplateId(email_004_template);
-                    email_004.setTemplateContent(templateContent);
-                    email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
-                    email_004.setReqRefNum(emailRandomStr_003);
-                    email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    email_004.setRefId(appNo);
-                    email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
-                    email_004.setSmsOnlyOfficerHour(false);
-                    notificationHelper.sendNotification(email_004);
+                EmailParam email_004 = new EmailParam();
+                email_004.setTemplateId(email_004_template);
+                email_004.setTemplateContent(templateContent);
+                email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+                email_004.setReqRefNum(emailRandomStr_003);
+                email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                email_004.setRefId(appNo);
+                email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+                email_004.setSmsOnlyOfficerHour(false);
+                notificationHelper.sendNotification(email_004);
             }
         }
 

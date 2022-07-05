@@ -823,14 +823,15 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-        String appPremisesKey=MiscUtil.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
+        String appPremisesKey= IaisCommonUtils.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),
+                rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
 
         boolean addressEquals=false;
-        for (PremisesDto premisesDto:premisesDtoList
-        ) {
-            String licPremisesKey=MiscUtil.getPremisesKey(premisesDto.getHciName(),premisesDto.getPostalCode(),premisesDto.getBlkNo(),"","",premisesDto.getFloorNo(),premisesDto.getUnitNo(),null);
+        for (PremisesDto premisesDto:premisesDtoList ) {
+            String licPremisesKey=IaisCommonUtils.getPremisesKey(premisesDto);
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=hcsaLicenceClient.getPremisesFloorUnits(premisesDto.getId()).getEntity();
-            String licAddress=MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
+            String licAddress=IaisCommonUtils.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),
+                    premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
             if(StringUtil.isEmpty(premisesDto.getBlkNo())){
                 licAddress=" "+licAddress;
             }

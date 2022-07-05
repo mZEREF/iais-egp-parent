@@ -19,7 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -303,9 +303,6 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-apppreinsncitem-be/adhoc-item-be/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AdhocChecklistItemDto> getAdhocChecklistItemById(@PathVariable(name = "id") String id);
 
-    @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
-    FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
-
     @GetMapping(value = "/iais-application-be/get-returnfee-appNo")
     FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@RequestParam(name = "appNo")String appNo,@RequestParam("returnType") String returnType);
 
@@ -332,9 +329,6 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-cessation/application-premises-misc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <AppPremiseMiscDto> getAppPremisesMisc(@RequestParam("correId") String correId);
-
-    @GetMapping(value = "/hcsa-app-common/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 
     @PostMapping(value = "/iais-application-be/submission-post",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> savePostSubmision(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
@@ -420,7 +414,7 @@ public interface ApplicationClient {
     @PutMapping(value = "/iais-application-group-be/update-be-group-status",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>> updateBeGroupStatus(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
     @PostMapping(value = "/iais-appeal/other-change-hci-name-app",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesEntityDto>> getOtherChangeHciNameApp(@RequestBody ApplicationDto application);
+    FeignResponseEntity<List<AppGrpPremisesDto>> getOtherChangeHciNameApp(@RequestBody ApplicationDto application);
     @GetMapping(value = "/iais-appeal/change-hci-name-application" ,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationDto(@RequestBody ApplicationDto application);
 

@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -91,6 +90,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SelectHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -174,6 +174,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Autowired
     private InsRepService insRepService;
@@ -3657,21 +3660,15 @@ public class HcsaApplicationDelegator {
             appCessLicDto.setSvcName(svcName);
             AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
             AppCessMiscDto appCessMiscDto = MiscUtil.transferEntityDto(appPremiseMiscDto, AppCessMiscDto.class);
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
-            String blkNo = appGrpPremisesEntityDto.getBlkNo();
-            String premisesId = appGrpPremisesEntityDto.getId();
-            String streetName = appGrpPremisesEntityDto.getStreetName();
-            String buildingName = appGrpPremisesEntityDto.getBuildingName();
-            String floorNo = appGrpPremisesEntityDto.getFloorNo();
-            String unitNo = appGrpPremisesEntityDto.getUnitNo();
-            String postalCode = appGrpPremisesEntityDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
+            AppGrpPremisesDto appGrpPremisesDto =
+                    appCommService.getActivePremisesByAppNo(applicationDto.getApplicationNo());
+            String hciAddress = IaisCommonUtils.getAddress(appGrpPremisesDto);
             AppCessHciDto appCessHciDto = new AppCessHciDto();
-            String hciName = appGrpPremisesEntityDto.getHciName();
-            String hciCode = appGrpPremisesEntityDto.getHciCode();
+            String hciName = appGrpPremisesDto.getHciName();
+            String hciCode = appGrpPremisesDto.getHciCode();
             appCessHciDto.setHciCode(hciCode);
             appCessHciDto.setHciName(hciName);
-            appCessHciDto.setPremiseId(premisesId);
+            appCessHciDto.setPremiseId(appGrpPremisesDto.getId());
             appCessHciDto.setHciAddress(hciAddress);
             if (appCessMiscDto != null) {
                 Date effectiveDate = appCessMiscDto.getEffectiveDate();

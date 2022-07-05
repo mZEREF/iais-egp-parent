@@ -93,13 +93,19 @@ public class LicenceUtil {
         return  selectOptions;
     }
 
-    public static List<SelectOption> getPremisesType(){
+    public static List<SelectOption> getPremisesType() {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption( ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_OFF_SITE,ApplicationConsts.PREMISES_TYPE_OFF_SITE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
-        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
-        return  selectOptions;
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_PERMANENT,
+                ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,
+                ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,
+                ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_MOBILE,
+                ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW));
+        selectOptions.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_REMOTE,
+                ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW));
+        return selectOptions;
     }
 
     public static String getSelectOptionTextFromSelectOptions( List<SelectOption> selectOptions,String selectOptionVal){

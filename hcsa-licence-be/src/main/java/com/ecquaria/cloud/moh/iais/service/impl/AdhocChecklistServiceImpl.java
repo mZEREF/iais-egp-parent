@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -61,6 +62,9 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
+
+    @Autowired
+    private AppCommService appCommService;
 
     private String acquireParameter(String appType, Function<String, String> t){
         return t.apply(appType);
@@ -124,9 +128,9 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
             if (!oneTime){
                 String hciCode = "";
-                AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getAppGrpPremise(premId).getEntity();
-                if (appGrpPremisesEntityDto != null){
-                    hciCode  = appGrpPremisesEntityDto.getHciCode();
+                AppGrpPremisesDto appGrpPremisesDto = appCommService.getAppGrpPremisesById(premId);
+                if (appGrpPremisesDto != null){
+                    hciCode  = appGrpPremisesDto.getHciCode();
                 }
 
                 ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();

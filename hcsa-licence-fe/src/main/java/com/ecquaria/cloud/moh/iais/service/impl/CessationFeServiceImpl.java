@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -50,9 +49,9 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
@@ -131,7 +130,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
-                        String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,premisesDto.getPremisesOperationalUnitDtos());
+                        String hciAddress = IaisCommonUtils.getAddress(premisesDto);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         String hciCode = premisesDto.getHciCode();
@@ -651,15 +650,8 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Override
     public PremisesDto getPremiseByHciCodeName(String hciNameCode) {
         PremisesDto premisesDto = licenceClient.getPremiseDtoByHciCodeOrName(hciNameCode).getEntity();
-        if(premisesDto!=null){
-            String blkNo = premisesDto.getBlkNo();
-            String streetName = premisesDto.getStreetName();
-            String buildingName = premisesDto.getBuildingName();
-            String floorNo = premisesDto.getFloorNo();
-            String unitNo = premisesDto.getUnitNo();
-            String postalCode = premisesDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,premisesDto.getPremisesOperationalUnitDtos());
-            premisesDto.setHciAddress(hciAddress);
+        if (premisesDto != null) {
+            premisesDto.setHciAddress(IaisCommonUtils.getAddress(premisesDto));
         }
         return premisesDto;
     }
