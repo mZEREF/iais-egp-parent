@@ -64,6 +64,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
@@ -267,8 +268,7 @@ public class VssDataSubmissionDelegator {
     protected final List<SelectOption> getSourseList(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
         DataSubmissionHelper.setVsPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        return selectOptions;
+        return DataSubmissionHelper.genOptions(stringStringMap);
     }
 
     /**
@@ -278,40 +278,40 @@ public class VssDataSubmissionDelegator {
      */
     public void doStep(BaseProcessClass bpc) {
         log.info(" ----- DoStep ------ ");
-        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        HttpServletRequest request = bpc.request;
+        String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if ("return".equals(crudType)) {
             return;
         }
-        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
         int status = 0;// 0: current page; -1: back / previous; 1: next; 2: submission
         if("previous".equals(crudType)){
             currentConfig.setStatus(status);
-            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
         }
         if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
-            status = doTreatment(bpc.request);
+            status = doTreatment(request);
         }else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
-            status = doConsentParticulars(bpc.request);
+            status = doConsentParticulars(request);
         }else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
-            status = doTfsspParticulars(bpc.request);
-
+            status = doTfsspParticulars(request);
         }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
-            status = doPreview(bpc.request);
+            status = doPreview(request);
         }
-        if("next".equals(crudType)||DataSubmissionHelper.isToNextAction(bpc.request)){
+        if("next".equals(crudType)||DataSubmissionHelper.isToNextAction(request)){
             currentConfig.setStatus(status);
-            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
         }else {
             status = 0;
             currentConfig.setStatus(status);
-            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
         }
 
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
+        ParamUtil.setRequestAttr(request, DataSubmissionConstant.ACTION_STATUS, status);
+        ParamUtil.setRequestAttr(request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
     }
 
     private void prepareTreatment(HttpServletRequest request) {
@@ -357,7 +357,7 @@ public class VssDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
+            ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,DataSubmissionConsts.DS_VSS);
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
             }
@@ -405,7 +405,7 @@ public class VssDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
+            ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,DataSubmissionConsts.DS_VSS);
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
             }
@@ -535,7 +535,7 @@ public class VssDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
+            ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,DataSubmissionConsts.DS_VSS);
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
             }
@@ -618,10 +618,11 @@ public class VssDataSubmissionDelegator {
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
-            ValidationResult treatmentDtoResult = WebValidationHelper.validateProperty(treatmentDto,"VSS");
-            ValidationResult gapResult = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
-            ValidationResult ssResult = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
+            ValidationResult treatmentDtoResult = WebValidationHelper.validateProperty(treatmentDto,DataSubmissionConsts.DS_VSS);
+            ValidationResult gapResult = WebValidationHelper.validateProperty(guardianAppliedPartDto,DataSubmissionConsts.DS_VSS);
+            ValidationResult ssResult = WebValidationHelper.validateProperty(sexualSterilizationDto,DataSubmissionConsts.DS_VSS);
 
+            List<DsConfig> configs = DsConfigHelper.getDsConfigList(DataSubmissionConsts.DS_VSS, request);
             if(declaration == null || declaration.length == 0){
                 errMap.put("declaration", "GENERAL_ERR0006");
             }
@@ -633,6 +634,23 @@ public class VssDataSubmissionDelegator {
             }
             if(ssResult !=null){
                 errMap.putAll(ssResult.retrieveAll());
+            }
+
+            if (treatmentDtoResult !=null && gapResult !=null && ssResult !=null) {
+                if (!CollectionUtils.isEmpty(treatmentDtoResult.retrieveAll())) {
+                    configs.get(0).setActive(true);
+                    configs.get(3).setActive(false);
+                } else if (!CollectionUtils.isEmpty(gapResult.retrieveAll())) {
+                    configs.get(0).setStatus(1);
+                    configs.get(1).setActive(true);
+                    configs.get(3).setActive(false);
+                } else if (!CollectionUtils.isEmpty(ssResult.retrieveAll())) {
+                    configs.get(0).setStatus(1);
+                    configs.get(1).setStatus(1);
+                    configs.get(2).setActive(true);
+                    configs.get(3).setActive(false);
+                }
+                DsConfigHelper.setDsConfigList(DataSubmissionConsts.DS_VSS,configs,request);
             }
         }
         if(!errMap.isEmpty()){
