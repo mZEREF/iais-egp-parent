@@ -475,6 +475,9 @@
         if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
             $('#PRS_SERVICE_DOWN').modal('show');
         }
+        if(data.selection.counsellingAge < 16 ){
+            $('#preCounsNoCondReasons').show();
+        }
         console.log("counselling");
         if (isEmpty(data) || data.birthDate) {
             $('#counsellingAge').html(null);
