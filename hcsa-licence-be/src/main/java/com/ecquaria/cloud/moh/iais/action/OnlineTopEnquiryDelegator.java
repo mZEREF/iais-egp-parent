@@ -226,7 +226,7 @@ public class OnlineTopEnquiryDelegator {
                 terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
             }
             if(StringUtil.isNotEmpty(terminationDto.getPrescribeTopPlace())&&premisesMap.containsKey(terminationDto.getPrescribeTopPlace())){
-                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getPremiseLabel());
+                terminationDto.setPrescribeTopPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getPremiseLabel());
             }
             if(StringUtil.isNotEmpty(terminationDto.getTopDrugPlace())&&premisesMap.containsKey(terminationDto.getTopDrugPlace())){
                 terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
