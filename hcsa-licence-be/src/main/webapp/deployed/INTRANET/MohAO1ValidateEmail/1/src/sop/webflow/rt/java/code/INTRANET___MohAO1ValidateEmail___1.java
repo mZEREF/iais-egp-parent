@@ -89,9 +89,6 @@ public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 
 	}
 
-	public void doRollBack_OnStepProcess_0() throws Exception {
-		// 		doRollBack->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doRollBack", this);
-	}
+
 
 }
