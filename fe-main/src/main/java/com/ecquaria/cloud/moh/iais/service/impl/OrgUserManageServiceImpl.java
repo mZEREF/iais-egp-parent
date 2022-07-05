@@ -274,24 +274,14 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             userClient.createClientUser(clientUser);
         }
         // roles
-        if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
-            List<String> roleList = IaisCommonUtils.genNewArrayList();
-            if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserDto.getUserRole())) {
-                roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
-            }
-            if (StringUtil.isNotEmpty(feUserDto.getRoles())) {
-                roleList.addAll(Arrays.asList(feUserDto.getRoles().split("#")));
-            }
-            Optional<String> optional = Optional.ofNullable(feUserDto.getUserRoleDto()).map(OrgUserRoleDto::getRoleName);
-            if (optional.isPresent()) {
-                IaisCommonUtils.addToList(optional.get(), roleList);
-            }
-            roleList.stream()
-                    .map(roleName -> {
+        List<OrgUserRoleDto> orgUserRoleDtos = feUserDto.getOrgUserRoleDtos();
+        if (!AppConsts.COMMON_STATUS_DELETED.equals(status) && IaisCommonUtils.isNotEmpty(orgUserRoleDtos)) {
+            orgUserRoleDtos.stream()
+                    .map(roleDto -> {
                         EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
                         egpUserRole.setUserId(userId);
                         egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                        egpUserRole.setRoleId(roleName);
+                        egpUserRole.setRoleId(roleDto.getRoleName());
                         egpUserRole.setPermission("A");
                         return egpUserRole;
                     })
