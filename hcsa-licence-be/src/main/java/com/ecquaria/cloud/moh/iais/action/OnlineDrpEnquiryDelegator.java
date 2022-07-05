@@ -211,10 +211,11 @@ public class OnlineDrpEnquiryDelegator {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
+        DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
+        DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
+        drugSubmissionDto.setHspBusinessName(premisesMap.get(drugSubmissionDto.getHspBusinessName()).getPremiseLabel());
         if("DP_TP002".equals(dpSuper.getSubmissionType())){
-            DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
-            DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
-            if(drugSubmissionDto!=null&&StringUtil.isNotEmpty(drugSubmissionDto.getDoctorInformationId())){
+            if(StringUtil.isNotEmpty(drugSubmissionDto.getDoctorInformationId())){
                 DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId()).getEntity();
                 dpSuper.setDoctorInformationDto(doctorInformationDto);
                 if (doctorInformationDto != null) {

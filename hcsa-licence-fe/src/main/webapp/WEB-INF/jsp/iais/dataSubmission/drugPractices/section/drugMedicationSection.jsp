@@ -15,11 +15,10 @@
                 <input type="hidden" name="drugMedicationLength" value="1">
                 <div class="med" id="indexs">
                 <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="0" end="0" varStatus="idxStatus">
-                    <c:set var="index" value="${idxStatus.index}" />
                    <iais:row id="test">
                        <div class="col-sm-6 control-label formtext col-md-8">
                            <div class="cgo-header">
-                               <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                               <strong>Medication</strong>
                            </div>
                        </div>
                        <div class="col-md-4 col-xs-7 text-right" id="deleteIcon">
@@ -86,12 +85,11 @@
                 <div id ="medicationDiv">
 
                     <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="1" varStatus="idxStatus">
-                        <c:set var="index" value="${idxStatus.index}" />
                         <div class="med">
                         <iais:row id="test">
                             <div class="col-sm-6 control-label formtext col-md-8">
                                 <div class="cgo-header">
-                                    <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                                    <strong>Medication</strong>
                                 </div>
                             </div>
                             <div class="col-md-4 col-xs-7 text-right">
