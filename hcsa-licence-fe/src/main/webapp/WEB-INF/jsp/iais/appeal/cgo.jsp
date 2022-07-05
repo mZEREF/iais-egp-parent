@@ -462,7 +462,8 @@
         $CurrentPsnEle.find('input[name="mobileNo"]').css('color','#999');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('border-color','#ededed');
         $CurrentPsnEle.find('input[name="emailAddress"]').css('color','#999');
-
+        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
       }
 >>>>>>> origin/SZ_Dev
 
@@ -502,6 +503,8 @@
         } else {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
+          $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+          $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
           var arr = $(this).val().split(',');
           var nationality = arr[0];
           var idType = arr[1];

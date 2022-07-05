@@ -60,7 +60,7 @@ public class VssFeClientFallback implements VssFeClient{
     }
 
     @Override
-    public FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDtoDraftByConds(String orgId, String type) {
+    public FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDtoDraftByConds(String orgId, String type, String userId) {
         return getFeignResponseEntity(orgId, type);
     }
 

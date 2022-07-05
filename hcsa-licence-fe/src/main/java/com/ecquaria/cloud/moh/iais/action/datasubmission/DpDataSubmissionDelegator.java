@@ -148,8 +148,13 @@ public class DpDataSubmissionDelegator {
             actionType = "back";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
-            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                    .map(LoginContext::getOrgId).orElse("");
+            String orgId = "";
+            String userId = "";
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            if (loginContext != null) {
+                orgId = loginContext.getOrgId();
+                userId = loginContext.getUserId();
+            }
             String hciCode = null;
             String svcName = null;
             if(premisesDto != null){
@@ -160,14 +165,14 @@ public class DpDataSubmissionDelegator {
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {
                 DpSuperDataSubmissionDto dataSubmissionDraft = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, svcName, hciCode);
+                        orgId, submissionType, svcName, hciCode, userId);
                 if (dataSubmissionDraft != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "back";
                 }
             } else if ("resume".equals(actionValue)) {
                 dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, svcName, hciCode);
+                        orgId, submissionType, svcName, hciCode, userId);
                 if (dpSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
@@ -224,10 +229,15 @@ public class DpDataSubmissionDelegator {
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
             if (crud_type.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-                String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                        .map(LoginContext::getOrgId).orElse("");
+                String orgId = "";
+                String userId = "";
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+                if (loginContext != null) {
+                    orgId = loginContext.getOrgId();
+                    userId = loginContext.getUserId();
+                }
                 if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId()) != null) {
+                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(), userId) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
             }

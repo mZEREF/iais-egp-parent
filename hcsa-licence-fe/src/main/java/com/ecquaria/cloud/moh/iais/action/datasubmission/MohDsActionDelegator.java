@@ -370,10 +370,14 @@ public class MohDsActionDelegator {
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
             }
-            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
-                    .map(LoginContext::getOrgId).orElse("");
-            ldtSuperDataSubmissionDto.setOrgId(orgId);
-            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, dataSubmissionDto.getId());
+            String orgId = "";
+            String userId = "";
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            if (loginContext != null) {
+                orgId = loginContext.getOrgId();
+                userId = loginContext.getUserId();
+            }
+            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId, dataSubmissionDto.getId());
             if (dataSubmissionDraft != null) {
                 uri += "&hasDraft=" + Boolean.TRUE;
             }

@@ -804,7 +804,7 @@ public class ApprovalBatAndActivityService {
         ApprovalBatAndActivityDto finalAllDataDto = null;
         ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)) {
-            finalAllDataDto = ApprovalBatAndActivityDto.from(approvalSelectionDto, approvalAppRoot);
+            finalAllDataDto = ApprovalBatAndActivityDto.from(approvalSelectionDto, approvalAppRoot, request);
             finalAllDataDto.setAppType(appType);
         }
         String draftAppNo = approvalBatAndActivityClient.saveNewFacilityDraft(finalAllDataDto);

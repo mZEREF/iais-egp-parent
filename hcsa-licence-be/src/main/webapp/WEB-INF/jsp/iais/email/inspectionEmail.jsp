@@ -106,9 +106,9 @@
                                                         </iais:value>
                                                     </iais:row>
                                                     <iais:row id="backToRow">
-                                                        <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                        <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                         <iais:value width="7">
-                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
+                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
                                                             <span id="error_rollBackTo1" class="error-msg"
                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>
@@ -217,12 +217,22 @@
         var f = $('#decision_email option:selected').val();
         var remark = $('#Remarks').val();
 
+        $('#selectDecisionMsg').hide();
+        $('#remarksMsg').hide();
+        $('#error_rollBackTo1').hide();
+
         if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
         }
 
         if("REDECI027" === f){
-            $('#confirmTag').modal('show');
+            const rollBackTo = $('#rollBackTo').val();
+            const actionValue = $("#decision_email").val();
+            if ("REDECI027" === actionValue && (rollBackTo===''||rollBackTo===undefined||rollBackTo===null)) {
+                $("#error_rollBackTo1").show();
+            }else {
+                $('#confirmTag').modal('show');
+            }
         } else {
             if(remark.length>300){
                 $("#remarksMsg").show();
@@ -235,16 +245,8 @@
     }
 
     function mySubmit() {
-        const rollBackTo = $('#rollBackTo').val();
-        const actionValue = $("#decision_email").val();
-        if ("REDECI027" === actionValue && (rollBackTo===''||rollBackTo===undefined||rollBackTo===null)) {
-            $("#error_rollBackTo1").show();
-            //close fangDuoJi in has error
-            $('#fangDuoJiconfirmTag').val(null);
-        }else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "send");
-        }
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
     function initBackToRow() {

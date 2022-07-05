@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -162,11 +163,16 @@ public class ArCycleStagesManualDelegator {
     private String checkPatient(ArSuperDataSubmissionDto currentArDataSubmission, HttpServletRequest request) {
         String stage = "patient";
         String orgId = currentArDataSubmission.getOrgId();
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+        }
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("Action Value: " + actionValue));
         if (StringUtil.isEmpty(actionValue) || "patient".equals(actionValue)) {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
-                    orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null);
+                    orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null, userId);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
@@ -201,6 +207,11 @@ public class ArCycleStagesManualDelegator {
             CycleStageSelectionDto selectionDto, HttpServletRequest request) {
         String stage = selectionDto.getStage();
         String orgId = currentArDataSubmission.getOrgId();
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            userId = loginContext.getUserId();
+        }
         String hciCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
                 .map(PremisesDto::getHciCode)
                 .orElse("");
@@ -209,7 +220,7 @@ public class ArCycleStagesManualDelegator {
         if (StringUtil.isEmpty(actionValue)) {
             List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                    orgId, hciCode, true);
+                    orgId, hciCode, true, userId);
             if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraftList = dataSubmissionDraftList.stream()
                         .filter(arSuperDataSubmissionDto -> StringUtil.isEmpty(arSuperDataSubmissionDto.getTransferInOutStageDto().getBindSubmissionId()))

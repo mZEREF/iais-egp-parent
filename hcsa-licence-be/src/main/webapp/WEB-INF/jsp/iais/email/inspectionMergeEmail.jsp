@@ -10,156 +10,185 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-           String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <div class="main-content">
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <iais:body>
-                            <div class="">
-                                <div class="col-xs-12">
-                                    <div class="tab-gp dashboard-tab">
-                                        <br><br><br>
-                                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li class="complete" role="presentation"><a href="#tabInfo"
-                                                                                        aria-controls="tabInfo"
-                                                                                        role="tab" data-toggle="tab">Info</a>
-                                            </li>
-                                            <li class="complete" role="presentation"><a href="#tabDocuments"
-                                                                                        aria-controls="tabDocuments"
-                                                                                        role="tab"
-                                                                                        data-toggle="tab">Documents</a>
-                                            </li>
-                                            <li class="active" role="presentation"><a href="#tabProcessing"
-                                                                                      aria-controls="tabProcessing"
-                                                                                      role="tab"
-                                                                                      data-toggle="tab">Processing</a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-nav-mobile visible-xs visible-sm">
-                                            <div class="swiper-wrapper" role="tablist">
-                                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
-                                                                             role="tab" data-toggle="tab">Info</a></div>
-                                                <div class="swiper-slide"><a href="#tabDocuments"
-                                                                             aria-controls="tabDocuments" role="tab"
-                                                                             data-toggle="tab">Documents</a></div>
-                                                <div class="swiper-slide"><a href="#tabProcessing"
-                                                                             aria-controls="tabProcessing" role="tab"
-                                                                             data-toggle="tab">Processing</a></div>
-                                            </div>
-                                            <div class="swiper-button-prev"></div>
-                                            <div class="swiper-button-next"></div>
-                                        </div>
-
-                                        <div class="tab-content">
-                                            <div class="tab-pane" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp" %>
+    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="crud_action_type" value="">
+        <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_additional" value="">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-lg-12 col-xs-12">
+                    <div class="center-content">
+                        <div class="intranet-content">
+                            <iais:body>
+                                <div class="">
+                                    <div class="col-xs-12">
+                                        <div class="tab-gp dashboard-tab">
+                                            <br><br><br>
+                                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                                <li class="complete" role="presentation"><a href="#tabInfo"
+                                                                                            aria-controls="tabInfo"
+                                                                                            role="tab"
+                                                                                            data-toggle="tab">Info</a>
+                                                </li>
+                                                <li class="complete" role="presentation"><a href="#tabDocuments"
+                                                                                            aria-controls="tabDocuments"
+                                                                                            role="tab"
+                                                                                            data-toggle="tab">Documents</a>
+                                                </li>
+                                                <li class="active" role="presentation"><a href="#tabProcessing"
+                                                                                          aria-controls="tabProcessing"
+                                                                                          role="tab"
+                                                                                          data-toggle="tab">Processing</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-nav-mobile visible-xs visible-sm">
+                                                <div class="swiper-wrapper" role="tablist">
+                                                    <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
+                                                                                 role="tab" data-toggle="tab">Info</a>
+                                                    </div>
+                                                    <div class="swiper-slide"><a href="#tabDocuments"
+                                                                                 aria-controls="tabDocuments" role="tab"
+                                                                                 data-toggle="tab">Documents</a></div>
+                                                    <div class="swiper-slide"><a href="#tabProcessing"
+                                                                                 aria-controls="tabProcessing"
+                                                                                 role="tab"
+                                                                                 data-toggle="tab">Processing</a></div>
+                                                </div>
+                                                <div class="swiper-button-prev"></div>
+                                                <div class="swiper-button-next"></div>
                                             </div>
 
-                                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
-                                            </div>
-                                            <div class="tab-pane active" id="tabProcessing" role="tabpanel">
-                                                <iais:section title="" id = "process_NcEmail">
-                                                    <iais:row>
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
-                                                        <div class="col-sm-9">
-                                                            <p><input name="subject" type="text" id="subject"
-                                                                      title="subject" readonly
-                                                                      value="${insEmailDto.subject}"></p>
-                                                        </div>
-                                                    </iais:row>
-                                                    <iais:row>
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
-                                                        <div class="col-sm-9">
+                                            <div class="tab-content">
+                                                <div class="tab-pane" id="tabInfo" role="tabpanel">
+                                                    <%@include
+                                                            file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp" %>
+                                                </div>
+
+                                                <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                                    <%@include
+                                                            file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
+                                                </div>
+                                                <div class="tab-pane active" id="tabProcessing" role="tabpanel">
+                                                    <iais:section title="" id="process_NcEmail">
+                                                        <iais:row>
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
+                                                            <div class="col-sm-9">
+                                                                <p><input name="subject" type="text" id="subject"
+                                                                          title="subject" readonly
+                                                                          value="${insEmailDto.subject}"></p>
+                                                            </div>
+                                                        </iais:row>
+                                                        <iais:row>
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
+                                                            <div class="col-sm-9">
                                                                 <textarea name="messageContent" cols="108" rows="50"
                                                                           id="htmlEditroArea"
                                                                           title="content">${insEmailDto.messageContent}</textarea>
-                                                        </div>
-                                                    </iais:row>
-                                                    <iais:row>
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks</label>
-                                                        <iais:value width="4000">
+                                                            </div>
+                                                        </iais:row>
+                                                        <iais:row>
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal
+                                                                Remarks</label>
+                                                            <iais:value width="4000">
                                                             <textarea name="Remarks" cols="60" rows="7"
                                                                       maxlength="300"
                                                             >${insEmailDto.remarks}</textarea>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <iais:row>
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Processing Decision<span class="mandatory">*</span></label>
-                                                        <iais:value width="6">
-                                                            <iais:select id="decision_merge_email" name="decision" onchange="thisTime()" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >
-                                                                This field is mandatory
-                                                            </span>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <iais:row id="rollBackToRow">
-                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Route Back To<span class="mandatory">*</span></label>
-                                                        <iais:value width="6">
-                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <iais:row style="display: none" id="selectReviseNc">
-                                                        <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span class="mandatory">*</span></label>
-                                                        <iais:value width="6" >
-                                                            <c:forEach items="${svcNames}" var="revise"
-                                                                       varStatus="index"><input type="checkbox" name="revise${index.index+1}"
-                                                                       value="${revise}"/>&nbsp;${revise}&nbsp;
-                                                            </c:forEach>
-                                                            <div class="row">&nbsp;</div>
-                                                            <span id="selectDecisionMsgRevise"  style="display: none; font-size: 1.6rem; color: #D22727;">This field is mandatory</span>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                    <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
-                                                        <iais:row >
-                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Licence Start Date</label>
-                                                            <div class="col-sm-9 " >
-                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                                </c:if>
-                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p>-</p>
-                                                                </c:if>
-                                                            </div>
+                                                            </iais:value>
                                                         </iais:row>
-                                                    </c:if>
-                                                </iais:section>
-                                                <p class="text-right text-center-mobile">
-                                                    <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                        <iais:row>
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Processing
+                                                                Decision<span class="mandatory">*</span></label>
+                                                            <iais:value width="6">
+                                                                <iais:select id="decision_merge_email" name="decision"
+                                                                             onchange="thisTime()"
+                                                                             cssClass="nice-select nextStage"
+                                                                             options="appTypeOption"
+                                                                             firstOption="Please select"/>
+                                                                <span style="font-size: 1.6rem; color: #D22727; display: none"
+                                                                      id="selectDecisionMsg">
+                                                                <iais:message key="GENERAL_ERR0006"/>
+                                                            </span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                        <iais:row id="rollBackToRow">
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Roll
+                                                                Back To<span class="mandatory">*</span></label>
+                                                            <iais:value width="6">
+                                                                <iais:select name="rollBackTo"
+                                                                             options="rollBackToOptions"
+                                                                             firstOption="Please Select"
+                                                                             needSort="true"/>
+                                                                <span style="font-size: 1.6rem; color: #D22727; display: none"
+                                                                      id="err_rollBackTo"><iais:message
+                                                                        key="GENERAL_ERR0006"/></span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                        <iais:row style="display: none" id="selectReviseNc">
+                                                            <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span
+                                                                    class="mandatory">*</span></label>
+                                                            <iais:value width="6">
+                                                                <c:forEach items="${svcNames}" var="revise"
+                                                                           varStatus="index"><input type="checkbox"
+                                                                                                    name="revise${index.index+1}"
+                                                                                                    value="${revise}"/>&nbsp;${revise}&nbsp;
+                                                                </c:forEach>
+                                                                <div class="row">&nbsp;</div>
+                                                                <span id="selectDecisionMsgRevise"
+                                                                      style="display: none; font-size: 1.6rem; color: #D22727;"><iais:message
+                                                                        key="GENERAL_ERR0006"/></span>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                        <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
+                                                            <iais:row>
+                                                                <label class="col-xs-0 col-md-2 control-label col-sm-2">Licence
+                                                                    Start Date</label>
+                                                                <div class="col-sm-9 ">
+                                                                    <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                        <p><fmt:formatDate
+                                                                                value='${applicationViewDto.recomLiceStartDate}'
+                                                                                pattern='dd/MM/yyyy'/></p>
+                                                                    </c:if>
+                                                                    <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                        <p>-</p>
+                                                                    </c:if>
+                                                                </div>
+                                                            </iais:row>
+                                                        </c:if>
+                                                    </iais:section>
+                                                    <p class="text-right text-center-mobile">
+                                                        <a style="float:left;padding-top: 1.1%;text-decoration:none;"
+                                                           class="back"
+                                                           href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em
+                                                                class="fa fa-angle-left"></em> Back</a>
 
-                                                    <iais:action style="text-align:right;">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                onclick="javascript:doPreview();">Preview
-                                                        </button>
-                                                        <button name="submitBtn" type="button" class="btn btn-primary"
-                                                                onclick="javascript:doSend();">Submit
-                                                        </button>
-                                                        &nbsp;
-                                                    </iais:action>
-                                                </p>
+                                                        <iais:action style="text-align:right;">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    onclick="javascript:doPreview();">Preview
+                                                            </button>
+                                                            <button name="submitBtn" type="button"
+                                                                    class="btn btn-primary"
+                                                                    onclick="javascript:doSend();">Submit
+                                                            </button>
+                                                            &nbsp;
+                                                        </iais:action>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </iais:body>
+                            </iais:body>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
@@ -177,25 +206,30 @@
     }
 
     function doSend() {
-        var f =$('#decision_merge_email option:selected').val();
+        var f = $('#decision_merge_email option:selected').val();
         $('#err_rollBackTo').hide();
-        if (f == null || f == "") {
+        $('#selectDecisionMsgRevise').hide();
+        $('#selectDecisionMsg').hide();
+        if (f == null || f === "") {
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
-        }else if('REDECI027' === f){
-            $('#confirmTag').modal('show');
+        } else if ('REDECI027' === f) {
+            const rollBackTo = $('#rollBackTo').val();
+            if (rollBackTo === null || rollBackTo === undefined || rollBackTo === "") {
+                $('#err_rollBackTo').show();
+            } else {
+                $('#confirmTag').modal('show');
+            }
         } else {
             $("#selectDecisionMsg").hide();
-            if ($('#decision_merge_email option:selected').val() == "REDECI005") {
+            if ($('#decision_merge_email option:selected').val() === "REDECI005") {
                 var checkOne = false;
                 var checkBox = $('input[type = checkbox]');
                 for (var i = 0; i < checkBox.length; i++) {
                     if (checkBox[i].checked) {
                         checkOne = true;
                     }
-                    ;
                 }
-                ;
 
                 if (checkOne) {
                     showWaiting();
@@ -203,7 +237,6 @@
                 } else {
                     $("#selectDecisionMsgRevise").show();
                 }
-                ;
 
             } else {
                 showWaiting();
@@ -214,7 +247,7 @@
     }
 
     function thisTime() {
-        if ($('#decision_merge_email option:selected').val() == "REDECI005") {
+        if ($('#decision_merge_email option:selected').val() === "REDECI005") {
             $("#selectReviseNc").show();
         } else {
             $("#selectReviseNc").hide();
@@ -222,24 +255,17 @@
         showRollBackToRow();
     }
 
-    function rollBackSubmit(){
-        const rollBackTo = $('#rollBackTo').val();
-        if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
-            $('#err_rollBackTo').show();
-            //close fangDuoJi in has error
-            $('#fangDuoJiconfirmTag').val(null);
-        }else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "send");
-        }
+    function rollBackSubmit() {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
-    function showRollBackToRow(){
+    function showRollBackToRow() {
         const f = $('#decision_merge_email option:selected').val();
         const row = $('#rollBackToRow')
-        if('REDECI027' === f){
+        if ('REDECI027' === f) {
             row.show();
-        }else {
+        } else {
             row.hide();
         }
     }

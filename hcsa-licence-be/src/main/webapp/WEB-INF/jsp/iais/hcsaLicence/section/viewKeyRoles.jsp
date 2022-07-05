@@ -21,10 +21,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         Who is the Licensee?
                     </div>
                     <div class="col-md-6">
+                        <div class="col-md-12">
                         <c:set var="entityType" value="${newLicenceDto.licenseeEntityDto.entityType}"/>
                         <c:if test="${empty entityType || '-' == entityType}" var="invalidType">
                             <iais:code code="${newLicenceDto.licenseeType}" />
@@ -32,6 +33,7 @@
                         <c:if test="${not invalidType}">
                             <iais:code code="${entityType}" />
                         </c:if>
+                        </div>
                     </div>
                 </div>
 

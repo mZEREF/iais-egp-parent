@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,11 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Collection;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_APP_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_ACTIVITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_FAC_AUTHORISED;
@@ -86,6 +89,7 @@ public class ApprovalBatAndActivityDto implements Serializable {
         }
 
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setProcessType(processType);
         primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
 
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{appInfoNodeGroup});
@@ -101,8 +105,12 @@ public class ApprovalBatAndActivityDto implements Serializable {
     /**
      * Write the approvalAppRoot NodeGroup into a DTO, then send the DTO to save the data.
      */
-    public static ApprovalBatAndActivityDto from(ApprovalSelectionDto approvalSelectionDto, NodeGroup approvalAppRoot) {
-        ApprovalBatAndActivityDto approvalBatAndActivityDto = new ApprovalBatAndActivityDto();
+    public static ApprovalBatAndActivityDto from(ApprovalSelectionDto approvalSelectionDto, NodeGroup approvalAppRoot, HttpServletRequest request) {
+        ApprovalBatAndActivityDto approvalBatAndActivityDto = (ApprovalBatAndActivityDto) ParamUtil.getSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
+        if (approvalBatAndActivityDto == null) {
+            approvalBatAndActivityDto = new ApprovalBatAndActivityDto();
+        }
+
         approvalBatAndActivityDto.setApprovalSelectionDto(approvalSelectionDto);
         String processType = approvalSelectionDto.getProcessType();
 

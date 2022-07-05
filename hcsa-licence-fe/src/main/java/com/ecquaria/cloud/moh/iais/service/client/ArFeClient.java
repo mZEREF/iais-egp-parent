@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = ArFeClientFallback.class)
 public interface ArFeClient {
@@ -107,13 +106,15 @@ public interface ArFeClient {
     FeignResponseEntity<List<ArSuperDataSubmissionDto>> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "idType") String idType,
                                                                                                 @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
                                                                                                 @RequestParam(name = "orgId") String orgId, @RequestParam(name = "hciCode") String hciCode,
-                                                                                                @RequestParam(name = "onlyStage") boolean onlyStage);
+                                                                                                @RequestParam(name = "onlyStage") boolean onlyStage,
+                                                                                                @RequestParam("userId") String userId);
 
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "submissionType") String submissionType,
-            @RequestParam(name = "hciCode", required = false) String hciCode);
+                                                                                          @RequestParam(name = "submissionType") String submissionType,
+                                                                                          @RequestParam(name = "hciCode", required = false) String hciCode,
+                                                                                          @RequestParam("userId") String userId);
 
     @PostMapping(value = "/data-submission/draft-ar-data-submission/cycle", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -3804,6 +3804,38 @@ public final class ApplicationHelper {
         return checkPremisesMap(reSetCurrent, false, request);
     }
 
+    public static List<String> checkPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            boolean reload, HttpServletRequest request) {
+        log.info("--- check Premises Hci List ---");
+        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
+        if (!reload && premisesHciList != null) {
+            return premisesHciList;
+        }
+        // if current is one of group new rfi, the premises will be only one, we need to check all apps in this group
+        List<HcsaServiceDto> hcsaServiceDtos = null;
+        if (isRfi) {
+            // init: this#loadingRfiGrpServiceConfig
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST);
+        }
+        if (hcsaServiceDtos == null) {
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
+        }
+        List<PremisesDto> excludePremisesList = null;
+        List<AppGrpPremisesDto> excludeAppPremList = null;
+        if (oldAppSubmissionDto != null) {
+            if (isRfi) {
+                LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
+            }
+            excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        }
+        AppCommService appCommService = SpringHelper.getBean(AppCommService.class);
+        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+                excludePremisesList, excludeAppPremList);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
+        return premisesHciList;
+    }
+
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
             HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
