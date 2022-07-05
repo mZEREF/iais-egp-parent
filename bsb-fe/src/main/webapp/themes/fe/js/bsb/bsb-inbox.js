@@ -50,6 +50,19 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#searchMsgDateFrom").change(function (){
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("[name='action_value']").val("msgDtFrom");
+        $("#mainForm").submit();
+    });
+
+    $("#searchMsgDateTo").change(function (){
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("[name='action_value']").val("msgDtTo");
+        $("#mainForm").submit();
+    });
 
     $("#searchBtn").click(function () {
         showWaiting();

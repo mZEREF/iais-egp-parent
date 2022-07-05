@@ -49,6 +49,8 @@ public class BsbInboxMsgDelegator {
     private static final String KEY_SEARCH_MSG_TYPE = "searchMsgType";
     private static final String KEY_SEARCH_SUBMISSION_TYPE = "searchSubType";
     private static final String KEY_SEARCH_SUBJECT = "searchSubject";
+    private static final String KEY_SEARCH_MSG_DATE_FROM = "searchMsgDateFrom";
+    private static final String KEY_SEARCH_MSG_DATE_TO = "searchMsgDateTo";
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
@@ -134,6 +136,16 @@ public class BsbInboxMsgDelegator {
             case "subject":
                 String searchSubject = ParamUtil.getString(request, KEY_SEARCH_SUBJECT);
                 searchDto.setSearchSubject(searchSubject);
+                searchDto.setPage(0);
+                break;
+            case "msgDtFrom":
+                String searchMsgDtFrom = ParamUtil.getString(request, KEY_SEARCH_MSG_DATE_FROM);
+                searchDto.setSearchMsgDateFrom(searchMsgDtFrom);
+                searchDto.setPage(0);
+                break;
+            case "msgDtTo":
+                String searchMsgDtTo = ParamUtil.getString(request, KEY_SEARCH_MSG_DATE_TO);
+                searchDto.setSearchMsgDateTo(searchMsgDtTo);
                 searchDto.setPage(0);
                 break;
             case KEY_ARCHIVE:
