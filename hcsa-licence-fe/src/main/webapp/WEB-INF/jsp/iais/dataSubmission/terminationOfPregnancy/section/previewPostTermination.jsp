@@ -1,5 +1,5 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002' && preTerminationDto.counsellingResult!='TOPPCR003'}">
 <c:set var="headingSign" value="${postTermination == 'false' ? 'incompleted' : 'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading <c:if test="${headingSigns != 'hide'}">${headingSign}</c:if>">

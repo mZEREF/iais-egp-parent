@@ -43,14 +43,10 @@
                                         <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
-                                            <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
-                                        </c:if>
+                                        <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
-                                            <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
-                                        </c:if>
+                                        <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
                                         <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
