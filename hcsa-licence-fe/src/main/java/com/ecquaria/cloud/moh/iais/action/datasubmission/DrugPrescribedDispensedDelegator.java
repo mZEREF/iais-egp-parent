@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -39,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
 
@@ -82,6 +82,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }else{
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 ajaxResDto.setResultJson(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
+                ParamUtil.setSessionAttr(request,"medication",drugPrescribedDispensedDto.getDrugSubmission().getMedication());
             }
         }
         if(!errorMap.isEmpty()){
@@ -194,6 +195,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission = new DrugSubmissionDto();
         }
         ControllerHelper.get(request, drugSubmission);
+        String medication = ParamUtil.getRequestString(request, "medication");
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){

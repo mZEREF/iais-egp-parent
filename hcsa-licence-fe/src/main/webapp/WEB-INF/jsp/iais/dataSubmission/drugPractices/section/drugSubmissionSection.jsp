@@ -435,6 +435,10 @@
             console.log("quantityMatch :" + quantityMatch);
             $('#QUANTITY_NOT_MATCH').modal('show');
         }
+
+        if ($('#prescriptionSubmissionId').val() != null && "DPD002" == $('#drugType option:selected').val()){
+            disableContent('div.medication');
+        }
     });
     function diagnosi(){
         var drugtype= $('#drugType option:selected').val();
