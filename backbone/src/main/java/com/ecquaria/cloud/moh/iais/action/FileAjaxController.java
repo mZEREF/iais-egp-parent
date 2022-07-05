@@ -147,7 +147,7 @@ public class FileAjaxController {
                     .append(" <button type=\"button\" class=\"").append(cssClass)
                     .append("\" onclick=\"javascript:deleteFileFeAjax('")
                     .append(fileAppendId).append("', ").append(size)
-                    .append("');\">Delete</button>");
+                    .append(");\">Delete</button>");
             if (!AppConsts.NO.equals(needReUpload)) {
                 data.append(" <button type=\"button\" class=\"")
                         .append(cssClass)

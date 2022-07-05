@@ -197,7 +197,7 @@
                                                                                 <iais:field value="Roll Back To" required="true"/>
                                                                                 <iais:value width="10">
                                                                                     <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
-                                                                                                 firstOption="Please Select" needSort="true"
+                                                                                                 firstOption="Please Select"
                                                                                                  options="rollBackValues"
                                                                                                  value="${selectRollBack}"></iais:select>
                                                                                     <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
@@ -209,7 +209,7 @@
                                                                                 <iais:field value="Route Back To" required="true"/>
                                                                                 <iais:value width="10">
                                                                                     <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
-                                                                                                 firstOption="Please Select" needSort="true"
+                                                                                                 firstOption="Please Select"
                                                                                                  options="routeBackValues"
                                                                                                  value="${selectRollBackCr}"></iais:select>
                                                                                 </iais:value>
