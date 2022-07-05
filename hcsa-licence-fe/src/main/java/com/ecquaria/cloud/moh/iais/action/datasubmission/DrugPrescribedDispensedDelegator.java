@@ -195,7 +195,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission = new DrugSubmissionDto();
         }
         ControllerHelper.get(request, drugSubmission);
-        String medication = ParamUtil.getRequestString(request, "medication");
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
