@@ -204,18 +204,6 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
 //        ParamUtil.setRequestAttr(request,"rollBackTo",ParamUtil.getRequestString(request,"rollBackTo"));
     }
 
-    public void doRollBack(BaseProcessClass bpc){
-        log.info("=======>>>>>doRollBack>>>>>>>>>>>>>>>>emailRequest");
-        HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APP_VIEW_DTO);
-        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
-        String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
-        ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "send");
-    }
-
     public void previewEmail(BaseProcessClass bpc){
         log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
@@ -263,7 +251,13 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
 
-        if (decision.equals(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT)){
+        if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
+            Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
+            String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+            return;
+        } else if (decision.equals(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             try {
@@ -280,9 +274,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto, userId,inspectionEmailTemplateDto.getRemarks(),HcsaConsts.ROUTING_STAGE_POT);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, taskDto, userId,"",HcsaConsts.ROUTING_STAGE_POT);
-
-        }
-        else {
+        } else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             try {

@@ -206,7 +206,7 @@
 
     function rollBackSubmit(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "rollBack");
+        SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
     function showRollBackToRow(){
