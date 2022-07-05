@@ -26,20 +26,9 @@
 <%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto" %>
 <%@attribute name="docFrag" fragment="true" %>
 
-<%@attribute name="editFrag" fragment="true" %>
-<%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="operatorEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="authorisedEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="adminEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="officerEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="committeeEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="batListEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="otherAppInfoEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="docEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="afcEditJudge" type="java.lang.Boolean" %>
-
-<jsp:invoke fragment="editFrag" var="editFragString"/>
-
+<%@attribute name="facilityInfoSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="batSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="docSelectJudge" type="java.lang.Boolean" %>
 
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
@@ -114,7 +103,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facProfile")}</div></c:if>
+                            <c:if test="${facilityInfoSelectJudge}"><div class="text-right"><input type="checkbox" name="facilityInfoSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.facilityInfoSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -164,7 +153,6 @@
                                 </div>
                             </div>
                             <c:if test="${not isRfJudge}">
-                            <c:if test="${operatorEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facOperator")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Operator Profile</strong></div>
@@ -223,7 +211,6 @@
                                 </div>
                             </div>
                             </c:if>
-                            <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Administrator/ Officer</strong></div>
@@ -323,7 +310,6 @@
                                 </div>
                             </div>
                             <c:if test="${facAdminOfficer.officerList.size() > 0}">
-                            <c:if test="${officerEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdminOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Officer</strong></div>
@@ -376,7 +362,6 @@
                             </div>
                             </c:if>
                             <c:if test="${not isRfJudge}">
-                                <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
                                         <div class="col-10"><strong>Biosafety Committee</strong></div>
@@ -388,7 +373,6 @@
                                 </div>
                             </c:if>
                             <c:if test="${not isPvRfJudge}">
-                                <c:if test="${authorisedEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAuth")}</div></c:if>
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
                                         <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
@@ -411,7 +395,7 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div></c:if>
+                            <c:if test="${batSelectJudge}"><div class="text-right"><input type="checkbox" name="batSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.batSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                             <c:forEach var="bat" items="${batList}">
                                 <c:set var="isLsp" value="${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq bat.activityType}"/>
                                 <div class="panel-main-content form-horizontal min-row">
@@ -623,7 +607,6 @@
                     </div>
                     <div id="previewOtherAppInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${otherAppInfoEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "otherInfo")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10" style="padding-bottom: 15px;"><strong>Declaration</strong></div>
@@ -667,12 +650,12 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10" style="padding-bottom: 15px;"><strong>Uploaded Documents</strong></div>
                                     <div class="clear"></div>
                                 </div>
+                                <c:if test="${docSelectJudge}"><div class="text-right"><input type="checkbox" name="docSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.docSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>
@@ -687,7 +670,6 @@
                     </div>
                     <div id="previewAfc" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${afcEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "afc")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label">Has the facility appointed an Approved Facility Certifier</label>

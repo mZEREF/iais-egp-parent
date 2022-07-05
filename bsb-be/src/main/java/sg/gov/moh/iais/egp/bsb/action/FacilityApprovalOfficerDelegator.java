@@ -1,16 +1,17 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
-
 import com.ecquaria.cloud.annotation.Delegator;
 
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityApprovalClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
+import sg.gov.moh.iais.egp.bsb.constant.TaskType;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
@@ -21,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityBiologicalAgentI
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -48,12 +50,15 @@ public class FacilityApprovalOfficerDelegator {
     private static final String KEY_ROUTE = "route";
     public static final String KEY_RESULT_MSG = "resultMsg";
     public static final String MSG_COMPLETE_TASK = "You have successfully completed your task";
+
     private final FacilityApprovalClient facApprovalClient;
     private final InternalDocClient internalDocClient;
+    private final AppViewService appViewService;
 
-    public FacilityApprovalOfficerDelegator(FacilityApprovalClient facApprovalClient, InternalDocClient internalDocClient) {
+    public FacilityApprovalOfficerDelegator(FacilityApprovalClient facApprovalClient, InternalDocClient internalDocClient, AppViewService appViewService) {
         this.facApprovalClient = facApprovalClient;
         this.internalDocClient = internalDocClient;
+        this.appViewService = appViewService;
     }
 
     public void startDO(BaseProcessClass bpc) {
@@ -74,7 +79,7 @@ public class FacilityApprovalOfficerDelegator {
         AuditTrailHelper.auditFunction("Pending HM Approval", "HM handle processing decision");
     }
 
-    public void init(BaseProcessClass bpc){
+    public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO);
@@ -118,12 +123,12 @@ public class FacilityApprovalOfficerDelegator {
         ArrayList<ProcessHistoryDto> processHistoryDtoList = new ArrayList<>(initDataDto.getProcessHistoryDtoList());
         ParamUtil.setSessionAttr(request, ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST, processHistoryDtoList);
 
-        ParamUtil.setSessionAttr(request,"aoSelectionOps",new ArrayList<>(initDataDto.getSelectRouteToAO()));
-        ParamUtil.setSessionAttr(request,"hmSelectionOps",new ArrayList<>(initDataDto.getSelectRouteToHM()));
+        ParamUtil.setSessionAttr(request, "aoSelectionOps", new ArrayList<>(initDataDto.getSelectRouteToAO()));
+        ParamUtil.setSessionAttr(request, "hmSelectionOps", new ArrayList<>(initDataDto.getSelectRouteToHM()));
 
         // inspection processing
         FacApprovalProcessDto processDto = initDataDto.getProcessDto();
-        if(processDto == null){
+        if (processDto == null) {
             processDto = new FacApprovalProcessDto();
         }
         String taskId = (String) ParamUtil.getSessionAttr(request, TaskModuleConstants.PARAM_NAME_TASK_ID);
@@ -134,19 +139,36 @@ public class FacilityApprovalOfficerDelegator {
         ParamUtil.setSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO, processDto);
     }
 
-    public void pre(BaseProcessClass bpc){
+    public void pre(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, TaskModuleConstants.PARAM_NAME_APP_ID);
         List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
         ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
 
+        // view application
+        SubmissionDetailsInfo submissionDetailsInfo = (SubmissionDetailsInfo) ParamUtil.getSessionAttr(request, ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO);
+        String appStatus = submissionDetailsInfo.getApplicationStatus();
+        switch(appStatus) {
+            case MasterCodeConstants.APP_STATUS_PEND_DO:
+                AppViewService.approvalAppViewApp(request, appId, TaskType.DO_PROCESSING_FACILITY_APPROVAL);
+                break;
+            case MasterCodeConstants.APP_STATUS_PEND_AO:
+                AppViewService.approvalAppViewApp(request, appId, TaskType.AO_PROCESSING_FACILITY_APPROVAL);
+                break;
+            case MasterCodeConstants.APP_STATUS_PEND_HM:
+                AppViewService.approvalAppViewApp(request, appId, TaskType.HM_PROCESSING_FACILITY_APPROVAL);
+                break;
+            default:
+                log.info("no such appStatus {}", StringUtils.normalizeSpace(appStatus));
+                break;
+        }
     }
 
-    public void bindAction(BaseProcessClass bpc){
+    public void bindAction(BaseProcessClass bpc) {
         // do nothing now
     }
 
-    public void handleSubmit(BaseProcessClass bpc){
+    public void handleSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         processDto.reqObjMapping(request);
@@ -156,17 +178,17 @@ public class FacilityApprovalOfficerDelegator {
         String decision = processDto.getProcessingDecision();
         String validateResult;
         if (validationResultDto.isPass()) {
-            if(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(decision)){
+            if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(decision)) {
                 validateResult = "rfi";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(decision)){
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(decision)) {
                 validateResult = "reject";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(decision)){
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(decision)) {
                 validateResult = "approve";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(decision)){
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(decision)) {
                 validateResult = "routeDO";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM.equals(decision)){
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM.equals(decision)) {
                 validateResult = "routeHM";
-            }else{
+            } else {
                 validateResult = "invalid";
             }
         } else {
@@ -179,75 +201,78 @@ public class FacilityApprovalOfficerDelegator {
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
     }
 
-    public void approveByDO(BaseProcessClass bpc){
+    public void approveByDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalApprove(processDto, StageConstants.ROLE_DO);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void rejectByDO(BaseProcessClass bpc){
+    public void rejectByDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalReject(processDto, StageConstants.ROLE_DO);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void rfiByDO(BaseProcessClass bpc){
+    public void rfiByDO(BaseProcessClass bpc) {
         //DO FRI
     }
 
-    public void rfiByAO(BaseProcessClass bpc){
+    public void rfiByAO(BaseProcessClass bpc) {
         //DO FRI
     }
 
-    public void approveByAO(BaseProcessClass bpc){
+    public void approveByAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalApprove(processDto, StageConstants.ROLE_AO);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void rejectByAO(BaseProcessClass bpc){
+    public void rejectByAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalReject(processDto, StageConstants.ROLE_AO);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void routeDO(BaseProcessClass bpc){
+    public void routeDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalRouteToDO(processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void routeHM(BaseProcessClass bpc){
+    public void routeHM(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalRouteToHM(processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void approveByHM(BaseProcessClass bpc){
+    public void approveByHM(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalApprove(processDto, StageConstants.ROLE_HM);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void rejectByHM(BaseProcessClass bpc){
+    public void rejectByHM(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
         facApprovalClient.facApprovalReject(processDto, StageConstants.ROLE_HM);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
     }
 
-    public void prepareRfi(BaseProcessClass bpc){
+    public void prepareRfi(BaseProcessClass bpc) {
         // prepare RFI
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, TaskModuleConstants.PARAM_NAME_APP_ID);
+        appViewService.retrieveApprovalBatAndActivity(request, appId);
     }
 
-    public void doRfi(BaseProcessClass bpc){
+    public void doRfi(BaseProcessClass bpc) {
         // DO RFI
     }
 }

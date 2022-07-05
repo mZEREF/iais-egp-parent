@@ -40,6 +40,7 @@ public class ApprovalBatAndActivityDto implements Serializable {
     private String appId;
 
     private ApprovalSelectionDto approvalSelectionDto;
+    private FacProfileDto facProfileDto;
     private BiologicalAgentToxinDto approvalToPossessDto;
     private ApprovalToLargeDto approvalToLargeDto;
     private ApprovalToSpecialDto approvalToSpecialDto;

@@ -10,21 +10,10 @@
 <%@attribute name="processType" required="true" type="java.lang.String" %>
 
 <%@attribute name="docFrag" fragment="true" %>
-<%@attribute name="editFrag" fragment="true" %>
-<%@attribute name="facProfileEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="batListEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="docEditJudge" type="java.lang.Boolean" %>
-
-<jsp:invoke fragment="editFrag" var="editFragString"/>
 
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
-    <div class="row" id="printRow">
-        <div class="text-right" style="padding: 0 15px">
-            <p class="print"></p><div style="font-size: 16px;"><a onclick="printApprovalApp('${printApprovalAppId}');" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div><p></p>
-        </div>
-    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
@@ -36,7 +25,6 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${facProfileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_facProfile")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -64,7 +52,6 @@
                             </div>
                             <c:choose>
                                 <c:when test="${processType eq masterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS}">
-                                    <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_possessBat")}</div></c:if>
                                     <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
                                     <div class="panel-main-content form-horizontal min-row">
                                         <div class="form-group" style="margin-top: 10px">
@@ -250,7 +237,6 @@
                                     </div>
                                 </c:when>
                                 <c:when test="${processType eq masterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE}">
-                                    <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_facActivity")}</div></c:if>
                                     <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToActivityDto"--%>
                                     <div class="panel-main-content form-horizontal min-row">
                                         <div class="form-group" style="margin-top: 10px">
@@ -268,7 +254,6 @@
                                     </div>
                                 </c:when>
                                 <c:when test="${processType eq masterCodeConstants.PROCESS_TYPE_APPROVE_LSP}">
-                                    <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_largeBat")}</div></c:if>
                                     <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto"--%>
                                     <div class="panel-main-content form-horizontal min-row">
                                             <div class="form-group" style="margin-top: 10px">
@@ -476,7 +461,6 @@
                                 </c:when>
                                 <c:when test="${processType eq masterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE}">
                                     <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto"--%>
-                                    <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_specialBat")}</div></c:if>
                                     <div class="panel-main-content form-horizontal min-row">
                                         <div class="form-group" style="margin-top: 10px">
                                             <div class="col-10"><strong>Details of Biological Agent</strong></div>
@@ -600,7 +584,6 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <jsp:invoke fragment="docFrag"/>
                             </div>

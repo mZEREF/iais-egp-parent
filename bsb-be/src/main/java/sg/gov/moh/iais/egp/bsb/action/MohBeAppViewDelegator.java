@@ -29,7 +29,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VI
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FAC_CER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_APPROVAL_APP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FAC_CER_REG;
 
 
@@ -60,9 +59,6 @@ public class MohBeAppViewDelegator {
             switch (appViewModuleType) {
                 case MODULE_VIEW_DEREGISTRATION_FACILITY:
                     appViewService.retrieveDeregistrationFac(request, appId);
-                    break;
-                case MODULE_VIEW_NEW_APPROVAL_APP:
-                    appViewService.retrieveApprovalApp(request, appId);
                     break;
                 case MODULE_VIEW_CANCELLATION_APPROVAL_APP:
                     appViewService.retrieveCancellationApproval(request, appId);

@@ -4,6 +4,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ taglib prefix="approvalApp" tagdir="/WEB-INF/tags/approvalApp" %>
 <%
@@ -29,7 +30,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
-                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}" processType="${processType}">
+                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedDto.facAuthorisedDtoList}" processType="${processType}">
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
