@@ -458,7 +458,7 @@
         }
     }
 
-    $("#counsellingGivenDate").on('blur', function () {
+    $("#counsellingGivenDate").change( function () {
         changeDate();
     });
 
