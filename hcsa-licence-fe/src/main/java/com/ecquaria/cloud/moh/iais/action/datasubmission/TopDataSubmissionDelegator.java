@@ -995,7 +995,7 @@ public class TopDataSubmissionDelegator {
                         }
                     }
                 }
-                if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getCounsellingResult())){
+                if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())){
                     if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
                         ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
@@ -1391,7 +1391,7 @@ public class TopDataSubmissionDelegator {
                         }
                     }
                 }
-                if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getCounsellingResult())){
+                if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())){
                     if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
                         terminationDto.setLateSubmit(true);
                     }
