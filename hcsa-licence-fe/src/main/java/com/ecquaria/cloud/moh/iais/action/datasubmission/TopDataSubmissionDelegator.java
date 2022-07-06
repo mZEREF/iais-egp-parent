@@ -512,52 +512,36 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request, "preTermination", "false");
         }
         if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-            if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                if (result4.isHasErrors()) {
-                    errMap.putAll(result4.retrieveAll());
-                    ParamUtil.setRequestAttr(request, "termination", "false");
-                }
-            } else {
-                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                        ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                        if (result4.isHasErrors()) {
-                            errMap.putAll(result4.retrieveAll());
-                            ParamUtil.setRequestAttr(request, "termination", "false");
-                        }
-                    }
-                }else {
+            if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                     ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                     if (result4.isHasErrors()) {
                         errMap.putAll(result4.retrieveAll());
                         ParamUtil.setRequestAttr(request, "termination", "false");
                     }
                 }
+            }else {
+                ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                if (result4.isHasErrors()) {
+                    errMap.putAll(result4.retrieveAll());
+                    ParamUtil.setRequestAttr(request, "termination", "false");
+                }
             }
         }
         if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-            if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
-                if (result5.isHasErrors()) {
-                    errMap.putAll(result5.retrieveAll());
-                    ParamUtil.setRequestAttr(request, "postTermination", "false");
-                }
-            } else {
-                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                        ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
-                        if (result5.isHasErrors()) {
-                            errMap.putAll(result5.retrieveAll());
-                            ParamUtil.setRequestAttr(request, "postTermination", "false");
-                        }
-                    }
-                }else {
+            if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                     ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
                     if (result5.isHasErrors()) {
                         errMap.putAll(result5.retrieveAll());
                         ParamUtil.setRequestAttr(request, "postTermination", "false");
                     }
+                }
+            }else {
+                ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+                if (result5.isHasErrors()) {
+                    errMap.putAll(result5.retrieveAll());
+                    ParamUtil.setRequestAttr(request, "postTermination", "false");
                 }
             }
         }
@@ -715,24 +699,17 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result != null) {
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result != null) {
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result != null) {
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result != null) {
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -773,24 +750,17 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result4 != null) {
-                        errMap.putAll(result4.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result4 != null) {
-                                errMap.putAll(result4.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result4 != null) {
                             errMap.putAll(result4.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result4 != null) {
+                        errMap.putAll(result4.retrieveAll());
                     }
                 }
             }
@@ -799,24 +769,17 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                    if(result !=null){
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                            if(result !=null){
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                         if(result !=null){
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -915,24 +878,17 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result != null) {
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result != null) {
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result != null) {
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result != null) {
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -973,24 +929,17 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result4 != null) {
-                        errMap.putAll(result4.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result4 != null) {
-                                errMap.putAll(result4.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result4 != null) {
                             errMap.putAll(result4.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result4 != null) {
+                        errMap.putAll(result4.retrieveAll());
                     }
                 }
             }
@@ -999,24 +948,17 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                    if(result !=null){
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                            if(result !=null){
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                         if(result !=null){
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -1145,24 +1087,17 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(actionType)){
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result != null) {
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result != null) {
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result != null) {
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result != null) {
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -1173,24 +1108,17 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_PREVIEW.equals(actionType)){
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result4 != null) {
-                        errMap.putAll(result4.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result4 != null) {
-                                errMap.putAll(result4.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result4 != null) {
                             errMap.putAll(result4.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result4 != null) {
+                        errMap.putAll(result4.retrieveAll());
                     }
                 }
             }
@@ -1199,24 +1127,17 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                    if(result !=null){
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                            if(result !=null){
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                         if(result !=null){
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -1327,24 +1248,17 @@ public class TopDataSubmissionDelegator {
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                    if (result != null) {
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
-                            if (result != null) {
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result != null) {
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                    if (result != null) {
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -1355,24 +1269,17 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_PREVIEW.equals(actionType)){
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                    if(result !=null){
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                            if(result !=null){
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                         if(result !=null){
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
@@ -1402,24 +1309,17 @@ public class TopDataSubmissionDelegator {
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                    if(result !=null){
-                        errMap.putAll(result.retrieveAll());
-                    }
-                } else {
-                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
-                        if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
-                            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
-                            if(result !=null){
-                                errMap.putAll(result.retrieveAll());
-                            }
-                        }
-                    }else {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                    if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                         if(result !=null){
                             errMap.putAll(result.retrieveAll());
                         }
+                    }
+                }else {
+                    ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                    if(result !=null){
+                        errMap.putAll(result.retrieveAll());
                     }
                 }
             }
