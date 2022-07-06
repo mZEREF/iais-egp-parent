@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -265,11 +264,21 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugMedicationDtos.get(0).setBatchNo(null);
         }
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
-        if(currentDpDataSubmission.getPatientDto() ==null){
+        PatientDto patientDto = currentDpDataSubmission.getPatientDto();
+        if(patientDto == null){
             PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
                     drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
             if(patient!=null){
                 currentDpDataSubmission.setPatientDto(patient);
+            }
+        } else {
+            //if patientDto not bull, check whether same patient
+            if (!(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
+                PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
+                        drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
+                if (patient != null) {
+                    currentDpDataSubmission.setPatientDto(patient);
+                }
             }
         }
         currentDpDataSubmission.setDrugPrescribedDispensedDto(drugPrescribedDispensed);
