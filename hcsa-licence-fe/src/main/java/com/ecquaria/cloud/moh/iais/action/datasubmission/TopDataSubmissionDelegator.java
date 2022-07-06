@@ -984,28 +984,32 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
+            String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+            String day2 = MasterCodeUtil.getCodeDesc("TOPDAY002");
+            int dayInt=Integer.parseInt(day);
+            int dayInt37=Integer.parseInt(day2);
             if(preTerminationDto.getCounsellingGiven()==true){
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                         ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
                 }
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("No".equals(preTerminationDto.getPatientAppointment())){
-                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
+                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
                             ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                         }
                     }
                 }
                 if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
                         ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
                 }
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("Yes".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP003".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                                 ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                             }
                         }
@@ -1021,7 +1025,7 @@ public class TopDataSubmissionDelegator {
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("Yes".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>30){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
                                 ParamUtil.setRequestAttr(request, "secondLateSubmit", Boolean.TRUE);
                             }
                         }
@@ -1375,33 +1379,36 @@ public class TopDataSubmissionDelegator {
             patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
         }
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String day2 = MasterCodeUtil.getCodeDesc("TOPDAY002");
         String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
-            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>Integer.parseInt(day)){
+            int dayInt=Integer.parseInt(day);
+            int dayInt37=Integer.parseInt(day2);
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>dayInt){
                 terminationDto.setLateSubmit(true);
             }
             if(preTerminationDto.getCounsellingGiven()==true){
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                         terminationDto.setLateSubmit(true);
                     }
                 }
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("No".equals(preTerminationDto.getPatientAppointment())){
-                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
+                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
                             terminationDto.setLateSubmit(true);
                         }
                     }
                 }
                 if("Yes".equals(preTerminationDto.getPatientAppointment())&&"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
                         terminationDto.setLateSubmit(true);
                     }
                 }
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("Yes".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP003".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                                 terminationDto.setLateSubmit(true);
                             }
                         }
@@ -1417,7 +1424,7 @@ public class TopDataSubmissionDelegator {
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("Yes".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>30){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
                                 terminationDto.setLateSubmit(true);
                             }
                         }
