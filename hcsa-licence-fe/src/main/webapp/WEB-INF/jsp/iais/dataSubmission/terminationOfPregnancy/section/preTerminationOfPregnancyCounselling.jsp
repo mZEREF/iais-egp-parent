@@ -218,38 +218,18 @@
         <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
-                <%--<iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="patientAppointment" firstOption="Please Select" id="secCounsellings" codeCategory="CATE_ID_BSB_GAZETTED_AREA"
-                         value="${preTerminationDto.patientAppointment}" cssClass="patientAppointment"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
-                </iais:value>--%>
-                <%--<div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                    <select name="patientAppointment" id="secCounsellings" class="patientAppointment" style="display: none;">
-                        <option value="">Please Select</option>
-                        <option value="Yes" <c:if test="${preTerminationDto.patientAppointment eq 'Yes'}">selected = 'selected'</c:if>>Yes</option>
-                        <option value="No" <c:if test="${preTerminationDto.patientAppointment eq 'No'}">selected = 'selected'</c:if>>No</option>
-                    </select>
-                    <div class="nice-select patientAppointment" tabindex="0">
-                        <span class="current">Please Select</span>
-                        <ul class="list">
-                            <li data-value="" class="option selected">Please Select</li>
-                            <li data-value="Yes" class="option">Yes</li>
-                            <li data-value="No" class="option">No</li>
-                        </ul>
-                    </div>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
-                </div>--%>
+
                 <div class="col-sm-7 col-md-7 col-xs-10" style="width: 930px;">
                     <select name="patientAppointment" id="secCounsellings" class="patientAppointment">
                         <option value="">Please Select</option>
-                        <option value="Yes" <c:if test="${preTerminationDto.patientAppointment eq 'Yes'}">selected = 'selected'</c:if>>Yes</option>
-                        <option value="No" <c:if test="${preTerminationDto.patientAppointment eq 'No'}">selected = 'selected'</c:if>>No</option>
+                        <option value="1" <c:if test="${preTerminationDto.patientAppointment eq '1'}">selected = 'selected'</c:if>>Yes</option>
+                        <option value="0" <c:if test="${preTerminationDto.patientAppointment eq '0'}">selected = 'selected'</c:if>>No</option>
                     </select>
                     <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
                 </div>
             </iais:row>
         </div>
-    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
+    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingDateLabel" style="padding-right: 50px;" value="Date of Second or Final Pre-Counselling" mandatory="true" info="${toolMsg}"/>
@@ -259,7 +239,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
+    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Result of Second or Final Counselling" mandatory="true" info="${toolMsg}"/>
@@ -410,7 +390,7 @@
 
     function secCounsellingDate(){
         var patientAppointment = $('#secCounsellings').val();
-        if (patientAppointment =="Yes") {
+        if (patientAppointment =="1") {
             $('#secCounsellingDates').show();
         }else {
             $('#secCounsellingDates').hide();
@@ -420,7 +400,7 @@
     }
     function secCounsellingResult(){
         var patientAppointment = $('#secCounsellings').val();
-        if (patientAppointment =="Yes") {
+        if (patientAppointment =="1") {
             $('#secCounsellingResults').show();
         }else {
             $('#secCounsellingResults').hide();
