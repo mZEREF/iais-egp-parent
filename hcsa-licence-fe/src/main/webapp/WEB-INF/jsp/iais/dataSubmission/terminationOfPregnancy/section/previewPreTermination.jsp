@@ -140,7 +140,7 @@
                 </div>
                 <div <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
                     <c:if test="${secondLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
                         <iais:field width="5" value="Date of Second or Final Pre-Counselling" info="${toolMsg}"/>
