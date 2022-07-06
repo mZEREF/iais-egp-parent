@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -240,7 +241,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         taskService.createTasks(createTaskList);
         //create history
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,taskDto.getTaskKey(),null,
-                InspectionConstants.PROCESS_DECI_PENDING_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_INP);
+                null, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_INP);
         //save checklist
         saveInspectionChecklist(inspectionChecklist, taskDto.getRefNo());
         //update insp status

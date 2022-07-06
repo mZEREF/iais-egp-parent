@@ -1058,11 +1058,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //set / get completedTask
         taskDto = completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        String processDecision = ParamUtil.getString(bpc.request, "nextStage");
-        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
-        if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
-            processDecision = nextStageReplys;
-        }
+        String processDecision = ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR;
         //save appPremisesRoutingHistoryExtDto
         String routeBackReview = (String) ParamUtil.getSessionAttr(bpc.request, "routeBackReview");
         if ("canRouteBackReview".equals(routeBackReview)) {
