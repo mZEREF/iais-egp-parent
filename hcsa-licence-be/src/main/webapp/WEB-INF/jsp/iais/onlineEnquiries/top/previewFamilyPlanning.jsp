@@ -47,7 +47,7 @@
                     </iais:value>
                 </iais:row>
                 <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek>24}">
-                    <c:set var="week"><iais:message key="Patient's Gestage Age Based on Ultrasound is more than 24 weeks" paramKeys="1" paramValues="counsellor"/></c:set>
+                    <c:set var="week"><iais:message key="DS_MSG031" paramKeys="1" paramValues="counsellor"/></c:set>
                 </c:if>
                 <iais:row>
                     <iais:field width="5" value="Gestation Age based on Ultrasound(Weeks)" info="${week}"/>
