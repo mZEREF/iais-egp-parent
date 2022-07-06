@@ -609,7 +609,8 @@ public class TopDataSubmissionDelegator {
 
             }
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+
+            log.error(StringUtil.changeForLog("setCounsellingAge is error"));
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         request.getSession().setAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
@@ -809,7 +810,8 @@ public class TopDataSubmissionDelegator {
             int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData());
             patientInformationDto.setPatientAge(age/365);
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+            log.error(StringUtil.changeForLog("setPatientAge is error"));
+
         }
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge()) && patientInformationDto.getPatientAge()<16){
             familyPlanDto.setNeedHpbConsult(true);
@@ -1027,7 +1029,7 @@ public class TopDataSubmissionDelegator {
                 }
             }
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+            log.error(StringUtil.changeForLog("LateSubmit is error"));
         }
         if(preTerminationDto.getCounsellingAge()!=null){
             if(preTerminationDto.getCounsellingAge()>16){
@@ -1046,7 +1048,7 @@ public class TopDataSubmissionDelegator {
                 preTerminationDto.setCounsellingAge(counsellingAge);
 
             }catch (Exception e){
-                log.error(e.getMessage(),e);
+                log.error(StringUtil.changeForLog("counsellingAge is error"));
 
             }
         }
@@ -1171,7 +1173,7 @@ public class TopDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(request, "topLateSubmit", Boolean.TRUE);
             }
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+            log.error(StringUtil.changeForLog("topLateSubmit is error"));
         }
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             if(StringUtil.isNotEmpty(topDates)){
@@ -1182,7 +1184,7 @@ public class TopDataSubmissionDelegator {
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                     }
                 }catch (Exception e){
-                    log.error(e.getMessage(),e);
+                    log.error(StringUtil.changeForLog("CounsellingDate is error"));
                 }
             }
         }
@@ -1423,7 +1425,7 @@ public class TopDataSubmissionDelegator {
                 }
             }
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+            log.error(StringUtil.changeForLog("setLateSubmit is error"));
         }
         topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
         try {
@@ -1453,7 +1455,8 @@ public class TopDataSubmissionDelegator {
             }
 
         } catch (IOException | TemplateException e) {
-            log.error(e.getMessage(), e);
+            log.error(StringUtil.changeForLog("sendMsgAndEmail is error"+licenseeId + "----"+ licenseeDtoName + "----"+ submissionNo));
+
         }
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
