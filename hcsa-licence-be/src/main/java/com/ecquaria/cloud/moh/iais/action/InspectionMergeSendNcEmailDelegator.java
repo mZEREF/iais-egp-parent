@@ -453,7 +453,7 @@ public class InspectionMergeSendNcEmailDelegator {
         if(InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
             Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
-            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
             ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
             return;
         }

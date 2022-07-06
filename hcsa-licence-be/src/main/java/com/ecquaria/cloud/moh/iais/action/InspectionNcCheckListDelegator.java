@@ -279,7 +279,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq, TASKDTO);
                 ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
                 Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(mulReq, ROLL_BACK_VALUE_MAP);
-                inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo));
+                inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo), ParamUtil.getString(request,"RemarksForHistory"));
                 ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","INSPE_ACK002");
             }
             serListDto.setProcessDec(processDec);

@@ -504,7 +504,7 @@ public class InspectionPreDelegator {
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto) ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
         String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), inspectionPreTaskDto.getReMarks());
         ParamUtil.setRequestAttr(bpc.request, "successPage", "rollBack");
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRollBack end ...."));
     }

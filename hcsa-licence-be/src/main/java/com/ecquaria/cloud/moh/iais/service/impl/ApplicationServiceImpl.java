@@ -1036,7 +1036,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void rollBackInsp(BaseProcessClass bpc, String roleId, String wrkGpId, String userId) throws CloneNotSupportedException {
+    public void rollBackInsp(BaseProcessClass bpc, String roleId, String wrkGpId, String userId, String remarks) throws CloneNotSupportedException {
 
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
@@ -1044,7 +1044,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         String taskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
         String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;
-        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -1057,11 +1056,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //set / get completedTask
         taskDto = completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        String processDecision = ParamUtil.getString(bpc.request, "nextStage");
-        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
-        if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
-            processDecision = nextStageReplys;
-        }
+        String processDecision = ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR;
         //save appPremisesRoutingHistoryExtDto
         String routeBackReview = (String) ParamUtil.getSessionAttr(bpc.request, "routeBackReview");
         if ("canRouteBackReview".equals(routeBackReview)) {
@@ -1079,7 +1074,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(), taskDto.getTaskKey(), HcsaConsts.ROUTING_STAGE_POT, taskDto.getWkGrpId(), internalRemarks, null, processDecision, taskDto.getRoleId());
+                applicationDto.getStatus(), taskDto.getTaskKey(), HcsaConsts.ROUTING_STAGE_POT, taskDto.getWkGrpId(), remarks, null, processDecision, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));

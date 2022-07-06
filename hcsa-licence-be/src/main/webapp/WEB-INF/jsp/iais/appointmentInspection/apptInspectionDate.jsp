@@ -173,26 +173,27 @@
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
                                              options="rollBackOptions"
-                                             needSort="true"
                                              value=""/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
 
-                            <iais:row>
-                              <iais:field value="Licence Start Date"/>
-                              <iais:value width="10" display="true">
-                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                  <span style="font-size: 16px"><fmt:formatDate
-                                          value='${applicationViewDto.recomLiceStartDate}'
-                                          pattern='dd/MM/yyyy'/></span>
-                                </c:if>
-                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                  <span style="font-size: 16px">-</span>
-                                </c:if>
-                              </iais:value>
-                            </iais:row>
+                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
+                              <iais:row>
+                                <iais:field value="Licence Start Date"/>
+                                <iais:value width="10" display="true">
+                                  <c:if test="${applicationViewDto.recomLiceStartDate != null}">
+                                    <span style="font-size: 16px"><fmt:formatDate
+                                            value='${applicationViewDto.recomLiceStartDate}'
+                                            pattern='dd/MM/yyyy'/></span>
+                                  </c:if>
+                                  <c:if test="${applicationViewDto.recomLiceStartDate == null}">
+                                    <span style="font-size: 16px">-</span>
+                                  </c:if>
+                                </iais:value>
+                              </iais:row>
+                            </c:if>
 
                             <iais:row>
                               <iais:field value="Fast Tracking?"/>

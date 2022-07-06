@@ -245,5 +245,5 @@ public interface InspectionService {
      * cr iais22-13
      * rollBack to History
      */
-    void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto);
+    void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto, String remark);
 }
