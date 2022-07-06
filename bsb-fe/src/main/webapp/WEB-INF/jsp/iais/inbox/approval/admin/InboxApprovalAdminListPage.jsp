@@ -111,7 +111,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label">Expiry Date From:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <iais:datePicker id="searchExpiryDateTo" name="searchExpiryDateTo" value="${inboxApprovalSearchDto.searchExpiryDateTo}"/>
+                                            <iais:datePicker id="searchExpiryDateFrom" name="searchExpiryDateFrom" value="${inboxApprovalSearchDto.searchExpiryDateFrom}"/>
                                             <span data-err-ind="searchExpiryDateFrom" class="error-msg"></span>
                                         </div>
 
@@ -119,7 +119,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-12 col-sm-5 control-label">Expiry Date To:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <iais:datePicker id="searchStartDateTo" name="searchStartDateTo" value="${inboxApprovalSearchDto.searchStartDateTo}"/>
+                                            <iais:datePicker id="searchExpiryDateTo" name="searchExpiryDateTo" value="${inboxApprovalSearchDto.searchExpiryDateTo}"/>
                                             <span data-err-ind="searchExpiryDateTo" class="error-msg"></span>
                                         </div>
                                     </div>

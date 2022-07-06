@@ -10,7 +10,7 @@ public class AppViewConstants {
     public static final String KEY_APP_VIEW_URL                             = "appViewUrl";
 
     public static final String KEY_APP_VIEW_URL_FACILITY                    = "/bsb-web/eservice/INTRANET/BsbBeViewFacilityRegistration";
-    public static final String KEY_APP_VIEW_URL_APPROVAL_APP                = "";
+    public static final String KEY_APP_VIEW_URL_APPROVAL_APP                = "/bsb-web/eservice/INTRANET/BsbBeViewApprovalBatAndActivity";
     public static final String KEY_APP_VIEW_URL_FAC_CER_REG                 = "";
 
     public static final String MODULE_NAME                                  = "MohBeAppView";
@@ -35,8 +35,6 @@ public class AppViewConstants {
     public static final String KEY_IS_RF                   = "isRegisteredFacility";
     public static final String KEY_IS_FIFTH_RF             = "isSPFifthRegisteredFacility";
     public static final String KEY_IS_PV_RF                = "isPolioVirusRegisteredFacility";
-
-    public static final String KEY_APPROVAL_PROFILE_LIST                    = "approvalProfileList";
 
     public static final String NODE_NAME_ORG_PROFILE                        = "orgProfile";
     public static final String NODE_NAME_ORG_CERTIFYING_TEAM                = "orgCerTeam";
@@ -77,4 +75,12 @@ public class AppViewConstants {
     public static final String COMPARE_AFC                                  = "compareAfc";
     public static final String COMPARE_BAT_MAP                              = "compareBatMap";
     public static final String COMPARE_DOC_MAP                              = "compareDocMap";
+
+    // approval bat and activity
+    public static final String KEY_PROCESS_TYPE = "processType";
+    public static final String KEY_FAC_PROFILE_DTO = "facProfileDto";
+    public static final String KEY_BAT_INFO = "batInfo";
+    public static final String KEY_FAC_AUTHORISED_DTO = "facAuthorisedDto";
+
+    // approval bat and activity compare
 }

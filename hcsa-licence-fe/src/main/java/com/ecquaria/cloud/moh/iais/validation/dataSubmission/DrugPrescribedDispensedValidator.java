@@ -67,7 +67,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         }
         String name=drugSubmission.getName();
         String doctorName=drugSubmission.getDoctorName();
-        if (errorMap.isEmpty() && StringUtil.isEmpty(name) && StringUtil.isEmpty(doctorName)) {
+        if (errorMap.isEmpty() && StringUtil.isEmpty(name)) {
             errorMap.put("showValidatePT", AppConsts.YES);
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
         }

@@ -206,7 +206,7 @@
                 </iais:value>
             </iais:row>
         </div>
-            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
+            <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace != 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -218,38 +218,18 @@
         <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
-                <%--<iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="patientAppointment" firstOption="Please Select" id="secCounsellings" codeCategory="CATE_ID_BSB_GAZETTED_AREA"
-                         value="${preTerminationDto.patientAppointment}" cssClass="patientAppointment"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
-                </iais:value>--%>
-                <%--<div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                    <select name="patientAppointment" id="secCounsellings" class="patientAppointment" style="display: none;">
-                        <option value="">Please Select</option>
-                        <option value="Yes" <c:if test="${preTerminationDto.patientAppointment eq 'Yes'}">selected = 'selected'</c:if>>Yes</option>
-                        <option value="No" <c:if test="${preTerminationDto.patientAppointment eq 'No'}">selected = 'selected'</c:if>>No</option>
-                    </select>
-                    <div class="nice-select patientAppointment" tabindex="0">
-                        <span class="current">Please Select</span>
-                        <ul class="list">
-                            <li data-value="" class="option selected">Please Select</li>
-                            <li data-value="Yes" class="option">Yes</li>
-                            <li data-value="No" class="option">No</li>
-                        </ul>
-                    </div>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
-                </div>--%>
+
                 <div class="col-sm-7 col-md-7 col-xs-10" style="width: 930px;">
                     <select name="patientAppointment" id="secCounsellings" class="patientAppointment">
                         <option value="">Please Select</option>
-                        <option value="Yes" <c:if test="${preTerminationDto.patientAppointment eq 'Yes'}">selected = 'selected'</c:if>>Yes</option>
-                        <option value="No" <c:if test="${preTerminationDto.patientAppointment eq 'No'}">selected = 'selected'</c:if>>No</option>
+                        <option value="1" <c:if test="${preTerminationDto.patientAppointment eq '1'}">selected = 'selected'</c:if>>Yes</option>
+                        <option value="0" <c:if test="${preTerminationDto.patientAppointment eq '0'}">selected = 'selected'</c:if>>No</option>
                     </select>
                     <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
                 </div>
             </iais:row>
         </div>
-    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
+    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingDateLabel" style="padding-right: 50px;" value="Date of Second or Final Pre-Counselling" mandatory="true" info="${toolMsg}"/>
@@ -259,7 +239,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
+    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Result of Second or Final Counselling" mandatory="true" info="${toolMsg}"/>
@@ -307,13 +287,8 @@
         $('#counsellingNo').change(function () {
             counsellingNo();
         });
-        $('#counsellingResults,input[name=counsellingGiven]').change(function () {
-            counselling();
-        });
-        $('#counsellingPlaceAge,input[name=counsellingGiven],#counsellingGivenDate').change(function () {
-            counsellingPlace();
-        });
         $('#counsellingResults').change(function () {
+            counselling();
             counsellingResults();
         });
         $('#secCounsellings').change(function () {
@@ -321,14 +296,47 @@
             secCounsellingResult();
         });
         changeDate();
-        /*$("#counsellingGivenDate").on('blur, change', function () {
-            age();
-        })*/
-        /*checkDate();
-        $("#counsellingGivenDate").change(function () {
-            checkDate();
-        })*/
+
+        // Initialize select2
+        $("#counsellingPlaces").select2();
+        $("#counsellingPlaceAgeSelect").select2();
+        $('.select2-container--default').attr('style','width:100%');
+        $('.partial-search-container').hide();
+
+        $('#counsellingPlaceAgeSelect').change(function () {
+
+            counsellingPlace();
+        });
+        $('input[name=counsellingGiven]').change(function () {
+            counselling();
+            counsellingPlace();
+            if ($('#counsellingNo').prop('checked')) {
+                $('#noCounsReason').show();
+                $('#numCounsellingGiven').hide();
+                $('#numCounsellingGivens').hide();
+                $('#numCounsellingGivenAge').hide();
+                $('#numCounsellingGivenDoc').hide();
+                $('#counsellorName').text('');
+                $('#counsellingDate').text('');
+                $('#counsellingResult').text('');
+                fillValue($('#counsellingPlaceAge'),null);
+            }
+            if ($('#counsellingYes').prop('checked')) {
+                $('#counsellorName').text('*');
+                $('#counsellingDate').text('*');
+                $('#counsellingResult').text('*');
+                $('#noCounsReason').hide();
+                $('#numCounsellingGiven').show();
+                $('#numCounsellingGivens').show();
+                $('#numCounsellingGivenAge').show();
+                $('#numCounsellingGivenDoc').show();
+            }
+            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
+            checkMantory('#counsellingYes', "#counsellorIdNoLabel");
+        });
     });
+
+
     function counsellingNo() {
         var counsellingNo = $('#counsellingNo').val();
 
@@ -349,41 +357,6 @@
         }
     }
 
-    $(document).ready(function () {
-        $('input[name=counsellingGiven]').change(function () {
-            if ($('#counsellingYes').prop('checked')) {
-                $('#counsellorName').text('*');
-                $('#counsellingDate').text('*');
-                $('#counsellingResult').text('*');
-            }
-            if ($('#counsellingNo').prop('checked')) {
-                $('#counsellorName').text('');
-                $('#counsellingDate').text('');
-                $('#counsellingResult').text('');
-            }
-            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
-            checkMantory('#counsellingYes', "#counsellorIdNoLabel");
-        });
-    });
-    $(document).ready(function () {
-        $('input[name=counsellingGiven]').change(function () {
-            if ($('#counsellingNo').prop('checked')) {
-                $('#noCounsReason').show();
-                $('#numCounsellingGiven').hide();
-                $('#numCounsellingGivens').hide();
-                $('#numCounsellingGivenAge').hide();
-                $('#numCounsellingGivenDoc').hide();
-                fillValue($('#counsellingPlaceAge'),null);
-            }
-            if ($('#counsellingYes').prop('checked')) {
-                $('#noCounsReason').hide();
-                $('#numCounsellingGiven').show();
-                $('#numCounsellingGivens').show();
-                $('#numCounsellingGivenAge').show();
-                $('#numCounsellingGivenDoc').show();
-            }
-        });
-    });
 
     function counselling() {
         var counsellingResults = $('#counsellingResults').val();
@@ -399,17 +372,16 @@
         }
     }
     function counsellingPlace() {
-        var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
+        var counsellingPlace = $('#counsellingPlaceAgeSelect option:selected').val();
         var maritalStatus = $('#maritalStatus').val();
         var patientAge = $('#counselling').val();
-        var counsellingGivenDate = $('#counsellingGivenDate').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='' || patientAge==''|| counsellingGivenDate==null) {
-                $('#preCounsNoCondReasons').hide();
+            if (counsellingPlace == "AR_SC_001" && maritalStatus !='TOPMS002' && patientAge<16 ) {
+                $('#preCounsNoCondReasons').show();
             }else {
                 console.log("1");
-                $('#preCounsNoCondReasons').show();
+                $('#preCounsNoCondReasons').hide();
             }
         }else {
             $('#preCounsNoCondReasons').hide();
@@ -418,7 +390,7 @@
 
     function secCounsellingDate(){
         var patientAppointment = $('#secCounsellings').val();
-        if (patientAppointment =="Yes") {
+        if (patientAppointment =="1") {
             $('#secCounsellingDates').show();
         }else {
             $('#secCounsellingDates').hide();
@@ -428,7 +400,7 @@
     }
     function secCounsellingResult(){
         var patientAppointment = $('#secCounsellings').val();
-        if (patientAppointment =="Yes") {
+        if (patientAppointment =="1") {
             $('#secCounsellingResults').show();
         }else {
             $('#secCounsellingResults').hide();
@@ -473,7 +445,10 @@
         if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
             $('#PRS_SERVICE_DOWN').modal('show');
         }
-        if(data.selection.counsellingAge < 16 ){
+
+        var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
+        var maritalStatus = $('#maritalStatus').val();
+        if(counsellingPlace == "AR_SC_001" && maritalStatus !='TOPMS002' && data.selection.counsellingAge < 16 ){
             $('#preCounsNoCondReasons').show();
         }
         console.log("counselling");
@@ -493,13 +468,6 @@
 
         }
     }
-    $(document).ready(function(){
-        // Initialize select2
-        $("#counsellingPlaces").select2();
-        $("#counsellingPlaceAgeSelect").select2();
-        $('.select2-container--default').attr('style','width:100%');
-        $('.partial-search-container').hide();
-    });
     /*function age(){
         var counsellingAge = $('#counselling').val();
 

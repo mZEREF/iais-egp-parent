@@ -9,7 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -30,6 +32,8 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import ecq.commons.exception.BaseException;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -308,6 +312,12 @@ public class FECorppassLandingDelegator {
             if (userSession.getAvailable() == null) {
                 userSession.setAvailable(Boolean.TRUE);
             }
+            // set roles
+            List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+            orgUserRoleDtos.add(IaisEGPHelper.createOrgUserRoleDto(RoleConsts.USER_ROLE_ORG_ADMIN, null));
+            orgUserRoleDtos.add(IaisEGPHelper.createOrgUserRoleDto(RoleConsts.USER_ROLE_ORG_USER, AppServicesConsts.SERVICE_MATRIX_ALL));
+            userSession.setOrgUserRoleDtos(orgUserRoleDtos);
+
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");

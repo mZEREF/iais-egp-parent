@@ -799,7 +799,7 @@
                     }else if(data.selection.hasException && !isEmpty(data.selections)){
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
-                        $('#ELIS_SERVICE').modal('show');
+                        $('#PRS_CLOSE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                     }else if (data.selection.hasException && isEmpty(data.selections)) {

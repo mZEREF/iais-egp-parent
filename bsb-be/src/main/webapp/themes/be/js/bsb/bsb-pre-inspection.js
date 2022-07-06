@@ -16,13 +16,4 @@ $(function () {
             window.open(url,'_blank');
         }
     })
-
-    var isClosePage = $("input[name='closePage']").val();
-    if (isClosePage === "Y") {
-        window.close();
-    }
-    $("#submitAppRfiBtn").click(function () {
-        showWaiting();
-        $("#mainForm").submit();
-    });
 })

@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="center-content">
-                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedList}" processType="${processType}"
+                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedDto.facAuthorisedDtoList}" processType="${processType}"
                                          facProfileEditJudge="true" batListEditJudge="true" docEditJudge="true">
                         <jsp:attribute name="editFrag"/>
                         <jsp:attribute name="docFrag">

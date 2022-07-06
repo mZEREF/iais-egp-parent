@@ -87,6 +87,7 @@ public class NotificationHelper {
 	public static final String MESSAGE_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
 
 	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
+	public static final String RECEIPT_ROLE_LICENSEE_ALL                		= "EM-LIC-ALL";
 	public static final String RECEIPT_ROLE_TRANSFEREE_LICENSEE                	= "TRANSFEREE";
 	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
 	public static final String RECEIPT_ROLE_ASSIGNED_ASO            			= "EM-A-ASO";
@@ -830,7 +831,7 @@ public class NotificationHelper {
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
 			inspectionEmailTemplateDto = getRecriptLic(role, refId, inspectionEmailTemplateDto,recipientUserId);
 		} else if (RECEIPT_TYPE_LICENSEE_ID.equals(refType)){
-			msgCommonUtil.setRecriptByLicenseeId(refId, inspectionEmailTemplateDto);
+			msgCommonUtil.setRecriptByLicenseeId(role,refId, inspectionEmailTemplateDto);
 		}else {
 			inspectionEmailTemplateDto = getOfficer(role, inspectionEmailTemplateDto,recipientUserId);
 		}

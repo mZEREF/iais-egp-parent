@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
 
@@ -82,6 +81,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }else{
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 ajaxResDto.setResultJson(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
+                ParamUtil.setSessionAttr(request,"medication",drugPrescribedDispensedDto.getDrugSubmission().getMedication());
             }
         }
         if(!errorMap.isEmpty()){
@@ -194,6 +194,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission = new DrugSubmissionDto();
         }
         ControllerHelper.get(request, drugSubmission);
+        String medication = (String) ParamUtil.getSessionAttr(request, "medication");
+        drugSubmission.setMedication(medication);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
@@ -264,11 +266,21 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugMedicationDtos.get(0).setBatchNo(null);
         }
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
-        if(currentDpDataSubmission.getPatientDto() ==null){
+        PatientDto patientDto = currentDpDataSubmission.getPatientDto();
+        if(patientDto == null){
             PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
                     drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
             if(patient!=null){
                 currentDpDataSubmission.setPatientDto(patient);
+            }
+        } else {
+            //if patientDto not bull, check whether same patient
+            if (!(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
+                PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
+                        drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
+                if (patient != null) {
+                    currentDpDataSubmission.setPatientDto(patient);
+                }
             }
         }
         currentDpDataSubmission.setDrugPrescribedDispensedDto(drugPrescribedDispensed);

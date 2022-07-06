@@ -69,8 +69,7 @@ public class ViewApprovalBatAndActivityDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         ApprovalBatAndActivityDto approvalBatAndActivityDto = getApprovalBatAndActivityDto(request, appId);
 
-        String facilityId = approvalBatAndActivityDto.getApprovalSelectionDto().getFacilityId();
-        FacProfileDto facProfileDto = approvalBatAndActivityClient.getFacProfileDtoByFacilityId(facilityId).getEntity();
+        FacProfileDto facProfileDto = approvalBatAndActivityDto.getFacProfileDto();
         ParamUtil.setRequestAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
 
         String processType = approvalBatAndActivityDto.getApprovalSelectionDto().getProcessType();

@@ -21,15 +21,18 @@ public interface FacilityApprovalClient {
     @PostMapping(path = "/facility-approval-be/form-validation/decision", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacApprovalProcessDto(@RequestBody FacApprovalProcessDto dto);
 
-    @PostMapping(value = "/facility-approval-be/decision/approve",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> facApprovalApprove(@RequestBody FacApprovalProcessDto dto,@RequestParam("role") String role);
+    @PostMapping(value = "/facility-approval-be/decision/approve", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> facApprovalApprove(@RequestBody FacApprovalProcessDto dto, @RequestParam("role") String role);
 
-    @PostMapping(value = "/facility-approval-be/decision/reject",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/facility-approval-be/decision/reject", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> facApprovalReject(@RequestBody FacApprovalProcessDto dto, @RequestParam("role") String role);
 
-    @PostMapping(value = "/facility-approval-be/decision/route-to-do",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/facility-approval-be/decision/route-to-do", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> facApprovalRouteToDO(@RequestBody FacApprovalProcessDto dto);
 
-    @PostMapping(value = "/facility-approval-be/decision/route-to-hm",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/facility-approval-be/decision/route-to-hm", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> facApprovalRouteToHM(@RequestBody FacApprovalProcessDto dto);
-    }
+
+    @PostMapping(value = "/facility-approval-be/decision/do-rfi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> facApprovalDORfi(@RequestBody FacApprovalProcessDto dto);
+}

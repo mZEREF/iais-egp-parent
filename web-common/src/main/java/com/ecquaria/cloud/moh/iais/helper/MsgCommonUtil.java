@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author yichen
@@ -29,14 +31,21 @@ public class MsgCommonUtil {
         return licenseeClient.getPersonByid(licenseeId).getEntity();
     }
 
-    public void setRecriptByLicenseeId(String refId, InspectionEmailTemplateDto inspectionEmailTemplateDto){
-        LicenseeDto licensee = getLicenseeById(refId);
-        if (licensee != null && AppConsts.COMMON_STATUS_ACTIVE.equals(licensee.getStatus())){
-            String emailAddr = licensee.getEmilAddr();
-            List<String> emailList = new ArrayList<>();
-            emailList.add(emailAddr);
-            inspectionEmailTemplateDto.setReceiptEmails(emailList);
+    public void setRecriptByLicenseeId(List<String> roles ,String refId, InspectionEmailTemplateDto inspectionEmailTemplateDto){
+        Set<String> emailSet = new HashSet<>();
+        if(roles != null && roles.contains(NotificationHelper.RECEIPT_ROLE_LICENSEE_ALL)){
+            //this refId is licensee id
+            List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(refId);
+            emailSet.addAll(emailAddrs);
+        }else{
+            //this refId is license id
+            LicenseeDto licensee = getLicenseeById(refId);
+            if (licensee != null && AppConsts.COMMON_STATUS_ACTIVE.equals(licensee.getStatus())){
+                String emailAddr = licensee.getEmilAddr();
+                emailSet.add(emailAddr);
+            }
         }
+        inspectionEmailTemplateDto.setReceiptEmails(new ArrayList<>(emailSet));
     }
 
     public List<String> getEmailAddressListByLicenseeId(List<String> licenseeIdList){

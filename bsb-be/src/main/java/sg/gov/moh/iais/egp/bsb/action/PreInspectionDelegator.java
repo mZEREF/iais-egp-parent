@@ -26,9 +26,9 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.RfiApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RfiPreInspectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -36,6 +36,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_BAT_SELECT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_DOC_SELECT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_FAC_SELECT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CLOSE_PAGE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_TRUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.RFI_SELECT_MAP;
 
 
 @Slf4j
@@ -73,8 +80,6 @@ public class PreInspectionDelegator {
     private static final String RFI_APPLICATION = "AppPreInspRfiCheck";
     private static final String RFI_SELF = "SelfPreInspRfiCheck";
 
-    private static final String KEY_RFI_APPLICATION_DTO = "rfiApplicationDto";
-
     @Autowired
     public PreInspectionDelegator(InspectionClient inspectionClient, AppViewService appViewService) {
         this.inspectionClient = inspectionClient;
@@ -85,7 +90,6 @@ public class PreInspectionDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_PRE_INSPECTION);
     }
 
@@ -95,7 +99,7 @@ public class PreInspectionDelegator {
         session.removeAttribute(RFI_APPLICATION);
         session.removeAttribute(RFI_SELF);
         session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
-        session.removeAttribute(KEY_RFI_APPLICATION_DTO);
+        session.removeAttribute(RFI_SELECT_MAP);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -215,11 +219,15 @@ public class PreInspectionDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        RfiApplicationDto rfiApplicationDto = (RfiApplicationDto) ParamUtil.getSessionAttr(request, KEY_RFI_APPLICATION_DTO);
+
+        Map<String, Boolean> rfiSelectMap = (Map<String, Boolean>) ParamUtil.getSessionAttr(request, RFI_SELECT_MAP);
+        RfiProcessDto rfiProcessDto = new RfiProcessDto();
+        rfiProcessDto.setRfiSelectMap(rfiSelectMap);
+
         RfiPreInspectionDto rfiPreInspectionDto = new RfiPreInspectionDto();
         rfiPreInspectionDto.setInsProcessDto(processDto);
         rfiPreInspectionDto.setRfiFlag(rfiFlag);
-        rfiPreInspectionDto.setRfiApplicationDto(rfiApplicationDto);
+        rfiPreInspectionDto.setRfiProcessDto(rfiProcessDto);
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
         inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiPreInspectionDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS));
@@ -244,13 +252,15 @@ public class PreInspectionDelegator {
 
     public void doApplicationRfi(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        RfiApplicationDto rfiApplicationDto = (RfiApplicationDto) ParamUtil.getSessionAttr(request, KEY_RFI_APPLICATION_DTO);
-        if (rfiApplicationDto == null) {
-            rfiApplicationDto = new RfiApplicationDto();
-        }
-        rfiApplicationDto.reqObjMapping(request);
-        ParamUtil.setSessionAttr(request, KEY_RFI_APPLICATION_DTO, rfiApplicationDto);
-        ParamUtil.setRequestAttr(request, "closePage", "Y");
+        Map<String, Boolean> rfiSelectMap = Maps.newHashMapWithExpectedSize(3);
+        String facSelect = ParamUtil.getString(request, CHECK_BOX_FAC_SELECT);
+        String batSelect = ParamUtil.getString(request, CHECK_BOX_BAT_SELECT);
+        String docSelect = ParamUtil.getString(request, CHECK_BOX_DOC_SELECT);
+        rfiSelectMap.put(CHECK_BOX_FAC_SELECT, facSelect != null && facSelect.equals(KEY_TRUE));
+        rfiSelectMap.put(CHECK_BOX_BAT_SELECT, batSelect != null && batSelect.equals(KEY_TRUE));
+        rfiSelectMap.put(CHECK_BOX_DOC_SELECT, docSelect != null && docSelect.equals(KEY_TRUE));
+        ParamUtil.setSessionAttr(request, RFI_SELECT_MAP, (Serializable) rfiSelectMap);
+        ParamUtil.setRequestAttr(request, CLOSE_PAGE, true);
     }
 
     private Map<String, String> validateRfi(HttpServletRequest request, InsProcessDto processDto) {

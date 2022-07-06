@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.client.ApplicationDocClient;
@@ -15,8 +16,6 @@ import sg.gov.moh.iais.egp.bsb.constant.TaskType;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
@@ -29,6 +28,9 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
@@ -43,6 +45,8 @@ import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.CompareUtil;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -61,7 +65,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.COMPARE_F
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.COMPARE_FAC_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.COMPARE_MAIN_ADMIN;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.COMPARE_OFFICERS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APPROVAL_PROFILE_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_BAT_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_BAT_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_CANCELLATION_APPROVAL_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DECLARATION_ANSWER_MAP;
@@ -70,6 +74,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DE_RE
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DE_REGISTRATION_FACILITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DOC_SETTINGS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FACILITY_REGISTRATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FAC_AUTHORISED_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FAC_PROFILE_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FILE_MAP_SAVED;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_INSPECTION_FOLLOW_UP_ITEMS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_CF;
@@ -80,8 +86,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_IS_UC
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_OTHER_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_SAVED_FILES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_TASK_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_VIEW_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_FAC_ADMIN_OFFICER;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.NODE_NAME_FAC_OPERATOR;
@@ -123,14 +132,27 @@ public class AppViewService {
         ParamUtil.setRequestAttr(request, AppViewConstants.KEY_TASK_TYPE, taskType);
     }
 
-    public static void approvalAppViewApp(HttpServletRequest request, String appId) {
+    public static void approvalAppViewApp(HttpServletRequest request, String appId, TaskType taskType) {
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
         ParamUtil.setRequestAttr(request, AppViewConstants.KEY_APP_VIEW_URL, AppViewConstants.KEY_APP_VIEW_URL_APPROVAL_APP);
+        ParamUtil.setRequestAttr(request, AppViewConstants.KEY_TASK_TYPE, taskType);
     }
 
     public static void facilityCertificationRegistrationViewApp(HttpServletRequest request, String appId) {
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
         ParamUtil.setRequestAttr(request, AppViewConstants.KEY_APP_VIEW_URL, AppViewConstants.KEY_APP_VIEW_URL_FAC_CER_REG);
+    }
+
+    public void init(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String maskedAppId = request.getParameter(MASK_PARAM_APP_ID);
+        String appId = MaskHelper.unmask(MASK_PARAM_APP_ID, maskedAppId);
+        ParamUtil.setSessionAttr(request, MASK_PARAM_APP_ID, appId);
+
+        String taskType = request.getParameter(KEY_TASK_TYPE);
+        if (!org.springframework.util.StringUtils.hasLength(taskType)) {
+            ParamUtil.setSessionAttr(request, KEY_TASK_TYPE, taskType);
+        }
     }
 
     /**
@@ -327,21 +349,57 @@ public class AppViewService {
     }
 
     /**
-     * retrieve new approval app view data
+     * retrieve new approval bat and activity view data
      */
-    public void retrieveApprovalApp(HttpServletRequest request, String applicationId) {
-        ResponseDto<ApprovalAppDto> resultDto = appViewClient.getApprovalAppDtoByAppId(applicationId);
-        if (resultDto.ok()){
-            ApprovalAppDto approvalAppDto = resultDto.getEntity();
-            List<ApprovalProfileDto> approvalProfileDtoList = new ArrayList<>(approvalAppDto.getApprovalProfileMap().values());
-            ParamUtil.setRequestAttr(request, KEY_APPROVAL_PROFILE_LIST, approvalProfileDtoList);
+    public void retrieveApprovalBatAndActivity(HttpServletRequest request, String applicationId) {
+        ResponseDto<ApprovalBatAndActivityDto> resultDto = appViewClient.getApprovalBatAndActivityDtoByAppId(applicationId);
+        if (resultDto.ok()) {
+            ApprovalBatAndActivityDto approvalBatAndActivityDto = resultDto.getEntity();
 
-//            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, docSettingService.getApprovalAppDocSettings());
+            FacProfileDto facProfileDto = approvalBatAndActivityDto.getFacProfileDto();
+            ParamUtil.setRequestAttr(request, KEY_FAC_PROFILE_DTO, facProfileDto);
+
+            String processType = approvalBatAndActivityDto.getApprovalSelectionDto().getProcessType();
+            ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE, processType);
+
+            switch (processType) {
+                case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
+                    BiologicalAgentToxinDto dto = approvalBatAndActivityDto.getApprovalToPossessDto();
+                    ParamUtil.setRequestAttr(request, KEY_BAT_INFO, dto);
+                    break;
+                case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
+                    ApprovalToLargeDto lspDto = approvalBatAndActivityDto.getApprovalToLargeDto();
+                    ParamUtil.setRequestAttr(request, KEY_BAT_INFO, lspDto);
+                    break;
+                case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
+                    ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalBatAndActivityDto.getApprovalToSpecialDto());
+                    ParamUtil.setRequestAttr(request, KEY_FAC_AUTHORISED_DTO, approvalBatAndActivityDto.getFacAuthorisedDto());
+                    break;
+                case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
+                    ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalBatAndActivityDto.getApprovalToActivityDto());
+                    break;
+                default:
+                    log.info("no such processType {}", StringUtils.normalizeSpace(processType));
+                    break;
+            }
+            List<DocSetting> approvalAppDocSettings = docSettingService.getApprovalAppDocSettings(processType);
+            ParamUtil.setRequestAttr(request, "docSettings", approvalAppDocSettings);
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(approvalAppDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
-            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(approvalBatAndActivityDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+
+            Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(approvalAppDocSettings, savedFiles.keySet());
+            ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
+        } else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    public void retrieveRfiApprovalBatAndActivity(HttpServletRequest request, String applicationId, ApprovalBatAndActivityDto oldApprovalBatAndActivityDto) {
+        ResponseDto<ApprovalBatAndActivityDto> resultDto = appViewClient.getApprovalBatAndActivityDtoByAppId(applicationId);
+        if (resultDto.ok()) {
+
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
