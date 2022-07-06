@@ -307,13 +307,8 @@
         $('#counsellingNo').change(function () {
             counsellingNo();
         });
-        $('#counsellingResults,input[name=counsellingGiven]').change(function () {
-            counselling();
-        });
-        $('#counsellingPlaceAge,input[name=counsellingGiven],#counsellingGivenDate').change(function () {
-            counsellingPlace();
-        });
         $('#counsellingResults').change(function () {
+            counselling();
             counsellingResults();
         });
         $('#secCounsellings').change(function () {
@@ -321,14 +316,44 @@
             secCounsellingResult();
         });
         changeDate();
-        /*$("#counsellingGivenDate").on('blur, change', function () {
-            age();
-        })*/
-        /*checkDate();
-        $("#counsellingGivenDate").change(function () {
-            checkDate();
-        })*/
+
+        // Initialize select2
+        $("#counsellingPlaces").select2();
+        $("#counsellingPlaceAgeSelect").select2();
+        $('.select2-container--default').attr('style','width:100%');
+        $('.partial-search-container').hide();
+
+
+        $('input[name=counsellingGiven]').change(function () {
+            counselling();
+            counsellingPlace();
+            if ($('#counsellingNo').prop('checked')) {
+                $('#noCounsReason').show();
+                $('#numCounsellingGiven').hide();
+                $('#numCounsellingGivens').hide();
+                $('#numCounsellingGivenAge').hide();
+                $('#numCounsellingGivenDoc').hide();
+                $('#counsellorName').text('');
+                $('#counsellingDate').text('');
+                $('#counsellingResult').text('');
+                fillValue($('#counsellingPlaceAge'),null);
+            }
+            if ($('#counsellingYes').prop('checked')) {
+                $('#counsellorName').text('*');
+                $('#counsellingDate').text('*');
+                $('#counsellingResult').text('*');
+                $('#noCounsReason').hide();
+                $('#numCounsellingGiven').show();
+                $('#numCounsellingGivens').show();
+                $('#numCounsellingGivenAge').show();
+                $('#numCounsellingGivenDoc').show();
+            }
+            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
+            checkMantory('#counsellingYes', "#counsellorIdNoLabel");
+        });
     });
+
+
     function counsellingNo() {
         var counsellingNo = $('#counsellingNo').val();
 
@@ -349,41 +374,6 @@
         }
     }
 
-    $(document).ready(function () {
-        $('input[name=counsellingGiven]').change(function () {
-            if ($('#counsellingYes').prop('checked')) {
-                $('#counsellorName').text('*');
-                $('#counsellingDate').text('*');
-                $('#counsellingResult').text('*');
-            }
-            if ($('#counsellingNo').prop('checked')) {
-                $('#counsellorName').text('');
-                $('#counsellingDate').text('');
-                $('#counsellingResult').text('');
-            }
-            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
-            checkMantory('#counsellingYes', "#counsellorIdNoLabel");
-        });
-    });
-    $(document).ready(function () {
-        $('input[name=counsellingGiven]').change(function () {
-            if ($('#counsellingNo').prop('checked')) {
-                $('#noCounsReason').show();
-                $('#numCounsellingGiven').hide();
-                $('#numCounsellingGivens').hide();
-                $('#numCounsellingGivenAge').hide();
-                $('#numCounsellingGivenDoc').hide();
-                fillValue($('#counsellingPlaceAge'),null);
-            }
-            if ($('#counsellingYes').prop('checked')) {
-                $('#noCounsReason').hide();
-                $('#numCounsellingGiven').show();
-                $('#numCounsellingGivens').show();
-                $('#numCounsellingGivenAge').show();
-                $('#numCounsellingGivenDoc').show();
-            }
-        });
-    });
 
     function counselling() {
         var counsellingResults = $('#counsellingResults').val();
@@ -399,17 +389,16 @@
         }
     }
     function counsellingPlace() {
-        var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
+        var counsellingPlace = $('#counsellingPlaceAgeSelect option:selected').val();
         var maritalStatus = $('#maritalStatus').val();
         var patientAge = $('#counselling').val();
-        var counsellingGivenDate = $('#counsellingGivenDate').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace == "AR_SC_001" || maritalStatus =='TOPMS002' || patientAge>=16 || counsellingPlace==null || counsellingPlace=='' || patientAge==''|| counsellingGivenDate==null) {
-                $('#preCounsNoCondReasons').hide();
+            if (counsellingPlace == "AR_SC_001" && maritalStatus !='TOPMS002' && patientAge<16 ) {
+                $('#preCounsNoCondReasons').show();
             }else {
                 console.log("1");
-                $('#preCounsNoCondReasons').show();
+                $('#preCounsNoCondReasons').hide();
             }
         }else {
             $('#preCounsNoCondReasons').hide();
@@ -475,7 +464,10 @@
         if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
             $('#PRS_SERVICE_DOWN').modal('show');
         }
-        if(data.selection.counsellingAge < 16 ){
+
+        var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
+        var maritalStatus = $('#maritalStatus').val();
+        if(counsellingPlace == "AR_SC_001" && maritalStatus !='TOPMS002' && data.selection.counsellingAge < 16 ){
             $('#preCounsNoCondReasons').show();
         }
         console.log("counselling");
@@ -495,13 +487,6 @@
 
         }
     }
-    $(document).ready(function(){
-        // Initialize select2
-        $("#counsellingPlaces").select2();
-        $("#counsellingPlaceAgeSelect").select2();
-        $('.select2-container--default').attr('style','width:100%');
-        $('.partial-search-container').hide();
-    });
     /*function age(){
         var counsellingAge = $('#counselling').val();
 
