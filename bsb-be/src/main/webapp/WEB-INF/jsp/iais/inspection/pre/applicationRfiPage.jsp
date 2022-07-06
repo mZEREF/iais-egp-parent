@@ -12,7 +12,7 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-pre-inspection.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process-decision-rfi.js"></script>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="closePage" value="${closePage}">
     <div class="main-content">
@@ -47,7 +47,7 @@
                                                                      facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                                                      batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
                                                                      classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
-                                                                     facilityInfoSelectJudge="true" batSelectJudge="true" docSelectJudge="true">
+                                                                     facSelectJudge="true" batSelectJudge="true" docSelectJudge="true">
                                                         <jsp:attribute name="docFrag"/>
                                                         <c:forEach var="doc" items="${docSettings}">
                                                             <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
@@ -85,7 +85,7 @@
                                                                 </c:forEach>
                                                             </div>
                                                         </c:if>
-                                                    </fac:preview>\
+                                                    </fac:preview>
                                                         <div style="text-align: right"><button name="submitAppRfiBtn" id="submitAppRfiBtn" type="button" class="btn btn-primary">Submit</button></div>
                                                 </div>
                                             </div>

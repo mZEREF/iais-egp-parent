@@ -26,7 +26,7 @@
 <%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto" %>
 <%@attribute name="docFrag" fragment="true" %>
 
-<%@attribute name="facilityInfoSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="facSelectJudge" type="java.lang.Boolean" %>
 <%@attribute name="batSelectJudge" type="java.lang.Boolean" %>
 <%@attribute name="docSelectJudge" type="java.lang.Boolean" %>
 
@@ -103,7 +103,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${facilityInfoSelectJudge}"><div class="text-right"><input type="checkbox" name="facilityInfoSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.facilityInfoSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
+                            <c:if test="${facSelectJudge}"><div class="text-right"><input type="checkbox" name="facSelect" value="true" <c:if test="${rfiSelectMap.get('facSelect')}">checked="checked"</c:if>/></div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -395,7 +395,7 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${batSelectJudge}"><div class="text-right"><input type="checkbox" name="batSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.batSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
+                            <c:if test="${batSelectJudge}"><div class="text-right"><input type="checkbox" name="batSelect" value="true" <c:if test="${rfiSelectMap.get('batSelect')}">checked="checked"</c:if>/></div></c:if>
                             <c:forEach var="bat" items="${batList}">
                                 <c:set var="isLsp" value="${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq bat.activityType}"/>
                                 <div class="panel-main-content form-horizontal min-row">
@@ -655,7 +655,7 @@
                                     <div class="col-10" style="padding-bottom: 15px;"><strong>Uploaded Documents</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <c:if test="${docSelectJudge}"><div class="text-right"><input type="checkbox" name="docSelectCheckBox" value="true" <c:if test="${rfiApplicationDto.docSelectCheckBox}">checked="checked"</c:if>/></div></c:if>
+                                <c:if test="${docSelectJudge}"><div class="text-right"><input type="checkbox" name="docSelect" value="true" <c:if test="${rfiSelectMap.get('docSelect')}">checked="checked"</c:if>/></div></c:if>
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>

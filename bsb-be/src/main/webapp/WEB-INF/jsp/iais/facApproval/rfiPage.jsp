@@ -15,12 +15,9 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process-decision-rfi.js"></script>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="action_type" value="">
-    <input type="hidden" name="action_value" value="">
-    <input type="hidden" name="action_additional" value="">
+    <input type="hidden" name="closePage" value="${closePage}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -29,7 +26,8 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
-                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedDto.facAuthorisedDtoList}" processType="${processType}">
+                                    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedDto.facAuthorisedDtoList}" processType="${processType}"
+                                                         appSelectJudge="true" docSelectJudge="true">
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
@@ -69,6 +67,7 @@
                                             </c:if>
                                         </jsp:attribute>
                                     </approvalApp:preview>
+                                    <div style="text-align: right"><button name="submitAppRfiBtn" id="submitAppRfiBtn" type="button" class="btn btn-primary">Submit</button></div>
                                 </div>
                             </div>
                         </div>

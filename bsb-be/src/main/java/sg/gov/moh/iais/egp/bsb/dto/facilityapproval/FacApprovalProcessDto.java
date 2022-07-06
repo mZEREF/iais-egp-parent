@@ -6,6 +6,7 @@ import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityBiologicalAgentInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -31,6 +32,8 @@ public class FacApprovalProcessDto implements Serializable {
     private String processingDecision;
 
     private String commentsToApplicant;
+
+    private RfiProcessDto rfiProcessDto;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;

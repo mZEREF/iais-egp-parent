@@ -11,6 +11,9 @@
 
 <%@attribute name="docFrag" fragment="true" %>
 
+<%@attribute name="appSelectJudge" type="java.lang.Boolean" %>
+<%@attribute name="docSelectJudge" type="java.lang.Boolean" %>
+
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
@@ -26,6 +29,7 @@
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
                             <div class="panel-main-content form-horizontal min-row">
+                                <c:if test="${appSelectJudge}"><div class="text-right"><input type="checkbox" name="appSelect" value="true" <c:if test="${rfiSelectMap.get('appSelect')}">checked="checked"</c:if>/></div></c:if>
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
                                     <div class="clear"></div>
@@ -585,6 +589,7 @@
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
                             <div class="panel-main-content form-horizontal min-row">
+                                <c:if test="${docSelectJudge}"><div class="text-right"><input type="checkbox" name="docSelect" value="true" <c:if test="${rfiSelectMap.get('docSelect')}">checked="checked"</c:if>/></div></c:if>
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>
