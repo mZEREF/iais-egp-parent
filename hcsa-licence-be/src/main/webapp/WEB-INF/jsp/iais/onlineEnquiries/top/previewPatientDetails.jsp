@@ -14,7 +14,7 @@
                 <iais:row>
                     <iais:field width="5" value="ID No." />
                     <iais:value width="7" display="true" cssClass="col-md-7">
-                        <iais:code code="${patientInformationDto.idType}"/>/<c:out value="${patientInformationDto.idNumber}"/>
+                        <iais:code code="${patientInformationDto.idType}"/>&nbsp;/&nbsp;<c:out value="${patientInformationDto.idNumber}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
