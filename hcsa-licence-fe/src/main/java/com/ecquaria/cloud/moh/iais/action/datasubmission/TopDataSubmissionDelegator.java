@@ -984,7 +984,7 @@ public class TopDataSubmissionDelegator {
         try {
             if(preTerminationDto.getCounsellingGiven()==true){
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
                         ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
                 }
@@ -995,7 +995,7 @@ public class TopDataSubmissionDelegator {
                         }
                     }
                 }
-                if("TOPPCR002".equals(preTerminationDto.getCounsellingResult())){
+                if("TOPSP002".equals(preTerminationDto.getCounsellingResult())){
                     if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
                         ParamUtil.setRequestAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
@@ -1380,7 +1380,7 @@ public class TopDataSubmissionDelegator {
             }
             if(preTerminationDto.getCounsellingGiven()==true){
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
+                    if("No".equals(preTerminationDto.getPatientAppointment())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>30){
                         terminationDto.setLateSubmit(true);
                     }
                 }
@@ -1391,7 +1391,7 @@ public class TopDataSubmissionDelegator {
                         }
                     }
                 }
-                if("TOPPCR002".equals(preTerminationDto.getCounsellingResult())){
+                if("TOPSP002".equals(preTerminationDto.getCounsellingResult())){
                     if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>37){
                         terminationDto.setLateSubmit(true);
                     }
