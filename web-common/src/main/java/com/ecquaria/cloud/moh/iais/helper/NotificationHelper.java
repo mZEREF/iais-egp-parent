@@ -831,7 +831,7 @@ public class NotificationHelper {
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
 			inspectionEmailTemplateDto = getRecriptLic(role, refId, inspectionEmailTemplateDto,recipientUserId);
 		} else if (RECEIPT_TYPE_LICENSEE_ID.equals(refType)){
-			msgCommonUtil.setRecriptByLicenseeId(refId, inspectionEmailTemplateDto);
+			msgCommonUtil.setRecriptByLicenseeId(role,refId, inspectionEmailTemplateDto);
 		}else {
 			inspectionEmailTemplateDto = getOfficer(role, inspectionEmailTemplateDto,recipientUserId);
 		}
