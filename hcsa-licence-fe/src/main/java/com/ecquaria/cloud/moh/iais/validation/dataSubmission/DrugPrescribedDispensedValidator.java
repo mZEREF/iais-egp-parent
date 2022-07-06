@@ -188,6 +188,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         //
         Map<String,Double> preDrugMedicationMap = null ;
         Map<String,Double> drugMedicationMap = null;
+        Map<String,Double> nowDrugMedicationMap = null;
         //The amount of medication that already took and nowCount
         double totalGet = 0;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
@@ -204,6 +205,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
             log.info("The amount of medication that already took {},Prescription submissionNo is{}",totalGet,drugSubmission.getPrescriptionSubmissionId());
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
+            nowDrugMedicationMap = tidyDrugMedicationDto(null,drugMedicationDtos);
         }
         List<String> quantityMatchS = new ArrayList<>(drugMedicationDtos.size());
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
@@ -245,7 +247,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                    } else {
                        preCount = null;
                    }
-                   Double nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   Double nowCount = nowDrugMedicationMap.get(drugMedicationDto.getBatchNo());
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
                    if(preCount ==  null || nowCount > (preCount - totalGet)){
