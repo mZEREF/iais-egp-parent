@@ -28,14 +28,14 @@
                     <iais:row>
                         <iais:field value="Processing Decision" required="true"/>
                         <iais:value width="10">
-                            <iais:select name="processDec" cssClass="processDec" options="processDecOption"
+                            <iais:select name="processDec" cssClass="processDec nextStage" options="processDecOption"
                                          firstOption="Please Select" value="${serListDto.processDec}" onchange="javascript:initRollBackToField()"/>
                         </iais:value>
                     </iais:row>
                     <iais:row id="rollBackToRow">
                         <iais:field value="Roll Back To" required="true"/>
                         <iais:value width="10">
-                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}" needSort="true"/>
+                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}"/>
                             <span id="error_rollBackTo1" class="error-msg"
                                   style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                         </iais:value>

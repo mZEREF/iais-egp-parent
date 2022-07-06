@@ -85,4 +85,20 @@ public class INTRANET___MohReviseNcEmail___1 extends BaseProcessClass {
 // 		doProcessing->OnStepProcess
 	}
 
+	public void setMulAction_OnStepProcess_0() throws Exception {
+	// 		setMulAction->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewCheckList", this);
+	}
+
+	public void doChecklist_OnStepProcess_0() throws Exception {
+	// 		doChecklist->OnStepProcess
+
+	}
+
+	public void saveChecklist_OnStepProcess_0() throws Exception {
+	// 		saveChecklist->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCheckList", this);
+
+	}
+
 }

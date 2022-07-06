@@ -239,7 +239,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
             Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
-            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getString(request, "Remarks"));
             ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
             return;
         }

@@ -108,7 +108,7 @@
                                                     <iais:row id="backToRow">
                                                         <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                         <iais:value width="7">
-                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
+                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
                                                             <span id="error_rollBackTo1" class="error-msg"
                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>

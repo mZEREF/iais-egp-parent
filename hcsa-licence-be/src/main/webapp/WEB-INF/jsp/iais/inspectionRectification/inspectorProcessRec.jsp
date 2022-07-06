@@ -215,7 +215,7 @@
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"/>
+                                <iais:select name="selectValue" options="processDecOption" cssClass="nextStage" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"/>
                               </iais:value>
                             </iais:row>
                             <iais:row id="rollBackToRow">
@@ -223,7 +223,7 @@
                               <iais:value width="10">
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
-                                             options="rollBackToOptions" needSort="true"/>
+                                             options="rollBackToOptions"/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>

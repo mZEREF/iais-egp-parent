@@ -80,6 +80,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -596,6 +597,7 @@ public class InspectionServiceImpl implements InspectionService {
         Assert.assertNotNull(rollBackHistoryValueMap);
         rollBackHistoryValueMap.clear();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
+        rollBackHistoryList.sort(Comparator.comparingInt(o -> ROLE.indexOf(o.getRoleId())));
         if (!IaisCommonUtils.isEmpty(rollBackHistoryList)) {
             int index = 0;
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : rollBackHistoryList) {
@@ -683,21 +685,21 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     @SneakyThrows
-    public void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto){
+    public void rollBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto, String remark){
         String stageId = rollBackHistoryDto.getStageId();
         if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
-            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto);
+            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto, remark);
         } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
-            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto);
+            rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto, remark);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, rollBackHistoryDto.getWrkGrpId(), rollBackHistoryDto.getActionby());
+            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, rollBackHistoryDto.getWrkGrpId(), rollBackHistoryDto.getActionby(), remark);
         } else{
             log.warn("wrong rollBack target, Stage Id is {}",rollBackHistoryDto.getStageId());
         }
     }
 
     @SneakyThrows
-    private void rollBackToPsoAso(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto) {
+    private void rollBackToPsoAso(BaseProcessClass bpc, TaskDto taskDto, ApplicationViewDto applicationViewDto, AppPremisesRoutingHistoryDto rollBackHistoryDto, String remark) {
         String stageId = rollBackHistoryDto.getStageId();
         String wrkGpId = rollBackHistoryDto.getWrkGrpId();
         String userId = rollBackHistoryDto.getActionby();
@@ -708,7 +710,6 @@ public class InspectionServiceImpl implements InspectionService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
-        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         //Delete all the Inspection records and update application's self assessment flag
         this.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
         //completed current task
@@ -717,7 +718,7 @@ public class InspectionServiceImpl implements InspectionService {
         broadcastOrganizationDto.setComplateTask(taskDto);
         //create completed task history
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, null, ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, taskDto.getRoleId());
+                applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), remark, null, ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));

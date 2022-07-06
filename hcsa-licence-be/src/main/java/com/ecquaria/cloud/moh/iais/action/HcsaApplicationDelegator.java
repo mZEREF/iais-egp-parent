@@ -1111,7 +1111,7 @@ public class HcsaApplicationDelegator {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
             fillUpCheckListGetAppClient.rollBackPreInspect(applicationViewDto.getAppPremisesCorrelationId());
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, wrkGpId, userId);
+            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, wrkGpId, userId, ParamUtil.getString(bpc.request, "internalRemarks"));
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);

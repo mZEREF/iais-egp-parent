@@ -89,6 +89,13 @@ public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 
 	}
 
+	public void saveChecklist_OnStepProcess_0() throws Exception {
+	// 		saveChecklist->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCheckList", this);
+	}
 
-
+	public void setMulAction_OnStepProcess_0() throws Exception {
+	// 		setMulAction->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewCheckList", this);
+	}
 }
