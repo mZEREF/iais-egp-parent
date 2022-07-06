@@ -85,9 +85,4 @@ public class INTRANET___MohReviseNcEmail___1 extends BaseProcessClass {
 // 		doProcessing->OnStepProcess
 	}
 
-	public void doRollBack_OnStepProcess_0() throws Exception {
-	// 		doRollBack->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doRollBack", this);
-	}
-
 }

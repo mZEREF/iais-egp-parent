@@ -236,6 +236,13 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
+        if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
+            Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
+            String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
+            inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
+            ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+            return;
+        }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
@@ -452,18 +459,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
-    }
-
-    public void doRollBack(BaseProcessClass bpc){
-        log.info("=======>>>>>doRollBack>>>>>>>>>>>>>>>>emailRequest");
-        HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APP_VIEW_DTO);
-        Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
-        String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo));
-        ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "send");
     }
 
     public void emailView(BaseProcessClass bpc) {
