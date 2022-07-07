@@ -444,7 +444,19 @@ public class InsRepServiceImpl implements InsRepService {
         return inspectionReportDto;
     }
 
+    /**
+     * Clean roll back tasks according to history
+     * @param entity
+     * @param appPremisesRoutingHistoryDtos
+     * @return
+     */
     private List<TaskDto> rollBackTask(List<TaskDto> entity, List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
+        if (IaisCommonUtils.isEmpty(entity)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        if (IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)) {
+            return entity;
+        }
         entity.sort(Comparator.comparing(TaskDto::getDateAssigned));
         List<TaskAndHistoryDto> taskAndHistoryDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < entity.size(); i++) {
@@ -477,7 +489,7 @@ public class InsRepServiceImpl implements InsRepService {
                     if (rollBackToIndex == 0) {
                         break;
                     } else {
-                        i = rollBackToIndex - 1;
+                        i = rollBackToIndex;
                     }
                 }
             }
