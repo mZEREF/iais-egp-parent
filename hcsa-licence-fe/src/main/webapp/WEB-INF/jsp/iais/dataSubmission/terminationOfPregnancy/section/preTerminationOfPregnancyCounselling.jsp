@@ -377,7 +377,8 @@
         var patientAge = $('#counselling').val();
         if($('#counsellingYes').prop('checked')){
             console.log("true");
-            if (counsellingPlace != "AR_SC_001" && maritalStatus !='TOPMS002' && patientAge<16 ) {
+            console.log(counsellingPlace);
+            if (counsellingPlace != null && counsellingPlace != '' &&counsellingPlace != "AR_SC_001" && maritalStatus !='TOPMS002' && patientAge<16 ) {
                 $('#preCounsNoCondReasons').show();
             }else {
                 console.log("1");
@@ -450,7 +451,7 @@
 
         var counsellingPlace = $('select[name="counsellingPlaceAge"]').val();
         var maritalStatus = $('#maritalStatus').val();
-        if(counsellingPlace != "AR_SC_001" && maritalStatus !='TOPMS002' && data.selection.counsellingAge < 16 ){
+        if(counsellingPlace != null && counsellingPlace != '' && counsellingPlace != "AR_SC_001" && maritalStatus !='TOPMS002' && data.selection.counsellingAge < 16 ){
             $('#preCounsNoCondReasons').show();
         }
         console.log("counselling");
