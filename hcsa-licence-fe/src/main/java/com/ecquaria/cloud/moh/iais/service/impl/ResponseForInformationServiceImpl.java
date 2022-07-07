@@ -318,7 +318,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
-        return eicGatewayClient.callEicWithTrack(processFileTrackDto, eicGatewayClient::saveFile, "saveFile").getEntity();
+        return eicGatewayClient.callEicWithTrack(processFileTrackDto, eicGatewayClient::saveFileApplication, "saveFileApplication").getEntity();
     }
 
 }
