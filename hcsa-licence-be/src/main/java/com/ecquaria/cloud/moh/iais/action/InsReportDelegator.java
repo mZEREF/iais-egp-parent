@@ -517,7 +517,7 @@ public class InsReportDelegator {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
-        riskLevelResult.add(new SelectOption("rollBack", "RollBack"));
+        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
         return riskLevelResult;
     }
 }
