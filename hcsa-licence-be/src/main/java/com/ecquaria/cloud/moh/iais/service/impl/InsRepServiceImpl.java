@@ -82,6 +82,7 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -457,7 +458,8 @@ public class InsRepServiceImpl implements InsRepService {
         if (IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)) {
             return entity;
         }
-        entity.sort(Comparator.comparing(TaskDto::getDateAssigned));
+        //CREATE_DT DESC to ASC
+        Collections.reverse(entity);
         List<TaskAndHistoryDto> taskAndHistoryDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < entity.size(); i++) {
             TaskAndHistoryDto taskAndHistoryDto = new TaskAndHistoryDto();
