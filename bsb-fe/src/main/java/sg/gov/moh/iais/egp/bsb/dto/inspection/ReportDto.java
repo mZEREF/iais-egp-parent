@@ -18,6 +18,7 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReportDto implements Serializable {
+    private String appId;
     // Section A (Facility Details)
     private String facName;
     private String classification;

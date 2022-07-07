@@ -3,12 +3,11 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
 <%@attribute name="facProfileDto" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
 <%@attribute name="dashboardFrag" fragment="true" %>
 <%@attribute name="innerFooterFrag" fragment="true" %>
-<%@attribute name="editJudge" type="java.lang.Boolean" %>
+
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -38,7 +37,6 @@
                                 <div id="appInfoPanel" role="tabpanel">
                                     <%@include file="/WEB-INF/jsp/iais/approvalBatAndActivity/subStepNavTab.jsp"%>
                                     <div class="form-horizontal">
-                                        <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">

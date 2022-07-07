@@ -36,7 +36,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="facInfoPanel" role="tabpanel">
-                                    <%@include file="../../mainAppCommon/facRegistration/subStepNavTab.jsp"%>
+                                    <%@include file="../../facRegistration/subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
                                     </div>
