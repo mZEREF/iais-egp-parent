@@ -158,10 +158,10 @@
                 </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
                     <c:if test="${preTerminationDto.counsellingAge<16 && patientInformationDto.maritalStatus !='TOPMS002' && preTerminationDto.counsellingPlace != 'AR_SC_001'}">
-                        <c:set var="ageInfo"><iais:message key="This patient is below 16 years old from the date of Termination of Pregnancy, not married and pre-counselling is not done at Health Promotion Board Counselling Centre or Student Health Centre" paramKeys="1" paramValues="counsellor" escape="false"/></c:set>
+                        <c:set var="toolMsgAge"><iais:message key="This patient is below 16 years old from the date of Termination of Pregnancy, not married and pre-counselling is not done at Health Promotion Board Counselling Centre or Student Health Centre" paramKeys="1" paramValues="counsellor" escape="false"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Patient Age (Years)" info="ageInfo"/>
+                        <iais:field width="5" value="Patient Age (Years)" info="${toolMsgAge}"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" id="age">
                             ${preTerminationDto.counsellingAge}
                         </iais:value>
