@@ -231,6 +231,12 @@ public class OnlineVssEnquiryDelegator {
         }
         SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        try {
+            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate());
+            treatmentDto.setAge(age / 365);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         if(treatmentDto!=null&&treatmentDto.getDoctorInformationId()!=null){
             DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(treatmentDto.getDoctorInformationId()).getEntity();
             if(doctorInformationDto!=null){

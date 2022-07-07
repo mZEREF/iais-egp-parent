@@ -219,9 +219,20 @@ public class OnlineDrpEnquiryDelegator {
                 DoctorInformationDto doctorInformationDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(drugSubmissionDto.getDoctorInformationId()).getEntity();
                 dpSuper.setDoctorInformationDto(doctorInformationDto);
                 if (doctorInformationDto != null) {
-                    drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                    if("DRPP".equals(doctorInformationDto.getDoctorSource()) || "DRPT".equals(doctorInformationDto.getDoctorSource())){
+                        dpSuper.setDoctorInformationDto(doctorInformationDto);
+                        drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                        drugSubmissionDto.setDoctorInformations("true");
+                    }else if("DRPE".equals(doctorInformationDto.getDoctorSource())){
+                        drugSubmissionDto.setDoctorName(doctorInformationDto.getName());
+                        drugSubmissionDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setSubSpecialty(String.valueOf(doctorInformationDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
+                        drugSubmissionDto.setDoctorInformations("false");
+                        drugSubmissionDto.setDoctorInformationPE("true");
+                    }
                 }
-                drugSubmissionDto.setDoctorInformations("true");
             }
         }
         ParamUtil.setRequestAttr(request,"dpSuperDataSubmissionDto",dpSuper);
