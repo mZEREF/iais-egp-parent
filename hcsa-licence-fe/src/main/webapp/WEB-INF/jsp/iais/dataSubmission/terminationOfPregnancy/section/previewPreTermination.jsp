@@ -93,10 +93,10 @@
                         <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <c:if test="${topDates}">
-                        <c:set var="toolMsg"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsgDS_MSG030"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>
+                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
@@ -141,10 +141,10 @@
                 </div>
                 <div <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
                     <c:if test="${secondLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsgSecondLate"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Second or Final Pre-Counselling" info="${toolMsg}"/>
+                        <iais:field width="5" value="Date of Second or Final Pre-Counselling" info="${toolMsgSecondLate}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.secCounsellingDate}"/>
                         </iais:value>
