@@ -716,13 +716,12 @@
 
     $("#submitButton").click(function () {
         var selectValue = $("[name='nextStage']").val();
+        clearErrorMsg();
         $('#err_rollBackTo').hide();
         if('RollBack' ===selectValue){
             const rollBackTo = $('#rollBackCr').val();
             if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
                 $('#err_rollBackTo').show();
-                //close fangDuoJi in has error
-                $('#fangDuoJiconfirmTag').val(null);
             }else {
                 $('#confirmTag').modal('show');
             }
