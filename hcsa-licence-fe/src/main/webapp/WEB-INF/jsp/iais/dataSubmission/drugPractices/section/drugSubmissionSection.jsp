@@ -728,15 +728,20 @@
     }
 
     //Prompt 2 days after the assignment start date
-    $("#startDispensingDate").on('blur, change', function () {
-        showWaiting();
+    $("#startDispensingDate").on('blur', function () {
         var dispensingDate=$('#startDispensingDate').val();
-        var url = $('#_contextPath').val() + '/dp/startdispensing-date';
-        var options = {
-            dispensingDate: dispensingDate,
-            url: url
+        let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+        let validDispensingDate = reg.test(dispensingDate);
+        console.log("validDispensingDate: "+validDispensingDate);
+        if (validDispensingDate){
+            showWaiting();
+            var url = $('#_contextPath').val() + '/dp/startdispensing-date';
+            var options = {
+                dispensingDate: dispensingDate,
+                url: url
+            }
+            callCommonAjax(options, checkBirthDateCallback);
         }
-        callCommonAjax(options, checkBirthDateCallback);
     });
 
     function checkBirthDateCallback(data) {

@@ -168,12 +168,16 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(dispensingDate) && !StringUtil.isEmpty(endDate)){
-            try {
-                if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
-                    errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
+            if (PreTerminationValidator.validateDate(dispensingDate)){
+                errorMap.put("dispensingDate", "Invalid date");
+            } else {
+                try {
+                    if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
+                        errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
                 }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
             }
         }
 

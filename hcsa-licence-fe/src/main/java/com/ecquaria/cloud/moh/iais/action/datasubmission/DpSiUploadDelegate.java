@@ -650,9 +650,7 @@ public class DpSiUploadDelegate {
             msgParam.setTemplateContent(emailMap);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_MSG);
 
-            List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(DataSubmissionConsts.DS_DRP);
-            msgParam.setSvcCodeList(svcCode);
+            msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             msgParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
             notificationHelper.sendNotification(msgParam);

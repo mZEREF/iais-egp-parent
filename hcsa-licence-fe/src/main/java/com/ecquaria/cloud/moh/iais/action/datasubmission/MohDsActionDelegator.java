@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -150,6 +151,12 @@ public class MohDsActionDelegator {
             VssTreatmentDto vssTreatmentDto=vssSuperDataSubmissionDto.getVssTreatmentDto();
             SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
             TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+            try {
+                int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate());
+                treatmentDto.setAge(age / 365);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
             DoctorInformationDto doctorInformationDto=docInfoService.getRfcDoctorInformationDtoByConds(treatmentDto.getDoctorInformationId());
             if(doctorInformationDto!=null){
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);

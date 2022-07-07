@@ -45,11 +45,11 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/InnerNavTab.jsp" %>
+                        <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="facInfoPanel" role="tabpanel">
-                                    <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/subStepNavTab.jsp" %>
+                                    <%@include file="/WEB-INF/jsp/iais/facRegistration/subStepNavTab.jsp" %>
                                     <div class="form-horizontal">
                                         <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Administrator</h3>

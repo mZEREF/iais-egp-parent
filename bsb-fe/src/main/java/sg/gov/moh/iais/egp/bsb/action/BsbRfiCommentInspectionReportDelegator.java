@@ -82,8 +82,9 @@ public class BsbRfiCommentInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        reportDto.setAppId(appId);
         // save data
-        rfiService.saveInspectionReport(request, reportDto, appId);
+        rfiService.saveInspectionReport(request, reportDto);
         // acknowledge page need appId
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
     }

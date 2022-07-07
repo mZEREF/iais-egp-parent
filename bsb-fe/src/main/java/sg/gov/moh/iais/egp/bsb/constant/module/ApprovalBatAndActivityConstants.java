@@ -57,7 +57,7 @@ public class ApprovalBatAndActivityConstants {
     public static final String DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO = "draftApprovalBatAndActivityDto";
 
     public static final String KEY_NAV_NEXT = "next";
-    public static final String KEY_NAV_BACK = "back";
+    public static final String KEY_NAV_PREVIOUS            = "previous";
 
     public static final String KEY_ACTION_SUBMIT = "submit";
     public static final String KEY_ACTION_JUMP = "jump";

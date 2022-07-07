@@ -1,26 +1,9 @@
 $(function () {
-    $("#next").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("jump");
-        $("input[name='action_value']").val("next");
-        $("#mainForm").submit();
-    });
-
-    $("#back").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("jump");
-        $("input[name='action_value']").val("back");
-        $("#mainForm").submit();
-    });
-
     $("#saveDraft").click(function () {
         showWaiting();
         $("input[name='action_type']").val("draft");
         $("#mainForm").submit();
     });
-
-    $("a[data-step-key]").click(jumpToStep);
-    $("li.tracker-item[data-step-key]").click(jumpToStep);
 
     $("#submit").click(function () {
         if ($("#declare1").is(':checked') && $("#declare2").is(':checked')) {
@@ -182,12 +165,6 @@ function newSectionHeader(num, idx, titlePrefix) {
 }
 
 //---------- START kinda common func ----------
-function jumpToStep() {
-    showWaiting();
-    $("input[name='action_type']").val("jump");
-    $("input[name='action_value']").val($(this).attr("data-step-key"));
-    $("#mainForm").submit();
-}
 
 function cancelLoadDraftData() {
     $('#haveData').modal('hide');

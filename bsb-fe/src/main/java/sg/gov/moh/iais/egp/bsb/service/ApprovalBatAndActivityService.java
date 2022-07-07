@@ -90,8 +90,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_PROFILE_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_JUMP_DEST_NODE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_BACK;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_PREVIOUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_ADDRESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_AUTH_PERSONNEL;
@@ -278,7 +278,7 @@ public class ApprovalBatAndActivityService {
                     ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
                 }
-            } else if (KEY_NAV_BACK.equals(actionValue)) {
+            } else if (KEY_NAV_PREVIOUS.equals(actionValue)) {
                 // do back
                 ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_BEGIN);
             }
@@ -317,7 +317,7 @@ public class ApprovalBatAndActivityService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {
                 ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, "appInfo_facProfile");
-            } else if (KEY_NAV_BACK.equals(actionValue)) {
+            } else if (KEY_NAV_PREVIOUS.equals(actionValue)) {
                 ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVAL_SELECTION);
             }
         } else {
@@ -344,7 +344,7 @@ public class ApprovalBatAndActivityService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-            if (actionValue.equals(KEY_NAV_BACK)) {
+            if (actionValue.equals(KEY_NAV_PREVIOUS)) {
                 ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
             } else {
                 jumpHandler(request, approvalAppRoot, currentNodePath, facProfileNode);
@@ -941,7 +941,7 @@ public class ApprovalBatAndActivityService {
             case KEY_NAV_NEXT:
                 destNode = Nodes.getNextNodePath(approvalAppRoot);
                 break;
-            case ApprovalBatAndActivityConstants.KEY_NAV_BACK:
+            case KEY_NAV_PREVIOUS:
                 destNode = Nodes.getPreviousNodePath(approvalAppRoot);
                 break;
             default:
