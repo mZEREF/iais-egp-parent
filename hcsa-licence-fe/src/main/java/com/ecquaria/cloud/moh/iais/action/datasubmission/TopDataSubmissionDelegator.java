@@ -982,6 +982,20 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         ControllerHelper.get(request, preTerminationDto);
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
+        if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+            try {
+                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())){
+                    if(Formatter.compareDateByDay(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate(),preTerminationDto.getCounsellingDate())>0){
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                    }else {
+                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                    }
+                }
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("CounsellingDate is error"));
+            }
+
+        }
         String submitDt=Formatter.formatDateTime(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         try {
             String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
@@ -1182,7 +1196,7 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             if(StringUtil.isNotEmpty(topDates)){
                 try {
-                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<2){
+                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())>0){
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                     }else {
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);

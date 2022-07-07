@@ -444,7 +444,7 @@
         if (isEmpty(data) ) {
             return;
         }
-        if(data.selection.counsellingAge < 10 || data.selection.counsellingAge > 65){
+        if(data.selection.counsellingAge <= 10 || data.selection.counsellingAge >= 65){
             $('#PRS_SERVICE_DOWN').modal('show');
         }
 
