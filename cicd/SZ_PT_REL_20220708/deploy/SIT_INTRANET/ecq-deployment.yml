@@ -1,6 +1,6 @@
 name: ${TagName}-${BUILD_NUMBER}
 project_name: IAIS
-env_name: P2_IAIS_INTRANET
+env_name: PT_IAIS_INTRANET
 description: |
   This production deployment package is for deployment release no. ${TagName}-${BUILD_NUMBER}.
   It contains the fixes/changes made for the following issue(s):
