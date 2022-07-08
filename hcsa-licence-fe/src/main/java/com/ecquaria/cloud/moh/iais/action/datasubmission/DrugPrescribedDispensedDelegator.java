@@ -279,7 +279,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }
         } else {
             //if patientDto not bull, check whether same patient
-            if (!(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
+            if (StringUtils.hasLength(drugSubmission.getIdType()) && StringUtils.hasLength(drugSubmission.getIdNumber()) && StringUtils.hasLength(drugSubmission.getNationality()) &&
+                    !(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
                 PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
                         drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
                 if (patient != null) {
