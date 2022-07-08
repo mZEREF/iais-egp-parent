@@ -96,7 +96,7 @@
                         <c:set var="toolMsgDS_MSG030"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
+                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}${toolMsg}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
