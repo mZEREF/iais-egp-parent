@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.TaskAndHistoryDto;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -81,10 +82,14 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -368,7 +373,9 @@ public class InsRepServiceImpl implements InsRepService {
 
         //noted by
         List<TaskDto> entity = organizationClient.getTasksByRefNo(appPremisesCorrelationId).getEntity();
-        for (TaskDto dto : entity) {
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
+        List<TaskDto> newEntity = rollBackTask(entity, appPremisesRoutingHistoryDtos);
+        for (TaskDto dto : newEntity) {
             String roleId = dto.getRoleId();
             String userId = dto.getUserId();
             if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
@@ -382,7 +389,7 @@ public class InsRepServiceImpl implements InsRepService {
                 inspectionReportDto.setReportNoteBy("-");
             }
         }
-        for (TaskDto dto : entity) {
+        for (TaskDto dto : newEntity) {
             String roleId = dto.getRoleId();
             String processUrl = dto.getProcessUrl();
             String userId = dto.getUserId();
@@ -427,20 +434,75 @@ public class InsRepServiceImpl implements InsRepService {
                 reportResultDto.setRiskLevel(inspectionReportDto.getRiskLevel());
                 if (appPremPreInspectionNcDto != null) {
                     reportResultDto.setNc(true);
-                }else {
+                } else {
                     reportResultDto.setNc(false);
                 }
                 saveReportResult(reportResultDto);
             }
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return inspectionReportDto;
     }
-    private String getReasonForVisit(String applicationType,String licenceId,Integer isPre){
+
+    /**
+     * Clean roll back tasks according to history
+     * @param entity
+     * @param appPremisesRoutingHistoryDtos
+     * @return
+     */
+    private List<TaskDto> rollBackTask(List<TaskDto> entity, List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
+        if (IaisCommonUtils.isEmpty(entity)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        if (IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)) {
+            return entity;
+        }
+        //CREATE_DT DESC to ASC
+        Collections.reverse(entity);
+        List<TaskAndHistoryDto> taskAndHistoryDtos = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < entity.size(); i++) {
+            TaskAndHistoryDto taskAndHistoryDto = new TaskAndHistoryDto();
+            taskAndHistoryDto.setTaskDto(entity.get(i));
+            int startIndex = i * 2;
+            int endIndex = startIndex + 1;
+            if (appPremisesRoutingHistoryDtos.size() > startIndex) {
+                taskAndHistoryDto.setStartHistory(appPremisesRoutingHistoryDtos.get(startIndex));
+                if (appPremisesRoutingHistoryDtos.size() > endIndex) {
+                    taskAndHistoryDto.setEndHistory(appPremisesRoutingHistoryDtos.get(endIndex));
+                }
+                taskAndHistoryDtos.add(taskAndHistoryDto);
+            }
+        }
+        for (int i = taskAndHistoryDtos.size() - 1; i >= 0; i--) {
+            TaskAndHistoryDto taskAndHistoryDto = taskAndHistoryDtos.get(i);
+            AppPremisesRoutingHistoryDto endHistory = taskAndHistoryDto.getEndHistory();
+            if (!Objects.isNull(endHistory)) {
+                if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(endHistory.getProcessDecision()) || InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(endHistory.getProcessDecision())) {
+                    String rollBackToStatus = taskAndHistoryDtos.get(i + 1).getStartHistory().getAppStatus();
+                    int rollBackToIndex = i;
+                    for (int j = i - 1; j >= 0; j--) {
+                        if (rollBackToStatus.equals(taskAndHistoryDtos.get(j).getStartHistory().getAppStatus())) {
+                            rollBackToIndex = j;
+                            break;
+                        }
+                    }
+                    taskAndHistoryDtos.subList(rollBackToIndex, i + 1).clear();
+                    if (rollBackToIndex == 0) {
+                        break;
+                    } else {
+                        i = rollBackToIndex;
+                    }
+                }
+            }
+        }
+        return taskAndHistoryDtos.stream().map(TaskAndHistoryDto::getTaskDto).collect(Collectors.toList());
+    }
+
+    private String getReasonForVisit(String applicationType, String licenceId, Integer isPre) {
         String applicationTypeOldDesc = "";
-        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)){
-            if(!StringUtil.isEmpty(licenceId)){
+        if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+            if (!StringUtil.isEmpty(licenceId)) {
                 List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
                 if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
                     String applicationId = licAppCorrelationDtos.get(0).getApplicationId();

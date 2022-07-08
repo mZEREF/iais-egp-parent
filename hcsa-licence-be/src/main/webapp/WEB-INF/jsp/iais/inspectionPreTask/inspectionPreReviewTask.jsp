@@ -181,7 +181,7 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <iais:field value="Processing Decision test" required="true"/>
+                              <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
                                 <iais:select name="selectValue" cssClass="nextStage" options="processDecOption"
                                              firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}"
@@ -203,7 +203,6 @@
                                 <iais:select name="rollBackTo"
                                              firstOption="Please Select"
                                              options="rollBackOptions"
-                                             needSort="true"
                                              value=""/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>

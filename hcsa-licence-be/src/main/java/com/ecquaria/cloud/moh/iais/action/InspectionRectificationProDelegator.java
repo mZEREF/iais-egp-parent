@@ -525,13 +525,13 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     public void rollBack(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the rollBack start ...."));
         HttpServletRequest request = bpc.request;
-
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request, "taskDto");
         Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLL_BACK_VALUE_MAP);
 
-        inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+        inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), internalRemarks);
         ParamUtil.setRequestAttr(bpc.request, "isRollBack",AppConsts.TRUE);
     }
 }

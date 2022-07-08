@@ -219,7 +219,7 @@ public class InsReportDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
             }else {
                 Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
-                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), appPremisesRecommendationDto.getProcessRemarks());
                 ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"rollBack");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             }
@@ -517,7 +517,7 @@ public class InsReportDelegator {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
-        riskLevelResult.add(new SelectOption("rollBack", "RollBack"));
+        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
         return riskLevelResult;
     }
 }

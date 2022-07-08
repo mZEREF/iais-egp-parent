@@ -1,132 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="MohReviseNcEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices />
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohReviseNcEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+ <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="80" y="310">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="preEmailView" x="376" y="356">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preEmailView_OnStepProcess_0" name="preEmailView_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="preEmailView_OnStepProcess_0" name="preEmailView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="emailView" x="699" y="535">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="emailView_OnStepProcess_0" name="emailView_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="emailView_OnStepProcess_0" name="emailView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="686" y="446">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doRecallEmail_OnStepProcess_0" name="doRecallEmail_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="doRecallEmail_OnStepProcess_0" name="doRecallEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="emailSubmitStep" x="676" y="356">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="emailSubmitStep_OnStepProcess_0" name="emailSubmitStep_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="emailSubmitStep_OnStepProcess_0" name="emailSubmitStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="checkListNext" x="569" y="265">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="checkListNext_OnStepProcess_0" name="checkListNext_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="checkListNext_OnStepProcess_0" name="checkListNext_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="386" y="446">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="366" y="536">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="previewEmail_OnStepProcess_0" name="previewEmail_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="previewEmail_OnStepProcess_0" name="previewEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="186" y="316">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="preCheckList" x="369" y="265">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preCheckList_OnStepProcess_0" name="preCheckList_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="preCheckList_OnStepProcess_0" name="preCheckList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="preProcessing" x="380" y="610">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preProcessing_OnStepProcess_0" name="preProcessing_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="preProcessing_OnStepProcess_0" name="preProcessing_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doProcessing" x="740" y="610">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRollBack" x="590" y="680">
-   <Description />
-   <probepoint type="none" />
+  <AutomaticStep defClass="" executor="" icon="" name="setMulAction" x="490" y="50">
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doRollBack_OnStepProcess_0" name="doRollBack_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="setMulAction_OnStepProcess_0" name="setMulAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChecklist" x="520" y="-40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChecklist_OnStepProcess_0" name="doChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveChecklist" x="360" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveChecklist_OnStepProcess_0" name="saveChecklist_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="emailViewPage" stageIndicator="" x="536" y="356">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="546" y="446">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="479" y="265">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="546" y="536">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingPage" stageIndicator="" x="560" y="610">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewCheckList" stageIndicator="" x="360" y="-30">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
  </Pages>
- <Forms />
+ <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/emailSubmitStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/emailViewPage" style="oblique">
    <position>{(556,376)(696,376)}</position>
@@ -142,9 +162,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(739,285)(602,165)(389,285)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
-   <position>{(499,285)(589,285)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(876,316)(602,92)(424,197)(206,336)}</position>
@@ -203,37 +220,71 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doProcessing" style="oblique">
    <position>{(760,630)(876,316)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doRollBack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(296,336)(610,700)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/setMulAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
+   <position>{(499,285)(510,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doRollBack" style="rectanular">
-   <position>{(610,700)(879,700)(876,316)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/setMulAction" style="rectanular">
+   <position>{(510,70)(610,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChecklist" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,70)(540,-20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,70)(589,285)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewCheckList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doChecklist" style="rectanular">
+   <position>{(540,-20)(380,-10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewCheckList" style="rectanular">
+   <position>{(380,-10)(400,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveChecklist" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(400,80)(380,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveChecklist" style="rectanular">
+   <position>{(380,180)(260,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(260,130)(380,-10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(260,130)(389,285)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="719" y="265">
-   <Description />
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/ViewCheckList" componentIfTrue="/Steps/AutomaticStep/preCheckList" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond2" operator="=" rightOperand="isValid" x="240" y="110">
+   <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preEmailView" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="276" y="316">
-   <Description />
-   <SwitchCase component="/Steps/AutomaticStep/preCheckList" value="&quot;checkList&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/preProcessing" value="&quot;processing&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/doRollBack" value="&quot;rollBack&quot;" />
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preCheckList" value="&quot;checkList&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preProcessing" value="&quot;processing&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/checkListNext" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="590" y="50">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doChecklist" value="&quot;doChecklist&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/checkListNext" value="&quot;save&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="380" y="60">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/saveChecklist" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
- <Branches />
+ <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="856" y="296">
-   <Description />
+   <Description/>
   </Merge>
  </Merges>
- <StudioLabels />
- <StageIndicator />
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
 </Application>
-

@@ -121,7 +121,7 @@
                                                 <iais:row id="rollBackToRow">
                                                     <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                     <iais:value width="7">
-                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
+                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" ><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
@@ -206,7 +206,7 @@
 
     function rollBackSubmit(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "rollBack");
+        SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
     function showRollBackToRow(){

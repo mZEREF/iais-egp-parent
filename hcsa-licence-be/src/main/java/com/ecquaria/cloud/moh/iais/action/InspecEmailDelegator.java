@@ -513,7 +513,7 @@ public class InspecEmailDelegator {
                 ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             }else {
                 Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
-                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request,"isRollBack",true);
             }
         }
