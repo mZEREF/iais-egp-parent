@@ -1,0 +1,23 @@
+name: ${TagName}-${BUILD_NUMBER}
+project_name: IAIS
+env_name: P2_IAIS_INTRANET
+description: |
+  This production deployment package is for deployment release no. ${TagName}-${BUILD_NUMBER}.
+  It contains the fixes/changes made for the following issue(s):
+  1) Just a simple deployment test on IAIS_INTRANET
+
+execution: manual
+failure_action: stop
+
+deployments:
+  - type: image_tag
+    stack_name: be-iais-app
+    services:
+      - hcsa-licence-web=hub.ecquaria.com:8152/docker-mohiais-egp/hcsa-licence:${TagName}-${BUILD_NUMBER}
+      - system-admin-web=hub.ecquaria.com:8152/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}
+      - main-web=hub.ecquaria.com:8152/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}
+      - web=hub.ecquaria.com:8152/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
+      - bsb-web=hub.ecquaria.com:8152/docker-mohiais-egp/bsb-be:${TagName}-${BUILD_NUMBER}
+  - type: wait_for_healthcheck
+    stack_name: be-iais-app
+    timeout_seconds: 300
