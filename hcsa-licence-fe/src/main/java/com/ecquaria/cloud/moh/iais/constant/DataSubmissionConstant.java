@@ -110,4 +110,7 @@ public class DataSubmissionConstant {
     public static String DP_DOCTOR_INFO_FROM_PRS           = "DRPP"; //DP get doctor info from PRS
     public static String DP_DOCTOR_INFO_FROM_ELIS          = "DRPE"; //DP get doctor info from eLis
     public static String DP_DOCTOR_INFO_USER_NEW_REGISTER  = "DRPT"; //DP register new doctor
+    public static String VS_DOCTOR_INFO_FROM_PRS           = "VSSP"; //VSS get doctor info from PRS
+    public static String VS_DOCTOR_INFO_FROM_ELIS          = "VSSE"; //VSS get doctor info from eLis
+    public static String VS_DOCTOR_INFO_USER_NEW_REGISTER  = "VSST"; //VSS register new doctor
 }
