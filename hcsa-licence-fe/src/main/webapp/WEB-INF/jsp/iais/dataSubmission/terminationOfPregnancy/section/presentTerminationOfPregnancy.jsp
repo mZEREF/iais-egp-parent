@@ -769,12 +769,14 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
+                    console.log("1");
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
                     $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
+                    console.log("2");
                 }else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     clearPrsInfoText();
                     $('#topDoctorInformations').val(true);
@@ -782,42 +784,50 @@
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                     $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#topDoctorInformations').val(false);
                     loadingSp(data);
+                    console.log("4");
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("5");
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("6");
                     }else if(data.selection.hasException && !isEmpty(data.selections)){
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("7");
                     }else if (data.selection.hasException && isEmpty(data.selections)) {
                         clearPrsInfoText();
                         $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("8");
                     }else if ('401' == data.selection.statusCode) {
                         $('#topDoctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("9");
                     }else if(!isEmpty(data.selections)){
 
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("10");
                     }
                 }
 

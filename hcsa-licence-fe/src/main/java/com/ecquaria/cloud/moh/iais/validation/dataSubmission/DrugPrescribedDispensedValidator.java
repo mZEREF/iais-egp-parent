@@ -169,8 +169,6 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(dispensingDate) && !StringUtil.isEmpty(endDate)){
             if (PreTerminationValidator.validateDate(dispensingDate)){
-                errorMap.put("dispensingDate", "Invalid date");
-            } else {
                 try {
                     if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
                         errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
@@ -178,6 +176,8 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
+            } else {
+                errorMap.put("dispensingDate", "Invalid date");
             }
         }
 
