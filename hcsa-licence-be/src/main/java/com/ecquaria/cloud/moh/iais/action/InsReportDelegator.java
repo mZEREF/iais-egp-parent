@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -511,16 +512,16 @@ public class InsReportDelegator {
         String status = applicationDto.getStatus();
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-            SelectOption so1 = new SelectOption("submit", "Give Clarification");
+            SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
             riskLevelResult.add(so1);
             return riskLevelResult;
         }
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
+        SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT));
         riskLevelResult.add(so1);
         String appType = applicationDto.getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
-            riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+            riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
         return riskLevelResult;
     }
