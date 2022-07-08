@@ -103,11 +103,12 @@
                     <iais:row>
                         <iais:field width="5" value="Place Where Counselling Was Done"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:if test="${preTerminationDto.counsellingAge >= 16}">
-                                <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlace"/>
+
+                            <c:if test="${preTerminationDto.counsellingPlace != 'AR_SC_001'}">
+                                ${preTerminationDto.counsellingPlace}
                             </c:if>
-                            <c:if test="${preTerminationDto.counsellingAge < 16}">
-                                <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlacea"/>
+                            <c:if test="${preTerminationDto.counsellingPlace == 'AR_SC_001'}">
+                                Health Promotion Board Counselling Centre
                             </c:if>
                         </iais:value>
                     </iais:row>
@@ -119,9 +120,6 @@
                     </iais:row>
                 </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge==null}">style="display: none"</c:if> >
-                    <c:if test="${preTerminationDto.counsellingGiven == true && preTerminationDto.counsellingAge<16 && patientInformationDto.maritalStatus !='TOPMS002' && preTerminationDto.counsellingPlace != 'AR_SC_001'}">
-                        <c:set var="toolMsgNum"><iais:message key="DS_MSG027" paramKeys="1" paramValues="counsellor"/></c:set>
-                    </c:if>
                     <iais:row>
                         <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" info="${toolMsgNum}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
