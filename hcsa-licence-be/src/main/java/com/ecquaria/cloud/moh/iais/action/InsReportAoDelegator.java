@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -23,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -119,7 +121,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, "reportClassTop", null);
         ParamUtil.setSessionAttr(request, "infoClassBelow", infoClassBelow);
         ParamUtil.setSessionAttr(request, "reportClassBelow", reportClassBelow);
-        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto().getStatus());
+        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto());
         ParamUtil.setSessionAttr(request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(request, INSREPDTO, insRepDto);
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, applicationViewDto);
@@ -219,7 +221,8 @@ public class InsReportAoDelegator  {
 
 
 
-    private List<SelectOption> getProcessingDecision(String status) {
+    private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
+        String status = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
@@ -232,7 +235,10 @@ public class InsReportAoDelegator  {
         SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
-        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+        String appType = applicationDto.getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+        }
         return riskLevelResult;
     }
 

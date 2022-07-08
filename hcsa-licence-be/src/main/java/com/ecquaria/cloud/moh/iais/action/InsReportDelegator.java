@@ -141,7 +141,7 @@ public class InsReportDelegator {
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
-        List<SelectOption> processingDe = getProcessingDecision(appStatus);
+        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto());
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
@@ -507,7 +507,8 @@ public class InsReportDelegator {
         return recommendationResult;
     }
 
-    private List<SelectOption> getProcessingDecision(String status) {
+    private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
+        String status = applicationDto.getStatus();
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
@@ -517,7 +518,10 @@ public class InsReportDelegator {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
-        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+        String appType = applicationDto.getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+        }
         return riskLevelResult;
     }
 }

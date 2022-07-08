@@ -415,27 +415,31 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
-        List<SelectOption> appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+        List<SelectOption> appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_INSPECTION_LEAD);
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS,RoleConsts.USER_ROLE_AO1);
 
 
         if(appPremisesRoutingHistoryDto==null){
-            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+            appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
         }
         if (appPremisesRoutingHistoryDto1==null) {
-            appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+            appTypeOption=MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW});
         }
         if(appPremisesRoutingHistoryDto!=null&&appPremisesRoutingHistoryDto1!=null){
             try {
                 String ao1=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto1.getUpdatedDt());
                 String lead=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto.getUpdatedDt());
                 if(lead.compareTo(ao1) <= 0) {
-                    appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+                    appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
                 }
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
+        }
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            appTypeOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
         }
 
 
