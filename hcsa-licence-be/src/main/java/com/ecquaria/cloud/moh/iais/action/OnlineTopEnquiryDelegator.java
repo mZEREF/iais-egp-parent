@@ -235,7 +235,7 @@ public class OnlineTopEnquiryDelegator {
         if(postDto!=null){
             if(StringUtil.isNotEmpty(postDto.getCounsellingPlace())&&premisesMap.containsKey(postDto.getCounsellingPlace())){
                 postDto.setCounsellingPlace(premisesMap.get(postDto.getCounsellingPlace()).getPremiseLabel());
-            }else if(postDto.getCounsellingPlace().equals("AR_SC_001")){
+            }else if(StringUtil.isNotEmpty(postDto.getCounsellingPlace())&&postDto.getCounsellingPlace().equals("AR_SC_001")){
                 postDto.setCounsellingPlace("Health Promotion Board Counselling Centre");
             }
         }
@@ -243,7 +243,7 @@ public class OnlineTopEnquiryDelegator {
         if(preDto!=null){
             if(StringUtil.isNotEmpty(preDto.getCounsellingPlace())&&premisesMap.containsKey(preDto.getCounsellingPlace())){
                 preDto.setCounsellingPlace(premisesMap.get(preDto.getCounsellingPlace()).getPremiseLabel());
-            }else if(preDto.getCounsellingPlace().equals("AR_SC_001")){
+            }else if(StringUtil.isNotEmpty(preDto.getCounsellingPlace())&&preDto.getCounsellingPlace().equals("AR_SC_001")){
                 preDto.setCounsellingPlace("Health Promotion Board Counselling Centre");
             }
         }
