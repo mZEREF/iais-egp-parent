@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
@@ -60,7 +61,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageSize(defaultPageSize);
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
-                    initMsgControlSearchParam(searchParam,request);
+                    //initMsgControlSearchParam(searchParam,request);
                     List<String> allTypes = HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos);
                     List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
                     allTypes.addAll(getDsTypes(privilegeIds));
@@ -176,11 +177,11 @@ public class HalpSearchResultHelper {
             if(dsTypes.size() < allDsTypes.size()){
                 List<String> allTypes = new ArrayList<>(allDsTypes);
                 allTypes.removeAll(dsTypes);
-                interMessageSearchDto.setSearchSql(2);
+                interMessageSearchDto.setSearchSql(2);// not in
                 interMessageSearchDto.setServiceCodes(allTypes);
             }
         }else {
-            interMessageSearchDto.setSearchSql(1);
+            interMessageSearchDto.setSearchSql(1);// in
             interMessageSearchDto.setServiceCodes(getDsTypes(privilegeIds));
         }
         return interMessageSearchDto;
@@ -237,5 +238,30 @@ public class HalpSearchResultHelper {
         interMessageSearchDto.setServiceCodes(getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 
         return interMessageSearchDto;
+    }
+
+    /**
+     * @param serviceCode
+     * @return SERVICE_NAME
+     * @description Get the value of SERVICE_NAME from SERVICE_CODE
+     */
+    public static String splitServiceName(String serviceCode){
+        if(StringUtil.isEmpty(serviceCode) || StringUtil.isIn(serviceCode, HalpSearchResultHelper.allDsTypes)){
+            return "N/A";
+        }
+        StringBuilder draftServiceName = new StringBuilder();
+        String[] serviceName = serviceCode.split("@");
+        for (int i=0;i<serviceName.length;i++){
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceName[i]);
+            if (hcsaServiceDto != null){
+                if (i>0){
+                    draftServiceName.append("<br/>")
+                            .append(hcsaServiceDto.getSvcName());
+                }else{
+                    draftServiceName.append(hcsaServiceDto.getSvcName());
+                }
+            }
+        }
+        return draftServiceName.toString();
     }
 }

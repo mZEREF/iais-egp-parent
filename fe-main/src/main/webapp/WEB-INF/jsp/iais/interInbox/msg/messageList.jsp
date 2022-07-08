@@ -50,9 +50,9 @@
                     <thead>
                     <tr>
                         <th scope="col" style="display: none"></th>
-                        <C:if test="${msgPage == 'msgView'}">
+                        <c:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "/>
-                        </C:if>
+                        </c:if>
                         <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="message_type_desc"
                                              value="Type" isFE="true"/>
@@ -80,7 +80,7 @@
                                         <tr>
                                     </c:otherwise>
                                 </c:choose>
-                                <C:if test="${msgPage == 'msgView'}">
+                                <c:if test="${msgPage == 'msgView'}">
                                     <td>
                                         <div class="form-check">
                                             <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="msgIdList" aria-invalid="false" value="${inboxQuery.id}"
@@ -90,7 +90,7 @@
                                             </label>
                                         </div>
                                     </td>
-                                </C:if>
+                                </c:if>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
                                     <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.msgContent}"/>',
