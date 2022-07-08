@@ -4,7 +4,11 @@ $(document).ready(function (){
     $('select[class = "frequency"]').each(function(index, ele){
         $(ele).unbind('change');
         $(ele).on('change', function() {
-            toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
+            if (index == '0'){
+                toggleOnSelect(ele, 'FRE009', 'othersFrequency');
+            }else{
+                toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
+            }
         })
     });
     var drugMedicationLength = $content.length;
