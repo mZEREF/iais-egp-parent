@@ -82,78 +82,73 @@ public class ConfigServiceDelegator {
         NAME_MAP = Collections.unmodifiableMap(NAME_MAP);
     }
 
+    // 		start->OnStepProcess
     public void start(BaseProcessClass bpc){
-        log.info("*********start***********");
+        log.info(StringUtil.changeForLog("confige start "));
+        log.info(StringUtil.changeForLog("confige start end"));
+    }
+    // 		prepareAddAndListPage->OnStepProcess
+    public void prepareAddAndListPage(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareAddAndListPage start "));
         removeSession(bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_SERVICE_CONFIGURATOR);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
+
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         bpc.request.getSession().setAttribute("orgUserDto",entity);
-    }
-    private void removeSession(BaseProcessClass bpc){
-        bpc.request.getSession().removeAttribute("hcsaServiceCategoryDtos");
-        bpc.request.getSession().removeAttribute("categoryDtos");
-        bpc.request.getSession().removeAttribute("maskHcsaServiceCategory");
-    }
-    public void switchOr(BaseProcessClass bpc){
-    log.info("*********switchOr  start***********");
-
-    log.info("*********switchOr  end***********");
-    }
-    public void prepare(BaseProcessClass bpc){
-        log.info("*********prepare  start***********");
-
-    }
-    /*
-    * list all service oder by service name (First ranking) , version (Second ranking)
-    * */
-    public void list(BaseProcessClass bpc){
-        log.info("*********list  start***********");
-        List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
-        bpc.request.setAttribute("hcsaServiceDtos", allHcsaServices);
+        log.info(StringUtil.changeForLog("confige prepareAddAndListPage end "));
     }
 
-    /*
-    * add new service
-    *
-    * */
-    public void addNewService(BaseProcessClass bpc){
-        log.info("*********addNewService  start***********");
+    // 		prepareAddOrList->OnStepProcess
+    public void prepareAddOrList(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareAddOrList start"));
+        log.info(StringUtil.changeForLog("confige prepareAddOrList  end"));
+    }
+
+    // 		prepareAddNewService->OnStepProcess
+    public void prepareAddNewService(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareAddNewService start"));
         bpc.request.getSession().removeAttribute("routingStage");
         configService.addNewService(bpc.request);
         Object individualPremises = bpc.request.getAttribute("individualPremises");
         if(individualPremises==null){
             bpc.request.setAttribute("individualPremises","0");
         }
+        log.info(StringUtil.changeForLog("confige prepareAddNewService  end"));
     }
-    /*
-    * update service to new version
-    * */
-    public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
-        log.info("*********saveOrUpdate  start***********");
+
+    // 		doCreate->OnStepProcess
+    public void doCreate(BaseProcessClass bpc) throws Exception{
+        log.info(StringUtil.changeForLog("confige doCreate start"));
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
         configService.saveOrUpdate(bpc.request,bpc.response,dateOfHcsaService);
+        log.info(StringUtil.changeForLog("confige doCreate end"));
     }
-    public void saveDate(BaseProcessClass bpc){
-        log.info("*********saveDate  start***********");
-        configService.saData(bpc.request);
+
+    // 		prepareList->OnStepProcess
+    public void prepareList(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareList start"));
+        List<HcsaServiceDto> allHcsaServices = configService.getAllHcsaServices();
+        bpc.request.setAttribute("hcsaServiceDtos", allHcsaServices);
+        log.info(StringUtil.changeForLog("confige prepareList end"));
     }
-    public void editOrDelete(BaseProcessClass bpc){
-        log.info("*********editOrDelete  start***********");
+
+    // 		prepareViewOrBack->OnStepProcess
+    public void prepareViewOrBack(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareViewOrBack start"));
+        log.info(StringUtil.changeForLog("confige prepareViewOrBack  end"));
 
     }
-    /*
-    * edit or choose other version service to edit
-    *
-    * */
-    public void edit(BaseProcessClass bpc){
-        log.info("*********edit  start***********");
+    // 		prepareView->OnStepProcess
+    public void prepareView(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareView start"));
         configService.viewPageInfo(bpc.request);
+        log.info(StringUtil.changeForLog("confige prepareView end"));
     }
-
-    public void editOrSave(BaseProcessClass bpc){
-        log.info("*********editOrSave  start***********");
+    // 		PrepareEditOrDelete->OnStepProcess
+    public void prepareEditOrDelete(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareEditOrDelete start"));
         String crud_action_value = bpc.request.getParameter("crud_action_type");
         if("save".equals(crud_action_value)){
             bpc.request.setAttribute("crud_action_type","save");
@@ -161,48 +156,41 @@ public class ConfigServiceDelegator {
         if("edit".equals(crud_action_value)){
             bpc.request.setAttribute("crud_action_type","edit");
         }
-
-
-    }
-
-    /*
-    * view page
-    * */
-    public void editView(BaseProcessClass bpc){
-        log.info("*********editView  start***********");
-
-        configService.viewPageInfo(bpc.request);
-    }
-    /*
-    * delete service if service never used
-    * */
-    public void delete(BaseProcessClass bpc){
-
-        log.info("*********delete  start***********");
-
-        configService.delete(bpc.request);
+        log.info(StringUtil.changeForLog("confige prepareEditOrDelete start"));
 
     }
 
-    public  void selectVersionAsNewTem(BaseProcessClass bpc){
-
-        log.info("*********selectVersionAsNewTem  start***********");
-
+    // 		PrepeareEdit->OnStepProcess
+    public void prepeareEdit(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige prepareView start"));
+         configService.viewPageInfo(bpc.request);
+        log.info(StringUtil.changeForLog("confige prepareView end"));
     }
-    public void deleteOrCancel(BaseProcessClass bpc){
-
-        log.info("*********deleteOrCancel  start***********");
-        configService.deleteOrCancel(bpc.request,bpc.response);
-
-    }
-
-    public void update(BaseProcessClass bpc) throws  Exception{
-
-        log.info("*********update  start***********");
+    // 		doUpdate->OnStepProcess
+    public void doUpdate(BaseProcessClass bpc) throws  Exception{
+        log.info(StringUtil.changeForLog("confige doUpdate start"));
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
         configService.update(bpc.request,bpc.response,dateOfHcsaService);
+        log.info(StringUtil.changeForLog("confige doUpdate end"));
 
     }
+
+
+    // 		doDelete->OnStepProcess
+    public void doDelete(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("confige doDelete start"));
+        configService.deleteOrCancel(bpc.request,bpc.response);
+        log.info(StringUtil.changeForLog("confige doDelete end"));
+    }
+
+
+
+    private void removeSession(BaseProcessClass bpc){
+        bpc.request.getSession().removeAttribute("hcsaServiceCategoryDtos");
+        bpc.request.getSession().removeAttribute("categoryDtos");
+        bpc.request.getSession().removeAttribute("maskHcsaServiceCategory");
+    }
+
     /*
     * get page all data
     * -----------------------

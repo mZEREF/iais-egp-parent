@@ -17,66 +17,53 @@ import com.ecquaria.cloud.helper.EngineHelper;
 public class INTRANET___MohServiceConfig___1 extends BaseProcessClass {
     private static final String DELEGATOR ="congfigSeriviceDelegator";
     public void start_OnStepProcess_0() throws Exception {
+    // 		prepareAddAndListPage->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareAddAndListPage", this);
+    }
+    public void step3_OnStepProcess_0() throws Exception {
+    // 		PrepareAddOrList->OnStepProcess
+    	EngineHelper.delegate(DELEGATOR, "prepareAddOrList", this);
+    }
+    public void step1_OnStepProcess_0() throws Exception {
     // 		start->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "start", this);
     }
-    public void step3_OnStepProcess_0() throws Exception {
-    // 		Step3->OnStepProcess
-    }
-    public void step1_OnStepProcess_0() throws Exception {
-    // 		Step1->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "switchOr", this);
-    }
     public void list_OnStepProcess_0() throws Exception {
-    // 		list->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "list", this);
+    // 		PrepareList->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareList", this);
     }
     public void addNewService_OnStepProcess_0() throws Exception {
-    // 		addNewService->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "addNewService", this);
+    // 		PrepareAddNewService->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareAddNewService", this);
     }
     public void saveOrUpdate_OnStepProcess_0() throws Exception {
-    // 		saveOrUpdate->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "saveOrUpdate", this);
-    }
-    public void save_OnStepProcess_0() throws Exception {
-    // 		save->OnStepProcess
-        
-        EngineHelper.delegate(DELEGATOR, "saveDate", this);
+    // 		DoCreate->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doCreate", this);
     }
     public void step6_OnStepProcess_0() throws Exception {
-    // 		Step6->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "editOrDelete", this);
+    // 		PrepareViewOrBack->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareViewOrBack", this);
     }
     public void edit_OnStepProcess_0() throws Exception {
-    // 		edit->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "edit", this);
+    // 		PrepareView->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareView", this);
     }
     public void step5_OnStepProcess_0() throws Exception {
-    // 		Step5->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "editOrSave", this);
+    // 		PrepareEditOrDelete->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareEditOrDelete", this);
     }
     public void editView_OnStepProcess_0() throws Exception {
-    // 		editView->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "editView", this);
-    }
-    public void delete_OnStepProcess_0() throws Exception {
-    // 		delete->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "delete", this);
+    // 		PrepeareEdit->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepeareEdit", this);
     }
     public void step8_OnStepProcess_0() throws Exception {
-    // 		Step8->OnStepProcess
+    // 		DoDelete->OnStepProcess
 
-        EngineHelper.delegate(DELEGATOR, "deleteOrCancel", this);
+        EngineHelper.delegate(DELEGATOR, "doDelete", this);
     }
     public void step2_OnStepProcess_0() throws Exception {
-    // 		Step2->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "update", this);
-    }
-    public void selectVersionAsNewTem_OnStepProcess_0() throws Exception {
-    // 		selectVersionAsNewTem->OnStepProcess
-        
-        EngineHelper.delegate(DELEGATOR, "selectVersionAsNewTem", this);
+    // 		DoUpdate->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doUpdate", this);
     }
 
 }
