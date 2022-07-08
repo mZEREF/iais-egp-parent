@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -151,16 +150,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     svcConfig.setSvcName(serviceConfig.getSvcName());
 
                     LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
-                    List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
-                    for(String subTypeName : serviceSubtypeName){
-                        ChecklistConfigDto subTypeConfig = configCommClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
-                        if (Optional.ofNullable(subTypeConfig).isPresent()){
-                            svcConfig.setHasSubtype(true);
-                            Map<String, List<PremCheckItem>> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
-                            serviceQuestion.putAll(subTypeQuestion);
-                        }
-                    }
-
                     svcConfig.setSqMap(serviceQuestion);
                     configList.add(svcConfig);
                 }
@@ -175,21 +164,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Override
     public List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId) {
         return FeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
-    }
-
-    private List<String> getServiceSubTypeName(String correlationId){
-        List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPremisesScopeDto> scopeList = applicationFeClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
-        for (AppSvcPremisesScopeDto premise : scopeList){
-            boolean isSubService = premise.isSubsumedType();
-            if (!isSubService){
-                String subTypeId = premise.getScopeName();
-                HcsaServiceSubTypeDto subType = configCommClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
-                String subTypeName = subType.getSubtypeName();
-                serviceSubtypeName.add(subTypeName);
-            }
-        }
-        return serviceSubtypeName;
     }
 
     @Override

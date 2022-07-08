@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -150,9 +151,9 @@ public class LicCommServiceImpl implements LicCommService {
         if (activeHcsaServiceDtoByName != null) {
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             log.info(StringUtil.changeForLog("The Svc Type: " + svcType));
-            if (ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)) {
+            if (HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)) {
                 return flag == true ? String.valueOf(true) : activeHcsaServiceDtoByName.getId();
-            } else if (ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)) {
+            } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)) {
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommService.getActiveSvcCorrelation();
                 if (serviceCorrelationDtos == null || serviceCorrelationDtos.isEmpty()) {
                     log.info(StringUtil.changeForLog("The service correlations is empty!"));
@@ -173,7 +174,7 @@ public class LicCommServiceImpl implements LicCommService {
                 }
 
                 List<LicBaseSpecifiedCorrelationDto> entity = getLicBaseSpecifiedCorrelationDtos(
-                        ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
+                        HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
                 if (entity == null || entity.isEmpty()) {
                     log.info(StringUtil.changeForLog("The related base service is empty!"));
                     return flag == true ? String.valueOf(false) : "";
@@ -432,10 +433,8 @@ public class LicCommServiceImpl implements LicCommService {
             if (check == 2) {
                 appSubmissionDtoByLicenceId.setPartPremise(false);
                 appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-                RfcHelper.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                 appCommService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId(),
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, false);
-                RfcHelper.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                 appSubmissionDtoByLicenceId.setAutoRfc(true);
                 appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 ApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);

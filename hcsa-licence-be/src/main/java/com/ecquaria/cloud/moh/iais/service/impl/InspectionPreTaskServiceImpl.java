@@ -385,20 +385,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 if(appEditSelectDto.isPremisesEdit()){
                     editSelect = editSelect + "Premises";
                 }
-                if(appEditSelectDto.isDocEdit()){
+                /*if(appEditSelectDto.isDocEdit()){
                     editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "Primary Documents";
-                }
+                }*/
                 if(appEditSelectDto.isServiceEdit()){
                     editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "Service Related Information - " + applicationViewDto.getServiceType();
-                }
-                if(appEditSelectDto.isPoEdit()){
-                    editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "PO";
-                }
-                if(appEditSelectDto.isDpoEdit()){
-                    editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "DPO";
-                }
-                if(appEditSelectDto.isMedAlertEdit()){
-                    editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "medAlert";
                 }
             }
             String remarks = "Sections Allowed for Change : " + editSelect;

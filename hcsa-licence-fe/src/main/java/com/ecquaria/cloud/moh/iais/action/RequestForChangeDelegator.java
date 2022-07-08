@@ -18,10 +18,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -386,18 +384,7 @@ public class RequestForChangeDelegator {
         // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
         // set doc info
-        List<HcsaSvcDocConfigDto> primaryDocConfig = null;
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
-            primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
-        }
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        //add align for dup for prem doc
-        ApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
-        //set primary doc title
-        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
-        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
 
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
@@ -421,9 +408,6 @@ public class RequestForChangeDelegator {
                 //set svc doc title
                 Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                 appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                HashMap<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap =
-                        ApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
-                bpc.request.getSession().setAttribute("reloadDisciplineAllocationMap",reloadDisciplineAllocationMap);
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             }
         }
@@ -454,9 +438,9 @@ public class RequestForChangeDelegator {
             }else if(RfcConst.EDIT_PREMISES.equals(editValue)){
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
-            }else if(RfcConst.EDIT_PRIMARY_DOC.equals(editValue)){
-                appEditSelectDto.setDocEdit(true);
-                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PRIMARY_DOC);
+            }else if(RfcConst.EDIT_SPECIALISED.equals(editValue)){
+                appEditSelectDto.setSpecialisedEdit(true);
+                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SPECIALISED);
             }else if(RfcConst.EDIT_SERVICE.equals(editValue)){
                 appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
@@ -968,8 +952,6 @@ public class RequestForChangeDelegator {
                     List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
                     hcsaServiceDtoList.add(hcsaServiceDto);
                     ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                    //set address
-                    ApplicationHelper.setPremAddress(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId",currSvcId);
                 }
 
@@ -1011,7 +993,6 @@ public class RequestForChangeDelegator {
             bpc.request.setAttribute("RFC_DRAFT_NO",draftNo);
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                RfcHelper.svcDocToPresmise(appSubmissionDto);
                 AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){

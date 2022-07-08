@@ -5,20 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -27,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -113,25 +106,11 @@ public class LicenceViewDelegator {
                         //set service step
                         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(hcsaServiceDto.getId());
                         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-                        //set primary doc info
-                        RfcHelper.svcDocToPresmise(appSubmissionDto);
-                        //set doc info
-                        List<HcsaSvcDocConfigDto> primaryDocConfig = null;
-                        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                        if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
-                            primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-                            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
-                        }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
                         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        ApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                        ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //primary doc add align for dup for prem
-                        ApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
-                        //set primary doc title
-                        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
-                        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
                         //set dupForPsn attr
                         ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
@@ -141,23 +120,7 @@ public class LicenceViewDelegator {
                         Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                         appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
-                        //set service scope info
-                        List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                        List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();
-                        if(!IaisCommonUtils.isEmpty(laboratoryDisciplinesDtos)){
-                            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:laboratoryDisciplinesDtos){
-                                List<AppSvcChckListDto> svcScopeList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                                if(!IaisCommonUtils.isEmpty(svcScopeList)){
-                                    for(AppSvcChckListDto svcScope:svcScopeList){
-                                        svcScopeIdList.add(svcScope.getChkLstConfId());
-                                    }
-                                }
-                            }
-                        }
-                        List<HcsaSvcSubtypeOrSubsumedDto> oldHcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.getSvcSubtypeOrSubsumedByIdList(svcScopeIdList);
-                        ApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,oldHcsaSvcSubtypeOrSubsumedDtos);
                         //set po dpo
-                        ApplicationHelper.setPreviewPo(appSvcRelatedInfoDto,bpc.request);
                         appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
@@ -177,9 +140,6 @@ public class LicenceViewDelegator {
                             //692590
                             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         }
-                        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap=
-                                ApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, licAlignAppSvcId);
-                        ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                     }else{
                         log.info(StringUtil.changeForLog("current svc name:"+appSvcRelatedInfoDto.getServiceName()+" can not found hcsaServiceDto"));
                     }

@@ -206,9 +206,6 @@ public class ApplicationDelegator extends AppCommDelegator {
         String appType = appSubmissionDto.getAppType();
         boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
-        if (isRenewalOrRfc) {
-            RfcHelper.svcDocToPresmise(appSubmissionDto);
-        }
         loadingRfiGrpServiceConfig(appSubmissionDto, request);
         svcRelatedInfoRFI(appSubmissionDto, appNo);
         //set max file index into session

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -16,8 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -31,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -188,8 +186,8 @@ public abstract class AppCommDelegator {
             } else if (RfcConst.EDIT_PREMISES.equals(currentEdit)) {
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
-            } else if (RfcConst.EDIT_PRIMARY_DOC.equals(currentEdit)) {
-                appEditSelectDto.setDocEdit(true);
+            } else if (RfcConst.EDIT_SPECIALISED.equals(currentEdit)) {
+                appEditSelectDto.setSpecialisedEdit(true);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             } else if (RfcConst.EDIT_SERVICE.equals(currentEdit)) {
                 appEditSelectDto.setServiceEdit(true);
@@ -221,8 +219,6 @@ public abstract class AppCommDelegator {
                 List<AppGrpPremisesDto> newAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
                 filtrationAppGrpPremisesDtos(appNo, appSubmissionDto, newAppGrpPremisesDtoList);
                 appGrpPremisesDtos = newAppGrpPremisesDtoList;
-                appSubmissionDto.setAppGrpPrimaryDocDtos(
-                        filterPrimaryDocs(appSubmissionDto.getAppGrpPrimaryDocDtos(), newAppGrpPremisesDtoList));
             }
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 appGrpPremisesDto.setFromDB(true);
@@ -239,17 +235,6 @@ public abstract class AppCommDelegator {
             }
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
         }
-    }
-
-    protected List<AppGrpPrimaryDocDto> filterPrimaryDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,
-            List<AppGrpPremisesDto> newPremisesDtos) {
-        if (appGrpPrimaryDocDtos == null || newPremisesDtos == null) {
-            return appGrpPrimaryDocDtos;
-        }
-        return appGrpPrimaryDocDtos.stream()
-                .filter(dto -> dto.getAppGrpPremId() == null ||
-                        newPremisesDtos.stream().anyMatch(premise -> dto.getAppGrpPremId().equals(premise.getId())))
-                .collect(Collectors.toList());
     }
 
     protected void filtrationAppGrpPremisesDtos(String appNo, AppSubmissionDto appSubmissionDto,
@@ -551,7 +536,7 @@ public abstract class AppCommDelegator {
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
-                ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_LICENSEE, isEdit, isRfi);
+                RfcConst.EDIT_LICENSEE, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
@@ -750,7 +735,7 @@ public abstract class AppCommDelegator {
         int baseSvcCount = 0;
         if (hcsaServiceDtoList != null) {
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
-                if (ApplicationConsts.SERVICE_TYPE_BASE.equalsIgnoreCase(hcsaServiceDto.getSvcType())) {
+                if (HcsaConsts.SERVICE_TYPE_BASE.equalsIgnoreCase(hcsaServiceDto.getSvcType())) {
                     baseSvcCount++;
                 }
             }
@@ -855,25 +840,7 @@ public abstract class AppCommDelegator {
             }
         }
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-            RfcHelper.svcDocToPresmise(appSubmissionDto);
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,
-                HcsaAppConst.PRIMARY_DOC_CONFIG);
-        if (IaisCommonUtils.isEmpty(primaryDocConfig)) {
-            if (isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0) {
-                primaryDocConfig = configCommService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-            } else {
-                primaryDocConfig = configCommService.getAllHcsaSvcDocs(null);
-            }
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
-        }
 
-        Map<String, List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,
-                appSubmissionDto.getAppGrpPremisesDtoList(), appGrpPrimaryDocDtos);
-        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             if (!ApplicationHelper.checkIsRfi(bpc.request)) {
                 // 113164
@@ -1050,8 +1017,7 @@ public abstract class AppCommDelegator {
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
-                ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1375,12 +1341,6 @@ public abstract class AppCommDelegator {
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             appSubmissionDto.setAppDeclarationDocDtos(oldAppSubmissionDto.getAppDeclarationDocDtos());
             appSubmissionDto.setAppDeclarationMessageDto(oldAppSubmissionDto.getAppDeclarationMessageDto());
-            RfcHelper.premisesDocToSvcDoc(appSubmissionDto);
-        } else {
-            //handler primary doc
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = RfcHelper.handlerPrimaryDoc(
-                    appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppGrpPrimaryDocDtos());
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         }
 
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
@@ -1436,30 +1396,6 @@ public abstract class AppCommDelegator {
                     result.put("premiss", MessageUtil.replaceMessage("GENERAL_ERR0006", "premiss", "field"));
                 }
             }
-            List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
-            if (dtoAppGrpPrimaryDocDtos != null) {
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos) {
-                    appGrpPrimaryDocDto.setPassValidate(true);
-                }
-            }
-            List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos1 = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            if (dtoAppGrpPrimaryDocDtos1 != null) {
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos1) {
-                    appGrpPrimaryDocDto.setPassValidate(true);
-                }
-            }
-            if (!appEditSelectDto.isDocEdit()) {
-                boolean b = RfcHelper.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(),
-                        oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
-                if (b) {
-                    log.info(StringUtil.changeForLog(
-                            "appGrpPrimaryDocDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPrimaryDocDtos())));
-                    log.info(StringUtil.changeForLog(
-                            "oldAppGrpPrimaryDocDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())));
-                    result.put("document", MessageUtil.replaceMessage("GENERAL_ERR0006", "document", "field"));
-                }
-            }
-
             if (!appEditSelectDto.isServiceEdit()) {
                 boolean b = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                         oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
@@ -1638,8 +1574,6 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        RfcHelper.premisesDocToSvcDoc(appSubmissionDto);
-        RfcHelper.premisesDocToSvcDoc(oldAppSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         appSubmissionDto.setAuditTrailDto(auditTrailDto);
@@ -1649,7 +1583,7 @@ public abstract class AppCommDelegator {
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto autoAppSubmissionDto = null;
         AppEditSelectDto autoChangeSelectDto = null;
-        if (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isPremisesEdit() || appEditSelectDto.isDocEdit() || appEditSelectDto.isServiceEdit()) {
+        if (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isPremisesEdit() || appEditSelectDto.isSpecialisedEdit() || appEditSelectDto.isServiceEdit()) {
             // add the current dto to the group
             if (isAutoRfc) {
                 autoSaveAppsubmission.add(appSubmissionDto);
@@ -1658,7 +1592,7 @@ public abstract class AppCommDelegator {
             }
         }
         // init auto app submission
-        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isDocEdit())) {
+        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isSpecialisedEdit())) {
             autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
@@ -1694,7 +1628,7 @@ public abstract class AppCommDelegator {
             List<AppSubmissionDto> appSubmissionDtos;
             if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
-                boolean checkSpec = ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType());
+                boolean checkSpec = HcsaConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType());
                 appSubmissionDtos = licCommService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
                 if (IaisCommonUtils.isNotEmpty(appSubmissionDtos)) {
                     StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
@@ -1784,9 +1718,9 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("##### Only Add claimed: " + addClaimed));
         // Primary Doc
         // re-set change edit select dto
-        if (appEditSelectDto.isDocEdit() && autoAppSubmissionDto != null) {
-            appEditSelectDto.setDocEdit(false);
-            autoChangeSelectDto.setDocEdit(true);
+        if (appEditSelectDto.isSpecialisedEdit() && autoAppSubmissionDto != null) {
+            appEditSelectDto.setSpecialisedEdit(false);
+            autoChangeSelectDto.setSpecialisedEdit(true);
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
@@ -2072,10 +2006,8 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppGrpNo(null);
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                RfcHelper.svcDocToPresmise(appSubmissionDto);
                 AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
                 if (oldAppSubmissionDto != null) {
-                    RfcHelper.svcDocToPresmise(oldAppSubmissionDto);
                     ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
                 }
             }
@@ -2171,7 +2103,7 @@ public abstract class AppCommDelegator {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto, false));
         appEditSelectDto.setPremisesEdit(true);
-        appEditSelectDto.setDocEdit(true);
+        appEditSelectDto.setSpecialisedEdit(true);
         appEditSelectDto.setServiceEdit(true);
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(
@@ -2195,9 +2127,6 @@ public abstract class AppCommDelegator {
         boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
         appSubmissionDto.setGiroAccount(isGiroAcc);
         //handler primary doc
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = RfcHelper.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),
-                appSubmissionDto.getAppGrpPrimaryDocDtos());
-        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;
@@ -2248,9 +2177,6 @@ public abstract class AppCommDelegator {
             }
             if (appEditSelectDto.isPremisesEdit()) {
                 appSubmissionDto.setAppGrpPremisesDtoList(oldDto.getAppGrpPremisesDtoList());
-            }
-            if (appEditSelectDto.isDocEdit()) {
-                appSubmissionDto.setAppGrpPrimaryDocDtos(oldDto.getAppGrpPrimaryDocDtos());
             }
             if (appEditSelectDto.isServiceEdit()) {
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(oldDto.getAppSvcRelatedInfoDtoList());

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -879,8 +880,8 @@ public class InterInboxDelegator {
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
             log.info(StringUtil.changeForLog("----- service svc type : "+ serviceDto.getSvcType()+"-------------"));
-            if(!ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType())){
-                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licId).getEntity();
+            if(!HcsaConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType())){
+                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licId).getEntity();
                 if(IaisCommonUtils.isEmpty(entity)){
                     log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id ------------------"));
                     return false;

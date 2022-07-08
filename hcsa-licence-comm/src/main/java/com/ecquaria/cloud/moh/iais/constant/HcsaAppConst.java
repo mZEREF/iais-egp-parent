@@ -56,7 +56,7 @@ public final class HcsaAppConst {
     public static final String OLDAPPSUBMISSIONDTO                          = "oldAppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO                    = "commonHcsaSvcDocConfigDto";
     public static final String PREMHCSASVCDOCCONFIGDTO                      = "premHcsaSvcDocConfigDto";
-    public static final String RELOADAPPGRPPRIMARYDOCMAP                    = "reloadAppGrpPrimaryDocMap";
+    //public static final String RELOADAPPGRPPRIMARYDOCMAP                    = "reloadAppGrpPrimaryDocMap";
     public static final String APPGRPPRIMARYDOCERRMSGMAP                    = "appGrpPrimaryDocErrMsgMap";
     public static final String PRIMARY_DOC_CONFIG                           = "primaryDocConfig";
     public static final String SVC_DOC_CONFIG                               = "svcDocConfig";

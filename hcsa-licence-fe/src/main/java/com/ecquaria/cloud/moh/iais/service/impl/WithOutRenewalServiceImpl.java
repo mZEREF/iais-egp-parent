@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -229,26 +228,10 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         List<String> newFileReportIds = IaisCommonUtils.genNewArrayList();
         List<String> oldFileReportIds = IaisCommonUtils.genNewArrayList();
-        RfcHelper.svcDocToPresmise(oldAppSubmissionDto);
-
-        List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
 
-        List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
 
-        if (!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos)) {
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : newAppGrpPrimaryDocDtos) {
-                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                newFileReportIds.add(fileRepoId);
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldAppGrpPrimaryDocDtos) {
-                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                oldFileReportIds.add(fileRepoId);
-            }
-        }
         if (!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit)) {
             for (AppSvcDocDto appSvcDocDto : NewAppSvcDocDtoLit) {
                 String fileRepoId = appSvcDocDto.getFileRepoId();

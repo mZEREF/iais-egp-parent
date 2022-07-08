@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -40,9 +39,6 @@ public interface InsRepClient {
                                                                           @PathVariable("type") String type);
     @PostMapping(value = "/iais-application-be/inspection/date", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<Date>> getInspectionRecomInDateByCorreId(@RequestBody List<String> taskRefNum);
-
-    @GetMapping(value = "/iais-application-be/application/premises-scope/{correId}")
-    FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(@PathVariable(name = "correId") String correId);
 
     @PostMapping(value = "/iais-inspection-report/saveReportResult" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveReportResult(@RequestBody ReportResultDto reportResultDto );

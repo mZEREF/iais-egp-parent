@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
@@ -12,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -20,8 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -42,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
@@ -393,7 +390,7 @@ public class LicenceApproveBatchjob {
                 String applicationNo = licenceDto.getApplicationNo();
                 log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  svcType is -->:"+svcType));
                 log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  applicationNo is -->:"+applicationNo));
-                if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)
+                if(!StringUtil.isEmpty(svcType) && HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)
                         && baseApplicationNo.equals(applicationNo)){
                     result = licenceDto;
                     break;
@@ -885,14 +882,11 @@ public class LicenceApproveBatchjob {
                     log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;" + appGrpPremisesDtos.size()));
                     //create lic_premises
                     List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
-                    //create LicPremisesScopeDto
-                    List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
-                    List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
                     List<AppGrpPersonnelDto> appGrpPersonnelDtosE = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtosE = applicationListDto.getAppSvcKeyPersonnelDtos();
 
-                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
-                            appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
+                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesDtos, appPremisesCorrelationDtos,
+                            appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
                     if (!IaisCommonUtils.isEmpty(premisesGroupDtos1)) {
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
@@ -903,9 +897,8 @@ public class LicenceApproveBatchjob {
                     licAppCorrelationDtos.add(licAppCorrelationDto);
 
                     //create the document and lic_document from the primary doc.
-                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                     List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
-                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(licDocumentRelationDtos,appGrpPrimaryDocDtos,
+                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(licDocumentRelationDtos,
                             appSvcDocDtos, appPremisesCorrelationDtos, premisesGroupDtos);
                     //licDocumentRelationDtos.addAll(licDocumentRelationDto1s);
 
@@ -1067,15 +1060,12 @@ public class LicenceApproveBatchjob {
                 //
                 //create lic_premises
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
-                //create LicPremisesScopeDto
-                List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
-                List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
                 List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
 
 
-                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
-                        appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
+                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos,
+                        appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
                 //String licenceNo = null;
                 //get the yearLenth.
 //                int yearLength = getYearLength(appPremisesRecommendationDto);
@@ -1136,9 +1126,8 @@ public class LicenceApproveBatchjob {
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
 
                 //create the document and lic_document from the primary doc.
-                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
-                List<LicDocumentRelationDto> licDocumentRelationDtos = getLicDocumentRelationDto(null,appGrpPrimaryDocDtos,
+                List<LicDocumentRelationDto> licDocumentRelationDtos = getLicDocumentRelationDto(null,
                         appSvcDocDtos, appPremisesCorrelationDtos, premisesGroupDtos);
                 superLicDto.setLicDocumentRelationDto(licDocumentRelationDtos);
 
@@ -1274,8 +1263,6 @@ public class LicenceApproveBatchjob {
                                                        ApplicationLicenceDto applicationLicenceDto,
                                                        List<AppGrpPremisesDto> appGrpPremisesDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
-                                                       List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,
-                                                       List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
                                                        List<AppGrpPersonnelDto> appGrpPersonnelDtos,
                                                        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,
                                                        HcsaServiceDto hcsaServiceDto,
@@ -1440,72 +1427,11 @@ public class LicenceApproveBatchjob {
                 licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 premisesGroupDto.setLicPremInspGrpCorrelationDto(licPremInspGrpCorrelationDto);
             }
-
-            //create LicPremisesScopeDto
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremisesCorrelationDto.getId());
-            if (!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)) {
-                List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
-                for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtoList) {
-                    LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
-                    LicPremisesScopeDto licPremisesScopeDto = MiscUtil.transferEntityDto(appSvcPremisesScopeDto, LicPremisesScopeDto.class);
-                    licPremisesScopeDto.setId(null);
-                    licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
-                    //create LicPremisesScopeAllocationDto
-                    AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
-                            appSvcPremisesScopeDto.getId());
-                    if (appSvcPremisesScopeAllocationDto != null) {
-                        AppSvcKeyPersonnelDto appSvcKeyPersonnelDto = getAppSvcKeyPersonnelDtoById(appSvcKeyPersonnelDtos, appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
-                        if(appSvcKeyPersonnelDto != null){
-                            AppGrpPersonnelDto appGrpPersonnelDto = getAppGrpPersonnelDtoById(appGrpPersonnelDtos, appSvcKeyPersonnelDto.getAppGrpPsnId());
-                            if(appGrpPersonnelDto!= null){
-                                LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
-                                licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
-                                //licPremisesScopeAllocationDto.setLicPremScopeId(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId());
-                                licPremisesScopeAllocationDto.setLicPremSvcPersonId(appSvcPremisesScopeAllocationDto.getAppSvcPersonId());
-                                licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
-                            }else{
-                                log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:"
-                                        + appSvcKeyPersonnelDto.getAppGrpPsnId()));
-                            }
-                        }else{
-                            log.debug(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:"
-                                    + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
-                        }
-                    } else {
-                        log.debug(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));
-                    }
-                    licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
-                }
-                premisesGroupDto.setLicPremisesScopeGroupDtoList(licPremisesScopeGroupDtoList);
-            } else {
-                log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:" + appPremisesCorrelationDto.getId()));
-            }
             reuslt.add(premisesGroupDto);
         }
         log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto end ..."));
         return reuslt;
     }
-
-
-    private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos, String appPremCorrecId) {
-        List<AppSvcPremisesScopeDto> result = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos) || appPremCorrecId == null || StringUtil.isEmpty(appPremCorrecId)) {
-            return result;
-        }
-
-        for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtos) {
-            if (appSvcPremisesScopeDto != null && appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())) {
-                result.add(appSvcPremisesScopeDto);
-            }
-        }
-        return result;
-    }
-
-//    private LicFeeGroupDto getLicFeeGroupDto(String amount) {
-//        LicFeeGroupDto licFeeGroupDto = new LicFeeGroupDto();
-//        licFeeGroupDto.setFeeAmount(amount);
-//        return licFeeGroupDto;
-//    }
 
     private Integer isPostInspNeeded(ApplicationGroupDto applicationGroupDto) {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is start ..."));
@@ -1609,21 +1535,6 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private AppSvcPremisesScopeAllocationDto getAppSvcPremisesScopeAllocationDto(List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
-                                                                                 String appSvcPremisesScopeId) {
-        AppSvcPremisesScopeAllocationDto result = null;
-        if (StringUtil.isEmpty(appSvcPremisesScopeId) || appSvcPremisesScopeAllocationDtos == null || appSvcPremisesScopeAllocationDtos.size() == 0) {
-            return result;
-        }
-        for (AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto : appSvcPremisesScopeAllocationDtos) {
-            if (appSvcPremisesScopeId.equals(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId())) {
-                result = appSvcPremisesScopeAllocationDto;
-                break;
-            }
-        }
-        return result;
-    }
-
     private boolean isExist(List<LicDocumentRelationDto> licDocumentRelationDtos, String fileRepoId) {
         boolean result = false;
         log.info(StringUtil.changeForLog("The isExist start ..."));
@@ -1643,42 +1554,11 @@ public class LicenceApproveBatchjob {
     }
 
     private List<LicDocumentRelationDto> getLicDocumentRelationDto(List<LicDocumentRelationDto> licDocumentRelationDtos,
-                                                                   List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<AppSvcDocDto> appSvcDocDtos,
+                                                                   List<AppSvcDocDto> appSvcDocDtos,
                                                                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, List<PremisesGroupDto> premisesGroupDtos) {
         log.info(StringUtil.changeForLog("The getLicDocumentRelationDto start ..."));
         if(licDocumentRelationDtos==null){
             licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
-        }
-        if (appGrpPrimaryDocDtos != null) {
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
-                if (isExist(licDocumentRelationDtos, appGrpPrimaryDocDto.getFileRepoId())) {
-                    continue;
-                }
-                if (!IaisCommonUtils.isEmpty(premisesGroupDtos)) {
-                    for (PremisesGroupDto premisesGroupDto : premisesGroupDtos) {
-                        PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
-                        LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
-                        DocumentDto documentDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto, DocumentDto.class);
-                        documentDto.setId(null);
-                        licDocumentRelationDto.setDocumentDto(documentDto);
-
-                        LicDocumentDto licDocumentDto = new LicDocumentDto();
-                        licDocumentDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
-                        licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_PARIMARY));
-                        licDocumentDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
-                        //set the old premises Id ,get the releation when the save.
-                        if (StringUtil.isEmpty(appGrpPrimaryDocDto.getAppGrpPremId())) {
-                            licDocumentDto.setLicPremId(premisesDto.getId());
-                            licDocumentRelationDto.setLicDocumentDto(licDocumentDto);
-                            licDocumentRelationDtos.add(licDocumentRelationDto);
-                        } else if (appGrpPrimaryDocDto.getAppGrpPremId().equals(premisesDto.getId())) {
-                            licDocumentDto.setLicPremId(appGrpPrimaryDocDto.getAppGrpPremId());
-                            licDocumentRelationDto.setLicDocumentDto(licDocumentDto);
-                            licDocumentRelationDtos.add(licDocumentRelationDto);
-                        }
-                    }
-                }
-            }
         }
         if (appSvcDocDtos != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {

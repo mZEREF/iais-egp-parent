@@ -642,20 +642,11 @@ public class ApplicationServiceImpl implements ApplicationService {
             if(appEditSelectDto.isPremisesEdit()){
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "Mode of Service Delivery";
             }
-            if(appEditSelectDto.isDocEdit()){
+          /*  if(appEditSelectDto.isSpecialisedEdit()){
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
-            }
+            }*/
             if(appEditSelectDto.isServiceEdit()){
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Service Related Information - " + applicationViewDto.getServiceType();
-            }
-            if(appEditSelectDto.isPoEdit()){
-                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "PO";
-            }
-            if(appEditSelectDto.isDpoEdit()){
-                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "DPO";
-            }
-            if(appEditSelectDto.isMedAlertEdit()){
-                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") + "medAlert";
             }
         }
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();

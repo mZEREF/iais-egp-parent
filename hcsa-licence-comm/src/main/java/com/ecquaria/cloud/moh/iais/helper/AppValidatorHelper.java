@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -20,9 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -384,15 +381,6 @@ public final class AppValidatorHelper {
                     }
                 }
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
-                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
-                List<HcsaSvcSubtypeOrSubsumedDto> checkList = configCommService.loadLaboratoryDisciplines(serviceId);
-                Map<String, String> disciplineMap = doValidateLaboratory(appGrpPremisesDtos,
-                        appSvcLaboratoryDisciplinesDtoList, serviceId, checkList);
-                if (!disciplineMap.isEmpty()) {
-                    errorMap.putAll(disciplineMap);
-                    addErrorStep(currentStep, stepName, true, errorList);
-                }
             } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
                 Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
@@ -420,10 +408,6 @@ public final class AppValidatorHelper {
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
-                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-                doValidateDisciplineAllocation(errorMap, appSvcDisciplineAllocationDtoList, dto, null);
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
                 new ValidateCharges().doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
@@ -575,57 +559,6 @@ public final class AppValidatorHelper {
         if (!isValid) {
             String stepName = getStepName(ApplicationHelper.getStep(psnType), stepDtos);
             addErrorStep(ApplicationHelper.getStep(psnType), stepName, true, errorList);
-        }
-    }
-
-    private static void doCommomDocument(AppSubmissionDto appSubmissionDto, Map<String, String> documentMap, boolean isRfi) {
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList;
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if (isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0) {
-            hcsaSvcDocDtos = getConfigCommService().getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-        } else {
-            hcsaSvcDocDtos = getConfigCommService().getAllHcsaSvcDocs(null);
-        }
-        if (hcsaSvcDocDtos != null) {
-            List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = IaisCommonUtils.genNewArrayList();
-            for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
-                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
-                }
-            }
-            commonHcsaSvcDocConfigList = commonHcsaSvcDocConfigDto;
-        } else {
-            return;
-        }
-        for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
-            String name = "common" + comm.getId();
-
-            Boolean isMandatory = comm.getIsMandatory();
-            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
-            if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
-                documentMap.put(name, err006);
-            } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
-                Boolean flag = Boolean.FALSE;
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                    if (StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())) {
-                        continue;
-                    }
-                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                    if (!comm.getId().equals(svcComDocId) && comm.getDocTitle().equals(appGrpPrimaryDocDto.getSvcComDocName())) {
-                        appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
-                        svcComDocId = comm.getId();
-                    }
-                    if (comm.getId().equals(svcComDocId)) {
-                        flag = Boolean.TRUE;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    documentMap.put(name, err006);
-                }
-            }
         }
     }
 
@@ -1692,92 +1625,6 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
-    public static Map<String, String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos, String serviceId,
-            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos) {
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        int premCount = 0;
-        if (appSvcLaboratoryDisciplinesDtos == null || appSvcLaboratoryDisciplinesDtos.isEmpty()) {
-            // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
-            map.put("checkError", "GENERAL_ERR0056");
-            return map;
-        }
-        int svcScopeSize = appSvcLaboratoryDisciplinesDtos.size();
-        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-            if (premCount >= svcScopeSize) {
-                break;
-            }
-            AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
-            List<AppSvcChckListDto> listDtos = IaisCommonUtils.getList(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
-            int count = 0;
-            if (listDtos.isEmpty()) {
-                // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
-                map.put("checkError", "GENERAL_ERR0056");
-            } else {
-                String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", HcsaAppConst.PLEASEINDICATE, "field");
-                boolean selectOtherScope = selectOtherScope(listDtos);
-                if (selectOtherScope) {
-                    boolean selectOtherChildrenScope = false;
-                    //check children scope is selected
-                    List<String> childrenConfigIdList = getOtherScopeChildrenIdList(hcsaSvcSubtypeOrSubsumedDtos);
-                    if (!IaisCommonUtils.isEmpty(childrenConfigIdList)) {
-                        for (AppSvcChckListDto appSvcChckListDto : listDtos) {
-                            if (childrenConfigIdList.contains(appSvcChckListDto.getChkLstConfId())) {
-                                selectOtherChildrenScope = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!selectOtherChildrenScope) {
-                        map.put("otherScopeError" + premCount, err006);
-                    }
-                }
-                for (int i = 0; i < listDtos.size(); i++) {
-                    AppSvcChckListDto appSvcChckListDto = listDtos.get(i);
-                    if (HcsaAppConst.PLEASEINDICATE.equals(appSvcChckListDto.getChkName())) {
-                        if (StringUtil.isEmpty(appSvcChckListDto.getOtherScopeName())) {
-                            map.put("pleaseIndicateError" + premCount, err006);
-                        } else if (appSvcChckListDto.getOtherScopeName().length() > 200) {
-                            map.put("pleaseIndicateError" + premCount, repLength("Please indicate", "200"));
-                        }
-                    }
-
-                    String parentName = appSvcChckListDto.getParentName();
-                    if (parentName == null) {
-                        count++;
-                        continue;
-                    } else if (appSvcChckListDto.isChkLstType()) {
-                        if (serviceId.equals(parentName)) {
-                            count++;
-                            continue;
-                        }
-                        for (AppSvcChckListDto every : listDtos) {
-                            if (every.getChildrenName() != null) {
-                                if (every.getChildrenName().equals(parentName)) {
-                                    count++;
-                                    break;
-                                }
-                            }
-                        }
-                    } else if (!appSvcChckListDto.isChkLstType()) {
-                        for (AppSvcChckListDto every : listDtos) {
-                            if (every.getChkLstConfId().equals(parentName)) {
-                                count++;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (count != listDtos.size()) {
-                map.put("checkError", "NEW_ERR0012");
-            }
-            premCount++;
-        }
-        WebValidationHelper.saveAuditTrailForNoUseResult(map);
-        return map;
-    }
-
     private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList) {
         List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
         HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;
@@ -2363,64 +2210,6 @@ public final class AppValidatorHelper {
         return mandatoryCount;
     }
 
-    public static List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,
-            boolean setIsPassValidate) {
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        return documentValid(appSubmissionDto, errorMap, setIsPassValidate);
-    }
-
-    private static List<AppGrpPrimaryDocDto> documentValid(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap,
-            boolean setIsPassValidate) {
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        SystemParamConfig systemParamConfig = getSystemParamConfig();
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPrimaryDocDtos() == null) {
-            return null;
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-            if (StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())) {
-                continue;
-            }
-            String keyName = "";
-            if (StringUtil.isEmpty(appGrpPrimaryDocDto.getPremisessName()) && StringUtil.isEmpty(
-                    appGrpPrimaryDocDto.getPremisessType())) {
-                //common
-                keyName = "common" + appGrpPrimaryDocDto.getSvcComDocId();
-            } else {
-                keyName = "prem" + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getPremisessName();
-            }
-            long length = appGrpPrimaryDocDto.getRealDocSize();
-            int uploadFileLimit = systemParamConfig.getUploadFileLimit();
-            if (length / 1024 / 1024 > uploadFileLimit) {
-                errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit), "sizeMax"));
-                continue;
-            }
-            Boolean flag = Boolean.FALSE;
-            String name = appGrpPrimaryDocDto.getDocName();
-            if (name.length() > 100) {
-                errorMap.put(keyName, MessageUtil.getMessageDesc("GENERAL_ERR0022"));
-            }
-            String substring = name.substring(name.lastIndexOf('.') + 1);
-            String sysFileType = systemParamConfig.getUploadFileType();
-            String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
-            for (String f : sysFileTypeArr) {
-                if (f.equalsIgnoreCase(substring)) {
-                    flag = Boolean.TRUE;
-                }
-            }
-            if (!flag) {
-                errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
-            }
-            String errMsg = errorMap.get(keyName);
-            if (StringUtil.isEmpty(errMsg) && setIsPassValidate) {
-                appGrpPrimaryDocDto.setPassValidate(true);
-            }
-        }
-        return appGrpPrimaryDocDtoList;
-    }
-
     public static boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory,
             HttpServletRequest request) {
         boolean isValid = true;
@@ -2491,71 +2280,6 @@ public final class AppValidatorHelper {
                         map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "CGO can't be null");
                         return;
                     }
-                }
-            }
-        }
-    }
-
-    public static void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
-            AppSvcRelatedInfoDto currentSvcDto, Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap) {
-        if (daList == null || daList.isEmpty()) {
-            return;
-        }
-        int size = daList.size();
-        Map<String, String> cgoMap = new HashMap<>();
-        Map<String, String> slMap = new HashMap<>();
-        for (int i = 0; i < size; i++) {
-            String cgoPerson = daList.get(i).getCgoPerson();
-            if (StringUtil.isEmpty(cgoPerson)) {
-                map.put("disciplineAllocation" + i,
-                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officers", "field"));
-            } else {
-                cgoMap.put(cgoPerson, cgoPerson);
-            }
-            String indexNo = daList.get(i).getSlIndex();
-            if (StringUtil.isEmpty(indexNo)) {
-                map.put("disciplineAllocationSl" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Section Leader", "field"));
-            } else {
-                slMap.put(indexNo, indexNo);
-            }
-        }
-        if (map.isEmpty()) {
-            size = ApplicationHelper.getAlocationAutualSize(daList, currentSvcDto.getServiceId(), svcScopeAlignMap);
-            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
-            List<AppSvcPrincipalOfficersDto> appSvcCgoList = currentSvcDto.getAppSvcCgoDtoList();
-            if (appSvcCgoList != null) {
-                int mapSize = cgoMap.size();
-                int objSize = appSvcCgoList.size();
-                if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
-                    String result = currentSvcDto.getAppSvcCgoDtoList().stream()
-                            .filter(appSvcCgoDto -> !cgoMap.containsKey(ApplicationHelper.getPersonKey(appSvcCgoDto)))
-                            .map(AppSvcPrincipalOfficersDto::getName)
-                            .filter(Objects::nonNull)
-                            .reduce((x, y) -> x + ", " + y)
-                            .orElse("");
-                    if (result.contains(",")) {
-                        error = error.replaceFirst("is", "are");
-                    }
-                    String replace = error.replace("{CGO Name}", result);
-                    map.put("CGO", replace);
-                }
-            }
-            List<AppSvcPersonnelDto> sectionLeaderDtoList = currentSvcDto.getAppSvcSectionLeaderList();
-            if (sectionLeaderDtoList != null) {
-                int mapSize = slMap.size();
-                int objSize = sectionLeaderDtoList.size();
-                if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
-                    String result = sectionLeaderDtoList.stream()
-                            .filter(sectionLeaderDto -> !slMap.containsKey(sectionLeaderDto.getIndexNo()))
-                            .map(AppSvcPersonnelDto::getName)
-                            .filter(Objects::nonNull)
-                            .reduce((x, y) -> x + ", " + y)
-                            .orElse("");
-                    if (result.contains(",")) {
-                        error = error.replaceFirst("is", "are");
-                    }
-                    String replace = error.replace("{CGO Name}", result);
-                    map.put("SL", replace);
                 }
             }
         }

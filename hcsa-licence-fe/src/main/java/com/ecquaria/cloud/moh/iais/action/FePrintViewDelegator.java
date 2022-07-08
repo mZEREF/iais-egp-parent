@@ -5,9 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -148,14 +146,6 @@ public class FePrintViewDelegator {
         log.debug(StringUtil.changeForLog("print view prepareData start ..."));
         List<AppSubmissionDto> appSubmissionDtoList = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS);
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtoList){
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            //set primary doc
-            if(appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size() > 0){
-                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtoList.get(0).getSvcComDocId());
-                ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, primaryDocConfig);
-                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appGrpPrimaryDocDtoList);
-                appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
-            }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
@@ -175,10 +165,6 @@ public class FePrintViewDelegator {
                     }
                     appSvcRelatedInfoDto.setReloadPoDtoList(reloadPoList);
                     appSvcRelatedInfoDto.setReloadDpoList(reloadDpoList);
-                    //set allocation
-                    Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap =
-                            ApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
-                    appSvcRelatedInfoDto.setReloadDisciplineAllocationMap(reloadDisciplineAllocationMap);
                     //set step
                     List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);

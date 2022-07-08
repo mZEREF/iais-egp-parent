@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -48,9 +47,6 @@ public interface AppCommClient {
     @GetMapping(value = "/active-pending-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(@PathVariable("licenseeId") String licenseeId);
 
-    @GetMapping(value = "/max-seq-num-primary-doc", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(@RequestParam("appGrpId") String appGrpId);
-
     @GetMapping(value = "/max-seq-num-svc-doc", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcDocDto>> getMaxSeqNumSvcDocList(@RequestParam("appGrpId") String appGrpId);
 
@@ -77,18 +73,9 @@ public interface AppCommClient {
     @PostMapping(value = "/app-group-misc-dto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(@RequestBody AppGroupMiscDto appGroupMiscDto);
 
-    @GetMapping(value = "/max-version-primary-com-doc", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(@RequestParam(name = "appGrpId") String appGrpId,
-            @RequestParam(name = "configDocId") String configDocId, @RequestParam(name = "seqNum") String seqNum);
-
     @GetMapping(value = "/max-version-svc-com-doc", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(@RequestParam(name = "appGrpId") String appGrpId,
             @RequestParam(name = "configDocId") String configDocId, @RequestParam(name = "seqNum") String seqNum);
-
-    @GetMapping(value = "/max-version-primary-spec-doc", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(@RequestParam(name = "appGrpId") String appGrpId,
-            @RequestParam(name = "configDocId") String configDocId, @RequestParam(name = "appNo") String appNo,
-            @RequestParam(name = "seqNum") String seqNum);
 
     @PostMapping(value = "/max-version-svc-spec-doc", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestBody AppSvcDocDto appSvcDocDto,

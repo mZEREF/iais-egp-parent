@@ -80,10 +80,18 @@
         <%--<input hidden class="premiseIndex" value="${premValue}">--%>
         <c:choose>
             <c:when test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() > 0}">
-                <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()}"/>
+                <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() + 1}"/>
             </c:when>
             <c:otherwise>
-                <input class="opLength" type="hidden" name="opLength" value="0"/>
+                <input class="opLength" type="hidden" name="opLength" value="1"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${appGrpPremisesDto.appPremNonLicRelationDtos.size() > 0}">
+                <input class="nonHcsaLength" type="hidden" name="nonHcsaLength" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <input class="nonHcsaLength" type="hidden" name="nonHcsaLength" value="1"/>
             </c:otherwise>
         </c:choose>
 
@@ -441,7 +449,7 @@
                                 <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihNonHcsa${status.index}"></span>
                             </iais:value>
                         </iais:row>
-                        <div class="locateWtihNonHcsaRowDiv">
+                        <div class="nonHcsaRowDiv">
                             <div class="file-upload-gp" style="background-color: rgba(242, 242, 242, 1);padding: 20px;">
                                 <p>Please list down all services not licensed under HCSA in the tabs below. Alternatively, you may also submit using the
                                     <a href="${pageContext.request.contextPath}/co-non-hcsa-template">Excel Template</a>
@@ -468,7 +476,7 @@
                             <c:set var="hasNonHcsa" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}" />
                             <c:if test="${hasNonHcsa}">
                             <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
-                                <iais:row cssClass="locateWtihNonHcsaRow">
+                                <iais:row cssClass="nonHcsaRow">
                                     <div class="col-xs-12 col-md-4">
                                         <iais:input maxLength="100" cssClass="coBusinessName" type="text" name="${premValue}coBusinessName${relatedStatus.index}" value="${relatedDto.busninessName}" />
                                     </div>
@@ -484,12 +492,17 @@
                             </c:forEach>
                             </c:if>
                             <c:if test="${not hasNonHcsa}">
-                            <iais:row cssClass="locateWtihNonHcsaRow">
-                                <div class="col-xs-6 ">
+                            <iais:row cssClass="nonHcsaRow">
+                                <div class="col-xs-12 col-md-4">
                                     <iais:input maxLength="100" cssClass="coBusinessName" type="text" name="${premValue}coBusinessName0" value="" />
                                 </div>
-                                <div class="col-xs-6 ">
+                                <div class="col-xs-12 col-md-4">
                                     <iais:input maxLength="100" cssClass="coSvcName" type="text" name="${premValue}coSvcName0" value="" />
+                                </div>
+                                <div class="col-xs-12 col-md-2 delNonHcsaSvcRow hiden">
+                                    <div class="text-center">
+                                        <p class="text-danger nonHcsaSvcDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                    </div>
                                 </div>
                             </iais:row>
                             </c:if>
@@ -508,10 +521,25 @@
 </c:forEach>
 <script type="text/javascript">
     $(document).ready(function() {
-        addOperational();
-        delOperation();
-
+        initPremisePage($('div.premContent'));
     });
+
+    function initPremisePage($premContent) {
+        addOperationalEvnet();
+        delOperationEvent();
+
+        locateWtihNonHcsaEvent();
+        addNonHcsaEvent;
+        delNonHcsaEvent();
+
+        checkAddressManatory($premContent);
+        checkLocateWtihNonHcsa($premContent);
+    }
+
+    function removeAdditional($premContent) {
+        $premContent.find('div.operationDivGroup .operationDiv').remove();
+        $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
+    }
 
     var premSelect = function(){
         $('.premSelect').change(function () {
@@ -519,14 +547,15 @@
             clearErrorMsg();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
-            var thisId = $(this).attr('id');
+            //var thisId = $(this).attr('id');
             var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
             clearFields($premContent);
-            checkAddressManatory($premContent);
             if ("-1" == premSelectVal) {
                 hideTag($premContent.find(".new-premise-form"));
             } else if ("newPremise" == premSelectVal) {
                 showTag($premContent.find(".new-premise-form"));
+                removeAdditional($premContent);
+                initPremisePage($premContent);
             } else {
                 showTag($premContent.find(".new-premise-form"));
                 var jsonData = {
@@ -551,8 +580,11 @@
             dismissWaiting();
             return;
         }
+        removeAdditional($premContent);
         fillForm($premContent, data);
-        checkAddressManatory($premContent);
+        fillFloorUnit($premContent, data.appPremisesOperationalUnitDtos);
+        fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
+        initPremisePage($premContent);
     }
 
     function checkAddressManatory($premContent) {
@@ -565,18 +597,120 @@
         }
     }
 
+    function checkLocateWtihNonHcsa($premContent) {
+        var $row = $premContent.find('.locateWtihNonHcsaRow');
+        if ($row.find('input.locateWtihNonHcsa[value="1"]').is(':checked')) {
+            showTag($row.next('.nonHcsaRowDiv'));
+        } else {
+            hideTag($row.next('.nonHcsaRowDiv'));
+        }
+    }
+
+    var locateWtihNonHcsaEvent = function (target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            $target = $(document);
+        }
+        $target.find('.locateWtihNonHcsa').unbind('click');
+        $target.find('.locateWtihNonHcsa').on('click', function () {
+            checkLocateWtihNonHcsa($(this).closest('.premContent'));
+        });
+    }
+
+    function fillNonHcsa($premContent, data) {
+        if (isEmpty(data) || !$.isArray(data)) {
+            return;
+        }
+        var $parent = $premContent.find('div.nonHcsaRow');
+        var len = data.length;
+        for(var i = 1; i <= len; i++) {
+            var $target = $parent.find('.operationDiv').eq(i - 1);
+            if ($target.length == 0) {
+                addFloorUnit($parent, 1);
+                $target = $parent.find('.operationDiv').eq(i - 1)
+            }
+            fillValue($target.find('input.floorNo'), data.floorNo);
+            fillValue($target.find('input.unitNo'), data.unitNo);
+        }
+    }
+
+    function refreshNonHcsa(target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            return;
+        }
+        $target.find('.nonHcsaRow').each(function(k, v) {
+            toggleTag($(this).find('.delNonHcsaSvcRow'), k != 0);
+            resetIndex(v, k);
+        });
+        var length = $nonHcsaRowDiv.find('div.nonHcsaRow').length;
+        $nonHcsaRowDiv.closest('div.premContent').find('.nonHcsaLength').val(length);
+        console.log('Non Hcsa: ' + length);
+    }
+
+    function addNonHcsa(ele) {
+        var $premContent = $(ele).closest('div.premContent');
+        var src = $premContent.find('div.nonHcsaRow:first').clone();
+        clearFields(src);
+        $premContent.find('div.addNonHcsaSvcRow').before(src);
+        refreshNonHcsa($premSelect.find('div.nonHcsaRowDiv'));
+        delOperationEvent($premContent);
+    }
+
+    var addNonHcsaEvent = function (target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            $target = $(document);
+        }
+        $target.find('.addNonHcsaSvc').unbind('click');
+        $target.find('.addNonHcsaSvc').on('click', function () {
+            addNonHcsa(this);
+        });
+    }
+
+    var delNonHcsaEvent = function (target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            $target = $(document);
+        }
+        $target.find('.nonHcsaSvcDel').unbind('click');
+        $target.find('.nonHcsaSvcDel').not(':first').on('click', function () {
+            $(this).closest('div.nonHcsaRow').remove();
+            var $nonHcsaRowDiv = $(this).closest('div.nonHcsaRowDiv');
+            refreshNonHcsa($nonHcsaRowDiv);
+        });
+    }
+
+    function fillFloorUnit($premContent, data) {
+        if (isEmpty(data) || !$.isArray(data)) {
+            return;
+        }
+        var $parent = $premContent.find('div.operationDivGroup');
+        var len = data.length;
+        for(var i = 1; i <= len; i++) {
+            var $target = $parent.find('.operationDiv').eq(i - 1);
+            if ($target.length == 0) {
+                addFloorUnit($parent, 1);
+                $target = $parent.find('.operationDiv').eq(i - 1)
+            }
+            fillValue($target.find('input.floorNo'), data.floorNo);
+            fillValue($target.find('input.unitNo'), data.unitNo);
+        }
+    }
+
     function refreshFloorUnit(operationDivGroup) {
         var $operationDivGroup = getJqueryNode(operationDivGroup);
         if (isEmpty($operationDivGroup)) {
             return;
         }
-        $operationDivGroup.find('.operationDiv').each(function(k, v) {
+        refreshIndex($operationDivGroup);
+        /*$operationDivGroup.find('.operationDiv').each(function(k, v) {
             showTag(v);
             resetIndex(v, k);
-        });
+        });*/
         var length = $operationDivGroup.find('div.operationDiv').length;
         $operationDivGroup.closest('div.premContent').find('.opLength').val(length);
-        console.log('Floor and Unit (operationDel): ' + length);
+        console.log('Floor and Unit: ' + length);
     }
 
     function addFloorUnit(ele, count) {
@@ -587,21 +721,29 @@
             $premContent.find('div.addOpDiv').before(src);
         }
         refreshFloorUnit($premSelect.find('div.operationDivGroup'));
-        operationDel();
+        delOperationEvent($premContent);
     }
 
-    var addOperational = function () {
-        $('.addOperational').unbind('click');
-        $('.addOperational').click(function () {
+    var addOperationalEvnet = function (target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            $target = $(document);
+        }
+        $target.find('.addOperational').unbind('click');
+        $target.find('.addOperational').on('click', function () {
             addFloorUnit(this, 1);
         });
     }
 
-    var delOperation = function () {
-        $('.opDel').unbind('click');
-        $('div.operationDivGroup').find('.opDel').on('click', function () {
+    var delOperationEvent = function (target) {
+        var $target = getJqueryNode(target);
+        if (isEmpty($target)) {
+            $target = $(document);
+        }
+        $target.find('.opDel').unbind('click');
+        $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
             var $operationDivGroup = $(this).closest('div.operationDivGroup');
-            var $premContent = $(this).closest('div.premContent');
+            //var $premContent = $(this).closest('div.premContent');
             $(this).closest('div.operationDiv').remove();
             refreshFloorUnit($operationDivGroup);
         });

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -45,8 +44,6 @@ public interface AppCommService {
 
     List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId);
 
-    List<AppGrpPrimaryDocDto> getMaxSeqNumPrimaryDocList(String appGrpId);
-
     List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId);
 
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
@@ -69,11 +66,7 @@ public interface AppCommService {
     Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
 
-    AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId, String configDocId, String valueOf);
-
     AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId, String valueOf);
-
-    AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo, String valueOf);
 
     AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
 

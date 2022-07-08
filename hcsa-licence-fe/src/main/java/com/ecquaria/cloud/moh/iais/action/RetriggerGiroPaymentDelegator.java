@@ -7,14 +7,13 @@ import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -133,7 +132,6 @@ public class RetriggerGiroPaymentDelegator {
         StringBuilder smallTitle = new StringBuilder();
         List<String> svcNames = getServiceNameList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-            RfcHelper.svcDocToPresmise(appSubmissionDto);
             String licenceNo = "";
             String licenceId = appSvcRelatedInfoDtos.get(0).getOriginLicenceId();
             if(!StringUtil.isEmpty(licenceId)){
@@ -149,7 +147,6 @@ public class RetriggerGiroPaymentDelegator {
                     .append(licenceNo)
                     .append("</strong>)");
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            requestForChangeService.svcDocToPrimaryForGiroDeduction(appSubmissionDto);
             title = "Licence Renewal";
             int renewCount = 0;
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -228,24 +225,11 @@ public class RetriggerGiroPaymentDelegator {
             }
         }*/
 
-        //set doc name
-        List<HcsaSvcDocConfigDto> primaryDocConfig = null;
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
-            primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
-        }
-        ApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, null, primaryDocConfig, null);
-        //add align for dup for prem doc
-        ApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
-        //set primary doc title
-        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = ApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
-        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             //set svc info
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(appSvcRelatedInfoDto.getServiceId());
-                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_TYPE_BASE)){
+                if(hcsaServiceDto.getSvcType().equals(HcsaConsts.SERVICE_TYPE_BASE)){
                     appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                 }
                 appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
@@ -269,12 +253,7 @@ public class RetriggerGiroPaymentDelegator {
                 //set doc name
                 List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                ApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
-                //set AppSvcLaboratoryDisciplinesDto
-                List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
-                if (!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)) {
-                    ApplicationHelper.setLaboratoryDisciplinesInfo(appGrpPremisesDtos, appSvcRelatedInfoDto, hcsaSvcSubtypeOrSubsumedDtos);
-                }
+                ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                 //set dpo select flag
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                 if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
@@ -649,9 +628,9 @@ public class RetriggerGiroPaymentDelegator {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getServiceId());
                 if(hcsaServiceDto != null){
-                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                    if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcNames.add(hcsaServiceDto.getSvcName());
-                    }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
+                    }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                         specifiedSvcNames.add(hcsaServiceDto.getSvcName());
                     }else{
                         otherSvcNames.add(hcsaServiceDto.getSvcName());

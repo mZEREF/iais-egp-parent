@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
@@ -1005,18 +1004,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                         }
                     }
                     setSvcDocsDupForPerson(appSvcDocDtoLit);
-                }
-            }
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
-            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
-            while (appGrpPrimaryDocDtoListIterator.hasNext()){
-                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
-                String fileRepoId = next.getFileRepoId();
-                String svcDocId = next.getSvcDocId();
-                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
-                    appGrpPrimaryDocDtoListIterator.remove();
                 }
             }
         }

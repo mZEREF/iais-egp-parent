@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -151,9 +150,6 @@ public interface ApplicationFeClient {
 
     @GetMapping(value = "/iais-submission/submission-id")
     FeignResponseEntity<String> getSubmissionId();
-
-    @GetMapping(value = "/iais-application/application/premises-scope/{correId}")
-    FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAppSvcPremisesScopeListByCorreId(@PathVariable(name = "correId") String correId);
 
     @GetMapping(path = "/iais-inspection-fe/itemids/{appPremCorrId}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})

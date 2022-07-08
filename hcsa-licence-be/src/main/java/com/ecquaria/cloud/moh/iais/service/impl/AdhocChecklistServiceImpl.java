@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -161,21 +160,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                 }
 
                 oneTime = true;
-            }
-
-            List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(corrId).getEntity();
-
-            if(!IaisCommonUtils.isEmpty(premScope)){
-                premScope.stream().filter(scope -> scope.isSubsumedType() == false)
-                        .forEach(scope -> {
-                            String subTypeId = scope.getScopeName();
-                            HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
-                            String subTypeName = subType.getSubtypeName();
-                            ChecklistConfigDto subTypeConfig = hcsaChklClient.getMaxVersionConfigByParams(svcCode, type, chklModule, subTypeName).getEntity();
-                            if (subTypeConfig != null){
-                                inspChecklist.add(subTypeConfig);
-                            }
-                        });
             }
 
         }

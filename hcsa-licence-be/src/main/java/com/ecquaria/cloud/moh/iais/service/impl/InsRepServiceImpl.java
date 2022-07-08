@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -243,17 +242,11 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setRiskLevel(riskLevel);
             applicationDto.setRiskScore(riskScore);
         }
-        List<String> serviceSubTypeName = getServiceSubTypeName(appPremisesCorrelationId);
-        if (IaisCommonUtils.isEmpty(serviceSubTypeName)) {
-            serviceSubTypeName.add("-");
-        }
-
         Map<String,String> vehMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos())){
             applicationViewDto.getAppSvcVehicleDtos().forEach(veh -> vehMap.put(veh.getVehicleName(),veh.getDisplayName()));
         }
 
-        inspectionReportDto.setSubsumedServices(serviceSubTypeName);
         //Nc
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
@@ -452,25 +445,6 @@ public class InsRepServiceImpl implements InsRepService {
         }
         return IaisCommonUtils.getReasonForVisitInspectionReport(applicationType,MasterCodeUtil.getCodeDesc(applicationType),isPre,applicationTypeOldDesc);
     }
-
-
-    private List<String> getServiceSubTypeName(String correlationId) {
-        List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPremisesScopeDto> scopeList = insRepClient.getAppSvcPremisesScopeListByCorreId(correlationId).getEntity();
-        for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : scopeList) {
-            boolean isSubService = appSvcPremisesScopeDto.isSubsumedType();
-            if (isSubService) {
-                String serviceId = appSvcPremisesScopeDto.getScopeName();
-                HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-                if (hcsaServiceDto != null) {
-                    String svcName = hcsaServiceDto.getSvcName();
-                    serviceSubtypeName.add(svcName);
-                }
-            }
-        }
-        return serviceSubtypeName;
-    }
-
 
     @Override
     public void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {

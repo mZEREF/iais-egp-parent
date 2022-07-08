@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -729,18 +728,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                             appSvcDocDtoListIterator.remove();
                         }
                     }
-                }
-            }
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
-            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
-            while (appGrpPrimaryDocDtoListIterator.hasNext()){
-                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
-                String fileRepoId = next.getFileRepoId();
-                String svcDocId = next.getSvcDocId();
-                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
-                    appGrpPrimaryDocDtoListIterator.remove();
                 }
             }
         }

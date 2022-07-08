@@ -435,6 +435,21 @@ function updateSelectTag($sel) {
     }
 }
 
+function toggleTag(ele, show) {
+    var $ele = getJqueryNode(ele);
+    if (isEmpty(ele)) {
+        return;
+    }
+    if (show) {
+        $ele.show();
+        $ele.removeClass('hidden');
+    } else {
+        $ele.hide();
+        $ele.addClass('hidden');
+        clearFields($ele);
+    }
+}
+
 function showTag(ele) {
     var $ele = getJqueryNode(ele);
     if (isEmpty(ele)) {

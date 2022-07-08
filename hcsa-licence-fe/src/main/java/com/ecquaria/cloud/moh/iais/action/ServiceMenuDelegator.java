@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -682,7 +683,7 @@ public class ServiceMenuDelegator {
                             appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                             appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                             appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
-                            if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
+                            if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                                 List<HcsaServiceDto> baseServiceDtos =  getBaseBySpc(hcsaServiceCorrelationDtoList,hcsaServiceDto.getId());
                                 for(HcsaServiceDto hcsaServiceDto1:baseServiceDtos){
                                     if(svcIds.contains(hcsaServiceDto.getId())){
@@ -954,7 +955,7 @@ public class ServiceMenuDelegator {
                             chkBase.add(hcsaServiceDto.getId());
                         }
                         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                            if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                                 chkBase.add(appSvcRelatedInfoDto.getServiceId());
                             }
                         }
@@ -1144,12 +1145,12 @@ public class ServiceMenuDelegator {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                 if(hcsaServiceDto != null){
-                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                    if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcIds.add(hcsaServiceDto.getId());
                         if(appSelectSvcDto.isAlign()){
                             appSvcRelatedInfoDto.setAlignFlag(alignFlag);
                         }
-                    }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
+                    }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                         speSvcIds.add(hcsaServiceDto.getId());
                     }
                 }

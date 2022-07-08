@@ -3,14 +3,12 @@ package com.ecquaria.cloud.moh.iais.util;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -117,27 +115,6 @@ public class PageDataCopyUtil {
         }
         return list;
     }
-    public static List<AppGrpPrimaryDocDto> copyGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
-
-        if(appGrpPrimaryDocDtos==null){
-            return new ArrayList<>();
-        }
-        List<AppGrpPrimaryDocDto> list=new ArrayList<>(appGrpPrimaryDocDtos.size());
-        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
-            if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
-                continue;
-            }
-            AppGrpPrimaryDocDto primaryDocDto=new AppGrpPrimaryDocDto();
-            primaryDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
-            primaryDocDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
-            primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
-            primaryDocDto.setMd5Code(appGrpPrimaryDocDto.getMd5Code());
-
-            list.add(primaryDocDto);
-        }
-        list.sort(Comparator.comparing(AppGrpPrimaryDocDto::getMd5Code));
-        return list;
-    }
 
     public static List<AppSvcPersonnelDto> copySvcPersonnels(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
         if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
@@ -236,26 +213,6 @@ public class PageDataCopyUtil {
                 list.add(svcChckListDto) ;
             }
         }
-        return list;
-    }
-
-    public static List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDto(
-            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList) {
-        if (appSvcDisciplineAllocationDtoList == null) {
-            return new ArrayList<>();
-        }
-        List<AppSvcDisciplineAllocationDto> list = new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
-        for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-            AppSvcDisciplineAllocationDto o = new AppSvcDisciplineAllocationDto();
-            o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
-            o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
-            o.setCgoPerson(appSvcDisciplineAllocationDto.getCgoPerson());
-            o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
-            o.setSectionLeaderName(appSvcDisciplineAllocationDto.getSectionLeaderName());
-            list.add(o);
-        }
-        list.sort(Comparator.comparing(AppSvcDisciplineAllocationDto::getPremiseVal)
-                .thenComparing(AppSvcDisciplineAllocationDto::getChkLstConfId));
         return list;
     }
 

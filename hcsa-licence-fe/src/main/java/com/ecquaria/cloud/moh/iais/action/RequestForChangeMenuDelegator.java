@@ -23,8 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -1609,29 +1607,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
-    public static void oldPremiseToNewPremise(AppSubmissionDto appSubmissionDto) {
-        if (appSubmissionDto != null) {
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-            if (appGrpPremisesDtoList != null) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                    if (appSvcLaboratoryDisciplinesDtoList != null) {
-                        for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
-                            String premiseVal = appSvcLaboratoryDisciplinesDto.getPremiseVal();
-                            if (!premisesIndexNo.equals(premiseVal)) {
-                                appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesIndexNo);
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
-    }
-
     /**
      * @param bpc
      * @Decription doRequestForInformationSubmit
@@ -1642,8 +1617,7 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setServiceEdit(false);
-        appEditSelectDto.setDocEdit(false);
-        appEditSelectDto.setPoEdit(false);
+        appEditSelectDto.setSpecialisedEdit(false);
         appEditSelectDto.setPremisesListEdit(true);
         appEditSelectDto.setPremisesEdit(true);
         String appGrpNo = appSubmissionDto.getAppGrpNo();
@@ -1864,16 +1838,6 @@ public class RequestForChangeMenuDelegator {
                     target.setSalutation(newPerson.getSalutation());
                     target.setMobileNo(newPerson.getMobileNo());
                     target.setEmailAddr(newPerson.getEmailAddr());
-                }
-            }
-        }
-        if (changePersonnel && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = targetReletedInfo.getAppSvcDisciplineAllocationDtoList();
-            if (appSvcDisciplineAllocationDtoList != null) {
-                for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                    if (Objects.equals(appSvcDisciplineAllocationDto.getCgoPerson(), personKey)) {
-                        appSvcDisciplineAllocationDto.setCgoPerson(newKey);
-                    }
                 }
             }
         }

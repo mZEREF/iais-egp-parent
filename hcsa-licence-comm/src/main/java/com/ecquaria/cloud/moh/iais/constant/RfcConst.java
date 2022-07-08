@@ -47,10 +47,10 @@ public class RfcConst {
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
 
-    public static final String EDIT_LICENSEE = "licensee";
-    public static final String EDIT_PREMISES = "premises";
-    public static final String EDIT_PRIMARY_DOC = "doc";
-    public static final String EDIT_SERVICE = "service";
+    public static final String EDIT_LICENSEE                                        = "licensee";
+    public static final String EDIT_PREMISES                                        = "premises";
+    public static final String EDIT_SPECIALISED                                     = "specialised";
+    public static final String EDIT_SERVICE                                         = "service";
 
     public static final String PERSONNEL_PARAM = "personnelParam";
     public static final String PERSONNEL_RESULT = "personnelResult";

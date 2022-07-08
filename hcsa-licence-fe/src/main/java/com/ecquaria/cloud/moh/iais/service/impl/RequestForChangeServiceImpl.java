@@ -5,15 +5,14 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -29,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -56,6 +54,11 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
@@ -64,10 +67,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /****
  *
@@ -454,121 +453,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto) {
-        if (appSubmissionDto == null) {
-            return;
-        }
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            List<AppGrpPrimaryDocDto> newPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
-                List<AppSvcDocDto> appSvcDocDtos = IaisCommonUtils.genNewArrayList();
-                List<AppSvcDocDto> deleteSvcDoc=IaisCommonUtils.genNewArrayList();
-                List<AppGrpPrimaryDocDto> deletePrimary=IaisCommonUtils.genNewArrayList();
-                if (appSvcDocDtoLit != null) {
-                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
-                        String svcDocId = appSvcDocDto.getSvcDocId();
-                        String fileRepoId = appSvcDocDto.getFileRepoId();
-                        if (StringUtil.isEmpty(svcDocId)) {
-                            deleteSvcDoc.add(appSvcDocDto);
-                            continue;
-                        }
-                        if(StringUtil.isEmpty(fileRepoId)){
-                            deleteSvcDoc.add(appSvcDocDto);
-                            continue;
-                        }
-                        HcsaSvcDocConfigDto entity = configCommClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                        if (entity != null) {
-                            String serviceId = entity.getServiceId();
-                            if (StringUtil.isEmpty(serviceId)) {
-                                AppGrpPrimaryDocDto appGrpPrimaryDocDto = svcTransferPrimaryDoc(appSvcDocDto);
-                                appGrpPrimaryDocDto.setSvcDocId(svcDocId);
-                                appGrpPrimaryDocDto.setSvcComDocId(svcDocId);
-                                appGrpPrimaryDocDto.setSvcComDocName(entity.getDocTitle());
-                                appGrpPrimaryDocDto.setAppGrpId(appSubmissionDto.getAppGrpId());
-                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-                                appSvcDocDtos.add(appSvcDocDto);
-                            }else {
-                                appSvcDocDto.setUpFileName(entity.getDocTitle());
-                            }
-                        }
-                    }
-                    appSvcDocDtoLit.removeAll(deleteSvcDoc);
-                    appSvcDocDtoLit.removeAll(appSvcDocDtos);
-                    for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
-                        for (int j = 0; j < appSvcDocDtoLit.size() && j != i; j++) {
-                            if (appSvcDocDtoLit.get(i).getFileRepoId().equals(appSvcDocDtoLit.get(j).getFileRepoId())) {
-                                appSvcDocDtoLit.remove(appSvcDocDtoLit.get(i));
-                                i--;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (dtoAppGrpPrimaryDocDtos != null) {
-                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
-                        String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                        if(StringUtil.isEmpty(fileRepoId)){
-                            deletePrimary.add(appGrpPrimaryDocDto);
-                            continue;
-                        }
-                        if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
-                            String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
-                            if(svcDocId!=null){
-                                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = configCommClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                                if (hcsaSvcDocConfigDto != null) {
-                                    appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
-                                }
-                            }
-                        }
-                    }
-                    dtoAppGrpPrimaryDocDtos.removeAll(deletePrimary);
-                    if (appGrpPrimaryDocDtos.isEmpty()) {
-                        appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
-                    } else {
-                        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
-                        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : dtoAppGrpPrimaryDocDtos) {
-                            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
-                                String svcComDocName = appGrpPrimaryDocDto.getSvcComDocName();
-                                String svcComDocName1 = appGrpPrimaryDocDto1.getSvcComDocName();
-                                if (svcComDocName1 != null) {
-                                    if (svcComDocName1.equals(svcComDocName)) {
-                                        continue;
-                                    } else {
-                                        appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
-                                    }
-                                } else if (svcComDocName != null) {
-                                    if (svcComDocName.equals(svcComDocName1)) {
-                                        continue;
-                                    } else {
-                                        appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
-                                    }
-                                }
-                            }
-                        }
-                        appGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtoList);
-                    }
-                }
-                for (int i = 0; i < appGrpPrimaryDocDtos.size(); i++) {
-                    for (int j = 0; j < appGrpPrimaryDocDtos.size() && j != i; j++) {
-                        if (appGrpPrimaryDocDtos.get(i).getFileRepoId().equals(appGrpPrimaryDocDtos.get(j).getFileRepoId())) {
-                            appGrpPrimaryDocDtos.remove(appGrpPrimaryDocDtos.get(i));
-                            i--;
-                            break;
-                        }
-                    }
-                }
-                newPrimaryDocDtoList.addAll(appGrpPrimaryDocDtos);
-            }
-            appSubmissionDto.setAppGrpPrimaryDocDtos(newPrimaryDocDtoList);
-        }
-
-    }
-
-    @Override
     public void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto) {
         if(appSubmissionDto==null){
             return;
@@ -586,9 +470,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             String id = activeHcsaServiceDtoByName.getId();
             String baseService="";
-            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
+            if(HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)){
                 var1.setBaseServiceId(activeHcsaServiceDtoByName.getId());
-            }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
+            }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                 String licenceId = appSubmissionDto.getLicenceId();
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null || serviceCorrelationDtos.isEmpty()){
@@ -605,7 +489,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 if(!StringUtil.isEmpty(baseService)){
                     String service_name = configCommClient.getServiceNameById(baseService).getEntity();
-                    List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceId);
+                    List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceId);
                     if(entity!=null && !entity.isEmpty()){
                         Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
                         while (iterator1.hasNext()){
@@ -633,9 +517,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if(activeHcsaServiceDtoByName!=null){
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             log.info(StringUtil.changeForLog("The Svc Type: " + svcType));
-            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
+            if(HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)){
                 return flag==true ? String.valueOf(true): activeHcsaServiceDtoByName.getId();
-            }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
+            }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null ||serviceCorrelationDtos.isEmpty()){
                     log.info(StringUtil.changeForLog("The service correlations is empty!"));
@@ -655,7 +539,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     return flag==true ?String.valueOf(false):"";
                 }
 
-                List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
+                List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
                 if(entity==null||entity.isEmpty()){
                     log.info(StringUtil.changeForLog("The related base service is empty!"));
                     return flag==true ? String.valueOf(false): "";
@@ -989,18 +873,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
         notificationHelper.sendNotification(smsParam);
-    }
-
-    private static AppGrpPrimaryDocDto svcTransferPrimaryDoc(AppSvcDocDto appSvcDocDto){
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-        appGrpPrimaryDocDto.setDocName(appSvcDocDto.getDocName());
-        appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
-        appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
-        appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
-        appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
-        appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
-        appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
-        return appGrpPrimaryDocDto;
     }
 
     @Override

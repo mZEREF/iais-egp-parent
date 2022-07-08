@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -39,11 +38,6 @@ public class AppCommClientFallback implements AppCommClient {
     @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId);
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(String appGrpId) {
-        return IaisEGPHelper.getFeignResponseEntity(appGrpId);
     }
 
     @Override
@@ -98,19 +92,8 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId, String seqNum) {
-        return IaisEGPHelper.getFeignResponseEntity(appGrpId, configDocId, seqNum);
-    }
-
-    @Override
     public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId, String seqNum) {
         return IaisEGPHelper.getFeignResponseEntity(appGrpId, configDocId, seqNum);
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo,
-            String seqNum) {
-        return IaisEGPHelper.getFeignResponseEntity(appGrpId, configDocId, appNo, seqNum);
     }
 
     @Override

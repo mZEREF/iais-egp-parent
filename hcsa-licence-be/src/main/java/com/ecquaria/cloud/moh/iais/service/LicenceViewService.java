@@ -11,9 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
  */
 
 public interface LicenceViewService {
-    public AppSubmissionDto getAppSubmissionByAppId(String appId);
+    AppSubmissionDto getAppSubmissionByAppId(String appId);
 
-    public AppEditSelectDto saveAppEditSelect(AppEditSelectDto appEditSelectDto);
-    public AppEditSelectDto saveAppEditSelectToFe(AppEditSelectDto appEditSelectDto);
-    void svcDocToPremise(AppSubmissionDto appSubmissionDto);
+    AppEditSelectDto saveAppEditSelect(AppEditSelectDto appEditSelectDto);
+    AppEditSelectDto saveAppEditSelectToFe(AppEditSelectDto appEditSelectDto);
 }
