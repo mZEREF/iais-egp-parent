@@ -71,6 +71,9 @@ import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.GLOBAL_M
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX;
 import static com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper.VSS_CURRENT_STEP;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_ELIS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_PRS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_USER_NEW_REGISTER;
 
 /**
  * Process: MohVSSDataSubmission
@@ -487,7 +490,6 @@ public class VssDataSubmissionDelegator {
             if ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())) {
                 if ("false".equals(sexualSterilizationDto.getDoctorInformations())) {
                     if ("true".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                        String DRPE = "DRPE";
                         String names = ParamUtil.getString(request, "names");
                         String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                         String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
@@ -501,24 +503,22 @@ public class VssDataSubmissionDelegator {
                         doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                         doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                         doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                        doctorInformationDto.setDoctorSource(DRPE);
+                        doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_FROM_ELIS);
                         vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
                     }
                 }
             }
             if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                String DRPP = "DRPP";
                 doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
                 doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                doctorInformationDto.setDoctorSource(DRPP);
+                doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_FROM_PRS);
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if ("true".equals(sexualSterilizationDto.getDoctorInformations())) {
-            String DRPT = "DRPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -528,7 +528,7 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DRPT);
+            doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_USER_NEW_REGISTER);
             sexualSterilizationDto.setDoctorName(dName);
             vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         } else {

@@ -61,6 +61,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_ELIS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_USER_NEW_REGISTER;
+
 /**
  * Process: MohNEWTOPDataSumission
  *
@@ -1211,7 +1215,6 @@ public class TopDataSubmissionDelegator {
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
                     if("true".equals(terminationDto.getDoctorInformationPE())){
-                        String TOPE="TOPE";
                         String doctorName = ParamUtil.getString(request, "names");
                         String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                         String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
@@ -1225,24 +1228,22 @@ public class TopDataSubmissionDelegator {
                         doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
                         doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
                         doctorInformationDto.setQualification(terminationDto.getQualification());
-                        doctorInformationDto.setDoctorSource(TOPE);
+                        doctorInformationDto.setDoctorSource(TOP_DOCTOR_INFO_FROM_ELIS);
                         topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
                     }
                 }
             }else if("false".equals(terminationDto.getDoctorInformationPE())){
-                String TOPP="TOPP";
                 String doctorName = ParamUtil.getString(request, "names");
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
                 doctorInformationDto.setSpeciality(terminationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(terminationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(terminationDto.getQualification());
-                doctorInformationDto.setDoctorSource(TOPP);
+                doctorInformationDto.setDoctorSource(TOP_DOCTOR_INFO_FROM_PRS);
                 topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(terminationDto.getTopDoctorInformations())){
-            String TOPT="TOPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -1252,7 +1253,7 @@ public class TopDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(TOPT);
+            doctorInformationDto.setDoctorSource(TOP_DOCTOR_INFO_USER_NEW_REGISTER);
             terminationDto.setDoctorName(dName);
             topSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }else {
