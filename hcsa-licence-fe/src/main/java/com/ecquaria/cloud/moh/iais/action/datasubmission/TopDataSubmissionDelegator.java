@@ -1060,7 +1060,6 @@ public class TopDataSubmissionDelegator {
             }else {
                 String counsellingPlaceAge = ParamUtil.getRequestString(request, "counsellingPlaceAge");
                 preTerminationDto.setCounsellingPlace(counsellingPlaceAge);
-                ParamUtil.setSessionAttr(request, "counsellingPlaceAge",counsellingPlaceAge);
             }
         }
         /*ParamUtil.setSessionAttr(request, "counsellingPlace",counsellingPlace);*/
