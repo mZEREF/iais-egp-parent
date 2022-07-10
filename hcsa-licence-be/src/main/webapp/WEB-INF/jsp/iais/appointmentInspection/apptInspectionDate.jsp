@@ -205,7 +205,7 @@
                               </iais:value>
                             </iais:row>
 
-                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
+                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag}">
                               <iais:action>
                                 <a style="float:left;padding-top: 1.1%;" class="back"
                                    href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em
@@ -214,12 +214,6 @@
                                         onclick="javascript:submitButFun()">
                                   SUBMIT
                                 </button>
-                              </iais:action>
-                            </c:if>
-                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
-                              <iais:action>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                                <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                               </iais:action>
                             </c:if>
                             <c:if test="${'SUCCESS' ne apptInspectionDateDto.actionButtonFlag}">

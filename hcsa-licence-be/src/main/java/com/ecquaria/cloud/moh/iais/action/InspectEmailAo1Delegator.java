@@ -594,7 +594,12 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                 appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT};
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        }
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
         String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
         if(content!=null){
             inspectionEmailTemplateDto.setMessageContent(content);
