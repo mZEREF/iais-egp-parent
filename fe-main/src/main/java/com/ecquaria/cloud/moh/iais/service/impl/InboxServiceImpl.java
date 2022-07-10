@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -28,7 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
@@ -99,7 +98,7 @@ public class InboxServiceImpl implements InboxService {
         for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
             if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_DRAFT_PENDING.equals(inboxAppQueryDto.getStatus())){
                 ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
-                inboxAppQueryDto.setServiceId(HalpStringUtils.splitServiceName(applicationDraftDto.getServiceCode()));
+                inboxAppQueryDto.setServiceId(HalpSearchResultHelper.splitServiceName(applicationDraftDto.getServiceCode()));
             }else{
                 if(!inboxAppQueryDto.getServiceId().isEmpty()){
                     inboxAppQueryDto.setServiceId(getServiceNameById(inboxAppQueryDto.getServiceId()));
@@ -117,7 +116,7 @@ public class InboxServiceImpl implements InboxService {
         SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
         List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxAppQueryDtoListRows) {
-            inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
+            inboxQueryDto.setServiceCodes(HalpSearchResultHelper.splitServiceName(inboxQueryDto.getServiceCodes()));
         }
         return inboxQueryDtoSearchResult;
     }

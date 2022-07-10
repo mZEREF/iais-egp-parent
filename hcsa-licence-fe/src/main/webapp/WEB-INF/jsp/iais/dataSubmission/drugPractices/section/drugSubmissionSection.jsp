@@ -437,7 +437,8 @@
             $('#QUANTITY_NOT_MATCH').modal('show');
         }
 
-        if ($('#prescriptionSubmissionId').val() != null && "DPD002" == $('#drugType option:selected').val()){
+        if (!isEmpty($('#prescriptionSubmissionId').val()) && "DPD002" === $('#drugType option:selected').val()){
+            console.log("disable medication");
             disableContent('div.medication');
         }
     });
@@ -728,7 +729,7 @@
     }
 
     //Prompt 2 days after the assignment start date
-    $("#startDispensingDate").on('blur', function () {
+    $("#startDispensingDate").on('blur, change', function () {
         var dispensingDate=$('#startDispensingDate').val();
         let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
         let validDispensingDate = reg.test(dispensingDate);
@@ -746,9 +747,13 @@
 
     function checkBirthDateCallback(data) {
         if (isEmpty(data) || isEmpty(data.showDate) || !data.showDate) {
+            console.log("return");
             return;
         }
-        $('#START_DATE_OF_DISPENSING').modal('show');
+        if ('MED001' === $("#medication").val()) {
+            console.log("show modal");
+            $('#START_DATE_OF_DISPENSING').modal('show');
+        }
     }
 
     function cancels() {

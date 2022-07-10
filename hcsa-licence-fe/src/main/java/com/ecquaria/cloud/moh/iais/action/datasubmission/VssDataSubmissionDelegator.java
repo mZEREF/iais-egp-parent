@@ -67,8 +67,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR;
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
+import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX;
 import static com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper.VSS_CURRENT_STEP;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_FROM_ELIS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_FROM_PRS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_USER_NEW_REGISTER;
 
 /**
  * Process: MohVSSDataSubmission
@@ -122,7 +127,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile_MaxIndex", null);
         ParamUtil.clearSession(bpc.request, HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedVssFile", SEESION_FILES_MAP_AJAX
-                + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+                + "selectedVssFile" + SEESION_FILES_MAP_AJAX_MAX_INDEX, GLOBAL_MAX_INDEX_SESSION_ATTR);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_VSS);
 
         String orgId = "";
@@ -203,6 +208,11 @@ public class VssDataSubmissionDelegator {
             }
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, DataSubmissionConstant.PAGE_STAGE_PAGE);
+            //set docs from draft
+            if (!CollectionUtils.isEmpty(vssSuperDataSubmissionDto.getFileMap())) {
+                ParamUtil.setSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile", (Serializable) vssSuperDataSubmissionDto.getFileMap());
+                ParamUtil.setSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile" + SEESION_FILES_MAP_AJAX_MAX_INDEX, vssSuperDataSubmissionDto.getFileMap().size());
+            }
         } else if (crud_action_type.equals("delete")) {
             vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
             vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
@@ -377,7 +387,6 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setSessionAttr(request, "vssFiles", null);
-        ParamUtil.setSessionAttr(request, "seesion_files_map_ajax_feselectedVssFile_MaxIndex", null);
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
@@ -481,7 +490,6 @@ public class VssDataSubmissionDelegator {
             if ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())) {
                 if ("false".equals(sexualSterilizationDto.getDoctorInformations())) {
                     if ("true".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                        String DRPE = "DRPE";
                         String names = ParamUtil.getString(request, "names");
                         String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                         String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
@@ -495,24 +503,22 @@ public class VssDataSubmissionDelegator {
                         doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                         doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                         doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                        doctorInformationDto.setDoctorSource(DRPE);
+                        doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_ELIS);
                         vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
                     }
                 }
             }
             if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                String DRPP = "DRPP";
                 doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
                 doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
                 doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
                 doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                doctorInformationDto.setDoctorSource(DRPP);
+                doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_PRS);
                 vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if ("true".equals(sexualSterilizationDto.getDoctorInformations())) {
-            String DRPT = "DRPT";
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(request, "dSubSpeciality");
@@ -522,7 +528,7 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DRPT);
+            doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_USER_NEW_REGISTER);
             sexualSterilizationDto.setDoctorName(dName);
             vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         } else {
@@ -668,10 +674,12 @@ public class VssDataSubmissionDelegator {
         ValidationResult treatmentDtoResult = new ValidationResult();
         ValidationResult gapResult = new ValidationResult();
         ValidationResult ssResult = new ValidationResult();
+        //if clicked page is Particulars of Treatment for Sexual Sterilization Performed page,validate the data from the previous two pages
         if (currentConfig.getSeqNo() == 3) {
             treatmentDtoResult = WebValidationHelper.validateProperty(treatmentDto, DataSubmissionConsts.DS_VSS);
             gapResult = WebValidationHelper.validateProperty(guardianAppliedPartDto, DataSubmissionConsts.DS_VSS);
         } else if (currentConfig.getSeqNo() == 4) {
+            //if clicked page is Preview & Submit page,validate the data from the previous three pages
             treatmentDtoResult = WebValidationHelper.validateProperty(treatmentDto, DataSubmissionConsts.DS_VSS);
             gapResult = WebValidationHelper.validateProperty(guardianAppliedPartDto, DataSubmissionConsts.DS_VSS);
             ssResult = WebValidationHelper.validateProperty(sexualSterilizationDto, DataSubmissionConsts.DS_VSS);
@@ -681,7 +689,7 @@ public class VssDataSubmissionDelegator {
         errMap.putAll(treatmentDtoResult.retrieveAll());
         errMap.putAll(gapResult.retrieveAll());
         errMap.putAll(ssResult.retrieveAll());
-        //
+        // check errorMsg, navigate to the first validate error page
         if (!CollectionUtils.isEmpty(treatmentDtoResult.retrieveAll())) {
             configs.get(0).setActive(true);
             configs.get(1).setActive(false);
@@ -808,6 +816,8 @@ public class VssDataSubmissionDelegator {
         if (vssSuperDataSubmissionDto != null) {
             vssSuperDataSubmissionDto.setDraftNo(vssDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_VSS,
                     vssSuperDataSubmissionDto.getDraftNo()));
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile");
+            vssSuperDataSubmissionDto.setFileMap(map);
             vssSuperDataSubmissionDto = vssDataSubmissionService.saveDataSubmissionDraft(vssSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

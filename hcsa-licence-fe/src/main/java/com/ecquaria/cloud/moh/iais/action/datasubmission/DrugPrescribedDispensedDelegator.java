@@ -43,6 +43,9 @@ import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_DISPENSED;
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_ELIS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_PRS;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_USER_NEW_REGISTER;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -205,7 +208,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(drugSubmission.getDoctorInformations())){
                     if("true".equals(drugSubmission.getDoctorInformationPE())){
-                        String DRPE="DRPE";
                         String doctorName = ParamUtil.getString(request, "names");
                         String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
                         String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
@@ -223,24 +225,22 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                         doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                         doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
                         doctorInformationDto.setQualification(drugSubmission.getQualification());
-                        doctorInformationDto.setDoctorSource(DRPE);
+                        doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_FROM_ELIS);
                         currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
                     }
                 }
             }else if("false".equals(drugSubmission.getDoctorInformationPE())){
                 String doctorName = ParamUtil.getString(request, "names");
-                String DRPP="DRPP";
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
                 doctorInformationDto.setSpeciality(drugSubmission.getSpecialty());
                 doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
                 doctorInformationDto.setQualification(drugSubmission.getQualification());
-                doctorInformationDto.setDoctorSource(DRPP);
+                doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_FROM_PRS);
                 currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
             }
         }
         if("true".equals(drugSubmission.getDoctorInformations())){
-            String DRPT="DRPT";
             String dName = ParamUtil.getString(bpc.request, "dName");
             String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
             String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
@@ -258,7 +258,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             doctorInformationDto.setSubSpeciality(dSubSpeciality);
             doctorInformationDto.setSpeciality(dSpeciality);
             doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DRPT);
+            doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_USER_NEW_REGISTER);
             currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
         }else {
             String doctorName = ParamUtil.getString(bpc.request, "names");
@@ -279,7 +279,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }
         } else {
             //if patientDto not bull, check whether same patient
-            if (!(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
+            if (StringUtils.hasLength(drugSubmission.getIdType()) && StringUtils.hasLength(drugSubmission.getIdNumber()) && StringUtils.hasLength(drugSubmission.getNationality()) &&
+                    !(drugSubmission.getIdType().equals(patientDto.getIdType()) && drugSubmission.getIdNumber().equals(patientDto.getIdNumber()) && drugSubmission.getNationality().equals(patientDto.getNationality()))) {
                 PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
                         drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
                 if (patient != null) {
