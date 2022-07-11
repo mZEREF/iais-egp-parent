@@ -414,20 +414,27 @@
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
                         console.log("6");
-                    }else if (data.selection.hasException) {
+                    }else if (data.selection.hasException && !isEmpty(data.selections)){
+                        clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
+                        $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
+                        console.log("7");
+                    } else if (data.selection.hasException) {
                         clearPrsInfoElis();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
-                        console.log("7");
-                    }else if ('401' == data.selection.statusCode) {
+                        console.log("8");
+                    } else if ('401' == data.selection.statusCode) {
                         $('#doctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
-                        console.log("8");
-                    }else if(isEmpty(!data.selections)){
+                        console.log("9");
+                    } else if (isEmpty(!data.selections)) {
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();

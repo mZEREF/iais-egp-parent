@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -247,6 +248,13 @@ public class OnlineTopEnquiryDelegator {
             if(!StringUtil.isEmpty(terminationDto)&&StringUtil.isNotEmpty(terminationDto.getDoctorInformationId())){
                 DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId()).getEntity();
                 if(doctorInfoDto!=null){
+                    ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+                    DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS").getEntity();
+                    if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
+                        ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+                    }else {
+                        ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
+                    }
                     if("TOPP".equals(doctorInfoDto.getDoctorSource()) || "TOPT".equals(doctorInfoDto.getDoctorSource())){
                         topInfo.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setTopDoctorInformations("true");
@@ -259,6 +267,8 @@ public class OnlineTopEnquiryDelegator {
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     }
+                }else {
+                    ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
                 }
             }
         }

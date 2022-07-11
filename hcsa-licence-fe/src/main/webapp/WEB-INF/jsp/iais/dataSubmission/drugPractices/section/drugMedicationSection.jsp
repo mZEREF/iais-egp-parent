@@ -33,8 +33,8 @@
                     <iais:row id="batchNo">
                         <iais:field width="5" value="Batch No." mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="20" type="text" name="batchNo${index}" value="${drugMedicationDto.batchNo}"/>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_batchNo"${index}></span>
+                            <iais:input maxLength="20" type="text" name="batchNo${idxStatus.index}" value="${drugMedicationDto.batchNo}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_batchNo"${idxStatus.index}></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -49,33 +49,33 @@
                             </c:choose>
                             <span class="mandatory">*</span></label>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_strength"${index}></span>
+                            <iais:input maxLength="3" type="text" name="strength${idxStatus.index}" value="${drugMedicationDto.strength}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_strength"${idxStatus.index}></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Quantity" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="3" type="text" name="quantity${index}" value="${drugMedicationDto.quantity}"/>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_quantity"${index}></span>
+                            <iais:input maxLength="3" type="text" name="quantity${idxStatus.index}" value="${drugMedicationDto.quantity}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_quantity"${idxStatus.index}></span>
                         </iais:value>
                     </iais:row>
                 <div class="medicationContent">
                     <iais:row>
                         <iais:field width="5" value="Frequency" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select"
+                            <iais:select cssClass="frequency"  name="frequency${idxStatus.index}" firstOption="Please Select"
                                          codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
 
-                            <span class="error-msg" name="iaisErrorMsg" id="error_frequency"${index}></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_frequency"${idxStatus.index}></span>
                         </iais:value>
                     </iais:row>
-                    <div id="othersFrequency${index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
+                    <div id="othersFrequency${idxStatus.index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
                         <iais:row>
                             <iais:field width="5" value="Other-Frequency" mandatory="true"/>
 
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="100" type="text" name="otherFrequency${index}" value="${drugMedicationDto.otherFrequency}"/>
+                                <iais:input maxLength="100" type="text" name="otherFrequency${idxStatus.index}" value="${drugMedicationDto.otherFrequency}"/>
                             </iais:value>
                         </iais:row>
                     </div>
@@ -104,8 +104,8 @@
                         <iais:row>
                             <iais:field width="5" value="Batch No." mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="batchNo${index}" value="${drugMedicationDto.batchNo}"/>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_batchNo"${index}></span>
+                                <iais:input maxLength="20" type="text" name="batchNo${idxStatus.index}" value="${drugMedicationDto.batchNo}"/>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_batchNo"${idxStatus.index}></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -120,28 +120,28 @@
                                 </c:choose>
                                 <span class="mandatory">*</span></label>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
+                                <iais:input maxLength="3" type="text" name="strength${idxStatus.index}" value="${drugMedicationDto.strength}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="5" value="Quantity" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="3" type="text" name="quantity${index}" value="${drugMedicationDto.quantity}"/>
+                                <iais:input maxLength="3" type="text" name="quantity${idxStatus.index}" value="${drugMedicationDto.quantity}"/>
                             </iais:value>
                         </iais:row>
                         <div class="medicationContent">
                             <iais:row>
                                 <iais:field width="5" value="Frequency" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select"
+                                    <iais:select cssClass="frequency"  name="frequency${idxStatus.index}" id="frequency${idxStatus.index}" firstOption="Please Select"
                                                  codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
                                 </iais:value>
                             </iais:row>
-                            <div id="othersFrequency${index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
+                            <div id="othersFrequency${idxStatus.index}" style="${drugMedicationDto.frequency eq 'FRE009' ? '' : 'display: none'}">
                                 <iais:row>
                                     <iais:field width="5" value="Other-Frequency" mandatory="true"/>
                                     <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="100" type="text" name="otherFrequency${index}" value="${drugMedicationDto.otherFrequency}"/>
+                                        <iais:input maxLength="100" type="text" name="otherFrequency${idxStatus.index}" value="${drugMedicationDto.otherFrequency}"/>
                                     </iais:value>
                                 </iais:row>
                             </div>

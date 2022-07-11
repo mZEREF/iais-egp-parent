@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -92,18 +93,19 @@ public class TopDataSubmissionDelegator {
     private TopDataSubmissionService topDataSubmissionService;
 
     @Autowired
-    LicenceViewService licenceViewService;
+    private LicenceViewService licenceViewService;
 
     @Autowired
-    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
     @Autowired
-    NotificationHelper notificationHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
-    DsLicenceService dsLicenceService;
+    private DsLicenceService dsLicenceService;
 
-
+    @Autowired
+    private DocInfoService docInfoService;
     /**
      * Step: Start
      *
@@ -987,7 +989,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
-                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())){
+                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                     if(Formatter.compareDateByDay(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate(),preTerminationDto.getCounsellingDate())<1){
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                     }else {
@@ -1198,7 +1200,7 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             if(StringUtil.isNotEmpty(topDates)){
                 try {
-                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<1){
+                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<1&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                     }else {
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
@@ -1209,6 +1211,12 @@ public class TopDataSubmissionDelegator {
             }
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+        DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS");
+        if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
+            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+        }else {
+            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
+        }
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
@@ -1661,7 +1669,7 @@ public class TopDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));
@@ -1691,7 +1699,7 @@ public class TopDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_RFC_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));

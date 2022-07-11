@@ -535,7 +535,7 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send LDT Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send LDT Email  end *****************"));
@@ -566,7 +566,7 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send LDT RFC Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_RFC_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send LDT RFC Email  end *****************"));

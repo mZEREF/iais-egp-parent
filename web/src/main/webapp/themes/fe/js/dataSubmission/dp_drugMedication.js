@@ -4,11 +4,7 @@ $(document).ready(function (){
     $('select[class = "frequency"]').each(function(index, ele){
         $(ele).unbind('change');
         $(ele).on('change', function() {
-            if (index == '0'){
-                toggleOnSelect(ele, 'FRE009', 'othersFrequency');
-            }else{
-                toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
-            }
+            toggleOnSelect(ele, 'FRE009', 'othersFrequency' + index);
         })
     });
     var drugMedicationLength = $content.length;
@@ -52,7 +48,8 @@ function refreshKeyAppointmentHolder() {
     refreshId($meContent);
     $meContent.each(function (k,v) {
         var $input = $(v);
-        if(k>=1){
+        var opt = $("#frequency"+k).val();
+        if (opt !== 'FRE009'){
             $input.attr("style","display: none")
         }
     });
