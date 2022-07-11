@@ -817,18 +817,28 @@ function refreshIndex(targetSelector) {
         if ($ele.is(':input')) {
             $selector = $ele;
         } else {
-            $selector = $ele.find(':input')
+            $selector = $ele.find(':input');
         }
         if ($selector.length == 0) {
             return;
         }
         $selector.each(function () {
-            resetIndex(this, k);
+            resetField(this, k);
         });
     });
 }
 
 function resetIndex(targetTag, index) {
+    var $target = getJqueryNode(targetTag);
+    if (isEmpty($target)) {
+        return;
+    }
+    $target.find(':input').each(function() {
+        resetField(this, index)
+    });
+}
+
+function resetField(targetTag, index, prefix) {
     var $target = getJqueryNode(targetTag);
     if (isEmpty($target) || $target.hasClass('not-refresh')) {
         return;
@@ -843,11 +853,23 @@ function resetIndex(targetTag, index) {
         if (isEmpty(orgName)) {
             return;
         }
-        var result = /(.*\D+)/g.exec(orgName);
-        var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-        var newName = name + index;
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        var base = $target.data('base');
+        if (isEmpty(base)) {
+            var result;
+            if (isEmpty(prefix)) {
+                prefix = "";
+                result = /(.*\D+)/g.exec(orgName);
+            } else {
+                result = /(\D+.*\D+)/g.exec(orgName);
+            }
+            base = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+        }
+        var newName = prefix + base + index;
         $target.prop('name', newName);
-        if (orgName == orgId || name == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+        if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
             $target.prop('id', newName);
         }
         var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
@@ -858,7 +880,9 @@ function resetIndex(targetTag, index) {
             updateSelectTag($target);
         }
     } else {
-        //
+        $target.find(':input').each(function() {
+            resetField(this, index, prefix);
+        });
     }
 }
 
