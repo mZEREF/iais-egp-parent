@@ -931,7 +931,7 @@ public class VssDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send VSS Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_VSS_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send VSS Email  end *****************"));

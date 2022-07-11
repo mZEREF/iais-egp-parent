@@ -68,7 +68,7 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
     }
 
     private void sendEmail(String applicantName,String LDTId,String licenceId) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL).getEntity();
+        MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_ACK_EMAIL).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("ApplicantName", applicantName);
         msgContentMap.put("LDTId", LDTId);
@@ -77,7 +77,7 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
         msgSubjectMap.put("LDTId", LDTId);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),msgSubjectMap);
         EmailParam emailParamSms = new EmailParam();
-        emailParamSms.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamSms.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_ACK_EMAIL);
         emailParamSms.setTemplateContent(msgContentMap);
         emailParamSms.setQueryCode(LDTId);
         emailParamSms.setReqRefNum(LDTId);

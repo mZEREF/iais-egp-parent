@@ -1670,7 +1670,7 @@ public class TopDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));
@@ -1700,7 +1700,7 @@ public class TopDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("***************** send TOP Notification  end *****************"));
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
-        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_EMAIL);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_RFC_ACK_EMAIL);
         emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send TOP Email  end *****************"));
