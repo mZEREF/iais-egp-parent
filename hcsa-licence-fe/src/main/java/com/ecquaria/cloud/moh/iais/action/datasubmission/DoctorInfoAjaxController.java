@@ -46,6 +46,7 @@ public class DoctorInfoAjaxController {
 //        professionalResponseDto = new ProfessionalResponseDto();
 //        professionalResponseDto.setRegno(professionRegoNo);
 //        professionalResponseDto.setHasException(true);
+        //
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()){
                 if(doctorInformationDto!=null){
