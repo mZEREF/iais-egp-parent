@@ -845,6 +845,7 @@ public class AppealServiceImpl implements AppealService {
         if (assignSelect != null && assignSelect.length > 0) {
             size = assignSelect.length;
         }
+        log.info(StringUtil.changeForLog("assignSelect size :"+size));
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
