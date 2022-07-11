@@ -1340,7 +1340,10 @@ public class AppealServiceImpl implements AppealService {
 
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
-            appSvcCgoDtos = reAppSvcCgo(request);
+            appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
+            if(appSvcCgoDtos==null){
+                appSvcCgoDtos = reAppSvcCgo(request);
+            }
         }
 
         SubLicenseeDto subLicenseeDto=licenceClient.getSubLicenseesById(licenceDto.getSubLicenseeId()).getEntity();
@@ -1447,7 +1450,10 @@ public class AppealServiceImpl implements AppealService {
 
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
-            appSvcCgoDtos = reAppSvcCgo(request);
+            appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
+            if(appSvcCgoDtos==null){
+                appSvcCgoDtos = reAppSvcCgo(request);
+            }
         }
 
         AppliSpecialDocDto appliSpecialDocDto = new AppliSpecialDocDto();
