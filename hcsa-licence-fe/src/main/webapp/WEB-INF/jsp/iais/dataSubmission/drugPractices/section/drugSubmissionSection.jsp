@@ -432,7 +432,7 @@
         disableControl();
         var quantityMatch = $('input[name="quantityMatch"]').val();
         var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
-        if (quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '')){
+        if (quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
             console.log("quantityMatch :" + quantityMatch);
             $('#QUANTITY_NOT_MATCH').modal('show');
         }
