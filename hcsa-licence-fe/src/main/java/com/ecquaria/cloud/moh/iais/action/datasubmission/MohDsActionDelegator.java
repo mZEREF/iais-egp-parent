@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -205,6 +206,13 @@ public class MohDsActionDelegator {
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
                 DoctorInformationDto doctorInfoDto=docInfoService.getRfcDoctorInformationDtoByConds(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorInformationId());
                 if(doctorInfoDto!=null){
+                    ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
+                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS");
+                    if(professionalResponseDto!=null&&doctorInformationDto!=null){
+                        ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",true);
+                    }else {
+                        ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                    }
                     if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource()) || TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
                         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
                         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
@@ -221,6 +229,8 @@ public class MohDsActionDelegator {
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     }
+                }else {
+                    ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);

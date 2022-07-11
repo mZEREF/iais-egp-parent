@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -93,18 +94,19 @@ public class TopDataSubmissionDelegator {
     private TopDataSubmissionService topDataSubmissionService;
 
     @Autowired
-    LicenceViewService licenceViewService;
+    private LicenceViewService licenceViewService;
 
     @Autowired
-    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+    private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
 
     @Autowired
-    NotificationHelper notificationHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
-    DsLicenceService dsLicenceService;
+    private DsLicenceService dsLicenceService;
 
-
+    @Autowired
+    private DocInfoService docInfoService;
     /**
      * Step: Start
      *
@@ -1210,6 +1212,12 @@ public class TopDataSubmissionDelegator {
             }
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+        DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS");
+        if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
+            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+        }else {
+            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
+        }
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
