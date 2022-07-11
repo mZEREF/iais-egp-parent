@@ -63,12 +63,8 @@
                                             <%@ include file="section/previewPatientDetails.jsp" %>
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
-                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
-                                                <%@ include file="section/previewPresentTermination.jsp" %>
-                                            </c:if>
-                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003'}">
-                                                <%@ include file="section/previewPostTermination.jsp" %>
-                                            </c:if>
+                                            <%@ include file="section/previewPresentTermination.jsp" %>
+                                            <%@ include file="section/previewPostTermination.jsp" %>
                                             <%@ include file="common/topDsAmendment.jsp" %>
                                             <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
