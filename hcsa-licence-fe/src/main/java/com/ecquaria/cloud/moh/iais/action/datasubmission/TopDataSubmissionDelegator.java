@@ -990,7 +990,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
-                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())){
+                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                     if(Formatter.compareDateByDay(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate(),preTerminationDto.getCounsellingDate())<1){
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                     }else {
@@ -1201,7 +1201,7 @@ public class TopDataSubmissionDelegator {
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             if(StringUtil.isNotEmpty(topDates)){
                 try {
-                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<1){
+                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<1&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                     }else {
                         ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
