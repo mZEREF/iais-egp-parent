@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.Dto.HuangKunRoomDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 
+import java.util.List;
+
 /**
  * @ClassName: HuangKunRoomService
  * @author: haungkun
@@ -10,4 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
  */
 public interface HuangKunRoomService {
     SearchResult<HuangKunRoomDto> doQuery();
+
+    List<String> listModuleTypes();
+
+    HuangKunRoomDto getRoomById(String msgId);
 }

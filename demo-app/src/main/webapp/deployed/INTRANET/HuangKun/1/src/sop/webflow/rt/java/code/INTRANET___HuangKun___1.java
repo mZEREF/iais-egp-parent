@@ -23,4 +23,29 @@ public class INTRANET___HuangKun___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
+	public void prepareSwitch_OnStepProcess_0() throws Exception {
+	// 		prepareSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
+	}
+
+	public void sortRecords_OnStepProcess_0() throws Exception {
+	// 		sortRecords->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSorting", this);
+	}
+
+	public void prepareEdit_OnStepProcess_0() throws Exception {
+	// 		prepareEdit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareEdit", this);
+	}
+
+	public void doSearch_OnStepProcess_0() throws Exception {
+	// 		doSearch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSearch", this);
+	}
+
+	public void start_OnStepProcess_0() throws Exception {
+	// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "startStep", this);
+	}
+
 }

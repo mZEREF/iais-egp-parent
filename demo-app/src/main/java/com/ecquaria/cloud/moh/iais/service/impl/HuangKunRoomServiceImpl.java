@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @ClassName: HuangKunRoomServiceImpl
  * @author: haungkun
@@ -23,5 +25,15 @@ public class HuangKunRoomServiceImpl implements HuangKunRoomService {
     @Override
     public SearchResult<HuangKunRoomDto> doQuery() {
         return huangKunRoomClient.queryRooms().getEntity();
+    }
+
+    @Override
+    public List<String> listModuleTypes() {
+        return null;
+    }
+
+    @Override
+    public HuangKunRoomDto getRoomById(String msgId) {
+        return null;
     }
 }
