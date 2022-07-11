@@ -3871,6 +3871,10 @@ public class HcsaApplicationDelegator {
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     AppSvcPrincipalOfficersDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    if(appSvcCgoDto==null){
+                        log.error("CGO info lost!!");
+                        return;
+                    }
                     appSvcCgoDto.setAssignSelect("newOfficer");
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);

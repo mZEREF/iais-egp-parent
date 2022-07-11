@@ -493,6 +493,7 @@
           fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
           $CurrentPsnEle.find('input[name="licPerson"]').val('0');
           $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+          $CurrentPsnEle.find('input[name="otherDesignation"]').val('');
 
         } else if ('-1' == $(this).val()) {
           $parentEle.find('> .profile-info-gp').removeClass('hidden');
@@ -501,6 +502,8 @@
           fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
           $CurrentPsnEle.find('input[name="licPerson"]').val('0');
           $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+          $CurrentPsnEle.find('input[name="otherDesignation"]').val('');
+
         } else {
           $parentEle.find('> .new-officer-form').removeClass('hidden');
           $parentEle.find('> .profile-info-gp').addClass('hidden');
@@ -721,6 +724,8 @@
         $CurrentPsnEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
       }else{
         $CurrentPsnEle.find('div.otherDesignationDiv').addClass('hidden');
+        $CurrentPsnEle.find('input[name="otherDesignation"]').val('');
+
       }
 
       <!-- professionType-->

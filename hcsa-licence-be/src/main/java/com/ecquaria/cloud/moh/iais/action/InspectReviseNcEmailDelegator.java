@@ -428,8 +428,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         }
         if(appPremisesRoutingHistoryDto!=null&&appPremisesRoutingHistoryDto1!=null){
             try {
-                String ao1=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto1.getUpdatedDt());
-                String lead=new SimpleDateFormat(AppConsts.DEFAULT_DATE_TIME_FORMAT).format(appPremisesRoutingHistoryDto.getUpdatedDt());
+                Date ao1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(appPremisesRoutingHistoryDto1.getUpdatedDt());
+                Date lead=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(appPremisesRoutingHistoryDto.getUpdatedDt());
                 if(lead.compareTo(ao1) <= 0) {
                     appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
                 }
