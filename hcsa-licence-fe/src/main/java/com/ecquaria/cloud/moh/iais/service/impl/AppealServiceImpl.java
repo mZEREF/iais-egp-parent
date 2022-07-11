@@ -1192,7 +1192,7 @@ public class AppealServiceImpl implements AppealService {
                     }
 
                 }
-
+                ParamUtil.setSessionAttr(request,"GovernanceOfficersList", (Serializable) appSvcCgoList);
             } else if (ApplicationConsts.APPEAL_REASON_OTHER.equals(appealReason)) {
                 String otherReason = request.getParameter("othersReason");
                 if (StringUtil.isEmpty(otherReason)) {
