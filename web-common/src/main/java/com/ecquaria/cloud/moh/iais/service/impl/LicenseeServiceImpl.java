@@ -32,6 +32,11 @@ public class LicenseeServiceImpl implements LicenseeService {
     }
 
     @Override
+    public List<String> getEmailsByRoleIdsAndLicenseeId(String licenseeId,List<String> roleIds){
+        return licenseeClient.getEmailsByRoleIdsAndLicenseeId(licenseeId,roleIds).getBody();
+    }
+
+    @Override
     public List<String> getLicenseeMobiles(String licenseeId) {
         return licenseeClient.getLicenseeMobiles(licenseeId).getBody();
     }
