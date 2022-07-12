@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -989,11 +988,23 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
-                if(StringUtil.isNotEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
-                    if(Formatter.compareDateByDay(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getTopDate(),preTerminationDto.getCounsellingDate())<1){
-                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
-                    }else {
-                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                if(StringUtil.isNotEmpty(terminationDto.getTopDate())){
+                    if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
+                        if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
+                            if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                }
+                            }
+                        }else {
+                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                            }else {
+                                ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                            }
+                        }
                     }
                 }
             }catch (Exception e){
@@ -1196,7 +1207,6 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
         String submitDt=Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss");
-        String topDates = ParamUtil.getString(request, "topDate");
         try {
             if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>=Integer.parseInt(day)){
                 ParamUtil.setSessionAttr(request, "topLateSubmit", Boolean.TRUE);
@@ -1205,16 +1215,28 @@ public class TopDataSubmissionDelegator {
             log.error(StringUtil.changeForLog("topLateSubmit is error"));
         }
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
-            if(StringUtil.isNotEmpty(topDates)){
-                try {
-                    if(Formatter.compareDateByDay(topDates,preTerminationDto.getCounsellingDate())<1&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
-                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
-                    }else {
-                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+            try {
+                if(StringUtil.isNotEmpty(terminationDto.getTopDate())){
+                    if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
+                        if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
+                            if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                }
+                            }
+                        }else {
+                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                            }else {
+                                ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                            }
+                        }
                     }
-                }catch (Exception e){
-                    log.error(StringUtil.changeForLog("CounsellingDate is error"));
                 }
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("CounsellingDate is error"));
             }
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
