@@ -150,7 +150,10 @@ public class ApptInspectionDateDelegator {
         if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysSpecDateFlag())) {
             processDecValues.add(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
         }
-        processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))){
+            processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        }
         ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
 
         //set rollback options

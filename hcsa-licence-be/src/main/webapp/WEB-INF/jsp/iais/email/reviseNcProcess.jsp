@@ -120,7 +120,7 @@
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row id="rollBackToRow">
-                                                    <iais:field value="Route Back To" required="true" id="backToLabel"/>
+                                                    <iais:field value="Roll Back To" required="true" id="backToLabel"/>
                                                     <iais:value width="7">
                                                         <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select" needSort="true"/>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
@@ -227,6 +227,7 @@
         var remark = $('#Remarks').val();
         clearErrorMsg();
         $('#err_rollBackTo').hide();
+        $('#selectDecisionMsg').hide();
         if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
         }

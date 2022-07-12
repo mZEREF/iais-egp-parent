@@ -59,21 +59,21 @@
                <iais:row >
                    <iais:field width="5" value="Specialty" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dSpecialitys" id="dSpecialitys" value="${sexualSterilizationDto.specialty}" />
+                       <iais:input maxLength="1024" type="text" name="dSpecialitys" id="dSpecialitys" value="${sexualSterilizationDto.specialty}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
                    </iais:value>
                </iais:row>
                <iais:row >
                    <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dSubSpecialitys" id="dSubSpecialitys" value="${sexualSterilizationDto.subSpecialty}" />
+                       <iais:input maxLength="1024" type="text" name="dSubSpecialitys" id="dSubSpecialitys" value="${sexualSterilizationDto.subSpecialty}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
                    </iais:value>
                </iais:row>
                <iais:row >
                    <iais:field width="5" value="Qualification" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dQualifications" id="dQualifications" value="${sexualSterilizationDto.qualification}" />
+                       <iais:input maxLength="1024" type="text" name="dQualifications" id="dQualifications" value="${sexualSterilizationDto.qualification}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
                    </iais:value>
                </iais:row>
@@ -90,21 +90,21 @@
            <iais:row >
                <iais:field width="5" value="Specialty" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input  type="text" name="dSpeciality" maxLength="100" id="dSpecialityText" value="${doctorInformationDto.speciality}" />
+                   <iais:input  type="text" name="dSpeciality" maxLength="1024" id="dSpecialityText" value="${doctorInformationDto.speciality}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                </iais:value>
            </iais:row>
            <iais:row >
                <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input  type="text" name="dSubSpeciality" maxLength="100"  id="dSubSpecialityText" value="${doctorInformationDto.subSpeciality}" />
+                   <iais:input  type="text" name="dSubSpeciality" maxLength="1024"  id="dSubSpecialityText" value="${doctorInformationDto.subSpeciality}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                </iais:value>
            </iais:row>
            <iais:row >
                <iais:field width="5" value="Qualification" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input type="text" name="dQualification" maxLength="100" id="dQualificationText" value="${doctorInformationDto.qualification}" />
+                   <iais:input type="text" name="dQualification" maxLength="1024" id="dQualificationText" value="${doctorInformationDto.qualification}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                </iais:value>
            </iais:row>
@@ -377,6 +377,7 @@
             'success': function (data) {
                 if(isEmpty(data.selection) && isEmpty(data.selections)) {
                     clearPrsInfoText();
+                    clearPrsInfoElis();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     console.log("1");
@@ -390,6 +391,7 @@
                     $('#doctorInformationPrs').hide();
                     console.log("2");
                 } else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                    clearPrsInfoElis();
                     clearPrsInfoText();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
@@ -421,8 +423,9 @@
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                         console.log("7");
-                    } else if (data.selection.hasException) {
+                    } else if (data.selection.hasException && isEmpty(data.selections)) {
                         clearPrsInfoElis();
+                        clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -438,7 +441,7 @@
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                        console.log("9");
+                        console.log("10");
                     }
 
                 }

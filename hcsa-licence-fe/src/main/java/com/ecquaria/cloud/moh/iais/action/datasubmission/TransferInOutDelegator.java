@@ -326,7 +326,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         msgParam.setReqRefNum(currentSubmissionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(receiveLicenseeId);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
         notificationHelper.sendNotification(msgParam);
 
         //send email

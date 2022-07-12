@@ -389,8 +389,12 @@ public class InspectionMergeSendNcEmailDelegator {
             inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
             inspectionEmailTemplateDto.setMessageContent(msgTemplateDto.getMessageContent());
         }
-
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,InspectionConstants.PROCESS_DECI_ROLL_BACK});
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT};
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        }
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
@@ -400,7 +404,7 @@ public class InspectionMergeSendNcEmailDelegator {
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
-        ParamUtil.setSessionAttr(request,"serListDto",fillupChklistService.getInspectionFDtosDtoOnlyForChecklistLetter(taskDto.getRefNo()));
+        ParamUtil.setSessionAttr(request, "serListDto", fillupChklistService.getInspectionFDtosDtoOnlyForChecklistLetter(taskDto.getRefNo()));
     }
 
     public void emailSubmitStep(BaseProcessClass bpc){

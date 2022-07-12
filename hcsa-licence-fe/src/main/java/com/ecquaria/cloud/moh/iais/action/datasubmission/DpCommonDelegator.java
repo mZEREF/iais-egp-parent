@@ -515,7 +515,7 @@ public abstract class DpCommonDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP_NEW);
         msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
@@ -546,7 +546,7 @@ public abstract class DpCommonDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP_SUP);
         msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);

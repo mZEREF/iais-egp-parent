@@ -214,9 +214,9 @@ public class LdtDataSubmissionDelegator {
         }
         try {
             if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
-                sendRfcMsgAndEmail(licenceId, licenseeDtoName, submissionNo);
+                sendRfcMsgAndEmail(licenceId, licenseeDtoName, submissionNo, licenseeId);
             } else {
-                sendMsgAndEmail(licenceId, "Lab-developed Test", licenseeDtoName, submissionNo);
+                sendMsgAndEmail(licenceId, "Lab-developed Test", licenseeDtoName, submissionNo, licenseeId);
             }
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
@@ -509,7 +509,7 @@ public class LdtDataSubmissionDelegator {
         return result;
     }
 
-    private void sendMsgAndEmail(String licenceId, String serverName, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendMsgAndEmail(String licenceId, String serverName, String submitterName, String submissionNo, String licenseeId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
@@ -527,7 +527,7 @@ public class LdtDataSubmissionDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT_NEW);
         msgParam.setRefId(licenceId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
@@ -536,12 +536,13 @@ public class LdtDataSubmissionDelegator {
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
         emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_ACK_EMAIL);
-        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+        emailParamEmail.setRefId(licenseeId);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send LDT Email  end *****************"));
     }
 
-    private void sendRfcMsgAndEmail(String licenceId, String submitterName, String submissionNo) throws IOException, TemplateException {
+    private void sendRfcMsgAndEmail(String licenceId, String submitterName, String submissionNo, String licenseeId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("dataSupervisor", submitterName);
@@ -558,7 +559,7 @@ public class LdtDataSubmissionDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT_SUP);
         msgParam.setRefId(licenceId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
@@ -567,7 +568,8 @@ public class LdtDataSubmissionDelegator {
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
         emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_SUBMITTED_RFC_ACK_EMAIL);
-        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+        emailParamEmail.setRefId(licenseeId);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
         notificationHelper.sendNotification(emailParamEmail);
         log.info(StringUtil.changeForLog("***************** send LDT RFC Email  end *****************"));
     }

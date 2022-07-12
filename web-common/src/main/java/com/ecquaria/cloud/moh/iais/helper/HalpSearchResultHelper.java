@@ -18,12 +18,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.privilege.Privilege;
-import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 
 public class HalpSearchResultHelper {
 
@@ -160,7 +160,7 @@ public class HalpSearchResultHelper {
                     MasterCodeUtil.retrieveOptionsByCate(cateId)));
     }
 
-    public static void initMsgControlSearchParam(SearchParam searchParam,HttpServletRequest request){
+    /*public static void initMsgControlSearchParam(SearchParam searchParam,HttpServletRequest request){
         InterMessageSearchDto interMessageSearchDto =  initInterMessageSearchDto(request);
         if(interMessageSearchDto.getSearchSql() == 1){
             setParamByField(searchParam,"interServiceDsShow",interMessageSearchDto.getServiceCodes());
@@ -185,31 +185,59 @@ public class HalpSearchResultHelper {
             interMessageSearchDto.setServiceCodes(getDsTypes(privilegeIds));
         }
         return interMessageSearchDto;
-    }
+    }*/
 
-    public static List<String> getDsTypes(List<String> privilegeIds){
-        if(IaisCommonUtils.isEmpty(privilegeIds)){
+    public static List<String> getDsTypes(List<String> privilegeIds) {
+        if (IaisCommonUtils.isEmpty(privilegeIds)) {
             return IaisCommonUtils.genNewArrayList();
         }
         List<String> types = IaisCommonUtils.genNewArrayList(5);
-        privilegeIds.stream().forEach(privilegeId ->{
-            switch(privilegeId){
-                case PrivilegeConsts.USER_PRIVILEGE_DS_AR :
-                    types.add(DataSubmissionConsts.DS_AR);
+        privilegeIds.forEach(privilegeId -> {
+            switch (privilegeId) {
+                case PrivilegeConsts.USER_PRIVILEGE_DS_AR:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR, types);
                     break;
-                case PrivilegeConsts.USER_PRIVILEGE_DS_DP :
-                    types.add(DataSubmissionConsts.DS_DRP);
+                case PrivilegeConsts.USER_PRIVILEGE_DS_DP:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_TOP:
-                    types.add(DataSubmissionConsts.DS_TOP);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_VSS:
-                    types.add(DataSubmissionConsts.DS_VSS);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_VSS, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_LDT:
-                    types.add(DataSubmissionConsts.DS_LDT);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT, types);
                     break;
-                default: break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_AR_CRE:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR_NEW, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_DP_CRE:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP_NEW, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_TOP_CRE:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP_NEW, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_VSS_CRE:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_VSS, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_LDT_CRE:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT_NEW, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR_SUP, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP_SUP, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_TOP_RFC:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP_SUP, types);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_LDT_RFC:
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT_SUP, types);
+                    break;
+                default:
+                    break;
             }
         });
         return types;
