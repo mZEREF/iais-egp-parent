@@ -20,7 +20,7 @@
                 <c:set var="drug" value="${drugSubmission}"/>
                 <div class="patient">
                     <iais:row>
-                        <iais:field width="5" value="Patient's ID No." mandatory="true"/>
+                        <iais:field width="5" value="Patient ID No." mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
                                          cssClass="idTypeSel" onchange="clearSelection()"/>
@@ -456,17 +456,16 @@
         if(drugtype == "DPD001"){
             $('#batchNo').hide();
             $('#addMore').hide();
-            $('#deleteIcon').hide();
-            // $('#medicationDiv').hide();
+            $('.deleteIcon').hide();
+            $('.assign-psn-item').hide();
         } else if(drugtype == "DPD002"){
             $('#batchNo').show();
             $('#addMore').show();
-            $('#deleteIcon').show();
-            // $('#medicationDiv').show();
         } else {
             $('#batchNo').hide();
             $('#addMore').hide();
-            $('#deleteIcon').hide();
+            $('.deleteIcon').hide();
+            $('.assign-psn-item').hide();
         }
     }
 
