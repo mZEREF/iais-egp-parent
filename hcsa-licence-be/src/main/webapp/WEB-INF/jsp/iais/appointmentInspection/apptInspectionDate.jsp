@@ -85,9 +85,9 @@
                               <table aria-describedby="" class="apptApp table">
                                 <thead>
                                 <tr>
-                                  <th scope="col" >Application No</th>
-                                  <th scope="col" >Application Status</th>
-                                  <th scope="col" >MOH Officer(s)</th>
+                                  <th scope="col" style="width: 34%">Application No</th>
+                                  <th scope="col" style="width: 35%">Application Status</th>
+                                  <th scope="col" style="width: 31%">MOH Officer(s)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -198,10 +198,9 @@
                             <iais:row>
                               <iais:field value="Fast Tracking?"/>
                               <iais:value width="10" display="true">
-                                <p></p>
-                                <input disabled type="checkbox"
+                                <input disabled type="checkbox" id="fastTracking"
                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                <p></p>
+                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                               </iais:value>
                             </iais:row>
 

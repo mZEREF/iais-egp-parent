@@ -239,6 +239,8 @@ public interface InspectionService {
      */
     List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole);
 
+    List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole, List<String> excludeRole);
+
     void rollBackInspectionRecord(String premCorrId, ApplicationDto applicationDto);
 
     /**

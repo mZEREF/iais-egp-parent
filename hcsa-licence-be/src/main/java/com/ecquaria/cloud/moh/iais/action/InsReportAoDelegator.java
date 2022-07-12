@@ -4,7 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -23,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -36,6 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +111,7 @@ public class InsReportAoDelegator  {
         insRepDto.setInspectors(inspectorAo.getInspectors());
         vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
+        List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId(), Collections.singletonList(RoleConsts.USER_ROLE_INSPECTIOR));
 
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
@@ -119,7 +123,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, "reportClassTop", null);
         ParamUtil.setSessionAttr(request, "infoClassBelow", infoClassBelow);
         ParamUtil.setSessionAttr(request, "reportClassBelow", reportClassBelow);
-        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto().getStatus());
+        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto());
         ParamUtil.setSessionAttr(request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(request, INSREPDTO, insRepDto);
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, applicationViewDto);
@@ -219,20 +223,24 @@ public class InsReportAoDelegator  {
 
 
 
-    private List<SelectOption> getProcessingDecision(String status) {
+    private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
+        String status = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-            SelectOption so1 = new SelectOption("submit", "Give Clarification");
+            SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
             riskLevelResult.add(so1);
             return riskLevelResult;
         }
 
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge Inspection Report");
-        SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
+        SelectOption so1 = new SelectOption(APPROVAL, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT));
+        SelectOption so2 = new SelectOption(REJECT, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT));
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
-        riskLevelResult.add(new SelectOption("rollBack", "Roll Back"));
+        String appType = applicationDto.getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            riskLevelResult.add(new SelectOption("rollBack", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
+        }
         return riskLevelResult;
     }
 

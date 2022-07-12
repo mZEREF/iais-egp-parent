@@ -43,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -594,6 +593,11 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole) {
+        return getRollBackSelectOptions(rollBackHistoryList, rollBackHistoryValueMap, currentRole, IaisCommonUtils.genNewArrayList());
+    }
+
+    @Override
+    public List<SelectOption> getRollBackSelectOptions(List<AppPremisesRoutingHistoryDto> rollBackHistoryList, Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap, String currentRole, List<String> excludeRole) {
         Assert.assertNotNull(rollBackHistoryValueMap);
         rollBackHistoryValueMap.clear();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
@@ -604,7 +608,7 @@ public class InspectionServiceImpl implements InspectionService {
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                if (user != null && validateRole(displayName, currentRole)) {
+                if (user != null && validateRole(displayName, currentRole, excludeRole)) {
                     SelectOption selectOption = new SelectOption(Integer.toString(index), user.getDisplayName() + " (" + displayName + ")");
                     rollBackStage.add(selectOption);
                     rollBackHistoryValueMap.put(Integer.toString(index), appPremisesRoutingHistoryDto);
@@ -615,8 +619,11 @@ public class InspectionServiceImpl implements InspectionService {
         return rollBackStage;
     }
 
-    private boolean validateRole(String historyRole, String currentRole) {
-        if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(currentRole)){
+    private boolean validateRole(String historyRole, String currentRole, List<String> excludeRole) {
+        if (IaisCommonUtils.isNotEmpty(excludeRole) && excludeRole.contains(historyRole)) {
+            return false;
+        }
+        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(currentRole)) {
             currentRole = RoleConsts.USER_ROLE_AO1;
         }
         return StringUtil.isNotEmpty(historyRole) && ROLE.contains(historyRole) && ROLE.indexOf(currentRole) > ROLE.indexOf(historyRole);
