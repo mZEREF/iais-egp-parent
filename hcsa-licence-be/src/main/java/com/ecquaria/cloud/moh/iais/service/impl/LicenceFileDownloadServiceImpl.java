@@ -999,8 +999,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
             if(requestTaskHistoryDto!=null){
-                log.info(StringUtil.changeForLog("rfi onSubmitTaskList json: " + JsonUtil.parseToJson(requestTaskHistoryDto.getTaskDtoList())));
-
                 if(!IaisCommonUtils.isEmpty(requestTaskHistoryDto.getTaskDtoList())){
                     onSubmitTaskList.addAll(requestTaskHistoryDto.getTaskDtoList());
                 }
@@ -1058,8 +1056,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
                 applicationClient.updateProcessFileTrack(processFileTrackDto);
             }else {
-                log.info(StringUtil.changeForLog("onSubmitTaskList json: " + JsonUtil.parseToJson(onSubmitTaskList)));
-
                 broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
                 broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                 eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
