@@ -13,10 +13,10 @@ deployments:
   - type: image_tag
     stack_name: p2_halp_app
     services:
-      - hcsa-licence-web=nexus3:8155/docker-mohiais-egp/hcsa-licence:${TagName}-${BUILD_NUMBER}-UAT
-      - system-admin-web=nexus3:8155/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}-UAT
-      - main-web=nexus3:8155/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}-UAT
-      - web=nexus3:8155/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}-UAT
+      - hcsa-licence-web=nexus3:8155/docker-mohiais-egp/hcsa-licence:P2-${TagName}-${BUILD_NUMBER}-UAT
+      - system-admin-web=nexus3:8155/docker-mohiais-egp/systemadmin-web:P2-${TagName}-${BUILD_NUMBER}-UAT
+      - main-web=nexus3:8155/docker-mohiais-egp/main-web:P2-${TagName}-${BUILD_NUMBER}-UAT
+      - web=nexus3:8155/docker-mohiais-egp/web:P2-${TagName}-${BUILD_NUMBER}-UAT
   - type: wait_for_healthcheck
     stack_name: p2_halp_app
     timeout_seconds: 300
