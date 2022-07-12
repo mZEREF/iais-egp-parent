@@ -133,7 +133,7 @@ public class ValidateVehicle {
         } else if (ENGINE_NAME.equals(name)) {
             val = asv.getEngineNum();
         }
-        return Optional.ofNullable(val).orElseGet(() -> "");
+        return Optional.ofNullable(val).orElse("");
     }
 
     public void doValidateVehicles(Map<String, String> map, AppSubmissionDto appSubmissionDto) {

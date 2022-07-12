@@ -12,7 +12,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 
 <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>

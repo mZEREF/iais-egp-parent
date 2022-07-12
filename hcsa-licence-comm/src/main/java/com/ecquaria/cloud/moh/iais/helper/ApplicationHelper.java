@@ -1478,7 +1478,7 @@ public final class ApplicationHelper {
         target.put(ApplicationConsts.PREMISES_TYPE_REMOTE, "remotePremSel");
         String addtional = " (Pending MOH Approval)";
         target.forEach((premiseType, sessionKey) -> {
-            List<SelectOption> premisesSelect = getPremisesSel(appType);
+            List<SelectOption> premisesSelect = getPremisesSel(appType, premiseType);
             setPremSelect(premisesSelect, premiseType, "", licAppGrpPremisesDtoMap);
             setPremSelect(premisesSelect, premiseType, addtional, appPremisesMap);
             ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
@@ -2557,12 +2557,8 @@ public final class ApplicationHelper {
         return idTypeSelectList;
     }
 
-    //=============================================================================
-    //private method
-    //=============================================================================
-
     private static void sortService(List<HcsaServiceDto> list) {
-        list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
+        list.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
     }
 
     private static HcsaSvcSubtypeOrSubsumedDto getScopeConfigByRecursiveTarNameUpward(
@@ -2624,18 +2620,41 @@ public final class ApplicationHelper {
         return newBusinessDtos;
     }
 
-    private static List<SelectOption> getPremisesSel(String appType) {
+    private static List<SelectOption> getPremisesSel(String appType, String premiseType) {
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
         SelectOption cps1 = new SelectOption("-1", HcsaAppConst.FIRESTOPTION);
         selectOptionList.add(cps1);
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            SelectOption cps2 = new SelectOption("newPremise", "Moving to a new address");
+            SelectOption cps2 = new SelectOption(HcsaAppConst.NEW_PREMISES, "Moving to a new address");
             selectOptionList.add(cps2);
         } else {
-            SelectOption cps2 = new SelectOption("newPremise", "Add a new mode of service delivery");
+            SelectOption cps2 = new SelectOption(HcsaAppConst.NEW_PREMISES,
+                    "Add a new " + StringUtil.toLowerCase(getPremisesTypeName(premiseType)));
             selectOptionList.add(cps2);
         }
         return selectOptionList;
+    }
+
+    public static String getPremisesTypeName(String premisesType) {
+        String name = "Mode of Service Delivery";
+        switch (premisesType) {
+            case ApplicationConsts.PREMISES_TYPE_PERMANENT:
+                name = ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
+                name = ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE:
+                name = ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_MOBILE:
+                name = ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_REMOTE:
+                name = ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW;
+                break;
+        }
+        return name;
     }
 
     private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType) {
@@ -3141,19 +3160,24 @@ public final class ApplicationHelper {
         return personKey;
     }
 
-    public static List<String> getRelatedAppId(String appId, String licenceId, String svcName) {
-        List<String> appIds = IaisCommonUtils.genNewArrayList();
+    public static List<String> getRelatedId(String appId, String licenceId, String svcName) {
+        List<String> ids = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isNotEmpty(licenceId)) {
             LicCommClient licenceClient = SpringContextHelper.getContext().getBean(LicCommClient.class);
             List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getAllRelatedLicAppCorrs(licenceId, svcName).getEntity();
             if (licAppCorrDtos != null && !licAppCorrDtos.isEmpty()) {
-                licAppCorrDtos.forEach(dto -> appIds.add(dto.getApplicationId()));
+                licAppCorrDtos.forEach(dto -> {
+                    ids.add(dto.getApplicationId());
+                    ids.add(dto.getLicenceId());
+                });
             }
         }
         if (StringUtil.isNotEmpty(appId)) {
-            appIds.add(appId);
+            ids.add(appId);
+            ids.add(licenceId);
         }
-        return appIds;
+        log.info(StringUtil.changeForLog("The current related id: " + ids));
+        return ids;
     }
 
     public static boolean isIn(String chkLstConfId, List<AppSvcChckListDto> appSvcChckListDtoList) {
@@ -3701,4 +3725,5 @@ public final class ApplicationHelper {
         }
         return result;
     }
+
 }

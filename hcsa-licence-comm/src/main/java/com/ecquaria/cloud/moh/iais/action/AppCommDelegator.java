@@ -67,6 +67,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -716,8 +718,7 @@ public abstract class AppCommDelegator {
                     premisesType.add(appGrpPremisesDto.getPremisesType());
                 }
             }
-
-            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         } else {
             log.debug(StringUtil.changeForLog("do not have select the services"));
         }
@@ -779,6 +780,37 @@ public abstract class AppCommDelegator {
         //single premises service
         ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
+    }
+
+    private List<String> sortPremisesTypes(Collection<String> premisesTypes) {
+        if (premisesTypes == null || premisesTypes.size() <= 1) {
+            return new ArrayList<>(premisesTypes);
+        }
+        return premisesTypes.stream()
+                .sorted(Comparator.comparingInt(this::getPremisesTypeInt))
+                .collect(Collectors.toList());
+    }
+
+    private int getPremisesTypeInt(String premisesType) {
+        int i = 9999;
+        switch (premisesType) {
+            case ApplicationConsts.PREMISES_TYPE_PERMANENT:
+                i = 1;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
+                i = 2;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE:
+                i = 3;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_MOBILE:
+                i = 4;
+                break;
+            case ApplicationConsts.PREMISES_TYPE_REMOTE:
+                i = 5;
+                break;
+        }
+        return i;
     }
 
     public void setSelectLicence(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {

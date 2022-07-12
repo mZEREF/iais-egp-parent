@@ -304,19 +304,53 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds) {
+    public List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds) {
+        //TODO need to be removed before UAT
+        List<AppSvcVehicleDto> result = getAppActiveVehicles(excludeIds);
+        log.error(StringUtil.changeForLog("App Vehicle size: " + result.size()));
+        result = getLicActiveVehicles(excludeIds);
+        log.info(StringUtil.changeForLog("App Vehicle size: " + result.size()));
+        return result;
+    }
+
+    private List<AppSvcVehicleDto> getLicActiveVehicles(List<String> excludeIds) {
+        List<AppSvcVehicleDto> vehicles = licCommService.getActiveVehicles();
+        if (vehicles == null) {
+            vehicles = IaisCommonUtils.genNewArrayList();
+        }
+        List<AppSvcVehicleDto> appVehicles = appCommClient.getActivePendingVehicles().getEntity();
+        if (appVehicles != null) {
+            vehicles.addAll(appVehicles);
+        }
+        if (excludeIds == null) {
+            excludeIds = IaisCommonUtils.genNewArrayList(0);
+        }
+        final List<String> finalIds = excludeIds;
+        List<AppSvcVehicleDto> result = IaisCommonUtils.genNewArrayList(vehicles.size());
+        vehicles.forEach(vehicle -> {
+            if (!finalIds.contains(vehicle.getAppId())) {
+                result.add(vehicle);
+            }
+        });
+        return vehicles.stream()
+                .filter(vehicle -> !finalIds.contains(vehicle.getAppId())
+                        && (vehicle.getLicenceDto() == null || !finalIds.contains(vehicle.getLicenceDto().getId())))
+                .collect(Collectors.toList());
+    }
+
+    private List<AppSvcVehicleDto> getAppActiveVehicles(List<String> excludeIds) {
         List<AppSvcVehicleDto> vehicles = appCommClient.getActiveVehicles().getEntity();
         if (vehicles == null || vehicles.isEmpty()) {
             return vehicles;
         }
-        if (appIds == null) {
-            appIds = IaisCommonUtils.genNewArrayList(0);
+        if (excludeIds == null) {
+            excludeIds = IaisCommonUtils.genNewArrayList(0);
         }
-        final List<String> finalAppIds = appIds;
+        final List<String> finalIds = excludeIds;
         List<LicAppCorrelationDto> licAppCorrList = licCommService.getInactiveLicAppCorrelations();
         List<AppSvcVehicleDto> result = IaisCommonUtils.genNewArrayList(vehicles.size());
         vehicles.forEach(vehicle -> {
-            if (!isIn(vehicle.getAppId(), licAppCorrList) && !finalAppIds.contains(vehicle.getAppId())) {
+            if (!isIn(vehicle.getAppId(), licAppCorrList) && !finalIds.contains(vehicle.getAppId())) {
                 result.add(vehicle);
             }
         });
@@ -331,6 +365,34 @@ public class AppCommServiceImpl implements AppCommService {
             return true;
         }
         return licAppCorrList.stream().anyMatch(corr -> appId.equals(corr.getApplicationId()));
+    }
+
+    @Override
+    public List<String> getActiveConveyanceVehicles(List<String> excludeIds) {
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        if (excludeIds == null) {
+            excludeIds = IaisCommonUtils.genNewArrayList(0);
+        }
+        final List<String> finalIds = excludeIds;
+        String premType = ApplicationConsts.PREMISES_TYPE_CONVEYANCE;
+        List<PremisesDto> premisesDtos = licCommService.getPremisesDtosByPremType(premType);
+        for (PremisesDto premisesDto : premisesDtos) {
+            List<LicenceDto> licenceDtos = premisesDto.getLicenceDtos();
+            if (licenceDtos != null && licenceDtos.stream().anyMatch(lic -> finalIds.contains(lic.getId()))) {
+                continue;
+            }
+            result.add(premisesDto.getVehicleNo());
+        }
+
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appCommClient.getActivePendingPremisesByPremType(premType).getEntity();
+        for (AppGrpPremisesDto premisesDto : appGrpPremisesDtos) {
+            List<ApplicationDto> appDtos = premisesDto.getApplicationDtos();
+            if (appDtos != null && appDtos.stream().anyMatch(app -> finalIds.contains(app.getId()))) {
+                continue;
+            }
+            result.add(premisesDto.getVehicleNo());
+        }
+        return result;
     }
 
     @Override

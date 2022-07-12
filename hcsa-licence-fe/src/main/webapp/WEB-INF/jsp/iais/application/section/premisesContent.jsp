@@ -63,44 +63,42 @@
 <c:set var="mobile" value="MOBILE" />
 <c:set var="remote" value="REMOTE" />
 
-<input type="hidden" name="premCount" value="0"/>
-
-
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
     <c:set var="canEdit" value="true"/>
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>">
-        <input type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
-        <input type="hidden" name="isPartEdit" value="0"/>
-        <input type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
-        <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
-        <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
+        <input class="not-refresh" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
+        <input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
+        <input class="not-refresh" type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
+        <input class="not-refresh premValue" type="hidden" name="premValue" value="${status.index}"/>
+        <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
+        <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
 
         <c:set var="premValue" value="${status.index}"/>
         <%--<input hidden class="premiseIndex" value="${premValue}">--%>
         <c:choose>
             <c:when test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() > 0}">
-                <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() + 1}"/>
+                <input class="not-refresh opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() + 1}"/>
             </c:when>
             <c:otherwise>
-                <input class="opLength" type="hidden" name="opLength" value="1"/>
+                <input class="not-refresh opLength" type="hidden" name="opLength" value="1"/>
             </c:otherwise>
         </c:choose>
         <c:choose>
             <c:when test="${appGrpPremisesDto.appPremNonLicRelationDtos.size() > 0}">
-                <input class="nonHcsaLength" type="hidden" name="nonHcsaLength" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size()}"/>
+                <input class="not-refresh nonHcsaLength" type="hidden" name="nonHcsaLength" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size()}"/>
             </c:when>
             <c:otherwise>
-                <input class="nonHcsaLength" type="hidden" name="nonHcsaLength" value="1"/>
+                <input class="not-refresh nonHcsaLength" type="hidden" name="nonHcsaLength" value="1"/>
             </c:otherwise>
         </c:choose>
 
         <c:choose>
             <c:when test="${appGrpPremisesDto.clickRetrieve}">
-                <input class="retrieveflag" type="hidden" name="retrieveflag" value="1"/>
+                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="1"/>
             </c:when>
             <c:otherwise>
-                <input class="retrieveflag" type="hidden" name="retrieveflag" value="0"/>
+                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="0"/>
             </c:otherwise>
         </c:choose>
 
@@ -110,7 +108,7 @@
                     <div class="col-xs-12 col-md-6">
                         <p class="app-title">Mode of Service Delivery <span class="premHeader">${status.index+1}</span></p>
                     </div>
-                    <div class="col-xs-12 col-md-4 text-right">
+                    <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                         <c:choose>
                             <c:when test="${!isRFI && !isRFC && !isRenew}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
@@ -155,14 +153,14 @@
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRFC}">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>
-                    <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
+                    <%--<input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>--%>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
 
                     <c:set var="premTypeLen" value="${premisesType.size()}"/>
                     <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                     <c:forEach var="premType" items="${premisesType}">
                         <div class="col-xs-12 ${premTypeCss}">
-                            <c:choose>
+                            <%--<c:choose>
                                 <c:when test="${premType == permanent}">
                                     <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
@@ -170,19 +168,19 @@
                                     <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == mobile}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == remote}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
-                            </c:choose>
+                            </c:choose>--%>
 
                             <div class="form-check">
                                 <c:if test="${appGrpPremisesDto.premisesType!=premType}">
-                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" value = "${premType}" aria-invalid="false">
+                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" value="${premType}" aria-invalid="false">
                                 </c:if>
                                 <c:if test="${appGrpPremisesDto.premisesType==premType}">
-                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value = "${premType}"  aria-invalid="false">
+                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
                                 </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premType == permanent}">
@@ -192,7 +190,7 @@
                                         Conveyance
                                     </c:if>
                                     <c:if test="${premType == easMts}">
-                                        Conveyance (in a mobile clinic / ambulance)
+                                        Conveyance<br/>(in a mobile clinic / ambulance)
                                     </c:if>
                                     <c:if test="${premType == mobile}">
                                         Mobile Delivery
@@ -200,7 +198,22 @@
                                     <c:if test="${premType == remote}">
                                         Remote Delivery
                                     </c:if>
+                                    &nbsp;
                                 </label>
+                                <c:choose>
+                                    <c:when test="${premType == permanent}">
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == conv || premType == easMts}">
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == mobile}">
+                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == remote}">
+                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                </c:choose>
                             </div>
                         </div>
                     </c:forEach>
@@ -214,7 +227,7 @@
                 </div>
                 <c:if test="${StringUtil.isIn(permanent, premisesType)}">
                 <iais:row cssClass="permanentSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list :" width="5" mandatory="true"/>
+                    <iais:field value="Add or select a Permanent Premises from the list :" width="5" mandatory="true"/>
                     <iais:value id="permanentSelect" cssClass="col-xs-11 col-sm-7 col-md-5">
                         <iais:select cssClass="premSelect permanentSel" name="permanentSel${status.index}" options="permanentSelect" needSort="false" value="${appGrpPremisesDto.premisesSelect}"/>
                     </iais:value>
@@ -222,7 +235,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(conv, premisesType)}">
                 <iais:row cssClass="conveyanceSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list :" width="5" mandatory="true"/>
+                    <iais:field value="Add or select a Conveyance from the list :" width="5" mandatory="true"/>
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <iais:select cssClass="premSelect conveyanceSel" name="conveyanceSel${status.index}"  options="conveyancePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                     </iais:value>
@@ -230,7 +243,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(easMts, premisesType)}">
                 <iais:row cssClass="easMtsSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list :" width="5" mandatory="true"/>
+                    <iais:field value="Add or select a Conveyance from the list :" width="5" mandatory="true"/>
                     <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <iais:select cssClass="premSelect easMtsSel" name="easMtsSel${status.index}" options="easMtsPremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                     </iais:value>
@@ -238,7 +251,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(mobile, premisesType)}">
                 <iais:row cssClass="mobileSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list :" width="5" mandatory="true"/>
+                    <iais:field value="Add or select a Mobile Delivery from the list :" width="5" mandatory="true"/>
                     <iais:value id="mobileSelect" cssClass="col-xs-11 col-sm-7 col-md-5">
                         <iais:select cssClass="premSelect mobileSel" name="mobileSel${status.index}" options="mobilePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                     </iais:value>
@@ -246,7 +259,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(remote, premisesType)}">
                 <iais:row cssClass="remoteSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list :" width="5" mandatory="true"/>
+                    <iais:field value="Add or select a Remote Delivery from the list :" width="5" mandatory="true"/>
                     <iais:value id="remoteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <iais:select cssClass="premSelect remoteSel" name="remoteSel${status.index}" options="remotePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                     </iais:value>
@@ -275,17 +288,18 @@
                             <iais:datePicker cssClass="fireIssuedDate" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field value="Business Name" mandatory="true" width="5"/>
-                        <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
-                            <iais:input cssClass="" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
-                        </iais:value>
-                    </iais:row>
 
                     <iais:row cssClass="vehicleRow">
                         <iais:field value="Vehicle No." mandatory="true" width="5"/>
                         <iais:value width="7" cssClass="col-md-5">
                             <iais:input maxLength="10" type="text" name="vehicleNo${status.index}" value="${appGrpPremisesDto.vehicleNo}"/>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row>
+                        <iais:field value="Business Name" mandatory="true" width="5"/>
+                        <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
+                            <iais:input cssClass="" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
                         </iais:value>
                     </iais:row>
 
@@ -308,7 +322,7 @@
                     <iais:row>
                         <iais:field value="Block / House No." width="5" cssClass="blkNoLabel"/>
                         <iais:value width="7">
-                            <iais:input cssClass="siteBlkNo" maxLength="10" type="text" name="blkNo${status.index}" value="${appGrpPremisesDto.blkNo}"/>
+                            <iais:input cssClass="blkNo" maxLength="10" type="text" name="blkNo${status.index}" value="${appGrpPremisesDto.blkNo}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="operationDiv">
@@ -316,11 +330,13 @@
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <div class="row">
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <iais:input maxLength="3" type="text" name="${status.index}floorNo0" value="${appGrpPremisesDto.floorNo}"/>
+                                    <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${status.index}FloorNo0" value="${appGrpPremisesDto.floorNo}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}FloorNo0"></span>
                                 </iais:value>
                                 <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <iais:input maxLength="5" type="text" name="${status.index}unitNo0" value="${appGrpPremisesDto.unitNo}"/>
+                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
                                 </iais:value>
                             </div>
                         </iais:value>
@@ -343,11 +359,13 @@
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <div class="row">
                                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}FloorNo${opIndex}" value="${operationDto.floorNo}" />
+                                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${premValue}FloorNo${opIndex}" value="${operationDto.floorNo}" />
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorNo${opIndex}"></span>
                                             </iais:value>
                                             <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                             <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}UnitNo${opIndex}" value="${operationDto.unitNo}"/>
+                                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${premValue}UnitNo${opIndex}" value="${operationDto.unitNo}"/>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}UnitNo${opIndex}"></span>
                                             </iais:value>
                                         </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorUnit${opIndex}"></span>
@@ -478,10 +496,12 @@
                             <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
                                 <iais:row cssClass="nonHcsaRow">
                                     <div class="col-xs-12 col-md-4">
-                                        <iais:input maxLength="100" cssClass="coBusinessName" type="text" name="${premValue}coBusinessName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
-                                        <iais:input maxLength="100" cssClass="coSvcName" type="text" name="${premValue}coSvcName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-2 delNonHcsaSvcRow">
                                         <div class="text-center">
@@ -524,6 +544,10 @@
         initPremisePage($('div.premContent'));
     });
 
+    function doEditPremise(premContent, isPartEdit) {
+
+    }
+
     function initPremisePage($premContent) {
         addOperationalEvnet();
         delOperationEvent();
@@ -534,6 +558,109 @@
 
         checkAddressManatory($premContent);
         checkLocateWtihNonHcsa($premContent);
+
+        premTypeEvent();
+        premSelectEvent();
+        removeBtnEvent();
+
+        var premType = $premContent.find('.premTypeValue').val();
+        console.info("Prem Type: " + premType);
+        if ('PERMANENT' == premType) {
+            showTag($premContent.find('.permanentSelect'));
+            hideTag($premContent.find('.conveyanceSelect'));
+            hideTag($premContent.find('.easMtsSelect'));
+            hideTag($premContent.find('.mobileSelect'));
+            hideTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
+            showTag($premContent.find('.scdfRefNoRow'));
+            showTag($premContent.find('.certIssuedDtRow'));
+            showTag($premContent.find('.co-location-div'));
+        } else if ('CONVEYANCE' == premType) {
+            hideTag($premContent.find('.permanentSelect'));
+            showTag($premContent.find('.conveyanceSelect'));
+            hideTag($premContent.find('.easMtsSelect'));
+            hideTag($premContent.find('.mobileSelect'));
+            hideTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find('.scdfRefNoRow'));
+            hideTag($premContent.find('.certIssuedDtRow'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
+            hideTag($premContent.find('.co-location-div'));
+            showTag($premContent.find('.vehicleRow'));
+            showTag($premContent.find('.co-location-div'));
+        } else if ('EASMTS' == premType) {
+            hideTag($premContent.find('.permanentSelect'));
+            hideTag($premContent.find('.conveyanceSelect'));
+            showTag($premContent.find('.easMtsSelect'));
+            hideTag($premContent.find('.mobileSelect'));
+            hideTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find('.scdfRefNoRow'));
+            hideTag($premContent.find('.certIssuedDtRow'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
+            hideTag($premContent.find('.co-location-div'));
+            showTag($premContent.find('.easMtsAddFields'));
+        } else if ('MOBILE' == premType) {
+            hideTag($premContent.find('.permanentSelect'));
+            hideTag($premContent.find('.conveyanceSelect'));
+            hideTag($premContent.find('.easMtsSelect'));
+            showTag($premContent.find('.mobileSelect'));
+            hideTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find('.scdfRefNoRow'));
+            hideTag($premContent.find('.certIssuedDtRow'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
+            hideTag($premContent.find('.co-location-div'));
+        } else if ('REMOTE' == premType) {
+            hideTag($premContent.find('.permanentSelect'));
+            hideTag($premContent.find('.conveyanceSelect'));
+            hideTag($premContent.find('.easMtsSelect'));
+            hideTag($premContent.find('.mobileSelect'));
+            showTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find('.scdfRefNoRow'));
+            hideTag($premContent.find('.certIssuedDtRow'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
+            hideTag($premContent.find('.co-location-div'));
+        } else {
+            hideTag($premContent.find('.permanentSelect'));
+            hideTag($premContent.find('.conveyanceSelect'));
+            hideTag($premContent.find('.easMtsSelect'));
+            hideTag($premContent.find('.mobileSelect'));
+            hideTag($premContent.find('.remoteSelect'));
+            hideTag($premContent.find(".new-premise-form"));
+        }
+    }
+
+    var removeBtnEvent = function () {
+        var $target = $(document);
+        $target.find('.removeBtn').unbind('click');
+        $target.find('.removeBtn').not(':first').on('click', function () {
+            $(this).closest('div.premContent').remove();
+            refreshPremise();
+        });
+    }
+
+    function refreshPremise() {
+        $('div.premContent').each(function(k, v){
+            var $target = $(v);
+            if (k == 0) {
+                $target.find('.premHeader').html('');
+                hideTag($target.find('.removeEditDiv'));
+            } else {
+                $target.find('.premHeader').html(k + 1);
+                showTag($target.find('.removeEditDiv'));
+            }
+            resetIndex($target, k);
+            $target.find('.operationDiv').each(function(i, ele){
+                resetField(ele, i, k);
+            });
+            var length = $target.find('.operationDiv').length;
+            $target.find('.opLength').val(length);
+            refreshNonHcsa($target, k);
+            initPremisePage($target);
+        });
     }
 
     function removeAdditional($premContent) {
@@ -541,35 +668,47 @@
         $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
     }
 
-    var premSelect = function(){
+    var premTypeEvent = function () {
+        $('.premTypeRadio').on('click', function () {
+            var $premContent = $(this).closest('div.premContent');
+            var premType = $premContent.find('.premTypeRadio:checked').val();
+            if (isEmpty(premType)) {
+                premType = "";
+            }
+            $premContent.find('.premTypeValue').val(premType);
+            initPremisePage($premContent);
+        });
+    }
+
+    var premSelectEvent = function() {
         $('.premSelect').change(function () {
             showWaiting();
             clearErrorMsg();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
-            //var thisId = $(this).attr('id');
-            var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
             clearFields($premContent);
             if ("-1" == premSelectVal) {
                 hideTag($premContent.find(".new-premise-form"));
+                dismissWaiting();
             } else if ("newPremise" == premSelectVal) {
-                showTag($premContent.find(".new-premise-form"));
                 removeAdditional($premContent);
                 initPremisePage($premContent);
+                showTag($premContent.find(".new-premise-form"));
+                dismissWaiting();
             } else {
                 showTag($premContent.find(".new-premise-form"));
+                var premType = $premContent.find('.premTypeValue').val();
+                var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
                 var jsonData = {
                     'premIndexNo': premisesIndexNo,
                     'premSelectVal': premSelectVal,
-                    'premisesType': premisesType,
-                    'premiseIndex': premiseIndex
+                    'premisesType': premType
                 };
                 var opt = {
                     url: '${pageContext.request.contextPath}/lic-premises',
                     type: 'GET',
                     data: jsonData
                 };
-                opt.data = jsonData;
                 callCommonAjax(opt, "premSelectCallback", $premContent);
             }
         });
@@ -585,6 +724,7 @@
         fillFloorUnit($premContent, data.appPremisesOperationalUnitDtos);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
         initPremisePage($premContent);
+        dismissWaiting();
     }
 
     function checkAddressManatory($premContent) {
@@ -634,14 +774,14 @@
         }
     }
 
-    function refreshNonHcsa(target) {
+    function refreshNonHcsa(target, prefix) {
         var $target = getJqueryNode(target);
         if (isEmpty($target)) {
             return;
         }
         $target.find('.nonHcsaRow').each(function(k, v) {
             toggleTag($(this).find('.delNonHcsaSvcRow'), k != 0);
-            resetIndex(v, k);
+            resetField(ele, k, prefix);
         });
         var length = $nonHcsaRowDiv.find('div.nonHcsaRow').length;
         $nonHcsaRowDiv.closest('div.premContent').find('.nonHcsaLength').val(length);
@@ -703,13 +843,11 @@
         if (isEmpty($operationDivGroup)) {
             return;
         }
-        refreshIndex($operationDivGroup);
-        /*$operationDivGroup.find('.operationDiv').each(function(k, v) {
-            showTag(v);
-            resetIndex(v, k);
-        });*/
+        operationDivGroup.each(function (k, v) {
+            resetField(v, k + 1);
+        });
         var length = $operationDivGroup.find('div.operationDiv').length;
-        $operationDivGroup.closest('div.premContent').find('.opLength').val(length);
+        $operationDivGroup.closest('div.premContent').find('.opLength').val(length + 1);
         console.log('Floor and Unit: ' + length);
     }
 
@@ -747,6 +885,43 @@
             $(this).closest('div.operationDiv').remove();
             refreshFloorUnit($operationDivGroup);
         });
+    }
+
+    function retrieveAddr(postalCode, target) {
+        var $addressSelectors = $(target);
+        var data = {
+            'postalCode':postalCode
+        };
+        showWaiting();
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/retrieve-address',
+            'dataType':'json',
+            'data':data,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                    //show pop
+                    $('#postalCodePop').modal('show');
+                    clearFileds($addressSelectors.find(':input'));
+                } else {
+                    fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
+                    fillValue($addressSelectors.find('.streetName'), data.streetName);
+                    fillValue($addressSelectors.find('.buildingName'), data.buildingName);
+                }
+                dismissWaiting();
+            },
+            'error':function () {
+                //show pop
+                $('#postalCodePop').modal('show');
+                handleVal($addressSelectors.find(':input'), '', false);
+                dismissWaiting();
+            }
+        });
+    }
+
+    function postalCodeCon(){
+        $('#postalCodePop').modal('hide');
     }
 
     function ajaxCallUpload(idForm, fileAppendId) {
@@ -809,6 +984,15 @@
         $('#_singleUpload').val("1");
     }
 
+    function hideTag(ele) {
+        var $ele = getJqueryNode(ele);
+        if (isEmpty($ele)) {
+            return;
+        }
+        $ele.hide();
+        $ele.addClass('hidden');
+        clearFields($ele);
+    }
     /*$(document).ready(function() {
 
     });

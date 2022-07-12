@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="common/navTabs.jsp" %>
+                        <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
                                 <%@ include file="section/specialisedDetail.jsp" %>

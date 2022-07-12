@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.callback;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -116,18 +117,28 @@ public class LicCommClientFallback implements LicCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles() {
+        return IaisEGPHelper.getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<PremisesDto>> getPremisesDtosByPremType(String premType) {
+        return IaisEGPHelper.getFeignResponseEntity(premType);
+    }
+
+    @Override
     public FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(String idNo) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity(idNo);
     }
 
     @Override
     public FeignResponseEntity<List<LicKeyPersonnelDto>> getLicKeyPersonnelDtoByPersonId(List<String> personIds) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity(personIds);
     }
 
     @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getLicPremisesById(String id) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity(id);
     }
 
 }

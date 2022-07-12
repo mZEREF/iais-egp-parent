@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohNewApplication___1 extends BaseProcessClass {
+public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="newApplicationDelegator";
 	public void start_OnStepProcess_0() throws Exception {
 		// 		Start->OnStepProcess

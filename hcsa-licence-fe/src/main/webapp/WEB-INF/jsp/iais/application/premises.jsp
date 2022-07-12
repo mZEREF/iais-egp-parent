@@ -10,7 +10,7 @@
   String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -50,6 +50,7 @@
                     </c:if>
                   </c:forEach>
                   <!--prem content -->
+                  <input type="hidden" name="premCount" value="${AppSubmissionDto.appGrpPremisesDtoList.size()}"/>
                   <%@include file="section/premisesContent.jsp"%>
                 </div>
                 <div class="row">
@@ -102,7 +103,7 @@
     </div>
   </div>--%>
   <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
-  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
@@ -113,13 +114,13 @@
     var init;
     $(document).ready(function() {
         $('#postalCodePop').modal('hide');
-        cl();
+        /*cl();
         $("input[name='easMtsUseOnly0']").trigger('change');
         preperChange();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
-        $("select[name='easMtsAddrType']").trigger('change');
+        $("select[name='easMtsAddrType']").trigger('change');*/
         <!-- init start-->
         init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){
@@ -137,7 +138,7 @@
 
         $('.table-condensed').css("background-color","#d9edf7");
 
-        reloadPage();
+        /*reloadPage();
 
         premType();
 
@@ -172,7 +173,7 @@
         clickAllDay();
 
         useType();
-
+*/
         //Binding method
         $('#Back').click(function(){
             showWaiting();
@@ -200,25 +201,36 @@
         });
         </c:if>
 
-        var mainContent =$('.main-content');
+       /* var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
             console.log(k);
             var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
         });
-
-        init = 1;
+*/
+       /* init = 1;
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
         if ($("#errorMapIs").val()=='error') {
             $('div.premContent').each(function () {
                 doEditPremise($(this), '1');
             });
         }
-        </c:if>
+        </c:if>*/
+
+
     });
 
+    function addPremEvent() {
+      $('#addPremBtn').on('click', function () {
+        var src = $('div.premContent').eq(0).clone();
+        $('div.premContent').after(src);
+        clearFields(src);
+        removeAdditional(src);
+        refreshPremise();
+      });
+    }
 
-    $("#onSiteSel").change(function(){
+    /*$("#onSiteSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })
     var oval = $("#onSiteSel").val();
@@ -287,7 +299,7 @@
       $Ele.find('span.multi-select-button').css('color','#999');
       $Ele.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
       $Ele.find('input.useType:checked').closest('div').find('label span.check-circle').addClass('radio-disabled');
-  }
+  }*/
 </script>
 
 

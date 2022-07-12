@@ -51,7 +51,7 @@
     <c:if test="${dto.licenseeType eq soloType}">
         <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
-    <%@include file="../../view/licensee/previewLicenseeCom.jsp"%>
+    <%@include file="../../view/licensee/viewLicenseeCom.jsp"%>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"

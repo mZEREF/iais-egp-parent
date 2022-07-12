@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -97,6 +98,12 @@ public interface LicCommClient {
 
     @GetMapping(value = "/inactive-licence-app-correlations", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations();
+
+    @GetMapping(value = "/active-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();
+
+    @GetMapping(value = "/licence-premises/{premType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getPremisesDtosByPremType(@PathVariable("premType") String premType);
 
     @GetMapping(value = "/getPersonnelDtoByLicId/{idNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(@PathVariable(name = "idNo") String idNo);

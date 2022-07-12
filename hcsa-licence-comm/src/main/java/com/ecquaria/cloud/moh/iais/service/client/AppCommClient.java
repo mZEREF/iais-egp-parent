@@ -59,6 +59,12 @@ public interface AppCommClient {
     @GetMapping(value = "/active-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();
 
+    @GetMapping(value = "/active-pending-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getActivePendingVehicles();
+
+    @GetMapping(value = "/{premType}/active-pending-Premises", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremisesByPremType(@PathVariable("premType") String premType);
+
     @GetMapping(value = "/app-premise-miscs", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(@RequestParam("type") String type,
             @RequestParam("appId") String appId,

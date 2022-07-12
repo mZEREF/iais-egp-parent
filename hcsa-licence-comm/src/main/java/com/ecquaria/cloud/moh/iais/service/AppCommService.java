@@ -49,7 +49,9 @@ public interface AppCommService {
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList);
 
-    List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
+    List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds);
+
+    List<String> getActiveConveyanceVehicles(List<String> excludeIds);
 
     List<AppPremiseMiscDto> getActiveWithdrawAppPremiseMiscsByApp(String appId);
 

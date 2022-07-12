@@ -437,7 +437,7 @@ function updateSelectTag($sel) {
 
 function toggleTag(ele, show) {
     var $ele = getJqueryNode(ele);
-    if (isEmpty(ele)) {
+    if (isEmpty($ele)) {
         return;
     }
     if (show) {
@@ -452,7 +452,7 @@ function toggleTag(ele, show) {
 
 function showTag(ele) {
     var $ele = getJqueryNode(ele);
-    if (isEmpty(ele)) {
+    if (isEmpty($ele)) {
         return;
     }
     $ele.show();
@@ -461,6 +461,9 @@ function showTag(ele) {
 
 function hideTag(ele) {
     var $ele = getJqueryNode(ele);
+    if (isEmpty($ele)) {
+        return;
+    }
     $ele.hide();
     $ele.addClass('hidden');
     clearFields($ele);

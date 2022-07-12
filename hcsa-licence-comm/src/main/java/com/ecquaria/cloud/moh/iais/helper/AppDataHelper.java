@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -156,7 +155,15 @@ public final class AppDataHelper {
         if (!isMultiPremService) {
             count = 1;
         }
-        String[] premisesIndexNo = ParamUtil.getStrings(request, "premisesIndexNo");
+        String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
+        String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
+        String[] premValue = ParamUtil.getStrings(request, "premValue");
+        String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
+        String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
+        String[] opLengths = ParamUtil.getStrings(request, "opLength");
+        String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
+        String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
+        /*String[] premisesIndexNo = ParamUtil.getStrings(request, "premisesIndexNo");
         String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
         //onsite
         String[] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
@@ -204,7 +211,7 @@ public final class AppDataHelper {
         String[] opLengths = ParamUtil.getStrings(request, "opLength");
         String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
         String[] weeklyLengths = ParamUtil.getStrings(request, "weeklyLength");
-        String[] eventLengths = ParamUtil.getStrings(request, "eventLength");
+        String[] eventLengths = ParamUtil.getStrings(request, "eventLength");*/
         for (int i = 0; i < count; i++) {
             String premType = ParamUtil.getString(request, "premType" + i);
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -220,7 +227,8 @@ public final class AppDataHelper {
             } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premType)) {
                 premisesSel = ParamUtil.getString(request, "remoteSel" + i);
             }
-            String premIndexNo = ParamUtil.getString(request, "premisesIndexNo" + i);
+            String premIndexNo = getVal(premisesIndexNos, i);
+                    //ParamUtil.getString(request, "premisesIndexNo" + i);
             if (StringUtil.isEmpty(premIndexNo)) {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
@@ -270,9 +278,9 @@ public final class AppDataHelper {
             // set premise type
             appGrpPremisesDto.setPremisesType(premType);
             //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
-            List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
+           /* List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
             List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
-            List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();
+            List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();*/
             /*int length = 0;
             try {
                 length = Integer.parseInt(phLength[i]);
@@ -285,7 +293,13 @@ public final class AppDataHelper {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("operation length can not parse to int"));
             }
-            int weeklyLength = 0;
+            int nonHcsaLength = 0;
+            try {
+                nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
+            }
+           /* int weeklyLength = 0;
             try {
                 weeklyLength = Integer.parseInt(weeklyLengths[i]);
             } catch (Exception e) {
@@ -302,7 +316,7 @@ public final class AppDataHelper {
                 eventLength = Integer.parseInt(eventLengths[i]);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("event length can not parse to int"));
-            }
+            }*/
             if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
                 appGrpPremisesDto.setRfiCanEdit(true);
             } else {
@@ -313,7 +327,47 @@ public final class AppDataHelper {
             } else {
                 appGrpPremisesDto.setClickRetrieve(false);
             }
+
+            ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+            String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
+            appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
+
+            String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
+            String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
+            appGrpPremisesDto.setFloorNo(floorNo);
+            appGrpPremisesDto.setUnitNo(unitNo);
+
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
+            for(int k = 1; k < opLength; k++) {
+                floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
+                unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
+                if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
+                    continue;
+                }
+                AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
+                dto.setFloorNo(floorNo);
+                dto.setUnitNo(unitNo);
+                dto.setPremType(premType);
+                dto.setPremVal(premIndexNo);
+                dto.setSeqNum(k);
+                appPremisesOperationalUnitDtos.add(dto);
+            }
+            appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+            List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
+            for(int k = 1; k < nonHcsaLength; k++) {
+                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + 0);
+                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + 0);
+                if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                    continue;
+                }
+                AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+                dto.setBusninessName(coBusinessName);
+                dto.setProvidedService(coSvcName);
+                dto.setSeqNum(k);
+                appPremNonLicRelationDtos.add(dto);
+            }
+            appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
+
             /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
                 String premVal = premValue[i];
                 String fireSafetyCertIssuedDateStr = ParamUtil.getString(request, premVal + "onSiteFireSafetyCertIssuedDate");

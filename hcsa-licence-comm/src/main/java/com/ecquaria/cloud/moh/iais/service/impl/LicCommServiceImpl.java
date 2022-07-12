@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -455,6 +456,20 @@ public class LicCommServiceImpl implements LicCommService {
     @Override
     public List<AppGrpPremisesDto> getLicPremisesInfo(String id) {
         return licCommClient.getLicPremisesById(id).getEntity();
+    }
+
+    @Override
+    public List<AppSvcVehicleDto> getActiveVehicles() {
+        return licCommClient.getActiveVehicles().getEntity();
+    }
+
+    @Override
+    public List<PremisesDto> getPremisesDtosByPremType(String premType) {
+        log.info(StringUtil.changeForLog("Prem Type: " + premType));
+        if (StringUtil.isEmpty(premType)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getPremisesDtosByPremType(premType).getEntity();
     }
 
 }

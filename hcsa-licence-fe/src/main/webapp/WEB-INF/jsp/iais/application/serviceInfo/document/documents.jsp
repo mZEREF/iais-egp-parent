@@ -7,7 +7,7 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../dashboard.jsp" %>
+<%@ include file="../../../common/dashboard.jsp" %>
 <form method="post" id="mainForm" enctype="multipart/form-data"  class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
@@ -18,15 +18,15 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="../navTabs.jsp" %>
+                        <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane active" id="serviceInformationTab" role="tabpanel">
                                 <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
-                                        <%@ include file="../formTabs.jsp" %>
+                                        <%@ include file="../../common/formTabs.jsp" %>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
-                                                <%@ include file="step.jsp" %>
+                                                <%@ include file="../../common/step.jsp" %>
                                                 <div class="application-service-steps">
                                                     <div class="Service-related-Documents document-upload-gp">
                                                         <h2>Service-related Documents</h2>
@@ -37,7 +37,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@ include file="next.jsp" %>
+                                <%@ include file="../../common/next.jsp" %>
                             </div>
                         </div>
                     </div>

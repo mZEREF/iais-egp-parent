@@ -71,6 +71,16 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<AppSvcVehicleDto>> getActivePendingVehicles() {
+        return IaisEGPHelper.getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremisesByPremType(String premType) {
+        return IaisEGPHelper.getFeignResponseEntity(premType);
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
             List<String> excludeStatus) {
         return IaisEGPHelper.getFeignResponseEntity(type, appId, excludeStatus);

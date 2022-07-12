@@ -63,9 +63,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -340,10 +338,10 @@ public final class AppValidatorHelper {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
                 // Vehicles
-                List<String> appIds = ApplicationHelper.getRelatedAppId(dto.getAppId(), dto.getLicenceId(),
+                List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                         dto.getServiceName());
 
-                List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(appIds);
+                List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids);
                 List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
                 if (!IaisCommonUtils.isEmpty(dtos)) {
                     for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
@@ -568,7 +566,7 @@ public final class AppValidatorHelper {
         List<String> list = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
+        Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
         boolean needAppendMsg = false;
         String licenseeId = appSubmissionDto.getLicenseeId();
         String licenceId = appSubmissionDto.getLicenceId();
@@ -603,63 +601,10 @@ public final class AppValidatorHelper {
                     }
                     errorMap.put("premisesSelect" + i, selectPremises);
                 } else if (needValidate || !StringUtil.isEmpty(premisesSelect) || "newPremise".equals(premisesSelect)) {
-                    List<String> floorUnitNo = new ArrayList<>(10);
+                    //List<String> floorUnitNo = new ArrayList<>(10);
                     List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
-                    String prefix = "";
-                    String hciName = null;
-                    String hciNameKey = "";
-                    /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        prefix = "onSite";
-                        String locateWithOthers = appGrpPremisesDto.getLocateWithOthers();
-                        if (StringUtil.isEmpty(locateWithOthers)) {
-                            errorMap.put("isOtherLic" + i,
-                                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Are you co-locating with another licensee",
-                                            "field"));
-                        }
-
-                        String ScdfRefNo = appGrpPremisesDto.getScdfRefNo();
-                        if (!StringUtil.isEmpty(ScdfRefNo) && ScdfRefNo.length() > 66) {
-                            String general_err0041 = repLength("Fire Safety & Shelter Bureau Ref. No.", "66");
-                            errorMap.put("ScdfRefNo" + i, general_err0041);
-                        }
-
-                        hciName = appGrpPremisesDto.getHciName();
-                        hciNameKey = "hciName" + i;
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        prefix = "conveyance";
-                        hciNameKey = "conveyanceHciName" + i;
-                        hciName = appGrpPremisesDto.getConveyanceHciName();
-
-                        validateVehicleNo(errorMap, distinctVehicleNo, i, appGrpPremisesDto.getConveyanceVehicleNo());
-                    } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)) {
-                        prefix = "offSite";
-                        hciNameKey = "conveyanceHciName" + i;
-                        hciName = appGrpPremisesDto.getOffSiteHciName();
-                    } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
-                        hciNameKey = "easMtsHciName" + i;
-                        hciName = appGrpPremisesDto.getEasMtsHciName();
-
-                        String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
-                        String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
-                        if (StringUtil.isEmpty(easMtsPubHotline)) {
-                            if (!"UOT002".equals(easMtsUseOnly)) {
-                                errorMap.put("easMtsPubHotline" + i,
-                                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Hotline", "field"));
-                            }
-                        } else {
-                            if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
-                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
-                            }
-                        }
-                    }*/
-                    if (!StringUtil.isEmpty(prefix)) {
-                        //weekly
-                        validateWeek(appGrpPremisesDto, i, prefix, errorMap);
-                        //ph
-                        validatePh(appGrpPremisesDto, i, prefix, errorMap);
-                        //event
-                        validateEvent(appGrpPremisesDto, i, prefix, errorMap);
-                    }
+                    String hciName = appGrpPremisesDto.getHciName();
+                    String hciNameKey = "hciName" + i;
                     //migrated licence need  judge
                     if (StringUtil.isEmpty(hciName)) {
                         errorMap.put(hciNameKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
@@ -669,7 +614,59 @@ public final class AppValidatorHelper {
                         }
                         checkHciName(hciNameKey, hciName, appType, licenceId, errorMap);
                     }
-                    Map<String, String> map = validateContactInfo(appGrpPremisesDto, i, floorUnitNo, floorUnitList, list);
+
+                    if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)) {
+                        String scdfRefNo = appGrpPremisesDto.getScdfRefNo();
+                        if (!StringUtil.isEmpty(scdfRefNo) && scdfRefNo.length() > 66) {
+                            errorMap.put("scdfRefNo" + i, repLength("Fire Safety & Shelter Bureau Ref. No.", "66"));
+                        }
+                        String certIssuedDtStr = appGrpPremisesDto.getCertIssuedDtStr();
+                        if (!StringUtil.isEmpty(certIssuedDtStr) && !CommonValidator.isDate(certIssuedDtStr)) {
+                            errorMap.put("certIssuedDt" + i, "GENERAL_ERR0033");
+                        }
+                        // Co-Location Services
+                        validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
+                                appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
+                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                        String vehicleNo = appGrpPremisesDto.getVehicleNo();
+                        if (appSubmissionDto.getAppSvcRelatedInfoDtoList().size() > 1) {
+                            // GENERAL_ERR0072 - The {type} can't be applied to mutiple services.
+                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0072",
+                                    ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
+                        }
+                        AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                        List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
+                                dto.getServiceName());
+                        List<String> vehicles = getAppCommService().getActiveConveyanceVehicles(ids);
+                        validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
+                        // Co-Location Services
+                        validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
+                                appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
+                    } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
+                        String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
+                        String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
+                        String email = appGrpPremisesDto.getEasMtsPubEmail();
+                        // "Public Hotline"
+                        if (StringUtil.isEmpty(easMtsPubHotline)) {
+                            if (!"UOT002".equals(easMtsUseOnly)) {
+                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                            }
+                        } else if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
+                            errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+                        }
+                        if (StringUtil.isEmpty(email)) {
+                            if (!"UOT002".equals(easMtsUseOnly)) {
+                                errorMap.put("easMtsPubEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                        "Email ", "field"));
+                            }
+                        } else if (email.length() > 320) {
+                            errorMap.put("easMtsPubEmail" + i, repLength("Email", "320"));
+                        } else if (!ValidationUtils.isEmail(email)) {
+                            errorMap.put("easMtsPubEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                        }
+                    }
+
+                    Map<String, String> map = validateContactInfo(appGrpPremisesDto, i, floorUnitList, list);
                     if (!map.isEmpty()) {
                         errorMap.putAll(map);
                     } else {
@@ -678,13 +675,6 @@ public final class AppValidatorHelper {
                         hciFlag = StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(vehicleNo);
                     }
                     log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                } else {
-                    //premiseSelect = organization hci code
-                    if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        String conveyanceVehicleNo = appGrpPremisesDto.getVehicleNo();
-                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
-                    }
-
                 }
             }
             //0062204 - 82421
@@ -752,6 +742,9 @@ public final class AppValidatorHelper {
 
     }
 
+    private static void doValidateCoLocation(AppGrpPremisesDto appGrpPremisesDto, Map<String, String> errorMap) {
+    }
+
     /**
      * There is an existing licence for this service.
      *
@@ -814,12 +807,12 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isEmpty(coBusinessName)) {
                         errorMap.put(index + "coBusinessName" + i, "GENERAL_ERR0006");
-                    } else if (coBusinessName.length() > 100){
+                    } else if (coBusinessName.length() > 100) {
                         errorMap.put(index + "coBusinessName" + i, repLength("Business Name", "100"));
                     }
                     if (StringUtil.isEmpty(coSvcName)) {
                         errorMap.put(index + "coSvcName" + i, "GENERAL_ERR0006");
-                    } else if (coSvcName.length() > 100){
+                    } else if (coSvcName.length() > 100) {
                         errorMap.put(index + "coSvcName" + i, repLength("Services Provided", "100"));
                     }
                     i++;
@@ -830,106 +823,62 @@ public final class AppValidatorHelper {
 
     }
 
-    private static void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount,
-            String conveyanceVehicleNo) {
-        if (StringUtil.isEmpty(conveyanceVehicleNo)) {
-            errorMap.put("conveyanceVehicleNo" + numberCount, MessageUtil.replaceMessage("GENERAL_ERR0006", "Vehicle No.", "field"));
+    /**
+     * 4.2.3.4	Mode of Service Delivery
+     * 13.	A vehicle number should not be repeated across other licenced conveyances from other services
+     * (i.e. vehicle number used for EAS cannot be used for Clinical Lab conveyance)
+     */
+    private static void validateVehicleNo(Map<String, String> errorMap, int index, String vehicleNo,
+            Set<String> distinctVehicleNos, List<String> vehicles) {
+        if (StringUtil.isEmpty(vehicleNo)) {
+            errorMap.put("vehicleNo" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Vehicle No.", "field"));
         } else {
-            if (conveyanceVehicleNo.length() > 10) {
+            if (vehicleNo.length() > 10) {
                 String general_err0041 = repLength("Vehicle No.", "10");
-                errorMap.put("conveyanceVehicleNo" + numberCount, general_err0041);
+                errorMap.put("vehicleNo" + index, general_err0041);
             }
-            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
+            boolean b = VehNoValidator.validateNumber(vehicleNo);
             if (!b) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "GENERAL_ERR0017");
+                errorMap.put("vehicleNo" + index, "GENERAL_ERR0017");
             }
 
-            if (distinctVehicleNo.contains(conveyanceVehicleNo)) {
-                errorMap.put("conveyanceVehicleNo" + numberCount, "NEW_ERR0016");
+            if (distinctVehicleNos.contains(vehicleNo)) {
+                // NEW_ERR0012 - This is a repeated entry
+                errorMap.put("vehicleNo" + index, "NEW_ERR0012");
+            } else if (vehicles.contains(vehicleNo)) {
+                // NEW_ERR0016 - This record already exists.
+                errorMap.put("vehicleNo" + index, "NEW_ERR0016");
             } else {
-                distinctVehicleNo.add(conveyanceVehicleNo);
+                distinctVehicleNos.add(vehicleNo);
             }
         }
+
     }
 
-    private static Map<String, String> validateContactInfo(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitNo,
-            List<String> floorUnitList, List<String> list) {
+    private static Map<String, String> validateContactInfo(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitList,
+            List<String> list) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder = new StringBuilder();
-        String prefix = "";
         String postalCode = appGrpPremisesDto.getPostalCode();
         String buildingName = appGrpPremisesDto.getBuildingName();
         String streetName = appGrpPremisesDto.getStreetName();
-        String email = appGrpPremisesDto.getEasMtsPubEmail();
         String addrType = appGrpPremisesDto.getAddrType();
         String blkNo = appGrpPremisesDto.getBlkNo();
-        String premisesType = appGrpPremisesDto.getPremisesType();
-        String blkNoKey = "";
-        String easMtsUseOnly = "";
-        if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premisesType)) {
-            blkNoKey = "blkNo" + i;
-            /*String offTelNo = appGrpPremisesDto.getOffTelNo();
-            String offTelNoKey = ApplicationHelper.getParamName(prefix, "offTelNo" + i);
-            if (StringUtil.isEmpty(offTelNo)) {
-                errorMap.put(offTelNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
-            } else {
-                if (offTelNo.length() > 8) {
-                    String general_err0041 = repLength("Office Telephone No.", "8");
-                    errorMap.put(offTelNoKey, general_err0041);
-                }
-                boolean matches = offTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH);
-                if (!matches) {
-                    errorMap.put(offTelNoKey, "GENERAL_ERR0015");
-                }
-            }*/
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-            prefix = "conveyance";
-            blkNoKey = "conveyanceBlockNos" + i;
-        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
-            prefix = "easMts";
-            easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
-            email = appGrpPremisesDto.getEasMtsPubEmail();
-            String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
-            blkNoKey = "easMtsBlockNo" + i;
-            // "Public Hotline"
-            if (StringUtil.isEmpty(easMtsPubHotline)) {
-                if (!"UOT002".equals(easMtsUseOnly)) {
-                    errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-                }
-            } else if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
-                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
-            }
-            if (StringUtil.isEmpty(email)) {
-                if (!"UOT002".equals(easMtsUseOnly)) {
-                    errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Email ", "field"));
-                }
-            } else if (email.length() > 320) {
-                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), repLength("Email", "320"));
-            } else if (!ValidationUtils.isEmail(email)) {
-                errorMap.put(ApplicationHelper.getParamName(prefix, "email" + i), MessageUtil.getMessageDesc("GENERAL_ERR0014"));
-            }
-        }
+        String blkNoKey = "blkNo" + i;
 
         if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
             String general_err0041 = repLength("Building Name", "66");
-            errorMap.put(ApplicationHelper.getParamName(prefix, "buildingName" + i), general_err0041);
+            errorMap.put("buildingName" + i, general_err0041);
         }
 
         if (StringUtil.isEmpty(streetName)) {
-            errorMap.put(ApplicationHelper.getParamName(prefix, "streetName" + i),
-                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+            errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
         } else if (streetName.length() > 32) {
-            String general_err0041 = repLength("Street Name", "32");
-            errorMap.put(ApplicationHelper.getParamName(prefix, "streetName" + i), general_err0041);
+            errorMap.put("streetName" + i, repLength("Street Name", "32"));
         }
 
         if (StringUtil.isEmpty(addrType)) {
-            errorMap.put(ApplicationHelper.getParamName(prefix, "addrType" + i),
-                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+            errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
-        // validate floor and units
-        validateOperaionUnits(appGrpPremisesDto, i, floorUnitNo, floorUnitList, errorMap);
         boolean empty1 = StringUtil.isEmpty(blkNo);
         if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
@@ -937,7 +886,9 @@ public final class AppValidatorHelper {
             String general_err0041 = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, general_err0041);
         }
-        String postalCodeKey = ApplicationHelper.getParamName(prefix, "postalCode" + i);
+        // validate floor and units
+        validateOperaionUnits(appGrpPremisesDto, i, floorUnitList, errorMap);
+        String postalCodeKey = "postalCode" + i;
         if (!StringUtil.isEmpty(postalCode)) {
             if (postalCode.length() > 6) {
                 String general_err0041 = repLength("Postal Code", "6");
@@ -947,27 +898,18 @@ public final class AppValidatorHelper {
             } else if (!postalCode.matches("^[0-9]{6}$")) {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
             } else {
-                if (!floorUnitNo.isEmpty()) {
-                    stringBuilder.append(postalCode);
-                    if (list.isEmpty()) {
-                        for (String str : floorUnitNo) {
-                            StringBuilder sb = new StringBuilder(stringBuilder);
-                            sb.append(str);
-                            list.add(sb.toString());
+                if (!floorUnitList.isEmpty()) {
+                    List<String> sbList = new ArrayList<>();
+                    for (String str : floorUnitList) {
+                        String sb = new StringBuilder(postalCode).append(AppConsts.DFT_DELIMITER).append(str).toString();
+                        if (list.contains(sb)) {
+                            // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
+                            errorMap.put(postalCodeKey, "NEW_ACK010");
+                        } else {
+                            sbList.add(sb);
                         }
-                    } else {
-                        List<String> sbList = new ArrayList<>();
-                        for (String str : floorUnitNo) {
-                            StringBuilder sb = new StringBuilder(stringBuilder);
-                            sb.append(str);
-                            if (list.contains(sb.toString())) {
-                                errorMap.put(postalCodeKey, "NEW_ACK010");
-                            } else {
-                                sbList.add(sb.toString());
-                            }
-                        }
-                        list.addAll(sbList);
                     }
+                    list.addAll(sbList);
                 }
             }
         } else {
@@ -976,10 +918,10 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
-    private static boolean validateOperaionUnits(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitNo,
-            List<String> floorUnitList, Map<String, String> errorMap) {
+    private static boolean validateOperaionUnits(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitList, Map<String,
+            String> errorMap) {
         boolean addrTypeFlag = true;
-        String premisesType = appGrpPremisesDto.getPremisesType();
+        //String premisesType = appGrpPremisesDto.getPremisesType();
         String diff = "";
         String prefix = "";
         String floorNo = appGrpPremisesDto.getFloorNo();
@@ -987,11 +929,11 @@ public final class AppValidatorHelper {
         String blkNo = appGrpPremisesDto.getBlkNo();
         String addrType = appGrpPremisesDto.getAddrType();
         appGrpPremisesDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo));
-        String floorNoKey = ApplicationHelper.getParamName(prefix, "floorNo" + i);
-        String blkNoKey = ApplicationHelper.getParamName(prefix, "blkNo" + i);
-        String unitNoKey = ApplicationHelper.getParamName(prefix, "unitNo" + i);
+        String floorNoKey = ApplicationHelper.getParamName(String.valueOf(i), "floorNo0");
+        String unitNoKey = ApplicationHelper.getParamName(String.valueOf(i), "unitNo0");
+        //String blkNoKey = ApplicationHelper.getParamName(prefix, "blkNo" + i);
         boolean empty = StringUtil.isEmpty(floorNo);
-        boolean empty1 = StringUtil.isEmpty(blkNo);
+        //boolean empty1 = StringUtil.isEmpty(blkNo);
         boolean empty2 = StringUtil.isEmpty(unitNo);
         boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
         if ((isAptBlkType || !empty2) && empty) {
@@ -999,49 +941,49 @@ public final class AppValidatorHelper {
             errorMap.put(floorNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
         }
         if (!empty && floorNo.length() > 3) {
+            addrTypeFlag = false;
             String general_err0041 = repLength("Floor No.", "3");
             errorMap.put(floorNoKey, general_err0041);
-        }
-        if (isAptBlkType && empty1) {
-            addrTypeFlag = false;
-            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-        } else if (!empty1 && blkNo.length() > 10) {
-            String general_err0041 = repLength("Block / House No.", "10");
-            errorMap.put(blkNoKey, general_err0041);
         }
         if ((isAptBlkType || !empty) && empty2) {
             addrTypeFlag = false;
             errorMap.put(unitNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
         }
         if (!empty2 && unitNo.length() > 5) {
+            addrTypeFlag = false;
             String general_err0041 = repLength("Unit No.", "5");
             errorMap.put(unitNoKey, general_err0041);
         }
-        if (!empty && !empty1 && !empty2) {
+        /*if (isAptBlkType && empty1) {
+            addrTypeFlag = false;
+            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+        } else if (!empty1 && blkNo.length() > 10) {
+            String general_err0041 = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, general_err0041);
+        }*/
+        if (addrTypeFlag) {
+            String floorNoErr = errorMap.get(floorNoKey);
             StringBuilder sb = new StringBuilder();
-            sb.append(floorNo).append(blkNo).append(unitNo);
-            floorUnitNo.add(sb.toString());
+            sb.append(ApplicationHelper.handleFloorNo(floorNo, floorNoErr)).append(AppConsts.DFT_DELIMITER)
+                    .append(StringUtil.getNonNull(blkNo)).append(AppConsts.DFT_DELIMITER).append(unitNo);
+            floorUnitList.add(sb.toString());
         }
 
-        if (addrTypeFlag) {
-            floorUnitList.add(floorNo + unitNo);
-        }
-        String floorErrName = "op" + diff + "FloorNo" + i;
-        String unitErrName = "op" + diff + "UnitNo" + i;
-        String floorUnitErrName = ApplicationHelper.getParamName(diff, "floorUnit" + i);
-        checkOperaionUnit(appGrpPremisesDto.getAppPremisesOperationalUnitDtos(), errorMap, floorErrName, unitErrName, floorUnitList,
-                floorUnitErrName, floorUnitNo, appGrpPremisesDto);
+        String floorErrName = i + "FloorNo";
+        String unitErrName = i + "UnitNo";
+        String floorUnitErrName = i + "FloorUnit";
+        checkOperaionUnit(appGrpPremisesDto.getAppPremisesOperationalUnitDtos(), errorMap, floorErrName, unitErrName,
+                floorUnitErrName, floorUnitList, appGrpPremisesDto);
         String floorNoErr = errorMap.get(floorNoKey);
         String unitNoErr = errorMap.get(unitNoKey);
         return StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
     }
 
     private static void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap,
-            String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo,
+            String floorErrName, String unitErrName, String floorUnitErrName, List<String> floorUnitList,
             AppGrpPremisesDto appGrpPremisesDto) {
-
         if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
-            int opLength = 0;
+            int opIndex = 1;
             for (AppPremisesOperationalUnitDto operationalUnitDto : operationalUnitDtos) {
                 boolean flag = true;
                 String floorNo = operationalUnitDto.getFloorNo();
@@ -1051,40 +993,42 @@ public final class AppValidatorHelper {
                 if (!(floorNoFlag && unitNoFlag)) {
                     if (floorNoFlag) {
                         flag = false;
-                        errorMap.put(floorErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                        errorMap.put(floorErrName + opIndex, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
                     } else if (unitNoFlag) {
                         flag = false;
-                        errorMap.put(unitErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                        errorMap.put(unitErrName + opIndex, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
                     }
                 }
 
                 if (!floorNoFlag && floorNo.length() > 3) {
+                    flag = false;
                     String general_err0041 = repLength("Floor No.", "3");
-                    errorMap.put(floorErrName + opLength, general_err0041);
+                    errorMap.put(floorErrName + opIndex, general_err0041);
                 }
 
                 if (!unitNoFlag && unitNo.length() > 5) {
+                    flag = false;
                     String general_err0041 = repLength("Unit No.", "5");
-                    errorMap.put(unitErrName + opLength, general_err0041);
+                    errorMap.put(unitErrName + opIndex, general_err0041);
                 }
-                String floorNoErr = errorMap.get(floorErrName + opLength);
+                String floorNoErr = errorMap.get(floorErrName + opIndex);
                 operationalUnitDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                 if (flag) {
                     if (!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())) {
                         String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
                         if (floorUnitList.contains(floorUnitStr)) {
-                            errorMap.put(floorUnitErrName + opLength, "NEW_ERR0017");
+                            errorMap.put(floorUnitErrName + opIndex, "NEW_ERR0017");
                         } else {
                             floorUnitList.add(floorUnitStr);
                         }
                         String blkNo = appGrpPremisesDto.getBlkNo();
-                        if (!StringUtil.isEmpty(blkNo)) {
-                            floorUnitNo.add(operationalUnitDto.getFloorNo() + blkNo + operationalUnitDto.getUnitNo());
-                        }
-
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(ApplicationHelper.handleFloorNo(floorNo, floorNoErr)).append(AppConsts.DFT_DELIMITER)
+                                .append(StringUtil.getNonNull(blkNo)).append(AppConsts.DFT_DELIMITER).append(unitNo);
+                        floorUnitList.add(sb.toString());
                     }
                 }
-                opLength++;
+                opIndex++;
             }
         }
 

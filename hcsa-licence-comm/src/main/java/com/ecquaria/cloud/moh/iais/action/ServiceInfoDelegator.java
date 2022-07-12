@@ -1594,10 +1594,9 @@ public class ServiceInfoDelegator {
                     }
                 });
             }
-            List<String> appIds = ApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
+            List<String> ids = ApplicationHelper.getRelatedId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
                     currSvcInfoDto.getServiceName());
-            log.info(StringUtil.changeForLog("The current related application id: " + appIds));
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(appIds);
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(ids);
             new ValidateVehicle().doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(),
                     oldAppSvcVehicleDto);
         }

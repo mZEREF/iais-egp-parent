@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="../navTabs.jsp" %>
+                        <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane active" id="serviceInformationTab" role="tabpanel">
                                 <div class="multiservice">
