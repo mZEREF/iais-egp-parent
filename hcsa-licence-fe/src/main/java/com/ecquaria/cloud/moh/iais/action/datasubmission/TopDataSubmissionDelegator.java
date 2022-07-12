@@ -1697,7 +1697,7 @@ public class TopDataSubmissionDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_TOP);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_TOP_NEW);
         msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);
@@ -1727,7 +1727,7 @@ public class TopDataSubmissionDelegator {
         msgParam.setTemplateContent(msgContentMap);
         msgParam.setQueryCode(submissionNo);
         msgParam.setReqRefNum(submissionNo);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_TOP_SUP);
         msgParam.setRefId(licenseeId);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setSubject(subject);

@@ -650,7 +650,7 @@ public class DpSiUploadDelegate {
             msgParam.setTemplateContent(emailMap);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_MSG);
 
-            msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP);
+            msgParam.setServiceTypes(DataSubmissionConsts.DS_DRP_NEW);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             msgParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
             notificationHelper.sendNotification(msgParam);
