@@ -503,9 +503,8 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
             doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_ELIS);
             vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
-        }
-        // doctor info get from PRS
-        if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
+        } else if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
+            // doctor info get from PRS
             doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
             doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
             doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
