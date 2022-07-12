@@ -624,7 +624,7 @@ public class InspectionServiceImpl implements InspectionService {
             return false;
         }
         if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(currentRole)) {
-            currentRole = RoleConsts.USER_ROLE_AO1;
+            currentRole = RoleConsts.USER_ROLE_INSPECTIOR;
         }
         return StringUtil.isNotEmpty(historyRole) && ROLE.contains(historyRole) && ROLE.indexOf(currentRole) > ROLE.indexOf(historyRole);
     }
