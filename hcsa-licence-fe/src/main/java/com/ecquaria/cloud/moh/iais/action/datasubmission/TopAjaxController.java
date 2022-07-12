@@ -93,8 +93,6 @@ public class TopAjaxController {
         return result;
     }
 
-
-
     @ResponseBody
     @PostMapping(value = "/counselling-age")
     public Map<String, Object> checkCounsellingAge(HttpServletRequest request) throws Exception {

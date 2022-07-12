@@ -409,7 +409,6 @@
         }
     }
 
-
     function changeDate(){
         var birthData = $('#birthData').val();
         var counsellingGiven = $('#counsellingGivenDate').val();
@@ -439,7 +438,6 @@
     function cancels() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
-
 
     function checkBirthDateCallbacks(data) {
         if (isEmpty(data) ) {
