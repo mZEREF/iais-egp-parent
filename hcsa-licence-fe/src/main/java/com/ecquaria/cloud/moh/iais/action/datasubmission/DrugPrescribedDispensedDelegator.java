@@ -302,39 +302,39 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
                     errorMap.put("dSpeciality", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
                     errorMap.put("dSpeciality", general_err0041);
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
                     errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
                     errorMap.put("dSubSpeciality", general_err0041);
                 }
                 if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
                     errorMap.put("dQualification", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
                     errorMap.put("dQualification", general_err0041);
                 }
             } else if("false".equals(drugSubmission.getDoctorInformations())){
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpecialitys", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
                     errorMap.put("dSpecialitys", general_err0041);
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
                     errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
                     errorMap.put("dSubSpecialitys", general_err0041);
                 }
                 if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
                     errorMap.put("dQualifications", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>100){
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "100");
+                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>1024){
+                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
                     errorMap.put("dQualifications", general_err0041);
                 }
             }

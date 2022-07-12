@@ -334,21 +334,21 @@
                 <iais:row >
                     <iais:field width="5" value="Specialty" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dSpecialitys" name="dSpecialitys" value="${terminationDto.specialty}" />
+                        <iais:input maxLength="1024" type="text" id="dSpecialitys" name="dSpecialitys" value="${terminationDto.specialty}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row >
                     <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${terminationDto.subSpecialty}" />
+                        <iais:input maxLength="1024" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${terminationDto.subSpecialty}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row >
                     <iais:field width="5" value="Qualification" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dQualifications" name="dQualifications" value="${terminationDto.qualification}" />
+                        <iais:input maxLength="1024" type="text" id="dQualifications" name="dQualifications" value="${terminationDto.qualification}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
                     </iais:value>
                 </iais:row>
@@ -365,21 +365,21 @@
         <iais:row >
             <iais:field width="5" value="Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                <iais:input maxLength="1024" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                <iais:input maxLength="1024" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Qualification" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
+                <iais:input maxLength="1024" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
             </iais:value>
         </iais:row>
@@ -387,7 +387,7 @@
     <iais:row >
         <iais:field width="5" value="Other Qualification"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <iais:input maxLength="100" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
+            <iais:input maxLength="1024" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
         </iais:value>
     </iais:row>
 </div>
