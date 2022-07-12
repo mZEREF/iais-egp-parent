@@ -102,8 +102,7 @@ public class TopDataSubmissionDelegator {
     @Autowired
     private NotificationHelper notificationHelper;
 
-    @Autowired
-    private DsLicenceService dsLicenceService;
+
 
     @Autowired
     private DocInfoService docInfoService;
@@ -1220,11 +1219,7 @@ public class TopDataSubmissionDelegator {
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS");
-        if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
-            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
-        }else {
-            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
-        }
+
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
@@ -1247,6 +1242,11 @@ public class TopDataSubmissionDelegator {
                     }
                 }
             }else if("false".equals(terminationDto.getDoctorInformationPE())){
+                if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
+                    ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+                }else {
+                    ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
+                }
                 String doctorName = ParamUtil.getString(request, "names");
                 doctorInformationDto.setName(doctorName);
                 doctorInformationDto.setDoctorReignNo(terminationDto.getDoctorRegnNo());
