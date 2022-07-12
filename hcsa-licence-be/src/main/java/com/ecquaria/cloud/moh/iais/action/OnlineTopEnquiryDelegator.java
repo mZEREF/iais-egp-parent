@@ -248,8 +248,8 @@ public class OnlineTopEnquiryDelegator {
             if(!StringUtil.isEmpty(terminationDto)&&StringUtil.isNotEmpty(terminationDto.getDoctorInformationId())){
                 DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId()).getEntity();
                 if(doctorInfoDto!=null){
-                    ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
-                    DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS").getEntity();
+                    ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
+                    DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS").getEntity();
 
                     if("TOPP".equals(doctorInfoDto.getDoctorSource()) || "TOPT".equals(doctorInfoDto.getDoctorSource())){
                         topInfo.setDoctorInformationDto(doctorInfoDto);
