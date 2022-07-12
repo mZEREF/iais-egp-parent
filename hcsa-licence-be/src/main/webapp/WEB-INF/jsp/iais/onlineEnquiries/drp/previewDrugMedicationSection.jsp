@@ -21,12 +21,12 @@
                             </div>
                         </div>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Batch No."/>
-                        <iais:value width="7" display="true">
-                            <c:out value="${drugMedicationDto.batchNo}" />
-                        </iais:value>
-                    </iais:row>
+<%--                    <iais:row>--%>
+<%--                        <iais:field width="5" value="Batch No."/>--%>
+<%--                        <iais:value width="7" display="true">--%>
+<%--                            <c:out value="${drugMedicationDto.batchNo}" />--%>
+<%--                        </iais:value>--%>
+<%--                    </iais:row>--%>
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label" >
                             <c:choose>
