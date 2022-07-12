@@ -196,37 +196,33 @@ public class HalpSearchResultHelper {
             switch (privilegeId) {
                 case PrivilegeConsts.USER_PRIVILEGE_DS_AR:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR, types);
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR_SUP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_DP:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP, types);
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP_SUP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_TOP:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP, types);
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP_SUP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_VSS:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_VSS, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_LDT:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT, types);
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT_SUP, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_AR_CRE:
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR, types);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR_NEW, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_DP_CRE:
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP, types);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_DRP_NEW, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_TOP_CRE:
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP, types);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_TOP_NEW, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_VSS_CRE:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_VSS, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_LDT_CRE:
-                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT, types);
+                    IaisCommonUtils.addToList(DataSubmissionConsts.DS_LDT_NEW, types);
                     break;
                 case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC:
                     IaisCommonUtils.addToList(DataSubmissionConsts.DS_AR_SUP, types);
