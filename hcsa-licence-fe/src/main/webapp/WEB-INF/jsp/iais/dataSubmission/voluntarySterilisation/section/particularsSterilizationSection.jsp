@@ -377,6 +377,7 @@
             'success': function (data) {
                 if(isEmpty(data.selection) && isEmpty(data.selections)) {
                     clearPrsInfoText();
+                    clearPrsInfoElis();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     console.log("1");
@@ -390,6 +391,7 @@
                     $('#doctorInformationPrs').hide();
                     console.log("2");
                 } else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                    clearPrsInfoElis();
                     clearPrsInfoText();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
@@ -421,8 +423,9 @@
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                         console.log("7");
-                    } else if (data.selection.hasException) {
+                    } else if (data.selection.hasException && isEmpty(data.selections)) {
                         clearPrsInfoElis();
+                        clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
@@ -438,7 +441,7 @@
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                        console.log("9");
+                        console.log("10");
                     }
 
                 }

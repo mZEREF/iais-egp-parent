@@ -44,7 +44,6 @@ public class DoctorInfoAjaxController {
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
         // PRS down
 //        professionalResponseDto = new ProfessionalResponseDto();
-//        professionalResponseDto.setRegno(professionRegoNo);
 //        professionalResponseDto.setHasException(true);
         //
         if(professionalResponseDto!=null){

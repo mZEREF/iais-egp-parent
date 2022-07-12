@@ -485,39 +485,36 @@ public class VssDataSubmissionDelegator {
         sexualSterilizationDto.setQualification(qualification);
         sexualSterilizationDto.setDoctorInformationPE(doctorInformationPE);
         sexualSterilizationDto.setDoctorInformations(doctorInformations);
-        ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
-        if (professionalResponseDto != null) {
-            if ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode())) {
-                if ("false".equals(sexualSterilizationDto.getDoctorInformations())) {
-                    if ("true".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                        String names = ParamUtil.getString(request, "names");
-                        String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
-                        String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
-                        String dQualification = ParamUtil.getString(request, "dQualifications");
-                        sexualSterilizationDto.setDoctorName(names);
-                        sexualSterilizationDto.setSpecialty(dSpeciality);
-                        sexualSterilizationDto.setSubSpecialty(dSubSpeciality);
-                        sexualSterilizationDto.setQualification(dQualification);
-                        doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
-                        doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
-                        doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
-                        doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
-                        doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                        doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_ELIS);
-                        vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
-                    }
-                }
-            }
-            if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
-                doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
-                doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
-                doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
-                doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
-                doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
-                doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_PRS);
-                vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
-            }
+
+        // doctor info get from eLis
+        if ("true".equals(sexualSterilizationDto.getDoctorInformationPE())) {
+            String names = ParamUtil.getString(request, "names");
+            String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
+            String dSubSpeciality = ParamUtil.getString(request, "dSubSpecialitys");
+            String dQualification = ParamUtil.getString(request, "dQualifications");
+            sexualSterilizationDto.setDoctorName(names);
+            sexualSterilizationDto.setSpecialty(dSpeciality);
+            sexualSterilizationDto.setSubSpecialty(dSubSpeciality);
+            sexualSterilizationDto.setQualification(dQualification);
+            doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
+            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+            doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
+            doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
+            doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
+            doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_ELIS);
+            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }
+        // doctor info get from PRS
+        if ("false".equals(sexualSterilizationDto.getDoctorInformationPE())) {
+            doctorInformationDto.setName(sexualSterilizationDto.getDoctorName());
+            doctorInformationDto.setDoctorReignNo(sexualSterilizationDto.getDoctorReignNo());
+            doctorInformationDto.setSpeciality(sexualSterilizationDto.getSpecialty());
+            doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
+            doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
+            doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_PRS);
+            vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }
+        // doctor not register,get data from input
         if ("true".equals(sexualSterilizationDto.getDoctorInformations())) {
             String dName = ParamUtil.getString(request, "dName");
             String dSpeciality = ParamUtil.getString(request, "dSpeciality");
@@ -535,7 +532,7 @@ public class VssDataSubmissionDelegator {
             sexualSterilizationDto.setDoctorName(doctorName);
         }
         if (StringUtil.isNotEmpty(reviewedByHec)) {
-            sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
+            sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true"));
         }
         try {
             Date oDate = Formatter.parseDate(operationDate);
