@@ -489,7 +489,7 @@ public class ServiceInfoDelegator {
         specialtyAttr.put("style", "display: none;");
         String specialtyHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialtySelectList, null, null);
         ParamUtil.setRequestAttr(bpc.request, "SpecialtyHtml", specialtyHtml);
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList(true);
+        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
         ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         //reload
         if (appSvcRelatedInfoDto != null) {
@@ -572,7 +572,7 @@ public class ServiceInfoDelegator {
         SelectOption deputyFlagOp3 = new SelectOption("1", "Yes");
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList(true);
+        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
         ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
 
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
@@ -1629,7 +1629,7 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.EASMTSSPECIALTYSELECTLIST, easMtsSpecialtySelectList);
         // Assgined person dropdown options
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PERSON_OPTIONS, ApplicationHelper.genAssignPersonSel(bpc.request, true));
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList(true);
+        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
         ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
     }

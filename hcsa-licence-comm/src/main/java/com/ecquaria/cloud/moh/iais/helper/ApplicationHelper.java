@@ -154,9 +154,7 @@ public final class ApplicationHelper {
         String licenseeId = "";
         if (isBackend()) {
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-            if (appSubmissionDto != null) {
-                licenseeId = appSubmissionDto.getLicenseeId();
-            }
+            licenseeId = appSubmissionDto.getLicenseeId();
         } else {
             LoginContext loginContext = getLoginContext(request);
             if (loginContext != null) {
@@ -202,12 +200,12 @@ public final class ApplicationHelper {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.OLDAPPSUBMISSIONDTO);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (oldAppSubmissionDto == null && appSubmissionDto != null) {
+        if (oldAppSubmissionDto == null) {
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                 oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "oldRenewAppSubmissionDto");
             }
         }
-        if (!onlySession && oldAppSubmissionDto == null && appSubmissionDto != null) {
+        if (!onlySession && oldAppSubmissionDto == null) {
             log.info(StringUtil.changeForLog("OldAppSubmissionDto is empty from Session"));
             oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
             if (oldAppSubmissionDto != null) {
@@ -293,7 +291,7 @@ public final class ApplicationHelper {
         appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
-            appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
+            appGrpPremisesDto.setNeedNewLicNo(isNeedNewLicNo);
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
         });
         if (!StringUtil.isEmpty(appGrpNo)) {
@@ -365,7 +363,7 @@ public final class ApplicationHelper {
             return;
         }
         List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
+        sourceList.forEach(dto -> {
             String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
             Optional<AppSubmissionDto> optional = notAutoSaveList.stream()
                     .filter(source -> licenceId.equals(source.getLicenceId()))
@@ -384,7 +382,7 @@ public final class ApplicationHelper {
             return;
         }
         List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
+        sourceList.forEach(dto -> {
             String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
             Optional<AppSubmissionDto> optional = autoSaveList.stream()
                     .filter(source -> licenceId.equals(source.getLicenceId()))
@@ -404,7 +402,7 @@ public final class ApplicationHelper {
             return;
         }
         List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
+        sourceList.forEach(dto -> {
             String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
             Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
                     .filter(source -> licenceId.equals(source.getLicenceId()))
@@ -416,7 +414,7 @@ public final class ApplicationHelper {
             }
         });
         List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
-        notInNonAuto.stream().forEach(dto -> {
+        notInNonAuto.forEach(dto -> {
             String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
             Optional<AppSubmissionDto> optional = autoSaveList.stream()
                     .filter(source -> licenceId.equals(source.getLicenceId()))
@@ -476,7 +474,7 @@ public final class ApplicationHelper {
         }
         if (source.isLicenseeEdit()) {
             target.setLicenseeEdit(true);
-            targetDto.setSubLicenseeDto((SubLicenseeDto) CopyUtil.copyMutableObject(scourceDto.getSubLicenseeDto()));
+            targetDto.setSubLicenseeDto(CopyUtil.copyMutableObject(scourceDto.getSubLicenseeDto()));
         }
         if (source.isPremisesEdit()) {
             target.setPremisesEdit(true);
@@ -823,7 +821,7 @@ public final class ApplicationHelper {
         if (oldAppSubmissionDto != null && oldAppSubmissionDto.getAppGrpPremisesDtoList() != null) {
             oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElseGet(() -> dto.getHciCode()))
+                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElseGet(dto::getHciCode))
                     .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
@@ -1049,7 +1047,7 @@ public final class ApplicationHelper {
     }
 
     public static Date handleDate(Date date, String str) {
-        Date newDate = null;
+        Date newDate;
         if (date != null) {
             newDate = (Date) date.clone();
         } else {
@@ -1067,7 +1065,7 @@ public final class ApplicationHelper {
         }
         return newDate;
     }
-
+/*
     @Deprecated
     public static Map<String, AppSvcPrincipalOfficersDto> getLicPsnIntoSelMap(HttpServletRequest request,
             List<PersonnelListQueryDto> licPsnDtos) {
@@ -1142,7 +1140,7 @@ public final class ApplicationHelper {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
-
+                        // nothing to do
                     }
 
                     person.setLicPerson(true);
@@ -1151,7 +1149,7 @@ public final class ApplicationHelper {
             }
         }
         return personMap;
-    }
+    }*/
 
     public static Map<String, AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<FeUserDto> feUserDtos,
             List<PersonnelListQueryDto> licPsnDtos, Map<String, AppSvcPersonAndExtDto> personMap) {
@@ -1425,10 +1423,8 @@ public final class ApplicationHelper {
             personList.add(sp);
         });
         //sort
-        if (personList != null) {
-            personList.sort(Comparator.comparing(SelectOption::getText));
-            psnSelectList.addAll(personList);
-        }
+        personList.sort(Comparator.comparing(SelectOption::getText));
+        psnSelectList.addAll(personList);
         return psnSelectList;
     }
 
@@ -1443,7 +1439,7 @@ public final class ApplicationHelper {
     public static List<SelectOption> getTimeHourList() {
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < 24; i++) {
-            timeHourList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
+            timeHourList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + i : String.valueOf(i)));
         }
         return timeHourList;
     }
@@ -1451,7 +1447,7 @@ public final class ApplicationHelper {
     public static List<SelectOption> getTimeMinList() {
         List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < 60; i++) {
-            timeMinList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
+            timeMinList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + i : String.valueOf(i)));
         }
         return timeMinList;
     }
@@ -1503,7 +1499,7 @@ public final class ApplicationHelper {
     }
 
     public static void doSortSelOption(List<SelectOption> selectOptions) {
-        Collections.sort(selectOptions, Comparator.comparing(SelectOption::getText));
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
     }
 
     /**
@@ -1733,14 +1729,14 @@ public final class ApplicationHelper {
                         AppPremisesOperationalUnitDto.class));
     }
 
-    public static boolean isAllFieldNull(AppSvcPrincipalOfficersDto person) throws Exception {
+    public static boolean isAllFieldNull(AppSvcPrincipalOfficersDto person) {
         boolean result = true;
         if (person != null) {
             PersonFieldDto personFieldDto = MiscUtil.transferEntityDto(person, PersonFieldDto.class);
             if ("-1".equals(personFieldDto.getSpeciality())) {
                 personFieldDto.setSpeciality(null);
             }
-            Class psnClsa = personFieldDto.getClass();
+            Class<? extends PersonFieldDto> psnClsa = personFieldDto.getClass();
             Field[] fs = psnClsa.getDeclaredFields();
             for (Field f : fs) {
                 Object value = ReflectionUtil.getPropertyObj(f, personFieldDto);
@@ -1760,7 +1756,7 @@ public final class ApplicationHelper {
             if ("-1".equals(personFieldDto.getSpeciality())) {
                 personFieldDto.setSpeciality(null);
             }
-            Class psnClsa = personFieldDto.getClass();
+            Class<? extends PersonFieldDto> psnClsa = personFieldDto.getClass();
             Field[] fs = psnClsa.getDeclaredFields();
             for (Field f : fs) {
                 if (Modifier.isStatic(f.getModifiers())) {
@@ -1860,12 +1856,8 @@ public final class ApplicationHelper {
     }
 
     public static boolean isCharity(HttpServletRequest request) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        boolean isCharity = false;
-        if (loginContext != null && AcraConsts.ENTITY_TYPE_CHARITIES.equals(loginContext.getLicenseeEntityType())) {
-            isCharity = true;
-        }
-        return isCharity;
+        LoginContext loginContext = getLoginContext(request);
+        return loginContext != null && AcraConsts.ENTITY_TYPE_CHARITIES.equals(loginContext.getLicenseeEntityType());
     }
 
     public static List<SelectOption> getGiroAccOptions(List<GiroAccountInfoDto> giroAccountInfoDtos) {
@@ -2000,12 +1992,7 @@ public final class ApplicationHelper {
                 if (!isMandatory) {
                     continue;
                 }
-                boolean mandatoryFlag;
-                if (isMandatory) {
-                    mandatoryFlag = false;
-                } else {
-                    mandatoryFlag = true;
-                }
+                boolean mandatoryFlag = false;
                 if (IaisCommonUtils.isEmpty(appSvcDocDtos)) {
                     appSvcDocDtos = IaisCommonUtils.genNewArrayList();
                 }
@@ -2076,7 +2063,7 @@ public final class ApplicationHelper {
                     HcsaAppConst.PLEASEINDICATE, HcsaAppConst.SERVICE_SCOPE_LAB_OTHERS);
             if (targetDto != null) {
                 for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos) {
-                    AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(appSvcChckListDto);
+                    AppSvcChckListDto newAppSvcChckListDto = CopyUtil.copyMutableObject(appSvcChckListDto);
                     String chkName = newAppSvcChckListDto.getChkName();
                     if (HcsaAppConst.PLEASEINDICATE.equals(chkName)) {
                         continue;
@@ -2337,7 +2324,7 @@ public final class ApplicationHelper {
         if (!IaisCommonUtils.isEmpty(reloadMap)) {
             reloadMap.forEach((k, v) -> {
                 if (v != null && v.size() > 1) {
-                    Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum));
+                    v.sort(Comparator.comparing(AppSvcDocDto::getSeqNum));
                 }
             });
         }
@@ -2508,23 +2495,19 @@ public final class ApplicationHelper {
     public static boolean isMultiPremService(List<HcsaServiceDto> hcsaServiceDtos) {
         boolean flag = true;
         if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
-            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                String svcCode = hcsaServiceDto.getSvcCode();
-                if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(
-                        svcCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
-                    flag = false;
-                    break;
-                }
-            }
+            flag = hcsaServiceDtos.stream()
+                    .noneMatch(hcsaServiceDto -> StringUtil.isIn(hcsaServiceDto.getSvcCode(),
+                            new String[]{AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE,
+                                    AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE}));
         }
         return flag;
     }
 
     public static List<HcsaServiceDto> sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {
-        List<HcsaServiceDto> baseList = new ArrayList();
-        List<HcsaServiceDto> specifiedList = new ArrayList();
-        List<HcsaServiceDto> subList = new ArrayList();
-        List<HcsaServiceDto> otherList = new ArrayList();
+        List<HcsaServiceDto> baseList = new ArrayList<>();
+        List<HcsaServiceDto> specifiedList = new ArrayList<>();
+        List<HcsaServiceDto> subList = new ArrayList<>();
+        List<HcsaServiceDto> otherList = new ArrayList<>();
         //class
         for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
             switch (hcsaServiceDto.getSvcType()) {
@@ -2552,9 +2535,8 @@ public final class ApplicationHelper {
         return hcsaServiceDtoList;
     }
 
-    public static List<SelectOption> genDesignationOpList(boolean needOthers) {
-        List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        return idTypeSelectList;
+    public static List<SelectOption> genDesignationOpList() {
+        return MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
     }
 
     private static void sortService(List<HcsaServiceDto> list) {
@@ -2878,7 +2860,7 @@ public final class ApplicationHelper {
     private static void setReloadTime(OperationHoursReloadDto operationHoursReloadDto) {
         List<String> selectValList = operationHoursReloadDto.getSelectValList();
         if (!IaisCommonUtils.isEmpty(selectValList)) {
-            String[] selectArr = (String[]) selectValList.toArray(new String[selectValList.size()]);
+            String[] selectArr = selectValList.toArray(new String[selectValList.size()]);
             String phSelect = StringUtil.arrayToString(selectArr);
             operationHoursReloadDto.setSelectVal(phSelect);
         }
@@ -3131,8 +3113,7 @@ public final class ApplicationHelper {
     public static Map<String, SubLicenseeDto> genSubLicessMap(List<SubLicenseeDto> subLicenseeDtoList) {
         Map<String, SubLicenseeDto> map = IaisCommonUtils.genNewLinkedHashMap();
         if (subLicenseeDtoList != null) {
-            subLicenseeDtoList.stream().forEach(
-                    dto -> map.put(getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNumber()), dto));
+            subLicenseeDtoList.forEach(dto -> map.put(getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNumber()), dto));
         }
         return map;
     }
@@ -3373,12 +3354,11 @@ public final class ApplicationHelper {
      * @param licenceList
      * @param appList
      * @param srcDto
-     * @param check                   1: PremisesSelect; 2: premiseIndexNo; 3:RFI
-     * @return
+     * @param check 1: PremisesSelect; 2: premiseIndexNo; 3:RFI
+     * @return premises select key
      */
     private static String initCurrentPremises(Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap,
-            Map<String, AppGrpPremisesDto> newAppMap,
-            List<AppGrpPremisesDto> licenceList, List<AppGrpPremisesDto> appList,
+            Map<String, AppGrpPremisesDto> newAppMap, List<AppGrpPremisesDto> licenceList, List<AppGrpPremisesDto> appList,
             AppGrpPremisesDto srcDto, int check) {
         if (check <= 0) {
             return null;
@@ -3484,7 +3464,7 @@ public final class ApplicationHelper {
         }
         if (!StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
             Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, null, false, false);
-            if (errorMap != null && !errorMap.isEmpty()) {
+            if (!errorMap.isEmpty()) {
                 log.info(StringUtil.changeForLog("------ Has Error ------"));
                 return;
             }
@@ -3625,9 +3605,9 @@ public final class ApplicationHelper {
             SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER));
             personnelTypeSel.add(personnelTypeOp3);
         } else if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)) {
-
+            // nothing to do
         } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)) {
-
+            // nothing to do
         }
         ApplicationHelper.doSortSelOption(personnelTypeSel);
         return personnelTypeSel;
@@ -3676,7 +3656,7 @@ public final class ApplicationHelper {
                     .orElse(null);
             if (targetDto != null) {
                 for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos) {
-                    AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(appSvcChckListDto);
+                    AppSvcChckListDto newAppSvcChckListDto = CopyUtil.copyMutableObject(appSvcChckListDto);
                     String chkName = newAppSvcChckListDto.getChkName();
                     if (HcsaAppConst.PLEASEINDICATE.equals(chkName)) {
                         continue;

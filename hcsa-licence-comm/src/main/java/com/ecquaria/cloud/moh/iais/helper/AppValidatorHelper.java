@@ -739,12 +739,8 @@ public final class AppValidatorHelper {
         AppValidatorHelper.validatePH(errorMap, appSubmissionDto);
         WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return errorMap;
-
     }
-
-    private static void doValidateCoLocation(AppGrpPremisesDto appGrpPremisesDto, Map<String, String> errorMap) {
-    }
-
+    
     /**
      * There is an existing licence for this service.
      *
@@ -789,31 +785,31 @@ public final class AppValidatorHelper {
     private static void validateCoLocation(Map<String, String> errorMap, int index, String locateWtihHcsa, String locateWtihNonHcsa,
             List<AppPremNonLicRelationDto> appPremNonLicRelationDtos) {
         if (StringUtil.isEmpty(locateWtihHcsa)) {
-            errorMap.put("locateWtihNonHcsa" + index, "GENERAL_ERR0006");
+            errorMap.put("locateWtihHcsa" + index, "GENERAL_ERR0006");
         }
         if (StringUtil.isEmpty(locateWtihNonHcsa)) {
             errorMap.put("locateWtihNonHcsa" + index, "GENERAL_ERR0006");
         } else if (AppConsts.YES.equals(locateWtihNonHcsa)) {
             if (IaisCommonUtils.isEmpty(appPremNonLicRelationDtos)) {
-                errorMap.put(index + "coBusinessName0", "GENERAL_ERR0006");
-                errorMap.put(index + "locateWtihNonHcsa0", "GENERAL_ERR0006");
+                errorMap.put(index + "CoBusinessName0", "GENERAL_ERR0006");
+                errorMap.put(index + "CoSvcName0", "GENERAL_ERR0006");
             } else {
                 int i = 0;
                 for (AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos) {
-                    String coBusinessName = appPremNonLicRelationDtos.get(i).getBusninessName();
-                    String coSvcName = appPremNonLicRelationDtos.get(i).getProvidedService();
+                    String coBusinessName = appPremNonLicRelationDto.getBusninessName();
+                    String coSvcName = appPremNonLicRelationDto.getProvidedService();
                     if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
                         continue;
                     }
                     if (StringUtil.isEmpty(coBusinessName)) {
-                        errorMap.put(index + "coBusinessName" + i, "GENERAL_ERR0006");
+                        errorMap.put(index + "CoBusinessName" + i, "GENERAL_ERR0006");
                     } else if (coBusinessName.length() > 100) {
-                        errorMap.put(index + "coBusinessName" + i, repLength("Business Name", "100"));
+                        errorMap.put(index + "CoBusinessName" + i, repLength("Business Name", "100"));
                     }
                     if (StringUtil.isEmpty(coSvcName)) {
-                        errorMap.put(index + "coSvcName" + i, "GENERAL_ERR0006");
+                        errorMap.put(index + "CoSvcName" + i, "GENERAL_ERR0006");
                     } else if (coSvcName.length() > 100) {
-                        errorMap.put(index + "coSvcName" + i, repLength("Services Provided", "100"));
+                        errorMap.put(index + "CoSvcName" + i, repLength("Services Provided", "100"));
                     }
                     i++;
                 }

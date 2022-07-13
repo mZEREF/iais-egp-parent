@@ -50,13 +50,12 @@
                     </c:if>
                   </c:forEach>
                   <!--prem content -->
-                  <input type="hidden" name="premCount" value="${AppSubmissionDto.appGrpPremisesDtoList.size()}"/>
                   <%@include file="section/premisesContent.jsp"%>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12" id="addPremBody" hidden>
+                  <div class="col-xs-12" id="addPremBody">
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly && isMultiPremService}">
+                    <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readOnly && isMultiPremService}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                     </c:if>
                   </div>
@@ -74,36 +73,22 @@
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
  <%-- <%@include file="common/premFun.jsp"%>--%>
   <input type="hidden" name="pageCon" value="valPremiseList" >
-  <%--<c:if test="${ not empty selectDraftNo }">
-    <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-  </c:if>--%>
-  <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+
+  <%--<c:if test="${!isRFC && !isRenew}">
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+  </c:if>--%>
+  <c:if test="${!(isRFC || isRenew)}">
+    <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
+                  yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelFunc="submit('premises','saveDraft','cancelSaveDraft');" />
   </c:if>
 
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
   <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
-  <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body" style="text-align: center;">
-          <div class="row">
-            <div class=""><span style="font-size: 16px;">${newAppPopUpMsg}</span></div>
-          </div>
-        </div>
-        <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-          <button type="button" style="margin-left: 60%" class="next btn btn-primary col-md-4" data-dismiss="modal" onclick="Continue()">Continue</button>
-        </div>
-      </div>
-    </div>
-  </div>--%>
+
   <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
-  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
+  <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
@@ -111,9 +96,9 @@
 </form>
 </div>
 <script type="text/javascript">
-    var init;
+    //var init;
     $(document).ready(function() {
-        $('#postalCodePop').modal('hide');
+        /*$('#postalCodePop').modal('hide');*/
         /*cl();
         $("input[name='easMtsUseOnly0']").trigger('change');
         preperChange();
@@ -122,7 +107,7 @@
         $("select[name='offSiteAddrType']").trigger('change');
         $("select[name='easMtsAddrType']").trigger('change');*/
         <!-- init start-->
-        init = 0;
+        //init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){
             $('#ackMessageConfim').modal('show');
         }
@@ -132,11 +117,11 @@
         if($('#hciNameUsedInput').val()=='hciNameUsed'){
             $('#hciNameUsed').modal('show');
         }
-        var checkedType = "";
+        /*var checkedType = "";
 
         $('.prem-summary').addClass('hidden');
 
-        $('.table-condensed').css("background-color","#d9edf7");
+        $('.table-condensed').css("background-color","#d9edf7");*/
 
         /*reloadPage();
 
@@ -182,7 +167,7 @@
         $('#Next').click(function(){
             showWaiting();
             $('input[type="radio"]').prop('disabled',false);
-            submit('documents',null,null);
+            submit('specialised',null,null);
         });
         $('#SaveDraft').click(function(){
             showWaiting();
@@ -195,7 +180,7 @@
             handlePage($(this));
         });
         </c:if>
-        <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null && !readOnly}">
+        <c:if test="${isNew && !isRfi && !readOnly}">
         $('div.premContent').each(function () {
             doEditPremise($(this));
         });
@@ -220,15 +205,14 @@
 
     });
 
-    function addPremEvent() {
-      $('#addPremBtn').on('click', function () {
-        var src = $('div.premContent').eq(0).clone();
-        $('div.premContent').after(src);
-        clearFields(src);
-        removeAdditional(src);
-        refreshPremise();
-      });
+    /*function saveDraft() {
+      $('input[type="radio"]').prop('disabled',false);
+      submit('premises','saveDraft',$('#selectDraftNo').val());
     }
+
+    function cancelSaveDraft() {
+      submit('premises','saveDraft','cancelSaveDraft');
+    }*/
 
     /*$("#onSiteSel").change(function(){
         $("#addPremBody").removeAttr("hidden");

@@ -521,8 +521,8 @@ public class ApplicationAjaxController {
         String premIndexNo = ParamUtil.getString(request, "premIndexNo");
         String premSelectVal = ParamUtil.getString(request, "premSelectVal");
         String premisesType = ParamUtil.getString(request,"premisesType");
-        String premiseIndex = request.getParameter("premiseIndex");
-        if (StringUtil.isEmpty(premSelectVal) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
+        //String premiseIndex = request.getParameter("premiseIndex");
+        if (StringUtil.isEmpty(premSelectVal) || StringUtil.isEmpty(premisesType)) {
             return null;
         }
         AppGrpPremisesDto appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premSelectVal, request);
