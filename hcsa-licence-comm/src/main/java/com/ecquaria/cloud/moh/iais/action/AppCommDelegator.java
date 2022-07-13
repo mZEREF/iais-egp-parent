@@ -559,11 +559,7 @@ public abstract class AppCommDelegator {
             AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
         }
         if (!errorMap.isEmpty()) {
-            //set audit
-            AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
-                    appSubmissionDto.getLicenceNo());
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_LICENSEE);
+            initAction(HcsaAppConst.ACTION_LICENSEE, errorMap, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
@@ -1105,11 +1101,7 @@ public abstract class AppCommDelegator {
             if (errorMap.size() > 0) {
                 boolean isNeedShowValidation = !"back".equals(crud_action_value);
                 if (isNeedShowValidation) {
-                    //set audit
-                    AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
-                            appSubmissionDto.getLicenceNo());
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, HcsaAppConst.ACTION_PREMISES);
+                    initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
                     ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
                 }
                 coMap.put(HcsaAppConst.SECTION_PREMISES, "");
@@ -1240,10 +1232,7 @@ public abstract class AppCommDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
-            AppValidatorHelper.setAudiErrMap(ApplicationHelper.checkIsRfi(bpc.request), appSubmissionDto.getAppType(), errorMap,
-                    appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_PREVIEW);
+            initAction(ACTION_PREVIEW, errorMap, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
@@ -1324,6 +1313,7 @@ public abstract class AppCommDelegator {
         String appError = checkMap.get(HcsaAppConst.ERROR_APP);
         if (!StringUtil.isEmpty(appError)) {
             initAction(ACTION_PREVIEW, null, appSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
             return;
         }
@@ -1348,12 +1338,14 @@ public abstract class AppCommDelegator {
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
         if (!doComChangeMap.isEmpty()) {
             initAction(ACTION_PREVIEW, doComChangeMap, appSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
         log.info("doComChange is ok ...");
         Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
             initAction(ACTION_PREVIEW, map, appSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
         // check whether it has been withdrew or not
@@ -1363,6 +1355,7 @@ public abstract class AppCommDelegator {
             // RFI_ERR002: There is a withdrawal for this application.
             ParamUtil.setRequestAttr(bpc.request, "showRfiWithdrawal", AppConsts.YES);
             initAction(ACTION_PREVIEW, null, appSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
@@ -1447,14 +1440,12 @@ public abstract class AppCommDelegator {
             HttpServletRequest request) {
         if (IaisCommonUtils.isNotEmpty(errorMap)) {
             boolean isRfi = ApplicationHelper.checkIsRfi(request);
-            if (isRfi) {
-                AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
-                        appSubmissionDto.getLicenceNo());
-            }
+            AppValidatorHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
+                    appSubmissionDto.getLicenceNo());
         }
         ParamUtil.setRequestAttr(request, "Msg", errorMap);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, action);
-        ParamUtil.setRequestAttr(request, COND_TYPE_RFI, "N");
     }
 
     private void jumpToErrorPage(HttpServletRequest request, String errorMsg) {
@@ -2010,10 +2001,7 @@ public abstract class AppCommDelegator {
                     errorMap.put("pay", MessageUtil.replaceMessage("GENERAL_ERR0006", "Giro Account", "field"));
                 }
                 if (!errorMap.isEmpty()) {
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
-                    AppValidatorHelper.setAudiErrMap(ApplicationHelper.checkIsRfi(bpc.request), appSubmissionDto.getAppType(),
-                            errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    initAction(HcsaAppConst.ACTION_PAYMENT, errorMap, appSubmissionDto, bpc.request);
                 }
             }
             if (!StringUtil.isEmpty(noNeedPayment)) {

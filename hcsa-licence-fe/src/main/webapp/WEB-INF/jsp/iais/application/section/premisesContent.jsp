@@ -69,10 +69,12 @@
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
-        <input class="not-refresh" type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
-        <input class="not-refresh premValue" type="hidden" name="premValue" value="${status.index}"/>
+        <%--<input class="not-refresh not-clear" type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>--%>
+        <%--<input class="not-refresh not-clear premValue" type="hidden" name="premValue" value="${status.index}"/>--%>
+        <input class="not-refresh not-clear premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
+        <input class="not-refresh premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
 
         <c:set var="premValue" value="${status.index}"/>
         <%--<input hidden class="premiseIndex" value="${premValue}">--%>
@@ -112,7 +114,6 @@
                         <c:choose>
                             <c:when test="${!isRFI && !isRFC && !isRenew}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
-                                <c:set var="canEdit" value="false"/>
                             </c:when>
                             <c:when test="${((isRFI && appGrpPremisesDto.rfiCanEdit) || isRFC || isRenew)}">
                                 <c:set var="canEdit" value="false"/>
@@ -152,79 +153,61 @@
             </c:if>
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRFC}">hidden</c:if> >
-                    <label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>
-                    <%--<input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>--%>
-                    <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
+                    <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>
+                    <iais:field value="What is your mode of service delivery ?" width="5" mandatory="true"/>
 
                     <c:set var="premTypeLen" value="${premisesType.size()}"/>
                     <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                     <c:forEach var="premType" items="${premisesType}">
-                        <div class="col-xs-12 ${premTypeCss}">
-                            <%--<c:choose>
+                        <div class="col-xs-12 ${premTypeCss} form-check">
+                            <c:if test="${appGrpPremisesDto.premisesType!=premType}">
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" value="${premType}" aria-invalid="false">
+                            </c:if>
+                            <c:if test="${appGrpPremisesDto.premisesType==premType}">
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
+                            </c:if>
+                            <label class="form-check-label" ><span class="check-circle"></span>
+                                <c:if test="${premType == permanent}">
+                                    Permanent Premises
+                                </c:if>
+                                <c:if test="${premType == conv}">
+                                    Conveyance
+                                </c:if>
+                                <c:if test="${premType == easMts}">
+                                    Conveyance<br/>(in a mobile clinic / ambulance)
+                                </c:if>
+                                <c:if test="${premType == mobile}">
+                                    Mobile Delivery
+                                </c:if>
+                                <c:if test="${premType == remote}">
+                                    Remote Delivery
+                                </c:if>
+                                &nbsp;
+                            </label>
+                            <c:choose>
                                 <c:when test="${premType == permanent}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == conv || premType == easMts}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == mobile}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == remote}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
-                            </c:choose>--%>
-
-                            <div class="form-check">
-                                <c:if test="${appGrpPremisesDto.premisesType!=premType}">
-                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" value="${premType}" aria-invalid="false">
-                                </c:if>
-                                <c:if test="${appGrpPremisesDto.premisesType==premType}">
-                                    <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
-                                </c:if>
-                                <label class="form-check-label" ><span class="check-circle"></span>
-                                    <c:if test="${premType == permanent}">
-                                        Permanent Premises
-                                    </c:if>
-                                    <c:if test="${premType == conv}">
-                                        Conveyance
-                                    </c:if>
-                                    <c:if test="${premType == easMts}">
-                                        Conveyance<br/>(in a mobile clinic / ambulance)
-                                    </c:if>
-                                    <c:if test="${premType == mobile}">
-                                        Mobile Delivery
-                                    </c:if>
-                                    <c:if test="${premType == remote}">
-                                        Remote Delivery
-                                    </c:if>
-                                    &nbsp;
-                                </label>
-                                <c:choose>
-                                    <c:when test="${premType == permanent}">
-                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
-                                    </c:when>
-                                    <c:when test="${premType == conv || premType == easMts}">
-                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
-                                    </c:when>
-                                    <c:when test="${premType == mobile}">
-                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
-                                    </c:when>
-                                    <c:when test="${premType == remote}">
-                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
-                                    </c:when>
-                                </c:choose>
-                            </div>
+                            </c:choose>
                         </div>
                     </c:forEach>
                 </div>
-
-                <div class="row">
-                    <div class="col-xs-12 col-md-4"></div>
-                    <div class="col-xs-6 col-md-5">
-                        <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" ></span>
+                <iais:row>
+                    <iais:field value="" width="5"/>
+                    <div class="col-xs-12 col-md-5">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}"></span>
                     </div>
-                </div>
+                </iais:row>
+
                 <c:if test="${StringUtil.isIn(permanent, premisesType)}">
                 <iais:row cssClass="permanentSelect hidden">
                     <iais:field value="Add or select a Permanent Premises from the list :" width="5" mandatory="true"/>
@@ -285,7 +268,7 @@
                     <iais:row cssClass="certIssuedDtRow">
                         <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                            <iais:datePicker cssClass="fireIssuedDate" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                            <iais:datePicker cssClass="certIssuedDt" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
 
@@ -309,7 +292,7 @@
                             <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode${status.index}" value="${appGrpPremisesDto.postalCode}"/>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>" id="onSite" >Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>">Retrieve your address</a></p>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -319,7 +302,7 @@
                                          firstOption="Please Select" value="${appGrpPremisesDto.addrType}" />
                         </iais:value>
                     </iais:row>
-                    <iais:row>
+                    <iais:row cssClass="address">
                         <iais:field value="Block / House No." width="5" cssClass="blkNoLabel"/>
                         <iais:value width="7">
                             <iais:input cssClass="blkNo" maxLength="10" type="text" name="blkNo${status.index}" value="${appGrpPremisesDto.blkNo}"/>
@@ -389,13 +372,13 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <iais:row>
+                    <iais:row cssClass="address">
                         <iais:field value="Street Name" mandatory="true" width="5"/>
                         <iais:value width="5" cssClass="col-md-5">
                             <iais:input cssClass="streetName" maxLength="32" type="text" name="streetName${status.index}" value="${appGrpPremisesDto.streetName}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
+                    <iais:row cssClass="address">
                         <iais:field value="Building Name" width="5"/>
                         <iais:value width="5" cssClass="col-md-5">
                             <iais:input cssClass="buildingName" maxLength="66" type="text" name="buildingName${status.index}" value="${appGrpPremisesDto.buildingName}"/>
@@ -441,29 +424,29 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Are you co-locating with a service that is licensed under HCSA?" mandatory="true" width="5" />
-                            <iais:value width="3" cssClass="col-md-3 form-check" style="padding-left: 0px;">
+                            <iais:value width="3" cssClass="col-md-3 form-check">
                                 <input <c:if test="${'1'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                             </iais:value>
-                            <iais:value width="4" cssClass="col-md-4 form-check" style="padding-left: 0px;">
+                            <iais:value width="4" cssClass="col-md-4 form-check">
                                 <input <c:if test="${'0'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </iais:value>
-                            <iais:value cssClass="col-xs-12">
+                            <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
                                 <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihHcsa${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="locateWtihNonHcsaRow">
                             <iais:field value="Are you co-locating with a service that is licensed under HCSA?" mandatory="true" width="5" />
-                            <iais:value width="3" cssClass="col-md-3 form-check" style="padding-left: 0px;">
-                                <input <c:if test="${'1'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa"  type="radio" name="locateWtihNonHcsa${status.index}" value = "1" aria-invalid="false">
+                            <iais:value width="3" cssClass="col-md-3 form-check">
+                                <input <c:if test="${'1'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                             </iais:value>
-                            <iais:value width="4" cssClass="col-md-4 form-check" style="padding-left: 0px;">
-                                <input <c:if test="${'0'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa"  type="radio" name="locateWtihNonHcsa${status.index}" value = "0" aria-invalid="false">
+                            <iais:value width="4" cssClass="col-md-4 form-check">
+                                <input <c:if test="${'0'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </iais:value>
-                            <iais:value cssClass="col-xs-12">
+                            <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
                                 <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihNonHcsa${status.index}"></span>
                             </iais:value>
                         </iais:row>
@@ -491,7 +474,7 @@
                                 <label class="col-xs-12 col-md-4 control-label">Services Provided</label>
                             </iais:row>
 
-                            <c:set var="hasNonHcsa" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}" />
+                            <c:set var="hasNonHcsa" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size() > 0}" />
                             <c:if test="${hasNonHcsa}">
                             <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
                                 <iais:row cssClass="nonHcsaRow">
@@ -514,10 +497,12 @@
                             <c:if test="${not hasNonHcsa}">
                             <iais:row cssClass="nonHcsaRow">
                                 <div class="col-xs-12 col-md-4">
-                                    <iais:input maxLength="100" cssClass="coBusinessName" type="text" name="${premValue}coBusinessName0" value="" />
+                                    <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName0" value="" />
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName0"></span>
                                 </div>
                                 <div class="col-xs-12 col-md-4">
-                                    <iais:input maxLength="100" cssClass="coSvcName" type="text" name="${premValue}coSvcName0" value="" />
+                                    <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName0" value="" />
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName0"></span>
                                 </div>
                                 <div class="col-xs-12 col-md-2 delNonHcsaSvcRow hiden">
                                     <div class="text-center">
@@ -527,10 +512,9 @@
                             </iais:row>
                             </c:if>
                             <iais:row cssClass="addNonHcsaSvcRow">
-                                <iais:field value="" width="5"/>
-                                <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                <div class="col-xs-12">
                                     <span class="addNonHcsaSvc"><a style="text-decoration:none;">+ Add Non-Licensable Service</a></span>
-                                </iais:value>
+                                </div>
                             </iais:row>
                         </div>
                     </div>
@@ -541,6 +525,7 @@
 </c:forEach>
 <script type="text/javascript">
     $(document).ready(function() {
+        initPremiseEvent();
         initPremisePage($('div.premContent'));
     });
 
@@ -548,23 +533,32 @@
 
     }
 
-    function initPremisePage($premContent) {
+    function initPremiseEvent() {
         addOperationalEvnet();
         delOperationEvent();
 
         locateWtihNonHcsaEvent();
-        addNonHcsaEvent;
+        addNonHcsaEvent();
         delNonHcsaEvent();
-
-        checkAddressManatory($premContent);
-        checkLocateWtihNonHcsa($premContent);
 
         premTypeEvent();
         premSelectEvent();
         removeBtnEvent();
 
+        addrTypeEvent();
+        retrieveAddrEvent();
+
+        addPremEvent();
+    }
+
+    function initPremisePage($premContent) {
+        checkAddressManatory($premContent);
+        checkLocateWtihNonHcsa($premContent);
+
         var premType = $premContent.find('.premTypeValue').val();
-        console.info("Prem Type: " + premType);
+        var premSelectVal = $premContent.find('.premSelValue').val();
+        checkPremSelect($premContent, premSelectVal, true);
+        console.info("Prem: " + premType + ' | ' + premSelectVal);
         if ('PERMANENT' == premType) {
             showTag($premContent.find('.permanentSelect'));
             hideTag($premContent.find('.conveyanceSelect'));
@@ -633,16 +627,59 @@
         }
     }
 
+    function initPremiseData($premContent) {
+        $premContent.find('.premSelValue').val('-1');
+        $premContent.find('.premTypeValue').val('');
+        $premContent.find('.premisesIndexNo').val('');
+        $premContent.find('.chooseExistData').val('0');
+        $premContent.find('.isPartEdit').val('0');
+    }
+
+    function addPremEvent() {
+        $('#addPremBtn').on('click', function () {
+            var src = $('div.premContent').eq(0).clone();
+            $('div.premContent').after(src);
+            var $premContent = $('div.premContent').last();
+            clearFields($premContent);
+            //initPremiseData($premContent);
+            removeAdditional($premContent);
+            refreshPremise($premContent, $('div.premContent').length - 1);
+        });
+    }
+
     var removeBtnEvent = function () {
         var $target = $(document);
         $target.find('.removeBtn').unbind('click');
         $target.find('.removeBtn').not(':first').on('click', function () {
             $(this).closest('div.premContent').remove();
-            refreshPremise();
+            refreshAllPremises();
         });
     }
 
-    function refreshPremise() {
+    function refreshPremise($premContent, k) {
+        var $target = getJqueryNode($premContent);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        //premIndex
+        $target.find('.premIndex').val(k);
+        if (k == 0) {
+            $target.find('.premHeader').html('');
+            hideTag($target.find('.removeEditDiv'));
+        } else {
+            $target.find('.premHeader').html(k + 1);
+            showTag($target.find('.removeEditDiv'));
+        }
+        resetIndex($target, k);
+        refreshFloorUnit($target, k);
+        refreshNonHcsa($target, k);
+        initPremisePage($target);
+        premTypeEvent();
+        premSelectEvent();
+        removeBtnEvent();
+    }
+
+    function refreshAllPremises() {
         $('div.premContent').each(function(k, v){
             var $target = $(v);
             if (k == 0) {
@@ -652,15 +689,15 @@
                 $target.find('.premHeader').html(k + 1);
                 showTag($target.find('.removeEditDiv'));
             }
+            $target.find('.premIndex').val(k);
             resetIndex($target, k);
-            $target.find('.operationDiv').each(function(i, ele){
-                resetField(ele, i, k);
-            });
-            var length = $target.find('.operationDiv').length;
-            $target.find('.opLength').val(length);
+            refreshFloorUnit($target, k);
             refreshNonHcsa($target, k);
             initPremisePage($target);
         });
+        premTypeEvent();
+        premSelectEvent();
+        removeBtnEvent();
     }
 
     function removeAdditional($premContent) {
@@ -670,12 +707,14 @@
 
     var premTypeEvent = function () {
         $('.premTypeRadio').on('click', function () {
+            clearErrorMsg();
             var $premContent = $(this).closest('div.premContent');
             var premType = $premContent.find('.premTypeRadio:checked').val();
             if (isEmpty(premType)) {
                 premType = "";
             }
             $premContent.find('.premTypeValue').val(premType);
+            $premContent.find('.premSelValue').val('-1');
             initPremisePage($premContent);
         });
     }
@@ -686,32 +725,46 @@
             clearErrorMsg();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
-            clearFields($premContent);
-            if ("-1" == premSelectVal) {
-                hideTag($premContent.find(".new-premise-form"));
-                dismissWaiting();
-            } else if ("newPremise" == premSelectVal) {
-                removeAdditional($premContent);
-                initPremisePage($premContent);
-                showTag($premContent.find(".new-premise-form"));
-                dismissWaiting();
-            } else {
-                showTag($premContent.find(".new-premise-form"));
-                var premType = $premContent.find('.premTypeValue').val();
-                var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
-                var jsonData = {
-                    'premIndexNo': premisesIndexNo,
-                    'premSelectVal': premSelectVal,
-                    'premisesType': premType
-                };
-                var opt = {
-                    url: '${pageContext.request.contextPath}/lic-premises',
-                    type: 'GET',
-                    data: jsonData
-                };
-                callCommonAjax(opt, "premSelectCallback", $premContent);
-            }
+            $premContent.find('.premSelValue').val(premSelectVal);
+            checkPremSelect($premContent, premSelectVal, false);
         });
+    }
+
+    function checkPremSelect($premContent, premSelectVal, onlyInit) {
+        var $premMainContent = $premContent.find(".new-premise-form");
+        if ("-1" == premSelectVal || isEmpty(premSelectVal)) {
+            hideTag($premMainContent);
+            dismissWaiting();
+        } else if ("newPremise" == premSelectVal) {
+            if (!onlyInit) {
+                removeAdditional($premContent);
+                clearFields($premMainContent);
+                checkAddressManatory($premContent);
+                checkLocateWtihNonHcsa($premContent);
+            }
+            showTag($premMainContent);
+            dismissWaiting();
+        } else {
+            showTag($premMainContent);
+            if (onlyInit) {
+                dismissWaiting();
+                return;
+            }
+            clearFields($premMainContent);
+            var premType = $premContent.find('.premTypeValue').val();
+            var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
+            var jsonData = {
+                'premIndexNo': premisesIndexNo,
+                'premSelectVal': premSelectVal,
+                'premisesType': premType
+            };
+            var opt = {
+                url: '${pageContext.request.contextPath}/lic-premises',
+                type: 'GET',
+                data: jsonData
+            };
+            callCommonAjax(opt, "premSelectCallback", $premContent);
+        }
     }
 
     function premSelectCallback(data, $premContent) {
@@ -719,28 +772,35 @@
             dismissWaiting();
             return;
         }
+        console.info("premSelectCallback");
         removeAdditional($premContent);
         fillForm($premContent, data);
         fillFloorUnit($premContent, data.appPremisesOperationalUnitDtos);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
-        initPremisePage($premContent);
-        dismissWaiting();
-    }
-
-    function checkAddressManatory($premContent) {
-        var addrType = $premContent.find('.addrType').val();
-        $premContent.find('.blkNoLabel .mandatory').remove();
-        $premContent.find('.floorUnitLabel .mandatory').remove();
-        if ('ADDTY001' == addrType) {
-            $premContent.find('.blkNoLabel').append('<span class="mandatory">*</span>');
-            $premContent.find('.floorUnitLabel').append('<span class="mandatory">*</span>');
+        // date
+        fillValue($premContent.find('.certIssuedDt'), data.certIssuedDtStr);
+        checkAddressManatory($premContent);
+        checkLocateWtihNonHcsa($premContent);
+        if (eqHciCode=='true') {
+            $premContent.find('input[name="chooseExistData"]').val('0');
+            //doEditPremise($premContent);
+        } else {
+            $premContent.find('input[name="chooseExistData"]').val('1');
         }
+
+        $premContent.find('.premSelValue').val(data.premisesSelect);
+        $premContent.find('.premTypeValue').val(data.premisesType);
+        $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
+        //$premContent.find('.chooseExistData').val(data.existingData);
+        $premContent.find('.isPartEdit').val('0');
+        dismissWaiting();
     }
 
     function checkLocateWtihNonHcsa($premContent) {
         var $row = $premContent.find('.locateWtihNonHcsaRow');
         if ($row.find('input.locateWtihNonHcsa[value="1"]').is(':checked')) {
             showTag($row.next('.nonHcsaRowDiv'));
+            hideTag($premContent.find('.delNonHcsaSvcRow:first'));
         } else {
             hideTag($row.next('.nonHcsaRowDiv'));
         }
@@ -748,7 +808,7 @@
 
     var locateWtihNonHcsaEvent = function (target) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.locateWtihNonHcsa').unbind('click');
@@ -766,7 +826,7 @@
         for(var i = 1; i <= len; i++) {
             var $target = $parent.find('.operationDiv').eq(i - 1);
             if ($target.length == 0) {
-                addFloorUnit($parent, 1);
+                addNonHcsa($parent);
                 $target = $parent.find('.operationDiv').eq(i - 1)
             }
             fillValue($target.find('input.floorNo'), data.floorNo);
@@ -776,48 +836,56 @@
 
     function refreshNonHcsa(target, prefix) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             return;
         }
         $target.find('.nonHcsaRow').each(function(k, v) {
-            toggleTag($(this).find('.delNonHcsaSvcRow'), k != 0);
-            resetField(ele, k, prefix);
+            console.log("refreshNonHcsa---" + prefix + " - " + k);
+            toggleTag($(v).find('.delNonHcsaSvcRow'), k != 0);
+            resetField(v, k, prefix);
         });
-        var length = $nonHcsaRowDiv.find('div.nonHcsaRow').length;
-        $nonHcsaRowDiv.closest('div.premContent').find('.nonHcsaLength').val(length);
+        var length = $target.find('div.nonHcsaRow').length;
+        $target.closest('div.premContent').find('.nonHcsaLength').val(length);
         console.log('Non Hcsa: ' + length);
     }
 
     function addNonHcsa(ele) {
+        showWaiting();
+        console.log("addNonHcsaSvc2");
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.nonHcsaRow:first').clone();
-        clearFields(src);
         $premContent.find('div.addNonHcsaSvcRow').before(src);
-        refreshNonHcsa($premSelect.find('div.nonHcsaRowDiv'));
+        var $target = $premContent.find('div.nonHcsaRow:last');
+        clearFields($target);
+        refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delOperationEvent($premContent);
+        dismissWaiting();
     }
 
     var addNonHcsaEvent = function (target) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             $target = $(document);
         }
+        console.log("addNonHcsaEvent");
         $target.find('.addNonHcsaSvc').unbind('click');
         $target.find('.addNonHcsaSvc').on('click', function () {
+            console.log("addNonHcsaSvc");
             addNonHcsa(this);
         });
     }
 
     var delNonHcsaEvent = function (target) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.nonHcsaSvcDel').unbind('click');
         $target.find('.nonHcsaSvcDel').not(':first').on('click', function () {
-            $(this).closest('div.nonHcsaRow').remove();
+            var $premContent = $(this).closest('div.premContent');
             var $nonHcsaRowDiv = $(this).closest('div.nonHcsaRowDiv');
-            refreshNonHcsa($nonHcsaRowDiv);
+            $(this).closest('div.nonHcsaRow').remove();
+            refreshNonHcsa($nonHcsaRowDiv, $('div.premContent').index($premContent));
         });
     }
 
@@ -830,7 +898,7 @@
         for(var i = 1; i <= len; i++) {
             var $target = $parent.find('.operationDiv').eq(i - 1);
             if ($target.length == 0) {
-                addFloorUnit($parent, 1);
+                addFloorUnit($parent);
                 $target = $parent.find('.operationDiv').eq(i - 1)
             }
             fillValue($target.find('input.floorNo'), data.floorNo);
@@ -838,52 +906,90 @@
         }
     }
 
-    function refreshFloorUnit(operationDivGroup) {
-        var $operationDivGroup = getJqueryNode(operationDivGroup);
-        if (isEmpty($operationDivGroup)) {
+    function refreshFloorUnit(target, prefix) {
+        var $target = getJqueryNode(target);
+        if (isEmptyNode($target)) {
             return;
         }
-        operationDivGroup.each(function (k, v) {
-            resetField(v, k + 1);
+        $target.find('.operationDiv').each(function(i, ele){
+            console.log("refreshFloorUnit---" + prefix + " - " + i);
+            if (i == 0) {
+                hideTag($(ele).find('.operationAdlDiv'));
+            } else {
+                showTag($(ele).find('.operationAdlDiv'));
+                $(ele).find('.floorUnitLabel').html('');
+            }
+            resetField(ele, i, prefix);
         });
-        var length = $operationDivGroup.find('div.operationDiv').length;
-        $operationDivGroup.closest('div.premContent').find('.opLength').val(length + 1);
-        console.log('Floor and Unit: ' + length);
+        var length = $target.find('.operationDiv').length;
+        $target.find('.opLength').val(length);
     }
 
-    function addFloorUnit(ele, count) {
+    function addFloorUnit(ele) {
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.operationDiv:first').clone();
         clearFields(src);
-        for (var i = 0 ; i < count; i++) {
-            $premContent.find('div.addOpDiv').before(src);
-        }
-        refreshFloorUnit($premSelect.find('div.operationDivGroup'));
+        $premContent.find('div.addOpDiv').before(src);
+        refreshFloorUnit($premContent, $('div.premContent').index($premContent));
         delOperationEvent($premContent);
     }
 
     var addOperationalEvnet = function (target) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.addOperational').unbind('click');
         $target.find('.addOperational').on('click', function () {
-            addFloorUnit(this, 1);
+            addFloorUnit(this);
         });
     }
 
     var delOperationEvent = function (target) {
         var $target = getJqueryNode(target);
-        if (isEmpty($target)) {
+        if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.opDel').unbind('click');
         $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
-            var $operationDivGroup = $(this).closest('div.operationDivGroup');
-            //var $premContent = $(this).closest('div.premContent');
+            var $premContent = $(this).closest('div.premContent');
             $(this).closest('div.operationDiv').remove();
-            refreshFloorUnit($operationDivGroup);
+            refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+        });
+    }
+
+    var addrTypeEvent = function(target) {
+        var $target = getJqueryNode(target);
+        if (isEmptyNode($target)) {
+            $target = $(document);
+        }
+        $target.find('.addrType').unbind('change');
+        $target.find('.addrType').on('change', function(){
+            var $premContent = $(this).closest('div.premContent');
+            checkAddressManatory($premContent);
+        });
+    }
+
+    function checkAddressManatory($premContent) {
+        var addrType = $premContent.find('.addrType').val();
+        $premContent.find('.blkNoLabel .mandatory').remove();
+        $premContent.find('.floorUnitLabel .mandatory').remove();
+        if ('ADDTY001' == addrType) {
+            $premContent.find('.blkNoLabel').append('<span class="mandatory">*</span>');
+            $premContent.find('.floorUnitLabel:first').append('<span class="mandatory">*</span>');
+        }
+    }
+
+    var retrieveAddrEvent = function(target) {
+        var $target = getJqueryNode(target);
+        if (isEmptyNode($target)) {
+            $target = $(document);
+        }
+        $target.find('.retrieveAddr').unbind('click');
+        $target.find('.retrieveAddr').on('click', function(){
+            var $postalCodeEle = $(this).closest('div.postalCodeDiv');
+            var postalCode = $postalCodeEle.find('.postalCode').val();
+            retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
         });
     }
 
@@ -918,10 +1024,6 @@
                 dismissWaiting();
             }
         });
-    }
-
-    function postalCodeCon(){
-        $('#postalCodePop').modal('hide');
     }
 
     function ajaxCallUpload(idForm, fileAppendId) {
@@ -983,8 +1085,109 @@
         $('#_fileType').val("XLSX");
         $('#_singleUpload').val("1");
     }
+/*
+    function isEmptyNode(ele) {
+        return ele == null || typeof ele !== "object" || !(ele instanceof jQuery) || ele.length == 0;
+    }
 
-    function hideTag(ele) {
+    function resetField(targetTag, index, prefix) {
+        var $target = getJqueryNode(targetTag);
+        if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
+            return;
+        }
+        var tag = $target[0].tagName.toLowerCase();
+        if ($target.is(':input')) {
+            var orgName = $target.attr('name');
+            var orgId = $target.attr('id');
+            if (isEmpty(orgName)) {
+                orgName = orgId;
+            }
+            if (isEmpty(orgName)) {
+                return;
+            }
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            var base = $target.data('base');
+            if (isEmpty(base)) {
+                var result;
+                if (isEmpty(prefix)) {
+                    prefix = "";
+                    result = /(.*\D+)/g.exec(orgName);
+                } else {
+                    result = /(\D+.*\D+)/g.exec(orgName);
+                }
+                base = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+            }
+            var newName = prefix + base + index;
+            $target.prop('name', newName);
+            if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+                $target.prop('id', newName);
+            }
+            var $errorSpan = $target.closest('.form-group').find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+            if ($errorSpan.length > 0) {
+                $errorSpan.prop('id', 'error_' + newName);
+            }
+            if (tag == 'select') {
+                updateSelectTag($target);
+            }
+        } else {
+            $target.find(':input').each(function() {
+                resetField(this, index, prefix);
+            });
+        }
+    }
+
+    function isEmpty(str) {
+        return typeof str === 'undefined' || str == null || (typeof str !== 'number' && str == '') || str == 'undefined';
+    }
+    function clearFields(targetSelector, withoutClearError) {
+        var $selector = getJqueryNode(targetSelector);
+        if (isEmptyNode($selector)) {
+            return;
+        }
+        if (!$selector.is(":input")) {
+            if (isEmpty(withoutClearError) || !withoutClearError) {
+                $selector.find("span[name='iaisErrorMsg']").each(function () {
+                    $(this).html("");
+                });
+            }
+            $selector = $selector.find(':input[class!="not-clear"]');
+        }
+        if ($selector.length <= 0) {
+            return;
+        }
+        $selector.each(function() {
+            var type = this.type, tag = this.tagName.toLowerCase();
+            if (!$(this).hasClass('not-clear')) {
+                if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
+                    this.value = '';
+                } else if (type == 'checkbox') {
+                    this.checked = false;
+                } else if (type == 'radio') {
+                    this.checked = false;
+                } else if (tag == 'select') {
+                    this.selectedIndex = 0;
+                    updateSelectTag($(this));
+                }
+            }
+        });
+    }
+
+    function capitalize(str){
+        if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
+            return str;
+        }
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function uncapitalize(str){
+        if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
+            return str;
+        }
+        return str.charAt(0).toLowerCase() + str.slice(1);
+    }*/
+    /*function hideTag(ele) {
         var $ele = getJqueryNode(ele);
         if (isEmpty($ele)) {
             return;
@@ -992,7 +1195,7 @@
         $ele.hide();
         $ele.addClass('hidden');
         clearFields($ele);
-    }
+    }*/
     /*$(document).ready(function() {
 
     });

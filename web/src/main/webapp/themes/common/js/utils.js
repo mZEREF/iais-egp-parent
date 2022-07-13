@@ -18,31 +18,31 @@ function dismissWaiting() {
     $.unblockUI();
 }
 
-function doValidation(){
+function doValidation() {
     clearErrorMsg();
     $.ajax({
         async: false,
         type: 'POST',
         url: BASE_CONTEXT_PATH + "/validation.do",
-        data:$('form').serialize(),
-        success: function(res){
+        data: $('form').serialize(),
+        success: function (res) {
             doValidationParse(res);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             $("#iaisErrorFlag").val('Error:Exception');
         }
     });
 }
 
-function showErrorMsg(errorKey,errorMsg) {
-    $('form').find("[id*="+errorKey.replace(/\./g,'\\.')+"]").html(formatHTMLEnCode(errorMsg));
+function showErrorMsg(errorKey, errorMsg) {
+    $('form').find("[id*=" + errorKey.replace(/\./g, '\\.') + "]").html(formatHTMLEnCode(errorMsg));
 }
 
-function formatHTMLEnCode(s1){
-    s1 = s1.replace(/\>/g,"&gt;");
-    s1 = s1.replace(/\</g,"&lt;");
-    s1 = s1.replace(/\"/g,"&quot;");
-    s1 = s1.replace(/\'/g,"&acute;");
+function formatHTMLEnCode(s1) {
+    s1 = s1.replace(/\>/g, "&gt;");
+    s1 = s1.replace(/\</g, "&lt;");
+    s1 = s1.replace(/\"/g, "&quot;");
+    s1 = s1.replace(/\'/g, "&acute;");
     return s1;
 }
 
@@ -60,16 +60,16 @@ function clearErrorMsg(targetTag) {
     }
 }
 
-function doValidationParse(data){
-    if(data != null && data != "[]" && data != ''){
+function doValidationParse(data) {
+    if (data != null && data != "[]" && data != '') {
         $("#iaisErrorFlag").val("BLOCK");
         var results = JSON.parse(data);
 
-        for(var i= 0 ; i< results.length ; i ++){
-            for(var key in results[i]){
-                var error_key="error_" + key.replace(/\./g,'\\.');
+        for (var i = 0; i < results.length; i++) {
+            for (var key in results[i]) {
+                var error_key = "error_" + key.replace(/\./g, '\\.');
                 if (document.getElementById(error_key)) {
-                    $("#"+error_key).show();
+                    $("#" + error_key).show();
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
                         document.getElementById(error_key).innerHTML = results[i][key];
@@ -114,24 +114,24 @@ function gotoFirstMsg() {
     $('html,body').animate({scrollTop: errorTop - 100});
 }
 
-function getErrorMsg(){
+function getErrorMsg() {
     var msgStatus = false;
-    if($("#iaisErrorFlag").val() != null && $("#iaisErrorFlag").val() != ""){
-        msgStatus =  true;
+    if ($("#iaisErrorFlag").val() != null && $("#iaisErrorFlag").val() != "") {
+        msgStatus = true;
     }
 
     return msgStatus;
 }
 
 function showPopupWindow(url) {
-    showPopupWindow(url,'N','popupWindow');
+    showPopupWindow(url, 'N', 'popupWindow');
 }
 
-function showPopupWindow(url,wName) {
-    showPopupWindow(url,'N',wName);
+function showPopupWindow(url, wName) {
+    showPopupWindow(url, 'N', wName);
 }
 
-function showPopupWindow(url,full,wName) {
+function showPopupWindow(url, full, wName) {
     showWaiting();
 
     var w, h;
@@ -142,7 +142,7 @@ function showPopupWindow(url,full,wName) {
         popW = w;
     }
     var leftPos = (w - popW) / 2, topPos = (h - popH) / 2;
-    var params = "scrollbars=yes,location=no,resizable=yes,width=" + popW + ",height=" + popH + ",left=" + leftPos + ",top="+topPos;
+    var params = "scrollbars=yes,location=no,resizable=yes,width=" + popW + ",height=" + popH + ",left=" + leftPos + ",top=" + topPos;
     if (wName == "" || wName == undefined) {
         wName = "popupWindow";
     }
@@ -163,7 +163,7 @@ function showPopupWindow(url,full,wName) {
     return false;
 }
 
-function showPopupWindowSpec(url,width,height) {
+function showPopupWindowSpec(url, width, height) {
     showWaiting();
 
     var w, h;
@@ -171,7 +171,7 @@ function showPopupWindowSpec(url,width,height) {
     w = $(window).width();
     h = $(window).height();
     var leftPos = (w - width) / 2, topPos = (h - height) / 2;
-    var params = "scrollbars=yes,location=no,resizable=yes,width=" + width + ",height=" + height + ",left=" + leftPos + ",top="+topPos;
+    var params = "scrollbars=yes,location=no,resizable=yes,width=" + width + ",height=" + height + ",left=" + leftPos + ",top=" + topPos;
     if (wName == "" || wName == undefined) {
         wName = "popupWindow";
     }
@@ -186,30 +186,30 @@ function showPopupWindowSpec(url,width,height) {
 
 function initMemoryPage(paginationDiv, checkType, pageNo) {
     var data = {
-        pageDiv : paginationDiv,
-        pageNum : pageNo
+        pageDiv: paginationDiv,
+        pageNum: pageNo
     };
-    var getTimestamp=new Date().getTime();
+    var getTimestamp = new Date().getTime();
     $.ajax({
-        data:data,
-        type:"GET",
+        data: data,
+        type: "GET",
         dataType: 'json',
-        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do?timestamp="+getTimestamp,
-        error:function(res){
+        url: BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do?timestamp=" + getTimestamp,
+        error: function (res) {
             $("#iaisErrorFlag").val('Error:Exception');
         },
-        success:function(res){
+        success: function (res) {
             confirmChangeMemoryPage(res);
         }
     });
 }
 
-function getQueryVariable(variable)  {
+function getQueryVariable(variable) {
     let query = window.location.search.substring(1);
     let vars = query.split("&");
-    for (let i = 0; i< vars.length; i++) {
+    for (let i = 0; i < vars.length; i++) {
         let pair = vars[i].split("=");
-        if(pair[0] == variable) return pair[1];
+        if (pair[0] == variable) return pair[1];
     }
 
     return null;
@@ -227,33 +227,33 @@ function changeMemoryPage(paginationDiv, checkType, pageNo) {
     var ids = "NA";
     if (checkType == 1) {
         var elemName = "input:checkbox[name='" + paginationDiv + "Check']";
-        $(elemName).each(function() {
+        $(elemName).each(function () {
             if (this.checked) {
                 ids += "," + this.value;
             }
         });
     } else if (checkType == 2) {
         var elemName = "input:radio[name='" + paginationDiv + "Check']";
-        $(elemName).each(function() {
+        $(elemName).each(function () {
             if (this.checked) {
                 ids += "," + this.value;
             }
         });
     }
     var data = {
-        checkId : ids,
-        pageDiv : paginationDiv,
-        pageNum : pageNo
+        checkId: ids,
+        pageDiv: paginationDiv,
+        pageNum: pageNo
     };
     $.ajax({
-        data:data,
-        type:"GET",
+        data: data,
+        type: "GET",
         dataType: 'json',
-        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
-        error:function(res){
+        url: BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
+        error: function (res) {
             $("#iaisErrorFlag").val('Error:Exception');
         },
-        success:function(res){
+        success: function (res) {
             confirmChangeMemoryPage(res);
         }
     });
@@ -271,7 +271,7 @@ function confirmChangeMemoryPage(res) {
     } else if (res.checkAllRemove != null && res.checkAllRemove == '0') {
         checkAllObj.checked = true;
     }
-    $('div#'+ res.pageDivId +' select').niceSelect();
+    $('div#' + res.pageDivId + ' select').niceSelect();
 }
 
 function checkAllMemoryheck(paginationDiv) {
@@ -296,33 +296,33 @@ function memoryCheckBoxChange(paginationDiv, obj) {
 
 function memoryPageSizeChange(paginationDiv, newSize) {
     var data = {
-        pageDiv : paginationDiv,
-        newSize : newSize
+        pageDiv: paginationDiv,
+        newSize: newSize
     };
     $.ajax({
-        data:data,
-        type:"GET",
+        data: data,
+        type: "GET",
         dataType: 'json',
-        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPageSize.do",
-        error:function(res){
+        url: BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPageSize.do",
+        error: function (res) {
             $("#iaisErrorFlag").val('Error:Exception');
         },
-        success:function(res){
+        success: function (res) {
             confirmChangeMemoryPage(res);
         }
     });
 }
 
-function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
-    var fileId= '#'+selectedFileId;
-    var fileV = $( fileId).val();
+function validateUploadSizeMaxOrEmpty(maxSize, selectedFileId) {
+    var fileId = '#' + selectedFileId;
+    var fileV = $(fileId).val();
     var file = $(fileId).get(0).files[0];
-    if(fileV == null || fileV == "" ||file==null|| file==undefined){
+    if (fileV == null || fileV == "" || file == null || file == undefined) {
         return "E";
     }
     var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
     fileSize = parseInt(fileSize);
-    if(fileSize>= maxSize){
+    if (fileSize >= maxSize) {
         return "N";
     }
     return "Y";
@@ -330,9 +330,9 @@ function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
 
 //use for download function in the page, example : /checklist-item/setup-checkbox
 function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
-    let array =[];
-    $('input[name=' + checkboxName  + ']').each(function(){
-        if ($(this).prop('checked')){
+    let array = [];
+    $('input[name=' + checkboxName + ']').each(function () {
+        if ($(this).prop('checked')) {
             array.push($(this).val())
         }
     });
@@ -340,9 +340,9 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
     $.ajax({
         'url': destUrl,
         'dataType': 'json',
-        'data': {selectedCheckBoxItem:array},
+        'data': {selectedCheckBoxItem: array},
         'type': 'POST',
-        'traditional':true,
+        'traditional': true,
         'async': false,
         'success': function (data) {
         },
@@ -351,23 +351,23 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
     });
 }
 
-function ajaxCallSelectCheckbox(){
+function ajaxCallSelectCheckbox() {
     let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
     if (this.checked) {
         destUrl += '?action=checked'
-      }else{
+    } else {
         destUrl += '?action=unchecked'
-      }
+    }
     destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
     $.ajax({
-            'url': destUrl,
-            'type': 'GET',
-            'traditional':true,
-            'async': true,
-            'success': function (data) {
-            },
-            'error': function () {
-            }
+        'url': destUrl,
+        'type': 'GET',
+        'traditional': true,
+        'async': true,
+        'success': function (data) {
+        },
+        'error': function () {
+        }
     });
 }
 
@@ -377,9 +377,14 @@ var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listener
 if (evenMoreListeners) {
     var allFleChoosers = $("input[type='file']");
     addEventListenersTo(allFleChoosers);
+
     function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
-        fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
+        fileChooser.change(function (event) {
+            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop())
+        });
+        fileChooser.click(function (event) {
+            console.log("open( #" + event.target.id + " )")
+        });
     }
 }
 
@@ -389,7 +394,9 @@ var clone = {};
 function fileClicked(event) {
     var fileElement = event.target;
     if (fileElement.value != "") {
-        if (debugFile) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
+        if (debugFile) {
+            console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop())
+        }
         clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
     }
     //What ever else you want to do when File Chooser Clicked
@@ -399,15 +406,22 @@ function fileClicked(event) {
 function fileChanged(event) {
     var fileElement = event.target;
     if (fileElement.value == "") {
-        if (debugFile) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+        if (debugFile) {
+            console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
+        }
         clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
         $(fileElement).remove(); //'Removing Original'
-        if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        if (evenMoreListeners) {
+            addEventListenersTo(clone[fileElement.id])
+        }//If Needed Re-attach additional Event Listeners
     }
     //What ever else you want to do when File Chooser Changed
 }
 
 function getJqueryNode(elem) {
+    if (!isEmptyNode(elem)) {
+        return elem;
+    }
     if (isEmpty(elem)) {
         return null;
     }
@@ -426,6 +440,28 @@ function getJqueryNode(elem) {
     return $target;
 }
 
+function isEmptyNode(ele) {
+    return ele == null || typeof ele !== "object" || !(ele instanceof jQuery) || ele.length == 0;
+}
+
+function isEmpty(str) {
+    return typeof str === 'undefined' || str == null || (typeof str !== 'number' && str == '') || str == 'undefined';
+}
+
+function capitalize(str) {
+    if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
+        return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function uncapitalize(str) {
+    if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
+        return str;
+    }
+    return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
 function updateSelectTag($sel) {
     if ($sel.is('select[multiple]')) {
         // mutiple select
@@ -437,7 +473,7 @@ function updateSelectTag($sel) {
 
 function toggleTag(ele, show) {
     var $ele = getJqueryNode(ele);
-    if (isEmpty($ele)) {
+    if (isEmptyNode($ele)) {
         return;
     }
     if (show) {
@@ -452,7 +488,7 @@ function toggleTag(ele, show) {
 
 function showTag(ele) {
     var $ele = getJqueryNode(ele);
-    if (isEmpty($ele)) {
+    if (isEmptyNode($ele)) {
         return;
     }
     $ele.show();
@@ -461,7 +497,7 @@ function showTag(ele) {
 
 function hideTag(ele) {
     var $ele = getJqueryNode(ele);
-    if (isEmpty($ele)) {
+    if (isEmptyNode($ele)) {
         return;
     }
     $ele.hide();
@@ -472,7 +508,7 @@ function hideTag(ele) {
 function toggleOnSelect(sel, val, elem) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(elem);
-    if (isEmpty($selector) || isEmpty($target)) {
+    if (isEmptyNode($selector) || isEmptyNode($target)) {
         return;
     }
     if ($selector.val() == val) {
@@ -483,7 +519,7 @@ function toggleOnSelect(sel, val, elem) {
         $target.addClass('hidden');
         clearFields($target);
     }
-    $target.each(function(i, ele) {
+    $target.each(function (i, ele) {
         if ('select' == ele.tagName.toLowerCase()) {
             updateSelectTag($(ele));
         }
@@ -493,49 +529,7 @@ function toggleOnSelect(sel, val, elem) {
 function toggleOnCheck(sel, elem, hide) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(elem);
-    if (isEmpty($selector) || isEmpty($target)) {
-        return;
-    }
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(elem);
-    if ($target.length == 0) {
-        $target = $('#' + elem);
-    } else if ($target.length == 0) {
-        $target = $('.' + sel);
-    }
-    if ($selector.length == 0 || $target.length == 0) {
-        return;
-    }
-    if ($selector.val() == val) {
-        $target.show();
-    } else {
-        $target.hide();
-        clearFields($target);
-    }
-}
-
-function toggleOnCheck(sel, elem, hide) {
-    if (isEmpty(sel)) {
-        return;
-    }
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(elem);
-    if ($target.length == 0) {
-        $target = $('#' + elem);
-    } else if ($target.length == 0) {
-        $target = $('.' + sel);
-    }
-    if ($selector.length == 0 || $target.length == 0) {
+    if (isEmptyNode($selector) || isEmptyNode($target)) {
         return;
     }
     if ($selector.is(':checked')) {
@@ -558,38 +552,9 @@ function toggleOnCheck(sel, elem, hide) {
 }
 
 function checkMantory(sel, targetLabel, val) {
-    console.log("checkMantory");
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(targetLabel);
-    if ($target.length == 0) {
-        $target = $('#' + targetLabel);
-    } else if ($selector.length == 0) {
-        $target = $('.' + targetLabel);
-    }
-    if ($selector.length <= 0 || $target.length <= 0) {
-        console.log("Tags error in checkMantory!");
-            $target.removeClass('hidden');
-    } else {
-        $target.hide();
-        $target.addClass('hidden');
-        clearFields($target);
-    }
-    $target.each(function(i, ele) {
-        if ('select' == ele.tagName.toLowerCase()) {
-            updateSelectTag($(ele));
-        }
-    });
-}
-
-function checkMantory(sel, targetLabel, val) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(targetLabel);
-    if (isEmpty($selector) || isEmpty($target)) {
+    if (isEmptyNode($selector) || isEmptyNode($target)) {
         return;
     }
     $target.find('.mandatory').remove();
@@ -598,39 +563,23 @@ function checkMantory(sel, targetLabel, val) {
     }
 }
 
-function isEmpty(str) {
-    return typeof str === 'undefined' || str == null || str == '' || str == 'undefined';
-}
-
-function capitalize(str){
-    if (isEmpty(str) || Object.prototype.toString.call(elem) !== "[object String]") {
-        return str;
-    }
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function uncapitalize(str){
-    if (isEmpty(str) || Object.prototype.toString.call(elem) !== "[object String]") {
-        return str;
-    }
-    return str.charAt(0).toLowerCase() + str.slice(1);
-}
-
-function clearFields(targetSelector) {
+function clearFields(targetSelector, withoutClearError) {
     var $selector = getJqueryNode(targetSelector);
-    if (isEmpty($selector)) {
+    if (isEmptyNode($selector)) {
         return;
     }
     if (!$selector.is(":input")) {
-        $selector.find("span[name='iaisErrorMsg']").each(function () {
-            $(this).html("");
-        });
+        if (isEmpty(withoutClearError) || !withoutClearError) {
+            $selector.find("span[name='iaisErrorMsg']").each(function () {
+                $(this).html("");
+            });
+        }
         $selector = $selector.find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function() {
+    $selector.each(function () {
         var type = this.type, tag = this.tagName.toLowerCase();
         if (!$(this).hasClass('not-clear')) {
             if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
@@ -649,7 +598,7 @@ function clearFields(targetSelector) {
 
 function fillForm(ele, data, prefix, suffix) {
     var $selector = getJqueryNode(ele);
-    if (isEmpty($selector)) {
+    if (isEmptyNode($selector)) {
         return;
     }
     if (isEmpty(data)) {
@@ -676,13 +625,13 @@ function fillForm(ele, data, prefix, suffix) {
         if ($input.length == 0) {
             continue;
         }
-        fillValue($input, data[i], true);
+        fillValue($input, val, true);
     }
 }
 
-function fillValue(targetSelector, data, includeHidden){
+function fillValue(targetSelector, data, includeHidden) {
     var $selector = getJqueryNode(targetSelector);
-    if (isEmpty($selector)) {
+    if (isEmptyNode($selector)) {
         return;
     }
     if (isEmpty(data)) {
@@ -729,12 +678,12 @@ function fillValue(targetSelector, data, includeHidden){
             console.log("Can't find the related tag - " + targetSelector);
             return;
         }
-        $selector.each(function(i, ele) {
+        $selector.each(function (i, ele) {
             fillValue(ele, data[i]);
         });
     } else {
-        $.each(data, function(i, val) {
-            var $input = $selector.find('[name="'+ i +'"]:input');
+        $.each(data, function (i, val) {
+            var $input = $selector.find('[name="' + i + '"]:input');
             if ($input.length == 0) {
                 $input = $selector.find('.' + i + ':input');
             }
@@ -745,7 +694,7 @@ function fillValue(targetSelector, data, includeHidden){
 
 function disableContent(targetSelector) {
     var $selector = getJqueryNode(targetSelector);
-    if (isEmpty($selector)) {
+    if (isEmptyNode($selector)) {
         return;
     }
     if (!$selector.is(":input")) {
@@ -754,14 +703,14 @@ function disableContent(targetSelector) {
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function(i, ele) {
+    $selector.each(function (i, ele) {
         var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
         $input.prop('disabled', true);
-        $input.css('border-color','#ededed');
-        $input.css('color','#999');
+        $input.css('border-color', '#ededed');
+        $input.css('color', '#999');
         if (tag == 'select') {
             updateSelectTag($input);
         }
@@ -770,7 +719,7 @@ function disableContent(targetSelector) {
 
 function unDisableContent(targetSelector) {
     var $selector = getJqueryNode(targetSelector);
-    if (isEmpty($selector)) {
+    if (isEmptyNode($selector)) {
         return;
     }
     if (!$selector.is(":input")) {
@@ -779,14 +728,14 @@ function unDisableContent(targetSelector) {
     if ($selector.length <= 0) {
         return;
     }
-    $selector.each(function(i, ele) {
+    $selector.each(function (i, ele) {
         var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
         if (type == 'hidden') {
             return;
         }
         $input.prop('disabled', false);
-        $input.css('border-color','');
-        $input.css('color','');
+        $input.css('border-color', '');
+        $input.css('color', '');
         if (tag == 'select') {
             updateSelectTag($input);
         }
@@ -794,7 +743,7 @@ function unDisableContent(targetSelector) {
 }
 
 function refreshId(targetSelector) {
-    $(targetSelector).each(function (k,v) {
+    $(targetSelector).each(function (k, v) {
         var $input = $(v);
         if ($input.hasClass('not-refresh')) {
             return;
@@ -811,7 +760,7 @@ function refreshId(targetSelector) {
 
 function refreshIndex(targetSelector) {
     var $target = getJqueryNode(targetSelector);
-    if (isEmpty($target)) {
+    if (isEmptyNode($target)) {
         return;
     }
     $target.each(function (k, v) {
@@ -833,17 +782,17 @@ function refreshIndex(targetSelector) {
 
 function resetIndex(targetTag, index) {
     var $target = getJqueryNode(targetTag);
-    if (isEmpty($target)) {
+    if (isEmptyNode($target)) {
         return;
     }
-    $target.find(':input').each(function() {
+    $target.find(':input').each(function () {
         resetField(this, index)
     });
 }
 
 function resetField(targetTag, index, prefix) {
     var $target = getJqueryNode(targetTag);
-    if (isEmpty($target) || $target.hasClass('not-refresh')) {
+    if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
         return;
     }
     var tag = $target[0].tagName.toLowerCase();
@@ -875,7 +824,7 @@ function resetField(targetTag, index, prefix) {
         if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
             $target.prop('id', newName);
         }
-        var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+        var $errorSpan = $target.closest('.form-group').find('span[name="iaisErrorMsg"][id="error_' + orgName + '"]');
         if ($errorSpan.length > 0) {
             $errorSpan.prop('id', 'error_' + newName);
         }
@@ -883,7 +832,7 @@ function resetField(targetTag, index, prefix) {
             updateSelectTag($target);
         }
     } else {
-        $target.find(':input').each(function() {
+        $target.find(':input').each(function () {
             resetField(this, index, prefix);
         });
     }
@@ -943,7 +892,7 @@ function callFunc(func) {
 function getContextPath() {
     var pathName = document.location.pathname;
     var index = pathName.substr(1).indexOf("/");
-    var result = pathName.substr(0,index+1);
+    var result = pathName.substr(0, index + 1);
     return result;
 }
 

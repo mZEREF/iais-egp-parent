@@ -146,18 +146,14 @@ public final class AppDataHelper {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
-        int count = ParamUtil.getInt(request, "premCount", 1);
        /* String[] premisesType = ParamUtil.getStrings(request, "premCount");
         String[] hciName = ParamUtil.getStrings(request, "onSiteHciName");
         if (premisesType != null) {
             count = premisesType.length;
         }*/
-        if (!isMultiPremService) {
-            count = 1;
-        }
         String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
-        String[] premValue = ParamUtil.getStrings(request, "premValue");
+        //String[] premValue = ParamUtil.getStrings(request, "premValue");
         String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
         String[] opLengths = ParamUtil.getStrings(request, "opLength");
@@ -212,6 +208,10 @@ public final class AppDataHelper {
         String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
         String[] weeklyLengths = ParamUtil.getStrings(request, "weeklyLength");
         String[] eventLengths = ParamUtil.getStrings(request, "eventLength");*/
+        int count = premisesIndexNos.length;
+        if (!isMultiPremService) {
+            count = 1;
+        }
         for (int i = 0; i < count; i++) {
             String premType = ParamUtil.getString(request, "premType" + i);
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -233,11 +233,12 @@ public final class AppDataHelper {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
             }
+            String existingData = getVal(chooseExistData, i);
             String appType = appSubmissionDto.getAppType();
             boolean newApp = !isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
                 if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1")
-                        && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(chooseExistData[i])) {
+                        && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(existingData)) {
                     AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
                     if (licPremise != null) {
                         appGrpPremisesDto = CopyUtil.copyMutableObject(licPremise);
@@ -246,13 +247,13 @@ public final class AppDataHelper {
                     }
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
-                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
+                        appGrpPremisesDto.setExistingData(existingData);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
                 }
-            } else if (AppConsts.YES.equals(chooseExistData[i])) {
+            } else if (AppConsts.YES.equals(existingData)) {
                 appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premisesSel, request);
                 if (appGrpPremisesDto != null) {
                     if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
@@ -261,7 +262,7 @@ public final class AppDataHelper {
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }
                     if (!AppConsts.YES.equals(isParyEdit[i])) {
-                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
+                        appGrpPremisesDto.setExistingData(existingData);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                         continue;
@@ -273,10 +274,11 @@ public final class AppDataHelper {
                     appGrpPremisesDto = new AppGrpPremisesDto();
                 }
             }
-            appGrpPremisesDto.setExistingData(chooseExistData[i]);
+            appGrpPremisesDto.setExistingData(existingData);
             ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
             appGrpPremisesDto.setPremisesType(premType);
+            appGrpPremisesDto.setPremisesSelect(premisesSel);
             //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
            /* List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
             List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
@@ -317,12 +319,12 @@ public final class AppDataHelper {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("event length can not parse to int"));
             }*/
-            if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+            if (AppConsts.TRUE.equals(getVal(rfiCanEdit, i))) {
                 appGrpPremisesDto.setRfiCanEdit(true);
             } else {
                 appGrpPremisesDto.setRfiCanEdit(false);
             }
-            if (AppConsts.YES.equals(retrieveflag[i])) {
+            if (AppConsts.YES.equals(getVal(retrieveflag, i))) {
                 appGrpPremisesDto.setClickRetrieve(true);
             } else {
                 appGrpPremisesDto.setClickRetrieve(false);
@@ -339,8 +341,8 @@ public final class AppDataHelper {
 
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             for(int k = 1; k < opLength; k++) {
-                floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
-                unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
+                floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
+                unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
                 if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
                     continue;
                 }
@@ -354,9 +356,9 @@ public final class AppDataHelper {
             }
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
             List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
-            for(int k = 1; k < nonHcsaLength; k++) {
-                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + 0);
-                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + 0);
+            for(int k = 0; k < nonHcsaLength; k++) {
+                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
+                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
                 if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
                     continue;
                 }

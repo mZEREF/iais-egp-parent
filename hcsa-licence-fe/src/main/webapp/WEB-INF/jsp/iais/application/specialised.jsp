@@ -33,3 +33,20 @@
     </div>
 </form>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<script type="text/javascript">
+    $(document).ready(function() {
+        //Binding method
+        $('#Back').click(function () {
+            showWaiting();
+            submit('premises', 'back', null);
+        });
+        $('#Next').click(function () {
+            showWaiting();
+            submit('serviceForms', null, null);
+        });
+        $('#SaveDraft').click(function () {
+            showWaiting();
+            submit('specialised', 'saveDraft', $('#selectDraftNo').val());
+        });
+    });
+</script>
