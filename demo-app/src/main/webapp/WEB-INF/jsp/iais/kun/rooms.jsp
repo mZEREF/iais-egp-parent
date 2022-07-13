@@ -10,6 +10,7 @@
 <div class="main-content">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" id="roomId" name="roomId" value="">
         <br>
         <br>
         <div class="bg-title"><h2>Rooms</h2></div>
@@ -17,16 +18,9 @@
             <div class="form-group">
                 <iais:field value="Type" required="true"/>
                 <iais:value width="7">
-                    <select name="roomType" id="roomType" onchange="displaySection()">
-                        <option value="default">select</option>
-                        <c:forEach var = "room" items = "${rooms.rows}" varStatus="status">
-                            <option value="${room.roomType}">${room.roomType}</option>
-                        </c:forEach>
-                    </select>
+                    <iais:select name="roomType" id="roomType" options="roomTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
                 </iais:value>
-                <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
             </div>
-
             <div class="row">
                 <div class="col-xs-12 col-md-12">
                     <div class="text-right">
@@ -41,7 +35,7 @@
             <h3>
                 <span>Search Results</span>
             </h3>
-            <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
+            <iais:pagination  param="roomSearchParam" result="roomSearchResult"/>
             <div class="table-gp">
                 <table aria-describedby="" class="table">
                     <thead>
@@ -54,13 +48,13 @@
                     </thead>
                     <tbody style="text-align: left">
                         <%-- rooms entity--%>
-                        <c:forEach var = "room" items = "${rooms.rows}" varStatus="status">
+                        <c:forEach var = "room" items = "${roomSearchResult.rows}" varStatus="status">
                             <tr>
                                 <td align="left" style="width: 40%"><iais:code code="${room.id}"></iais:code></td>
                                 <td align="left" style="width: 30%"><iais:code code="${room.roomType}"></iais:code></td>
                                 <td align="left" style="width: 20%"><iais:code code="${room.roomNo}"></iais:code></td>
                                 <td align="left" style="width: 10%">
-                                    <button type="button"   onclick="prepareEdit('<iais:mask name="roomId" value="${room.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
+                                    <button type="button" value="${room.id}" onclick="prepareEdit('<iais:mask name="roomId" value="${room.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -86,29 +80,11 @@
         SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
     }
 
-    function disable(id){
-        $("#msgQueryId").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
-    }
-
-    function doClear() {
-        $("#domainType option[text = 'Please Select']").val("selected", "selected");
-        $("#domainType").val("");
-        $("#msgType option[text = 'Please Select']").val("selected", "selected");
-        $("#msgType").val("");
-        $("#module option[text = 'Please Select']").val("selected", "selected");
-        $("#module").val("");
-        $(".form-horizontal .current").text("Please Select");
-    }
-
     $(document).ready(function() {
         displaySection()
     });
 
     function displaySection(){
-        var val =  $("#domainType").val();
-        if(val == null || val == '' ){
-            return;
-        }
+        var val =  $("#roomType").val();
     }
 </script>

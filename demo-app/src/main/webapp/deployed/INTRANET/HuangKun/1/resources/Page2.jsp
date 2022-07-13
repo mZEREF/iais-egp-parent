@@ -1,1 +1,1 @@
-111
+<%@include file = "/WEB-INF/jsp/iais/kun/roomEdit.jsp"%>

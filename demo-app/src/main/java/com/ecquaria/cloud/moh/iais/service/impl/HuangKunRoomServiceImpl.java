@@ -28,12 +28,17 @@ public class HuangKunRoomServiceImpl implements HuangKunRoomService {
     }
 
     @Override
-    public List<String> listModuleTypes() {
-        return null;
+    public SearchResult<HuangKunRoomDto> queryRoomByType(String param) {
+        return huangKunRoomClient.queryRoomsByType(param).getEntity();
     }
 
     @Override
-    public HuangKunRoomDto getRoomById(String msgId) {
-        return null;
+    public List<String> listRoomTypes() {
+        return huangKunRoomClient.queryRoomType().getEntity();
+    }
+
+    @Override
+    public HuangKunRoomDto getRoomById(String Id) {
+        return huangKunRoomClient.queryRoomByID(Id).getEntity();
     }
 }

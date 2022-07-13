@@ -13,7 +13,9 @@ import java.util.List;
 public interface HuangKunRoomService {
     SearchResult<HuangKunRoomDto> doQuery();
 
-    List<String> listModuleTypes();
+    SearchResult<HuangKunRoomDto> queryRoomByType(String param);
 
-    HuangKunRoomDto getRoomById(String msgId);
+    List<String> listRoomTypes();
+
+    HuangKunRoomDto getRoomById(String Id);
 }
