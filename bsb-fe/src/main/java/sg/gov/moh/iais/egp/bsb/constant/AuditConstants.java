@@ -19,9 +19,6 @@ public class AuditConstants {
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
     public static final String PARAM_FACILITY_TYPE = "facilityType";
 
-    public static final String MODULE_AUDIT = "Audit";
-    public static final String FUNCTION_AUDIT = "Audit";
-
     public static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
     public static final String KEY_AUDIT_DATA_LIST = "dataList";
     public static final String KEY_ACTION_VALUE = "action_value";

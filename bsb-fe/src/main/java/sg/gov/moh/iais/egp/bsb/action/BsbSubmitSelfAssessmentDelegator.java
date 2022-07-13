@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -38,14 +36,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.AssessmentState;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.SelfAssChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -67,6 +63,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_SELF_ASSESSMENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_MAIN_FUNCTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
@@ -144,7 +142,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         // if rfi module
         rfiService.clearAndSetAppIdInSession(request);
         // set audit trail info (We can set appNo here, may be added in future)
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SELF_ASSESSMENT);
+        AuditTrailHelper.auditFunction(MODULE_MAIN_FUNCTION, FUNCTION_SELF_ASSESSMENT);
     }
 
 
@@ -405,16 +403,16 @@ public class BsbSubmitSelfAssessmentDelegator {
         List<ChklstItemAnswerDto> answerDtos = IaisCommonUtils.genNewArrayList();
         List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        NewDocInfo fileInfo = getFileInfo(request);
-        if (fileInfo == null) {
+        File file = getFileInfo(request);
+        if (file == null) {
             errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-        } else if (fileInfo.getSize() == 0) {
+        } else if (file.length() == 0) {
             // GENERAL_ERR0069 - Could not parse file content.
             errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0069"));
-        } else if (!FileUtils.isExcel(fileInfo.getFilename())) {
+        } else if (!FileUtils.isExcel(file.getName())) {
             errorMap.put("selfAssessmentData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
-            Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
+            Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(file);
             List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
             Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
                     errorMsgs);
@@ -468,13 +466,12 @@ public class BsbSubmitSelfAssessmentDelegator {
         return errorMsgs.isEmpty();
     }
 
-    private Map<String, List<ChklstItemAnswerDto>> transformToChklstItemAnswerDtos(NewDocInfo fileInfo) {
-        if (fileInfo == null) {
+    private Map<String, List<ChklstItemAnswerDto>> transformToChklstItemAnswerDtos(File file) {
+        if (file == null) {
             return IaisCommonUtils.genNewHashMap();
         }
         Map<String, List<ChklstItemAnswerDto>> resultMap = IaisCommonUtils.genNewHashMap();
         try {
-            File file = fileInfo.getFile();
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, false);
             Map<String, List<SelfAssChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (!CollectionUtils.isEmpty(data)) {
@@ -503,7 +500,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         return resultMap;
     }
 
-    private NewDocInfo getFileInfo(HttpServletRequest request) {
+    private File getFileInfo(HttpServletRequest request) {
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
         if (fileMap == null || fileMap.isEmpty()) {
             log.info("No file found!");
@@ -511,13 +508,8 @@ public class BsbSubmitSelfAssessmentDelegator {
         }
         // only one
         Iterator<Map.Entry<String, File>> iterator = fileMap.entrySet().iterator();
-        if (!iterator.hasNext()) {
-            return null;
-        }
         Map.Entry<String, File> next = iterator.next();
-        File file = next.getValue();
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        return NewDocInfo.toNewDocInfo(DocConstants.DOC_TYPE_SELF_ASSESSMENT, loginContext.getUserId(), file);
+        return next.getValue();
     }
 
     /**

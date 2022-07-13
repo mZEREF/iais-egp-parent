@@ -6,7 +6,7 @@
 
 <%@attribute name="facProfileDto" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto" %>
 <%@attribute name="batInfo" required="true" type="java.lang.Object" %>
-<%@attribute name="facAuthorisedList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto>" %>
+<%@attribute name="facAuthorisedList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>" %>
 <%@attribute name="processType" required="true" type="java.lang.String" %>
 
 <%@attribute name="docFrag" fragment="true" %>

@@ -150,7 +150,10 @@ public class ApptInspectionDateDelegator {
         if (AppConsts.TRUE.equals(apptInspectionDateDto.getSysSpecDateFlag())) {
             processDecValues.add(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
         }
-        processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))){
+            processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        }
         ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
 
         //set rollback options
@@ -300,7 +303,7 @@ public class ApptInspectionDateDelegator {
                 String rollBackToIndex = ParamUtil.getString(bpc.request, "rollBackTo");
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
                 Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
-                inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex));
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex),null);
                 ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
             }
         }

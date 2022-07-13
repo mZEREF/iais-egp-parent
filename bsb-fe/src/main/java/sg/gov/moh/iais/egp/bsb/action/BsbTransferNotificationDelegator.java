@@ -31,6 +31,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION_TRANSFER_NOTIFICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSUME_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FACILITY_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_OTHER_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -78,11 +87,12 @@ public class BsbTransferNotificationDelegator {
      */
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_FACILITY_INFO, null);
-        ParamUtil.setSessionAttr(request, KEY_TRANSFER_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_FAC_ID, null);
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, null);
-        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_FACILITY_INFO);
+        session.removeAttribute(KEY_TRANSFER_NOTIFICATION_DTO);
+        session.removeAttribute(KEY_FAC_ID);
+        session.removeAttribute(KEY_OTHER_DOC);
+        AuditTrailHelper.auditFunction(MODULE_DATA_SUBMISSION, FUNCTION_DATA_SUBMISSION_TRANSFER_NOTIFICATION);
     }
 
     public void preFacSelect(BaseProcessClass bpc) {

@@ -59,21 +59,21 @@
                <iais:row >
                    <iais:field width="5" value="Specialty" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dSpecialitys" id="dSpecialitys" value="${sexualSterilizationDto.specialty}" />
+                       <iais:input maxLength="1024" type="text" name="dSpecialitys" id="dSpecialitys" value="${sexualSterilizationDto.specialty}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
                    </iais:value>
                </iais:row>
                <iais:row >
                    <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dSubSpecialitys" id="dSubSpecialitys" value="${sexualSterilizationDto.subSpecialty}" />
+                       <iais:input maxLength="1024" type="text" name="dSubSpecialitys" id="dSubSpecialitys" value="${sexualSterilizationDto.subSpecialty}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
                    </iais:value>
                </iais:row>
                <iais:row >
                    <iais:field width="5" value="Qualification" mandatory="true"/>
                    <iais:value width="7" cssClass="col-md-7" display="true">
-                       <iais:input maxLength="100" type="text" name="dQualifications" id="dQualifications" value="${sexualSterilizationDto.qualification}" />
+                       <iais:input maxLength="1024" type="text" name="dQualifications" id="dQualifications" value="${sexualSterilizationDto.qualification}" />
                        <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
                    </iais:value>
                </iais:row>
@@ -90,21 +90,21 @@
            <iais:row >
                <iais:field width="5" value="Specialty" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input  type="text" name="dSpeciality" maxLength="100" id="dSpecialityText" value="${doctorInformationDto.speciality}" />
+                   <iais:input  type="text" name="dSpeciality" maxLength="1024" id="dSpecialityText" value="${doctorInformationDto.speciality}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                </iais:value>
            </iais:row>
            <iais:row >
                <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input  type="text" name="dSubSpeciality" maxLength="100"  id="dSubSpecialityText" value="${doctorInformationDto.subSpeciality}" />
+                   <iais:input  type="text" name="dSubSpeciality" maxLength="1024"  id="dSubSpecialityText" value="${doctorInformationDto.subSpeciality}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                </iais:value>
            </iais:row>
            <iais:row >
                <iais:field width="5" value="Qualification" mandatory="true"/>
                <iais:value width="7" cssClass="col-md-7" display="true">
-                   <iais:input type="text" name="dQualification" maxLength="100" id="dQualificationText" value="${doctorInformationDto.qualification}" />
+                   <iais:input type="text" name="dQualification" maxLength="1024" id="dQualificationText" value="${doctorInformationDto.qualification}" />
                    <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                </iais:value>
            </iais:row>
@@ -356,7 +356,6 @@
         console.log('loading info ...');
         showWaiting();
         var prgNo =  $('input[name="doctorReignNo"]').val();
-        console.log('1');
         if(prgNo == "" || prgNo == null || prgNo == undefined){
             clearPrsInfo();
             dismissWaiting();
@@ -370,18 +369,18 @@
             'prgNo': no,
             'docSource': doctorSource
         };
-        console.log('2');
         $.ajax({
             'url': '${pageContext.request.contextPath}/doc/prg-input-info',
             'dataType': 'json',
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                console.log('3');
                 if(isEmpty(data.selection) && isEmpty(data.selections)) {
                     clearPrsInfoText();
+                    clearPrsInfoElis();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
+                    console.log("1");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
@@ -390,42 +389,59 @@
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
+                    console.log("2");
                 } else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
+                    clearPrsInfoElis();
                     clearPrsInfoText();
                     $('#doctorInformations').val(true);
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                     $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
+                    console.log("4");
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("5");
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
-                    }else if (data.selection.hasException) {
+                        console.log("6");
+                    }else if (data.selection.hasException && !isEmpty(data.selections)){
                         clearPrsInfoElis();
+                        $('#doctorInformationPE').val(true);
+                        $('#PRS_CLOSE').modal('show');
+                        $('#doctorInformationElis').show();
+                        $('#doctorInformationPrs').hide();
+                        console.log("7");
+                    } else if (data.selection.hasException && isEmpty(data.selections)) {
+                        clearPrsInfoElis();
+                        clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
-                    }else if ('401' == data.selection.statusCode) {
+                        console.log("8");
+                    } else if ('401' == data.selection.statusCode) {
                         $('#doctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
-                    }else if(isEmpty(!data.selections)){
+                        console.log("9");
+                    } else if (isEmpty(!data.selections)) {
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("10");
                     }
 
                 }

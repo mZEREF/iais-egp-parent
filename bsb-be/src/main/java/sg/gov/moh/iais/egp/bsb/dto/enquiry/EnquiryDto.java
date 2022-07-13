@@ -1,11 +1,14 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import net.sf.oval.constraint.ValidateWithMethod;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -52,10 +55,10 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
 
     private String processType;
 
-    private Date facilityExpiryDateFrom;
+    private LocalDate facilityExpiryDateFrom;
 
     @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkExpiryDtToAfterFrom", parameterType = Date.class, profiles = {"fac"})
-    private Date facilityExpiryDateTo;
+    private LocalDate facilityExpiryDateTo;
 
     private String gazettedArea;
 
@@ -160,11 +163,11 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
         return approvalDateTo.after(approvalDateFrom);
     }
 
-    private boolean checkExpiryDtToAfterFrom(Date facilityExpiryDateTo) {
+    private boolean checkExpiryDtToAfterFrom(LocalDate facilityExpiryDateTo) {
         if (facilityExpiryDateTo == null || facilityExpiryDateFrom == null){
             return true;
         }
-        return facilityExpiryDateTo.after(facilityExpiryDateFrom);
+        return facilityExpiryDateTo.isAfter(facilityExpiryDateFrom);
     }
 
     private boolean checkApprovalSubDtToAfterFrom(Date approvalSubmissionDateTo) {

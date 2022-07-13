@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -50,8 +51,6 @@ import com.ecquaria.egp.api.EGPHelper;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -595,6 +594,12 @@ public final class IaisEGPHelper extends EGPHelper {
         return licenseeService.getLicenseeEmails(licenseeId);
     }
 
+    public static List<String> getEmailsByRoleIdsAndLicenseeId(String licenseeId,List<String> roleIds){
+        LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
+
+        return licenseeService.getEmailsByRoleIdsAndLicenseeId(licenseeId,roleIds);
+    }
+
     public static List<String> getLicenseeMobiles(String licenseeId) {
         LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
 
@@ -995,6 +1000,13 @@ public final class IaisEGPHelper extends EGPHelper {
             // roles.add(RoleConsts.USER_ROLE_DS_VSS_SUPERVISOR);
         }
         return roles;
+    }
+
+    public static OrgUserRoleDto createOrgUserRoleDto(String roleName, String selectSvcs) {
+        OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
+        orgUserRoleDto.setRoleName(roleName);
+        orgUserRoleDto.setSelectServices(selectSvcs);
+        return orgUserRoleDto;
     }
 
     public static <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {

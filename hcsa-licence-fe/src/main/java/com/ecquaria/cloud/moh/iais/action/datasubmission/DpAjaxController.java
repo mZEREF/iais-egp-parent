@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,8 +88,11 @@ public class DpAjaxController {
         String dispensingDate = ParamUtil.getString(request, "dispensingDate");
         String submitDt=Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
-        if(Formatter.compareDateByDay(submitDt,dispensingDate)>2){
-            result.put("showDate", Boolean.TRUE);
+        boolean b = PreTerminationValidator.validateDate(dispensingDate);
+        if (b) {
+            if (Formatter.compareDateByDay(submitDt, dispensingDate) > 2) {
+                result.put("showDate", Boolean.TRUE);
+            }
         }
         return result;
     }

@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -47,24 +46,13 @@ public class BsbBeViewFacilityDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(MASK_PARAM_APP_ID);
-        session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
         session.removeAttribute(KEY_TASK_TYPE);
+        session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
         AuditTrailHelper.auditFunction("View Application", "Facility Registration");
     }
 
     public void init(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String maskedAppId = request.getParameter(MASK_PARAM_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM_APP_ID, maskedAppId);
-        if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
-            throw new IaisRuntimeException("Invalid App ID");
-        }
-        ParamUtil.setSessionAttr(request, MASK_PARAM_APP_ID, appId);
-
-        String taskType = request.getParameter(KEY_TASK_TYPE);
-        if (taskType != null && !taskType.equals("")) {
-            ParamUtil.setSessionAttr(request, KEY_TASK_TYPE, taskType);
-        }
+        appViewService.init(bpc);
     }
 
     public void prepareData(BaseProcessClass bpc) {

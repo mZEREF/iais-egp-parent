@@ -111,6 +111,11 @@ function printData() {
             url += '&printflag=' + printflag;
         }
     }
+    if (url.indexOf('?') < 0) {
+        url += '?role=' + 'DS_VSS';
+    } else {
+        url += '&role=' + 'DS_VSS';
+    }
     var data = getDataForPrinting();
     if (isEmpty(data)) {
         window.open(url,'_blank');

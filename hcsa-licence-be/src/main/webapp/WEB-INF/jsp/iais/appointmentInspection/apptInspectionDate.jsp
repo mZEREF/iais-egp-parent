@@ -85,9 +85,9 @@
                               <table aria-describedby="" class="apptApp table">
                                 <thead>
                                 <tr>
-                                  <th scope="col" >Application No</th>
-                                  <th scope="col" >Application Status</th>
-                                  <th scope="col" >MOH Officer(s)</th>
+                                  <th scope="col" style="width: 34%">Application No</th>
+                                  <th scope="col" style="width: 35%">Application Status</th>
+                                  <th scope="col" style="width: 31%">MOH Officer(s)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -173,38 +173,38 @@
                                 <iais:select name="rollBackTo" id="rollBackTo"
                                              firstOption="Please Select"
                                              options="rollBackOptions"
-                                             needSort="true"
                                              value=""/>
                                 <span id="error_rollBackTo1" class="error-msg"
                                       style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
 
-                            <iais:row>
-                              <iais:field value="Licence Start Date"/>
-                              <iais:value width="10" display="true">
-                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                  <span style="font-size: 16px"><fmt:formatDate
-                                          value='${applicationViewDto.recomLiceStartDate}'
-                                          pattern='dd/MM/yyyy'/></span>
-                                </c:if>
-                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                  <span style="font-size: 16px">-</span>
-                                </c:if>
-                              </iais:value>
-                            </iais:row>
+                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
+                              <iais:row>
+                                <iais:field value="Licence Start Date"/>
+                                <iais:value width="10" display="true">
+                                  <c:if test="${applicationViewDto.recomLiceStartDate != null}">
+                                    <span style="font-size: 16px"><fmt:formatDate
+                                            value='${applicationViewDto.recomLiceStartDate}'
+                                            pattern='dd/MM/yyyy'/></span>
+                                  </c:if>
+                                  <c:if test="${applicationViewDto.recomLiceStartDate == null}">
+                                    <span style="font-size: 16px">-</span>
+                                  </c:if>
+                                </iais:value>
+                              </iais:row>
+                            </c:if>
 
                             <iais:row>
                               <iais:field value="Fast Tracking?"/>
                               <iais:value width="10" display="true">
-                                <p></p>
-                                <input disabled type="checkbox"
+                                <input disabled type="checkbox" id="fastTracking"
                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                <p></p>
+                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
                               </iais:value>
                             </iais:row>
 
-                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
+                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag}">
                               <iais:action>
                                 <a style="float:left;padding-top: 1.1%;" class="back"
                                    href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em
@@ -213,12 +213,6 @@
                                         onclick="javascript:submitButFun()">
                                   SUBMIT
                                 </button>
-                              </iais:action>
-                            </c:if>
-                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
-                              <iais:action>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                                <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                               </iais:action>
                             </c:if>
                             <c:if test="${'SUCCESS' ne apptInspectionDateDto.actionButtonFlag}">

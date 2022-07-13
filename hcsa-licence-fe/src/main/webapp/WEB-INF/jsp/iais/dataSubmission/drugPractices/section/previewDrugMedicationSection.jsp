@@ -14,11 +14,11 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:forEach items="${drugPrescribedDispensedDto.drugMedicationDtos}" var="drugMedicationDto" varStatus="idxStatus">
-                    <c:set var="index" value="${idxStatus.index}" />
+                    <c:set var="index" value="${idxStatus.index}"/>
                     <iais:row>
                         <div class="col-sm-6 control-label formtext col-md-8">
                             <div class="cgo-header">
-                                <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                                <strong>Medication <span>${index+1}</span></strong>
                             </div>
                         </div>
                     </iais:row>

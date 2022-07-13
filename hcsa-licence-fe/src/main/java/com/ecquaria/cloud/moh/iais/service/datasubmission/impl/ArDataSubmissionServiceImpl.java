@@ -824,12 +824,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
                  if( StringUtil.isNotEmpty( dataSubmissionDraftDto.getLicenseeId())){
                      Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("ApplicantName","draftNumber","date","MOH_AGENCY_NAME"),Arrays.asList(licenseeService.getLicenseeDtoById(dataSubmissionDraftDto.getLicenseeId()).getName(),dataSubmissionDraftDto.getDraftNo(),expDateString,AppConsts.MOH_AGENCY_NAME));
+                     String serviceType = dsType2ServiceType(dataSubmissionDraftDto.getDsType());
+                     String emailTemplateId = dsType2EmailTempId(dataSubmissionDraftDto.getDsType());
                      try {
                          notificationHelper.sendNotification(new EmailParam(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG,map,dataSubmissionDraftDto.getDraftNo(),dataSubmissionDraftDto.getDraftNo(),
-                                 NotificationHelper.MESSAGE_TYPE_NOTIFICATION,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),dataSubmissionDraftDto.getDsType()));
+                                 NotificationHelper.MESSAGE_TYPE_NOTIFICATION,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),serviceType));
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send msg end ----------"));
-                         notificationHelper.sendNotification(new EmailParam(MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL,map,dataSubmissionDraftDto.getDraftNo(),dataSubmissionDraftDto.getDraftNo(),
-                                 NotificationHelper.RECEIPT_TYPE_LICENSEE_ID ,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),dataSubmissionDraftDto.getDsType()));
+                         notificationHelper.sendNotification(new EmailParam(emailTemplateId,map,dataSubmissionDraftDto.getDraftNo(),dataSubmissionDraftDto.getDraftNo(),
+                                 NotificationHelper.RECEIPT_TYPE_LICENSEE_ID ,dataSubmissionDraftDto.getLicenseeId(),MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map),serviceType));
                          draftNos.add(dataSubmissionDraftDto.getDraftNo());
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send email end ----------"));
                      } catch (IOException e) {
@@ -843,6 +845,36 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             });
 
             arFeClient.doUpdateDraftRemindEmailStatus(draftNos);
+        }
+    }
+
+    private String dsType2ServiceType(String dsType){
+        switch (dsType){
+            case DataSubmissionConsts.DS_AR:
+                return DataSubmissionConsts.DS_AR_NEW;
+            case DataSubmissionConsts.DS_LDT:
+                return  DataSubmissionConsts.DS_LDT_NEW;
+            case DataSubmissionConsts.DS_TOP:
+                return DataSubmissionConsts.DS_TOP_NEW;
+            case DataSubmissionConsts.DS_DRP:
+                return  DataSubmissionConsts.DS_DRP_NEW;
+            default:
+                return dsType;
+        }
+    }
+
+    private String dsType2EmailTempId(String dsType){
+        switch (dsType){
+            case DataSubmissionConsts.DS_AR:
+                return MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_AR;
+            case DataSubmissionConsts.DS_LDT:
+                return  MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_LDT;
+            case DataSubmissionConsts.DS_TOP:
+                return MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_TOP;
+            case DataSubmissionConsts.DS_DRP:
+                return  MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_DP;
+            default:
+                return MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_VSS;
         }
     }
 }

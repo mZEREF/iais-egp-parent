@@ -1,5 +1,5 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003' && preTerminationDto.counsellingResult!='TOPPCR003'}">
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
 <c:set var="doctorInformationDto" value="${topSuperDataSubmissionDto.doctorInformationDto}" />
 <c:set var="terminationDto" value="${terminationOfPregnancyDto.terminationDto}" />
@@ -153,7 +153,7 @@
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
@@ -206,7 +206,7 @@
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
@@ -260,7 +260,7 @@
             <iais:row cssClass="topDrugPlace">
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
@@ -334,21 +334,21 @@
                 <iais:row >
                     <iais:field width="5" value="Specialty" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dSpecialitys" name="dSpecialitys" value="${terminationDto.specialty}" />
+                        <iais:input maxLength="1024" type="text" id="dSpecialitys" name="dSpecialitys" value="${terminationDto.specialty}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row >
                     <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${terminationDto.subSpecialty}" />
+                        <iais:input maxLength="1024" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${terminationDto.subSpecialty}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row >
                     <iais:field width="5" value="Qualification" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <iais:input maxLength="100" type="text" id="dQualifications" name="dQualifications" value="${terminationDto.qualification}" />
+                        <iais:input maxLength="1024" type="text" id="dQualifications" name="dQualifications" value="${terminationDto.qualification}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
                     </iais:value>
                 </iais:row>
@@ -365,21 +365,21 @@
         <iais:row >
             <iais:field width="5" value="Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                <iais:input maxLength="1024" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                <iais:input maxLength="1024" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
             </iais:value>
         </iais:row>
         <iais:row >
             <iais:field width="5" value="Qualification" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
-                <iais:input maxLength="100" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
+                <iais:input maxLength="1024" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
             </iais:value>
         </iais:row>
@@ -387,7 +387,7 @@
     <iais:row >
         <iais:field width="5" value="Other Qualification"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <iais:input maxLength="100" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
+            <iais:input maxLength="1024" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
         </iais:value>
     </iais:row>
 </div>
@@ -769,12 +769,14 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
+                    console.log("1");
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
                     $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
+                    console.log("2");
                 }else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     clearPrsInfoText();
                     $('#topDoctorInformations').val(true);
@@ -782,42 +784,50 @@
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                     $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#topDoctorInformations').val(false);
                     loadingSp(data);
+                    console.log("4");
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("5");
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("6");
                     }else if(data.selection.hasException && !isEmpty(data.selections)){
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
-                        $('#ELIS_SERVICE').modal('show');
+                        $('#PRS_CLOSE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("7");
                     }else if (data.selection.hasException && isEmpty(data.selections)) {
                         clearPrsInfoText();
                         $('#topDoctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("8");
                     }else if ('401' == data.selection.statusCode) {
                         $('#topDoctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("9");
                     }else if(!isEmpty(data.selections)){
 
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("10");
                     }
                 }
 

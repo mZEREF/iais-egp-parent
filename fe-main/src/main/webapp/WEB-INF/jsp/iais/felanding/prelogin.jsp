@@ -143,22 +143,24 @@
                         </div>
                       </div>
                       <!---------------------->
-                      <div class="col-xs-12 col-lg-8" style="padding-top:15px">
-                        <div class="form-check-gp">
-                          <div class="form-check">
-                            <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
-                            <label class="form-check-label"  for="oldSystem"><span class="check-square"></span><strong>Biosafety Branch (BSB)</strong></label>
+                      <div id="bsbDiv" <c:if test="${'yes' ne bsbAppearFlag}">style="display: none"</c:if>>
+                        <div class="col-xs-12 col-lg-8" style="padding-top:15px">
+                          <div class="form-check-gp">
+                            <div class="form-check">
+                              <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
+                              <label class="form-check-label"  for="oldSystem"><span class="check-square"></span><strong>Biosafety Branch (BSB)</strong></label>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
-                        <a data-toggle="collapse" data-target="#bsb-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
-                      </div>
-                      <div class="col-xs-12 col-lg-12" >
-                        <div id="bsb-info" class="collapse halp-infobox"  style="height: 100px">
-                          <div class="col-xs-4 col-md-11 col-sm-4">Register New Facility</div><br>
-                          <div class="col-xs-4 col-md-11 col-sm-4">Approval for  Approval</div><br>
-                          <div class="col-xs-4 col-md-11 col-sm-4">Apply to New Facility Certifier</div>
+                        <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
+                          <a data-toggle="collapse" data-target="#bsb-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        </div>
+                        <div class="col-xs-12 col-lg-12" >
+                          <div id="bsb-info" class="collapse halp-infobox"  style="height: 100px">
+                            <div class="col-xs-4 col-md-11 col-sm-4">Register New Facility</div><br>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Approval for  Approval</div><br>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply to New Facility Certifier</div>
+                          </div>
                         </div>
                       </div>
                       <!---------------------->

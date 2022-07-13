@@ -1,4 +1,5 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_drugMedication.js"></script>
+<input type="hidden" id="medicationSize" name="medicationSize" value="${drugMedicationDtos.size()}">
 <div class="panel panel-default" id="medicationSection">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -15,14 +16,14 @@
                 <input type="hidden" name="drugMedicationLength" value="1">
                 <div class="med" id="indexs">
                 <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="0" end="0" varStatus="idxStatus">
-                    <c:set var="index" value="${idxStatus.index}" />
+                   <c:set var="index" value="${idxStatus.index}"/>
                    <iais:row id="test">
                        <div class="col-sm-6 control-label formtext col-md-8">
                            <div class="cgo-header">
-                               <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                               <strong>Medication <span class="assign-psn-item">${index+1}</span></strong>
                            </div>
                        </div>
-                       <div class="col-md-4 col-xs-7 text-right" id="deleteIcon">
+                       <div class="col-md-4 col-xs-7 text-right deleteIcon">
                            <a class="removeMedications"  onclick="" style="text-decoration:none;" href="javascript:void(0)">
                                <h4 class="text-danger">
                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -86,12 +87,12 @@
                 <div id ="medicationDiv">
 
                     <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="1" varStatus="idxStatus">
-                        <c:set var="index" value="${idxStatus.index}" />
+                        <c:set var="index" value="${idxStatus.index}"/>
                         <div class="med">
                         <iais:row id="test">
                             <div class="col-sm-6 control-label formtext col-md-8">
                                 <div class="cgo-header">
-                                    <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                                    <strong>Medication <span class="assign-psn-item">${index+1}</span></strong>
                                 </div>
                             </div>
                             <div class="col-md-4 col-xs-7 text-right">
@@ -135,7 +136,7 @@
                             <iais:row>
                                 <iais:field width="5" value="Frequency" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select cssClass="frequency"  name="frequency${index}" firstOption="Please Select"
+                                    <iais:select cssClass="frequency"  name="frequency${index}" id="frequency${index}" firstOption="Please Select"
                                                  codeCategory="DP_FREQUENCY" value="${drugMedicationDto.frequency}"/>
                                 </iais:value>
                             </iais:row>

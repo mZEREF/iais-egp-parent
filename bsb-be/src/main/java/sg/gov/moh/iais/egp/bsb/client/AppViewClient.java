@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
@@ -29,8 +29,8 @@ public interface AppViewClient {
     @GetMapping(value = "/declaration/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<DeclarationItemMainInfo> getDeclarationConfigInfoById(@PathVariable("id") String id);
 
-    @GetMapping(path = "/app-view/register/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalAppDto> getApprovalAppDtoByAppId(@PathVariable("appId") String applicationId);
+    @GetMapping(path = "/app-view/register/bat-and-activity/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovalBatAndActivityDto> getApprovalBatAndActivityDtoByAppId(@PathVariable("appId") String applicationId);
 
     @GetMapping(path = "/app-view/register/facility-certifier/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityCertifierRegisterDto> getFacCerRegDtoByAppId(@PathVariable("appId") String applicationId);
@@ -58,4 +58,7 @@ public interface AppViewClient {
 
     @GetMapping(path = "/app-view/rfi-old-data/facility", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getOldFacilityRegistrationData(@RequestParam("appId") String appId);
+
+    @GetMapping(path = "/app-view/rfi-old-data/bat-and-activity", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovalBatAndActivityDto> getOldApprovalBatAndActivityData(@RequestParam("appId") String appId);
 }

@@ -87,6 +87,17 @@ public class NotificationHelper {
 	public static final String MESSAGE_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
 
 	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
+	public static final String RECEIPT_ROLE_LICENSEE_ALL                		= "EM-LIC-ALL";
+	public static final String RECEIPT_ROLE_LICENSEE_AR_SUBMITTER               = "EM-DS-AR";
+	public static final String RECEIPT_ROLE_LICENSEE_DP_SUBMITTER               = "EM-DS-DP";
+	public static final String RECEIPT_ROLE_LICENSEE_VS_SUBMITTER               = "EM-DS-VS";
+	public static final String RECEIPT_ROLE_LICENSEE_LDT_SUBMITTER              = "EM-DS-LDT";
+	public static final String RECEIPT_ROLE_LICENSEE_TOP_SUBMITTER              = "EM-DS-TOP";
+	public static final String RECEIPT_ROLE_LICENSEE_AR_SUPERVISOR              = "EM-DR-AR";
+	public static final String RECEIPT_ROLE_LICENSEE_DP_SUPERVISOR              = "EM-DR-DP";
+	public static final String RECEIPT_ROLE_LICENSEE_VS_SUPERVISOR              = "EM-DR-VS";
+	public static final String RECEIPT_ROLE_LICENSEE_LDT_SUPERVISOR             = "EM-DR-LDT";
+	public static final String RECEIPT_ROLE_LICENSEE_TOP_SUPERVISOR             = "EM-DR-TOP";
 	public static final String RECEIPT_ROLE_TRANSFEREE_LICENSEE                	= "TRANSFEREE";
 	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
 	public static final String RECEIPT_ROLE_ASSIGNED_ASO            			= "EM-A-ASO";
@@ -830,7 +841,7 @@ public class NotificationHelper {
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
 			inspectionEmailTemplateDto = getRecriptLic(role, refId, inspectionEmailTemplateDto,recipientUserId);
 		} else if (RECEIPT_TYPE_LICENSEE_ID.equals(refType)){
-			msgCommonUtil.setRecriptByLicenseeId(refId, inspectionEmailTemplateDto);
+			msgCommonUtil.setRecriptByLicenseeId(role,refId, inspectionEmailTemplateDto);
 		}else {
 			inspectionEmailTemplateDto = getOfficer(role, inspectionEmailTemplateDto,recipientUserId);
 		}

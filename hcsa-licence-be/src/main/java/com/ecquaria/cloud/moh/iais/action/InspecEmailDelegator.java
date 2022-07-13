@@ -342,7 +342,7 @@ public class InspecEmailDelegator {
                 index++;
             }
             mesContext= msgTemplateDto.getMessageContent();
-            inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
+            inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), mapTemplate));
         }
 
         // mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
@@ -353,16 +353,20 @@ public class InspecEmailDelegator {
         }
         inspectionEmailTemplateDto.setMessageContent(mesContext);
 
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW,InspectionConstants.PROCESS_DECI_ROLL_BACK});
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
-        for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-            if(!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW};
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        }
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
+        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 : appPremisesRoutingHistoryDtos) {
+            if (!StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getWrkGrpId())) {
                 appPremisesRoutingHistoryDto1.setWrkGrpId(applicationViewService.getWrkGrpName(appPremisesRoutingHistoryDto1.getWrkGrpId()));
             }
-            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getActionby())){
+            if (StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getActionby())) {
                 appPremisesRoutingHistoryDto1.setActionby("-");
-            }
-            else {
+            } else {
                 appPremisesRoutingHistoryDto1.setActionby(applicationViewService.getUserNameById(new ArrayList<String>(Collections.singleton(appPremisesRoutingHistoryDto1.getActionby()))).get(0).getDisplayName());
             }
             if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getProcessDecision())){
@@ -513,7 +517,7 @@ public class InspecEmailDelegator {
                 ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             }else {
                 Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, "rollBackValueMap");
-                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo));
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request,"isRollBack",true);
             }
         }

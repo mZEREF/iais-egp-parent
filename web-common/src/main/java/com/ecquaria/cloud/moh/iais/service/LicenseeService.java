@@ -13,5 +13,6 @@ import java.util.List;
 public interface LicenseeService {
     LicenseeDto getLicenseeDtoById(String licenseeId);
     List<String> getLicenseeEmails(String licenseeId);
+    List<String> getEmailsByRoleIdsAndLicenseeId(String licenseeId,List<String> roleIds);
     List<String> getLicenseeMobiles(String licenseeId);
 }

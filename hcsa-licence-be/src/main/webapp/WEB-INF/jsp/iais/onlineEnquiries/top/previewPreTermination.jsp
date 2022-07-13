@@ -14,7 +14,7 @@
                 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
                 <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                 <c:if test="${preTerminationDto.counsellingGiven == false }">
-                    <c:set var="beforeConsultation"><iais:message key="No Pre-Termination of Pregnancy counseling was done for this patient" paramKeys="1" paramValues="counsellor"/></c:set>
+                    <c:set var="beforeConsultation"><iais:message key="DS_MSG032" paramKeys="1" paramValues="counsellor"/></c:set>
                 </c:if>
                 <iais:row>
                     <iais:field width="6" value="Whether Given Counselling" info="${beforeConsultation}"/>
@@ -89,10 +89,13 @@
                 </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
                     <c:if test="${counsellingLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
+                    </c:if>
+                    <c:if test="${topDates}">
+                        <c:set var="toolMsgDS_MSG030"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>
+                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
@@ -100,11 +103,12 @@
                     <iais:row>
                         <iais:field width="5" value="Place Where Counselling Was Done"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:if test="${preTerminationDto.counsellingAge >= 16}">
-                                <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlace"/>
+
+                            <c:if test="${preTerminationDto.counsellingPlace != 'AR_SC_001'}">
+                                ${preTerminationDto.counsellingPlace}
                             </c:if>
-                            <c:if test="${preTerminationDto.counsellingAge < 16}">
-                                <iais:optionText value="${preTerminationDto.counsellingPlace}" selectionOptions="CounsellingPlacea"/>
+                            <c:if test="${preTerminationDto.counsellingPlace == 'AR_SC_001'}">
+                                Health Promotion Board Counselling Centre
                             </c:if>
                         </iais:value>
                     </iais:row>
@@ -115,9 +119,9 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellingGiven != true || patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null}">style="display: none"</c:if> >
+                <div <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge==null}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"/>
+                        <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" info="${toolMsgNum}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.preCounsNoCondReason}"/>
                         </iais:value>
@@ -127,16 +131,17 @@
                     <iais:row>
                         <iais:field width="6" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"/>
                         <iais:value width="6" display="true">
-                            <c:out value="${preTerminationDto.patientAppointment}"/>
+                            <c:if test="${preTerminationDto.patientAppointment=='1'}">Yes</c:if>
+                            <c:if test="${preTerminationDto.patientAppointment=='0'}">No</c:if>
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.patientAppointment!='Yes' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
+                <div <c:if test="${preTerminationDto.patientAppointment!='1' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
                     <c:if test="${secondLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="late" paramKeys="1" paramValues="counsellor"/></c:set>
+                        <c:set var="toolMsgSecondLate"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Second or Final Pre-Counselling" info="${toolMsg}"/>
+                        <iais:field width="5" value="Date of Second or Final Pre-Counselling" info="${toolMsgSecondLate}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.secCounsellingDate}"/>
                         </iais:value>
@@ -149,8 +154,11 @@
                     </iais:row>
                 </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
+                    <c:if test="${preTerminationDto.counsellingAge<16 && patientInformationDto.maritalStatus !='TOPMS002' && preTerminationDto.counsellingPlace != 'AR_SC_001'}">
+                        <c:set var="toolMsgAge"><iais:message key="This patient is below 16 years old from the date of Termination of Pregnancy, not married and pre-counselling is not done at Health Promotion Board Counselling Centre or Student Health Centre" paramKeys="1" paramValues="counsellor" escape="false"/></c:set>
+                    </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Patient Age (Years)"/>
+                        <iais:field width="5" value="Patient Age (Years)" info="${toolMsgAge}"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" id="age">
                             ${preTerminationDto.counsellingAge}
                         </iais:value>

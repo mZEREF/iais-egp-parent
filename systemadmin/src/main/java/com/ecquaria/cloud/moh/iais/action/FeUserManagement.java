@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -193,14 +195,13 @@ public class FeUserManagement {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(request,"name");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
-            String active = ParamUtil.getString(request,"active");
             //admin role
             String role = ParamUtil.getString(request,"role");
             String roles = ParamUtil.getStringsToString(request, "roles");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             String idType = ParamUtil.getString(bpc.request,"idType");
             String selectServices = ParamUtil.getStringsToString(bpc.request,"service");
-            active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
+            String active = "active".equals(ParamUtil.getString(request,"active")) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String id = userAttr.getId();
             String prevIdNumber = userAttr.getIdentityNo();
@@ -276,11 +277,27 @@ public class FeUserManagement {
                     att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                     AuditTrailHelper.callSaveAuditTrail(att);
                     userAttr.setAuditTrailDto(att);
-
-                    //save be
-                    if (StringUtil.isEmpty(userAttr.getSelectServices())) {
-                        userAttr.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
+                    // set roles
+                    List<String> roleList = IaisCommonUtils.genNewArrayList();
+                    if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(userAttr.getUserRole())) {
+                        roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
                     }
+                    if (StringUtil.isNotEmpty(userAttr.getRoles())) {
+                        roleList.addAll(Arrays.asList(userAttr.getRoles().split("#")));
+                    }
+                    List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+                    for (String r : roleList) {
+                        String selectSvcs = null;
+                        if (StringUtil.isIn(r, new String[]{RoleConsts.USER_ROLE_ORG_USER})) {
+                            selectSvcs = selectServices;
+                            if (StringUtil.isEmpty(selectServices)) {
+                                selectSvcs = AppServicesConsts.SERVICE_MATRIX_ALL;
+                            }
+                        }
+                        orgUserRoleDtos.add(IaisEGPHelper.createOrgUserRoleDto(r, selectSvcs));
+                    }
+                    userAttr.setOrgUserRoleDtos(orgUserRoleDtos);
+                    //save be
                     userAttr = intranetUserService.saveIntrenetUser(userAttr);
                     // sync
                     syncFeUserWithTrack(userAttr);

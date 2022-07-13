@@ -21,7 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AFC_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ADMINISTRATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_APPLICATION_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_COMPANY_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT;
 
 @Delegator(value = "rfcViewCertRegAppDelegator")
 @Slf4j
@@ -44,7 +50,7 @@ public class RfcViewCertRegAppDelegator {
 
     public void start(BaseProcessClass bpc) { // NOSONAR
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("RFC Facility Certifier Register", "RFC View Application");
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_AFC_REGISTRATION);
         request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 

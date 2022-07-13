@@ -8,9 +8,6 @@ public class FacCertifierRegisterConstants {
     private FacCertifierRegisterConstants() {}
     public static final String STEP_NAME_FACILITY_CERTIFIER_PREVIEW = "certTeamPreview";
 
-
-    public static final String MODULE_NAME_NEW = "Facility Certifier Registration";
-
     public static final String NODE_NAME_BEGIN_FACILITY_CERTIFIER = "beginAFC";
     public static final String NODE_NAME_APPLICATION_INFO = "appInfo";
     public static final String NODE_NAME_COMPANY_PROFILE = "companyProfile";
@@ -18,8 +15,6 @@ public class FacCertifierRegisterConstants {
     public static final String NODE_NAME_CERTIFYING_TEAM_DETAIL = "certTeam";
     public static final String NODE_NAME_SUPPORTING_DOCUMENT = "supportingDoc";
     public static final String NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT = "previewSubmit";
-
-
 
     public static final String KEY_ROOT_NODE_GROUP = "facCertifierRegRoot";
 

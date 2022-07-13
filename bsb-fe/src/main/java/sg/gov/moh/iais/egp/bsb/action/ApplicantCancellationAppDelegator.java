@@ -22,14 +22,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPROVAL_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_CESSATION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_1;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_2;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_DO_SAVE_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_INIT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_PREPARE_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_TYPE_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_TYPE_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_VALUE_BACK;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_ACTION_VALUE_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_APPROVAL_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_CANCELLATION_APPROVAL_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_CURRENT_DATE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_EDIT_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants.KEY_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 
-/**
- * @author : LiRan
- * @date : 2022/1/10
- */
 @Slf4j
 @Delegator("applicantCancellationAppDelegator")
 public class ApplicantCancellationAppDelegator {
@@ -47,7 +60,7 @@ public class ApplicantCancellationAppDelegator {
         request.getSession().removeAttribute(KEY_PROCESS_TYPE);
         request.getSession().removeAttribute(KEY_CANCELLATION_APPROVAL_DTO);
         request.getSession().removeAttribute(DocConstants.KEY_COMMON_DOC_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_CANCELLATION_APPROVAL);
+        AuditTrailHelper.auditFunction(MODULE_CESSATION, FUNCTION_APPROVAL_APPLICATION);
     }
 
     public void init(BaseProcessClass bpc) {

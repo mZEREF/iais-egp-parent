@@ -102,4 +102,15 @@ public class DataSubmissionConstant {
     public static String RFC_NO_CHANGE_ERROR               = "RFC_NO_CHANGE_ERROR";
 
     public static String DFT_ERROR_MC                      = "-1";
+
+    //doctor source
+    public static String TOP_DOCTOR_INFO_FROM_PRS          = "TOPP"; //TOP get doctor info from PRS
+    public static String TOP_DOCTOR_INFO_FROM_ELIS         = "TOPE"; //TOP get doctor info from eLis
+    public static String TOP_DOCTOR_INFO_USER_NEW_REGISTER = "TOPT"; //TOP register new doctor
+    public static String DP_DOCTOR_INFO_FROM_PRS           = "DRPP"; //DP get doctor info from PRS
+    public static String DP_DOCTOR_INFO_FROM_ELIS          = "DRPE"; //DP get doctor info from eLis
+    public static String DP_DOCTOR_INFO_USER_NEW_REGISTER  = "DRPT"; //DP register new doctor
+    public static String VS_DOCTOR_INFO_FROM_PRS           = "VSSP"; //VSS get doctor info from PRS
+    public static String VS_DOCTOR_INFO_FROM_ELIS          = "VSSE"; //VSS get doctor info from eLis
+    public static String VS_DOCTOR_INFO_USER_NEW_REGISTER  = "VSST"; //VSS register new doctor
 }

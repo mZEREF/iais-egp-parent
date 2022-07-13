@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
-import static com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts.FUNCTION_INSPECTION_REPORT;
-import static com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts.MODULE_INSPECTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INSPECTION_REPORT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_REPORT_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
@@ -43,7 +43,7 @@ public class BsbRfiCommentInspectionReportDelegator {
         session.removeAttribute(KEY_COMMON_DOC_DTO);
         session.removeAttribute(KEY_APP_ID);
         rfiService.clearAndSetAppIdInSession(request);
-        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_INSPECTION_REPORT);
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_INSPECTION_REPORT);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -82,8 +82,9 @@ public class BsbRfiCommentInspectionReportDelegator {
         HttpServletRequest request = bpc.request;
         ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        reportDto.setAppId(appId);
         // save data
-        rfiService.saveInspectionReport(request, reportDto, appId);
+        rfiService.saveInspectionReport(request, reportDto);
         // acknowledge page need appId
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
     }

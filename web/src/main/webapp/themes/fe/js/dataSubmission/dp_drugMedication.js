@@ -14,11 +14,18 @@ $(document).ready(function (){
     if(num==0){
         $('.removeMedications').hide();
     }
+    var size = $("#medicationSize").val();
+    console.log("init size: "+size);
+    if (size > 1){
+        $('.deleteIcon').show();
+        $('.assign-psn-item').show();
+    }
 });
 
 $(function () {
     removeMedications();
 });
+
 function addMedications() {
     var targetClass = '.med';
     var $content = $(targetClass).eq(0).clone();
@@ -31,12 +38,20 @@ function addMedications() {
     }
     refreshKeyAppointmentHolder();
     removeMedications();
+    $('.deleteIcon').show();
+    $('.assign-psn-item').show();
 }
 function removeMedications(){
     $('.removeMedications').on("click", function() {
         console.log("click is triger")
         $(this).closest('#medicationDiv .med').remove();
         refreshKeyAppointmentHolder();
+        var size = $("#medicationSize").val();
+        console.log("removeMedications function -> size: "+size);
+        if (size == 1){
+            $('.deleteIcon').hide();
+            $('.assign-psn-item').hide();
+        }
     })
 }
 function refreshKeyAppointmentHolder() {
@@ -48,9 +63,11 @@ function refreshKeyAppointmentHolder() {
     refreshId($meContent);
     $meContent.each(function (k,v) {
         var $input = $(v);
-        if(k>=1){
+        var opt = $("#frequency"+k).val();
+        if (opt !== 'FRE009'){
             $input.attr("style","display: none")
         }
+        $("#medicationSize").val(k+1);
     });
     var $frequencyContent = $('select[class = "frequency"]');
     console.log($frequencyContent)

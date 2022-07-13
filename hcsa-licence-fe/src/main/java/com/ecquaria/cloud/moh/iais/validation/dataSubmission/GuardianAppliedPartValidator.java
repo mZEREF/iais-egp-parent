@@ -9,14 +9,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Map;
 @Slf4j
 public class GuardianAppliedPartValidator implements CustomizeValidator {
@@ -27,6 +25,9 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto();
+        if(guardianAppliedPartDto ==null){
+            guardianAppliedPartDto= new GuardianAppliedPartDto();
+        }
         String errMsg =  MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field");
         if(treatmentDto.getAge()<21 && !treatmentDto.getMaritalStatus().equals(DataSubmissionConsts.MARITAL_STATUS_MARRIED)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getGuardianName())){

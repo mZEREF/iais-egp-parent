@@ -57,7 +57,7 @@ public class ApprovalBatAndActivityConstants {
     public static final String DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO = "draftApprovalBatAndActivityDto";
 
     public static final String KEY_NAV_NEXT = "next";
-    public static final String KEY_NAV_BACK = "back";
+    public static final String KEY_NAV_PREVIOUS            = "previous";
 
     public static final String KEY_ACTION_SUBMIT = "submit";
     public static final String KEY_ACTION_JUMP = "jump";
@@ -81,7 +81,6 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
-    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
 
     public static final String KEY_ACTION_SAVE_AS_DRAFT = "draft";
 

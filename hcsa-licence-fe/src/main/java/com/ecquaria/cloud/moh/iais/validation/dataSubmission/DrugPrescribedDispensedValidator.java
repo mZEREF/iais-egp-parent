@@ -67,7 +67,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         }
         String name=drugSubmission.getName();
         String doctorName=drugSubmission.getDoctorName();
-        if (errorMap.isEmpty() && StringUtil.isEmpty(name) && StringUtil.isEmpty(doctorName)) {
+        if (errorMap.isEmpty() && StringUtil.isEmpty(name)) {
             errorMap.put("showValidatePT", AppConsts.YES);
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
         }
@@ -168,12 +168,16 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(dispensingDate) && !StringUtil.isEmpty(endDate)){
-            try {
-                if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
-                    errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
+            if (PreTerminationValidator.validateDate(dispensingDate)){
+                try {
+                    if(Formatter.compareDateByDay(endDate,dispensingDate)<0){
+                        errorMap.put("endDate", "Must be later than date of Start Date of Dispensing.");
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
                 }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            } else {
+                errorMap.put("dispensingDate", "Invalid date");
             }
         }
 
@@ -188,6 +192,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         //
         Map<String,Double> preDrugMedicationMap = null ;
         Map<String,Double> drugMedicationMap = null;
+        Map<String,Double> nowDrugMedicationMap = null;
         //The amount of medication that already took and nowCount
         double totalGet = 0;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
@@ -204,6 +209,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             }
             log.info("The amount of medication that already took {},Prescription submissionNo is{}",totalGet,drugSubmission.getPrescriptionSubmissionId());
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
+            nowDrugMedicationMap = tidyDrugMedicationDto(null,drugMedicationDtos);
         }
         List<String> quantityMatchS = new ArrayList<>(drugMedicationDtos.size());
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
@@ -245,7 +251,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                    } else {
                        preCount = null;
                    }
-                   Double nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   Double nowCount = nowDrugMedicationMap.get(drugMedicationDto.getBatchNo());
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
                    if(preCount ==  null || nowCount > (preCount - totalGet)){

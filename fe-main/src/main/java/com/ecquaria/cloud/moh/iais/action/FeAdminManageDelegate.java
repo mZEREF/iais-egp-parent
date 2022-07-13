@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -38,6 +39,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -250,6 +253,27 @@ public class FeAdminManageDelegate {
                 if (StringUtil.isEmpty(feUserDto.getSelectServices())) {
                     feUserDto.setSelectServices(AppServicesConsts.SERVICE_MATRIX_ALL);
                 }
+                // set roles
+                List<String> roleList = IaisCommonUtils.genNewArrayList();
+                if (RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserDto.getUserRole())) {
+                    roleList.add(RoleConsts.USER_ROLE_ORG_ADMIN);
+                }
+                if (StringUtil.isNotEmpty(feUserDto.getRoles())) {
+                    roleList.addAll(Arrays.asList(feUserDto.getRoles().split("#")));
+                }
+                List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+                for (String r : roleList) {
+                    String selectSvcs = null;
+                    if (StringUtil.isIn(r, new String[]{RoleConsts.USER_ROLE_ORG_USER})) {
+                        selectSvcs = feUserDto.getSelectServices();
+                        if (StringUtil.isEmpty(selectSvcs)) {
+                            selectSvcs = AppServicesConsts.SERVICE_MATRIX_ALL;
+                        }
+                    }
+                    orgUserRoleDtos.add(IaisEGPHelper.createOrgUserRoleDto(r, selectSvcs));
+                }
+                feUserDto.setOrgUserRoleDtos(orgUserRoleDtos);
+
                 orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto, feUserDto,
                         reSetMyInfoData(feUserDto, myInfoDto), false);
                 if (licenseeHave) {

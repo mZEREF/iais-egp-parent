@@ -134,7 +134,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         msgParam.setReqRefNum(submssionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(licenseeId);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
         notificationHelper.sendNotification(msgParam);
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
@@ -160,7 +160,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
         msgParam.setReqRefNum(submssionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(licenseeId);
-        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_AR_NEW);
         notificationHelper.sendNotification(msgParam);
         //send email
         EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);

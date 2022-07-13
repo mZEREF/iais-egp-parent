@@ -845,6 +845,7 @@ public class AppealServiceImpl implements AppealService {
         if (assignSelect != null && assignSelect.length > 0) {
             size = assignSelect.length;
         }
+        log.info(StringUtil.changeForLog("assignSelect size :"+size));
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
@@ -1191,7 +1192,7 @@ public class AppealServiceImpl implements AppealService {
                     }
 
                 }
-
+                ParamUtil.setSessionAttr(request,"GovernanceOfficersList", (Serializable) appSvcCgoList);
             } else if (ApplicationConsts.APPEAL_REASON_OTHER.equals(appealReason)) {
                 String otherReason = request.getParameter("othersReason");
                 if (StringUtil.isEmpty(otherReason)) {
@@ -1339,6 +1340,9 @@ public class AppealServiceImpl implements AppealService {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
             appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
+            if(appSvcCgoDtos==null){
+                appSvcCgoDtos = reAppSvcCgo(request);
+            }
         }
 
         SubLicenseeDto subLicenseeDto=licenceClient.getSubLicenseesById(licenceDto.getSubLicenseeId()).getEntity();
@@ -1446,6 +1450,9 @@ public class AppealServiceImpl implements AppealService {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
             appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
+            if(appSvcCgoDtos==null){
+                appSvcCgoDtos = reAppSvcCgo(request);
+            }
         }
 
         AppliSpecialDocDto appliSpecialDocDto = new AppliSpecialDocDto();

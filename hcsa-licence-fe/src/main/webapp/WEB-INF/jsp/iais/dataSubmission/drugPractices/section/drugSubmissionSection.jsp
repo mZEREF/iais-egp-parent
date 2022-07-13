@@ -20,7 +20,7 @@
                 <c:set var="drug" value="${drugSubmission}"/>
                 <div class="patient">
                     <iais:row>
-                        <iais:field width="5" value="Patient's ID No." mandatory="true"/>
+                        <iais:field width="5" value="Patient ID No." mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${drugSubmission.idType}"
                                          cssClass="idTypeSel" onchange="clearSelection()"/>
@@ -61,14 +61,14 @@
                         </a>
                     </iais:value>
                 </iais:row>
-                <div id="doctorInformation" <c:if test="${drugSubmission.doctorInformations eq 'true'}">style="display: none"</c:if>>
+                <div id="doctorInformation" <c:if test="${drugSubmission.doctorInformations eq 'true' && doctorInformationDto.doctorSource ne 'DRPP'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true' || doctorInformationDto.doctorSource ne 'DRPP'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty"/>
                             <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -88,31 +88,31 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null}">style="display: none"</c:if>>
+                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null || doctorInformationDto.doctorSource ne 'DRPE'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <iais:input maxLength="100" type="text" id="dSpecialitys" name="dSpecialitys" value="${drugSubmission.specialty}" />
+                                <iais:input maxLength="1024" type="text" id="dSpecialitys" name="dSpecialitys" value="${drugSubmission.specialty}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_dSpecialitys"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row >
                             <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <iais:input maxLength="100" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${drugSubmission.subSpecialty}" />
+                                <iais:input maxLength="1024" type="text" id="dSubSpecialitys" name="dSubSpecialitys" value="${drugSubmission.subSpecialty}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpecialitys"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row >
                             <iais:field width="5" value="Qualification" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <iais:input maxLength="100" type="text" id="dQualifications" name="dQualifications" value="${drugSubmission.qualification}" />
+                                <iais:input maxLength="1024" type="text" id="dQualifications" name="dQualifications" value="${drugSubmission.qualification}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_dQualifications"></span>
                             </iais:value>
                         </iais:row>
                     </div>
                 </div>
-                <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null}">style="display: none"</c:if>>
+                <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null || doctorInformationDto.doctorSource ne 'DRPT'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
@@ -123,21 +123,21 @@
                     <iais:row >
                         <iais:field width="5" value="Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
+                            <iais:input maxLength="1024" type="text" id="dSpecialityText" name="dSpeciality" value="${doctorInformationDto.speciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Sub-Specialty" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
+                            <iais:input maxLength="1024" type="text" id="dSubSpecialityText" name="dSubSpeciality" value="${doctorInformationDto.subSpeciality}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dSubSpeciality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row >
                         <iais:field width="5" value="Qualification" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <iais:input maxLength="100" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
+                            <iais:input maxLength="1024" type="text" id="dQualificationText" name="dQualification" value="${doctorInformationDto.qualification}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_dQualification"></span>
                         </iais:value>
                     </iais:row>
@@ -278,6 +278,7 @@
 <input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
 <input type="hidden" name="action" id="action" value="">
 <input type="hidden" name="haveError" id="haveError" value="${haveError}">
+<input type="hidden" name="noChangeForRFC" id="noChangeForRFC" value="${RFC_NO_CHANGE_ERROR}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -429,10 +430,11 @@
 
         // checkPrescriptionSubmissionId();
         disableControl();
-        var quantityMatch = $('input[name="quantityMatch"]').val();
-        if (quantityMatch == "No"){
-            console.log("quantityMatch :" + quantityMatch);
-            $('#QUANTITY_NOT_MATCH').modal('show');
+        showQuantityNotMatchModal();
+
+        if (!isEmpty($('#prescriptionSubmissionId').val()) && "DPD002" === $('#drugType option:selected').val()){
+            console.log("disable medication");
+            disableContent('div.medication');
         }
     });
     function diagnosi(){
@@ -449,17 +451,16 @@
         if(drugtype == "DPD001"){
             $('#batchNo').hide();
             $('#addMore').hide();
-            $('#deleteIcon').hide();
-            // $('#medicationDiv').hide();
+            $('.deleteIcon').hide();
+            $('.assign-psn-item').hide();
         } else if(drugtype == "DPD002"){
             $('#batchNo').show();
             $('#addMore').show();
-            $('#deleteIcon').show();
-            // $('#medicationDiv').show();
         } else {
             $('#batchNo').hide();
             $('#addMore').hide();
-            $('#deleteIcon').hide();
+            $('.deleteIcon').hide();
+            $('.assign-psn-item').hide();
         }
     }
 
@@ -626,12 +627,14 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
+                    console.log("1");
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
                     $('#doctorInformationPE').val(true);
                     $('#ELIS_SERVICE').modal('show');
                     $('#doctorInformationElis').show();
                     $('#doctorInformationPrs').hide();
+                    console.log("2");
                 }else if (isEmpty(data.selections) && ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode)) {
                     clearPrsInfoText();
                     $('#doctorInformations').val(true);
@@ -639,42 +642,50 @@
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                     $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
                     loadingSp(data);
+                    console.log("4");
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("5");
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
                         $('#doctorInformationPE').val(false);
                         $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("6");
                     }else if (data.selection.hasException && !isEmpty(data.selections)) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
+                        console.log("7");
                     }else if(data.selection.hasException && isEmpty(data.selections)){
                         clearPrsInfoText();
                         $('#doctorInformations').val(true);
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("8");
                     }else if ('401' == data.selection.statusCode) {
                         $('#doctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        console.log("9");
                     }else if(!isEmpty(data.selections)){
                         console.log('tnull');
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
+                        console.log("10");
                     }
                 }
                 dismissWaiting();
@@ -723,21 +734,30 @@
 
     //Prompt 2 days after the assignment start date
     $("#startDispensingDate").on('blur, change', function () {
-        showWaiting();
         var dispensingDate=$('#startDispensingDate').val();
-        var url = $('#_contextPath').val() + '/dp/startdispensing-date';
-        var options = {
-            dispensingDate: dispensingDate,
-            url: url
+        let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+        let validDispensingDate = reg.test(dispensingDate);
+        console.log("validDispensingDate: "+validDispensingDate);
+        if (validDispensingDate){
+            showWaiting();
+            var url = $('#_contextPath').val() + '/dp/startdispensing-date';
+            var options = {
+                dispensingDate: dispensingDate,
+                url: url
+            }
+            callCommonAjax(options, checkBirthDateCallback);
         }
-        callCommonAjax(options, checkBirthDateCallback);
     });
 
     function checkBirthDateCallback(data) {
         if (isEmpty(data) || isEmpty(data.showDate) || !data.showDate) {
+            console.log("return");
             return;
         }
-        $('#START_DATE_OF_DISPENSING').modal('show');
+        if ('MED001' === $("#medication").val()) {
+            console.log("show modal");
+            $('#START_DATE_OF_DISPENSING').modal('show');
+        }
     }
 
     function cancels() {
@@ -749,10 +769,21 @@
         $('#PRS_PRN').modal('hide');
     }
 
+    function showQuantityNotMatchModal() {
+        var quantityMatch = $('input[name="quantityMatch"]').val();
+        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
+        var haveError = $('input[name="haveError"]').val();
+        if (haveError == "No" && quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
+            console.log("quantityMatch :" + quantityMatch);
+            $('#QUANTITY_NOT_MATCH').modal('show');
+        }
+    }
+
     function closeQuantityNotMatchModal() {
         $('#QUANTITY_NOT_MATCH').modal('hide');
         var haveError = $('input[name="haveError"]').val();
-        if (haveError == "No") {
+        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
+        if (haveError == "No" && noChangeForRFC != "1") {
             $('input[name="action"]').val("confirm");
             $('#nextBtn').click();
         }

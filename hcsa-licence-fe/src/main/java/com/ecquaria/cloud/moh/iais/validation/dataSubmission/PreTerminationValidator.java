@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInforma
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -68,6 +69,19 @@ public class PreTerminationValidator implements CustomizeValidator {
                 if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
                     if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
                         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+                            if(preTerminationDto.getCounsellingAge()==null){
+                                try {
+                                    String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
+                                    if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
+                                        String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
+                                        int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
+                                        terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(age);
+
+                                    }
+                                }catch (Exception e){
+                                    log.error(e.getMessage(),e);
+                                }
+                            }
                             if(preTerminationDto.getCounsellingAge()<16){
                                 if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
                                     errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
@@ -90,7 +104,7 @@ public class PreTerminationValidator implements CustomizeValidator {
             if(!"TOPPCR004".equals(preTerminationDto.getCounsellingResult())){
                 if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
                     if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) && preTerminationDto.getCounsellingGiven() == true){
-                        if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
+                        if ("1".equals(preTerminationDto.getPatientAppointment())) {
                             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
                                 errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
                             }

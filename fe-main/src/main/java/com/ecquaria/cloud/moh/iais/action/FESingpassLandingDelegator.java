@@ -10,7 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -32,6 +34,9 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import ecq.commons.exception.BaseException;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -353,6 +358,11 @@ public class FESingpassLandingDelegator {
         if (userSession.getAvailable() == null) {
             userSession.setAvailable(Boolean.TRUE);
         }
+        // set roles
+        List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+        orgUserRoleDtos.add(IaisEGPHelper.createOrgUserRoleDto(RoleConsts.USER_ROLE_ORG_USER, AppServicesConsts.SERVICE_MATRIX_ALL));
+        userSession.setOrgUserRoleDtos(orgUserRoleDtos);
+
         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
         userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
         userSession.setEmail(ParamUtil.getString(request,"emailAddr"));

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -124,11 +125,15 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         }
         setCheckListUnFinishedTask(request,taskDto);
 
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION,InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION};
+        String appType = appViewDto.getApplicationDto().getApplicationType();
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))){
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+        }
         ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, (Serializable) MasterCodeUtil.retrieveOptionsByCodes(processDess));
 
         //set rollback select options
-        ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> selectOptionList = inspectionService.getRollBackSelectOptions(appViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId());
         ParamUtil.setSessionAttr(request, ROLL_BACK_OPTIONS, (Serializable) selectOptionList);
@@ -279,7 +284,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq, TASKDTO);
                 ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
                 Map<String, AppPremisesRoutingHistoryDto> rollBackHistoryValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(mulReq, ROLL_BACK_VALUE_MAP);
-                inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo));
+                inspectionService.rollBack(bpc, taskDto, appViewDto, rollBackHistoryValueMap.get(rollBackTo), ParamUtil.getString(request,"RemarksForHistory"));
                 ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","INSPE_ACK002");
             }
             serListDto.setProcessDec(processDec);

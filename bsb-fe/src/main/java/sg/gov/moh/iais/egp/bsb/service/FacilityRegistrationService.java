@@ -1,10 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -23,7 +20,6 @@ import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -32,7 +28,6 @@ import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -41,7 +36,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
@@ -73,8 +67,89 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ACTION_LOAD_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.DECLARATION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ELIGIBLE_DRAFT_REGISTER_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_BAT_NOT_NULL;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_ACTIVITY;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_CLASSIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_NULL_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_NULL_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_RF_INVALID_ACTIVITY;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.HAVE_SUITABLE_DRAFT_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_DELETE_DATA_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_EXPAND_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_LOAD_DATA_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_BAT_CONTAINS_IMPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_BAT_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DECLARATION_ANSWER_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DECLARATION_CONFIG;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DECLARATION_ERROR_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DEST_NODE_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DOC_SETTINGS;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DOC_TYPES_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ERROR_IN_DATA_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_FILE_MAP_NEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_FILE_MAP_SAVED;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INDEED_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_CF;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_FIFTH_RF;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_NEW_REG_FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_PV_RF;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_RF;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_UCF;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_PREVIOUS;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_ADDRESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_DOC_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_FAC_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_NATIONALITY;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_SCHEDULE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTION_SALUTATION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OTHER_DOC_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PRINT_MASKED_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PRINT_MASK_PARAM;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SAMPLE_AUTHORISER;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SAMPLE_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SCHEDULE_BAT_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SCHEDULE_BAT_MAP_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SCHEDULE_FIRST_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SELECTED_ACTIVITIES;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SELECTED_CLASSIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SOURCE_NODE_PATH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_VALID_DATA_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_BEFORE_BEGIN;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_COMPANY_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN_OFFICER;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_OTHER_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_REVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_AUTH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_AUTHORISER_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_COMMITTEE_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
@@ -86,18 +161,16 @@ public class FacilityRegistrationService {
     private final BsbFileClient bsbFileClient;
     private final FacilityRegisterClient facRegClient;
     private final DocSettingService docSettingService;
-    private final OrganizationInfoClient orgInfoClient;
     private final DraftClient draftClient;
 
     @Autowired
     public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
                                        FacilityRegisterClient facRegClient,
-                                       DocSettingService docSettingService, OrganizationInfoClient orgInfoClient, DraftClient draftClient) {
+                                       DocSettingService docSettingService, DraftClient draftClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
         this.docSettingService = docSettingService;
-        this.orgInfoClient = orgInfoClient;
         this.draftClient = draftClient;
     }
 
@@ -132,23 +205,6 @@ public class FacilityRegistrationService {
 
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
         return facRegRoot;
-    }
-
-    public void retrieveOrgAddressInfo(HttpServletRequest request) {
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        assert auditTrailDto != null;
-        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
-        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen(auditTrailDto.getUenId());
-        orgAddressInfo.setCompName(licenseeDto.getName());
-        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
-        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
-        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
-        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
-        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
-        orgAddressInfo.setStreet(licenseeDto.getStreetName());
-        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
-        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
     }
 
     public void handleBeforeBegin(BaseProcessClass bpc) {

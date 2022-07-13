@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_WITHDRAWN_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_WITHDRAWN_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_PRIMARY_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DOC_TYPES_JSON;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_DOC_TYPES;
@@ -75,7 +78,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_SUBM
 @Slf4j
 @Delegator("bsbWithDrawnAppDelegator")
 public class WithdrawnAppDelegator {
-    private static final String MODULE_NAME = "Withdrawn Application";
     private static final String ACTION_TYPE_SUBMIT = "doSubmit";
     private static final String ACTION_TYPE_PREPARE = "prepare";
     private static final String ACTION_TYPE = "action_type";
@@ -91,6 +93,7 @@ public class WithdrawnAppDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
 
+    @Autowired
     public WithdrawnAppDelegator(WithdrawnClient withdrawnClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
         this.withdrawnClient = withdrawnClient;
         this.fileRepoClient = fileRepoClient;
@@ -105,7 +108,7 @@ public class WithdrawnAppDelegator {
         request.getSession().removeAttribute(PARAM_ADD_WITHDRAWN_APP_NOS);
         request.getSession().removeAttribute(PARAM_PRIMARY_DOC_DTO);
         request.getSession().removeAttribute(PARAM_NEW_FILES);
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+        AuditTrailHelper.auditFunction(MODULE_WITHDRAWN_APPLICATION, FUNCTION_WITHDRAWN_APPLICATION);
     }
 
     @SneakyThrows(JsonProcessingException.class)

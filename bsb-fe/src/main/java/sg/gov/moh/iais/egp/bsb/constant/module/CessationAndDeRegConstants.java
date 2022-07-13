@@ -1,18 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.constant.module;
 
-/**
- * @author : LiRan
- * @date : 2022/1/18
- */
+
 public class CessationAndDeRegConstants {
 
     private CessationAndDeRegConstants() {}
-
-    public static final String MODULE_NAME                                  = "Cessation and DeRegistration";
-
-    public static final String FUNCTION_NAME_DE_REGISTRATION_FACILITY       = "DeRegistration Facility";
-    public static final String FUNCTION_NAME_CANCELLATION_APPROVAL          = "Cancellation approval";
-    public static final String FUNCTION_NAME_DE_REGISTRATION_AFC            = "DeRegistration Facility";
 
     public static final String KEY_DE_REGISTRATION_FACILITY_DTO             = "deRegistrationFacilityDto";
     public static final String KEY_CANCELLATION_APPROVAL_DTO                = "cancellationApprovalDto";

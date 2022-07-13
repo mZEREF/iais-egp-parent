@@ -7,7 +7,7 @@
 <comm:supportingDocuments savedFiles="${savedFiles}" newFiles="${newFiles}" docSettings="${docSettings}" otherDocTypes="${otherDocTypes}" docTypeOps="${docTypeOps}"
                          newFileDLUrl="/bsb-web/ajax/doc/download/facReg/new/" savedFileDLUrl="/bsb-web/ajax/doc/download/facReg/repo/">
     <jsp:attribute name="innerNavTabFrag">
-        <%@include file="/WEB-INF/jsp/iais/mainAppCommon/facRegistration/InnerNavTab.jsp" %>
+        <%@include file="/WEB-INF/jsp/iais/facRegistration/InnerNavTab.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="specialJsFrag">
     <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>

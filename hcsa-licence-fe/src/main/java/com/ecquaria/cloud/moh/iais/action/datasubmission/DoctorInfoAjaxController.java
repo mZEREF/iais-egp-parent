@@ -42,8 +42,12 @@ public class DoctorInfoAjaxController {
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
         DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
+        // PRS down
+//        professionalResponseDto = new ProfessionalResponseDto();
+//        professionalResponseDto.setHasException(true);
+        //
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()){
                 if(doctorInformationDto!=null){
                     professionalResponseDto.setName(doctorInformationDto.getName());
                     professionalResponseDto.setSpecialty(Collections.singletonList((doctorInformationDto.getSpeciality())));

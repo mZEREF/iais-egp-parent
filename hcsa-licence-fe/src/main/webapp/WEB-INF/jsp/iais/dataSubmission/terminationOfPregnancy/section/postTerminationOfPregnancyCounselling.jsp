@@ -1,5 +1,6 @@
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
-<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003'}">
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP003' && preTerminationDto.counsellingResult!='TOPPCR003'}">
+
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
 <c:set var="postTerminationDto" value="${terminationOfPregnancyDto.postTerminationDto}" />
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -92,8 +93,8 @@
 </div>
     <div id="numCounsellingGivenDoc" <c:if test="${postTerminationDto.givenPostCounselling == false}">style="display: none"</c:if> >
         <iais:row>
-            <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-            <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+            <c:set var="toolMsgPost"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+            <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsgPost}" style="padding-right: 0px;"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${postTerminationDto.counsellingReignNo}"/>
             </iais:value>

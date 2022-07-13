@@ -824,6 +824,14 @@ public class ConfigServiceImpl implements ConfigService {
         stageIds.add(HcsaConsts.ROUTING_STAGE_AO2);
         stageIds.add(HcsaConsts.ROUTING_STAGE_AO3);
 
+        Map<String,String> stage = IaisCommonUtils.genNewHashMap();
+        stage.put("ASO",HcsaConsts.ROUTING_STAGE_ASO);
+        stage.put("PSO",HcsaConsts.ROUTING_STAGE_PSO);
+        stage.put("INS",HcsaConsts.ROUTING_STAGE_INS);
+        stage.put("AO1",HcsaConsts.ROUTING_STAGE_AO1);
+        stage.put("AO2",HcsaConsts.ROUTING_STAGE_AO2);
+        stage.put("AO3",HcsaConsts.ROUTING_STAGE_AO3);
+
         List<WorkingGroupDto> hcsa = organizationClient.getWorkingGroup("hcsa").getEntity();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getHcsaStageWorkingGroup(hcsaServiceDto.getId()).getEntity();
 
@@ -879,13 +887,22 @@ public class ConfigServiceImpl implements ConfigService {
                     String schemeType = hcsaSvcSpeRoutingSchemeDto.getSchemeType();
                         for(HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos){
                             String workingGroupId = hcsaConfigPageDto.getWorkingGroupId();
+                            String stageCode = hcsaConfigPageDto.getStageCode();
                             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos2 = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
-                            if(hcsaSvcStageWorkingGroupDto.getStageWorkGroupId().equals(workingGroupId)&&stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())&&hcsaSvcStageWorkingGroupDto.getOrder()==1){
+                            if(hcsaSvcStageWorkingGroupDto.getStageWorkGroupId().equals(workingGroupId)
+                                    && hcsaSvcStageWorkingGroupDto.getStageId().equals(stage.get(stageCode))
+                                    && stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())
+                                    && hcsaSvcStageWorkingGroupDto.getOrder()==1){
                                 hcsaConfigPageDto.setRoutingSchemeName(schemeType);
+                                log.info(StringUtil.changeForLog("The schemeType is -->:"+schemeType));
+                                log.info(StringUtil.changeForLog("The hcsaSvcStageWorkingGroupDto.getOrder() is -->:"+hcsaSvcStageWorkingGroupDto.getOrder()));
+                                log.info(StringUtil.changeForLog("The stageCode is -->:"+stageCode));
+                                log.info(StringUtil.changeForLog("The workingGroupId is -->:"+workingGroupId));
                             }
                             if(hcsaSvcSpeRoutingSchemeDtos2!=null){
                                 for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto1 : hcsaSvcSpeRoutingSchemeDtos2){
-                                    if(stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId()) && String.valueOf(hcsaSvcStageWorkingGroupDto.getOrder()-2).equals(hcsaSvcSpeRoutingSchemeDto1.getInsOder())){
+                                    if(stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())
+                                            && String.valueOf(hcsaSvcStageWorkingGroupDto.getOrder()-2).equals(hcsaSvcSpeRoutingSchemeDto1.getInsOder())){
                                         hcsaSvcSpeRoutingSchemeDto1.setSchemeType(schemeType);
                                     }
                                 }
@@ -953,8 +970,10 @@ public class ConfigServiceImpl implements ConfigService {
                     String stageId = hcsaSvcStageWorkingGroupDto.getStageId();
                     String workingStageId = hcsaSvcStageWorkingGroupDto.getId();
                     String stage = hcsaConfigPageDtos.get(i).getStage();
-                    if (stageId.equals(stage)) {
+                    if (stageId.equals(stage) && hcsaSvcStageWorkingGroupDto.getOrder()==1) {
+                        log.info(StringUtil.changeForLog("The stageId is -->:"+stageId));
                         String id = hcsaSvcStageWorkingGroupDto.getStageWorkGroupId();
+                        log.info(StringUtil.changeForLog("The hcsaSvcStageWorkingGroupDto.getStageWorkGroupId() is -->:"+id));
                         hcsaConfigPageDtos.get(i).setWorkingGroupId(id);
                         hcsaConfigPageDtos.get(i).setWorkStageId(workingStageId);
                     }

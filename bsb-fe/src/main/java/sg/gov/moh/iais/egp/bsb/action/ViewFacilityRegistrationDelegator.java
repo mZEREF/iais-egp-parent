@@ -1,23 +1,18 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
-import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
@@ -28,6 +23,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
+import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sg.gov.moh.iais.egp.bsb.service.ViewAppService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -40,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_EXPAND_FILE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_BAT_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_LIST;
@@ -53,7 +51,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_FIFTH
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_PV_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_UCF;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OTHER_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN_OFFICER;
@@ -66,18 +63,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.K
 @Delegator(value = "bsbViewFacRegAppDelegator")
 @Slf4j
 public class ViewFacilityRegistrationDelegator {
-    private static final String MODULE_NAME = "Facility Registration";
-    private static final String FUNCTION_NAME = "View Application";
-
     private final FacilityRegisterClient facRegClient;
-    private final OrganizationInfoClient orgInfoClient;
+    private final OrganizationInfoService organizationInfoService;
     private final DocSettingService docSettingService;
 
     @Autowired
-    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, OrganizationInfoClient orgInfoClient,
+    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, OrganizationInfoService organizationInfoService,
                                              DocSettingService docSettingService) {
         this.facRegClient = facRegClient;
-        this.orgInfoClient = orgInfoClient;
+        this.organizationInfoService = organizationInfoService;
         this.docSettingService = docSettingService;
     }
 
@@ -87,7 +81,7 @@ public class ViewFacilityRegistrationDelegator {
         session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_FACILITY_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -112,20 +106,7 @@ public class ViewFacilityRegistrationDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         FacilityRegisterDto facilityRegisterDto = getFacilityRegisterDto(request, appId);
 
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        assert auditTrailDto != null;
-        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
-        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen(auditTrailDto.getUenId());
-        orgAddressInfo.setCompName(licenseeDto.getName());
-        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
-        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
-        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
-        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
-        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
-        orgAddressInfo.setStreet(licenseeDto.getStreetName());
-        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
-        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+        organizationInfoService.retrieveOrgAddressInfo(request);
 
         FacilitySelectionDto selectionDto = facilityRegisterDto.getFacilitySelectionDto();
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());

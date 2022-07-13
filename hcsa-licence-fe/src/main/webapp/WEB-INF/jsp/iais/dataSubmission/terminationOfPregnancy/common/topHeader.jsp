@@ -8,7 +8,8 @@
 <%--<c:set var="smallTitle" value="You are submitting for <strong>Termination Of Pregnancy</strong>" />--%>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/top_common.js"></script>
-
+<c:set value="${topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
+       var="isRfc"/>
 <input type="hidden" name="top_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">

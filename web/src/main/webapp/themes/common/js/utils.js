@@ -491,51 +491,12 @@ function toggleOnSelect(sel, val, elem) {
 }
 
 function toggleOnCheck(sel, elem, hide) {
-    var $selector = getJqueryNode(sel);
-    var $target = getJqueryNode(elem);
-    if (isEmpty($selector) || isEmpty($target)) {
-        return;
-    }
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(elem);
-    if ($target.length == 0) {
-        $target = $('#' + elem);
-    } else if ($target.length == 0) {
-        $target = $('.' + sel);
-    }
-    if ($selector.length == 0 || $target.length == 0) {
-        return;
-    }
-    if ($selector.val() == val) {
-        $target.show();
-    } else {
-        $target.hide();
-        clearFields($target);
-    }
-}
-
-function toggleOnCheck(sel, elem, hide) {
     if (isEmpty(sel)) {
         return;
     }
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(elem);
-    if ($target.length == 0) {
-        $target = $('#' + elem);
-    } else if ($target.length == 0) {
-        $target = $('.' + sel);
-    }
-    if ($selector.length == 0 || $target.length == 0) {
+    var $selector = getJqueryNode(sel);
+    var $target = getJqueryNode(elem);
+    if (isEmpty($selector) || isEmpty($target)) {
         return;
     }
     if ($selector.is(':checked')) {
@@ -555,35 +516,6 @@ function toggleOnCheck(sel, elem, hide) {
             clearFields($target);
         }
     }
-}
-
-function checkMantory(sel, targetLabel, val) {
-    console.log("checkMantory");
-    var $selector = $(sel);
-    if ($selector.length == 0) {
-        $selector = $('#' + sel);
-    } else if ($selector.length == 0) {
-        $selector = $('.' + sel);
-    }
-    var $target = $(targetLabel);
-    if ($target.length == 0) {
-        $target = $('#' + targetLabel);
-    } else if ($selector.length == 0) {
-        $target = $('.' + targetLabel);
-    }
-    if ($selector.length <= 0 || $target.length <= 0) {
-        console.log("Tags error in checkMantory!");
-            $target.removeClass('hidden');
-    } else {
-        $target.hide();
-        $target.addClass('hidden');
-        clearFields($target);
-    }
-    $target.each(function(i, ele) {
-        if ('select' == ele.tagName.toLowerCase()) {
-            updateSelectTag($(ele));
-        }
-    });
 }
 
 function checkMantory(sel, targetLabel, val) {

@@ -13,13 +13,13 @@
                 <c:set var="doctorInformationDto" value="${dpSuperDataSubmissionDto.doctorInformationDto}" />
                 <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
                 <iais:row>
-                    <iais:field width="5" value="Patient's ID Type" />
+                    <iais:field width="5" value="ID Type" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${drugSubmission.idType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Patient's ID No." />
+                    <iais:field width="5" value="Patient ID No." />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.idNumber}"/>
                     </iais:value>
