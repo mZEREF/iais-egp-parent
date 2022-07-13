@@ -62,6 +62,8 @@ function printData() {
     var url = $('#_contextPath').val() + '/eservice/INTERNET/MohDsPrint';
     var token = $('input[name="OWASP_CSRFTOKEN"]').val();
     var title = $('input[name="title"]').val();
+    const isRfc = $('input[name="isRfc"]').val();
+    const role = isRfc?'DS_LDT':'DS_LDT_SUP'
     if (!isEmpty(token)) {
         url += '?OWASP_CSRFTOKEN=' + token;
     }
@@ -79,6 +81,11 @@ function printData() {
         } else {
             url += '&title=' + title;
         }
+    }
+    if (url.indexOf('?') < 0) {
+        url += '?role=' + role;
+    } else {
+        url += '&role=' + role;
     }
     var data = getDataForPrinting();
     if (isEmpty(data)) {

@@ -430,12 +430,7 @@
 
         // checkPrescriptionSubmissionId();
         disableControl();
-        var quantityMatch = $('input[name="quantityMatch"]').val();
-        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
-        if (quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
-            console.log("quantityMatch :" + quantityMatch);
-            $('#QUANTITY_NOT_MATCH').modal('show');
-        }
+        showQuantityNotMatchModal();
 
         if (!isEmpty($('#prescriptionSubmissionId').val()) && "DPD002" === $('#drugType option:selected').val()){
             console.log("disable medication");
@@ -772,6 +767,16 @@
         $('#PRS_SERVICE').modal('hide');
         $('#PRS_CLOSE').modal('hide');
         $('#PRS_PRN').modal('hide');
+    }
+
+    function showQuantityNotMatchModal() {
+        var quantityMatch = $('input[name="quantityMatch"]').val();
+        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
+        var haveError = $('input[name="haveError"]').val();
+        if (haveError == "No" && quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
+            console.log("quantityMatch :" + quantityMatch);
+            $('#QUANTITY_NOT_MATCH').modal('show');
+        }
     }
 
     function closeQuantityNotMatchModal() {
