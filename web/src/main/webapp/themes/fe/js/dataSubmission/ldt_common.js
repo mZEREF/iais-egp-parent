@@ -63,7 +63,7 @@ function printData() {
     var token = $('input[name="OWASP_CSRFTOKEN"]').val();
     var title = $('input[name="title"]').val();
     const isRfc = $('input[name="isRfc"]').val();
-    const role = isRfc?'DS_LDT':'DS_LDT_SUP'
+    const role = isRfc?'DS_LDT_SUP':'DS_LDT'
     if (!isEmpty(token)) {
         url += '?OWASP_CSRFTOKEN=' + token;
     }
