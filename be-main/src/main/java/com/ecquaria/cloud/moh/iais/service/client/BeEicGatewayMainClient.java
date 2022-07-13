@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,17 @@ import java.util.List;
 public class BeEicGatewayMainClient {
     @Value("${iais.intra.gateway.url}")
     private String gateWayUrl;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto,
                                                           String date, String authorization, String dateSec,
@@ -43,5 +56,13 @@ public class BeEicGatewayMainClient {
                                                      String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, PaymentRequestDto.class);
+    }
+
+    public FeignResponseEntity<List> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.PUT, applicationGroupDtos,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                ApplicationGroupDto.class);
     }
 }

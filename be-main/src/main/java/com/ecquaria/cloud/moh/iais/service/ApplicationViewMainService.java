@@ -51,4 +51,7 @@ public interface ApplicationViewMainService {
     void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 
     List<SelectOption> getCanViewAuditRoles(List<String> roleIds);
+
+    void syncFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos);
+
 }

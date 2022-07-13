@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -437,4 +438,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/roll-back-inspection/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> rollBackInspection(@PathVariable("premCorrId") String premId);
+
+    @GetMapping(value = "/activeTaskList/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getActiveTaskList(@PathVariable("premCorrId") String premCorrId);
 }

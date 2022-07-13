@@ -98,6 +98,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -227,6 +228,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
+
+    @Autowired
+    private GiroDeductionBeService giroDeductionBeService;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -2536,6 +2540,9 @@ public class HcsaApplicationDelegator {
                             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
                         } else {
                             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                            List<ApplicationGroupDto> applicationGroupDtoList=IaisCommonUtils.genNewArrayList();
+                            applicationGroupDtoList.add(applicationGroupDto);
+                            giroDeductionBeService.syncFeApplicationGroupStatus(applicationGroupDtoList);
                         }
                         applicationGroupDto.setAo3ApprovedDt(new Date());
                         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -2587,6 +2594,7 @@ public class HcsaApplicationDelegator {
                 }
                 if(!IaisCommonUtils.isEmpty(applicationGroupDtos)){
                     applicationClient.updateApplications(applicationGroupDtos);
+
                 }
             }
         }
