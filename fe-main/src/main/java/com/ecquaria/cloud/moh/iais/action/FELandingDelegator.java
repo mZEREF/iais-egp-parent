@@ -73,6 +73,9 @@ public class FELandingDelegator {
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
+		//Used to determine whether display BSB entry
+		String string = ConfigHelper.getString("bsb.appear.sperate.flag");
+		ParamUtil.setRequestAttr(bpc.request, "bsbAppearFlag", string);
 	}
 
 	/**
