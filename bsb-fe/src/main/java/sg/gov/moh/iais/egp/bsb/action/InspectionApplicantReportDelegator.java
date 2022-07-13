@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,9 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPLICANT_CERTIFICATION_UPLOAD_REPORT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ACK_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFC_DASHBOARD_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_DASHBOARD_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_AFC_REPORT_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.PARAM_CAN_ACTION_ROLE;
 
 @Slf4j
 @Delegator("insApplicantReportDelegator")
@@ -54,7 +60,7 @@ public class InspectionApplicantReportDelegator {
         session.removeAttribute(KEY_REVIEW_AFC_REPORT_DTO);
         session.removeAttribute(KEY_COMMON_DOC_DTO);
         session.removeAttribute(PARAM_REPO_ID_DOC_MAP);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Applicant Certification upload report");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_APPLICANT_CERTIFICATION_UPLOAD_REPORT);
     }
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;

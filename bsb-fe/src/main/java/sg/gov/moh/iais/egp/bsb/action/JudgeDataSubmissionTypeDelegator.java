@@ -14,10 +14,20 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_CONSUME;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_DISPOSAL;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_EXPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_RECEIPT;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 
 /**
  * @author tangtang
@@ -41,10 +51,11 @@ public class JudgeDataSubmissionTypeDelegator {
      * */
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_ACTION_TYPE, null);
-        ParamUtil.setSessionAttr(request,KEY_DRAFT,null);
-        ParamUtil.setSessionAttr(request,KEY_BACK,null);
-        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ACTION_TYPE);
+        session.removeAttribute(KEY_DRAFT);
+        session.removeAttribute(KEY_BACK);
+        session.removeAttribute(KEY_SUBMISSION_TYPE);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }

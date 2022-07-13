@@ -3,10 +3,6 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class FacRegisterConstants {
     private FacRegisterConstants() {}
 
-    public static final String MODULE_NAME_NEW             = "Facility Registration";
-    public static final String MODULE_NAME_RFC             = "Rfc Facility Registration";
-    public static final String MODULE_NAME_RENEWAL         = "Renewal Facility Registration";
-
     public static final String DECLARATION_TYPE            = "Facility Registration";
 
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
@@ -57,7 +53,6 @@ public class FacRegisterConstants {
 
     public static final String KEY_SELECTED_CLASSIFICATION = "SELECTED_CLASSIFICATION";
     public static final String KEY_SELECTED_ACTIVITIES     = "SELECTED_ACTIVITIES";
-    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
 
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";

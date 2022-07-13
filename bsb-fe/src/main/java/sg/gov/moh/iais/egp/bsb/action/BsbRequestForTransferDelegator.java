@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
@@ -15,11 +16,17 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION_REQUEST_FOR_TRANSFER;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -38,6 +45,7 @@ public class BsbRequestForTransferDelegator {
     private final BsbSubmissionCommon subCommon;
     private final DataSubmissionClient submissionClient;
 
+    @Autowired
     public BsbRequestForTransferDelegator(BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient) {
         this.subCommon = subCommon;
         this.submissionClient = submissionClient;
@@ -49,10 +57,11 @@ public class BsbRequestForTransferDelegator {
      * */
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO, null);
-        ParamUtil.setSessionAttr(request,KEY_TRANSFER_REQUEST_DTO, null);
-        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
-        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_FACILITY_INFO);
+        session.removeAttribute(KEY_TRANSFER_REQUEST_DTO);
+        session.removeAttribute(KEY_FAC_ID);
+        AuditTrailHelper.auditFunction(MODULE_DATA_SUBMISSION, FUNCTION_DATA_SUBMISSION_REQUEST_FOR_TRANSFER);
     }
 
     public void preFacSelect(BaseProcessClass bpc){

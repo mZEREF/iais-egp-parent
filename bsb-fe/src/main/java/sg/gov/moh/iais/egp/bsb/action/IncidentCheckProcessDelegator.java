@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DraftClient;
@@ -33,6 +34,7 @@ public class IncidentCheckProcessDelegator {
     private static final String KEY_PROCESS_TYPE = "processType";
     private static final String KEY_DRAFT = "draft";
 
+    @Autowired
     public IncidentCheckProcessDelegator(DraftClient draftClient) {
         this.draftClient = draftClient;
     }

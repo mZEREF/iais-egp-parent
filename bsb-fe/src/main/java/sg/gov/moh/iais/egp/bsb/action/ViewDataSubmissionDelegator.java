@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 
 @Slf4j
@@ -31,6 +34,7 @@ public class ViewDataSubmissionDelegator {
 
     private final DataSubmissionClient dataSubmissionClient;
     private final DocSettingService docSettingService;
+
     @Autowired
     public ViewDataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, DocSettingService docSettingService) {
         this.dataSubmissionClient = dataSubmissionClient;
@@ -39,6 +43,7 @@ public class ViewDataSubmissionDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_DATA_SUBMISSION);
         String maskedSubmissionId = request.getParameter(KEY_SUBMISSION_ID);
         String submissionId = MaskUtil.unMaskValue("id", maskedSubmissionId);
         if (maskedSubmissionId == null || submissionId == null || maskedSubmissionId.equals(submissionId)) {

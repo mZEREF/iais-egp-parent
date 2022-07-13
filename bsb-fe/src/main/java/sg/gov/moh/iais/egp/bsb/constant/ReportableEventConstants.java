@@ -7,9 +7,6 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class ReportableEventConstants {
     private ReportableEventConstants() {}
 
-    public static final String MODULE_NAME_NOTIFICATION_OF_INCIDENT = "Notification of Incident";
-    public static final String MODULE_NAME_INVESTIGATION_REPORT = "Investigation Report";
-    public static final String MODULE_NAME_INCIDENT_FOLLOW_UP = "Incident Follow-up";
     public static final String KEY_ROOT_NODE_GROUP_INCIDENT_NOT = "incidentNotRoot";
     public static final String KEY_ROOT_NODE_GROUP_INVEST_REPORT = "investRepoRoot";
 

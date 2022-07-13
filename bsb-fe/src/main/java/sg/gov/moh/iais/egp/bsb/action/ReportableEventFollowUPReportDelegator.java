@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
-import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -27,11 +26,17 @@ import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INCIDENT_FOLLOW_UP_REPORT_1A;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INCIDENT_FOLLOW_UP_REPORT_1B;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INCIDENT_FOLLOW_UP;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_INCIDENT_TITLE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_TITLE_FOLLOW_UP_REPORT_1A;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_TITLE_FOLLOW_UP_REPORT_1B;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -71,22 +76,24 @@ public class ReportableEventFollowUPReportDelegator {
 
     public void startFollowup1A(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_1A);
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_DOCUMENT);
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_1A_PREVIEW);
-        request.getSession().removeAttribute(KEY_MODULE_CHOOSE);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_FOLLOW_UP_1A);
+        session.removeAttribute(KEY_FOLLOW_UP_DOCUMENT);
+        session.removeAttribute(KEY_FOLLOW_UP_1A_PREVIEW);
+        session.removeAttribute(KEY_MODULE_CHOOSE);
         ParamUtil.setSessionAttr(request,KEY_MODULE_CHOOSE,KEY_MODULE_CHOOSE_REFERENCE_NO_1A);
-        AuditTrailHelper.auditFunction(ReportableEventConstants.MODULE_NAME_INCIDENT_FOLLOW_UP, "Incident Follow-up Report 1A");
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT_FOLLOW_UP, FUNCTION_INCIDENT_FOLLOW_UP_REPORT_1A);
     }
 
     public void startFollowup1B(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_1B);
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_DOCUMENT);
-        request.getSession().removeAttribute(KEY_FOLLOW_UP_1B_PREVIEW);
-        request.getSession().removeAttribute(KEY_MODULE_CHOOSE);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_FOLLOW_UP_1B);
+        session.removeAttribute(KEY_FOLLOW_UP_DOCUMENT);
+        session.removeAttribute(KEY_FOLLOW_UP_1B_PREVIEW);
+        session.removeAttribute(KEY_MODULE_CHOOSE);
         ParamUtil.setSessionAttr(request,KEY_MODULE_CHOOSE,KEY_MODULE_CHOOSE_REFERENCE_NO_1B);
-        AuditTrailHelper.auditFunction(ReportableEventConstants.MODULE_NAME_INCIDENT_FOLLOW_UP, "Incident Follow-up Report 1B");
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT_FOLLOW_UP, FUNCTION_INCIDENT_FOLLOW_UP_REPORT_1B);
     }
 
     public void initFollowup1B(BaseProcessClass bpc){

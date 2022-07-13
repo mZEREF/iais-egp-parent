@@ -2,10 +2,10 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.constant.OptionsConstants;
@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_FACILITY;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_FAC_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
@@ -35,6 +37,7 @@ public class BsbInboxFacilityDelegator {
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
+    @Autowired
     public BsbInboxFacilityDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
         this.inboxService = inboxService;
@@ -44,7 +47,7 @@ public class BsbInboxFacilityDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_FAC_SEARCH_DTO);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, "Inbox Facility");
+        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_FACILITY);
     }
 
     public void init(BaseProcessClass bpc){

@@ -42,11 +42,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INVESTIGATION_REPORT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INVESTIGATION_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INDEED_ACTION_TYPE;
-import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.ERR_MSG_NULL_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.ERR_MSG_NULL_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_ACTION_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_INCIDENT_TITLE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_NAV_BACK;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_NODE_ROUTE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_ROOT_NODE_GROUP_INVEST_REPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_TITLE_INVESTIGATION_REPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_DOCUMENTS;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_INCIDENT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_INCIDENT_INVESTIGATION;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_MEDICAL_INVESTIGATION;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_PREVIEW_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_REFERENCE_NO_SELECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -77,7 +98,7 @@ public class InvestigationReportDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP_INVEST_REPORT);
         request.getSession().removeAttribute(PARAM_INCIDENT_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME_INVESTIGATION_REPORT, MODULE_NAME_INVESTIGATION_REPORT);
+        AuditTrailHelper.auditFunction(MODULE_INVESTIGATION_REPORT, FUNCTION_INVESTIGATION_REPORT);
     }
 
     public void init(BaseProcessClass bpc){

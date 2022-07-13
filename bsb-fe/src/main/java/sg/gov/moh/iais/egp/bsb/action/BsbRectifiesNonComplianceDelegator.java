@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPLICANT_RECTIFIES_NCS;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ALL_ITEM_RECTIFY;
@@ -81,7 +83,7 @@ public class BsbRectifiesNonComplianceDelegator {
         }
         // if rfi module
         rfiService.clearAndSetAppIdInSession(request);
-        AuditTrailHelper.auditFunction("Applicant rectifies NCs", "Applicant rectifies NCs");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_APPLICANT_RECTIFIES_NCS);
     }
 
     public void init(BaseProcessClass bpc){

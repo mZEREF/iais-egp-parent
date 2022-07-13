@@ -25,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 
+import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPROVAL_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_NEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.HAVE_SUITABLE_DRAFT_DATA;
@@ -67,11 +70,13 @@ public class ApprovalBatAndActivityDelegator {
 
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final ApprovalBatAndActivityService approvalBatAndActivityService;
+    private final OrganizationInfoService organizationInfoService;
 
     @Autowired
-    public ApprovalBatAndActivityDelegator(ApprovalBatAndActivityClient approvalBatAndActivityClient, ApprovalBatAndActivityService approvalBatAndActivityService) {
+    public ApprovalBatAndActivityDelegator(ApprovalBatAndActivityClient approvalBatAndActivityClient, ApprovalBatAndActivityService approvalBatAndActivityService, OrganizationInfoService organizationInfoService) {
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
         this.approvalBatAndActivityService = approvalBatAndActivityService;
+        this.organizationInfoService = organizationInfoService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -89,7 +94,7 @@ public class ApprovalBatAndActivityDelegator {
         session.removeAttribute(DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(HAVE_SUITABLE_DRAFT_DATA);
         session.removeAttribute("editApp");
-        AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
+        AuditTrailHelper.auditFunction(MODULE_NEW_APPLICATION, FUNCTION_APPROVAL_APPLICATION);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -118,7 +123,7 @@ public class ApprovalBatAndActivityDelegator {
             ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, new ApprovalBatAndActivityDto());
         }
 
-        approvalBatAndActivityService.retrieveOrgAddressInfo(request);
+        organizationInfoService.retrieveOrgAddressInfo(request);
     }
 
     public void preApprovalSelection(BaseProcessClass bpc) {

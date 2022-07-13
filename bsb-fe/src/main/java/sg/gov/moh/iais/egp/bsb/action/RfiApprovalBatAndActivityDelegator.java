@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
+import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPROVAL_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.ERR_MSG_INVALID_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.HAVE_SUITABLE_DRAFT_DATA;
@@ -62,11 +65,13 @@ public class RfiApprovalBatAndActivityDelegator {
 
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final ApprovalBatAndActivityService approvalBatAndActivityService;
+    private final OrganizationInfoService organizationInfoService;
     private final RfiService rfiService;
 
-    public RfiApprovalBatAndActivityDelegator(ApprovalBatAndActivityClient approvalBatAndActivityClient, ApprovalBatAndActivityService approvalBatAndActivityService, RfiService rfiService) {
+    public RfiApprovalBatAndActivityDelegator(ApprovalBatAndActivityClient approvalBatAndActivityClient, ApprovalBatAndActivityService approvalBatAndActivityService, OrganizationInfoService organizationInfoService, RfiService rfiService) {
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
         this.approvalBatAndActivityService = approvalBatAndActivityService;
+        this.organizationInfoService = organizationInfoService;
         this.rfiService = rfiService;
     }
 
@@ -87,7 +92,7 @@ public class RfiApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(DRAFT_APPROVAL_BAT_AND_ACTIVITY_DTO);
         session.removeAttribute(HAVE_SUITABLE_DRAFT_DATA);
-        AuditTrailHelper.auditFunction("Application for Approval", "Application for Approval");
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_APPROVAL_APPLICATION);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -111,7 +116,7 @@ public class RfiApprovalBatAndActivityDelegator {
             throw new IaisRuntimeException("Fail to retrieve rfi data");
         }
 
-        approvalBatAndActivityService.retrieveOrgAddressInfo(request);
+        organizationInfoService.retrieveOrgAddressInfo(request);
     }
 
     public void preApprovalSelection(BaseProcessClass bpc) {

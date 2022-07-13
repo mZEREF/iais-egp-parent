@@ -1,10 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -25,7 +22,6 @@ import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -39,7 +35,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalBatAndActivityDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto;
@@ -98,7 +93,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_NATIONALITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_SCHEDULE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ORG_ADDRESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OTHER_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PRINT_MASKED_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PRINT_MASK_PARAM;
@@ -131,38 +125,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class ApprovalBatAndActivityService {
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final DocSettingService docSettingService;
-    private final OrganizationInfoClient orgInfoClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final DraftClient draftClient;
 
     @Autowired
     public ApprovalBatAndActivityService(ApprovalBatAndActivityClient approvalBatAndActivityClient, DocSettingService docSettingService,
-                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, OrganizationInfoClient orgInfoClient, DraftClient draftClient) {
+                                         FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DraftClient draftClient) {
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
         this.docSettingService = docSettingService;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
-        this.orgInfoClient = orgInfoClient;
         this.draftClient = draftClient;
-    }
-
-
-    public void retrieveOrgAddressInfo(HttpServletRequest request) {
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        assert auditTrailDto != null;
-        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
-        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen(auditTrailDto.getUenId());
-        orgAddressInfo.setCompName(licenseeDto.getName());
-        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
-        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
-        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
-        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
-        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
-        orgAddressInfo.setStreet(licenseeDto.getStreetName());
-        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
-        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
     }
 
     public void preApprovalSelection(BaseProcessClass bpc) {
