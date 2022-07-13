@@ -153,7 +153,7 @@
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
@@ -206,7 +206,7 @@
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
@@ -260,7 +260,7 @@
             <iais:row cssClass="topDrugPlace">
                 <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
-                    ${'unknown'}
+                    ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
                 </iais:value>
             </iais:row>
         </div>
