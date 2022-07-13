@@ -31,6 +31,9 @@ public interface AppPremisesRoutingHistoryClient {
     @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppNo(@RequestParam("appNo") String appNo);
 
+    @GetMapping(value = "/activeAppPremisesRoutingHistorys",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getActiveAppPremisesRoutingHistorysByAppCorrId(@RequestParam("premCorrId") String premCorrId);
+
     @GetMapping(value = "/iais-application-history/appPremisesRoutingHistoryByAppNoAndRoleIds", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(@RequestParam(name ="appNo")  String appNo,
                                                                                                                 @RequestParam(name ="roleIds")  List<String> roleIds);

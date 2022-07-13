@@ -371,10 +371,7 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectypeRemarks("-");
         }
 
-        //noted by
-        List<TaskDto> entity = organizationClient.getTasksByRefNo(appPremisesCorrelationId).getEntity();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
-        List<TaskDto> newEntity = rollBackTask(entity, appPremisesRoutingHistoryDtos);
+        List<TaskDto> newEntity = applicationClient.getActiveTaskList(appPremisesCorrelationId).getEntity();
         for (TaskDto dto : newEntity) {
             String roleId = dto.getRoleId();
             String userId = dto.getUserId();
