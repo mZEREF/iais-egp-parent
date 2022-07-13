@@ -46,4 +46,8 @@ public interface ConfigService {
     Map<String,String> getMaskHcsaServiceCategory();
 
     HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String man,String mix,String psnType);
+
+    Map<String,Boolean> isExistHcsaService(HcsaServiceDto hcsaServiceDto);
+
+    void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto);
 }

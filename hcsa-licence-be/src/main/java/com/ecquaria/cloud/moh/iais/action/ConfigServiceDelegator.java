@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -22,17 +23,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.collect.Maps;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -110,6 +120,7 @@ public class ConfigServiceDelegator {
     public void prepareAddNewService(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareAddNewService start"));
         bpc.request.getSession().removeAttribute("routingStage");
+        preparePage(bpc.request);
         configService.addNewService(bpc.request);
         Object individualPremises = bpc.request.getAttribute("individualPremises");
         if(individualPremises==null){
@@ -118,11 +129,34 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("confige prepareAddNewService  end"));
     }
 
+    private void preparePage(HttpServletRequest request){
+        List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(ServiceConfigConstant.SERVICE_CODE);
+        selectOptionList1.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
+        request.setAttribute("codeSelectOptionList",selectOptionList1);
+    }
     // 		doCreate->OnStepProcess
     public void doCreate(BaseProcessClass bpc) throws Exception{
         log.info(StringUtil.changeForLog("confige doCreate start"));
-        HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
-        configService.saveOrUpdate(bpc.request,bpc.response,dateOfHcsaService);
+        String crud_action_type =  bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create",crud_action_type);
+        log.info(StringUtil.changeForLog("The doCreate crud_action_type is -->:"+crud_action_type));
+
+        if("save".equals(crud_action_type)){
+            HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(bpc.request);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto,"save");
+            if(validationResult.isHasErrors()){
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create","dovalidate");
+                ParamUtil.setRequestAttr(bpc.request,"hcsaServiceDto",hcsaServiceConfigDto.getHcsaServiceDto());
+            }else{
+                //configService.saveOrUpdate(bpc.request,bpc.response,hcsaServiceConfigDto);
+                transferHcsaServiceConfigDtoForDB(hcsaServiceConfigDto);
+                configService.saveHcsaServiceConfigDto(hcsaServiceConfigDto);
+            }
+        }
+
         log.info(StringUtil.changeForLog("confige doCreate end"));
     }
 
@@ -191,6 +225,48 @@ public class ConfigServiceDelegator {
         bpc.request.getSession().removeAttribute("maskHcsaServiceCategory");
     }
 
+
+
+    private void setStatusAndEndDate(HcsaServiceDto hcsaServiceDto ){
+        try {
+            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(hcsaServiceDto.getEffectiveDate());
+//            String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
+//            hcsaServiceDto.setEffectiveDate(format);
+            if(parse.before(new Date())){
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            }else {
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            }
+
+        } catch (Exception e) {
+//            Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+//            hcsaServiceDto.setEffectiveDate(startDate);
+//            if(parse.after(new Date())){
+//                hcsaServiceDto.setStatus("CMSTAT003");
+//            }else {
+//                hcsaServiceDto.setStatus("CMSTAT001");
+//            }
+        }
+
+
+        if (StringUtil.isEmpty(hcsaServiceDto.getEndDate())) {
+//            try {
+//                hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(endDate));
+//            } catch (ParseException e) {
+//                hcsaServiceDto.setEndDate(new Date(99,1,1));
+//            }
+            hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date(99,1,1)));
+        }
+    }
+
+
+    private HcsaServiceConfigDto transferHcsaServiceConfigDtoForDB(HcsaServiceConfigDto hcsaServiceConfigDto){
+        HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+        setStatusAndEndDate(hcsaServiceDto);
+        hcsaServiceDto.setVersion("1");
+        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
+        return  hcsaServiceConfigDto;
+    }
     /*
     * get page all data
     * -----------------------
@@ -203,6 +279,12 @@ public class ConfigServiceDelegator {
     private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+        hcsaServiceDto =  ControllerHelper.get(request,hcsaServiceDto);
+        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
+        if(HcsaConsts.SERVICE_TYPE_OTHERS.equals(hcsaServiceDto.getSvcType())){
+          return hcsaServiceConfigDto;
+        }
+
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
         //if service type is sub must to chose
         String[] subsumption = request.getParameterValues("Subsumption");
@@ -511,34 +593,7 @@ public class ConfigServiceDelegator {
 
             }
         }
-        try {
-            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
-            String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
-            hcsaServiceDto.setEffectiveDate(format);
-            if(parse.before(new Date())){
-                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            }else {
-                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            }
 
-        } catch (Exception e) {
-          /*  Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-            hcsaServiceDto.setEffectiveDate(startDate);
-            if(parse.after(new Date())){
-                hcsaServiceDto.setStatus("CMSTAT003");
-            }else {
-                hcsaServiceDto.setStatus("CMSTAT001");
-            }*/
-        }
-
-
-        if (!StringUtil.isEmpty(endDate)) {
-            try {
-                hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(endDate));
-            } catch (ParseException e) {
-                hcsaServiceDto.setEndDate(new Date(99,1,1));
-            }
-        }
 
         hcsaServiceDto.setSvcDisplayDesc(displayDescription);
         hcsaServiceDto.setSvcDesc(description);

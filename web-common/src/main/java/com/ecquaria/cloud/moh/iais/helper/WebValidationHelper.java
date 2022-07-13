@@ -119,7 +119,7 @@ public class WebValidationHelper {
         }
         ValidationResult result = null;
         try {
-            result = validatePropertyWithoutCustom(obj, propertyName);
+            result = validatePropertyWithoutCustom(obj, "default,"+propertyName);
             if (result != null) {
                 HttpServletRequest request = MiscUtil.getCurrentRequest();
                 if (request != null && result.isHasErrors() && obj != null) {

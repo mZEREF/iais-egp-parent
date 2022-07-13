@@ -46,13 +46,6 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,6 +58,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -86,6 +85,7 @@ public class ConfigServiceImpl implements ConfigService {
     private static final String SUSPENSION="Suspension";
     private static final String WITHDRAWAL="Withdrawal";
 
+    @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private OrganizationClient organizationClient;
@@ -105,11 +105,11 @@ public class ConfigServiceImpl implements ConfigService {
 
     private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
 
-    @Autowired
-    public ConfigServiceImpl(HcsaConfigClient hcsaConfigClient) {
-        this.hcsaConfigClient = hcsaConfigClient;
-        this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-    }
+//    @Autowired
+//    public ConfigServiceImpl(HcsaConfigClient hcsaConfigClient) {
+//        this.hcsaConfigClient = hcsaConfigClient;
+//        this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+//    }
 
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
@@ -239,7 +239,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "save");
     }
-    static String[] code ={HcsaConsts.SERVICE_TYPE_BASE,HcsaConsts.SERVICE_TYPE_SUBSUMED,HcsaConsts.SERVICE_TYPE_SPECIFIED};
+
 
     @Override
     public void addNewService(HttpServletRequest request) {
@@ -258,9 +258,7 @@ public class ConfigServiceImpl implements ConfigService {
         categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
         selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
-        List<SelectOption> selectOptionList1 = MasterCodeUtil.retrieveOptionsByCodes(code);
-        selectOptionList1.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
-        request.getSession().setAttribute("codeSelectOptionList",selectOptionList1);
+
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
     }
 
@@ -328,7 +326,7 @@ public class ConfigServiceImpl implements ConfigService {
                  Integer i = (int) Double.parseDouble(hcsaServiceDto1.getVersion()) + 1;
                  hcsaServiceDto.setVersion(i.toString());
                  String effectiveDate = hcsaServiceDto.getEffectiveDate();
-                 Date endDate = hcsaServiceDto.getEndDate();
+                 String endDate = hcsaServiceDto.getEndDate();
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
                  if(hcsaServiceDto.isSelectAsNewVersion()){
                      String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
@@ -515,7 +513,7 @@ public class ConfigServiceImpl implements ConfigService {
         String svcDisplayDesc = hcsaServiceDto.getSvcDisplayDesc();
         String svcType = hcsaServiceDto.getSvcType();
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
-        Date endDate = hcsaServiceDto.getEndDate();
+        String endDate = hcsaServiceDto.getEndDate();
         boolean selectAsNewVersion = hcsaServiceDto.isSelectAsNewVersion();
         Date maxVersionEndDate = hcsaServiceDto.getMaxVersionEndDate();
         String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
@@ -542,14 +540,16 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }else if(selectAsNewVersion){
             if(!StringUtil.isEmpty(endDate)){
-                if(endDate.before(new Date()) || endDate.compareTo(new Date())==0){
+                Date endDateDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+                if(endDateDate.before(new Date()) || endDateDate.compareTo(new Date())==0){
                     errorMap.put("effectiveEndDate","RSM_ERR012");
                 }
             }
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
-            if(endDate.before(parse) || parse.compareTo(endDate)==0){
+            Date endDateDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+            if(endDateDate.before(parse) || parse.compareTo(endDateDate)==0){
                 errorMap.put("effectiveEndDate", "EMM_ERR004");
             }
         }
@@ -1056,6 +1056,9 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+        if(hcsaServiceCatgoryDtos == null){
+            hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+        }
         return hcsaServiceCatgoryDtos;
     }
 
@@ -1093,6 +1096,19 @@ public class ConfigServiceImpl implements ConfigService {
         personnelDto.setPsnType(psnType);
         personnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return personnelDto;
+    }
+
+    @Override
+    public Map<String, Boolean> isExistHcsaService(HcsaServiceDto hcsaServiceDto) {
+        return hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
+    }
+
+    @Override
+    public void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto) {
+        //transFor(hcsaServiceConfigDto);
+        hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
+       // eicGateway(hcsaServiceConfigDto);
+        //HcsaServiceCacheHelper.flushServiceMapping();
     }
 
     static String[] codeSvc ={HcsaConsts.SERVICE_TYPE_BASE,HcsaConsts.SERVICE_TYPE_SUBSUMED,HcsaConsts.SERVICE_TYPE_SPECIFIED};
@@ -1325,7 +1341,7 @@ public class ConfigServiceImpl implements ConfigService {
             String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
             hcsaServiceDto.setOldEffectiveDate(format);
-            hcsaServiceDto.setOldEndDate(hcsaServiceDto.getEndDate());
+           // hcsaServiceDto.setOldEndDate(hcsaServiceDto.getEndDate());
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
         }

@@ -46,7 +46,7 @@
           <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">Inactive</c:if></td>
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
-        <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/></td>
+        <td  style="text-align: center">${hcsaServiceDto.endDate}</td>
         <td  style="text-align: center">${hcsaServiceDto.version}</td>
         <td  style="text-align: center">
           <button onclick="edit(this)"  class="btn btn-default btn-sm" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>">update</button>
