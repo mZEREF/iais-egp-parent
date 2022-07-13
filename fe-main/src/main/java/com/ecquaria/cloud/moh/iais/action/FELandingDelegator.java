@@ -74,7 +74,7 @@ public class FELandingDelegator {
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
 		//Used to determine whether display BSB entry
-		String string = ConfigHelper.getString("bsb.appear.sperate.flag");
+		String string = ConfigHelper.getString("bsb.appear.sperate.flag","no");
 		ParamUtil.setRequestAttr(bpc.request, "bsbAppearFlag", string);
 	}
 
