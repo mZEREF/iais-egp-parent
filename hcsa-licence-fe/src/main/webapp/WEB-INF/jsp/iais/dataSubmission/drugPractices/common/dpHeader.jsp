@@ -6,7 +6,8 @@
 %>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_common.js"></script>
-
+<c:set value="${dpSuperDataSubmissionDto != null && dpSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
+       var="isRfc"/>
 <input type="hidden" name="ar_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">

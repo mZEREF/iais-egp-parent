@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
 /**
  * Process: MohDsPrint
@@ -40,8 +41,8 @@ public class MohDsPrintDelegator {
         String printflag = ParamUtil.getString(bpc.request, DataSubmissionConstant.PRINT_FLAG);
         if (StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_ACKART,
                 DataSubmissionConstant.PRINT_FLAG_ACKDRP,DataSubmissionConstant.PRINT_FLAG_ACKLDT,DataSubmissionConstant.PRINT_FLAG_ACKTOP,DataSubmissionConstant.PRINT_FLAG_ACKVSS})) {
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
-                    DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+            String role = ParamUtil.getString(bpc.request, "role");
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(role)));
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                     DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         }

@@ -764,8 +764,17 @@ public final class DataSubmissionHelper {
     }
 
     public static String getLicenseeEmailAddrs(HttpServletRequest request) {
+        return getEmailAddrsByRoleIdsAndLicenseeId(request, null);
+    }
+
+    public static String getEmailAddrsByRoleIdsAndLicenseeId(HttpServletRequest request, List<String> roleIds) {
         LoginContext loginContext = getLoginContext(request);
-        List<String> emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
+        List<String> emailAddresses;
+        if(IaisCommonUtils.isEmpty(roleIds)){
+            emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
+        } else {
+            emailAddresses = IaisEGPHelper.getEmailsByRoleIdsAndLicenseeId(loginContext.getLicenseeId(), roleIds);
+        }
         StringBuilder emailAddress = new StringBuilder();
         if (emailAddresses.isEmpty()) {
             return emailAddress.toString();

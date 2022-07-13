@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -340,8 +342,14 @@ public abstract class DpCommonDelegator {
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
+        String emailAddress;
+        if(!isRfc(bpc.request)){
+            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_DP));
+        } else {
+            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_DP_SUPERVISOR));
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
