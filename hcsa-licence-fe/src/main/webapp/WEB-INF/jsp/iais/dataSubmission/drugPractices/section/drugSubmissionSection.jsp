@@ -61,14 +61,14 @@
                         </a>
                     </iais:value>
                 </iais:row>
-                <div id="doctorInformation" <c:if test="${drugSubmission.doctorInformations eq 'true'}">style="display: none"</c:if>>
+                <div id="doctorInformation" <c:if test="${drugSubmission.doctorInformations eq 'true' && doctorInformationDto.doctorSource ne 'DRPP'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" id="names">
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true'}">style="display: none"</c:if>>
+                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true' || doctorInformationDto.doctorSource ne 'DRPP'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty"/>
                             <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">
@@ -88,7 +88,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null}">style="display: none"</c:if>>
+                    <div id="doctorInformationElis" <c:if test="${drugSubmission.doctorInformationPE eq 'false' || drugSubmission.doctorInformationPE eq null || doctorInformationDto.doctorSource ne 'DRPE'}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
@@ -112,7 +112,7 @@
                         </iais:row>
                     </div>
                 </div>
-                <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null}">style="display: none"</c:if>>
+                <div id="doctorInformationText" <c:if test="${drugSubmission.doctorInformations eq 'false' || drugSubmission.doctorInformations eq null || doctorInformationDto.doctorSource ne 'DRPT'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Name" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
