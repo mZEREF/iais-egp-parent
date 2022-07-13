@@ -17,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
+import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_EXPAND_FILE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
@@ -39,7 +42,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DES
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.MODULE_NAME_NEW;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_COMPANY_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
@@ -59,12 +61,14 @@ public class RfiFacilityRegistrationDelegator {
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
     private final RfiService rfiService;
+    private final OrganizationInfoService organizationInfoService;
 
     @Autowired
-    public RfiFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, RfiService rfiService) {
+    public RfiFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, RfiService rfiService, OrganizationInfoService organizationInfoService) {
         this.facRegClient = facRegClient;
         this.facilityRegistrationService = facilityRegistrationService;
         this.rfiService = rfiService;
+        this.organizationInfoService = organizationInfoService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -74,7 +78,7 @@ public class RfiFacilityRegistrationDelegator {
         session.removeAttribute(KEY_ROOT_NODE_GROUP);
         session.removeAttribute(KEY_APP_ID);
         rfiService.clearAndSetAppIdInSession(request);
-        AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_FACILITY_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -86,7 +90,7 @@ public class RfiFacilityRegistrationDelegator {
             if (resultDto.ok()) {
                 failRetrieveRfiData = false;
                 facilityRegistrationService.retrieveFacRegRoot(request, resultDto.getEntity());
-                facilityRegistrationService.retrieveOrgAddressInfo(request);
+                organizationInfoService.retrieveOrgAddressInfo(request);
             }
         }
         if (failRetrieveRfiData) {

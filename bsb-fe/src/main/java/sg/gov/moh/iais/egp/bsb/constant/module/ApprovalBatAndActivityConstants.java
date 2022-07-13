@@ -81,7 +81,6 @@ public class ApprovalBatAndActivityConstants {
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
-    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
 
     public static final String KEY_ACTION_SAVE_AS_DRAFT = "draft";
 

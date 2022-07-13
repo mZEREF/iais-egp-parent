@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -39,6 +40,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_ADHOC_RFI;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
+
 /**
  * BsbAdhocRfiDelegator
  * @author junyu
@@ -66,15 +70,14 @@ public class BsbAdhocRfiDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
-        HttpServletRequest request=bpc.request;
+        HttpServletRequest request = bpc.request;
         String approvalNo = ParamUtil.getMaskedString(request,"approvalNo");
         AdhocRfiQueryDto dto = new AdhocRfiQueryDto();
         dto.defaultPaging();
         dto.setApprovalNo(approvalNo);
         dto.setStatus("RFIST001");
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
-
-
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_ADHOC_RFI);
     }
 
     public void preRfiList(BaseProcessClass bpc) {

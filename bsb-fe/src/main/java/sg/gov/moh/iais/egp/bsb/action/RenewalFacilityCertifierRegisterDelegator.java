@@ -52,7 +52,7 @@
 //        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
 //        request.getSession().removeAttribute(KEY_INSTRUCTION_INFO);
 //        request.getSession().removeAttribute(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-//        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+//        AuditTrailHelper.auditFunction(MODULE_RENEW, FUNCTION_AFC_REGISTRATION);
 //    }
 //
 //    public void init(BaseProcessClass bpc) {

@@ -30,7 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.AUDIT_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_SCENARIO_CATEGORY;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_SELF_AUDIT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_NON_OBJECT_ERROR;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO;
 
@@ -54,7 +60,7 @@ public class SelfAuditDelegator {
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_SELF_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);

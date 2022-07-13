@@ -31,13 +31,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION_ACK_OF_RECEIPT_OF_TRANSFER;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
-/**
- * @author YiMing
- * @version 2021/11/16 15:15
- **/
+
 @Slf4j
 @Delegator("ackOfTransferReceiptDelegator")
 public class AckOfReceiptOfTransferDelegator {
@@ -69,7 +71,7 @@ public class AckOfReceiptOfTransferDelegator {
         ParamUtil.setSessionAttr(request,ACK_TRANSFER_RECEIPT_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
         request.getSession().removeAttribute(KEY_DATA_SUB_NO);
-        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+        AuditTrailHelper.auditFunction(MODULE_DATA_SUBMISSION, FUNCTION_DATA_SUBMISSION_ACK_OF_RECEIPT_OF_TRANSFER);
     }
 
     public void prepareData(BaseProcessClass bpc){

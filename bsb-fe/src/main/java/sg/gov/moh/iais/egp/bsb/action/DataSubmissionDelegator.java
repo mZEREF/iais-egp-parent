@@ -28,6 +28,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,31 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSUME_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_CONSUME;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_DISPOSAL;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_EXPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_RECEIPT;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DOC_META;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DOC_TYPE_INVENTORY_BAT;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DOC_TYPE_INVENTORY_TOXIN;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DOC_TYPE_OF_OTHER;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DOC_TYPE_OTHERS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DO_SETTINGS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FACILITY_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LIST_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_OTHER_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SCHEDULE_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 @Slf4j
@@ -67,16 +92,17 @@ public class DataSubmissionDelegator {
      */
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_CONSUME_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_DISPOSAL_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_EXPORT_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_RECEIPT_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, null);
-        ParamUtil.setSessionAttr(request, KEY_FAC_ID, null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_CONSUME_NOTIFICATION_DTO);
+        session.removeAttribute(KEY_DISPOSAL_NOTIFICATION_DTO);
+        session.removeAttribute(KEY_EXPORT_NOTIFICATION_DTO);
+        session.removeAttribute(KEY_RECEIPT_NOTIFICATION_DTO);
+        session.removeAttribute(KEY_OTHER_DOC);
+        session.removeAttribute(KEY_FAC_ID);
         if (log.isInfoEnabled()) {
             log.info("In the future this module will be used to initialize some data");
         }
-        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+        AuditTrailHelper.auditFunction(MODULE_DATA_SUBMISSION, FUNCTION_DATA_SUBMISSION);
     }
 
     public void prepareNotificationTypeSelect(BaseProcessClass bpc) {

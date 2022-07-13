@@ -19,7 +19,8 @@ import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APPOINTMENT_LIST_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.MODULE_NAME;
 
 @Slf4j
 @Delegator("rescheduleAppointmentListDelegator")

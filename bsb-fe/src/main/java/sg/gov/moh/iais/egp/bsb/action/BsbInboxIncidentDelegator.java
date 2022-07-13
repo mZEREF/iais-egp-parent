@@ -1,10 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepSearchDto;
@@ -12,6 +12,9 @@ import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_REPORTABLE_EVENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
 
 @Delegator("bsbInboxIncidentDelegator")
 @Slf4j
@@ -22,6 +25,7 @@ public class BsbInboxIncidentDelegator {
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
+    @Autowired
     public BsbInboxIncidentDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
         this.inboxService = inboxService;
@@ -31,7 +35,7 @@ public class BsbInboxIncidentDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_REPORTABLE_EVENT_SEARCH_PARAMETER_DTO);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, "Inbox Reportable Event");
+        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_REPORTABLE_EVENT);
     }
 
 

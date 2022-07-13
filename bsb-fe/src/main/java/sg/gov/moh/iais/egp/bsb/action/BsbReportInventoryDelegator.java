@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -29,8 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DATA_SUBMISSION_REPORT_INVENTORY;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DATA_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_SUBMISSION_TYPE;
 
 /**
  * @author YiMing
@@ -47,6 +54,7 @@ public class BsbReportInventoryDelegator {
     private final BsbFileClient bsbFileClient;
     private final DataSubmissionClient submissionClient;
 
+    @Autowired
     public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DataSubmissionClient submissionClient) {
         this.subCommon = subCommon;
         this.fileRepoClient = fileRepoClient;
@@ -57,8 +65,8 @@ public class BsbReportInventoryDelegator {
 
     public void step1(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO, null);
-        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+        request.getSession().removeAttribute(KEY_FACILITY_INFO);
+        AuditTrailHelper.auditFunction(MODULE_DATA_SUBMISSION, FUNCTION_DATA_SUBMISSION_REPORT_INVENTORY);
     }
 
 

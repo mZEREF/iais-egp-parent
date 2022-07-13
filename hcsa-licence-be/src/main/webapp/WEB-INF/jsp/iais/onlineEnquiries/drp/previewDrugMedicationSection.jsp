@@ -14,19 +14,22 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:forEach items="${drugPrescribedDispensedDto.drugMedicationDtos}" var="drugMedicationDto" varStatus="idxStatus">
+                    <c:set var="index" value="${idxStatus.index}" />
                     <iais:row>
                         <div class="col-sm-6 control-label formtext col-md-8">
                             <div class="cgo-header">
-                                <strong>Medication</strong>
+                                <strong>Medication<c:if test="${idxStatus.index!=0}"> <label class="assign-psn-item">${index+1}</label></c:if></strong>
                             </div>
                         </div>
                     </iais:row>
-<%--                    <iais:row>--%>
-<%--                        <iais:field width="5" value="Batch No."/>--%>
-<%--                        <iais:value width="7" display="true">--%>
-<%--                            <c:out value="${drugMedicationDto.batchNo}" />--%>
-<%--                        </iais:value>--%>
-<%--                    </iais:row>--%>
+                    <c:if test="${drugMedicationDto.drugType == 'DPD002'}">
+                        <iais:row>
+                            <iais:field width="5" value="Batch No."/>
+                            <iais:value width="7" display="true">
+                                <c:out value="${drugMedicationDto.batchNo}" />
+                            </iais:value>
+                        </iais:row>
+                    </c:if>
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label" >
                             <c:choose>

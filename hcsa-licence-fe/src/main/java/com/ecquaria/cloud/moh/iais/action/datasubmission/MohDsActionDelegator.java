@@ -363,7 +363,7 @@ public class MohDsActionDelegator {
                     professionalResponseDto=new ProfessionalResponseDto();
                 }*/
                 if(doctorInformationDto!=null){
-                    if(DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())){
+                    if(DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource()) || DP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInformationDto.getDoctorSource())){
                         dpSuper.setDoctorInformationDto(doctorInformationDto);
                         drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
                         drugSubmissionDto.setDoctorInformations("true");
@@ -375,10 +375,6 @@ public class MohDsActionDelegator {
                         drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
                         drugSubmissionDto.setDoctorInformations("false");
                         drugSubmissionDto.setDoctorInformationPE("true");
-                    }else if(DP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInformationDto.getDoctorSource())){
-                        dpSuper.setDoctorInformationDto(doctorInformationDto);
-                        drugSubmissionDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
-                        drugSubmissionDto.setDoctorInformations("true");
                     }
                 }
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareDrugPrecribed?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;

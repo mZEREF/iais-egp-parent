@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPROVAL_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_BAT_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_AUTHORISED_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_PROFILE_DTO;
@@ -40,9 +42,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.K
 @Delegator(value = "viewApprovalBatAndActivityDelegator")
 @Slf4j
 public class ViewApprovalBatAndActivityDelegator {
-    private static final String MODULE_NAME = "Approval Application";
-    private static final String FUNCTION_NAME = "View Application";
-
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final DocSettingService docSettingService;
 
@@ -57,7 +56,7 @@ public class ViewApprovalBatAndActivityDelegator {
         session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_APPROVAL_APPLICATION);
     }
 
     public void init(BaseProcessClass bpc) {

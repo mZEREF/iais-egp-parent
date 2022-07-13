@@ -47,7 +47,7 @@
 //        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
 //        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
 //        request.getSession().removeAttribute(KEY_OLD_FAC_CER_REG_DTO);
-//        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+//        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_CHANGE, FUNCTION_AFC_REGISTRATION);
 //    }
 //
 //    public void init(BaseProcessClass bpc) {

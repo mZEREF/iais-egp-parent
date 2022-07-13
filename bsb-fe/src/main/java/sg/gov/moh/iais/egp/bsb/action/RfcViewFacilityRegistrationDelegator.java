@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_EDIT_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
@@ -43,9 +44,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.K
 @Delegator(value = "rfcViewFacRegAppDelegator")
 @Slf4j
 public class RfcViewFacilityRegistrationDelegator {
-    private static final String MODULE_NAME = "RFC Facility Registration";
-    private static final String FUNCTION_NAME = "RFC View Application";
-
     private final FacilityRegisterClient facRegClient;
 
     @Autowired
@@ -55,7 +53,7 @@ public class RfcViewFacilityRegistrationDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, MODULE_VIEW_APPLICATION);
         request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 

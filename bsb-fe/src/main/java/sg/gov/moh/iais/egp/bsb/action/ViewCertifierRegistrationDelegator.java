@@ -21,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AFC_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ADMINISTRATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_COMPANY_PROFILE;
@@ -36,9 +38,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.K
 @Delegator(value = "bsbViewCertRegAppDelegator")
 @Slf4j
 public class ViewCertifierRegistrationDelegator {
-    private static final String MODULE_NAME = "Facility Certifier Registration";
-    private static final String FUNCTION_NAME = "View Application";
-
     private final FacCertifierRegisterClient certifierRegisterClient;
     private final DocSettingService docSettingService;
 
@@ -54,7 +53,7 @@ public class ViewCertifierRegistrationDelegator {
         session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_FACILITY_CERTIFIER_REGISTER);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_AFC_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {

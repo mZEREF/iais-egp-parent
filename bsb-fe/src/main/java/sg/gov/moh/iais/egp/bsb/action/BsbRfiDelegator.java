@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_REQUEST_FOR_INFORMATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_ACTION_TYPE_PREPARE_RFI;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_ACTION_TYPE_PRE_ACKNOWLEDGE;
@@ -29,7 +32,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_DISPL
  * 1. Process is simple with New and RFI, RFI judgment is added to the same process and page.
  * (eg: BsbSubmitSelfAssessmentDelegator, BsbRectifiesNonComplianceDelegator, InspectionFollowUpItemsDelegator)
  * 2. Process is complex with New and RFI, RFI has a separate process and page.
- * (eg: RfiFacilityRegistrationDelegator)
+ * (eg: RfiFacilityRegistrationDelegator, RfiApprovalBatAndActivityDelegator)
  * 3. Process only has RFI and no New, RFI has a separate process and page.
  * (eg: BsbRfiCommentInspectionReportDelegator)
  */
@@ -46,6 +49,7 @@ public class BsbRfiDelegator {
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_RFI_DISPLAY_DTO);
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_REQUEST_FOR_INFORMATION);
     }
 
     public void init(BaseProcessClass bpc){

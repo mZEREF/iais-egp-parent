@@ -31,7 +31,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_RENEW;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_REVIEW_EDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_EDIT_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INSTRUCTION_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN_OFFICER;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_SELECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_INSTRUCTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_OTHER_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_REVIEW;
 
 /**
  * @author : LiRan
@@ -55,7 +83,7 @@ public class RenewalFacilityRegistrationDelegator {
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
         request.getSession().removeAttribute(KEY_INSTRUCTION_INFO);
         request.getSession().removeAttribute(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-        AuditTrailHelper.auditFunction(MODULE_NAME_RENEWAL, MODULE_NAME_RENEWAL);
+        AuditTrailHelper.auditFunction(MODULE_RENEW, FUNCTION_FACILITY_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {

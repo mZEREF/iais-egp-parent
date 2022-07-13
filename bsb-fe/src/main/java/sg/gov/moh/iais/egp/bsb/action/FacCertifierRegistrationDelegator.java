@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
@@ -19,15 +20,36 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityCertifierRegistrationService;
+import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AFC_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_NEW_APPLICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.ERR_MSG_INVALID_ACTION;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ACTION_EXPAND_FILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ACTION_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_EDIT_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_NAV_SAVE_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_SHOW_ERROR_SWITCH;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_APPLICATION_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.STEP_NAME_FACILITY_CERTIFIER_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_ADDRESS;
 
 /**
  *@author YiMing
@@ -40,17 +62,22 @@ public class FacCertifierRegistrationDelegator {
     private final FacCertifierRegisterClient facCertifierRegisterClient;
     private final FileRepoClient fileRepoClient;
     private final FacilityCertifierRegistrationService facilityCertifierRegistrationService;
+    private final OrganizationInfoService organizationInfoService;
 
-    public FacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient, FacilityCertifierRegistrationService facilityCertifierRegistrationService) {
+    @Autowired
+    public FacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient, FacilityCertifierRegistrationService facilityCertifierRegistrationService, OrganizationInfoService organizationInfoService) {
         this.facCertifierRegisterClient = facCertifierRegisterClient;
         this.fileRepoClient = fileRepoClient;
         this.facilityCertifierRegistrationService = facilityCertifierRegistrationService;
+        this.organizationInfoService = organizationInfoService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-        AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ROOT_NODE_GROUP);
+        session.removeAttribute(KEY_ORG_ADDRESS);
+        AuditTrailHelper.auditFunction(MODULE_NEW_APPLICATION, FUNCTION_AFC_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -98,18 +125,7 @@ public class FacCertifierRegistrationDelegator {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityCertifierRegistrationService.getFacCertifierRegisterRoot(request));
         }
 
-        // TODO retrieve company address, and set in session
-        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen("185412420D");
-        orgAddressInfo.setCompName("DBO Laboratories");
-        orgAddressInfo.setPostalCode("980335");
-        orgAddressInfo.setAddressType("ADDTY001");
-        orgAddressInfo.setBlockNo("10");
-        orgAddressInfo.setFloor("03");
-        orgAddressInfo.setUnitNo("01");
-        orgAddressInfo.setStreet("Toa Payoh Lorong 2");
-        orgAddressInfo.setBuilding("-");
-        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+        organizationInfoService.retrieveOrgAddressInfo(request);
     }
 
 
