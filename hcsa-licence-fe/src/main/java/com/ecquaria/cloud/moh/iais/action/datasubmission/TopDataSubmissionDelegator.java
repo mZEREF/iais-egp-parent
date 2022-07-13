@@ -1054,7 +1054,7 @@ public class TopDataSubmissionDelegator {
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
                             if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
                                 ParamUtil.setSessionAttr(request, "secondLateSubmit", Boolean.TRUE);
-                            }else if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&& Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                                 ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                             }
                         }
@@ -1482,7 +1482,7 @@ public class TopDataSubmissionDelegator {
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
                             if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
                                 terminationDto.setLateSubmit(true);
-                            }else if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
                                 terminationDto.setLateSubmit(true);
                             }
                         }

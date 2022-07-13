@@ -150,8 +150,8 @@
         </div>
         <div id="numCounsellingGivenDoc" <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
             <iais:row>
-                <c:set var="toolMsg"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
-                <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsg}" style="padding-right: 0px;"/>
+                <c:set var="toolMsgPre"><iais:message key="DS_MSG018" escape="false" paramKeys="1" paramValues="patient"/></c:set>
+                <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsgPre}" style="padding-right: 0px;"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="20" type="text" name="counsellingReignNo" value="${preTerminationDto.counsellingReignNo}"/>
                 </iais:value>
