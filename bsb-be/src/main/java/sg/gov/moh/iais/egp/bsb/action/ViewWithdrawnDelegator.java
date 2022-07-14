@@ -10,9 +10,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.FUNCTION_NAME;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_WITHDRAWN_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_NAME;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
 
 @Delegator("viewWithdrawnDelegator")
@@ -28,7 +28,7 @@ public class ViewWithdrawnDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_WITHDRAWN_APPLICATION);
     }
 
     public void prepareViewForm(BaseProcessClass bpc) {

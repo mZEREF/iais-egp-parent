@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -19,7 +18,10 @@ import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_REVIEW_FOLLOW_UP_ITEMS_EXTENSION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.YES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -50,10 +52,11 @@ public class BsbInspectionDOReviewFollowUpItemsExtensionDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "DO Review Follow-up Items");
-        request.getSession().removeAttribute(KEY_REVIEW_FOLLOW_UP_DTO);
-        request.getSession().removeAttribute(KEY_INS_DECISION);
-        request.getSession().removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_DO_REVIEW_FOLLOW_UP_ITEMS_EXTENSION);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_REVIEW_FOLLOW_UP_DTO);
+        session.removeAttribute(KEY_INS_DECISION);
+        session.removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
     }
 
     public void prepare(BaseProcessClass bpc) {

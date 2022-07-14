@@ -21,6 +21,8 @@ import javax.servlet.http.HttpSession;
 
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_ACTION_EXPAND_FILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_FACILITY_REGISTRATION_DTO;
@@ -48,7 +50,7 @@ public class BsbBeViewFacilityDelegator {
         session.removeAttribute(MASK_PARAM_APP_ID);
         session.removeAttribute(KEY_TASK_TYPE);
         session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
-        AuditTrailHelper.auditFunction("View Application", "Facility Registration");
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_FACILITY_REGISTRATION);
     }
 
     public void init(BaseProcessClass bpc) {

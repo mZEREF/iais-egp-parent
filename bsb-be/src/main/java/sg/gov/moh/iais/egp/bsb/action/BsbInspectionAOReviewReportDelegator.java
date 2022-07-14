@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -27,10 +26,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_REVIEW_INSPECTION_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFTER_SAVE_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
@@ -68,7 +68,7 @@ public class BsbInspectionAOReviewReportDelegator {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "AO Review Inspection Report");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_AO_REVIEW_INSPECTION_REPORT);
     }
 
     public void init(BaseProcessClass bpc) {

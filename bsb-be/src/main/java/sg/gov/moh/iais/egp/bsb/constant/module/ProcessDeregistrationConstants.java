@@ -7,18 +7,11 @@ package sg.gov.moh.iais.egp.bsb.constant.module;
 public class ProcessDeregistrationConstants {
     private ProcessDeregistrationConstants() {}
 
-    public static final String MODULE_NAME                        = "MOH Processing";
-    public static final String FUNCTION_NAME_DO_PROCESS           = "DO Processing";
-    public static final String FUNCTION_NAME_AO_PROCESS           = "AO Processing";
-    public static final String FUNCTION_NAME_HM_PROCESS           = "HM Processing";
-
     public static final String KEY_DO_PROCESS_DTO                 = "doProcessDto";
     public static final String KEY_AO_PROCESS_DTO                 = "aoProcessDto";
     public static final String KEY_HM_PROCESS_DTO                 = "hmProcessDto";
     public static final String KEY_SUBMISSION_DETAILS_DTO         = "submissionDetailsDto";
 
-    public static final String KEY_SUBJECT                        = "subject";
-    public static final String KEY_DYNAMIC_CONTENT                = "dynamicContent";
     public static final String KEY_DO_REMARKS                     = "doRemarks";
     public static final String KEY_AO_REMARKS                     = "aoRemarks";
     public static final String KEY_HM_REMARKS                     = "hmRemarks";

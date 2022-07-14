@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
@@ -29,6 +30,9 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_NC_EMAIL;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_NC_EMAIL_DRAFT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_NC_EMAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_NC_EMAIL_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
@@ -53,6 +57,7 @@ public class MohOfficerNCEmailDelegator {
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
 
+    @Autowired
     public MohOfficerNCEmailDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
@@ -61,13 +66,13 @@ public class MohOfficerNCEmailDelegator {
     public void startDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-        AuditTrailHelper.auditFunction("Pending DO NC Email Draft", "Pending DO NC Email Draft");
+        AuditTrailHelper.auditFunction(MODULE_NC_EMAIL, FUNCTION_DO_NC_EMAIL_DRAFT);
     }
 
     public void startAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
-        AuditTrailHelper.auditFunction("Pending AO NC Email", "Pending AO NC Email");
+        AuditTrailHelper.auditFunction(MODULE_NC_EMAIL, FUNCTION_AO_NC_EMAIL);
     }
 
     public void init(BaseProcessClass bpc) {

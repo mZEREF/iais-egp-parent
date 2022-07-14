@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -34,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP;
@@ -71,14 +73,14 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.FUNCTION_INSPECTION_RECTIFICATION, "DO Review NC Rectification Evidence Documents");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_DO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS);
     }
 
     public void startAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.FUNCTION_INSPECTION_RECTIFICATION, "AO Review NC Rectification Evidence Documents ");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_AO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS);
     }
 
     public void init(BaseProcessClass bpc){

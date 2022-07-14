@@ -12,10 +12,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_WITHDRAWN_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
-import static sg.gov.moh.iais.egp.bsb.service.ProcessWithdrawalService.MODULE_NAME;
 import static sg.gov.moh.iais.egp.bsb.service.ProcessWithdrawalService.WITHDRAWN_APP_DTO;
 
 /**
@@ -34,10 +35,10 @@ public class BsbAOProcessWithdrawalDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
         request.getSession().removeAttribute(WITHDRAWN_APP_DTO);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
+        AuditTrailHelper.auditFunction(MODULE_WITHDRAWN_APPLICATION, FUNCTION_AO_PROCESSING);
     }
 
     public void prepareData(BaseProcessClass bpc) {

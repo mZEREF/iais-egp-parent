@@ -25,10 +25,12 @@ import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_INSPECTION_DATE_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_REVIEW_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL;
@@ -38,6 +40,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_END_HOUR
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_START_HOURS_OPTION;
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_CONFIRM_DATE;
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_SPECIFY_NEW_DATE;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPOINT_INSPECTION_DATE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -64,15 +67,16 @@ public class AppointInspectionDateDelegator {
     }
 
     public void start(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction("Inspection", "Appoint Inspection Date");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_APPOINT_INSPECTION_DATE);
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, null);
-        ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, null);
-        ParamUtil.setSessionAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, null);
-        ParamUtil.setSessionAttr(request, KEY_START_HOURS_OPTION, null);
-        ParamUtil.setSessionAttr(request, KEY_END_HOURS_OPTION, null);
-        ParamUtil.setSessionAttr(request, INSPECTION_INFO_DTO,null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(APPOINTMENT_INSPECTION_DATE_DTO);
+        session.removeAttribute(APPOINTMENT_REVIEW_DATA);
+        session.removeAttribute(KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST);
+        session.removeAttribute(KEY_START_HOURS_OPTION);
+        session.removeAttribute(KEY_END_HOURS_OPTION);
+        session.removeAttribute(INSPECTION_INFO_DTO);
     }
 
     public void prepareData(BaseProcessClass bpc) {

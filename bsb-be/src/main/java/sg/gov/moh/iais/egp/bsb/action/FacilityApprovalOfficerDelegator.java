@@ -41,6 +41,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_HANDLE_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_RECOMMEND_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_HANDLE_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_APPROVAL_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_APP_SELECT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_DOC_SELECT;
@@ -74,19 +78,19 @@ public class FacilityApprovalOfficerDelegator {
     public void startDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, TaskModuleConstants.PARAM_NAME_APP_ID, TaskModuleConstants.PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction("Pending DO Recommendation", "DO recommend processing decision");
+        AuditTrailHelper.auditFunction(MODULE_APPROVAL_APPLICATION, FUNCTION_DO_RECOMMEND_PROCESSING);
     }
 
     public void startAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, TaskModuleConstants.PARAM_NAME_APP_ID, TaskModuleConstants.PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction("Pending AO Approval", "AO handle processing decision");
+        AuditTrailHelper.auditFunction(MODULE_APPROVAL_APPLICATION, FUNCTION_AO_HANDLE_PROCESSING);
     }
 
     public void startHM(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, TaskModuleConstants.PARAM_NAME_APP_ID, TaskModuleConstants.PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction("Pending HM Approval", "HM handle processing decision");
+        AuditTrailHelper.auditFunction(MODULE_APPROVAL_APPLICATION, FUNCTION_HM_HANDLE_PROCESSING);
     }
 
     public void init(BaseProcessClass bpc) {
