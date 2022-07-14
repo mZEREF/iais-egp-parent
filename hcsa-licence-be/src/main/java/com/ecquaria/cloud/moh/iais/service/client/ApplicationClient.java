@@ -439,6 +439,6 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/roll-back-inspection/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> rollBackInspection(@PathVariable("premCorrId") String premId);
 
-    @GetMapping(value = "/activeTaskList/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-application-be/activeTaskList/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getActiveTaskList(@PathVariable("premCorrId") String premCorrId);
 }
