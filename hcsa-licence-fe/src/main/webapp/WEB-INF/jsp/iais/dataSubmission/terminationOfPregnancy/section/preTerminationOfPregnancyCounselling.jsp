@@ -331,8 +331,8 @@
                 $('#numCounsellingGivenAge').show();
                 $('#numCounsellingGivenDoc').show();
             }
-            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
-            checkMantory('#counsellingYes', "#counsellorIdNoLabel");
+            checkMandatory('#counsellingYes', "#counsellorIdTypeLabel");
+            checkMandatory('#counsellingYes', "#counsellorIdNoLabel");
         });
     });
 

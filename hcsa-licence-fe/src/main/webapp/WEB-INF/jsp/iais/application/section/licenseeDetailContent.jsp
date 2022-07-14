@@ -96,9 +96,9 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function() {
-      checkAddressManatory();
+      checkAddressMandatory();
 
-      $('#addrType').on('change', checkAddressManatory);
+      $('#addrType').on('change', checkAddressMandatory);
       $('.retrieveAddr').click(function() {
           var $postalCodeEle = $(this).closest('div.postalCodeDiv');
           var postalCode = $postalCodeEle.find('.postalCode').val();
@@ -112,7 +112,7 @@
     });
   });
 
-  function checkAddressManatory() {
+  function checkAddressMandatory() {
     var addrType = $('#addrType').val();
     $('.blkNoLabel .mandatory').remove();
     $('.floorUnitLabel .mandatory').remove();

@@ -22,9 +22,6 @@
         </c:when>
     </c:choose>
 </div>
-<c:if test="${!(isRFC || isRenew)}">
-    <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
-</c:if>
 <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
 <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
@@ -91,13 +88,13 @@
             submit('jump','undo',null);
         });
     });
-    function cancel() {
+    /*function cancel() {
         $('#saveDraft').modal('hide');
     }
 
     function jumpPage() {
         submit('premises','saveDraft','jumpPage');
-    }
+    }*/
     function Continue() {
         $('#hciNameUsed').modal('hide');
         $("[name='crud_action_type_continue']").val("continue");

@@ -26,6 +26,8 @@
                         <div class="tab-content">
                             <div class="tab-pane in active">
                                 <%@ include file="section/licenseeDetail.jsp" %>
+                                <c:set var="fromDaftOrRfi" value="${DraftConfig != null || isRfi}"/>
+                                <c:set var="fromAssessGuild" value="${AssessMentConfig != null}"/>
                                 <%@ include file="common/appFooter.jsp"%>
                             </div>
                         </div>
@@ -36,11 +38,6 @@
     </div>
 </form>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<c:if test="${!(isRFC || isRenew)}">
-    <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
-                  yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                  cancelFunc="submit('licensee','saveDraft','jumpPage');" />
-</c:if>
 <script type="text/javascript">
     $(document).ready(function() {
         //assignSelectBindEvent();
@@ -59,9 +56,6 @@
             submit('licensee','saveDraft',$('#selectDraftNo').val());
         });
 
-        if($('#saveDraftSuccess').val()=='success'){
-            $('#saveDraft').modal('show');
-        }
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
             disableContent('div.licenseeContent');
         </c:if>

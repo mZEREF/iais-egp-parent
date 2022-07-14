@@ -92,7 +92,7 @@
         } else if ($('.licenseeType').length > 0) {
             $('.licenseeType').removeClass('hidden');
         }
-        checkAddressManatory();
+        checkAddressMandatory();
         var $postalCode = $('div.postalCodeDiv').find('.postalCode');
         if ($postalCode.length > 0) {
             $('.retrieveAddr').toggleClass('hidden', $postalCode.prop('disabled'));
@@ -305,7 +305,7 @@
         $('#licenseeType').niceSelect('update');
     }
 
-    function checkAddressManatory() {
+    function checkAddressMandatory() {
         var addrType = $('#addrType').val();
         $('.blkNoLabel .mandatory').remove();
         $('.floorUnitLabel .mandatory').remove();

@@ -479,11 +479,11 @@
                             <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
                                 <iais:row cssClass="nonHcsaRow">
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.businessName}" />
                                         <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.busninessName}" />
+                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.providedService}" />
                                         <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-2 delNonHcsaSvcRow">
@@ -543,16 +543,16 @@
 
         premTypeEvent();
         premSelectEvent();
-        removeBtnEvent();
 
         addrTypeEvent();
         retrieveAddrEvent();
 
         addPremEvent();
+        removeBtnEvent();
     }
 
     function initPremisePage($premContent) {
-        checkAddressManatory($premContent);
+        checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
 
         var premType = $premContent.find('.premTypeValue').val();
@@ -637,13 +637,16 @@
 
     function addPremEvent() {
         $('#addPremBtn').on('click', function () {
-            var src = $('div.premContent').eq(0).clone();
-            $('div.premContent').after(src);
+            var $target = $('div.premContent:last');
+            var src = $target.clone();
+            $('div.premises-content').append(src)
+            $target.html(src.html());// for preventing the radio auto cleared
             var $premContent = $('div.premContent').last();
             clearFields($premContent);
             //initPremiseData($premContent);
             removeAdditional($premContent);
             refreshPremise($premContent, $('div.premContent').length - 1);
+            initPremiseEvent();
         });
     }
 
@@ -739,7 +742,7 @@
             if (!onlyInit) {
                 removeAdditional($premContent);
                 clearFields($premMainContent);
-                checkAddressManatory($premContent);
+                checkAddressMandatory($premContent);
                 checkLocateWtihNonHcsa($premContent);
             }
             showTag($premMainContent);
@@ -768,30 +771,27 @@
     }
 
     function premSelectCallback(data, $premContent) {
-        if (data == null) {
+        if (data == null || isEmptyNode($premContent)) {
             dismissWaiting();
             return;
         }
         console.info("premSelectCallback");
         removeAdditional($premContent);
-        fillForm($premContent, data);
-        fillFloorUnit($premContent, data.appPremisesOperationalUnitDtos);
+        fillForm($premContent, data, "", $('div.premContent').index($premContent));
+        fillFloorUnit($premContent, data);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
         // date
         fillValue($premContent.find('.certIssuedDt'), data.certIssuedDtStr);
-        checkAddressManatory($premContent);
+        checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
         if (eqHciCode=='true') {
             $premContent.find('input[name="chooseExistData"]').val('0');
-            //doEditPremise($premContent);
         } else {
             $premContent.find('input[name="chooseExistData"]').val('1');
         }
-
         $premContent.find('.premSelValue').val(data.premisesSelect);
         $premContent.find('.premTypeValue').val(data.premisesType);
         $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
-        //$premContent.find('.chooseExistData').val(data.existingData);
         $premContent.find('.isPartEdit').val('0');
         dismissWaiting();
     }
@@ -802,7 +802,9 @@
             showTag($row.next('.nonHcsaRowDiv'));
             hideTag($premContent.find('.delNonHcsaSvcRow:first'));
         } else {
-            hideTag($row.next('.nonHcsaRowDiv'));
+            var $nonHcsaRowDiv = $row.next('.nonHcsaRowDiv');
+            hideTag($nonHcsaRowDiv);
+            $nonHcsaRowDiv.find('.locateWtihNonHcsaRow:not(:first)').remove();
         }
     }
 
@@ -821,16 +823,16 @@
         if (isEmpty(data) || !$.isArray(data)) {
             return;
         }
-        var $parent = $premContent.find('div.nonHcsaRow');
+        var $parent = $premContent.find('div.nonHcsaRowDiv');
         var len = data.length;
-        for(var i = 1; i <= len; i++) {
-            var $target = $parent.find('.operationDiv').eq(i - 1);
+        for(var i = 0; i < len; i++) {
+            var $target = $parent.find('.nonHcsaRow').eq(i);
             if ($target.length == 0) {
                 addNonHcsa($parent);
-                $target = $parent.find('.operationDiv').eq(i - 1)
+                $target = $parent.find('.nonHcsaRow').eq(i);
             }
-            fillValue($target.find('input.floorNo'), data.floorNo);
-            fillValue($target.find('input.unitNo'), data.unitNo);
+            fillValue($target.find('input.coBusinessName'), data[i].businessName);
+            fillValue($target.find('input.coSvcName'), data[i].providedService);
         }
     }
 
@@ -890,19 +892,25 @@
     }
 
     function fillFloorUnit($premContent, data) {
-        if (isEmpty(data) || !$.isArray(data)) {
+        if (isEmpty(data)) {
             return;
         }
+        // base
+        var $firstFU = $premContent.find('.operationDiv:first');
+        fillValue($firstFU.find('input.floorNo'), data.floorNo);
+        fillValue($firstFU.find('input.unitNo'), data.unitNo);
+        // additional
+        var floorUnits = data.appPremisesOperationalUnitDtos;
         var $parent = $premContent.find('div.operationDivGroup');
-        var len = data.length;
-        for(var i = 1; i <= len; i++) {
-            var $target = $parent.find('.operationDiv').eq(i - 1);
+        var len = floorUnits.length;
+        for(var i = 0; i < len; i++) {
+            var $target = $parent.find('.operationDiv').eq(i);
             if ($target.length == 0) {
                 addFloorUnit($parent);
-                $target = $parent.find('.operationDiv').eq(i - 1)
+                $target = $parent.find('.operationDiv').eq(i);
             }
-            fillValue($target.find('input.floorNo'), data.floorNo);
-            fillValue($target.find('input.unitNo'), data.unitNo);
+            fillValue($target.find('input.floorNo'), floorUnits[i].floorNo);
+            fillValue($target.find('input.unitNo'), floorUnits[i].unitNo);
         }
     }
 
@@ -966,11 +974,11 @@
         $target.find('.addrType').unbind('change');
         $target.find('.addrType').on('change', function(){
             var $premContent = $(this).closest('div.premContent');
-            checkAddressManatory($premContent);
+            checkAddressMandatory($premContent);
         });
     }
 
-    function checkAddressManatory($premContent) {
+    function checkAddressMandatory($premContent) {
         var addrType = $premContent.find('.addrType').val();
         $premContent.find('.blkNoLabel .mandatory').remove();
         $premContent.find('.floorUnitLabel .mandatory').remove();
@@ -1009,18 +1017,23 @@
                     // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                     //show pop
                     $('#postalCodePop').modal('show');
-                    clearFileds($addressSelectors.find(':input'));
+                    //handleVal($addressSelectors.find(':input'), '', false);
+                    clearFields($addressSelectors.find(':input'));
+                    unReadlyContent($addressSelectors);
+                    //$premContent.find('input[name="retrieveflag"]').val('0');
                 } else {
                     fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
                     fillValue($addressSelectors.find('.streetName'), data.streetName);
                     fillValue($addressSelectors.find('.buildingName'), data.buildingName);
+                    readonlyContent($addressSelectors);
                 }
                 dismissWaiting();
             },
             'error':function () {
                 //show pop
                 $('#postalCodePop').modal('show');
-                handleVal($addressSelectors.find(':input'), '', false);
+                clearFields($addressSelectors.find(':input'));
+                unReadlyContent($addressSelectors);
                 dismissWaiting();
             }
         });
@@ -1085,6 +1098,89 @@
         $('#_fileType').val("XLSX");
         $('#_singleUpload').val("1");
     }
+
+
+    /*function fillForm(ele, data, prefix, suffix) {
+        var $selector = getJqueryNode(ele);
+        if (isEmptyNode($selector)) {
+            return;
+        }
+        if (isEmpty(data)) {
+            clearFields($selector);
+            return;
+        }
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        if (isEmpty(suffix)) {
+            suffix = "";
+        }
+        for (var i in data) {
+            var val = data[i];
+            if (Object.prototype.toString.call(val) === "[object Object]") {
+                fillValue(ele, val, prefix, suffix);
+            }
+            var name = prefix + i + suffix;
+            var $input = $selector.find('[name="' + name + '"]');
+            if ($input.length == 0) {
+                name = prefix + capitalize(i) + suffix;
+                $input = $selector.find('[name="' + name + '"]');
+            }
+            if ($input.length == 0) {
+                continue;
+            }
+            fillValue($input, val, true);
+        }
+    }
+
+    function readonlyContent(targetSelector) {
+        var $selector = getJqueryNode(targetSelector);
+        if (isEmptyNode($selector)) {
+            return;
+        }
+        if (!$selector.is(":input")) {
+            $selector = $selector.find(':input');
+        }
+        if ($selector.length <= 0) {
+            return;
+        }
+        $selector.each(function (i, ele) {
+            var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+            if (type == 'hidden') {
+                return;
+            }
+            $input.prop('readonly', true);
+            if (tag == 'select') {
+                updateSelectTag($input);
+            }
+        });
+    }
+
+    function unReadlyContent(targetSelector) {
+        var $selector = getJqueryNode(targetSelector);
+        if (isEmptyNode($selector)) {
+            return;
+        }
+        if (!$selector.is(":input")) {
+            $selector = $selector.find(':input');
+        }
+        if ($selector.length <= 0) {
+            return;
+        }
+        $selector.each(function (i, ele) {
+            var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+            if (type == 'hidden') {
+                return;
+            }
+            $input.prop('readonly', false);
+            if (tag == 'select') {
+                updateSelectTag($input);
+            }
+        });
+    }
+
+    function premisesFunc(){}*/
+
 /*
     function isEmptyNode(ele) {
         return ele == null || typeof ele !== "object" || !(ele instanceof jQuery) || ele.length == 0;

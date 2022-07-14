@@ -40,7 +40,7 @@
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
-                                     onchange="checkMantory(this, '#ethnicGroupLabel', 'NAT0001')"
+                                     onchange="checkMandatory(this, '#ethnicGroupLabel', 'NAT0001')"
                                      value="${patientDto.nationality}" cssClass="nationalitySel"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                     </iais:value>

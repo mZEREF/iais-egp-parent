@@ -30,8 +30,7 @@ $(document).ready(function() {
     tableCollapse();
     licenceBtn();
     mobileMenuBtn();
-    premisesFunc();
-    serviceInfoFunc();
+    //serviceInfoFunc();
     checkboxLevelDisabledEnabledFunc();
     selfAssessmentFunc();
     if ($('.personal-detail-info').length > 0) {
@@ -481,69 +480,6 @@ function mobileMenuBtn() {
     });
 
    
-}
-
-
-
-function premisesFunc() {
-    $('input[name="premisesType"]').on('change', function() {
-        $('.premiseLocationSelect').removeClass('hidden');
-        $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
-        $('#premisesSelect, #vehicleSelect').prop('selectedIndex', 0);
-        $('#premisesSelect, #vehicleSelect').niceSelect('update');
-    });
-
-    $('#premisesSelect').on('change', function() {
-        if ($(this).val() == "newPremise") {
-
-            $('.premises-summary, .vehicleSelectForm').addClass('hidden');
-            if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
-
-                $('.new-premise-form-conveyance').removeClass('hidden');
-                $('.new-premise-form-on-site').addClass('hidden');
-
-            } else {
-                $('.new-premise-form-on-site').removeClass('hidden');
-                $('.new-premise-form-conveyance').addClass('hidden');
-            }
-        } else {
-            $('.new-premise-form-conveyance,.new-premise-form-on-site').addClass('hidden');
-
-            if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
-                $('.vehicleSelectForm, .premises-summary .vehicle-txt').removeClass('hidden');
-                $('.premise-address-gp .premise-type b').text("Conveyance: ")
-            } else {
-                $('.premises-summary').removeClass('hidden');
-                $('.premises-summary .vehicle-info,.premises-summary .vehicle-txt').addClass('hidden');
-                $('.premise-address-gp .premise-type b').text("On-site: ")
-            }
-
-            $('.premises-summary .premise-address').text($('#premisesSelect option:selected').text());
-        }
-    });
-
-    $('#vehicleSelect').on('change', function() {
-        $('.premises-summary').removeClass('hidden');
-        $('.vehicle-txt').removeClass('hidden');
-        $('.premises-summary .vehicle-info').removeClass('hidden').text($('#vehicleSelect option:selected').text());
-    });
-
-    $('.application-tab-footer a[data-toggle="tab"]').on('click', function() {
-
-
-        var target = $(this).attr("href");
-
-        $('.steps-tab .nav li').removeClass('active');
-        $('.steps-tab .nav li a[href="' + target + '"]').closest('li').addClass('active');
-
-        if ($(this).hasClass('next')) {
-            mySwiper.slideNext();
-        } else {
-            mySwiper.slidePrev();
-        }
-        $('.tab-nav-mobile .swiper-slide a[href="' + target + '"]').click();
-
-    });
 }
 
 $(window).on('scroll', function() {

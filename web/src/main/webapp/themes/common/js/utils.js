@@ -551,15 +551,34 @@ function toggleOnCheck(sel, elem, hide) {
     }
 }
 
-function checkMantory(sel, targetLabel, val) {
+function checkMandatory(sel, targetLabel, val) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(targetLabel);
     if (isEmptyNode($selector) || isEmptyNode($target)) {
         return;
     }
     $target.find('.mandatory').remove();
-    if (isEmpty(val) && val != '' && $selector.is(':checked') || val == $selector.val()) {
-        $target.append('<span class="mandatory">*</span>');
+    var type = $selector.get(0).type;
+    if (type == 'checkbox' || type == 'radio') {
+        var isAdd = false;
+        if ($selector.length == 1) {
+            if ($selector.is(':checked')) {
+                isAdd = true;
+            }
+        } else if ($selector.is(':checked')) {
+            if ($selector.filter(':checked').val() == val) {
+                isAdd = true;
+            }
+        }
+        if (isAdd) {
+            $target.append('<span class="mandatory">*</span>');
+        }
+    } else if ($selector.is(':input')) {
+        if ($selector.val() == val) {
+            $target.append('<span class="mandatory">*</span>');
+        }
+    } else {
+        checkMandatory($selector.find(':input'), targetLabel, val);
     }
 }
 
@@ -736,6 +755,52 @@ function unDisableContent(targetSelector) {
         $input.prop('disabled', false);
         $input.css('border-color', '');
         $input.css('color', '');
+        if (tag == 'select') {
+            updateSelectTag($input);
+        }
+    });
+}
+
+function readonlyContent(targetSelector) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmptyNode($selector)) {
+        return;
+    }
+    if (!$selector.is(":input")) {
+        $selector = $selector.find(':input');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function (i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+        if (type == 'hidden') {
+            return;
+        }
+        $input.prop('readonly', true);
+        if (tag == 'select') {
+            updateSelectTag($input);
+        }
+    });
+}
+
+function unReadlyContent(targetSelector) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmptyNode($selector)) {
+        return;
+    }
+    if (!$selector.is(":input")) {
+        $selector = $selector.find(':input');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function (i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+        if (type == 'hidden') {
+            return;
+        }
+        $input.prop('readonly', false);
         if (tag == 'select') {
             updateSelectTag($input);
         }
