@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedication
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -184,7 +184,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) getSourseList(bpc.request));
+        List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
+        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
     }
 
     @Override
@@ -364,12 +365,15 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }
-    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+
+    protected final List<SelectOption> getBusinessNameList(HttpServletRequest request,String premises){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setDpPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        return selectOptions;
+        Map<String, PremisesDto> stringPremisesDtoMap = DataSubmissionHelper.setDpPremisesMap(request);
+        PremisesDto premisesDto = stringPremisesDtoMap.get(premises);
+        stringStringMap.put(premisesDto.getHciCode(),premisesDto.getPremiseLabel());
+        return DataSubmissionHelper.genOptions(stringStringMap);
     }
+
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
