@@ -171,6 +171,16 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
         }
+        DrugSubmissionDto drugSubmission = drugPrescribedDispensedDto.getDrugSubmission();
+        if (drugSubmission == null) {
+            drugSubmission = new DrugSubmissionDto();
+            drugPrescribedDispensedDto.setDrugSubmission(drugSubmission);
+        }
+        DoctorInformationDto doctorInformationDto = dpSuperDataSubmissionDto.getDoctorInformationDto();
+        if (doctorInformationDto == null){
+            doctorInformationDto = new DoctorInformationDto();
+            dpSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
