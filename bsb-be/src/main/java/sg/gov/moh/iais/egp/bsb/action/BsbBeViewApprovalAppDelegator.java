@@ -13,6 +13,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_APPROVAL_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_TASK_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
 
@@ -34,7 +36,7 @@ public class BsbBeViewApprovalAppDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(MASK_PARAM_APP_ID);
         session.removeAttribute(KEY_TASK_TYPE);
-        AuditTrailHelper.auditFunction("View Application", "Approval Application");
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_APPROVAL_APPLICATION);
     }
 
     public void init(BaseProcessClass bpc) {

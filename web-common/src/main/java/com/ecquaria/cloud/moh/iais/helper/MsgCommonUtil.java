@@ -5,14 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,8 +43,20 @@ public class MsgCommonUtil {
             List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(refId);
             emailSet.addAll(emailAddrs);
         } else if(roles != null && !allDataSubmissionRoleIds.isEmpty()){
-            List<String> emailAddrs = IaisEGPHelper.getEmailsByRoleIdsAndLicenseeId(refId,allDataSubmissionRoleIds);
-            emailSet.addAll(emailAddrs);
+            List<OrgUserDto> orgUserDtoList = IaisEGPHelper.getLicenseeAccountByRolesAndLicenseeId(refId,allDataSubmissionRoleIds);
+            if(orgUserDtoList != null && !orgUserDtoList.isEmpty()){
+                //officerNameMap is used to store each user display name;key is id,value is displayName
+                Map<String, String> officerNameMap = Maps.newHashMapWithExpectedSize(orgUserDtoList.size());
+                //emailAddressMap is used to store each user email;key is id ,value is email address
+                Map<String, String> emailAddressMap =  Maps.newHashMapWithExpectedSize(orgUserDtoList.size());
+                //each user own different name
+                for (OrgUserDto userDto : orgUserDtoList) {
+                    officerNameMap.put(userDto.getId(),userDto.getDisplayName());
+                    emailAddressMap.put(userDto.getId(),userDto.getEmail());
+                }
+                inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
+                inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
+            }
         }else{
             //this refId is license id
             LicenseeDto licensee = getLicenseeById(refId);

@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedication
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -171,10 +171,21 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
         }
+        DrugSubmissionDto drugSubmission = drugPrescribedDispensedDto.getDrugSubmission();
+        if (drugSubmission == null) {
+            drugSubmission = new DrugSubmissionDto();
+            drugPrescribedDispensedDto.setDrugSubmission(drugSubmission);
+        }
+        DoctorInformationDto doctorInformationDto = dpSuperDataSubmissionDto.getDoctorInformationDto();
+        if (doctorInformationDto == null){
+            doctorInformationDto = new DoctorInformationDto();
+            dpSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
+        }
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) getSourseList(bpc.request));
+        List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
+        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
     }
 
     @Override
@@ -300,42 +311,46 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     String general_err0041 = AppValidatorHelper.repLength("Doctor's Name", "66");
                     errorMap.put("dName", general_err0041);
                 }
-                if(StringUtil.isEmpty(doctorInformationDto.getSpeciality())){
-                    errorMap.put("dSpeciality", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
-                    errorMap.put("dSpeciality", general_err0041);
-                }
-                if(StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())){
-                    errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
-                    errorMap.put("dSubSpeciality", general_err0041);
-                }
-                if(StringUtil.isEmpty(doctorInformationDto.getQualification())){
-                    errorMap.put("dQualification", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
-                    errorMap.put("dQualification", general_err0041);
+                if (!DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
+                    if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                        errorMap.put("dSpeciality", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
+                        errorMap.put("dSpeciality", general_err0041);
+                    }
+                    if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                        errorMap.put("dSubSpeciality", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality()) && doctorInformationDto.getSubSpeciality().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
+                        errorMap.put("dSubSpeciality", general_err0041);
+                    }
+                    if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                        errorMap.put("dQualification", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification()) && doctorInformationDto.getQualification().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
+                        errorMap.put("dQualification", general_err0041);
+                    }
                 }
             } else if("false".equals(drugSubmission.getDoctorInformations())){
-                if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
-                    errorMap.put("dSpecialitys", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSpeciality())&&doctorInformationDto.getSpeciality().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
-                    errorMap.put("dSpecialitys", general_err0041);
-                }
-                if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
-                    errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality())&&doctorInformationDto.getSubSpeciality().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
-                    errorMap.put("dSubSpecialitys", general_err0041);
-                }
-                if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
-                    errorMap.put("dQualifications", "GENERAL_ERR0006");
-                }else if(StringUtil.isNotEmpty(doctorInformationDto.getQualification())&&doctorInformationDto.getQualification().length()>1024){
-                    String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
-                    errorMap.put("dQualifications", general_err0041);
+                if (!DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
+                    if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
+                        errorMap.put("dSpecialitys", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Specialty", "1024");
+                        errorMap.put("dSpecialitys", general_err0041);
+                    }
+                    if (StringUtil.isEmpty(doctorInformationDto.getSubSpeciality())) {
+                        errorMap.put("dSubSpecialitys", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getSubSpeciality()) && doctorInformationDto.getSubSpeciality().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Sub-Specialty", "1024");
+                        errorMap.put("dSubSpecialitys", general_err0041);
+                    }
+                    if (StringUtil.isEmpty(doctorInformationDto.getQualification())) {
+                        errorMap.put("dQualifications", "GENERAL_ERR0006");
+                    } else if (StringUtil.isNotEmpty(doctorInformationDto.getQualification()) && doctorInformationDto.getQualification().length() > 1024) {
+                        String general_err0041 = AppValidatorHelper.repLength("Qualification", "1024");
+                        errorMap.put("dQualifications", general_err0041);
+                    }
                 }
             }
             verifyRfcCommon(request, errorMap);
@@ -350,12 +365,15 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }
-    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+
+    protected final List<SelectOption> getBusinessNameList(HttpServletRequest request,String premises){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setDpPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        return selectOptions;
+        Map<String, PremisesDto> stringPremisesDtoMap = DataSubmissionHelper.setDpPremisesMap(request);
+        PremisesDto premisesDto = stringPremisesDtoMap.get(premises);
+        stringStringMap.put(premisesDto.getHciCode(),premisesDto.getPremiseLabel());
+        return DataSubmissionHelper.genOptions(stringStringMap);
     }
+
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);

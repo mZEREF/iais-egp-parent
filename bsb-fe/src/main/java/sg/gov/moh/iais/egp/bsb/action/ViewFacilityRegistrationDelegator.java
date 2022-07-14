@@ -58,7 +58,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FA
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_FACILITY_REGISTRATION_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 @Delegator(value = "bsbViewFacRegAppDelegator")
 @Slf4j
@@ -79,7 +78,6 @@ public class ViewFacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_FACILITY_REGISTRATION_DTO);
         AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_FACILITY_REGISTRATION);
     }

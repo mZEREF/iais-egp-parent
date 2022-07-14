@@ -21,15 +21,27 @@ import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_REINSTATEMENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_SUSPENSION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REINSTATEMENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_SUSPENSION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APPROVAL_STATUS_SUSPENDED;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
-import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.APP;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.APPROVAL_LIST_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_NON_OBJECT_ERROR;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.TASK_LIST_URL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
@@ -38,8 +50,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Slf4j
 @Delegator("bsbSuspensionDelegator")
 public class BsbSuspensionDelegator {
-    private static final String SUSPENSION_MODULE_NAME = "Suspension";
-    private static final String REINSTATEMENT_MODULE_NAME = "Reinstatement";
     private static final String ACTION_TYPE_SAVE = "doSave";
     private static final String ACTION_TYPE_PREPARE = "prepare";
     private static final String ACTION_TYPE_NEXT = "doNext";
@@ -65,13 +75,12 @@ public class BsbSuspensionDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, null);
-        AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, null);
-        ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, null);
-        ParamUtil.setSessionAttr(request, BACK_URL, null);
-        ParamUtil.setSessionAttr(request, FROM, null);
-        request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
-        request.getSession().removeAttribute(KEY_CAN_UPLOAD);
+        HttpSession session = request.getSession();
+        session.removeAttribute(SUSPENSION_REINSTATEMENT_DTO);
+        session.removeAttribute(BACK_URL);
+        session.removeAttribute(FROM);
+        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
+        session.removeAttribute(KEY_CAN_UPLOAD);
     }
 
     /**
@@ -145,9 +154,9 @@ public class BsbSuspensionDelegator {
 
     private void setModuleType(SuspensionReinstatementDto dto) {
         if (dto.getApprovalStatus().equals(APPROVAL_STATUS_SUSPENDED)) {
-            AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, REINSTATEMENT_MODULE_NAME);
+            AuditTrailHelper.auditFunction(MODULE_SUSPENSION, FUNCTION_SUSPENSION);
         } else {
-            AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, SUSPENSION_MODULE_NAME);
+            AuditTrailHelper.auditFunction(MODULE_REINSTATEMENT, FUNCTION_REINSTATEMENT);
         }
     }
 

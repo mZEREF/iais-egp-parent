@@ -13,9 +13,6 @@ public class AppViewConstants {
     public static final String KEY_APP_VIEW_URL_APPROVAL_APP                = "/bsb-web/eservice/INTRANET/BsbBeViewApprovalBatAndActivity";
     public static final String KEY_APP_VIEW_URL_FAC_CER_REG                 = "";
 
-    public static final String MODULE_NAME                                  = "MohBeAppView";
-    public static final String FUNCTION_NAME                                = "MohBeAppView";
-
     public static final String NODE_NAME_AFC                                = "afc";
     public static final String NODE_NAME_FAC_PROFILE                        = "facProfile";
     public static final String NODE_NAME_FAC_OPERATOR                       = "facOperator";

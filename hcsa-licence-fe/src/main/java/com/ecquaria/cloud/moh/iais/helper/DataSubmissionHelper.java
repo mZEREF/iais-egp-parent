@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -40,12 +41,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Description Data Submission Helper
@@ -773,7 +776,8 @@ public final class DataSubmissionHelper {
         if(IaisCommonUtils.isEmpty(roleIds)){
             emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
         } else {
-            emailAddresses = IaisEGPHelper.getEmailsByRoleIdsAndLicenseeId(loginContext.getLicenseeId(), roleIds);
+            List<OrgUserDto> orgUserDtoList = IaisEGPHelper.getLicenseeAccountByRolesAndLicenseeId(loginContext.getLicenseeId(), roleIds);
+            emailAddresses = orgUserDtoList != null ?orgUserDtoList.stream().map(OrgUserDto::getEmail).distinct().collect(Collectors.toList()) : new ArrayList<>();
         }
         StringBuilder emailAddress = new StringBuilder();
         if (emailAddresses.isEmpty()) {

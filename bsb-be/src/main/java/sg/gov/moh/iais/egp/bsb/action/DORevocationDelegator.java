@@ -27,12 +27,30 @@ import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_REVOCATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REVOCATION;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.APP;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.APPROVAL_LIST_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_ACTION_ADDT;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_CAN_UPLOAD;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_NON_OBJECT_ERROR;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_FACILITY_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_REVOKE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.TASK_LIST_URL;
 
 /**
  * @author Zhu Tangtang
@@ -60,13 +78,14 @@ public class DORevocationDelegator {
      * StartStep: startStep
      */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_REVOCATION);
+        AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_DO_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
-        ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
-        ParamUtil.setSessionAttr(request, FROM, null);
-        ParamUtil.setSessionAttr(request, BACK_URL, null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(PARAM_REVOKE_DTO);
+        session.removeAttribute(PARAM_FACILITY_SEARCH);
+        session.removeAttribute(FROM);
+        session.removeAttribute(BACK_URL);
     }
 
     /**

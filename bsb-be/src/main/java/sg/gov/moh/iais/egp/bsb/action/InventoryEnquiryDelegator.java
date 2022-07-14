@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InventoryClient;
@@ -46,8 +45,11 @@ public class InventoryEnquiryDelegator {
     private static final String KEY_SEND_FACILITY       = "sendFacility";
     private static final String KEY_RECEIVE_FACILITY    = "recFacility";
 
-    @Autowired
-    private InventoryClient inventoryClient;
+    private final InventoryClient inventoryClient;
+
+    public InventoryEnquiryDelegator(InventoryClient inventoryClient) {
+        this.inventoryClient = inventoryClient;
+    }
 
     /**
      * AutoStep: prepareData
@@ -95,7 +97,7 @@ public class InventoryEnquiryDelegator {
         ParamUtil.setSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO, inventoryDto);
     }
 
-    public void getFilterAndSearch(HttpServletRequest request,InventoryDto inventoryDto,String count) throws ParseException {
+    public void getFilterAndSearch(HttpServletRequest request,InventoryDto inventoryDto,String count) {
         inventoryDto.clearAllFields();
         String scheduleType = ParamUtil.getString(request,KEY_SCHEDULE_TYPE);
         String biologicalAgent = ParamUtil.getString(request,KEY_BIOLOGICAL_NAME);

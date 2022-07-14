@@ -21,10 +21,34 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.FACILITY_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.FACILITY_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_ACTION_ADDT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_MANUAL_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_CREATE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_CLASSIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_REMARKS;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_YEAR;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SEPARATOR;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AUDIT_CREATION;
 
 /**
  * @author Zhu Tangtang
@@ -45,11 +69,12 @@ public class AuditCreationDelegator {
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT_CREATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
-        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(PARAM_AUDIT_SEARCH);
+        session.removeAttribute(KEY_MANUAL_AUDIT);
     }
 
     /**

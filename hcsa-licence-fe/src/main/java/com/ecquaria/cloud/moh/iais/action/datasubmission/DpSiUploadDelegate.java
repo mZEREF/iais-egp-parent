@@ -554,7 +554,7 @@ public class DpSiUploadDelegate {
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
-        sendSovenorFileMsg(bpc.request);
+        sendSovenorFileMsgAndEmail(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperListBe);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_DP)));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
@@ -630,7 +630,7 @@ public class DpSiUploadDelegate {
         }
     }
 
-    public void sendSovenorFileMsg(HttpServletRequest request)  {
+    public void sendSovenorFileMsgAndEmail(HttpServletRequest request)  {
 
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
 
@@ -654,6 +654,22 @@ public class DpSiUploadDelegate {
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             msgParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
             notificationHelper.sendNotification(msgParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+
+        //email
+        try {
+            EmailParam emailParam = new EmailParam();
+            emailParam.setQueryCode(subNo);
+            emailParam.setReqRefNum(subNo);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_EMAIL);
+
+            emailParam.setServiceTypes(DataSubmissionConsts.DS_DRP_NEW);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_ROLE_LICENSEE_DP_SUBMITTER);
+            emailParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
