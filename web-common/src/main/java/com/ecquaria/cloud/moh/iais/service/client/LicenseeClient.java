@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -32,8 +33,8 @@ public interface LicenseeClient {
     @GetMapping(value = "/iais-licensee/user-email-addrs/{licenseeId}")
     ResponseEntity<List<String>> getLicenseeEmails(@PathVariable(name = "licenseeId") String licenseeId);
 
-    @PostMapping(value = "/iais-licensee/user-email-addrs/licenseeId/roleIds")
-    ResponseEntity<List<String>> getEmailsByRoleIdsAndLicenseeId(@RequestParam(name = "licenseeId") String licenseeId,@RequestBody List<String> roleIds);
+    @PostMapping(value = "/iais-licensee/user-account/licenseeId/roleIds")
+    ResponseEntity<List<OrgUserDto>> getLicenseeAccountByRolesAndLicenseeId(@RequestParam(name = "licenseeId") String licenseeId, @RequestBody List<String> roleIds);
 
     @GetMapping(value = "/iais-licensee/user-mobile-nos/{licenseeId}")
     ResponseEntity<List<String>> getLicenseeMobiles(@PathVariable(name = "licenseeId") String licenseeId);
