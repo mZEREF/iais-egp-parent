@@ -448,8 +448,12 @@ public class MohDsActionDelegator {
                 if(doctorInformationDto!=null){
                     if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())){
                         topSuper.setDoctorInformationDto(doctorInformationDto);
+                        terminationDto.setDoctorName(doctorInformationDto.getName());
+                        terminationDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setSubSpecialty(String.valueOf(doctorInformationDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setDoctorRegnNo(doctorInformationDto.getDoctorReignNo());
-                        terminationDto.setTopDoctorInformations("true");
+                        terminationDto.setTopDoctorInformations("false");
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInformationDto.getDoctorSource())){
                         terminationDto.setDoctorName(doctorInformationDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
