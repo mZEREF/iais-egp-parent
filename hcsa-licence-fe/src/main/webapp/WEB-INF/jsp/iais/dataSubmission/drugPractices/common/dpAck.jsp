@@ -36,9 +36,7 @@
                 <label class="col-xs-12" style="font-size: 20px">Submission Successful</label>
                 <p class="col-xs-12 margin-btm">- <strong><iais:code code="${dpSuperDataSubmissionDto.submissionType}"/></strong></p>
                 <div class="ack-font-16">
-                    <c:if test="${dpSuperDataSubmissionDto.submissionType!='DP_TP003'}">
-                        <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
-                    </c:if>
+                    <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
                     <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>
                 </div>
                 <div class="ack-font-16">
