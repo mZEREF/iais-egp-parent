@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -103,7 +104,8 @@ public class TopDataSubmissionDelegator {
     @Autowired
     private NotificationHelper notificationHelper;
 
-
+    @Autowired
+    private AssistedReproductionClient assistedReproductionClient;
 
     @Autowired
     private DocInfoService docInfoService;
@@ -261,7 +263,13 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseLists(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+             ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         return selectOptions;
     }
@@ -269,7 +277,13 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseListsDrug(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,TOP_OTHERS));
         return selectOptions;
@@ -1206,13 +1220,13 @@ public class TopDataSubmissionDelegator {
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         ControllerHelper.get(request, terminationDto);
-        if(terminationDto.getPregnancyOwn()!=null&&!terminationDto.getPregnancyOwn()){
+        if(terminationDto.getPregnancyOwn()!=null&&terminationDto.getPregnancyOwn()){
             terminationDto.setPrescribeTopPlace(null);
         }
-        if(terminationDto.getTakenOwn()!=null&&!terminationDto.getTakenOwn()){
+        if(terminationDto.getTakenOwn()!=null&&terminationDto.getTakenOwn()){
             terminationDto.setTopDrugPlace(null);
         }
-        if(terminationDto.getPerformedOwn()!=null&&!terminationDto.getPerformedOwn()){
+        if(terminationDto.getPerformedOwn()!=null&&terminationDto.getPerformedOwn()){
             terminationDto.setTopPlace(null);
         }
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
