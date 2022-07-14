@@ -31,7 +31,6 @@
                             <div class="tab-pane fade in active">
                                 <div id="previewPanel" role="tabpanel">
                                     <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthorisedDto.facAuthorisedDtoList}" processType="${processType}">
-                                        <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
