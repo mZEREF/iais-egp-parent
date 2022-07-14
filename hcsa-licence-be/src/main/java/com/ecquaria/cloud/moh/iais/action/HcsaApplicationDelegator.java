@@ -1942,7 +1942,7 @@ public class HcsaApplicationDelegator {
     private void checkShowInspection(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto, String correlationId) {
         String status = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
-                getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS);
+                getActiveAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS);
         if (appPremisesRoutingHistoryDto == null || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(appPremisesRoutingHistoryDto.getProcessDecision())) {
             ParamUtil.setRequestAttr(bpc.request, "isShowInspection", "N");
         } else {

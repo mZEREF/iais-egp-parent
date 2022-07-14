@@ -16,6 +16,7 @@ public interface AppPremisesRoutingHistoryService {
     List<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistoryDtosByCorrId(String corrId);
     public List<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(String appNo, List<String> roleIds);
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId) ;
+    AppPremisesRoutingHistoryDto getActiveAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId);
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId) ;
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId, String appStatus) ;
     public AppPremisesRoutingHistoryDto getAppHistoryByAppNoAndActionBy(String appNo,String actionBy);
