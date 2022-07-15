@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
@@ -11,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -30,10 +30,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL_RESCHEDULE_APPOINTMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.BACK_URL_TASK_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.INSPECTION_INFO_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_END_HOURS_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.KEY_START_HOURS_OPTION;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_CONFIRM_DATE;
+import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.PROCESS_DEC_SPECIFY_NEW_DATE;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_RESCHEDULE;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_PAGE_INFO;
 
@@ -47,6 +59,7 @@ public class BsbRescheduleApptDelegator {
     private final BsbAppointmentClient bsbAppointmentClient;
     private final ApptInspectionDateService apptInspectionDateService;
 
+    @Autowired
     public BsbRescheduleApptDelegator(BsbAppointmentClient bsbAppointmentClient, ApptInspectionDateService apptInspectionDateService) {
         this.bsbAppointmentClient = bsbAppointmentClient;
         this.apptInspectionDateService = apptInspectionDateService;
@@ -56,7 +69,7 @@ public class BsbRescheduleApptDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_SEARCH_DTO);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_RESCHEDULE);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_RESCHEDULE);
     }
 
     public void prepareData(BaseProcessClass bpc) {

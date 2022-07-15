@@ -121,7 +121,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                 MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG);
 
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("submissionerName", submissionerName);
+        msgContentMap.put("ApplicantName", submissionerName);
         msgContentMap.put("patientName", patientName);
         msgContentMap.put("date", dateStr);
         msgContentMap.put("submissionId", submssionNo);
@@ -148,7 +148,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                 MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG);
 
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("submissionerName", submissionerName);
+        msgContentMap.put("ApplicantName", submissionerName);
         msgContentMap.put("patientName", patientName);
         msgContentMap.put("submissionId", submssionNo);
 

@@ -294,7 +294,7 @@ public class AppealDelegator {
         //reload
 
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("appealGovernanceOfficer", "appealGenerateGovernanceOfficerHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("appealGovernanceOfficer", "appealGenerateGovernanceOfficerHtml");
 
 
         //assign cgo select

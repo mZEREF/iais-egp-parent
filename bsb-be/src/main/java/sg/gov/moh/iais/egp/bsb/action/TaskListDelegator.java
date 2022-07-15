@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,10 +24,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_TASK_LIST;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTRANET_DASHBOARD;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_CUR_ROLE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ROLE_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ROLE_OPTIONS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_SEARCH_DTO;
 
 
 @Slf4j
@@ -47,7 +55,7 @@ public class TaskListDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_TASK_LIST_SEARCH_DTO);
 
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_TASK_LIST);
+        AuditTrailHelper.auditFunction(MODULE_INTRANET_DASHBOARD, FUNCTION_TASK_LIST);
     }
 
     public void init(BaseProcessClass bpc) {

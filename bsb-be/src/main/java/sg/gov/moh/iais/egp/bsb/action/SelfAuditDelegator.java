@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
@@ -21,9 +22,28 @@ import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_SELF_AUDIT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.AO_REMARKS;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.AUDIT_OUTCOME;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.FINAL_REMARK;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_OFFICER_PROCESS_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AO_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_COMPLETED;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REMARKS;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INPUT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 /**
@@ -43,17 +63,19 @@ public class SelfAuditDelegator {
     private final AuditClientBE auditClientBE;
     private final ProcessHistoryService processHistoryService;
 
+    @Autowired
     public SelfAuditDelegator(AuditClientBE auditClientBE, ProcessHistoryService processHistoryService) {
         this.auditClientBE = auditClientBE;
         this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_SELF_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
-        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(PARAM_AUDIT_SEARCH);
+        session.removeAttribute(KEY_OFFICER_PROCESS_DATA);
     }
 
     public void prepareProcessSelfAuditData(BaseProcessClass bpc) {

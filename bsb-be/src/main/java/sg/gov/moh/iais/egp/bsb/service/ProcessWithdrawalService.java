@@ -30,7 +30,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_
 @Service
 @Slf4j
 public class ProcessWithdrawalService {
-    public static final String MODULE_NAME = "Withdrawn Application";
     public static final String ACTION_TYPE_SAVE = "doSave";
     public static final String ACTION_TYPE_PREPARE = "prepare";
     public static final String ACTION_TYPE = "action_type";

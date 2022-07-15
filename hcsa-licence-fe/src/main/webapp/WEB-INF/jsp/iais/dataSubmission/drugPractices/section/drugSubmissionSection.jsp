@@ -68,7 +68,7 @@
                             ${drugSubmission.doctorName}
                         </iais:value>
                     </iais:row>
-                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true' || doctorInformationDto.doctorSource ne 'DRPP'}">style="display: none"</c:if>>
+                    <div id="doctorInformationPrs" <c:if test="${drugSubmission.doctorInformationPE eq 'true' || (doctorInformationDto.doctorSource ne null && doctorInformationDto.doctorSource ne 'DRPP')}">style="display: none"</c:if>>
                         <iais:row >
                             <iais:field width="5" value="Specialty"/>
                             <iais:value width="7" cssClass="col-md-7" display="true" id="specialty">

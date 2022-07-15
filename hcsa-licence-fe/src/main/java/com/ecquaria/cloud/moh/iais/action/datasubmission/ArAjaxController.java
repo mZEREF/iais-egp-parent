@@ -180,7 +180,7 @@ public class ArAjaxController {
         int babySize = ParamUtil.getInt(request, "babySize");
         List<SelectOption> babyWeightSelectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BABY_BIRTH_WEIGHT);
 
-        String sqlStr = SqlMap.INSTANCE.getSql("pregnancyOutcomeStage", "generatePregnancyOutcomeBabyHtml").getSqlStr();
+        String sqlStr = SqlMap.INSTANCE.getSql("pregnancyOutcomeStage", "generatePregnancyOutcomeBabyHtml");
         StringBuilder resultJson = new StringBuilder();
 
         for (int i = 0; i < babySize; i++) {

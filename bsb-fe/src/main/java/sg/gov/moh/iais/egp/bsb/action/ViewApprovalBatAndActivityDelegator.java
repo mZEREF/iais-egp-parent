@@ -37,7 +37,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 @Delegator(value = "viewApprovalBatAndActivityDelegator")
 @Slf4j
@@ -54,7 +53,6 @@ public class ViewApprovalBatAndActivityDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_APPROVAL_BAT_AND_ACTIVITY_DTO);
         AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_APPROVAL_APPLICATION);
     }

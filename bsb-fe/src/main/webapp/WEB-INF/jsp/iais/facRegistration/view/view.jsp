@@ -33,7 +33,6 @@
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
 <%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
-<%--@elvariable id="maskedEditId" type="java.lang.String"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -53,7 +52,6 @@
                                                  batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
                                                  classification="${SELECTED_CLASSIFICATION}" activities="${SELECTED_ACTIVITIES}"
                                                  profileEditJudge="true" batListEditJudge="true" docEditJudge="true" otherAppInfoEditJudge="true" afcEditJudge="true">
-                                        <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-web/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />

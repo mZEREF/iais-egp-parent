@@ -47,6 +47,7 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String FEIGN_CLIENT = "approvalBatAndActivityFeignClient";
 
+    public static final String KEY_ALLOW_SAVE_DRAFT        = "isAllowToSaveDraft";
     public static final String KEY_EDIT_APP_ID = "editId";
     public static final String KEY_ACTION_TYPE = "action_type";
     public static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";

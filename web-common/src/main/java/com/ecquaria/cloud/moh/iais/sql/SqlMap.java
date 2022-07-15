@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SqlMap {
     public static final SqlMap INSTANCE = new SqlMap();
     private Map<String, Sql> mapforSql;
+    private Map<String, String> dbNameMap;
     private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
     public void initSqlMap(List<Sql> sqls) {
@@ -50,9 +52,26 @@ public class SqlMap {
         }
         cfg.setTemplateLoader(loader);
         cfg.setNewBuiltinClassResolver(TemplateClassResolver.SAFER_RESOLVER);
+
+        //init DB name
+        dbNameMap = IaisCommonUtils.genNewHashMap();
+        dbNameMap.put("hcsal", ConfigHelper.getString("iais.dbname.hcsal", "hcsal"));
+        dbNameMap.put("hcsala", ConfigHelper.getString("iais.dbname.hcsala", "hcsala"));
+        dbNameMap.put("hcsalm", ConfigHelper.getString("iais.dbname.hcsalm", "hcsalm"));
+        dbNameMap.put("iaismstr", ConfigHelper.getString("iais.dbname.iaismstr", "iaismstr"));
+        dbNameMap.put("organization", ConfigHelper.getString("iais.dbname.organization", "organization"));
+        dbNameMap.put("biospa", ConfigHelper.getString("iais.dbname.biospa", "biospa"));
+        dbNameMap.put("audittrail", ConfigHelper.getString("iais.dbname.audittrail", "audittrail"));
+        dbNameMap.put("egpcloud", ConfigHelper.getString("iais.dbname.egpcloud", "egpcloud"));
+        dbNameMap.put("edrdb", ConfigHelper.getString("iais.dbname.edrdb", "edrdb"));
+        dbNameMap.put("filerepo", ConfigHelper.getString("iais.dbname.filerepo", "filerepo"));
+        dbNameMap.put("inetbox", ConfigHelper.getString("iais.dbname.inetbox", "inetbox"));
+        dbNameMap.put("onlpymt", ConfigHelper.getString("iais.dbname.onlpymt", "onlpymt"));
+        dbNameMap.put("onlappt", ConfigHelper.getString("iais.dbname.onlappt", "onlappt"));
+        dbNameMap.put("smemail", ConfigHelper.getString("iais.dbname.smemail", "smemail"));
     }
 
-    public Sql getSql(String catalog, String key) {
+    private Sql getDocSql(String catalog, String key) {
         String ck = getKey(catalog, key);
         Sql sql =  mapforSql.get(ck);
         if (sql == null) {
@@ -64,9 +83,23 @@ public class SqlMap {
         return sql;
     }
 
+    public String getSql(String catalog, String key) {
+        try {
+            return getSql(catalog, key, IaisCommonUtils.genNewHashMap());
+        } catch (IOException| TemplateException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+    }
+
     public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
-        Sql sql = getSql(catalog, key);
+        Sql sql = getDocSql(catalog, key);
         String sqlStat = sql.getSqlStr();
+        if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isEmpty(sqlStat)) {
+            for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
+                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
+            }
+        }
         if (isDynamicSql(sqlStat)) {
             StringWriter writer = new StringWriter();
             Template temp = cfg.getTemplate(getKey(sql.getCatalog(), sql.getKey()));

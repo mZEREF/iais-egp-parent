@@ -24,15 +24,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DEREGISTRATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.FUNCTION_NAME_DO_PROCESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.INDEED_ACTION_TYPE_DO_PROCESS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.INDEED_ACTION_TYPE_PREPARE_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.KEY_HM_PROCESS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.KEY_SUBMISSION_DETAILS_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.MODULE_NAME;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.PROCESS_PAGE_VALIDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
@@ -67,7 +67,7 @@ public class HMProcessDeregistrationDelegator {
         request.getSession().removeAttribute(KEY_HM_PROCESS_DTO);
         request.getSession().removeAttribute("applicationDocRepoIdNameMap");
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DO_PROCESS);
+        AuditTrailHelper.auditFunction(MODULE_DEREGISTRATION, FUNCTION_HM_PROCESSING);
     }
 
     public void prepareData(BaseProcessClass bpc) {

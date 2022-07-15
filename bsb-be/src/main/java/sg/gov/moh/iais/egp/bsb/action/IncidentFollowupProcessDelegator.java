@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.IncidentProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.incident.FollowupProcessDto;
@@ -16,7 +17,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INCIDENT_FOLLOW_UP;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_PROCESSING;
 
 /**
  * @author YiMing
@@ -25,7 +27,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAM
 @Delegator(value = "followupProcessDelegator")
 @Slf4j
 public class IncidentFollowupProcessDelegator {
-    private static final String FUNCTION_NAME_DO = "DO Processing";
     private static final String KEY_PREPARE = "prepare";
     private static final String KEY_CLOSE = "close";
     private static final String PARAM_MODULE_KEY = "module";
@@ -37,6 +38,7 @@ public class IncidentFollowupProcessDelegator {
     private final IncidentProcessClient processClient;
     private final IncidentFollowupProcessService followupService;
 
+    @Autowired
     public IncidentFollowupProcessDelegator(IncidentProcessClient processClient, IncidentFollowupProcessService followupService) {
         this.processClient = processClient;
         this.followupService = followupService;
@@ -45,7 +47,7 @@ public class IncidentFollowupProcessDelegator {
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         followupService.clearSession(request);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DO);
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT_FOLLOW_UP, FUNCTION_DO_PROCESSING);
     }
 
     public void initFollowA(BaseProcessClass bpc){
@@ -121,7 +123,7 @@ public class IncidentFollowupProcessDelegator {
     }
 
     public void preSuccessData(BaseProcessClass bpc){
-
+        // do nothing now
     }
 
 }

@@ -1,25 +1,56 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.OnlineEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AFCResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AFCSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AppResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AppSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.FacResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.FacSearchDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_APPLICATION_RESULT;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_DOWNLOAD;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_SEARCH_DTO_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_SEARCH_DTO_APPLICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_SEARCH_DTO_APPROVAL;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_SEARCH_DTO_FACILITY;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_SEARCH_DTO_SUFFIX;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_CHOICE_APPLICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_CHOICE_APPROVAL;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_CHOICE_APPROVED_FACILITY_CERTIFIER;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_CHOICE_FACILITY;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_COUNT;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_SEARCH_CHK;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_SEARCH_TEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.URL_BIO_SAFETY_INFO_FILE;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_ONLINE_ENQUIRY;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_ONLINE_ENQUIRY;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 
 /**
@@ -32,12 +63,13 @@ public class BiosafetyEnquiryDelegator {
 
     private final OnlineEnquiryClient onlineEnquiryClient;
 
+    @Autowired
     public BiosafetyEnquiryDelegator(OnlineEnquiryClient onlineEnquiryClient) {
         this.onlineEnquiryClient = onlineEnquiryClient;
     }
 
     public void start(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, "Biosafety Enquiry");
+        AuditTrailHelper.auditFunction(MODULE_ONLINE_ENQUIRY, FUNCTION_ONLINE_ENQUIRY);
         HttpServletRequest request = bpc.request;
         ParamUtil.clearSession(request,KEY_SEARCH_DTO_APPLICATION);
         ParamUtil.clearSession(request,KEY_SEARCH_DTO_FACILITY);
