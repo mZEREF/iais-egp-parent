@@ -130,7 +130,7 @@ public class ApplicationAjaxController {
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
         log.debug(StringUtil.changeForLog("currentLength : " + currentLength));
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml");
         Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
         StringBuilder premTypeBuffer = new StringBuilder();
 
@@ -322,7 +322,7 @@ public class ApplicationAjaxController {
         String hasNumber = ParamUtil.getRequestString(request, "HasNumber");
         String errMsg = "You are allowed to add up till only " + hasNumber + " CGO";
         if (canAddNumber > 0) {
-            String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
+            String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml");
             //assign cgo select
             List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
             sql = sql.replace("(1)", generateDropDownHtml(cgoSelectList, "assignSelect", "assignSel", null));
@@ -399,7 +399,7 @@ public class ApplicationAjaxController {
         }
 
         if (spMaxNumber - hasNumber > 0) {
-            String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
+            String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging");
             String currentSvcCod = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
             List<SelectOption> personnel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             Map<String, String> personnelAttr = IaisCommonUtils.genNewHashMap();
@@ -434,7 +434,7 @@ public class ApplicationAjaxController {
         int poMmaximumCount = 0;
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
         String svcId = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSERVICEID);
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml");
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
@@ -466,7 +466,7 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/deputy-principal-officer-html")
     public Map<String, String> addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml");
         int dpoMmaximumCount = 0;
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
@@ -524,7 +524,7 @@ public class ApplicationAjaxController {
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
                 StringBuilder operationHtml = new StringBuilder();
-                String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
+                String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational");
                 sql = sql.replace("${premType}", premisesType);
                 sql = sql.replace("${premIndex}", premiseIndex);
                 int size = operationalUnitDtos.size();
@@ -591,7 +591,7 @@ public class ApplicationAjaxController {
             if (!IaisCommonUtils.isEmpty(eventDtoList)) {
                 StringBuilder eventHtml = new StringBuilder();
                 for (int i = 0; i < eventDtoList.size(); i++) {
-                    String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+                    String sql = SqlMap.INSTANCE.getSql("premises", "event");
                     sql = sql.replace("${premIndex}", premiseIndex);
                     sql = sql.replace("${premType}", premisesType);
                     sql = sql.replace("${eventCount}", Integer.toString(i));
@@ -779,7 +779,7 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/med-alert-person-html")
     public Map<String, String> genMedAlertPersonHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the genMedAlertPersonHtml start ...."));
-        String sql = SqlMap.INSTANCE.getSql("medAlertPerson", "generateMedAlertPersonHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("medAlertPerson", "generateMedAlertPersonHtml");
         int mapMaximumCount = 0;
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
@@ -883,7 +883,7 @@ public class ApplicationAjaxController {
         }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)){
             premTypeStr = "easMts";
         }
-        String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational");
         sql = sql.replace("${premType}", premTypeStr);
         sql = sql.replace("${premIndex}", premIndex);
         sql = sql.replace("${opCount}", opCount);
@@ -954,7 +954,7 @@ public class ApplicationAjaxController {
         String premType = ParamUtil.getString(request,"premType");
         String eventCount = ParamUtil.getString(request,"eventCount");
         String premPrefixName = getPremPrefixName(premType);
-        String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("premises", "event");
         sql = sql.replace("${premIndex}",premIndex);
         sql = sql.replace("${premType}",premPrefixName);
         sql = sql.replace("${eventCount}",eventCount);
@@ -1041,7 +1041,7 @@ public class ApplicationAjaxController {
     public Map<String, Object> generateVehicleHtml(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the generateVehicleHtml start ...."));
         int vehicleLength = ParamUtil.getInt(request,"vehicleLength");
-        String vehicleHtml = SqlMap.INSTANCE.getSql("vehicle", "generateVehicleHtml").getSqlStr();
+        String vehicleHtml = SqlMap.INSTANCE.getSql("vehicle", "generateVehicleHtml");
         vehicleHtml = vehicleHtml.replace("${vehicleLength}",String.valueOf(vehicleLength+1));
         vehicleHtml = vehicleHtml.replace("${vehicleSuffix}",String.valueOf(vehicleLength));
         log.debug(StringUtil.changeForLog("the generateVehicleHtml end ...."));
@@ -1057,7 +1057,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml start ...."));
         int slLength = ParamUtil.getInt(request, "slLength");
         log.info(StringUtil.changeForLog("The index: " + slLength));
-        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml").getSqlStr();
+        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml");
         html = html.replace("${stepName}", HcsaConsts.SECTION_LEADER);
         html = html.replace("${index}", String.valueOf(slLength));
         html = html.replace("${slIndex}", String.valueOf(slLength + 1));
@@ -1469,7 +1469,7 @@ public class ApplicationAjaxController {
         String weeklyEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
 
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "weekly").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("premises", "weekly");
         sql = sql.replace("${fieldName}","Weekly <span class=\"mandatory\">*</span>");
         sql = sql.replace("${opType}","Weekly");
         sql = sql.replace("${premPrefixName}", premPrefixName);
@@ -1524,7 +1524,7 @@ public class ApplicationAjaxController {
         String pubHolidayEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
 
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "weekly").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("premises", "weekly");
         sql = sql.replace("${fieldName}","Public Holiday");
         sql = sql.replace("${opType}","PubHoliday");
         sql = sql.replace("${premPrefixName}", premPrefixName);

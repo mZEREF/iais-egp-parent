@@ -13,12 +13,6 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description Ajax
@@ -64,14 +64,21 @@ public class DpAjaxController {
             params.put("nationality", "nationality");
             errorMap.putAll(vr.retrieveAll(params));
         }
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
+
         if (!errorMap.isEmpty()) {
             result.put(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            dpSuperDataSubmissionDto.setDraftPatientValid(false);
+            DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientDto db = patientService.getDpPatientDto(idType, idNo, nationality, orgId);
             if (db != null) {
                 patient = db;
+                dpSuperDataSubmissionDto.setDraftPatientValid(true);
+                DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
+
                 ParamUtil.setRequestAttr(request,"enteredPatient",db);
             }
             result.put("selection", patient);

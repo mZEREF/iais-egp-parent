@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -63,8 +64,13 @@ public class TopAjaxController {
             params.put("idNumber", "idNumber");
             errorMap.putAll(vr.retrieveAll(params));
         }
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+
         if (!errorMap.isEmpty()) {
             result.put(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            topSuperDataSubmissionDto.setDraftPatientValid(false);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,request);
+
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
@@ -74,6 +80,9 @@ public class TopAjaxController {
             }*/
             if (top != null) {
                 patientInformation = top;
+                topSuperDataSubmissionDto.setDraftPatientValid(true);
+                DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,request);
+
             }
 
            /* try {

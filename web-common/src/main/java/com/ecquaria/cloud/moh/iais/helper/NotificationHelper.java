@@ -443,6 +443,15 @@ public class NotificationHelper {
 									mesContext = MessageTemplateUtil.replaceNum(mesContext);
 									emailDto.setContent(mesContext);
 								}
+
+								boolean dataSubmissionApplicantFlag = templateContent.containsKey("ApplicantName");
+								if(dataSubmissionApplicantFlag){
+									templateContent.put("ApplicantName", officerValue);
+									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+									//replace num
+									mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									emailDto.setContent(mesContext);
+								}
 							}
 							emailDto.setReceipts(officerEmails);
 							if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {

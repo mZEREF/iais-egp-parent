@@ -737,57 +737,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return result;
     }
 
-    @SneakyThrows
-    private void sendFirstNotification(String licenseeId) {
-        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
-                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
-        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
-        EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG);
-        msgParam.setTemplateContent(msgContentMap);
-        msgParam.setSubject(msgSubject);
-        msgParam.setQueryCode(licenseeId);
-        msgParam.setReqRefNum(licenseeId);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        msgParam.setRefId(licenseeId);
-        notificationHelper.sendNotification(msgParam);
-
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
-                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL).getEntity();
-        Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
-        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(), subjectMap);
-        EmailParam eamilParam = new EmailParam();
-        eamilParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
-        eamilParam.setTemplateContent(emailMap);
-        eamilParam.setSubject(emailSubject);
-        eamilParam.setQueryCode(licenseeId);
-        eamilParam.setReqRefNum(licenseeId);
-        eamilParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
-        eamilParam.setRefId(licenseeId);
-        notificationHelper.sendNotification(eamilParam);
-    }
-
-    @SneakyThrows
-    private void sendPerNotification(String licenseeId) {
-        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
-                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
-        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
-        EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG);
-        msgParam.setTemplateContent(msgContentMap);
-        msgParam.setSubject(msgSubject);
-        msgParam.setQueryCode(licenseeId);
-        msgParam.setReqRefNum(licenseeId);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        msgParam.setRefId(licenseeId);
-        notificationHelper.sendNotification(msgParam);
-    }
-
     @Override
     public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
         return StringUtil.allStringIsNull(patientDto.getIdType(), patientDto.getIdNumber(), patientDto.getNationality()) ?

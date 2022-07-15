@@ -147,9 +147,9 @@ public class OnlineTopEnquiryDelegator {
 
     private void setQueryFilter(DsTopEnquiryFilterDto filterDto, FilterParameter filterParameter){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-//        if(filterDto.getCenterName()!=null) {
-//            filter.put("arCentre", filterDto.getCenterName());
-//        }
+        if(filterDto.getCenterName()!=null) {
+            filter.put("arCentre", filterDto.getCenterName());
+        }
         if(filterDto.getPatientIdType()!=null) {
             filter.put("patientIdType", filterDto.getPatientIdType());
         }

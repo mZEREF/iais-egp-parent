@@ -635,7 +635,7 @@ public class DpSiUploadDelegate {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
 
         String subNo=System.currentTimeMillis()+"";
-        emailMap.put("SubmitterName", DataSubmissionHelper.getLoginContext(request).getUserName());
+        emailMap.put("ApplicantName", DataSubmissionHelper.getLoginContext(request).getUserName());
 
         emailMap.put("DDMMYYYYtime", Formatter.formatDateTime(new Date()));
 
@@ -667,7 +667,7 @@ public class DpSiUploadDelegate {
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SOVENOR_EMAIL);
 
             emailParam.setServiceTypes(DataSubmissionConsts.DS_DRP_NEW);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_ROLE_LICENSEE_DP_SUBMITTER);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
             emailParam.setRefId(DataSubmissionHelper.getLoginContext(request).getLicenseeId());
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){

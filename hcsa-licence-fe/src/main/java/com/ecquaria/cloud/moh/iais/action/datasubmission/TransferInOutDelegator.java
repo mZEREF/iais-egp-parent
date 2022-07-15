@@ -306,7 +306,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
                 + currentSubmissionId;
-        msgContentMap.put("submissionerName", submitterName);
+        msgContentMap.put("ApplicantName", submitterName);
         // template's transferring and receiving is out and in, so need convert
         if (isOut) {
             msgContentMap.put("transferringCenter", transferringCenter);

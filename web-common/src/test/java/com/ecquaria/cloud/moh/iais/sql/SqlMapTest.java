@@ -69,13 +69,13 @@ public class SqlMapTest {
 
     @Test
     public void testGetSql() {
-        Sql s = sm.getSql(CATA, KEY_1);
+        String s = sm.getSql(CATA, KEY_1);
         assertNotNull(s);
     }
 
     @Test(expected = IaisRuntimeException.class)
     public void testGetSqlExp() {
-        Sql s = sm.getSql(CATA, "ddccss");
+        String s = sm.getSql(CATA, "ddccss");
     }
 
     @Test
@@ -90,10 +90,8 @@ public class SqlMapTest {
     public void testGetDynamicSqlStat() throws IOException, TemplateException {
         Map<String, Object> param = IaisCommonUtils.genNewHashMap();
         param.put("nric_no", "dsas");
-        Sql sql = sm.getSql(CATA, KEY_1);
-        sm.getDynamicSqlStat(sql, param);
+        String sql = sm.getSql(CATA, KEY_1);
         sql = sm.getSql(CATA, KEY_D);
-        String s = sm.getDynamicSqlStat(sql, param);
-        assertNotNull(s);
+        assertNotNull(sql);
     }
 }
