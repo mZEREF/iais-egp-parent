@@ -62,7 +62,7 @@ function printData() {
     var url = $('#_contextPath').val() + '/eservice/INTERNET/MohDsPrint';
     var token = $('input[name="OWASP_CSRFTOKEN"]').val();
     var title = $('input[name="title"]').val();
-    const isRfc = $('input[name="isRfc"]').val();
+    const isRfc = $('input[name="isRfc"]').val() === 'true';
     const role = isRfc?'DS_LDT_SUP':'DS_LDT'
     if (!isEmpty(token)) {
         url += '?OWASP_CSRFTOKEN=' + token;
