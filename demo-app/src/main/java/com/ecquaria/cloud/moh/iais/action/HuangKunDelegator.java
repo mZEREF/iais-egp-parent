@@ -1,16 +1,19 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.Dto.HuangKunRoomDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.HuangKunPersonDto;
+import com.ecquaria.cloud.moh.iais.dto.HuangKunRoomDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.HuangKunRoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,29 +32,32 @@ import java.util.List;
 @Slf4j
 public class HuangKunDelegator {
 
-    private  final FilterParameter filterParameter = new FilterParameter.Builder()
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(HuangKunRoomDto.class)
             .searchAttr("roomSearchParam")
             .resultAttr("roomSearchResult")
-            .sortFieldToMap("id", SearchParam.ASCENDING)
-            .sortFieldToMap("roomType", SearchParam.ASCENDING)
-            .sortFieldToMap("roomNo", SearchParam.ASCENDING).build();
+            .sortFieldToMap("ROOM_NO", SearchParam.ASCENDING).build();
 
     @Autowired
     HuangKunRoomService huangKunRoomService;
 
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"roomSearchParam", null);
         preSelectOption(request);
-        SearchResult<HuangKunRoomDto> rooms = huangKunRoomService.doQuery();
-        ParamUtil.setRequestAttr(request, "roomSearchResult", rooms);
+        ParamUtil.setSessionAttr(request,"roomSearchParam", null);
+        ParamUtil.setSessionAttr(request, "roomSearchResult", null);
     }
 
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
         SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
+
+        QueryHelp.setMainSql("roomsample", "queryRoom", param);
+        SearchResult<HuangKunRoomDto> result = huangKunRoomService.doQuery(param);
+
         ParamUtil.setSessionAttr(request, "roomSearchParam", param);
+        ParamUtil.setSessionAttr(request, "roomSearchResult", result);
     }
 
     public void doSorting(BaseProcessClass bpc){
@@ -74,28 +80,66 @@ public class HuangKunDelegator {
         String roomId = ParamUtil.getMaskedString(request, "roomId");
         HuangKunRoomDto roomRequestDto = huangKunRoomService.getRoomById(roomId);
         ParamUtil.setSessionAttr(request,"roomRequestDto", roomRequestDto);
+        SearchResult<HuangKunPersonDto> result = huangKunRoomService.queryPersonByRoomId(roomId);
+        ParamUtil.setRequestAttr(request, "personResult", result);
     }
 
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResult<HuangKunRoomDto> rooms=new SearchResult<>();
         String roomType = request.getParameter("roomType");
-        if (roomType==null||"".equals(roomType)){
-            rooms = huangKunRoomService.doQuery();
-        }else {
-            rooms = huangKunRoomService.queryRoomByType(roomType);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        if (StringUtil.isNotEmpty(roomType)){
+            searchParam.addFilter("roomType", roomType, true);
         }
-        ParamUtil.setRequestAttr(request, "roomSearchResult", rooms);
     }
 
-    public void doback(BaseProcessClass bpc){
+    public void doBack(BaseProcessClass bpc){
     }
 
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String roomType = ParamUtil.getString(request, "roomType");
-        String roomNo = ParamUtil.getString(request, "roomNo");
+        String roomNo = ParamUtil.getString(request, "roomNO");
         HuangKunRoomDto roomEditDto = (HuangKunRoomDto) ParamUtil.getSessionAttr(request, "roomRequestDto");
+        roomEditDto.setRoomNO(roomNo);
+        roomEditDto.setRoomType(roomType);
+        huangKunRoomService.updateRoom(roomEditDto);
+    }
+
+    public void doPaging(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+    }
+
+    public void prepareAddRoom(BaseProcessClass bpc){
+    }
+
+    public void addRoom(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String roomType = ParamUtil.getString(request, "roomType");
+        String roomNo = ParamUtil.getString(request, "roomNO");
+        HuangKunRoomDto huangKunRoomDto=new HuangKunRoomDto();
+        huangKunRoomDto.setRoomNO(roomNo);
+        huangKunRoomDto.setRoomType(roomType);
+        huangKunRoomService.addRoom(huangKunRoomDto);
+    }
+
+    public void prepareAddPerson(BaseProcessClass bpc){
+    }
+
+    public void addPerson(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String roomId = ParamUtil.getMaskedString(request, "roomId");
+        String displayName = ParamUtil.getString(request, "displayName");
+        String mobileNo = ParamUtil.getString(request, "mobileNo");
+        HuangKunPersonDto huangKunPersonDto=new HuangKunPersonDto();
+        huangKunPersonDto.setDisplayName(displayName);
+        huangKunPersonDto.setRoomId(roomId);
+        huangKunPersonDto.setMobileNo(mobileNo);
+        huangKunRoomService.savePerson(huangKunPersonDto);
+        SearchResult<HuangKunPersonDto> result = huangKunRoomService.queryPersonByRoomId(roomId);
+        ParamUtil.setRequestAttr(request, "personResult", result);
     }
 }

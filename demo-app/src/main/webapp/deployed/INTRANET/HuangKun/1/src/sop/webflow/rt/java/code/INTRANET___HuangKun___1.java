@@ -44,13 +44,37 @@ public class INTRANET___HuangKun___1 extends BaseProcessClass {
 		}
 
 	public void doback_OnStepProcess_0() throws Exception {
-	// 		doback->OnStepProcess
+	// 		doBack->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doBack", this);
 	}
 
 	public void doEdit_OnStepProcess_0() throws Exception {
 	// 		doEdit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doEdit", this);
+	}
+
+	public void prepareAddRoom_OnStepProcess_0() throws Exception {
+	// 		prepareAddRoom->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareAddRoom", this);
+	}
+
+	public void addRoom_OnStepProcess_0() throws Exception {
+	// 		addRoom->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "addRoom", this);
+	}
+
+	public void changePage_OnStepProcess_0 () throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPaging", this);
+	}
+
+	public void prepareAddPerson_OnStepProcess_0() throws Exception {
+	// 		prepareAddPerson->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareAddPerson", this);
+	}
+
+	public void addPerson_OnStepProcess_0() throws Exception {
+	// 		addPerson->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "addPerson", this);
 	}
 
 }

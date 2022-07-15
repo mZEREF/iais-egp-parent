@@ -40,9 +40,9 @@
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader style="width:40%" needSort="true"  field="id" value="id" ></iais:sortableHeader>
-                        <iais:sortableHeader style="width:20%" needSort="true"  field="roomType" value="room_type"></iais:sortableHeader>
-                        <iais:sortableHeader style="width:30%" needSort="true"   field="roomNo" value="room_no"></iais:sortableHeader>
+                        <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>
+                        <iais:sortableHeader style="width:20%" needSort="true"  field="room_Type" value="room_type"></iais:sortableHeader>
+                        <iais:sortableHeader style="width:30%" needSort="true"   field="room_NO" value="room_no"></iais:sortableHeader>
                         <iais:sortableHeader style="width:10%" needSort="false"  field="" value=""></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -50,9 +50,9 @@
                         <%-- rooms entity--%>
                         <c:forEach var = "room" items = "${roomSearchResult.rows}" varStatus="status">
                             <tr>
-                                <td align="left" style="width: 40%"><iais:code code="${room.id}"></iais:code></td>
+                                <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
                                 <td align="left" style="width: 30%"><iais:code code="${room.roomType}"></iais:code></td>
-                                <td align="left" style="width: 20%"><iais:code code="${room.roomNo}"></iais:code></td>
+                                <td align="left" style="width: 20%"><iais:code code="${room.roomNO}"></iais:code></td>
                                 <td align="left" style="width: 10%">
                                     <button type="button" value="${room.id}" onclick="prepareEdit('<iais:mask name="roomId" value="${room.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
                                 </td>
@@ -60,6 +60,13 @@
                         </c:forEach>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4" style="float: right">
+                <div class="button-group" >
+                    <button type="button"  onclick="doAdd()"  class="bbtn btn-primary" >ADD</button>
+                </div>
             </div>
         </div>
     </form>
@@ -78,6 +85,10 @@
     function prepareEdit(id){
         $("#roomId").val(id);
         SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
+    }
+
+    function doAdd(){
+        SOP.Crud.cfxSubmit("mainForm", "prepareAddRoom");
     }
 
     $(document).ready(function() {
