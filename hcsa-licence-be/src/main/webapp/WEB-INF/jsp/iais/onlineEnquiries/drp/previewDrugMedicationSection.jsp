@@ -22,7 +22,7 @@
                             </div>
                         </div>
                     </iais:row>
-                    <c:if test="${drugPrescribedDispensedDto.drugSubmissionDto.drugType == 'DPD002'}">
+                    <c:if test="${drugPrescribedDispensedDto.drugSubmission.drugType == 'DPD002'}">
                         <iais:row>
                             <iais:field width="5" value="Batch No."/>
                             <iais:value width="7" display="true">
