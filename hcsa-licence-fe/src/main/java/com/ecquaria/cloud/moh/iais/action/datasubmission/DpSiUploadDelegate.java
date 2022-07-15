@@ -635,7 +635,7 @@ public class DpSiUploadDelegate {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
 
         String subNo=System.currentTimeMillis()+"";
-        emailMap.put("SubmitterName", DataSubmissionHelper.getLoginContext(request).getUserName());
+        emailMap.put("ApplicantName", DataSubmissionHelper.getLoginContext(request).getUserName());
 
         emailMap.put("DDMMYYYYtime", Formatter.formatDateTime(new Date()));
 

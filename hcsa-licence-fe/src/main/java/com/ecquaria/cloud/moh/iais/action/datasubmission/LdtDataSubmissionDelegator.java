@@ -520,7 +520,7 @@ public class LdtDataSubmissionDelegator {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
-        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("ApplicantName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
         msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
@@ -552,7 +552,7 @@ public class LdtDataSubmissionDelegator {
     private void sendRfcMsgAndEmail(String licenceId, String submitterName, String submissionNo, String licenseeId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("dataSupervisor", submitterName);
+        msgContentMap.put("ApplicantName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
         msgContentMap.put("date", Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
