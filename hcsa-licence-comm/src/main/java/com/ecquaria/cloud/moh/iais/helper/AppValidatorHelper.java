@@ -796,7 +796,7 @@ public final class AppValidatorHelper {
             } else {
                 int i = 0;
                 for (AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos) {
-                    String coBusinessName = appPremNonLicRelationDto.getBusninessName();
+                    String coBusinessName = appPremNonLicRelationDto.getBusinessName();
                     String coSvcName = appPremNonLicRelationDto.getProvidedService();
                     if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
                         continue;
