@@ -52,7 +52,7 @@ public class SqlMap {
         cfg.setNewBuiltinClassResolver(TemplateClassResolver.SAFER_RESOLVER);
     }
 
-    public Sql getSql(String catalog, String key) {
+    private Sql getDocSql(String catalog, String key) {
         String ck = getKey(catalog, key);
         Sql sql =  mapforSql.get(ck);
         if (sql == null) {
@@ -64,8 +64,17 @@ public class SqlMap {
         return sql;
     }
 
+    public String getSql(String catalog, String key) {
+        try {
+            return getSql(catalog, key, IaisCommonUtils.genNewHashMap());
+        } catch (IOException| TemplateException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+    }
+
     public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
-        Sql sql = getSql(catalog, key);
+        Sql sql = getDocSql(catalog, key);
         String sqlStat = sql.getSqlStr();
         if (isDynamicSql(sqlStat)) {
             StringWriter writer = new StringWriter();
