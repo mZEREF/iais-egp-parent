@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -152,6 +153,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                         orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
+                ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) getSourseList(bpc.request));
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if ("resume".equals(actionValue)) {
@@ -170,6 +172,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             } else if ("delete".equals(actionValue)) {
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
+        }else {
+            List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
+            ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
         }
         DrugSubmissionDto drugSubmission = drugPrescribedDispensedDto.getDrugSubmission();
         if (drugSubmission == null) {
@@ -184,8 +189,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-        List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
-        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
     }
 
     @Override
@@ -245,25 +248,27 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
         }
         if("true".equals(drugSubmission.getDoctorInformations())){
-            String dName = ParamUtil.getString(bpc.request, "dName");
-            String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
-            String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
-            String dQualification = ParamUtil.getString(bpc.request, "dQualification");
-            String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
+            if (!DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
+                String dName = ParamUtil.getString(bpc.request, "dName");
+                String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
+                String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");
+                String dQualification = ParamUtil.getString(bpc.request, "dQualification");
+                String dOtherQualification = ParamUtil.getString(bpc.request, "otherQualification");
 
-            drugSubmission.setDoctorName(dName);
-            drugSubmission.setSpecialty(dSpeciality);
-            drugSubmission.setSubSpecialty(dSubSpeciality);
-            drugSubmission.setQualification(dQualification);
-            drugSubmission.setOtherQualification(dOtherQualification);
+                drugSubmission.setDoctorName(dName);
+                drugSubmission.setSpecialty(dSpeciality);
+                drugSubmission.setSubSpecialty(dSubSpeciality);
+                drugSubmission.setQualification(dQualification);
+                drugSubmission.setOtherQualification(dOtherQualification);
 
-            doctorInformationDto.setName(dName);
-            doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
-            doctorInformationDto.setSubSpeciality(dSubSpeciality);
-            doctorInformationDto.setSpeciality(dSpeciality);
-            doctorInformationDto.setQualification(dQualification);
-            doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_USER_NEW_REGISTER);
-            currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+                doctorInformationDto.setName(dName);
+                doctorInformationDto.setDoctorReignNo(drugSubmission.getDoctorReignNo());
+                doctorInformationDto.setSubSpeciality(dSubSpeciality);
+                doctorInformationDto.setSpeciality(dSpeciality);
+                doctorInformationDto.setQualification(dQualification);
+                doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_USER_NEW_REGISTER);
+                currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
+            }
         }else {
             String doctorName = ParamUtil.getString(bpc.request, "names");
             drugSubmission.setDoctorName(doctorName);
@@ -369,9 +374,20 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
     protected final List<SelectOption> getBusinessNameList(HttpServletRequest request,String premises){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
         Map<String, PremisesDto> stringPremisesDtoMap = DataSubmissionHelper.setDpPremisesMap(request);
-        PremisesDto premisesDto = stringPremisesDtoMap.get(premises);
-        stringStringMap.put(premisesDto.getHciCode(),premisesDto.getPremiseLabel());
+        if (!CollectionUtils.isEmpty(stringPremisesDtoMap)) {
+            PremisesDto premisesDto = stringPremisesDtoMap.get(premises);
+            if (premisesDto != null) {
+                stringStringMap.put(premisesDto.getHciCode(), premisesDto.getPremiseLabel());
+            }
+        }
         return DataSubmissionHelper.genOptions(stringStringMap);
+    }
+
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setDpPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
     }
 
     @Override
