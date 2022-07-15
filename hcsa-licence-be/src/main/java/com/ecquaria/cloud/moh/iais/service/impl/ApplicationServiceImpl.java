@@ -1037,7 +1037,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void rollBackInsp(BaseProcessClass bpc, String roleId, String wrkGpId, String userId, String remarks) throws CloneNotSupportedException {
+    public void rollBackInsp(BaseProcessClass bpc, String stageId, String roleId, String wrkGpId, String userId, String historyId,String remarks) throws CloneNotSupportedException {
 
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
@@ -1109,10 +1109,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
+        inspectionService.saveRollBackExtInfo(broadcastApplicationDto,taskDto.getRefNo(),taskDto.getId(),historyId,stageId,wrkGpId,userId,roleId);
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
-        fillUpCheckListGetAppClient.rollBackPreInspect(applicationViewDto.getAppPremisesCorrelationId());
         //0062460 update FE  application status.
         updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
