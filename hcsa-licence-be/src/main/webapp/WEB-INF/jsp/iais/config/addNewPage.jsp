@@ -56,7 +56,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="svcName" maxlength="100" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" type="text" name="svcName" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
@@ -65,7 +65,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" name="svcDesc" maxlength="255" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" type="text" name="svcDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
@@ -74,7 +74,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDisplayDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
@@ -84,7 +84,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
           </div>
         </div>
@@ -97,7 +97,7 @@
             <select id="ServiceType" name="svcType" >
               <option value="">Please Select</option>
               <c:forEach var="codeSelectOption" items="${codeSelectOptionList}">
-                <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
+                <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
               </c:forEach>
             </select>
             <span class="error-msg" name="iaisErrorMsg"  id="error_svcType"></span>
@@ -113,7 +113,7 @@
             <select name="categoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
             <span id="error_serviceCategory" class="error-msg" name="iaisErrorMsg"></span>
@@ -137,11 +137,11 @@
             <label class="col-xs-12 col-md-7 control-label" >Addition&nbsp;<span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.additionFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="1" >
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.additionFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="1" >
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.additionFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="0">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.additionFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_additionFlow"></span>
@@ -153,11 +153,11 @@
             <label class="col-xs-12 col-md-7 control-label" >Removal&nbsp;<span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.removalFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="1" >
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.removalFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="1" >
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.removalFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="0">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.removalFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_removalFlow"></span>
@@ -168,7 +168,7 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Description Label</label>
             <div class="col-xs-12 col-md-4">
-              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="255" value="${hcsaServiceDto.descriptionLabel}">
+              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}">
               <span class="error-msg" name="iaisErrorMsg" id="error_descriptionLabel"></span>
             </div>
           </div>
@@ -506,14 +506,14 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document (for <span id ="serviceTypeShow">specialised</span> service) to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" maxlength="2" name="NumberDocument" value="${serviceDocSize}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_NumberDocument"></span>
+            <input id="NumberDocument" type="text" maxlength="2" name="serviceDocSize" value="${hcsaServiceConfigDto.serviceDocSize}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_serviceDocSize"></span>
           </div>
         </div>
       </div>
 
       <div class="serviceNumberfields">
-        <c:forEach items="${serviceDoc}" var="doc" varStatus="sta">
+        <c:forEach items="${hcsaServiceConfigDto.hcsaSvcDocConfigDtos}" var="doc" varStatus="sta">
           <div class="form-group">
             <div class="col-xs-12 col-md-12">
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
@@ -896,7 +896,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
+              <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
                      name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
               <span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
               <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
@@ -909,7 +909,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" autocomplete="off" value="${hcsaServiceDto.endDate}"
+            <input type="text" autocomplete="off" value="${hcsaServiceConfigDto.hcsaServiceDto.endDate}"
                    class="date_picker form-control form_datetime" name="endDate" id="-20247433206800"
                    data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>

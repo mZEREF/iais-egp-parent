@@ -737,7 +737,7 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         });
-        String numberDocument = hcsaServiceConfigDto.getComDocSize();
+        /*String numberDocument = hcsaServiceConfigDto.getComDocSize();
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
         }else if(numberDocument.length()>2){
@@ -789,7 +789,7 @@ public class ConfigServiceImpl implements ConfigService {
                     }
                 }
             }
-        }
+        }*/
         Map<String,List<HcsaSvcSpeRoutingSchemeDto>> newHashMap=(Map<String,List<HcsaSvcSpeRoutingSchemeDto>>) request.getAttribute("insRoutingStage");
         if(newHashMap!=null){
             newHashMap.forEach((k,v)->{
