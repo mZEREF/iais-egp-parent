@@ -89,9 +89,9 @@
         }
     }
 
-    $('#addrType').on('change',checkAddressManatory);
+    $('#addrType').on('change',checkAddressMandatory);
 
-    function checkAddressManatory() {
+    function checkAddressMandatory() {
         var addrType = $('#addrType').val();
         if ('ADDTY001' == addrType) {
             $('.blkNoLabel').append('<span class="mandatory">*</span>');
@@ -103,7 +103,7 @@
     }
 
     $(document).ready(function() {
-        checkAddressManatory();
+        checkAddressMandatory();
     });
 
     function doClearInfo(){

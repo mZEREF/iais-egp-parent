@@ -444,6 +444,11 @@ public abstract class AppCommDelegator {
      * @param bpc
      */
     public void doAction(BaseProcessClass bpc) {
+        String crudActionAdditional = bpc.request.getParameter("crud_action_additional");
+        if ("jumpPage".equals(crudActionAdditional)) {
+            log.info("Jump Page!!!");
+            return;
+        }
         String action = (String) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.ACTION);
         if (HcsaAppConst.ACTION_LICENSEE.equals(action)) {
             doSubLicensee(bpc);
@@ -822,6 +827,131 @@ public abstract class AppCommDelegator {
     }
 
     /**
+     * StartStep: DoPremises
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doPremises(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("the do doPremises start ...."));
+        String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
+        if ("undo".equals(crud_action_value)) {
+            // Undo All Changes
+            DealSessionUtil.clearPremisesMap(bpc.request);
+            return;
+        }
+        //gen dto
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+
+        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
+        log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                    || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+                for (int i = 0; i < oldAppGrpPremisesDtoList.size(); i++) {
+                    appGrpPremisesDtoList.get(i).setOldHciCode(oldAppGrpPremisesDtoList.get(i).getOldHciCode());
+                }
+            }
+
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+            if (appSubmissionDto.isNeedEditController()) {
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                clickEditPages.add(HcsaAppConst.APP_PAGE_NAME_PREMISES);
+                appSubmissionDto.setClickEditPage(clickEditPages);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                appEditSelectDto.setPremisesEdit(true);
+                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+            }
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                //65718
+                //ApplicationHelper.removePremiseEmptyAlignInfo(appSubmissionDto);
+                //ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            }
+            //update address
+            //ApplicationHelper.updatePremisesAddress(appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
+        }
+        String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
+        if (!"saveDraft".equals(crud_action_value)) {
+            String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+            bpc.request.setAttribute("continueStep", actionType);
+            bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
+            // validation
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
+                    bpc.request);
+            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, oldAppSubmissionDto,
+                    premisesHciList, isRfi, true);
+            String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
+            if ("continue".equals(crud_action_type_continue)) {
+                errorMap.remove("hciNameUsed");
+            }
+            String hciNameUsed = errorMap.get("hciNameUsed");
+            if (errorMap.size() == 1 && hciNameUsed != null) {
+                ParamUtil.setRequestAttr(bpc.request, "hciNameUsed", "hciNameUsed");
+                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
+            }
+            // check result
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+            if (errorMap.size() > 0) {
+                boolean isNeedShowValidation = !"back".equals(crud_action_value);
+                if (isNeedShowValidation) {
+                    initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
+                    ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
+                }
+                coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            } else {
+                coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
+                if ("rfcSaveDraft".equals(crud_action_additional)) {
+                    try {
+                        doSaveDraft(bpc);
+                    } catch (IOException e) {
+                        log.error("error", e);
+                    }
+                }
+            }
+            // coMap.put("serviceConfig", sB.toString());
+            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
+        }
+        log.info(StringUtil.changeForLog("the do doPremises end ...."));
+    }
+
+    private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
+            HttpServletRequest request) {
+        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
+        if (premisesHciList != null) {
+            return premisesHciList;
+        }
+        // if current is one of group new rfi, the premises will be only one, we need to check all apps in this group
+        List<HcsaServiceDto> hcsaServiceDtos = null;
+        if (isRfi) {
+            // init: this#loadingRfiGrpServiceConfig
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST);
+        }
+        if (hcsaServiceDtos == null) {
+            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
+        }
+        List<PremisesDto> excludePremisesList = null;
+        List<AppGrpPremisesDto> excludeAppPremList = null;
+        if (oldAppSubmissionDto != null) {
+            if (isRfi) {
+                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
+            }
+            excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        }
+        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
+                excludePremisesList, excludeAppPremList);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
+        return premisesHciList;
+    }
+
+    /**
      * StartStep: PrepareForms
      *
      * @param bpc
@@ -1023,131 +1153,6 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ATTR_RELOAD_PAYMENT_METHOD, paymentMethod);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
-    }
-
-    /**
-     * StartStep: DoPremises
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doPremises(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do doPremises start ...."));
-        String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
-        if ("undo".equals(crud_action_value)) {
-            // Undo All Changes
-            DealSessionUtil.clearPremisesMap(bpc.request);
-            return;
-        }
-        //gen dto
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-
-        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
-        log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        if (isGetDataFromPage) {
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
-            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                    || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                for (int i = 0; i < oldAppGrpPremisesDtoList.size(); i++) {
-                    appGrpPremisesDtoList.get(i).setOldHciCode(oldAppGrpPremisesDtoList.get(i).getOldHciCode());
-                }
-            }
-
-            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            if (appSubmissionDto.isNeedEditController()) {
-                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                clickEditPages.add(HcsaAppConst.APP_PAGE_NAME_PREMISES);
-                appSubmissionDto.setClickEditPage(clickEditPages);
-                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                appEditSelectDto.setPremisesEdit(true);
-                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-            }
-            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                //65718
-                ApplicationHelper.removePremiseEmptyAlignInfo(appSubmissionDto);
-                //ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            }
-            //update address
-            ApplicationHelper.updatePremisesAddress(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-        }
-        String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
-        if (!"saveDraft".equals(crud_action_value)) {
-            String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-            bpc.request.setAttribute("continueStep", actionType);
-            bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
-            // validation
-            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-            List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
-                    bpc.request);
-            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, oldAppSubmissionDto,
-                    premisesHciList, isRfi, true);
-            String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
-            if ("continue".equals(crud_action_type_continue)) {
-                errorMap.remove("hciNameUsed");
-            }
-            String hciNameUsed = errorMap.get("hciNameUsed");
-            if (errorMap.size() == 1 && hciNameUsed != null) {
-                ParamUtil.setRequestAttr(bpc.request, "hciNameUsed", "hciNameUsed");
-                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
-            }
-            // check result
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-            if (errorMap.size() > 0) {
-                boolean isNeedShowValidation = !"back".equals(crud_action_value);
-                if (isNeedShowValidation) {
-                    initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
-                    ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
-                }
-                coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-            } else {
-                coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-                if ("rfcSaveDraft".equals(crud_action_additional)) {
-                    try {
-                        doSaveDraft(bpc);
-                    } catch (IOException e) {
-                        log.error("error", e);
-                    }
-                }
-            }
-            // coMap.put("serviceConfig", sB.toString());
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
-        }
-        log.info(StringUtil.changeForLog("the do doPremises end ...."));
-    }
-
-    private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
-            HttpServletRequest request) {
-        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
-        if (premisesHciList != null) {
-            return premisesHciList;
-        }
-        // if current is one of group new rfi, the premises will be only one, we need to check all apps in this group
-        List<HcsaServiceDto> hcsaServiceDtos = null;
-        if (isRfi) {
-            // init: this#loadingRfiGrpServiceConfig
-            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST);
-        }
-        if (hcsaServiceDtos == null) {
-            hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
-        }
-        List<PremisesDto> excludePremisesList = null;
-        List<AppGrpPremisesDto> excludeAppPremList = null;
-        if (oldAppSubmissionDto != null) {
-            if (isRfi) {
-                excludePremisesList = licCommService.getPremisesListByLicenceId(oldAppSubmissionDto.getLicenceId());
-            }
-            excludeAppPremList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        }
-        premisesHciList = appCommService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos,
-                excludePremisesList, excludeAppPremList);
-        ParamUtil.setSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-        return premisesHciList;
     }
 
     /**

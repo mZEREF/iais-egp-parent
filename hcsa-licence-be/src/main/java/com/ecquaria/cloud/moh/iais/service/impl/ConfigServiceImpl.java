@@ -605,7 +605,7 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(businessName)){
             errorMap.put("businessName",MessageUtil.replaceMessage("GENERAL_ERR0006","Business Name","field"));
         }
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+        /*List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
 
         for (int i = 0; i < hcsaSvcPersonnelDtos.size(); i++) {
             String psnType = hcsaSvcPersonnelDtos.get(i).getPsnType();
@@ -650,7 +650,7 @@ public class ConfigServiceImpl implements ConfigService {
                     errorMap.put("maximumCount" + i, "SC_ERR006");
                 }
             }
-        }
+        }*/
         Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap =hcsaServiceConfigDto.getHcsaSvcSpeRoutingSchemeDtoMap();
         String GENERAL_ERR0006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Service Routing Scheme", "field");
         hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
@@ -737,7 +737,7 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         });
-        String numberDocument = hcsaServiceConfigDto.getComDocSize();
+        /*String numberDocument = hcsaServiceConfigDto.getComDocSize();
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
         }else if(numberDocument.length()>2){
@@ -789,7 +789,7 @@ public class ConfigServiceImpl implements ConfigService {
                     }
                 }
             }
-        }
+        }*/
         Map<String,List<HcsaSvcSpeRoutingSchemeDto>> newHashMap=(Map<String,List<HcsaSvcSpeRoutingSchemeDto>>) request.getAttribute("insRoutingStage");
         if(newHashMap!=null){
             newHashMap.forEach((k,v)->{

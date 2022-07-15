@@ -26,7 +26,7 @@
     <iais:field width="5" value="Nationality" mandatory="true"/>
     <iais:value width="7" cssClass="col-md-7">
         <iais:select name="nationality${suffix}" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY" value="${person.nationality}"
-                     cssClass="nationalitySel" onchange="checkMantory(this, '#ethnicGroup${suffix}Label', 'NAT0001')"/>
+                     cssClass="nationalitySel" onchange="checkMandatory(this, '#ethnicGroup${suffix}Label', 'NAT0001')"/>
     </iais:value>
 </iais:row>
 <iais:row>

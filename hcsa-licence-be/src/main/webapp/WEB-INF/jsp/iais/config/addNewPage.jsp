@@ -56,7 +56,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="svcName" maxlength="100" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" type="text" name="svcName" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
@@ -65,7 +65,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" name="svcDesc" maxlength="255" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" type="text" name="svcDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
@@ -74,7 +74,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" type="text" name="svcDisplayDesc" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.svcDisplayDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
@@ -84,7 +84,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" type="text" name="svcCode" maxlength="3" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcCode"></span>
           </div>
         </div>
@@ -97,7 +97,7 @@
             <select id="ServiceType" name="svcType" >
               <option value="">Please Select</option>
               <c:forEach var="codeSelectOption" items="${codeSelectOptionList}">
-                <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
+                <option value="${codeSelectOption.value}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.svcType==codeSelectOption.value}">selected="selected"</c:if>>${codeSelectOption.text}</option>
               </c:forEach>
             </select>
             <span class="error-msg" name="iaisErrorMsg"  id="error_svcType"></span>
@@ -113,7 +113,7 @@
             <select name="categoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
             <span id="error_serviceCategory" class="error-msg" name="iaisErrorMsg"></span>
@@ -137,11 +137,11 @@
             <label class="col-xs-12 col-md-7 control-label" >Addition&nbsp;<span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.additionFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="1" >
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.additionFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="1" >
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.additionFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="0">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.additionFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="additionFlow"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_additionFlow"></span>
@@ -153,11 +153,11 @@
             <label class="col-xs-12 col-md-7 control-label" >Removal&nbsp;<span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.removalFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="1" >
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.removalFlow=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="1" >
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <div class="col-xs-12 col-md-6 form-check">
-                <input  type="radio" <c:if test="${hcsaServiceDto.removalFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="0">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.hcsaServiceDto.removalFlow=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="removalFlow"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span></label>
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_removalFlow"></span>
@@ -168,7 +168,7 @@
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Description Label</label>
             <div class="col-xs-12 col-md-4">
-              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="255" value="${hcsaServiceDto.descriptionLabel}">
+              <input id="descriptionLabel" type="text" name="descriptionLabel" maxlength="255" value="${hcsaServiceConfigDto.hcsaServiceDto.descriptionLabel}">
               <span class="error-msg" name="iaisErrorMsg" id="error_descriptionLabel"></span>
             </div>
           </div>
@@ -213,25 +213,22 @@
         </div>
       </div>
 
-      <div class="form-group" style="display: none" id="Subsumption">
-        <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" ><iais:code code="CDN001"/> Subsumed Under&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
-            <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
+        <div class="form-group" id ="businessInformation">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Business Information <span class="mandatory">*</span></label>
+            <div class="cl-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="form-group" style="display: none" id="Pre-requisite">
-        <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite <iais:code code="CDN001"/>&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
-            <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
-          </div>
-        </div>
-      </div>
 
       <div class="form-group" >
         <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
@@ -243,62 +240,62 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
-          <div class="cl-xs-12 col-md-4">
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
-              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+      <div id = "basePersionCount1">
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
             </div>
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
-              <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount0"></span>
             </div>
-            <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount0"></span>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder (KAH)&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
+              <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount10"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount10"></span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount1"></span>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount1"></span>
+            </div>
           </div>
         </div>
-      </div>
 
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -308,101 +305,215 @@
           <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount2"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_man-ClinicalGovernanceOfficer"></span>
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount2"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_mix-ClinicalGovernanceOfficer"></span>
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
+      <div id ="basePersionCount2">
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
+            </div>
           </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount6"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount6"></span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >General Conveyance Charges<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount7"></span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount8"></span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
+              <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+              <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount4"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <input  type="text" name="mix-MedalertPerson" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+              <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount4"></span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount6"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount6"></span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >General Conveyance Charges<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount7"></span>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SECLDR.id}"/>
+              <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-SectionLeader"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-SectionLeader"></span>
+            </div>
           </div>
         </div>
-      </div>
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount8"></span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount4"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount4"></span>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Nurse In Charge&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT004.id}"/>
+              <iais:input maxLength="2" type="text" name="man-NurseInCharge" value="${SPPT004.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-NurseInCharge"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-NurseInCharge" value="${SPPT004.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-NurseInCharge"></span>
+            </div>
           </div>
         </div>
-      </div>
-
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Radiation Safety Officer (RSO)&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT003.id}"/>
+              <iais:input maxLength="2" type="text" name="man-RadiationSafetyOfficer" value="${SPPT003.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-RadiationSafetyOfficer"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-RadiationSafetyOfficer" value="${SPPT003.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-RadiationSafetyOfficer"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Diagnostic Radiographer&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT005.id}"/>
+              <iais:input maxLength="2" type="text" name="man-DiagnosticRadiographer" value="${SPPT005.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-DiagnosticRadiographer"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-DiagnosticRadiographer" value="${SPPT005.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-DiagnosticRadiographer"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Medical Physicist&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT002.id}"/>
+              <iais:input maxLength="2" type="text" name="man-MedicalPhysicist" value="${SPPT002.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-MedicalPhysicist"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-MedicalPhysicist" value="${SPPT002.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-MedicalPhysicist"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Radiation Physicist&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT001.id}"/>
+              <iais:input maxLength="2" type="text" name="man-RadiationPhysicist" value="${SPPT001.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-RadiationPhysicist"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-RadiationPhysicist" value="${SPPT001.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-RadiationPhysicist"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >NM Technologist&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input type="hidden" name="secldrId" value="${SPPT005.id}"/>
+              <iais:input maxLength="2" type="text" name="man-NMTechnologist" value="${SPPT005.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-NMTechnologist"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-NMTechnologist" value="${SPPT005.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-NMTechnologist"></span>
+            </div>
+          </div>
+        </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document (for <span id ="serviceTypeShow">specialised</span> service) to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" maxlength="2" name="NumberDocument" value="${serviceDocSize}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_NumberDocument"></span>
+            <input id="NumberDocument" type="text" maxlength="2" name="serviceDocSize" value="${hcsaServiceConfigDto.serviceDocSize}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_serviceDocSize"></span>
           </div>
         </div>
       </div>
 
       <div class="serviceNumberfields">
-        <c:forEach items="${serviceDoc}" var="doc" varStatus="sta">
+        <c:forEach items="${hcsaServiceConfigDto.hcsaSvcDocConfigDtos}" var="doc" varStatus="sta">
           <div class="form-group">
             <div class="col-xs-12 col-md-12">
               <label class="col-xs-12 col-md-5 control-label" style="margin-right: 2%">Name of Info Field</label>
@@ -440,7 +551,7 @@
         </c:forEach>
       </div>
 
-      <div class="form-group">
+     <%-- <div class="form-group">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -477,7 +588,7 @@
             </div>
           </div>
         </c:forEach>
-      </div>
+      </div>--%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9  marg-1">
@@ -490,194 +601,196 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9  marg-1">
-          <label class="col-xs-12 col-md-7 control-label" >Service Risk Score</label>
-          <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
+      <div id ="baseKpiConfig">
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9  marg-1">
+            <label class="col-xs-12 col-md-7 control-label" >Service Risk Score</label>
+            <div class="col-xs-10 col-md-4">
+              <div class="components">
+                <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-9 marg-1">
+            <label class="col-xs-12 col-md-7 control-label" >Service KPI</label>
+            <div class="col-xs-10 col-md-4">
+              <div class="components">
+                <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" ><span class="view">Configure</span></a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9 marg-1">
-          <label class="col-xs-12 col-md-7 control-label" >Service KPI</label>
-          <div class="col-xs-10 col-md-4">
-            <div class="components">
-              <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" ><span class="view">Configure</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-12" style="margin-left: 10%">
-          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR014")%></c:if></span>
-          <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR015")%></c:if></span>
-          <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR016")%></c:if></span>
-          <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR017")%></c:if></span>
-          <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR018")%></c:if></span>
-          <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR019")%></c:if></span>
-        </div>
-
-        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70"  onclick="showNEW()"><span <c:if test="${errorMap['APTY002']!=null}">style="color: #ff0000" </c:if> class="view">NEW APPLICATION</span></a>
-            </div>
-          </div>
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70"  onclick="showRENEW()"><span <c:if test="${errorMap['APTY004']!=null}">style="color: #ff0000" </c:if> class="view">RENEW</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70"  onclick="showAPPEAL()"><span <c:if test="${errorMap['APTY001']!=null}">style="color: #ff0000" </c:if> class="view">APPEAL</span></a>
-            </div>
-          </div>
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70"  onclick="showRFC()"><span <c:if test="${errorMap['APTY005']!=null}">style="color: #ff0000" </c:if> class="view">REQUEST FOR CHANGE</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div  class="form-group">
-        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-6">
-            <div class="components  width-center">
-              <a class="btn btn-secondary width-70"  onclick="showCESSATION()"><span <c:if test="${errorMap['APTY008']!=null}">style="color: #ff0000" </c:if> class="view">CESSATION</span></a>
-            </div>
-          </div>
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span  <c:if test="${errorMap['APTY006']!=null}">style="color: #ff0000" </c:if> class="view">WITHDRAWAL</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <c:set var="index" value="0"></c:set>
-      <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
-      <div class="form-group" style="display: none" id="${routingStages.key}" >
-        <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-      <table aria-describedby="" border="1px" style="text-align: center" valign="middle">
-        <tr>
-          <th scope="col" style="width: 10% ;height: 40px;text-align: center">Application Type&nbsp;<span class="mandatory">*</span></th>
-          <th scope="col" style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory">*</span></th>
-          <th scope="col" style="width:30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
-          <th scope="col" style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
-          <%--<th scope="col" style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>--%>
-        </tr>
-        <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
-      <tr>
-        <td >${routingStage.appTypeName} </td>
-        <td >${routingStage.stageName}</td>
-        <td>
-          <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
-            <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
-              <option value="">Please Select</option>
-              <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if>>Mandatory</option>
-              <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
-            </select>
-            <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
+      <div id ="baseFlowConfig">
+        <div class="form-group">
+          <div class="col-xs-12 col-md-12" style="margin-left: 10%">
+            <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR014")%></c:if></span>
             <br>
-            <c:if test="${routingStage.stageCode=='AO1'|| routingStage.stageCode=='AO2'}">
-              <input type="hidden" value="${routingStage.canApprove}" name="canApprove${routingStage.stageCode}${routingStages.key}">
-              <input type="checkbox"  <c:if test="${routingStage.canApprove=='1'}">checked</c:if> onclick="canApprove(this)" /><span>&nbsp;Can Approve ?</span>
-            </c:if>
-
-          </div>
-          <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
-            <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
-              <option value="" >Please Select</option>
-              <option value="common"
-                      <c:choose>
-                        <c:when test="${routingStage.routingSchemeName=='common'}">
-                          selected="selected"
-                        </c:when>
-                      </c:choose>
-              >Common Pool</option>
-              <option value="round"
-                      <c:choose>
-                        <c:when test="${routingStage.routingSchemeName=='round'}">
-                          selected="selected"
-                        </c:when>
-                      </c:choose>
-
-              >Round Robin</option>
-              <option value="assign"
-                      <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
-              >Supervisor Assign</option>
-
-           </select>
-            <c:if test="${routingStage.stageCode=='INS'}">
-              <p>Inspector</p>
-            </c:if>
-            <c:if test="${routingStage.stageCode=='INS'}">
-              <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
-                <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
-                  <option value="" >Please Select</option>
-                  <option value="common"
-                          <c:choose>
-                            <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
-                              selected="selected"
-                            </c:when>
-                          </c:choose>
-                  >Common Pool</option>
-                  <option value="round"
-                          <c:choose>
-                            <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
-                              selected="selected"
-                            </c:when>
-                          </c:choose>
-                  >Round Robin</option>
-                  <option value="assign"
-                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
-                  >Supervisor Assign</option>
-                </select>
-                <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
-                  <p>Inspector AO1</p>
-                </c:if>
-                <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
-                  <p>Inspector Lead</p>
-                </c:if>
-              </c:forEach>
-            </c:if>
-            <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
+            <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR015")%></c:if></span>
+            <br>
+            <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR016")%></c:if></span>
+            <br>
+            <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR017")%></c:if></span>
+            <br>
+            <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR018")%></c:if></span>
+            <br>
+            <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR019")%></c:if></span>
           </div>
 
-        </td>
-        <td>
-          <div class="col-xs-12 col-md-12" style="text-align:left">
-            <input style="margin: 0px 0px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
-            <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
+          <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+            <div class="col-xs-10 col-md-6">
+              <div class="components width-center">
+                <a class="btn btn-secondary width-70"  onclick="showNEW()"><span <c:if test="${errorMap['APTY002']!=null}">style="color: #ff0000" </c:if> class="view">NEW APPLICATION</span></a>
+              </div>
+            </div>
+            <div class="col-xs-10 col-md-6">
+              <div class="components width-center">
+                <a class="btn btn-secondary width-70"  onclick="showRENEW()"><span <c:if test="${errorMap['APTY004']!=null}">style="color: #ff0000" </c:if> class="view">RENEW</span></a>
+              </div>
+            </div>
           </div>
-        </td>
-      </tr>
-        </c:forEach>
-      </table>
         </div>
+
+        <div class="form-group">
+          <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+            <div class="col-xs-10 col-md-6">
+              <div class="components width-center">
+                <a class="btn btn-secondary width-70"  onclick="showAPPEAL()"><span <c:if test="${errorMap['APTY001']!=null}">style="color: #ff0000" </c:if> class="view">APPEAL</span></a>
+              </div>
+            </div>
+            <div class="col-xs-10 col-md-6">
+              <div class="components width-center">
+                <a class="btn btn-secondary width-70"  onclick="showRFC()"><span <c:if test="${errorMap['APTY005']!=null}">style="color: #ff0000" </c:if> class="view">REQUEST FOR CHANGE</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div  class="form-group">
+          <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+            <div class="col-xs-10 col-md-6">
+              <div class="components  width-center">
+                <a class="btn btn-secondary width-70"  onclick="showCESSATION()"><span <c:if test="${errorMap['APTY008']!=null}">style="color: #ff0000" </c:if> class="view">CESSATION</span></a>
+              </div>
+            </div>
+            <div class="col-xs-10 col-md-6">
+              <div class="components width-center">
+                <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span  <c:if test="${errorMap['APTY006']!=null}">style="color: #ff0000" </c:if> class="view">WITHDRAWAL</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <c:set var="index" value="0"></c:set>
+        <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
+        <div class="form-group" style="display: none" id="${routingStages.key}" >
+          <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
+        <table aria-describedby="" border="1px" style="text-align: center" valign="middle">
+          <tr>
+            <th scope="col" style="width: 10% ;height: 40px;text-align: center">Application Type&nbsp;<span class="mandatory">*</span></th>
+            <th scope="col" style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory">*</span></th>
+            <th scope="col" style="width:30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
+            <th scope="col" style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
+            <%--<th scope="col" style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>--%>
+          </tr>
+          <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
+        <tr>
+          <td >${routingStage.appTypeName} </td>
+          <td >${routingStage.stageName}</td>
+          <td>
+            <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
+              <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                <option value="">Please Select</option>
+                <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if>>Mandatory</option>
+                <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
+              </select>
+              <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
+              <br>
+              <c:if test="${routingStage.stageCode=='AO1'|| routingStage.stageCode=='AO2'}">
+                <input type="hidden" value="${routingStage.canApprove}" name="canApprove${routingStage.stageCode}${routingStages.key}">
+                <input type="checkbox"  <c:if test="${routingStage.canApprove=='1'}">checked</c:if> onclick="canApprove(this)" /><span>&nbsp;Can Approve ?</span>
+              </c:if>
+
+            </div>
+            <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
+              <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
+                <option value="" >Please Select</option>
+                <option value="common"
+                        <c:choose>
+                          <c:when test="${routingStage.routingSchemeName=='common'}">
+                            selected="selected"
+                          </c:when>
+                        </c:choose>
+                >Common Pool</option>
+                <option value="round"
+                        <c:choose>
+                          <c:when test="${routingStage.routingSchemeName=='round'}">
+                            selected="selected"
+                          </c:when>
+                        </c:choose>
+
+                >Round Robin</option>
+                <option value="assign"
+                        <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
+                >Supervisor Assign</option>
+
+             </select>
+              <c:if test="${routingStage.stageCode=='INS'}">
+                <p>Inspector</p>
+              </c:if>
+              <c:if test="${routingStage.stageCode=='INS'}">
+                <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
+                  <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
+                    <option value="" >Please Select</option>
+                    <option value="common"
+                            <c:choose>
+                              <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
+                                selected="selected"
+                              </c:when>
+                            </c:choose>
+                    >Common Pool</option>
+                    <option value="round"
+                            <c:choose>
+                              <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
+                                selected="selected"
+                              </c:when>
+                            </c:choose>
+                    >Round Robin</option>
+                    <option value="assign"
+                            <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
+                    >Supervisor Assign</option>
+                  </select>
+                  <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
+                    <p>Inspector AO1</p>
+                  </c:if>
+                  <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
+                    <p>Inspector Lead</p>
+                  </c:if>
+                </c:forEach>
+              </c:if>
+              <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
+            </div>
+
+          </td>
+          <td>
+            <div class="col-xs-12 col-md-12" style="text-align:left">
+              <input style="margin: 0px 0px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+              <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
+            </div>
+          </td>
+        </tr>
+          </c:forEach>
+        </table>
+          </div>
+        </div>
+        </c:forEach>
       </div>
-      </c:forEach>
 
-
-      <div class="form-group">
+      <div class="form-group" id ="baseSubService">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
           <label class="col-xs-12 col-md-12 control-label">Service Sub-Types</label>
         </div>
@@ -783,7 +896,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
+              <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
                      name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
               <span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
               <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
@@ -796,7 +909,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" autocomplete="off" value="${hcsaServiceDto.endDate}"
+            <input type="text" autocomplete="off" value="${hcsaServiceConfigDto.hcsaServiceDto.endDate}"
                    class="date_picker form-control form_datetime" name="endDate" id="-20247433206800"
                    data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
@@ -871,51 +984,55 @@
     $('#ServiceType').change(function () {
         serviceTypeChange();
     });
+
     function serviceTypeChange(){
         var val = $('#ServiceType').val();
         //for other service
         if("SVTP005"==val){
-            $('#selectCategoryId').hide();
-            $('#msd').hide();
-            $('#admndAndNotifactionFlow').show();
-            $('#baseAndSpeci').hide();
-            //for bacse Service
+            forOtherService();
+        //for bacse Service
         } else if("SVTP001"==val){
-            $('#selectCategoryId').attr("style","display:block");
-            $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:none");
-            $("select[name='selectCategoryId']").next().attr('class','nice-select');
-
-            $('#admndAndNotifactionFlow').hide();
-            $('#baseAndSpeci').show();
-            //for subsumed service
-            /* } else if("SVTP002"==val){
-                 $('#Subsumption').attr("style","display:block");
-                 $('#Pre-requisite').attr("style","display:none");
-                 $('#selectCategoryId').attr("style","display:none");
-               $("select[name='selectCategoryId']").next().attr('class','nice-select');*/
-            //for specified service
+            forBaseService();
+        //for specified service
         }else  if("SVTP003"==val){
-            $('#Pre-requisite').attr("style","display:block");
-            $('#Subsumption').attr("style","display:none");
-            $('#selectCategoryId').attr("style","display:block");
-            $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
-            $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-            $("select[name='selectCategoryId']").val('Special Licensable Service')
-
-
-            $('#admndAndNotifactionFlow').show();
-            $('#baseAndSpeci').show();
-            // do not select,default show base
+            forSpecifiedService()
+        // do not select,default show base
         }else {
-            $('#Subsumption').attr("style","display:none");
-            $('#Pre-requisite').attr("style","display:none");
-            $('#selectCategoryId').attr("style","display:none");
-            $("select[name='selectCategoryId']").next().attr('class','nice-select');
+            //forBaseService();
+            forSpecifiedService()
         }
     }
-
-
+    function forBaseService(){
+        $('#selectCategoryId').show();
+        $('#admndAndNotifactionFlow').hide();
+        $('#baseAndSpeci').show();
+        $('#msd').show();
+        $('#businessInformation').show();
+        $('#basePersionCount1').show();
+        $('#basePersionCount2').show();
+        $('#serviceTypeShow').html('licensable');
+        $('#baseKpiConfig').show();
+        $('#baseFlowConfig').show();
+        $('#baseSubService').show();
+    }
+    function forSpecifiedService(){
+        $('#selectCategoryId').hide();
+        $('#admndAndNotifactionFlow').show();
+        $('#baseAndSpeci').show();
+        $('#msd').hide();
+        $('#businessInformation').hide();
+        $('#basePersionCount1').hide();
+        $('#basePersionCount2').hide();
+        $('#serviceTypeShow').html('specialised');
+        $('#baseKpiConfig').hide();
+        $('#baseFlowConfig').hide();
+        $('#baseSubService').hide();
+    }
+    function forOtherService(){
+        $('#selectCategoryId').hide();
+        $('#admndAndNotifactionFlow').show();
+        $('#baseAndSpeci').hide();
+    }
 
     function removeThis(obj) {
         $(obj).closest("div").closest("div.view").remove();

@@ -363,7 +363,7 @@ public final class AppDataHelper {
                     continue;
                 }
                 AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
-                dto.setBusninessName(coBusinessName);
+                dto.setBusinessName(coBusinessName);
                 dto.setProvidedService(coSvcName);
                 dto.setSeqNum(k);
                 appPremNonLicRelationDtos.add(dto);

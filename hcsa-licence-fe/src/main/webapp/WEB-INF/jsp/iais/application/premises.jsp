@@ -77,11 +77,6 @@
   <%--<c:if test="${!isRFC && !isRenew}">
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
   </c:if>--%>
-  <c:if test="${!(isRFC || isRenew)}">
-    <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
-                  yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                  cancelFunc="submit('premises','saveDraft','cancelSaveDraft');" />
-  </c:if>
 
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
   <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
@@ -110,9 +105,6 @@
         //init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){
             $('#ackMessageConfim').modal('show');
-        }
-        if($('#saveDraftSuccess').val()=='success'){
-            $('#saveDraft').modal('show');
         }
         if($('#hciNameUsedInput').val()=='hciNameUsed'){
             $('#hciNameUsed').modal('show');

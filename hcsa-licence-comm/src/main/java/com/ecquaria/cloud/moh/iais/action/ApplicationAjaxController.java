@@ -526,7 +526,6 @@ public class ApplicationAjaxController {
             return null;
         }
         AppGrpPremisesDto appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premSelectVal, request);
-        //set dayName
         if (appGrpPremisesDto != null) {
             /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
