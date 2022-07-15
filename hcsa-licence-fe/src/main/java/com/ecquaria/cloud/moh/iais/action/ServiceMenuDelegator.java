@@ -298,15 +298,15 @@ public class ServiceMenuDelegator {
                 .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
                 .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
                 .collect(Collectors.toList());
-        List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
+        /*List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
                 .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType()))
                 .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
         //sort
         allbaseService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
-        allspecifiedService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
+        //allspecifiedService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
+        //ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         appSelectSvcDto.setChooseBaseSvc(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);

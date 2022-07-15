@@ -747,6 +747,7 @@ public abstract class AppCommDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.FALSE);
         }
+        ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         //when rfc/renew check is select existing premises
         /*String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
@@ -779,7 +780,6 @@ public abstract class AppCommDelegator {
 //        ParamUtil.setRequestAttr(bpc.request, "eventCount", systemParamConfig.getEventCount());
 //        ParamUtil.setRequestAttr(bpc.request, "postalCodeAckMsg", MessageUtil.getMessageDesc("NEW_ACK016"));
         //single premises service
-        ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 

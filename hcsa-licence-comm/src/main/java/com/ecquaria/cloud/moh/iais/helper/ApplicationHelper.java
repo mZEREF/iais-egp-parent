@@ -188,8 +188,8 @@ public final class ApplicationHelper {
         return appSubmissionDto;
     }
 
-    public static void setAppSubmissionDto(AppSubmissionDto oldAppSubmissionDto, HttpServletRequest request) {
-        ParamUtil.setSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO, oldAppSubmissionDto);
+    public static void setAppSubmissionDto(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
     }
 
     public static AppSubmissionDto getOldAppSubmissionDto(HttpServletRequest request) {
@@ -556,14 +556,13 @@ public final class ApplicationHelper {
         return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
     }
 
-    public static void reSetMaxFileIndex(int maxSeqNum, HttpServletRequest request) {
+    public static void reSetMaxFileIndex(Integer maxSeqNum, HttpServletRequest request) {
         getMaxFileIndex(maxSeqNum, true, request);
     }
 
-    public static void reSetMaxFileIndex(int maxSeqNum) {
+    public static void reSetMaxFileIndex(Integer maxSeqNum) {
         reSetMaxFileIndex(maxSeqNum, MiscUtil.getCurrentRequest());
     }
-
 
     public static List<SelectOption> getIdTypeSelOp() {
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
@@ -1164,7 +1163,6 @@ public final class ApplicationHelper {
                 //String nationality = AppConsts.NATIONALITY_SG;
                 AppSvcPersonAndExtDto appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
                 AppSvcPersonDto appSvcPersonDto = new AppSvcPersonDto();
-//                    appSvcPersonDto.setCurPersonelId("");
                 appSvcPersonDto.setSalutation(feUserDto.getSalutation());
                 appSvcPersonDto.setName(feUserDto.getDisplayName());
                 appSvcPersonDto.setIdType(idType);
@@ -2498,7 +2496,10 @@ public final class ApplicationHelper {
             flag = hcsaServiceDtos.stream()
                     .noneMatch(hcsaServiceDto -> StringUtil.isIn(hcsaServiceDto.getSvcCode(),
                             new String[]{AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE,
-                                    AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE}));
+                                    AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE,
+                                    AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL,
+                                    AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE
+                            }));
         }
         return flag;
     }
@@ -3454,15 +3455,16 @@ public final class ApplicationHelper {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
-        if (!appSubmissionDto.getAppGrpPremisesDtoList().stream().allMatch(AppGrpPremisesDto::isFilled)) {
-            return;
-        }
         String errorMsg = (String) request.getAttribute(IaisEGPConstant.ERRORMSG);
         if (StringUtil.isNotEmpty(errorMsg) && !"[]".equals(errorMsg)) {
             log.info(StringUtil.changeForLog("------ Has Error ------"));
             return;
         }
-        if (!StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if (appGrpPremisesDtoList.stream().anyMatch(premises -> premises.getHasError() != null && premises.getHasError())) {
+            return;
+        }
+        if (appGrpPremisesDtoList.stream().anyMatch(premises -> premises.getHasError() == null)) {
             Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, null, false, false);
             if (!errorMap.isEmpty()) {
                 log.info(StringUtil.changeForLog("------ Has Error ------"));
@@ -3474,6 +3476,9 @@ public final class ApplicationHelper {
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.APP_PREMISES_MAP);
         for (AppGrpPremisesDto premises : appSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (premises.getHasError() == null || premises.getHasError()) {
+                continue;
+            }
             String premisesSelect = getPremisesKey(premises);
             AppGrpPremisesDto newDto = CopyUtil.copyMutableObject(premises);
             newDto.setRelatedServices(null);// new premise

@@ -176,6 +176,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
                 //set max file index into session
                 ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
+                /*
                 // check premise select
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
@@ -190,7 +191,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             }
                         }
                     }
-                }
+                }*/
 
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if (stepColor != null) {

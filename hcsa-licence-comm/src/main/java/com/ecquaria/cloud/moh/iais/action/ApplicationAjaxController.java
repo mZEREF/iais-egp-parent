@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -45,19 +46,6 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +58,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @Auther chenlei on 5/6/2022.
@@ -137,8 +139,8 @@ public class ApplicationAjaxController {
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
         log.debug(StringUtil.changeForLog("currentLength : " + currentLength));
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml");
-        Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
+        String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
+        /*Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
         StringBuilder premTypeBuffer = new StringBuilder();
 
         for (String type : premType) {
@@ -260,6 +262,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the add premises html end ...."));*/
         return sql;
     }
+
     /**
      * @param
      * @description: ajax
@@ -271,7 +274,7 @@ public class ApplicationAjaxController {
 
         File inputFile = ResourceUtils.getFile("classpath:docTemplate/Authorisation Letter.doc");
 
-        FileUtils.writeFileResponseContent(response,inputFile);
+        FileUtils.writeFileResponseContent(response, inputFile);
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
@@ -286,7 +289,7 @@ public class ApplicationAjaxController {
 
         File inputFile = ResourceUtils.getFile("classpath:docTemplate/Annex 8-1-9 DCA.doc");
 
-        FileUtils.writeFileResponseContent(response,inputFile);
+        FileUtils.writeFileResponseContent(response, inputFile);
 
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
@@ -329,18 +332,19 @@ public class ApplicationAjaxController {
         String hasNumber = ParamUtil.getRequestString(request, "HasNumber");
         String errMsg = "You are allowed to add up till only " + hasNumber + " CGO";
         if (canAddNumber > 0) {
-            String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml");
+            String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
             //assign cgo select
             List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
             sql = sql.replace("(1)", generateDropDownHtml(cgoSelectList, "assignSelect", "assignSel", null));
             //salutation
-            sql = sql.replace("(2)",  generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation", "salutationSel"));
+            sql = sql.replace("(2)", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation", "salutationSel"));
             //ID Type
             sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType", "idTypeSel"));
             //Designation
             sql = sql.replace("(4)", generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation", "designationSel"));
             //Professional Regn Type
-            sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE, "professionType", "professionTypeSel"));
+            sql = sql.replace("(5)",
+                    generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE, "professionType", "professionTypeSel"));
             //Specialty
             List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
             sql = sql.replace("(6)", generateDropDownHtml(specialtyList, "specialty", null));
@@ -394,7 +398,8 @@ public class ApplicationAjaxController {
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         String errMsg = "You are allowed to add up till only " + hasNumber + " SP";
-        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
+        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(
+                request, SERVICEALLPSNCONFIGMAP);
 
         String svcId = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
@@ -406,21 +411,23 @@ public class ApplicationAjaxController {
         }
 
         if (spMaxNumber - hasNumber > 0) {
-            String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging");
+            String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
             String currentSvcCod = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
             List<SelectOption> personnel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             Map<String, String> personnelAttr = IaisCommonUtils.genNewHashMap();
             personnelAttr.put("name", "personnelSel");
             personnelAttr.put("class", "personnelSel");
             personnelAttr.put("style", "display: none;");
-            String personnelSelectStr = ApplicationHelper.generateDropDownHtml(personnelAttr, personnel, HcsaAppConst.FIRESTOPTION, null);
+            String personnelSelectStr = ApplicationHelper.generateDropDownHtml(personnelAttr, personnel, HcsaAppConst.FIRESTOPTION,
+                    null);
 
             List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
             designationAttr.put("class", "designation");
-            String designationSelectStr = ApplicationHelper.generateDropDownHtml(designationAttr, designation, HcsaAppConst.FIRESTOPTION, null);
+            String designationSelectStr = ApplicationHelper.generateDropDownHtml(designationAttr, designation,
+                    HcsaAppConst.FIRESTOPTION, null);
             sql = sql.replace("(0)", String.valueOf(hasNumber + 1));
             sql = sql.replace("(1)", personnelSelectStr);
             sql = sql.replace("(2)", designationSelectStr);
@@ -441,9 +448,10 @@ public class ApplicationAjaxController {
         int poMmaximumCount = 0;
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
         String svcId = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSERVICEID);
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml");
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
-        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
+        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(
+                request, SERVICEALLPSNCONFIGMAP);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
             if ("PO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())) {
@@ -473,11 +481,12 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/deputy-principal-officer-html")
     public Map<String, String> addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml");
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
         int dpoMmaximumCount = 0;
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
-        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
+        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(
+                request, SERVICEALLPSNCONFIGMAP);
 
         String svcId = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
@@ -515,7 +524,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo start ...."));
         String premIndexNo = ParamUtil.getString(request, "premIndexNo");
         String premSelectVal = ParamUtil.getString(request, "premSelectVal");
-        String premisesType = ParamUtil.getString(request,"premisesType");
+        String premisesType = ParamUtil.getString(request, "premisesType");
         //String premiseIndex = request.getParameter("premiseIndex");
         if (StringUtil.isEmpty(premSelectVal) || StringUtil.isEmpty(premisesType)) {
             return null;
@@ -530,7 +539,7 @@ public class ApplicationAjaxController {
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
                 StringBuilder operationHtml = new StringBuilder();
-                String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational");
+                String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
                 sql = sql.replace("${premType}", premisesType);
                 sql = sql.replace("${premIndex}", premiseIndex);
                 int size = operationalUnitDtos.size();
@@ -597,7 +606,7 @@ public class ApplicationAjaxController {
             if (!IaisCommonUtils.isEmpty(eventDtoList)) {
                 StringBuilder eventHtml = new StringBuilder();
                 for (int i = 0; i < eventDtoList.size(); i++) {
-                    String sql = SqlMap.INSTANCE.getSql("premises", "event");
+                    String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
                     sql = sql.replace("${premIndex}", premiseIndex);
                     sql = sql.replace("${premType}", premisesType);
                     sql = sql.replace("${eventCount}", Integer.toString(i));
@@ -634,7 +643,8 @@ public class ApplicationAjaxController {
         }
         String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
         log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
-        Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.PERSONSELECTMAP);
+        Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,
+                HcsaAppConst.PERSONSELECTMAP);
         AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
         if (psn == null) {
             log.info(StringUtil.changeForLog("can not get data from PersonSelectMap ..."));
@@ -690,7 +700,8 @@ public class ApplicationAjaxController {
         }
         String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
         log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
-        Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.PERSONSELECTMAP);
+        Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                HcsaAppConst.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
         AppSvcPrincipalOfficersDto person = null;
         //66762
@@ -720,25 +731,25 @@ public class ApplicationAjaxController {
             String specialityHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null,
                     person.getSpeciality());
             person.setSpecialityHtml(specialityHtml);
-        } else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
             Date specialtyGetDate = person.getSpecialtyGetDate();
-            if(specialtyGetDate != null){
+            if (specialtyGetDate != null) {
                 person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
             }
             Date currRegiDate = person.getCurrRegiDate();
-            if(currRegiDate != null){
+            if (currRegiDate != null) {
                 person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
             }
             Date praCerEndDate = person.getPraCerEndDate();
-            if(praCerEndDate != null){
+            if (praCerEndDate != null) {
                 person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
             }
             Date acls = person.getAclsExpiryDate();
-            if(acls != null){
+            if (acls != null) {
                 person.setAclsExpiryDateStr(Formatter.formatDate(acls));
             }
             Date bcls = person.getBclsExpiryDate();
-            if(bcls != null){
+            if (bcls != null) {
                 person.setBclsExpiryDateStr(Formatter.formatDate(bcls));
             }
         }
@@ -773,11 +784,12 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/med-alert-person-html")
     public Map<String, String> genMedAlertPersonHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the genMedAlertPersonHtml start ...."));
-        String sql = SqlMap.INSTANCE.getSql("medAlertPerson", "generateMedAlertPersonHtml");
+        String sql = SqlMap.INSTANCE.getSql("medAlertPerson", "generateMedAlertPersonHtml").getSqlStr();
         int mapMaximumCount = 0;
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
-        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
+        Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(
+                request, SERVICEALLPSNCONFIGMAP);
         for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()) {
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
@@ -831,11 +843,12 @@ public class ApplicationAjaxController {
         String resCode = "404";
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
         if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)
-                /*&& (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))*/) {
+            /*&& (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))*/) {
             for (FeUserDto feUserDto : feUserDtos) {
                 String userIdType = feUserDto.getIdType();
                 if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
-                    Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.PERSONSELECTMAP);
+                    Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                            HcsaAppConst.PERSONSELECTMAP);
                     if (psnMap != null) {
                         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(ApplicationHelper.getPersonKey(nationality,
                                 idType, idNo));
@@ -862,7 +875,7 @@ public class ApplicationAjaxController {
     }
 
     @PostMapping(value = "/premises-operational-html")
-    public Map<String, Object> genPremOperationalHtml(HttpServletRequest request){
+    public Map<String, Object> genPremOperationalHtml(HttpServletRequest request) {
         /*String premIndex = ParamUtil.getString(request,"premIndex");
         String premType = ParamUtil.getString(request,"premType");
         String opCount = ParamUtil.getString(request,"opCount");
@@ -877,7 +890,7 @@ public class ApplicationAjaxController {
         }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)){
             premTypeStr = "easMts";
         }
-        String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational");
+        String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
         sql = sql.replace("${premType}", premTypeStr);
         sql = sql.replace("${premIndex}", premIndex);
         sql = sql.replace("${opCount}", opCount);
@@ -889,24 +902,24 @@ public class ApplicationAjaxController {
     }
 
     @PostMapping(value = "/operation-weekly-html")
-    public Map<String, Object> genPremOperationalWeeklyHtml(HttpServletRequest request){
+    public Map<String, Object> genPremOperationalWeeklyHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the gen weekly start ...."));
-        String premIndex = ParamUtil.getString(request,"premIndex");
-        String premType = ParamUtil.getString(request,"premType");
-        String weeklyCount = ParamUtil.getString(request,"weeklyCount");
+        String premIndex = ParamUtil.getString(request, "premIndex");
+        String premType = ParamUtil.getString(request, "premType");
+        String weeklyCount = ParamUtil.getString(request, "weeklyCount");
 
-        String weeklyHtml = genWeeklyCountHtml(premType,premIndex,weeklyCount);
+        String weeklyHtml = genWeeklyCountHtml(premType, premIndex, weeklyCount);
 
         String premPrefixName = getPremPrefixName(premType);
         String weeklyName = "Weekly";
         Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
         weeklyAttr.put("class", weeklyName);
-        weeklyAttr.put("id", premIndex +premPrefixName+ weeklyName + weeklyCount);
-        weeklyAttr.put("name", premIndex +premPrefixName+ weeklyName + weeklyCount);
+        weeklyAttr.put("id", premIndex + premPrefixName + weeklyName + weeklyCount);
+        weeklyAttr.put("name", premIndex + premPrefixName + weeklyName + weeklyCount);
         weeklyAttr.put("style", "display: none;");
-        List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
-        String weeklyDropHtml = ApplicationHelper.genMutilSelectOpHtml(weeklyAttr,weeklyOpList,null,null,true);
-        weeklyHtml = weeklyHtml.replace("${multipleDropDown}",weeklyDropHtml);
+        List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
+        String weeklyDropHtml = ApplicationHelper.genMutilSelectOpHtml(weeklyAttr, weeklyOpList, null, null, true);
+        weeklyHtml = weeklyHtml.replace("${multipleDropDown}", weeklyDropHtml);
         log.debug(StringUtil.changeForLog("the gen weekly end ...."));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
@@ -917,21 +930,21 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/operation-public-holiday-html")
     public Map<String, Object> genPublicHolidayHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
-        String premIndex = ParamUtil.getString(request,"premIndex");
-        String premType = ParamUtil.getString(request,"premType");
-        String phCount = ParamUtil.getString(request,"phCount");
+        String premIndex = ParamUtil.getString(request, "premIndex");
+        String premType = ParamUtil.getString(request, "premType");
+        String phCount = ParamUtil.getString(request, "phCount");
 
-        String phHtml = genPhCountHtml(premType,premIndex,phCount);
+        String phHtml = genPhCountHtml(premType, premIndex, phCount);
 
         String premPrefixName = getPremPrefixName(premType);
         String pubHolidayName = "PubHoliday";
         Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
         pubHolidayAttr.put("class", pubHolidayName);
-        pubHolidayAttr.put("id", premIndex +premPrefixName+ pubHolidayName + phCount);
-        pubHolidayAttr.put("name", premIndex +premPrefixName+ pubHolidayName + phCount);
+        pubHolidayAttr.put("id", premIndex + premPrefixName + pubHolidayName + phCount);
+        pubHolidayAttr.put("name", premIndex + premPrefixName + pubHolidayName + phCount);
         pubHolidayAttr.put("style", "display: none;");
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-        String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,null,true);
+        String pubHolidayHtml = ApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr, phOpList, null, null, true);
 
         phHtml = phHtml.replace("${multipleDropDown}", pubHolidayHtml);
 
@@ -945,14 +958,14 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/operation-event-html")
     public Map<String, Object> genEventHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the gen event start ...."));
-        String premIndex = ParamUtil.getString(request,"premIndex");
-        String premType = ParamUtil.getString(request,"premType");
-        String eventCount = ParamUtil.getString(request,"eventCount");
+        String premIndex = ParamUtil.getString(request, "premIndex");
+        String premType = ParamUtil.getString(request, "premType");
+        String eventCount = ParamUtil.getString(request, "eventCount");
         String premPrefixName = getPremPrefixName(premType);
-        String sql = SqlMap.INSTANCE.getSql("premises", "event");
-        sql = sql.replace("${premIndex}",premIndex);
-        sql = sql.replace("${premType}",premPrefixName);
-        sql = sql.replace("${eventCount}",eventCount);
+        String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+        sql = sql.replace("${premIndex}", premIndex);
+        sql = sql.replace("${premType}", premPrefixName);
+        sql = sql.replace("${eventCount}", eventCount);
         log.debug(StringUtil.changeForLog("the gen event end ...."));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
@@ -961,20 +974,20 @@ public class ApplicationAjaxController {
     }
 
     @GetMapping(value = "/new-app-ack-print")
-    public void generateAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
-        String action = ParamUtil.getString(request,"action");
+    public void generateAckPdf(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String action = ParamUtil.getString(request, "action");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO);
         String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt,action);
-        if(bytes != null){
+        byte[] bytes = doPrint(appSubmissionDto, isRfi, txnRefNo, txndt, action);
+        if (bytes != null) {
             String fileName = "newAppAck.pdf";
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                 fileName = "amendAck.pdf";
             }
             response.setContentType("application/OCTET-STREAM");
-            response.addHeader("Content-Disposition", "attachment;filename="+fileName);
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
             response.addHeader("Content-Length", "" + bytes.length);
             OutputStream ops = new BufferedOutputStream(response.getOutputStream());
             ops.write(bytes);
@@ -984,16 +997,16 @@ public class ApplicationAjaxController {
     }
 
     @GetMapping(value = "/rfc-app-ack-print")
-    public void generateAckPdfOfRfc(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void generateAckPdfOfRfc(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(request, "appSubmissionDtos");
-        String dAmount = (String)request.getSession().getAttribute("dAmount");
-        String payMethod = (String)request.getSession().getAttribute("payMethod");
+        String dAmount = (String) request.getSession().getAttribute("dAmount");
+        String payMethod = (String) request.getSession().getAttribute("payMethod");
         appSubmissionDtos.get(0).setAmountStr(dAmount);
         appSubmissionDtos.get(0).setPaymentMethod(payMethod);
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDtos.get(0),isRfi,txnRefNo,new SimpleDateFormat("dd/MM/yyyy").format(new Date()),"");
-        if(bytes != null){
+        byte[] bytes = doPrint(appSubmissionDtos.get(0), isRfi, txnRefNo, new SimpleDateFormat("dd/MM/yyyy").format(new Date()), "");
+        if (bytes != null) {
             response.setContentType("application/OCTET-STREAM");
             response.addHeader("Content-Disposition", "attachment;filename=rfcAppAck.pdf");
             response.addHeader("Content-Length", String.valueOf(bytes.length));
@@ -1005,25 +1018,24 @@ public class ApplicationAjaxController {
     }
 
     @GetMapping(value = "/renew-ack-print")
-    public void generateRenewAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void generateRenewAckPdf(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         List<String> svcNames = (List<String>) ParamUtil.getSessionAttr(request, "serviceNamesAck");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = "";
-        if(loginContext != null){
+        if (loginContext != null) {
             licenseeId = loginContext.getLicenseeId();
         }
         String totalString = (String) ParamUtil.getSessionAttr(request, "totalStr");
         byte[] bytes = doRenewPrint(renewDto.getAppSubmissionDtos().get(0), txnRefNo, txndt, svcNames, licenseeId, totalString);
 
 
-
-        if(bytes != null){
+        if (bytes != null) {
             String fileName = "renewAppAck.pdf";
             response.setContentType("application/OCTET-STREAM");
-            response.addHeader("Content-Disposition", "attachment;filename="+fileName);
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
             response.addHeader("Content-Length", "" + bytes.length);
             OutputStream ops = new BufferedOutputStream(response.getOutputStream());
             ops.write(bytes);
@@ -1033,12 +1045,12 @@ public class ApplicationAjaxController {
     }
 
     @PostMapping(value = "/vehicle-html")
-    public Map<String, Object> generateVehicleHtml(HttpServletRequest request){
+    public Map<String, Object> generateVehicleHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the generateVehicleHtml start ...."));
-        int vehicleLength = ParamUtil.getInt(request,"vehicleLength");
-        String vehicleHtml = SqlMap.INSTANCE.getSql("vehicle", "generateVehicleHtml");
-        vehicleHtml = vehicleHtml.replace("${vehicleLength}",String.valueOf(vehicleLength+1));
-        vehicleHtml = vehicleHtml.replace("${vehicleSuffix}",String.valueOf(vehicleLength));
+        int vehicleLength = ParamUtil.getInt(request, "vehicleLength");
+        String vehicleHtml = SqlMap.INSTANCE.getSql("vehicle", "generateVehicleHtml").getSqlStr();
+        vehicleHtml = vehicleHtml.replace("${vehicleLength}", String.valueOf(vehicleLength + 1));
+        vehicleHtml = vehicleHtml.replace("${vehicleSuffix}", String.valueOf(vehicleLength));
         log.debug(StringUtil.changeForLog("the generateVehicleHtml end ...."));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
@@ -1052,7 +1064,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml start ...."));
         int slLength = ParamUtil.getInt(request, "slLength");
         log.info(StringUtil.changeForLog("The index: " + slLength));
-        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml");
+        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml").getSqlStr();
         html = html.replace("${stepName}", HcsaConsts.SECTION_LEADER);
         html = html.replace("${index}", String.valueOf(slLength));
         html = html.replace("${slIndex}", String.valueOf(slLength + 1));
@@ -1068,7 +1080,7 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/clinical-director-html")
     public Map<String, Object> generateClinicalDirectorHtml(HttpServletRequest request) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml start ...."));
-        int cdLength = ParamUtil.getInt(request,"cdLength");
+        int cdLength = ParamUtil.getInt(request, "cdLength");
         String currSvcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
 
         Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
@@ -1114,15 +1126,16 @@ public class ApplicationAjaxController {
     }
 
     @PostMapping(value = "/search-charges-type")
-    public Map<String, Object> searchChargesTypeByCategory(HttpServletRequest request){
+    public Map<String, Object> searchChargesTypeByCategory(HttpServletRequest request) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
-        String category = ParamUtil.getString(request,"category");
-        String chargesSuffix = ParamUtil.getString(request,"chargesSuffix");
+        String category = ParamUtil.getString(request, "category");
+        String chargesSuffix = ParamUtil.getString(request, "chargesSuffix");
         List<SelectOption> chargesTypeList = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(category)){
-            switch (category){
+        if (!StringUtil.isEmpty(category)) {
+            switch (category) {
                 case ApplicationConsts.CHARGES_CATEGORY_AIRWAY_AND_VENTILATION_EQUIPMENT:
-                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AIRWAY_AND_VENTILATION_EQUIPMENT_CHARGES_TYPE);
+                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(
+                            MasterCodeUtil.CATE_ID_AIRWAY_AND_VENTILATION_EQUIPMENT_CHARGES_TYPE);
                     break;
                 case ApplicationConsts.CHARGES_CATEGORY_INTRAVENOUS_EQUIPMENT:
                     chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INTRAVENOUS_EQUIPMENT_CHARGES_TYPE);
@@ -1134,10 +1147,12 @@ public class ApplicationAjaxController {
                     chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_IMMOBILISATION_DEVICE_CHARGES_TYPE);
                     break;
                 case ApplicationConsts.CHARGES_CATEGORY_TRAUMA_SUPPLIES_OR_EQUIPMENT:
-                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TRAUMA_SUPPLIES_OR_EQUIPMENT_CHARGES_TYPE);
+                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(
+                            MasterCodeUtil.CATE_ID_TRAUMA_SUPPLIES_OR_EQUIPMENT_CHARGES_TYPE);
                     break;
                 case ApplicationConsts.CHARGES_CATEGORY_INFECTION_CONTROL_EQUIPMENT:
-                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE);
+                    chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(
+                            MasterCodeUtil.CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE);
                     break;
                 case ApplicationConsts.CHARGES_CATEGORY_MEDICATIONS:
                     chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MEDICATIONS_CHARGES_TYPE);
@@ -1145,13 +1160,15 @@ public class ApplicationAjaxController {
                 case ApplicationConsts.CHARGES_CATEGORY_MISCELLANEOUS:
                     chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MISCELLANEOUS_CHARGES_TYPE);
                     break;
-                default:break;
+                default:
+                    break;
             }
             Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
             chargesTypeAttr.put("class", "otherChargesType");
-            chargesTypeAttr.put("name", "otherChargesType"+chargesSuffix);
+            chargesTypeAttr.put("name", "otherChargesType" + chargesSuffix);
             chargesTypeAttr.put("style", "display: none;");
-            String chargeTypeSelHtml = ApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, chargesTypeList, HcsaAppConst.FIRESTOPTION, null, false);
+            String chargeTypeSelHtml = ApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, chargesTypeList,
+                    HcsaAppConst.FIRESTOPTION, null, false);
             map.put("resCode", "200");
             map.put("resultJson", chargeTypeSelHtml);
         }
@@ -1160,20 +1177,22 @@ public class ApplicationAjaxController {
 
     @PostMapping(value = "/general-charges-html")
     public Map<String, Object> generateGeneralChargesHtml(HttpServletRequest request) throws IOException, TemplateException {
-        int generalChargeLength = ParamUtil.getInt(request,"generalChargeLength");
+        int generalChargeLength = ParamUtil.getInt(request, "generalChargeLength");
         //charges type
-        List<SelectOption> chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE);
+        List<SelectOption> chargesTypeList = MasterCodeUtil.retrieveOptionsByCate(
+                MasterCodeUtil.CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE);
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
         chargesTypeAttr.put("class", "chargesType");
-        chargesTypeAttr.put("name", "chargesType"+generalChargeLength);
+        chargesTypeAttr.put("name", "chargesType" + generalChargeLength);
         chargesTypeAttr.put("style", "display: none;");
-        String chargesTypeSelectStr = ApplicationHelper.generateDropDownHtml(chargesTypeAttr, chargesTypeList, HcsaAppConst.FIRESTOPTION, null);
+        String chargesTypeSelectStr = ApplicationHelper.generateDropDownHtml(chargesTypeAttr, chargesTypeList,
+                HcsaAppConst.FIRESTOPTION, null);
 
-        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
-        paramMap.put("chargesType",chargesTypeSelectStr);
-        paramMap.put("suffix",generalChargeLength);
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("chargesType", chargesTypeSelectStr);
+        paramMap.put("suffix", generalChargeLength);
 
-        String chargesHtml = SqlMap.INSTANCE.getSql("charges", "generalChargesHtml",paramMap);
+        String chargesHtml = SqlMap.INSTANCE.getSql("charges", "generalChargesHtml", paramMap);
 
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
@@ -1183,28 +1202,31 @@ public class ApplicationAjaxController {
 
     @PostMapping(value = "/other-charges-html")
     public Map<String, Object> generateOtherChargesHtml(HttpServletRequest request) throws IOException, TemplateException {
-        int otherChargeLength = ParamUtil.getInt(request,"otherChargeLength");
+        int otherChargeLength = ParamUtil.getInt(request, "otherChargeLength");
         //charges category
-        List<SelectOption> chargesCateList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY);
+        List<SelectOption> chargesCateList = MasterCodeUtil.retrieveOptionsByCate(
+                MasterCodeUtil.CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY);
         Map<String, String> chargesCateAttr = IaisCommonUtils.genNewHashMap();
         chargesCateAttr.put("class", "otherChargesCategory");
-        chargesCateAttr.put("name", "otherChargesCategory"+otherChargeLength);
+        chargesCateAttr.put("name", "otherChargesCategory" + otherChargeLength);
         chargesCateAttr.put("style", "display: none;");
-        String chargesCateSelectStr = ApplicationHelper.generateDropDownHtml(chargesCateAttr, chargesCateList, HcsaAppConst.FIRESTOPTION, null);
+        String chargesCateSelectStr = ApplicationHelper.generateDropDownHtml(chargesCateAttr, chargesCateList,
+                HcsaAppConst.FIRESTOPTION, null);
         //empty charges type
         List<SelectOption> chargesTypeList = IaisCommonUtils.genNewArrayList();
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
         chargesTypeAttr.put("class", "otherChargesType");
-        chargesTypeAttr.put("name", "otherChargesType"+otherChargeLength);
+        chargesTypeAttr.put("name", "otherChargesType" + otherChargeLength);
         chargesTypeAttr.put("style", "display: none;");
-        String chargesTypeSelectStr = ApplicationHelper.generateDropDownHtml(chargesTypeAttr, chargesTypeList, HcsaAppConst.FIRESTOPTION, null);
+        String chargesTypeSelectStr = ApplicationHelper.generateDropDownHtml(chargesTypeAttr, chargesTypeList,
+                HcsaAppConst.FIRESTOPTION, null);
 
-        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
-        paramMap.put("chargesCategory",chargesCateSelectStr);
-        paramMap.put("chargesType",chargesTypeSelectStr);
-        paramMap.put("suffix",otherChargeLength);
+        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("chargesCategory", chargesCateSelectStr);
+        paramMap.put("chargesType", chargesTypeSelectStr);
+        paramMap.put("suffix", otherChargeLength);
 
-        String chargesHtml = SqlMap.INSTANCE.getSql("charges", "otherChargesHtml",paramMap);
+        String chargesHtml = SqlMap.INSTANCE.getSql("charges", "otherChargesHtml", paramMap);
 
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
@@ -1214,7 +1236,7 @@ public class ApplicationAjaxController {
 
     @PostMapping(value = "/keyAppointmentHolder-html")
     public Map<String, Object> generateKeyAppointmentHolderHtml(HttpServletRequest request) throws TemplateException, IOException {
-        int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
+        int keyAppointmentHolderLength = ParamUtil.getInt(request, "keyAppointmentHolderLength");
 
         Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
         paramMap.put("keyAppointmentHolderLength", keyAppointmentHolderLength + 1);
@@ -1254,7 +1276,8 @@ public class ApplicationAjaxController {
         return null;
     }
 
-    private AppSvcPrincipalOfficersDto getAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, AppSvcPrincipalOfficersDto person) {
+    private AppSvcPrincipalOfficersDto getAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto,
+            AppSvcPrincipalOfficersDto person) {
         if (appSvcPersonAndExtDto == null) {
             return person;
         }
@@ -1273,27 +1296,28 @@ public class ApplicationAjaxController {
         return person;
     }
 
-    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi, String txnRefNo, String txnDt, String action) throws Exception {
+    private static byte[] doPrint(AppSubmissionDto appSubmissionDto, boolean isRfi, String txnRefNo, String txnDt, String action)
+            throws Exception {
         byte[] bytes = null;
-        if(appSubmissionDto != null){
+        if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(appSvcRelatedInfoDtos != null && appSvcRelatedInfoDtos.size()>0){
-                Map<String,String> paramMap = IaisCommonUtils.genNewHashMap();
+            if (appSvcRelatedInfoDtos != null && appSvcRelatedInfoDtos.size() > 0) {
+                Map<String, String> paramMap = IaisCommonUtils.genNewHashMap();
 
                 List<String> svcNameList = IaisCommonUtils.genNewArrayList();
                 StringBuilder serviceName = new StringBuilder();
                 List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode()));
                 }
                 hcsaServiceDtos = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtos);
-                for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                    svcNameList.add("<strong>"+hcsaServiceDto.getSvcName()+"</strong>");
+                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                    svcNameList.add("<strong>" + hcsaServiceDto.getSvcName() + "</strong>");
                     serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")
                             .append(hcsaServiceDto.getSvcName())
                             .append("</strong></p></div>");
                 }
-                String serviceNameTitle = String.join(" | ",svcNameList);
+                String serviceNameTitle = String.join(" | ", svcNameList);
                 List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(appSubmissionDto.getLicenseeId());
                 String emailAddress = ApplicationHelper.emailAddressesToString(licenseeEmailAddrs);
 
@@ -1303,13 +1327,13 @@ public class ApplicationAjaxController {
                 String title;
                 StringBuilder newExtraTitle = new StringBuilder();
                 StringBuilder rfcExtraTitle = new StringBuilder();
-                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     title = "New Licence Application";
                     newExtraTitle.append("<h3 id=\"newSvc\">You are applying for ")
                             .append(serviceNameTitle)
                             .append("</h3>");
-                }else {
-                    title = "Amendment" ;
+                } else {
+                    title = "Amendment";
                     String svcName = appSvcRelatedInfoDtos.get(0).getServiceName();
                     rfcExtraTitle.append("<p class=\"center\">You are amending the <strong>")
                             .append(svcName)
@@ -1317,45 +1341,45 @@ public class ApplicationAjaxController {
                             .append(appSubmissionDto.getLicenceNo())
                             .append("</strong>)</p>");
                 }
-                if(StringUtil.isEmpty(action) || !"noHeader".equals(action)){
-                    paramMap.put("title",title);
-                    paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
-                    paramMap.put("newExtraTitle",newExtraTitle.toString());
+                if (StringUtil.isEmpty(action) || !"noHeader".equals(action)) {
+                    paramMap.put("title", title);
+                    paramMap.put("rfcExtraTitle", rfcExtraTitle.toString());
+                    paramMap.put("newExtraTitle", newExtraTitle.toString());
                 }
-                paramMap.put("serviceName",serviceName.toString());
-                paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
-                paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));
-                paramMap.put("appGrpNo",StringUtil.viewHtml(appSubmissionDto.getAppGrpNo()));
-                if(StringUtil.isEmpty(txnDt)){
-                    paramMap.put("txnDt",StringUtil.viewHtml(emptyStr));
-                }else{
-                    paramMap.put("txnDt",StringUtil.viewHtml(txnDt));
+                paramMap.put("serviceName", serviceName.toString());
+                paramMap.put("emailAddress", StringUtil.viewHtml(emailAddress));
+                paramMap.put("NEW_ACK005", StringUtil.viewHtml(newAck005));
+                paramMap.put("appGrpNo", StringUtil.viewHtml(appSubmissionDto.getAppGrpNo()));
+                if (StringUtil.isEmpty(txnDt)) {
+                    paramMap.put("txnDt", StringUtil.viewHtml(emptyStr));
+                } else {
+                    paramMap.put("txnDt", StringUtil.viewHtml(txnDt));
                 }
 
-                paramMap.put("amountStr",StringUtil.viewHtml(appSubmissionDto.getAmountStr()));
-                if(StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())){
-                    paramMap.put("paymentMethod",StringUtil.viewHtml(emptyStr));
-                }else {
+                paramMap.put("amountStr", StringUtil.viewHtml(appSubmissionDto.getAmountStr()));
+                if (StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())) {
+                    paramMap.put("paymentMethod", StringUtil.viewHtml(emptyStr));
+                } else {
                     String pmtName = MasterCodeUtil.getCodeDesc(appSubmissionDto.getPaymentMethod());
-                    paramMap.put("paymentMethod",StringUtil.viewHtml(pmtName));
+                    paramMap.put("paymentMethod", StringUtil.viewHtml(pmtName));
                 }
 
-                paramMap.put("dateColumn",StringUtil.viewHtml("Date & Time"));
+                paramMap.put("dateColumn", StringUtil.viewHtml("Date & Time"));
                 //rfi
-                if(!isRfi){
-                    paramMap.put("txnRefNoColumn","<th>Transactional No.</th>");
-                    if(StringUtil.isEmpty(txnRefNo)){
-                        paramMap.put("txnRefNo",StringUtil.viewHtml(emptyStr));
-                    }else{
-                        paramMap.put("txnRefNo",StringUtil.viewHtml(txnRefNo));
+                if (!isRfi) {
+                    paramMap.put("txnRefNoColumn", "<th>Transactional No.</th>");
+                    if (StringUtil.isEmpty(txnRefNo)) {
+                        paramMap.put("txnRefNo", StringUtil.viewHtml(emptyStr));
+                    } else {
+                        paramMap.put("txnRefNo", StringUtil.viewHtml(txnRefNo));
                     }
-                }else{
-                    paramMap.put("txnRefNoColumn",null);
-                    paramMap.put("txnRefNo",null);
+                } else {
+                    paramMap.put("txnRefNoColumn", null);
+                    paramMap.put("txnRefNo", null);
                 }
                 //File pdfFile = new File("new application report.pdf");
                 JarFileUtil.copyFileToDir("pdfTemplate", "newAppAck.ftl");
-                File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH , "pdfTemplate");
+                File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH, "pdfTemplate");
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 bytes = pdfGenerator.convertHtmlToPDF("newAppAck.ftl", paramMap);
             }
@@ -1363,14 +1387,15 @@ public class ApplicationAjaxController {
         return bytes;
     }
 
-    private static byte[] doRenewPrint(AppSubmissionDto appSubmissionDto, String txnRefNo, String txnDt, List<String> svcNames, String licenseeId, String totalString) throws IOException, TemplateException {
+    private static byte[] doRenewPrint(AppSubmissionDto appSubmissionDto, String txnRefNo, String txnDt, List<String> svcNames,
+            String licenseeId, String totalString) throws IOException, TemplateException {
         byte[] bytes = null;
-        if(appSubmissionDto != null){
+        if (appSubmissionDto != null) {
             String emptyStr = "N/A";
-            Map<String,String> paramMap = IaisCommonUtils.genNewHashMap();
+            Map<String, String> paramMap = IaisCommonUtils.genNewHashMap();
             StringBuilder serviceName = new StringBuilder();
-            if(!IaisCommonUtils.isEmpty(svcNames)){
-                for(String svcName:svcNames){
+            if (!IaisCommonUtils.isEmpty(svcNames)) {
+                for (String svcName : svcNames) {
                     serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")
                             .append(svcName)
                             .append("</strong></p></div>");
@@ -1380,38 +1405,38 @@ public class ApplicationAjaxController {
             String emailAddress = ApplicationHelper.emailAddressesToString(licenseeEmailAddrs);
             String newAck005 = MessageUtil.getMessageDesc("NEW_ACK005");
 
-            if(StringUtil.isEmpty(txnRefNo)){
-                paramMap.put("txnRefNo",StringUtil.viewHtml(emptyStr));
-            }else{
-                paramMap.put("txnRefNo",StringUtil.viewHtml(txnRefNo));
+            if (StringUtil.isEmpty(txnRefNo)) {
+                paramMap.put("txnRefNo", StringUtil.viewHtml(emptyStr));
+            } else {
+                paramMap.put("txnRefNo", StringUtil.viewHtml(txnRefNo));
             }
-            if(StringUtil.isEmpty(txnDt)){
-                paramMap.put("txnDt",StringUtil.viewHtml(emptyStr));
-            }else{
-                paramMap.put("txnDt",StringUtil.viewHtml(txnDt));
+            if (StringUtil.isEmpty(txnDt)) {
+                paramMap.put("txnDt", StringUtil.viewHtml(emptyStr));
+            } else {
+                paramMap.put("txnDt", StringUtil.viewHtml(txnDt));
             }
-            if(StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())){
-                paramMap.put("paymentMethod",StringUtil.viewHtml(emptyStr));
-            }else {
+            if (StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())) {
+                paramMap.put("paymentMethod", StringUtil.viewHtml(emptyStr));
+            } else {
                 String pmtName = MasterCodeUtil.getCodeDesc(appSubmissionDto.getPaymentMethod());
-                paramMap.put("paymentMethod",StringUtil.viewHtml(pmtName));
+                paramMap.put("paymentMethod", StringUtil.viewHtml(pmtName));
             }
-            paramMap.put("amountStr",StringUtil.viewHtml(totalString));
-            paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
-            paramMap.put("serviceName",serviceName.toString());
-            paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));
-            paramMap.put("dateColumn",StringUtil.viewHtml("Date & Time"));
+            paramMap.put("amountStr", StringUtil.viewHtml(totalString));
+            paramMap.put("emailAddress", StringUtil.viewHtml(emailAddress));
+            paramMap.put("serviceName", serviceName.toString());
+            paramMap.put("NEW_ACK005", StringUtil.viewHtml(newAck005));
+            paramMap.put("dateColumn", StringUtil.viewHtml("Date & Time"));
 
             File pdfFile = new File("renew application report.pdf");
             JarFileUtil.copyFileToDir("pdfTemplate", "renewAck.ftl");
-            File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH , "pdfTemplate");
+            File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH, "pdfTemplate");
             PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
             bytes = pdfGenerator.convertHtmlToPDF("renewAck.ftl", paramMap);
         }
         return bytes;
     }
 
-    private String getPremPrefixName(String premType){
+    private String getPremPrefixName(String premType) {
         String premTypeStr = "";
         /*if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
             premTypeStr = "onSite";
@@ -1425,7 +1450,7 @@ public class ApplicationAjaxController {
         return premTypeStr;
     }
 
-    private String genWeeklyCountHtml(String premType,String premIndex,String weeklyCount){
+    private String genWeeklyCountHtml(String premType, String premIndex, String weeklyCount) {
         String premPrefixName = getPremPrefixName(premType);
         List<SelectOption> hourList = ApplicationHelper.getTimeHourList();
         List<SelectOption> minList = ApplicationHelper.getTimeMinList();
@@ -1434,39 +1459,39 @@ public class ApplicationAjaxController {
         Map<String, String> startHourAttr = IaisCommonUtils.genNewHashMap();
         startHourAttr.put("class", weeklyStartHourName);
         startHourAttr.put("id", weeklyStartHourName);
-        startHourAttr.put("name", premIndex+premPrefixName+weeklyStartHourName+weeklyCount);
+        startHourAttr.put("name", premIndex + premPrefixName + weeklyStartHourName + weeklyCount);
         startHourAttr.put("style", "display: none;");
-        String weeklyStartHourHtml = ApplicationHelper.generateDropDownHtml(startHourAttr,hourList,"--",null);
+        String weeklyStartHourHtml = ApplicationHelper.generateDropDownHtml(startHourAttr, hourList, "--", null);
 
         String weeklyStartMinName = "WeeklyStartMM";
         Map<String, String> startMinAttr = IaisCommonUtils.genNewHashMap();
         startMinAttr.put("class", weeklyStartMinName);
         startMinAttr.put("id", weeklyStartMinName);
-        startMinAttr.put("name", premIndex+premPrefixName+weeklyStartMinName+weeklyCount);
+        startMinAttr.put("name", premIndex + premPrefixName + weeklyStartMinName + weeklyCount);
         startMinAttr.put("style", "display: none;");
-        String weeklyStartMinHtml = ApplicationHelper.generateDropDownHtml(startMinAttr,minList,"--",null);
+        String weeklyStartMinHtml = ApplicationHelper.generateDropDownHtml(startMinAttr, minList, "--", null);
 
 
         String weeklyEndHourName = "WeeklyEndHH";
         Map<String, String> endHourAttr = IaisCommonUtils.genNewHashMap();
         endHourAttr.put("class", weeklyEndHourName);
         endHourAttr.put("id", weeklyEndHourName);
-        endHourAttr.put("name", premIndex+premPrefixName+weeklyEndHourName+weeklyCount);
+        endHourAttr.put("name", premIndex + premPrefixName + weeklyEndHourName + weeklyCount);
         endHourAttr.put("style", "display: none;");
-        String weeklyEndHourHtml = ApplicationHelper.generateDropDownHtml(endHourAttr,hourList,"--",null);
+        String weeklyEndHourHtml = ApplicationHelper.generateDropDownHtml(endHourAttr, hourList, "--", null);
 
-        String weeklyEndMinName ="WeeklyEndMM";
+        String weeklyEndMinName = "WeeklyEndMM";
         Map<String, String> endMinAttr = IaisCommonUtils.genNewHashMap();
         endMinAttr.put("class", weeklyEndMinName);
         endMinAttr.put("id", weeklyEndMinName);
-        endMinAttr.put("name", premIndex+premPrefixName+weeklyEndMinName+weeklyCount);
+        endMinAttr.put("name", premIndex + premPrefixName + weeklyEndMinName + weeklyCount);
         endMinAttr.put("style", "display: none;");
-        String weeklyEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
+        String weeklyEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr, minList, "--", null);
 
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "weekly");
-        sql = sql.replace("${fieldName}","Weekly <span class=\"mandatory\">*</span>");
-        sql = sql.replace("${opType}","Weekly");
+        String sql = SqlMap.INSTANCE.getSql("premises", "weekly").getSqlStr();
+        sql = sql.replace("${fieldName}", "Weekly <span class=\"mandatory\">*</span>");
+        sql = sql.replace("${opType}", "Weekly");
         sql = sql.replace("${premPrefixName}", premPrefixName);
         sql = sql.replace("${premIndex}", premIndex);
         sql = sql.replace("${opCount}", weeklyCount);
@@ -1474,13 +1499,13 @@ public class ApplicationAjaxController {
         sql = sql.replace("${startMM}", weeklyStartMinHtml);
         sql = sql.replace("${endHH}", weeklyEndHourHtml);
         sql = sql.replace("${endMM}", weeklyEndMinHtml);
-        sql = sql.replace("${delClass}","weeklyDel");
-        sql = sql.replace("${divClass}","weeklyDiv");
-        sql = sql.replace("${allDayName}",premIndex+premPrefixName+"WeeklyAllDay"+weeklyCount);
+        sql = sql.replace("${delClass}", "weeklyDel");
+        sql = sql.replace("${divClass}", "weeklyDiv");
+        sql = sql.replace("${allDayName}", premIndex + premPrefixName + "WeeklyAllDay" + weeklyCount);
         return sql;
     }
 
-    private String genPhCountHtml(String premType,String premIndex,String phCount){
+    private String genPhCountHtml(String premType, String premIndex, String phCount) {
         String premPrefixName = getPremPrefixName(premType);
         List<SelectOption> hourList = ApplicationHelper.getTimeHourList();
         List<SelectOption> minList = ApplicationHelper.getTimeMinList();
@@ -1489,39 +1514,39 @@ public class ApplicationAjaxController {
         Map<String, String> startHourAttr = IaisCommonUtils.genNewHashMap();
         startHourAttr.put("class", pubHolidayStartHourName);
         startHourAttr.put("id", pubHolidayStartHourName);
-        startHourAttr.put("name", premIndex+premPrefixName+pubHolidayStartHourName+phCount);
+        startHourAttr.put("name", premIndex + premPrefixName + pubHolidayStartHourName + phCount);
         startHourAttr.put("style", "display: none;");
-        String pubHolidayStartHourHtml = ApplicationHelper.generateDropDownHtml(startHourAttr,hourList,"--",null);
+        String pubHolidayStartHourHtml = ApplicationHelper.generateDropDownHtml(startHourAttr, hourList, "--", null);
 
         String pubHolidayStartMinName = "PhStartMM";
         Map<String, String> startMinAttr = IaisCommonUtils.genNewHashMap();
         startMinAttr.put("class", pubHolidayStartMinName);
         startMinAttr.put("id", pubHolidayStartMinName);
-        startMinAttr.put("name", premIndex+premPrefixName+pubHolidayStartMinName+phCount);
+        startMinAttr.put("name", premIndex + premPrefixName + pubHolidayStartMinName + phCount);
         startMinAttr.put("style", "display: none;");
-        String pubHolidayStartMinHtml = ApplicationHelper.generateDropDownHtml(startMinAttr,minList,"--",null);
+        String pubHolidayStartMinHtml = ApplicationHelper.generateDropDownHtml(startMinAttr, minList, "--", null);
 
 
         String pubHolidayEndHourName = "PhEndHH";
         Map<String, String> endHourAttr = IaisCommonUtils.genNewHashMap();
         endHourAttr.put("class", pubHolidayEndHourName);
         endHourAttr.put("id", pubHolidayEndHourName);
-        endHourAttr.put("name", premIndex+premPrefixName+pubHolidayEndHourName+phCount);
+        endHourAttr.put("name", premIndex + premPrefixName + pubHolidayEndHourName + phCount);
         endHourAttr.put("style", "display: none;");
-        String pubHolidayEndHourHtml = ApplicationHelper.generateDropDownHtml(endHourAttr,hourList,"--",null);
+        String pubHolidayEndHourHtml = ApplicationHelper.generateDropDownHtml(endHourAttr, hourList, "--", null);
 
-        String pubHolidayEndMinName ="PhEndMM";
+        String pubHolidayEndMinName = "PhEndMM";
         Map<String, String> endMinAttr = IaisCommonUtils.genNewHashMap();
         endMinAttr.put("class", pubHolidayEndMinName);
         endMinAttr.put("id", pubHolidayEndMinName);
-        endMinAttr.put("name", premIndex+premPrefixName+pubHolidayEndMinName+phCount);
+        endMinAttr.put("name", premIndex + premPrefixName + pubHolidayEndMinName + phCount);
         endMinAttr.put("style", "display: none;");
-        String pubHolidayEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
+        String pubHolidayEndMinHtml = ApplicationHelper.generateDropDownHtml(endMinAttr, minList, "--", null);
 
 
-        String sql = SqlMap.INSTANCE.getSql("premises", "weekly");
-        sql = sql.replace("${fieldName}","Public Holiday");
-        sql = sql.replace("${opType}","PubHoliday");
+        String sql = SqlMap.INSTANCE.getSql("premises", "weekly").getSqlStr();
+        sql = sql.replace("${fieldName}", "Public Holiday");
+        sql = sql.replace("${opType}", "PubHoliday");
         sql = sql.replace("${premPrefixName}", premPrefixName);
         sql = sql.replace("${premIndex}", premIndex);
         sql = sql.replace("${opCount}", phCount);
@@ -1529,55 +1554,58 @@ public class ApplicationAjaxController {
         sql = sql.replace("${startMM}", pubHolidayStartMinHtml);
         sql = sql.replace("${endHH}", pubHolidayEndHourHtml);
         sql = sql.replace("${endMM}", pubHolidayEndMinHtml);
-        sql = sql.replace("${delClass}","pubHolidayDel");
-        sql = sql.replace("${divClass}","pubHolidayDiv");
-        sql = sql.replace("${allDayName}",premIndex+premPrefixName+"PhAllDay"+phCount);
+        sql = sql.replace("${delClass}", "pubHolidayDel");
+        sql = sql.replace("${divClass}", "pubHolidayDiv");
+        sql = sql.replace("${allDayName}", premIndex + premPrefixName + "PhAllDay" + phCount);
         return sql;
     }
 
-    private String genMultiDropDown(String premVal,String dropLength,List<SelectOption> dropDownOpList,String premType,String name){
+    private String genMultiDropDown(String premVal, String dropLength, List<SelectOption> dropDownOpList, String premType,
+            String name) {
         Map<String, String> attr = IaisCommonUtils.genNewHashMap();
         attr.put("class", name);
         attr.put("id", name);
         attr.put("name", premVal + premType + name + dropLength);
         attr.put("style", "display: none;");
-        return ApplicationHelper.genMutilSelectOpHtml(attr,dropDownOpList,null,null,true);
+        return ApplicationHelper.genMutilSelectOpHtml(attr, dropDownOpList, null, null, true);
     }
 
-    private String genOperationHourDropDown(String premVal,String dropLength,List<SelectOption> dropDownOpList,String premType,String name){
+    private String genOperationHourDropDown(String premVal, String dropLength, List<SelectOption> dropDownOpList, String premType,
+            String name) {
         Map<String, String> ohAttr = IaisCommonUtils.genNewHashMap();
         ohAttr.put("class", name);
         ohAttr.put("id", name);
-        ohAttr.put("name", premVal+premType+name+dropLength);
+        ohAttr.put("name", premVal + premType + name + dropLength);
         ohAttr.put("style", "display: none;");
         return ApplicationHelper.generateDropDownHtml(ohAttr, dropDownOpList, "--", null);
     }
 
-    private String setOperationHour(String html,List<SelectOption> weeklyList,List<SelectOption> phList,List<SelectOption> hourList,List<SelectOption> minList,String premType,String premVal){
+    private String setOperationHour(String html, List<SelectOption> weeklyList, List<SelectOption> phList, List<SelectOption> hourList,
+            List<SelectOption> minList, String premType, String premVal) {
         //onsite weekly
-        String onSiteWeeklyDropHtml = genMultiDropDown(premVal,"0",weeklyList,premType,"Weekly");
-        String onSiteWeeklyStartHH = genOperationHourDropDown(premVal,"0",hourList,premType,"WeeklyStartHH");
-        String onSiteWeeklyStartMM = genOperationHourDropDown(premVal,"0",minList,premType,"WeeklyStartMM");
-        String onSiteWeeklyEndHH = genOperationHourDropDown(premVal,"0",hourList,premType,"WeeklyEndHH");
-        String onSiteWeeklyEndMM = genOperationHourDropDown(premVal,"0",minList,premType,"WeeklyEndMM");
+        String onSiteWeeklyDropHtml = genMultiDropDown(premVal, "0", weeklyList, premType, "Weekly");
+        String onSiteWeeklyStartHH = genOperationHourDropDown(premVal, "0", hourList, premType, "WeeklyStartHH");
+        String onSiteWeeklyStartMM = genOperationHourDropDown(premVal, "0", minList, premType, "WeeklyStartMM");
+        String onSiteWeeklyEndHH = genOperationHourDropDown(premVal, "0", hourList, premType, "WeeklyEndHH");
+        String onSiteWeeklyEndMM = genOperationHourDropDown(premVal, "0", minList, premType, "WeeklyEndMM");
 
-        html = html.replace("${"+premType+"WeeklySelect}", onSiteWeeklyDropHtml);
-        html = html.replace("${"+premType+"WeeklyStartHH}", onSiteWeeklyStartHH);
-        html = html.replace("${"+premType+"WeeklyStartMM}", onSiteWeeklyStartMM);
-        html = html.replace("${"+premType+"WeeklyEndHH}", onSiteWeeklyEndHH);
-        html = html.replace("${"+premType+"WeeklyEndMM}", onSiteWeeklyEndMM);
+        html = html.replace("${" + premType + "WeeklySelect}", onSiteWeeklyDropHtml);
+        html = html.replace("${" + premType + "WeeklyStartHH}", onSiteWeeklyStartHH);
+        html = html.replace("${" + premType + "WeeklyStartMM}", onSiteWeeklyStartMM);
+        html = html.replace("${" + premType + "WeeklyEndHH}", onSiteWeeklyEndHH);
+        html = html.replace("${" + premType + "WeeklyEndMM}", onSiteWeeklyEndMM);
         //onsite ph
-        String onSitePubHolidayDropHtml = genMultiDropDown(premVal,"0",phList,premType,"PubHoliday");
-        String onSitePhStartHH = genOperationHourDropDown(premVal,"0",hourList,premType,"PhStartHH");
-        String onSitePhStartMM = genOperationHourDropDown(premVal,"0",minList,premType,"PhStartMM");
-        String onSitePhEndHH = genOperationHourDropDown(premVal,"0",hourList,premType,"PhEndHH");
-        String onSitePhEndMM = genOperationHourDropDown(premVal,"0",minList,premType,"PhEndMM");
+        String onSitePubHolidayDropHtml = genMultiDropDown(premVal, "0", phList, premType, "PubHoliday");
+        String onSitePhStartHH = genOperationHourDropDown(premVal, "0", hourList, premType, "PhStartHH");
+        String onSitePhStartMM = genOperationHourDropDown(premVal, "0", minList, premType, "PhStartMM");
+        String onSitePhEndHH = genOperationHourDropDown(premVal, "0", hourList, premType, "PhEndHH");
+        String onSitePhEndMM = genOperationHourDropDown(premVal, "0", minList, premType, "PhEndMM");
 
-        html = html.replace("${"+premType+"PhSelect}", onSitePubHolidayDropHtml);
-        html = html.replace("${"+premType+"PhStartHH}", onSitePhStartHH);
-        html = html.replace("${"+premType+"PhStartMM}", onSitePhStartMM);
-        html = html.replace("${"+premType+"PhEndHH}", onSitePhEndHH);
-        html = html.replace("${"+premType+"PhEndMM}", onSitePhEndMM);
+        html = html.replace("${" + premType + "PhSelect}", onSitePubHolidayDropHtml);
+        html = html.replace("${" + premType + "PhStartHH}", onSitePhStartHH);
+        html = html.replace("${" + premType + "PhStartMM}", onSitePhStartMM);
+        html = html.replace("${" + premType + "PhEndHH}", onSitePhEndHH);
+        html = html.replace("${" + premType + "PhEndMM}", onSitePhEndMM);
 
         return html;
     }
@@ -1638,47 +1666,6 @@ public class ApplicationAjaxController {
         }
     }
 
-    @PostMapping(value = "co-non-hcsa-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Map<String, Object> handleCoNonHcsaFile(HttpServletRequest request, /*@RequestParam("selectedFile")
-    */MultipartFile selectedFile, @RequestParam("fileAppendId") String fileAppendId,
-            @RequestParam("uploadFormId") String uploadFormId) throws Exception {
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap();
-        String fileType = ParamUtil.getString(request, "_fileType");
-        String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
-        int maxSize = 0;
-        if (StringUtil.isDigit(fileMaxSize)) {
-            maxSize = Integer.parseInt(fileMaxSize);
-        }
-        String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
-        if (StringUtil.isNotEmpty(errorMessage)) {
-            result.put("error", errorMessage);
-        } else {
-            int index = 0;
-            String tempFolder = request.getSession().getId() + fileAppendId + index;
-            String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
-            File toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
-            List<List<String>> data = ExcelReader.readerToList(toFile, 1, 1, null);
-            if (IaisCommonUtils.isEmpty(data)) {
-                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
-                result.put("error", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
-            } else if (IaisCommonUtils.isEmpty(data.get(0))) {
-                // PRF_ERR006 - No records found.
-                result.put("error", MessageUtil.getMessageDesc("PRF_ERR006"));
-            } else {
-                // page show it
-                Map<String, File> map = IaisCommonUtils.genNewHashMap(1);
-                map.put(fileAppendId + index, toFile);
-                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, maxSize);
-                String fileShowHtml = IaisEGPHelper.getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, index,
-                        uploadFormId, false, request);
-                result.put("fileShowHtml", fileShowHtml);
-
-            }
-        }
-        return result;
-    }
-
-
     private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
         if (selectedFile == null || selectedFile.isEmpty()) {
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
@@ -1715,4 +1702,5 @@ public class ApplicationAjaxController {
         }
         return "";
     }
+
 }

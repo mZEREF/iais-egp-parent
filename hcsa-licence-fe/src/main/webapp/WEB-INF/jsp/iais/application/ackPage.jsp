@@ -8,7 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="./dashboard.jsp" %>
+<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
 <style>
     .margin-bottom-10{
         margin-bottom:10px;

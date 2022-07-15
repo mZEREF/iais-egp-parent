@@ -455,19 +455,13 @@
                                 <p>Please list down all services not licensed under HCSA in the tabs below. Alternatively, you may also submit using the
                                     <a href="${pageContext.request.contextPath}/co-non-hcsa-template">Excel Template</a>
                                 </p>
-                                <div id="uploadFileShowId">
+                                <div class="uploadFileShowDiv" id="uploadFile${status.index}ShowId">
                                 </div>
-                                <div class="col-xs-12">
-                                    <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
+                                <div class="col-xs-12 uploadFileErrorDiv">
+                                    <span id="error_uploadFile${status.index}Error" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                                 <br/>
-                                <input id="uploadFile" name="selectedFile"
-                                       class="uploadFile commDoc"
-                                       type="file" style="display: none;"
-                                       aria-label="selectedFile1"
-                                       onclick="fileClicked(event)"
-                                       onchange="ajaxCallUpload('mainForm','uploadFile');"/>
-                                <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
+                                <a class="btn btn-file-upload file-upload btn-secondary">Upload</a>
                             </div>
                             <iais:row>
                                 <label class="col-xs-12 col-md-4 control-label">Business Name</label>
@@ -523,6 +517,9 @@
         </div>
     </div>
 </c:forEach>
+<input type="hidden" name="uploadKey" value=""/>
+<div id="selectFileDiv">
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         initPremiseEvent();
@@ -549,6 +546,8 @@
 
         addPremEvent();
         removeBtnEvent();
+
+        fileUploadEvent();
     }
 
     function initPremisePage($premContent) {
@@ -636,11 +635,19 @@
     }
 
     function addPremEvent() {
+        $('#addPremBtn').unbind('click');
         $('#addPremBtn').on('click', function () {
             var $target = $('div.premContent:last');
+            var premType = $target.find('input.premTypeRadio:checked').val();
+            var locateWtihHcsa = $target.find('input[name^="locateWtihHcsa"]:checked').val();
+            var locateWtihNonHcsa = $target.find('input.locateWtihNonHcsa:checked').val();
             var src = $target.clone();
-            $('div.premises-content').append(src)
-            $target.html(src.html());// for preventing the radio auto cleared
+            $('div.premises-content').append(src);
+            // for preventing the radio auto cleared
+            fillValue($target.find('input.premTypeRadio'), premType);
+            fillValue($target.find('input[name^="locateWtihHcsa"]'), locateWtihHcsa);
+            fillValue($target.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
+            // init new section
             var $premContent = $('div.premContent').last();
             clearFields($premContent);
             //initPremiseData($premContent);
@@ -659,7 +666,7 @@
         });
     }
 
-    function refreshPremise($premContent, k) {
+    function refreshPremise($premContent, k, withEvent) {
         var $target = getJqueryNode($premContent);
         if (isEmptyNode($target)) {
             return;
@@ -677,26 +684,22 @@
         refreshFloorUnit($target, k);
         refreshNonHcsa($target, k);
         initPremisePage($target);
-        premTypeEvent();
-        premSelectEvent();
-        removeBtnEvent();
+        // file
+        $target.find('div.uploadFileShowDiv').attr('id', "uploadFile" + k + "ShowId");
+        var filepart = $target.find('div.uploadFileShowDiv div');
+        if (filepart.length() > 0) {
+            filepart.each(function() {
+                var id = $(this).attr('id');
+                var part = /(.*\D+)(\d+)/g.exec(id);
+                $(this).attr('id', 'uploadFile' + k + 'Div' + part[2]);
+            });
+        }
+        $target.find('div.uploadFileErrorDiv .error-msg').attr('id', "error_uploadFile" + k + "Error");
     }
 
     function refreshAllPremises() {
         $('div.premContent').each(function(k, v){
-            var $target = $(v);
-            if (k == 0) {
-                $target.find('.premHeader').html('');
-                hideTag($target.find('.removeEditDiv'));
-            } else {
-                $target.find('.premHeader').html(k + 1);
-                showTag($target.find('.removeEditDiv'));
-            }
-            $target.find('.premIndex').val(k);
-            resetIndex($target, k);
-            refreshFloorUnit($target, k);
-            refreshNonHcsa($target, k);
-            initPremisePage($target);
+            refreshPremise($(v), k , false);
         });
         premTypeEvent();
         premSelectEvent();
@@ -706,6 +709,7 @@
     function removeAdditional($premContent) {
         $premContent.find('div.operationDivGroup .operationDiv').remove();
         $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
+        $premContent.find('div.uploadFileShowDiv').emtpy();
     }
 
     var premTypeEvent = function () {
@@ -776,7 +780,6 @@
             return;
         }
         console.info("premSelectCallback");
-        removeAdditional($premContent);
         fillForm($premContent, data, "", $('div.premContent').index($premContent));
         fillFloorUnit($premContent, data);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
@@ -820,7 +823,9 @@
     }
 
     function fillNonHcsa($premContent, data) {
+        $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
         if (isEmpty(data) || !$.isArray(data)) {
+            clearFields($premContent.find('div.nonHcsaRowDiv'));
             return;
         }
         var $parent = $premContent.find('div.nonHcsaRowDiv');
@@ -900,6 +905,7 @@
         fillValue($firstFU.find('input.floorNo'), data.floorNo);
         fillValue($firstFU.find('input.unitNo'), data.unitNo);
         // additional
+        $premContent.find('div.operationDivGroup .operationDiv').remove();
         var floorUnits = data.appPremisesOperationalUnitDtos;
         var $parent = $premContent.find('div.operationDivGroup');
         var len = floorUnits.length;
@@ -997,7 +1003,7 @@
         $target.find('.retrieveAddr').on('click', function(){
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
             var postalCode = $postalCodeEle.find('.postalCode').val();
-            retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
+            retrieveAddr(postalCode, $(this).closest('div.premContent').find('div.address'));
         });
     }
 
@@ -1039,7 +1045,30 @@
         });
     }
 
-    function ajaxCallUpload(idForm, fileAppendId) {
+    function initUploadFileData() {
+        $('#_needReUpload').val(0);
+        $('#_fileType').val("XLSX");
+        $('#_singleUpload').val("1");
+    }
+
+    var fileUploadEvent = function() {
+        $('.file-upload').unbind('click');
+        $('.file-upload').click(function () {
+            var index = $(this).closest('.premContent').find('input[name="premIndex"]').val();
+            var uploadKey = "uploadFile" + index;
+            $('input[name="uploadKey"]').val(uploadKey);
+            clearFlagValueFEFile();
+            $('#selectFileDiv').html('<input id="' + uploadKey + '" class="selectedFile" name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="ajaxCallUpload(\'mainForm\',\'' + uploadKey + '\');" aria-label="selectedFile">');
+            $('input[type="file"]').click();
+        });
+    }
+
+    function doActionAfterUploading(data, fileAppendId) {
+        fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
+    }
+
+
+    /*function ajaxCallUpload(idForm, fileAppendId) {
         showWaiting();
         $("#fileAppendId").val(fileAppendId);
         $("#error_" + fileAppendId + "Error").html("");
@@ -1073,6 +1102,7 @@
                                 deleteFileFeDiv(fileAppendId + "Div" + reloadIndex + "Copy");
                             } else {
                                 $("#" + fileAppendId + "ShowId").append(data.description);
+                                fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
                             }
                             $("#error_" + fileAppendId + "Error").html("");
                             cloneUploadFile();
@@ -1091,13 +1121,7 @@
                 }
             });
         }
-    }
-
-    function initUploadFileData() {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX");
-        $('#_singleUpload').val("1");
-    }
+    }*/
 
 
     /*function fillForm(ele, data, prefix, suffix) {
