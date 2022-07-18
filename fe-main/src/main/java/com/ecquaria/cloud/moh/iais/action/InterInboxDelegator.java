@@ -1591,8 +1591,6 @@ public class InterInboxDelegator {
 //        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST, "Pending Internal Clarification"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL)));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION)));
