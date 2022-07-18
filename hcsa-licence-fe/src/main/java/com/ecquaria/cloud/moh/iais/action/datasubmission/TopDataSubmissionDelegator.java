@@ -59,6 +59,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -375,7 +376,9 @@ public class TopDataSubmissionDelegator {
             premisesMap = topDataSubmissionService.getTopCenterPremises(licenseeId);
         }
         if (premisesMap.size() !=0) {
-            premisesMap.values().stream().forEach(v -> topSuperDataSubmissionDto.setPremisesDto(v));
+            List<PremisesDto> premisesDtos= (List<PremisesDto>) premisesMap.values();
+            premisesDtos.sort(Comparator.comparing(PremisesDto::getHciName));
+            topSuperDataSubmissionDto.setPremisesDto(premisesDtos.get(0));
         }
     }
     /**

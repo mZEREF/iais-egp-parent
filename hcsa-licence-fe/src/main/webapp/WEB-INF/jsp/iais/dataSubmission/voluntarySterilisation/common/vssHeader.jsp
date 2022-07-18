@@ -8,6 +8,7 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/vss_common.js"></script>
 <c:set value="${vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(vssSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
        var="isRfc"/>
+<input type="hidden" name="isRfc" value="${isRfc}"/>
 <input type="hidden" name="vss_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">

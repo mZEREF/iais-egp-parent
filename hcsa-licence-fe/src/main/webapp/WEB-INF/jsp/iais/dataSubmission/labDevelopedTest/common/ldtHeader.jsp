@@ -15,6 +15,7 @@
 <c:set value="${LdtSuperDataSubmissionDto != null && LdtSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(LdtSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
        var="isRfc"/>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ldt_common.js"></script>
+<input type="hidden" name="isRfc" value="${isRfc}"/>
 <input type="hidden" name="current_page" value="${ldt_current_page}"/>
 <input type="hidden" name="_contextPath" id="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">
