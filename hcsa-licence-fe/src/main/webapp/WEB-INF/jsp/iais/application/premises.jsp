@@ -11,8 +11,8 @@
 %>
 
 <webui:setLayout name="iais-internet"/>
-
-<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
+<%--<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">--%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%--Validation fields Start--%>
   <input type="hidden" name="crud_action_type_continue" value="">

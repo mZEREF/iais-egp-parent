@@ -8,7 +8,7 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../dashboard.jsp" %>
+<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
@@ -24,11 +24,11 @@
                             <div class="tab-pane active" id="serviceInformationTab" role="tabpanel">
                                 <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
-                                        <%@ include file="../formTabs.jsp" %>
+                                        <%@ include file="../common/formTabs.jsp" %>
                                         <div class="tab-content" ${(empty hcsaServiceDtoList || hcsaServiceDtoList.size() <= 1) ?
                                         'style="width:100%;"' : ''}>
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
-                                                <%@ include file="step.jsp" %>
+                                                <%@ include file="../common/step.jsp" %>
                                                 <div class="application-service-steps">
                                                     <c:choose>
                                                         <c:when test="${currentStep == 'SVST012'}">
@@ -110,7 +110,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@ include file="next.jsp" %>
+                                <%@ include file="../common/next.jsp" %>
                             </div>
                         </div>
                     </div>
