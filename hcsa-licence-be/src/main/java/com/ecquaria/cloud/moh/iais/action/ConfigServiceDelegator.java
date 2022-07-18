@@ -631,7 +631,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
                 if (StringUtil.isNotEmpty(parameterValues[i])) {
-                    hcsaSvcDocConfigDto.setDupForPerson(parameterValues[i]);
+                    hcsaSvcDocConfigDto.setDupForPerson(IaisCommonUtils.getDupForPersonFromType(parameterValues[i]));
                 }
                 hcsaSvcDocConfigDto.setDupForPrem(serviceDocPremises[i]);
 

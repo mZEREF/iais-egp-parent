@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -53,31 +54,34 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         //validate the svcCode and svcName repetition
         validateSvcCodeAndName(configService,hcsaServiceDto,result);
 
-        //validate the hcsaServiceDto
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
-        for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
-            ValidationResult validationResultHcsaSvcPersonnelDto = WebValidationHelper.validateProperty(hcsaSvcPersonnelDto,serviceType);
-            if(validationResultHcsaSvcPersonnelDto.isHasErrors()){
-                result.putAll(transferErrorMapForPersonnel(validationResultHcsaSvcPersonnelDto.retrieveAll(),hcsaSvcPersonnelDto));
+        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+            //validate the hcsaServiceDto
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
+                ValidationResult validationResultHcsaSvcPersonnelDto = WebValidationHelper.validateProperty(hcsaSvcPersonnelDto,serviceType);
+                if(validationResultHcsaSvcPersonnelDto.isHasErrors()){
+                    result.putAll(transferErrorMapForPersonnel(validationResultHcsaSvcPersonnelDto.retrieveAll(),hcsaSvcPersonnelDto));
+                }
             }
-        }
-        //validate the HcsaSvcDocConfigDto
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
-        if(hcsaSvcDocConfigDtos!=null){
-            for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
-                String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
-                ValidationResult validationResultHcsaSvcDocConfigDto = WebValidationHelper.validateProperty(hcsaSvcDocConfigDtos.get(i),serviceType);
-                if(validationResultHcsaSvcDocConfigDto.isHasErrors()){
-                    String docTitleError  = validationResultHcsaSvcDocConfigDto.retrieveAll().get("docTitle");
-                    result.put("serviceDoc"+i,docTitleError);
-                }else{
-                    int countForTitle = getCountForTitle(docTitle,hcsaSvcDocConfigDtos);
-                    if(countForTitle >1){
-                        result.put("serviceDoc"+i,"SC_ERR011");
+            //validate the HcsaSvcDocConfigDto
+            List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
+            if(hcsaSvcDocConfigDtos!=null){
+                for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
+                    String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
+                    ValidationResult validationResultHcsaSvcDocConfigDto = WebValidationHelper.validateProperty(hcsaSvcDocConfigDtos.get(i),serviceType);
+                    if(validationResultHcsaSvcDocConfigDto.isHasErrors()){
+                        String docTitleError  = validationResultHcsaSvcDocConfigDto.retrieveAll().get("docTitle");
+                        result.put("serviceDoc"+i,docTitleError);
+                    }else{
+                        int countForTitle = getCountForTitle(docTitle,hcsaSvcDocConfigDtos);
+                        if(countForTitle >1){
+                            result.put("serviceDoc"+i,"SC_ERR011");
+                        }
                     }
                 }
             }
         }
+
 
 
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));

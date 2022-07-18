@@ -68,6 +68,11 @@ public class ShuFeiAdminPageServiceImpl implements ShuFeiAdminPageService {
     }
 
     @Override
+    public ShuFeiPersonSampleDto getByDisPlayName(String displayName) {
+        return shuFeiAdminPageClient.selectByDisPlayName(displayName).getEntity();
+    }
+
+    @Override
     public void savePerson(ShuFeiPersonSampleDto shuFeiPersonSampleDto) {
         shuFeiAdminPageClient.savePerson(shuFeiPersonSampleDto);
     }

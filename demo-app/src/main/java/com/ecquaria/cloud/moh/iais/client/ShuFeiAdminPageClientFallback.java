@@ -89,6 +89,14 @@ public class ShuFeiAdminPageClientFallback implements ShuFeiAdminPageClient{
     }
 
     @Override
+    public FeignResponseEntity<ShuFeiPersonSampleDto> selectByDisPlayName(String displayName) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> selectId(String roomType, String roomNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

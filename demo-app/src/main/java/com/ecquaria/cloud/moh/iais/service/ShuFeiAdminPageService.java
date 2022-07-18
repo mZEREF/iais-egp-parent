@@ -28,4 +28,6 @@ public interface ShuFeiAdminPageService {
 
     List<ShuFeiPersonSampleDto> getByRoomId(String roomId);
 
+    ShuFeiPersonSampleDto getByDisPlayName(String displayName);
+
 }
