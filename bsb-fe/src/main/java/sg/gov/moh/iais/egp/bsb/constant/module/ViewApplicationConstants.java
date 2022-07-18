@@ -4,8 +4,6 @@ public class ViewApplicationConstants {
     private ViewApplicationConstants() {}
 
     public static final String KEY_APP_ID                        = "appId";
-    public static final String KEY_MASKED_EDIT_APP_ID            = "maskedEditId";
-    public static final String KEY_EDIT_APP_ID                   = "editId";
     public static final String KEY_APPROVE_NO                    = "approveNo";
 
     public static final String KEY_FACILITY_REGISTRATION_DTO     = "facilityRegistrationDto";

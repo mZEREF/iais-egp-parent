@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -42,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_REVIEW_INSPECTION_REPORT_CERTIFICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.KEY_COMMON_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFC_DASHBOARD_MSG;
@@ -63,6 +64,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+
 @Slf4j
 @Delegator("insAoCertificationDelegator")
 public class InspectionAoCertificationDelegator {
@@ -86,8 +88,8 @@ public class InspectionAoCertificationDelegator {
         session.removeAttribute(KEY_REVIEW_AFC_REPORT_DTO);
         session.removeAttribute(KEY_COMMON_DOC_DTO);
         session.removeAttribute(PARAM_REPO_ID_DOC_MAP);
-        ParamUtil.setSessionAttr(request, "ValidSave", null);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Ao Review Inspection Report(Certification)");
+        session.removeAttribute("ValidSave");
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_AO_REVIEW_INSPECTION_REPORT_CERTIFICATION);
     }
 
     public void init(BaseProcessClass bpc) {

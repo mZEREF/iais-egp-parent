@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
@@ -20,16 +21,52 @@ import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.CancelAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.AUDIT_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.AUDIT_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.BACK_URL_CANCEL_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.BACK_URL_TASK_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_ACTION_ADDT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_CANCEL_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_OFFICER_PROCESS_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AO_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_CANCELLED;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_CANCEL_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_CANCEL_REASON;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_CLASSIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_YEAR;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_CANCEL_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_REJECTED;
 
 /**
  * @author Zhu Tangtang
@@ -46,19 +83,21 @@ public class CancelAuditDelegator {
     private final AuditClientBE auditClientBE;
     private final OnlineEnquiryClient onlineEnquiryClient;
 
+    @Autowired
     public CancelAuditDelegator(AuditClientBE auditClientBE, OnlineEnquiryClient onlineEnquiryClient) {
         this.auditClientBE = auditClientBE;
         this.onlineEnquiryClient = onlineEnquiryClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_CANCEL_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
-        ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,null);
-        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, null);
-        ParamUtil.setSessionAttr(request,PARAM_CANCEL_REASON,null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(PARAM_AUDIT_SEARCH);
+        session.removeAttribute(KEY_CANCEL_AUDIT);
+        session.removeAttribute(KEY_OFFICER_PROCESS_DATA);
+        session.removeAttribute(PARAM_CANCEL_REASON);
     }
 
     public void prepareCancelAuditListData(BaseProcessClass bpc) {

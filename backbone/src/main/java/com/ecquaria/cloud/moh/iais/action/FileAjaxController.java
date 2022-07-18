@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -12,24 +12,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +29,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Auther wangyu and chenlei on 4/19/2022.
@@ -60,7 +60,7 @@ public class FileAjaxController {
     private SystemParamConfig systemParamConfig;
 
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String ajaxUpload(HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile,
+    public Map<String, Object> ajaxUpload(HttpServletRequest request, /*@RequestParam("selectedFile") */MultipartFile selectedFile,
             @RequestParam("fileAppendId") String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
             @RequestParam("reloadIndex") int reloadIndex,
             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal) {
@@ -85,13 +85,13 @@ public class FileAjaxController {
             maxSize = Integer.parseInt(fileMaxSize);
         }
         String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
-        MessageDto messageCode = new MessageDto();
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(errorMessage)) {
-            messageCode.setMsgType("N");
-            messageCode.setDescription(errorMessage);
-            return JsonUtil.parseToJson(messageCode);
+            result.put("msgType", "N");
+            result.put("description", errorMessage);
+            return result;
         } else {
-            messageCode.setMsgType("Y");
+            result.put("msgType", "Y");
         }
         File toFile;
         String tempFolder;
@@ -116,17 +116,90 @@ public class FileAjaxController {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             log.info("----------change MultipartFile to file  falie-----------------");
-            return "";
+            result.put("msgType", "N");
+            result.put("description", "Cannot upload the file");
+            return result;
         }
         // Save File to other nodes
         saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
-        String html = IaisEGPHelper.getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, size, uploadFormId,
+        String html = getFileShowHtml(selectedFile.getOriginalFilename(), fileAppendId, size, uploadFormId,
                 !AppConsts.NO.equals(needReUpload), request);
-        messageCode.setDescription(html);
+        result.put("description", html);
+        checkAddtionalData(result, toFile, request);
         log.info("-----------ajax-upload-file end------------");
-        return JsonUtil.parseToJson(messageCode);
+        return result;
+    }
+
+    private void checkAddtionalData(Map<String, Object> result, File toFile, HttpServletRequest request) {
+        String[] premTypes = ParamUtil.getStrings(request, "premType");
+        if (!IaisCommonUtils.isEmpty(premTypes)) {
+            List<List<String>> data = null;
+            try {
+                data = ExcelReader.readerToList(toFile, 0, 1, null);
+            } catch (Exception e) {
+                log.warn(StringUtil.changeForLog(e.getMessage()), e);
+            }
+            if (IaisCommonUtils.isEmpty(data)) {
+                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+                result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
+                result.put("msgType", "N");
+            } else if (IaisCommonUtils.isEmpty(data.get(0))) {
+                // PRF_ERR006 - No records found.
+                result.put("description", MessageUtil.getMessageDesc("PRF_ERR006"));
+                result.put("msgType", "N");
+            } else {
+                // data
+                List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = data.stream().map(list -> {
+                    AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+                    dto.setBusinessName(list.get(0));
+                    dto.setProvidedService(list.get(1));
+                    return dto;
+                }).collect(Collectors.toList());
+                result.put("appPremNonLicRelationDtos", appPremNonLicRelationDtos);
+            }
+        }
+    }
+
+    private String getFileShowHtml(String fileName, String fileAppendId, int index, String uploadFormId,
+            boolean needReUpload, HttpServletRequest request) {
+        StringBuilder data = new StringBuilder();
+        if (fileName != null) {
+            boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
+            log.info(StringUtil.changeForLog("isBackend: " + isBackend));
+            String cssClass;
+            if (isBackend) {
+                cssClass = "btn btn-secondary-del btn-sm";
+            } else {
+                cssClass = "btn btn-secondary btn-sm";
+            }
+            String[] fileSplit = fileName.split("\\.");
+            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(index).append("' >")
+                    .append("<a href=\"").append(request.getContextPath())
+                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
+                    .append("&fileIndexDown=").append(index)
+                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
+                    .append("\" title=\"Download\" class=\"downloadFile\">")
+                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
+                    .append('.').append(fileSplit[fileSplit.length - 1])
+                    .append("</a>")
+                    .append(" <button type=\"button\" class=\"").append(cssClass)
+                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
+                    .append(fileAppendId).append("', ").append(index)
+                    .append(");\">Delete</button>");
+            if (needReUpload) {
+                data.append(" <button type=\"button\" class=\"")
+                        .append(cssClass)
+                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
+                        .append(fileAppendId).append("', ").append(index)
+                        .append(", '").append(uploadFormId)
+                        .append("');\">ReUpload</button>");
+            }
+            data.append("</div>");
+        }
+        return data.toString();
     }
 
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)

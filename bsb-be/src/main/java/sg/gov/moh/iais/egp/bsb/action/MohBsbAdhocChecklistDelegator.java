@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.HcsaChecklistClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
@@ -39,6 +39,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_ADHOC_CHECKLIST;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_ACTION_FLAG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR;
@@ -68,7 +70,7 @@ public class MohBsbAdhocChecklistDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_ADHOC_CHECKLIST);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_ADHOC_CHECKLIST);
         bpc.getSession().removeAttribute(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
 
         ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.YES);
@@ -88,6 +90,7 @@ public class MohBsbAdhocChecklistDelegator {
     }
 
     public void displayAction(BaseProcessClass bpc) {
+        // do nothing now
     }
 
     public void prepareItemPool(BaseProcessClass bpc) {
@@ -177,6 +180,7 @@ public class MohBsbAdhocChecklistDelegator {
     }
 
     public void back(BaseProcessClass bpc) {
+        // do nothing now
     }
 
     public void customAction(BaseProcessClass bpc) {
@@ -259,7 +263,7 @@ public class MohBsbAdhocChecklistDelegator {
             List<AdhocChecklistItemDto> itemList = config.getAdhocChecklistItemList();
             log.debug("indicates that a record has been selected ");
             if (IaisCommonUtils.isNotEmpty(itemList)) {
-                itemList.removeIf(i -> StringUtil.isEmpty(i.getItemId()));
+                itemList.removeIf(i -> StringUtils.isEmpty(i.getItemId()));
                 SqlHelper.builderNotInSql(searchParam, "item.id", "adhocItemId",
                         itemList.stream().map(AdhocChecklistItemDto::getItemId).collect(Collectors.toList()));
             }

@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -103,7 +104,8 @@ public class TopDataSubmissionDelegator {
     @Autowired
     private NotificationHelper notificationHelper;
 
-
+    @Autowired
+    private AssistedReproductionClient assistedReproductionClient;
 
     @Autowired
     private DocInfoService docInfoService;
@@ -261,7 +263,13 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseLists(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+             ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         return selectOptions;
     }
@@ -269,7 +277,13 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseListsDrug(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,TOP_OTHERS));
         return selectOptions;
@@ -988,12 +1002,20 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         ControllerHelper.get(request, preTerminationDto);
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
+        ParamUtil.setSessionAttr(request, "topDates", null);
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
                 if(StringUtil.isNotEmpty(terminationDto.getTopDate())){
                     if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
                             if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                }
+                            }
+                            if(preTerminationDto.getPatientAppointment().equals("0")){
                                 if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
@@ -1018,27 +1040,33 @@ public class TopDataSubmissionDelegator {
         try {
             ParamUtil.setSessionAttr(request, "counsellingLateSubmit", null);
             ParamUtil.setSessionAttr(request, "secondLateSubmit", null);
-            String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
-            String day2 = MasterCodeUtil.getCodeDesc("TOPDAY002");
-            int dayInt=Integer.parseInt(day);
-            int dayInt37=Integer.parseInt(day2);
+            String dayB = MasterCodeUtil.getCodeDesc("TOPDAY003");
+            String dayC = MasterCodeUtil.getCodeDesc("TOPDAY002");
+            String dayD = MasterCodeUtil.getCodeDesc("TOPDAY004");
+            String dayE = MasterCodeUtil.getCodeDesc("TOPDAY006");
+            String dayF = MasterCodeUtil.getCodeDesc("TOPDAY005");
+            int dayIntB=Integer.parseInt(dayB);
+            int dayIntC=Integer.parseInt(dayC);
+            int dayIntD=Integer.parseInt(dayD);
+            int dayIntE=Integer.parseInt(dayE);
+            int dayIntF=Integer.parseInt(dayF);
             if(preTerminationDto.getCounsellingGiven()==true){
                 //b.Only 1 pre-TOP counselling session done and decision is not to abort; Data was submitted more than 30 days from the Pre-Counselling Date;
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntB){
                         ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
                 }
                 //c.Only 1 pre-TOP counselling session done and patient was lost to follow-up; Data was submitted more than 37 days from Pre-counselling date;
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("0".equals(preTerminationDto.getPatientAppointment())){
-                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
+                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntC){
                             ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                         }
                     }
                 }
                 if("TOPPCR002".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntC){
                         ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                     }
                 }
@@ -1046,15 +1074,15 @@ public class TopDataSubmissionDelegator {
                     if("1".equals(preTerminationDto.getPatientAppointment())){
                         //d.More than 1 pre-TOP counselling session done and decision is not to abort; Data was submitted more than 30 days from Pre-Counselling Date;
                         if("TOPSP003".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntD){
                                 ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                             }
                         }
                         //f.More than 1 pre-TOP counselling session, decision is to abort, Data was submitted more than 30 days from the last Pre-counselling date.
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayIntF){
                                 ParamUtil.setSessionAttr(request, "secondLateSubmit", Boolean.TRUE);
-                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&& Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&& Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntF){
                                 ParamUtil.setSessionAttr(request, "counsellingLateSubmit", Boolean.TRUE);
                             }
                         }
@@ -1064,7 +1092,7 @@ public class TopDataSubmissionDelegator {
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("1".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP001".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt37){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayIntE){
                                 ParamUtil.setSessionAttr(request, "secondLateSubmit", Boolean.TRUE);
                             }
                         }
@@ -1206,18 +1234,19 @@ public class TopDataSubmissionDelegator {
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         ControllerHelper.get(request, terminationDto);
-        if(terminationDto.getPregnancyOwn()!=null&&!terminationDto.getPregnancyOwn()){
+        if(terminationDto.getPregnancyOwn()!=null&&terminationDto.getPregnancyOwn()){
             terminationDto.setPrescribeTopPlace(null);
         }
-        if(terminationDto.getTakenOwn()!=null&&!terminationDto.getTakenOwn()){
+        if(terminationDto.getTakenOwn()!=null&&terminationDto.getTakenOwn()){
             terminationDto.setTopDrugPlace(null);
         }
-        if(terminationDto.getPerformedOwn()!=null&&!terminationDto.getPerformedOwn()){
+        if(terminationDto.getPerformedOwn()!=null&&terminationDto.getPerformedOwn()){
             terminationDto.setTopPlace(null);
         }
         topSuperDataSubmissionDto.getDataSubmissionDto().setSubmitDt(new Date());
         String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
         String submitDt=Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss");
+        ParamUtil.setSessionAttr(request, "topLateSubmit", null);
         try {
             if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>=Integer.parseInt(day)){
                 ParamUtil.setSessionAttr(request, "topLateSubmit", Boolean.TRUE);
@@ -1225,6 +1254,7 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(StringUtil.changeForLog("topLateSubmit is error"));
         }
+        ParamUtil.setSessionAttr(request, "topDates", null);
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
                 if(StringUtil.isNotEmpty(terminationDto.getTopDate())){
@@ -1235,6 +1265,13 @@ public class TopDataSubmissionDelegator {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                }
+                                if(preTerminationDto.getPatientAppointment().equals("0")){
+                                    if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                    }else {
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                    }
                                 }
                             }
                         }else {
@@ -1252,7 +1289,7 @@ public class TopDataSubmissionDelegator {
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
         DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS");
-
+        ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",null);
         if(professionalResponseDto!=null){
             if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
@@ -1440,33 +1477,41 @@ public class TopDataSubmissionDelegator {
         if (StringUtil.isNotEmpty(patientInformationDto.getPatientName())) {
             patientInformationDto.setPatientName(patientInformationDto.getPatientName().toUpperCase(AppConsts.DFT_LOCALE));
         }
-        String day = MasterCodeUtil.getCodeDesc("TOPDAY001");
-        String day2 = MasterCodeUtil.getCodeDesc("TOPDAY002");
+        String dayA = MasterCodeUtil.getCodeDesc("TOPDAY001");
+        String dayB = MasterCodeUtil.getCodeDesc("TOPDAY003");
+        String dayC = MasterCodeUtil.getCodeDesc("TOPDAY002");
+        String dayD = MasterCodeUtil.getCodeDesc("TOPDAY004");
+        String dayE = MasterCodeUtil.getCodeDesc("TOPDAY006");
+        String dayF = MasterCodeUtil.getCodeDesc("TOPDAY005");
         String submitDt=Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss");
         try {
-            int dayInt=Integer.parseInt(day);
-            int dayInt37=Integer.parseInt(day2);
+            int dayIntA=Integer.parseInt(dayA);
+            int dayIntB=Integer.parseInt(dayB);
+            int dayIntC=Integer.parseInt(dayC);
+            int dayIntD=Integer.parseInt(dayD);
+            int dayIntE=Integer.parseInt(dayE);
+            int dayIntF=Integer.parseInt(dayF);
             //a.TOP procedure is completed; Data was submitted more than 30 days (Configurable) from TOP Date;
-            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>=dayInt){
+            if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>=dayIntA){
                 terminationDto.setLateSubmit(true);
             }
             if(preTerminationDto.getCounsellingGiven()==true){
                 //b.Only 1 pre-TOP counselling session done and decision is not to abort; Data was submitted more than 30 days from the Pre-Counselling Date;
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntB){
                         terminationDto.setLateSubmit(true);
                     }
                 }
                 //c.Only 1 pre-TOP counselling session done and patient was lost to follow-up; Data was submitted more than 37 days from Pre-counselling date;
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("0".equals(preTerminationDto.getPatientAppointment())){
-                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
+                        if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntC){
                             terminationDto.setLateSubmit(true);
                         }
                     }
                 }
                 if("TOPPCR002".equals(preTerminationDto.getCounsellingResult())){
-                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt37){
+                    if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntC){
                         terminationDto.setLateSubmit(true);
                     }
                 }
@@ -1474,15 +1519,15 @@ public class TopDataSubmissionDelegator {
                     if("1".equals(preTerminationDto.getPatientAppointment())){
                         //d.More than 1 pre-TOP counselling session done and decision is not to abort; Data was submitted more than 30 days from Pre-Counselling Date;
                         if("TOPSP003".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntD){
                                 terminationDto.setLateSubmit(true);
                             }
                         }
                         //f.More than 1 pre-TOP counselling session, decision is to abort, Data was submitted more than 30 days from the last Pre-counselling date.
                         if("TOPSP004".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayIntF){
                                 terminationDto.setLateSubmit(true);
-                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayInt){
+                            }else if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())&&Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntF){
                                 terminationDto.setLateSubmit(true);
                             }
                         }
@@ -1493,7 +1538,7 @@ public class TopDataSubmissionDelegator {
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
                     if("1".equals(preTerminationDto.getPatientAppointment())){
                         if("TOPSP001".equals(preTerminationDto.getSecCounsellingResult())){
-                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayInt37){
+                            if(Formatter.compareDateByDay(submitDt,preTerminationDto.getSecCounsellingDate())>=dayIntE){
                                 terminationDto.setLateSubmit(true);
                             }
                         }
@@ -1699,7 +1744,7 @@ public class TopDataSubmissionDelegator {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("serverName", serverName);
-        msgContentMap.put("submitterName", submitterName);
+        msgContentMap.put("ApplicantName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
         msgContentMap.put("date",Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
@@ -1730,7 +1775,7 @@ public class TopDataSubmissionDelegator {
     private void sendRfcMsgAndEmail(String licenseeId, String submitterName, String submissionNo) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DS_SUBMITTED_RFC_ACK_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        msgContentMap.put("dataSupervisor", submitterName);
+        msgContentMap.put("ApplicantName", submitterName);
         msgContentMap.put("submissionId", submissionNo);
         msgContentMap.put("date", Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss"));
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);

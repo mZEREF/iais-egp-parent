@@ -85,6 +85,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_L
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ALLOW_SAVE_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_BAT_CONTAINS_IMPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_BAT_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_ERRORS;
@@ -101,7 +102,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_FILE_MAP
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_CF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_FIFTH_RF;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_NEW_REG_FAC;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_PV_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_UCF;
@@ -458,7 +458,7 @@ public class FacilityRegistrationService {
     /** Checks if current flow is registering a new facility, if so, it's allowed to save draft.
      * Else, if current flow is editing a saved facility, it's not allowed to save draft. */
     public boolean allowSaveDraft(HttpServletRequest request) {
-        return (boolean) ParamUtil.getSessionAttr(request, KEY_IS_NEW_REG_FAC);
+        return (boolean) ParamUtil.getSessionAttr(request, KEY_ALLOW_SAVE_DRAFT);
     }
 
     public void preCompInfo(BaseProcessClass bpc) {

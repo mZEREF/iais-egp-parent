@@ -98,7 +98,7 @@ public class ConfigServiceDelegator {
     private void preparePage(HttpServletRequest request){
         HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(request,"hcsaServiceConfigDto");
         if(hcsaServiceConfigDto != null){
-            ParamUtil.setRequestAttr(request,"hcsaServiceDto",hcsaServiceConfigDto.getHcsaServiceDto());
+            ParamUtil.setRequestAttr(request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             if(IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelDtos)){
                 for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos){
@@ -119,7 +119,7 @@ public class ConfigServiceDelegator {
 
         if("save".equals(crud_action_type)){
             HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(bpc.request);
-            ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto,"save");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto, "save");
             if(validationResult.isHasErrors()){
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP, errorMap);
@@ -604,15 +604,17 @@ public class ConfigServiceDelegator {
     private void addDocumentConfigsFromPage(HcsaServiceConfigDto hcsaServiceConfigDto, HttpServletRequest request) {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaServiceConfigDto.getHcsaServiceStepSchemeDtos();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfig = IaisCommonUtils.genNewArrayList();
-        String numberDocument = request.getParameter("NumberDocument");
+        //List<HcsaSvcDocConfigDto> hcsaSvcDocConfig = IaisCommonUtils.genNewArrayList();
+        String serviceDocSize = request.getParameter("serviceDocSize");
         String[] descriptionServiceDocs = request.getParameterValues("descriptionServiceDoc");
         String[] parameterValues = request.getParameterValues("selectDocPerson");
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String[] serviceDocPremises = request.getParameterValues("serviceDocPremises");
-        String numberfields = request.getParameter("Numberfields");
 
-        request.setAttribute("serviceDocSize", numberDocument);
+        //String numberfields = request.getParameter("Numberfields");
+
+        //request.setAttribute("serviceDocSize", numberDocument);
+
         if (descriptionServiceDocs != null) {
             for (int i = 0; i < descriptionServiceDocs.length; i++) {
                 HcsaSvcDocConfigDto hcsaSvcDocConfigDto = new HcsaSvcDocConfigDto();
@@ -622,27 +624,29 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setDispOrder(i);
                 hcsaSvcDocConfigDto.setServiceId("");
                 hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(0));
-                if (String.valueOf(0).equals(serviceDocMandatories[i])) {
+
+                if ("0".equals(serviceDocMandatories[i])) {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
-                } else if (String.valueOf(1).equals(serviceDocMandatories[i])) {
+                } else if ("1".equals(serviceDocMandatories[i])) {
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
-                if (!"".equals(parameterValues[i])) {
+                if (StringUtil.isNotEmpty(parameterValues[i])) {
                     hcsaSvcDocConfigDto.setDupForPerson(parameterValues[i]);
                 }
-                if (String.valueOf(0).equals(serviceDocPremises[i])) {
-                    hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(0));
-                } else if (String.valueOf(1).equals(serviceDocPremises[i])) {
-                    hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(1));
-                }
+                hcsaSvcDocConfigDto.setDupForPrem(serviceDocPremises[i]);
+
                 hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
+               // hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
             }
 
             addStepSchemeDto(true, HcsaConsts.STEP_DOCUMENTS, HcsaConsts.DOCUMENTS, hcsaServiceStepSchemeDtos);
         }
-        request.setAttribute("serviceDoc", hcsaSvcDocConfigDtos);
-        request.setAttribute("comDocSize", numberfields);
+        hcsaServiceConfigDto.setServiceDocSize(serviceDocSize);
+        hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfigDtos);
+       // request.setAttribute("serviceDoc", hcsaSvcDocConfigDtos);
+
+
+        /*request.setAttribute("comDocSize", numberfields);
         String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = IaisCommonUtils.genNewArrayList();
         String[] commDocMandatory = request.getParameterValues("commDocMandatory");
@@ -664,9 +668,9 @@ public class ConfigServiceDelegator {
                 } else if (String.valueOf(1).equals(commDocPremises[i])) {
                     hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(1));
                 }
-               /* if(!StringUtil.isEmpty(commDocIds[i])){
+               *//* if(!StringUtil.isEmpty(commDocIds[i])){
                     hcsaSvcDocConfigDto.setId(commDocIds[i]);
-                }*/
+                }*//*
                 hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
                 hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
             }
@@ -674,7 +678,7 @@ public class ConfigServiceDelegator {
         request.setAttribute("comDoc", hcsaSvcDocConfigDtoList);
         hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfig);
         hcsaServiceConfigDto.setComDocSize(numberDocument);
-        hcsaServiceConfigDto.setServiceDocSize(numberfields);
+        hcsaServiceConfigDto.setServiceDocSize(numberfields);*/
     }
 
     private void addSvcPersionnelAndStepConfigsFromPage(HcsaServiceConfigDto hcsaServiceConfigDto, HttpServletRequest request) {

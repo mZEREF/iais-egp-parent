@@ -15,15 +15,16 @@
                 <c:set var="drug" value="" />
                 <input type="hidden" name="drugMedicationLength" value="1">
                 <div class="med" id="indexs">
+                <c:set var="size" value="${drugPrescribedDispensedDto.drugMedicationDtos.size()}"/>
                 <c:forEach items="${drugMedicationDtos}" var="drugMedicationDto" begin="0" end="0" varStatus="idxStatus">
                    <c:set var="index" value="${idxStatus.index}"/>
                    <iais:row id="test">
                        <div class="col-sm-6 control-label formtext col-md-8">
                            <div class="cgo-header">
-                               <strong>Medication <span class="assign-psn-item">${index+1}</span></strong>
+                               <strong>Medication <span class="assign-psn-item" <c:if test="${size < 2}">style="display: none"</c:if>>${index+1}</span></strong>
                            </div>
                        </div>
-                       <div class="col-md-4 col-xs-7 text-right deleteIcon">
+                       <div class="col-md-4 col-xs-7 text-right deleteIcon" <c:if test="${size < 2}">style="display: none"</c:if>>
                            <a class="removeMedications"  onclick="" style="text-decoration:none;" href="javascript:void(0)">
                                <h4 class="text-danger">
                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>

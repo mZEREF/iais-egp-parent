@@ -79,7 +79,7 @@
                         <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
                         <c:set var="fileList" value="${svcDocReloadMap[mapKey]}"/>
                         <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${prem.premisesIndexNo}"/>
-                        <%@include file="../../common/docContent.jsp"%>
+                        <%@include file="docContent.jsp"%>
                         <br/>
                     </c:when>
                     <c:otherwise>

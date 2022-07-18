@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_EDIT_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN_OFFICER;
@@ -39,7 +37,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FA
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APPROVE_NO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 @Delegator(value = "rfcViewFacRegAppDelegator")
 @Slf4j
@@ -62,15 +59,6 @@ public class RfcViewFacilityRegistrationDelegator {
         String maskedAppId = request.getParameter(KEY_APP_ID);
         String appId = MaskHelper.unmask("id", maskedAppId);
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
-
-        // check if this app is editable
-        String maskedEditAppId = request.getParameter(KEY_EDIT_APP_ID);
-        if (StringUtils.hasLength(maskedEditAppId)) {
-            String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
-            if (appId.equals(editAppId)) {
-                ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
-            }
-        }
 
         //rfc dashbord processType
         String maskProcessType = request.getParameter(KEY_PROCESS_TYPE);

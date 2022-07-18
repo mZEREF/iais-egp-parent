@@ -45,6 +45,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_SUBMIT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_ALLOW_SAVE_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_BAT_AND_ACTIVITY_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APPROVAL_SELECTION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_APP_DT;
@@ -99,14 +100,15 @@ public class ApprovalBatAndActivityDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        boolean newApprovalApp = true;
+        boolean editDraft = false;
+
         // check if we are doing editing
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
                 log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
             }
-            newApprovalApp = false;
+            editDraft = true;
             ParamUtil.setSessionAttr(request, "editApp", true);
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
@@ -119,7 +121,11 @@ public class ApprovalBatAndActivityDelegator {
                 ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, editDto.getApprovalSelectionDto().getProcessType());
             }
         }
-        if (newApprovalApp) {
+
+        // allow saving draft for apply new, continue draft
+        ParamUtil.setSessionAttr(request, KEY_ALLOW_SAVE_DRAFT, Boolean.TRUE);
+
+        if (!editDraft) {
             ParamUtil.setSessionAttr(request, KEY_APPROVAL_BAT_AND_ACTIVITY_DTO, new ApprovalBatAndActivityDto());
         }
 

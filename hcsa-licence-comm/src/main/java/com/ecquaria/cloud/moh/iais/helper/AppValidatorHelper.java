@@ -563,8 +563,8 @@ public final class AppValidatorHelper {
     public static Map<String, String> doValidatePremises(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             List<String> premisesHciList, boolean rfi, boolean checkOthers) {
         //do validate one premiss
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> list = IaisCommonUtils.genNewArrayList();
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
         boolean needAppendMsg = false;
@@ -573,6 +573,7 @@ public final class AppValidatorHelper {
         String premiseTypeError = "";
         String selectPremises = "";
         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
             String premiseType = appGrpPremisesDto.getPremisesType();
             boolean hciFlag = false;
@@ -720,25 +721,30 @@ public final class AppValidatorHelper {
                     }
                 }
             }
+            if (!errMap.isEmpty()) {
+                appGrpPremisesDto.setHasError(true);
+                errMap.putAll(errMap);
+            } else {
+                appGrpPremisesDto.setHasError(false);
+            }
         }
+
         if (checkOthers) {
             //65116
             // NEW_ACK004 - Records indicate another licensed entity is using this address. Do note co-location requirements may apply.
-            String hciNameUsed = errorMap.get("hciNameUsed");
+            String hciNameUsed = errMap.get("hciNameUsed");
             String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
             if (needAppendMsg) {
                 if (StringUtil.isEmpty(hciNameUsed)) {
-                    errorMap.put("hciNameUsed", errMsg);
+                    errMap.put("hciNameUsed", errMsg);
                 } else {
                     String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
-                    errorMap.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
+                    errMap.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
                 }
             }
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
-        AppValidatorHelper.validatePH(errorMap, appSubmissionDto);
-        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-        return errorMap;
+        return errMap;
     }
     
     /**

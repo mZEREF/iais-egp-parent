@@ -1057,6 +1057,7 @@
                 FROM ds_data_submission ddsNew
                 join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
                 ) T1
             where 1 = 1
             <#if patientIdType??> AND  charindex(:patientIdType, T1.PATIENT_ID_TYPE) >0</#if>
@@ -1121,6 +1122,7 @@
                 FROM ds_data_submission ddsNew
                 join  ds_vs_treatment dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )  and dds.STATUS not in ('DS002')
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
             <#if birthDateFrom??> AND dvt.PATIENT_BIRTHDAY >= convert(date,:birthDateFrom)</#if>

@@ -20,7 +20,22 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AUDIT_DATE;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_OFFICER_PROCESS_DATA;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AO_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AO_REASON;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AO_REMARKS;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_CANCELLED;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_COMPLETED;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REASON;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REMARKS;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INPUT;
 
@@ -43,7 +58,7 @@ public class AuditDateDelegatorBE {
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT_DATE);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);

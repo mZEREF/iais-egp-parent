@@ -14,7 +14,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.RedirectUtil;
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -30,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
@@ -594,10 +594,10 @@ public final class IaisEGPHelper extends EGPHelper {
         return licenseeService.getLicenseeEmails(licenseeId);
     }
 
-    public static List<String> getEmailsByRoleIdsAndLicenseeId(String licenseeId,List<String> roleIds){
+    public static List<OrgUserDto> getLicenseeAccountByRolesAndLicenseeId(String licenseeId, List<String> roleIds){
         LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
 
-        return licenseeService.getEmailsByRoleIdsAndLicenseeId(licenseeId,roleIds);
+        return licenseeService.getLicenseeAccountByRolesAndLicenseeId(licenseeId,roleIds);
     }
 
     public static List<String> getLicenseeMobiles(String licenseeId) {
@@ -969,14 +969,13 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         // services & DS centers
         if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
-                AppServicesConsts.SERVICE_NAME_AR_CENTER,
+                AppServicesConsts.SERVICE_NAME_ASSISTED_REPRODUCTION,
                 DataSubmissionConsts.DS_AR}))) {
             roles.add(RoleConsts.USER_ROLE_DS_AR);
             roles.add(RoleConsts.USER_ROLE_DS_AR_SUPERVISOR);
         }
         if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
                 AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL,
-                AppServicesConsts.SERVICE_NAME_NURSING_HOME,
                 AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,
                 DataSubmissionConsts.DS_DRP}))) {
             roles.add(RoleConsts.USER_ROLE_DS_DP);
@@ -988,8 +987,8 @@ public final class IaisEGPHelper extends EGPHelper {
             roles.add(RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR);
         }
         if (data == null || data.stream().anyMatch(datum -> StringUtil.isIn(datum, new String[]{
-                AppServicesConsts.SERVICE_NAME_MEDICAL_CLINIC,
-                AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL,
+                AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE,
+                AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL_CENTRE,
                 AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,
                 DataSubmissionConsts.DS_TOP}))) {
             roles.add(RoleConsts.USER_ROLE_DS_TOP);
@@ -1040,43 +1039,4 @@ public final class IaisEGPHelper extends EGPHelper {
         return null;
     }
 
-    public static String getFileShowHtml(String fileName, String fileAppendId, int index, String uploadFormId,
-            boolean needReUpload, HttpServletRequest request) {
-        StringBuilder data = new StringBuilder();
-        if (fileName != null) {
-            boolean isBackend = AppConsts.USER_DOMAIN_INTRANET.equals(ConfigHelper.getString("iais.current.domain"));
-            log.info(StringUtil.changeForLog("isBackend: " + isBackend));
-            String cssClass;
-            if (isBackend) {
-                cssClass = "btn btn-secondary-del btn-sm";
-            } else {
-                cssClass = "btn btn-secondary btn-sm";
-            }
-            String[] fileSplit = fileName.split("\\.");
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(index).append("' >")
-                    .append("<a href=\"").append(request.getContextPath())
-                    .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
-                    .append("&fileIndexDown=").append(index)
-                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
-                    .append("\" title=\"Download\" class=\"downloadFile\">")
-                    .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
-                    .append('.').append(fileSplit[fileSplit.length - 1])
-                    .append("</a>")
-                    .append(" <button type=\"button\" class=\"").append(cssClass)
-                    .append("\" onclick=\"javascript:deleteFileFeAjax('")
-                    .append(fileAppendId).append("', ").append(index)
-                    .append(");\">Delete</button>");
-            if (needReUpload) {
-                data.append(" <button type=\"button\" class=\"")
-                        .append(cssClass)
-                        .append("\" onclick=\"javascript:reUploadFileFeAjax('")
-                        .append(fileAppendId).append("', ").append(index)
-                        .append(", '").append(uploadFormId)
-                        .append("');\">ReUpload</button>");
-            }
-            data.append("</div>");
-        }
-        return data.toString();
-    }
 }

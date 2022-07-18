@@ -32,7 +32,6 @@
                                 <div id="previewSubmitPanel" role="tabpanel">
                                     <fac:preview companyProfile="${orgProfile}" companyCerTeam="${orgCerTeam}" companyAdmin="${orgAdmin}"
                                                  profileEditJudge="true" docEditJudge="true">
-                                        <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-web/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />

@@ -28,7 +28,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NOD
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_COMPANY_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_FACILITY_CERTIFIER_REGISTER;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ViewApplicationConstants.KEY_MASKED_EDIT_APP_ID;
 
 /**
  * @author YiMing
@@ -51,7 +50,6 @@ public class ViewCertifierRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_MASKED_EDIT_APP_ID);
         session.removeAttribute(KEY_FACILITY_CERTIFIER_REGISTER);
         AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_AFC_REGISTRATION);
     }

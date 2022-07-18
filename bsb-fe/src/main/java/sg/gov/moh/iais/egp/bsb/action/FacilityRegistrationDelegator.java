@@ -4,6 +4,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -45,13 +46,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_S
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SUBMIT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ALLOW_SAVE_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_APP_DT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_APP_NO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_EDIT_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_CF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_FIFTH_RF;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_NEW_REG_FAC;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_PV_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_RF;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_IS_UCF;
@@ -95,6 +96,7 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_ROOT_NODE_GROUP);
+        session.removeAttribute(KEY_ALLOW_SAVE_DRAFT);
         session.removeAttribute(KEY_JUMP_DEST_NODE);
         session.removeAttribute(KEY_SAMPLE_COMMITTEE);
         session.removeAttribute(KEY_SAMPLE_AUTHORISER);
@@ -113,13 +115,12 @@ public class FacilityRegistrationDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         boolean editDraft = false;
-        boolean editSavedFacility = false;
 
         // check if we are doing editing
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
-                log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
+                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
             }
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
@@ -127,12 +128,9 @@ public class FacilityRegistrationDelegator {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
+                    editDraft = true;
                     FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
                     facilityRegistrationService.retrieveFacRegRoot(request, facilityRegisterDto);
-
-                    // judge if the data comes from a draft or a saved facility
-                    editSavedFacility = facilityRegisterDto.getFacilityProfileDto().getFacilityEntityId() != null;
-                    editDraft = !editSavedFacility;
                 }
             }
             if (failRetrieveEditData) {
@@ -140,10 +138,10 @@ public class FacilityRegistrationDelegator {
             }
         }
 
-        /* this attribute means if this flow starts to create a new facility (starts from a draft also means new facility) */
-        ParamUtil.setSessionAttr(request, KEY_IS_NEW_REG_FAC, !editSavedFacility);
+        // allow saving draft for apply new, continue draft
+        ParamUtil.setSessionAttr(request, KEY_ALLOW_SAVE_DRAFT, Boolean.TRUE);
 
-        if (!editSavedFacility && !editDraft) {
+        if (!editDraft) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityRegistrationService.getFacilityRegisterRoot(request));
         }
 
@@ -167,12 +165,7 @@ public class FacilityRegistrationDelegator {
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
-        boolean newFacReg = (boolean) ParamUtil.getSessionAttr(bpc.request, KEY_IS_NEW_REG_FAC);
-        if (newFacReg) {
-            facilityRegistrationService.handleNewFacilityServiceSelection(bpc);
-        } else {
-            facilityRegistrationService.handleServiceSelection(bpc);
-        }
+        facilityRegistrationService.handleNewFacilityServiceSelection(bpc);
     }
 
     public void preFacProfile(BaseProcessClass bpc) {

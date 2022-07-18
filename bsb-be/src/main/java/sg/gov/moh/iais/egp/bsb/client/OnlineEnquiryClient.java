@@ -5,12 +5,18 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
-import sg.gov.moh.iais.egp.bsb.dto.entity.BiologicalDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AFCResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AFCSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AppResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.AppSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.FacResultPageInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.FacSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 
 import java.util.List;
 
@@ -41,11 +47,5 @@ public interface OnlineEnquiryClient {
 
     @GetMapping(value = "/online-enquiry/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AFCResultPageInfoDto> getApprovedFacilityCertifier(@SpringQueryMap  AFCSearchDto dto);
-
-    @GetMapping(path = "/bat-info/{id}")
-    BiologicalDto getBiologicalById(@PathVariable(name = "id") String biologicalId);
-
-    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
-    FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 
 }

@@ -14,12 +14,6 @@ $(document).ready(function (){
     if(num==0){
         $('.removeMedications').hide();
     }
-    var size = $("#medicationSize").val();
-    console.log("init size: "+size);
-    if (size > 1){
-        $('.deleteIcon').show();
-        $('.assign-psn-item').show();
-    }
 });
 
 $(function () {

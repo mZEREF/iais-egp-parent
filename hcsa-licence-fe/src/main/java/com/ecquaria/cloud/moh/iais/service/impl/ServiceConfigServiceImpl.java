@@ -1144,7 +1144,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
+        return IaisCommonUtils.genNewArrayList();
+        /*List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = configCommClient.getActiveSvcCorrelation().getEntity();
         List<HcsaServiceCorrelationDto> newHcsaServiceCorrelationDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaServiceCorrelationDtos)){
             List<String> baseSpecIdList = IaisCommonUtils.genNewArrayList();
@@ -1157,7 +1158,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
 
-        return newHcsaServiceCorrelationDtos;
+        return newHcsaServiceCorrelationDtos;*/
     }
 
     @Override

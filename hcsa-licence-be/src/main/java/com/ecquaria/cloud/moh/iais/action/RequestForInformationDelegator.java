@@ -46,17 +46,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +56,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RequestForInformationDelegator
@@ -720,7 +716,7 @@ public class RequestForInformationDelegator {
             length="0";
         }
         int len = Integer.parseInt(length);
-        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new");
 
 
         sql=sql.replaceAll("indexTitleRfi",String.valueOf((len+1)));
@@ -738,7 +734,7 @@ public class RequestForInformationDelegator {
             length="0";
         }
         int len = Integer.parseInt(length);
-        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-info-new").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-info-new");
 
         sql=sql.replaceAll("indexTitleRfi",String.valueOf((len+1)));
         sql=sql.replaceAll("indexRfi",length);

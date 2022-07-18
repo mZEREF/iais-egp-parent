@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_ADHOC_RFI;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_NO;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_PAGE_SIZE;
 
@@ -64,6 +67,7 @@ public class BsbAdhocRfiDelegator {
         session.removeAttribute(KEY_VIEW_REQ_INFO);
         String approvalId = ParamUtil.getMaskedString(request,KEY_APPROVAL_ID);
         ParamUtil.setSessionAttr(request, KEY_APPROVAL_ID, approvalId);
+        AuditTrailHelper.auditFunction(MODULE_REQUEST_FOR_INFORMATION, FUNCTION_ADHOC_RFI);
     }
     /**
      * preAdhocRfi

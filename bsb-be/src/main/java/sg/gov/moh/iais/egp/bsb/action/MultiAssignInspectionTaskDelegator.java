@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_NAME_MULTI_ASSIGN_INSPECTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ASSIGN_RESULT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
@@ -36,8 +38,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_
 @Slf4j
 @Delegator("multiAssignInspectionTaskDelegator")
 public class MultiAssignInspectionTaskDelegator {
-    private static final String MODULE_NAME = "Inspection";
-    private static final String FUNCTION_NAME_MULTI_ASSIGN_INSPECTION = "Multi Assign Inspection";
     private static final String MULTI_ASSIGN_INSPECTION_DTO = "multiAssignInsDto";
     private static final String MASK_USER_ID = "maskUserId";
     private static final String USER_OPTION = "userOption";
@@ -55,7 +55,7 @@ public class MultiAssignInspectionTaskDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_MULTI_ASSIGN_INSPECTION);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_NAME_MULTI_ASSIGN_INSPECTION);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         request.getSession().removeAttribute(MULTI_ASSIGN_INSPECTION_DTO);
         request.getSession().removeAttribute(USER_OPTION);

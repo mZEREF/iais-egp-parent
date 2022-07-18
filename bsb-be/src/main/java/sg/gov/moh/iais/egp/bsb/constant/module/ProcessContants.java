@@ -12,14 +12,6 @@ public class ProcessContants {
 
     public static final String MOH_PROCESS_PAGE_VALIDATION          = "mohProcessPageValidation";
 
-    public static final String MODULE_NAME                          = "Moh Process";
-    public static final String FUNCTION_NAME_DO_SCREENING           = "DO Screening";
-    public static final String FUNCTION_NAME_AO_SCREENING           = "AO Screening";
-    public static final String FUNCTION_NAME_HM_SCREENING           = "HM Screening";
-    public static final String FUNCTION_NAME_DO_PROCESSING          = "DO Processing";
-    public static final String FUNCTION_NAME_AO_PROCESSING          = "AO Processing";
-    public static final String FUNCTION_NAME_HM_PROCESSING          = "HM Processing";
-
     public static final String MODULE_NAME_DO_SCREENING             = "doScreening";
     public static final String MODULE_NAME_AO_SCREENING             = "aoScreening";
     public static final String MODULE_NAME_HM_SCREENING             = "hmScreening";
