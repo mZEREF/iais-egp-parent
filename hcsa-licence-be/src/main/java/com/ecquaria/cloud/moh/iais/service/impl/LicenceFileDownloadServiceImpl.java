@@ -1066,18 +1066,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         EventBusConsts.SERVICE_NAME_APPSUBMIT,
                         EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                         broadcastApplicationDto.getEventRefNo(), null);
-            }
 
-            //update fe application stauts
-            log.info("update application stauts");
-            for(ApplicationDto applicationDto :requestForInfList){
-                beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
+                //update fe application stauts
+                log.info("update application stauts");
+                for(ApplicationDto applicationDto :requestForInfList){
+                    beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
+                }
+                log.info("update request for info start");
+                updateRfiTask(requestForInfList);
+                log.info("update request for info end");
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
+                updateRfiTask(updateTaskList);
             }
-            log.info("update request for info start");
-            updateRfiTask(requestForInfList);
-            log.info("update request for info end");
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
-            updateRfiTask(updateTaskList);
         }
     }
 
