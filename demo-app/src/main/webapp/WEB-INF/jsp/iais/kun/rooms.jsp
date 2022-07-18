@@ -18,7 +18,7 @@
             <div class="form-group">
                 <iais:field value="Type" required="true"/>
                 <iais:value width="7">
-                    <iais:select name="roomType" id="roomType" options="roomTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                    <iais:select name="roomType" id="roomType" options="roomTypeSelect" firstOption="Please Select"></iais:select>
                 </iais:value>
             </div>
             <div class="row">
@@ -50,7 +50,7 @@
                         <%-- rooms entity--%>
                         <c:forEach var = "room" items = "${roomSearchResult.rows}" varStatus="status">
                             <tr>
-                                <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
+                                <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (roomSearchParam.pageNo - 1) * roomSearchParam.pageSize}</td>
                                 <td align="left" style="width: 30%"><iais:code code="${room.roomType}"></iais:code></td>
                                 <td align="left" style="width: 20%"><iais:code code="${room.roomNO}"></iais:code></td>
                                 <td align="left" style="width: 10%">
@@ -89,13 +89,5 @@
 
     function doAdd(){
         SOP.Crud.cfxSubmit("mainForm", "prepareAddRoom");
-    }
-
-    $(document).ready(function() {
-        displaySection()
-    });
-
-    function displaySection(){
-        var val =  $("#roomType").val();
     }
 </script>

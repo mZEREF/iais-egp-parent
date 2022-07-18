@@ -7,13 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HuangKunPersonDto;
 import com.ecquaria.cloud.moh.iais.dto.HuangKunRoomDto;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.HuangKunRoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: HuangKunDelegator
@@ -104,7 +103,16 @@ public class HuangKunDelegator {
         HuangKunRoomDto roomEditDto = (HuangKunRoomDto) ParamUtil.getSessionAttr(request, "roomRequestDto");
         roomEditDto.setRoomNO(roomNo);
         roomEditDto.setRoomType(roomType);
-        huangKunRoomService.updateRoom(roomEditDto);
+
+        ValidationResult vResult = WebValidationHelper.validateProperty(roomEditDto, "edit");
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            huangKunRoomService.updateRoom(roomEditDto);
+        }
     }
 
     public void doPaging(BaseProcessClass bpc){
@@ -123,7 +131,17 @@ public class HuangKunDelegator {
         HuangKunRoomDto huangKunRoomDto=new HuangKunRoomDto();
         huangKunRoomDto.setRoomNO(roomNo);
         huangKunRoomDto.setRoomType(roomType);
-        huangKunRoomService.addRoom(huangKunRoomDto);
+
+        ValidationResult vResult = WebValidationHelper.validateProperty(huangKunRoomDto, "add");
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            huangKunRoomService.addRoom(huangKunRoomDto);
+        }
+
     }
 
     public void prepareAddPerson(BaseProcessClass bpc){

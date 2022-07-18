@@ -45,15 +45,15 @@
                     <thead>
                     <tr>
                         <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>
-                        <iais:sortableHeader style="width:30%" needSort="true"  field="displayName" value="displayName"></iais:sortableHeader>
-                        <iais:sortableHeader style="width:30%" needSort="true"   field="mobileNo" value="mobileNo"></iais:sortableHeader>
+                        <iais:sortableHeader style="width:30%" needSort="false"  field="displayName" value="displayName"></iais:sortableHeader>
+                        <iais:sortableHeader style="width:30%" needSort="false"   field="mobileNo" value="mobileNo"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody style="text-align: left">
                     <%-- person entity--%>
                     <c:forEach var = "person" items = "${personResult.rows}" varStatus="status">
                         <tr>
-                            <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
+                            <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (roomSearchParam.pageNo - 1) * roomSearchParam.pageSize}</td>
                             <td align="left" ><iais:code code="${person.displayName}"></iais:code></td>
                             <td align="left" ><iais:code code="${person.mobileNo}"></iais:code></td>
                         </tr>
@@ -87,5 +87,4 @@
     function doAdd(){
         SOP.Crud.cfxSubmit("mainForm", "prepareAddPerson");
     }
-
 </script>
