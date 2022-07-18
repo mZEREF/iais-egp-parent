@@ -687,36 +687,24 @@ public class ApplicationAjaxController {
      * @return AppSvcPrincipalOfficersDto
      * @Designation
      */
-    @GetMapping(value = "/person-info/svc-code")
+    @GetMapping(value = "/person-info")
     public AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
         String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
-        String psnType = ParamUtil.getString(request, "psnType");
-        String svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
-        if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(svcCode)) {
+       //String psnType = ParamUtil.getString(request, "psnType");
+        if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
             return null;
         }
         String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
         log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
-        Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+        AppSvcPrincipalOfficersDto person = ApplicationHelper.getKeyPersonnelDto(psnKey, null, request);
+        /*Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
-        AppSvcPrincipalOfficersDto person = null;
-        //66762
-        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
-        if (appSvcPersonDto != null) {
-            person = MiscUtil.transferEntityDto(appSvcPersonDto, AppSvcPrincipalOfficersDto.class);
-            person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
-        }
-        if (person != null && !person.isLicPerson()) {
-            person = getAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, person);
-        } else {
-            person = ApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
-        }
-
-        if (person == null) {
+*/
+        /*if (person == null) {
             log.info(StringUtil.changeForLog("can not get data from person dropdown ..."));
             return new AppSvcPrincipalOfficersDto();
         }
@@ -752,9 +740,36 @@ public class ApplicationAjaxController {
             if (bcls != null) {
                 person.setBclsExpiryDateStr(Formatter.formatDate(bcls));
             }
-        }
+        }*/
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
         return person;
+    }
+
+    @GetMapping(value = "/user-account-info")
+    public Map<String, Object> getUserAccountInfo(HttpServletRequest request) {
+        String nationality = ParamUtil.getString(request, "nationality");
+        String idType = ParamUtil.getString(request, "idType");
+        String idNo = ParamUtil.getString(request, "idNo");
+        List<FeUserDto> feUserDtos = (List<FeUserDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT);
+        String resCode = "404";
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+        if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)
+            /*&& (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))*/) {
+            for (FeUserDto feUserDto : feUserDtos) {
+                String userIdType = feUserDto.getIdType();
+                if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
+                    String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
+                    appSvcPrincipalOfficersDto = ApplicationHelper.getKeyPersonnelDto(psnKey, "", request);
+                    if (appSvcPrincipalOfficersDto != null) {
+                        resCode = "200";
+                    }
+                }
+            }
+        }
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
+        map.put("resCode", resCode);
+        map.put("resultJson", appSvcPrincipalOfficersDto);
+        return map;
     }
 
     @GetMapping(value = "/person-info/company-licesee")
@@ -832,46 +847,6 @@ public class ApplicationAjaxController {
         SelectOption idType2 = new SelectOption("SMS", "SMS");
         MedAlertSelectList.add(idType2);
         return MedAlertSelectList;
-    }
-
-    @PostMapping(value = "/user-account-info")
-    public Map<String, Object> getUserAccountInfo(HttpServletRequest request) {
-        String nationality = ParamUtil.getString(request, "nationality");
-        String idType = ParamUtil.getString(request, "idType");
-        String idNo = ParamUtil.getString(request, "idNo");
-        List<FeUserDto> feUserDtos = (List<FeUserDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT);
-        String resCode = "404";
-        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-        if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)
-            /*&& (AppConsts.NATIONALITY_SG.equals(nationality) || StringUtil.isEmpty(nationality))*/) {
-            for (FeUserDto feUserDto : feUserDtos) {
-                String userIdType = feUserDto.getIdType();
-                if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
-                    Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
-                            HcsaAppConst.PERSONSELECTMAP);
-                    if (psnMap != null) {
-                        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(ApplicationHelper.getPersonKey(nationality,
-                                idType, idNo));
-//                        if(!ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(appSvcPersonAndExtDto)){
-//                            log.info(StringUtil.changeForLog("can not loading this type data"));
-//                            continue;
-//                        }
-                        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
-                        if (appSvcPersonDto != null) {
-                            appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcPersonDto, AppSvcPrincipalOfficersDto.class);
-                            appSvcPrincipalOfficersDto.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
-                        }
-                        appSvcPrincipalOfficersDto = getAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, appSvcPrincipalOfficersDto);
-
-                        resCode = "200";
-                    }
-                }
-            }
-        }
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
-        map.put("resCode", resCode);
-        map.put("resultJson", appSvcPrincipalOfficersDto);
-        return map;
     }
 
     @PostMapping(value = "/premises-operational-html")
@@ -1276,25 +1251,6 @@ public class ApplicationAjaxController {
         return null;
     }
 
-    private AppSvcPrincipalOfficersDto getAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto,
-            AppSvcPrincipalOfficersDto person) {
-        if (appSvcPersonAndExtDto == null) {
-            return person;
-        }
-        List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-        AppSvcPersonExtDto appSvcPersonExtDto = new AppSvcPersonExtDto();
-        if (!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)) {
-            appSvcPersonExtDtos.sort((h1, h2) -> h1.getServiceCode().compareTo(h2.getServiceCode()));
-            appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
-        }
-        Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
-        person = MiscUtil.transferEntityDto(appSvcPersonExtDto, AppSvcPrincipalOfficersDto.class, fieldMap, person);
-        //transfer
-        person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
-        AppPsnEditDto appPsnEditDto = ApplicationHelper.setNeedEditField(person);
-        person.setPsnEditDto(appPsnEditDto);
-        return person;
-    }
 
     private static byte[] doPrint(AppSubmissionDto appSubmissionDto, boolean isRfi, String txnRefNo, String txnDt, String action)
             throws Exception {

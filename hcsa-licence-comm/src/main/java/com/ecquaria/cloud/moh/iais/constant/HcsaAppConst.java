@@ -45,6 +45,12 @@ public final class HcsaAppConst {
     public static final String SECTION_SVCINFO                              = "information";
     public static final String SECTION_PREVIEW                              = "previewli";
 
+    public static final String CURR_SVC_INFO                                = "currSvcInfoDto";
+    public static final String CURR_SVC_STEP                                = "currentStep";
+    public static final String CURR_STEP_CONFIG                             = "currStepConfig";
+    public static final String CURR_STEP_NAME                               = "currStepName";
+    public static final String CURR_SINGLE_NAME                             = "singleName";
+
     public static final String CURRENT_SVC_CODE                             = "CURRENT_SVC_CODE";
 
     public static final String ERRORMAP_PREMISES                            = "errorMap_premises";
@@ -126,10 +132,6 @@ public final class HcsaAppConst {
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT                        = "IdTypeSelect";
-
-    public static final String CURR_STEP_NAME                               = "currStepName";
-    public static final String PAGE_NAME_PO                                 = "pageNamePo";
-    public static final String PAGE_NAME_MAP                                = "pageNameMap";
 
     public static final String PERSON_OPTIONS                               = "PERSON_OPTIONS";
 

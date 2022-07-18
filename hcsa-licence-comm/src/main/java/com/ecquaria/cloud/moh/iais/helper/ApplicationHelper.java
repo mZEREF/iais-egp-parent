@@ -1806,6 +1806,28 @@ public final class ApplicationHelper {
         return removeArrIndex(arr, i);
     }
 
+    public static AppSvcPrincipalOfficersDto getKeyPersonnelDto(String psnKey, String svcCode, HttpServletRequest request) {
+        Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                HcsaAppConst.PERSONSELECTMAP);
+        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
+        if (appSvcPersonAndExtDto == null) {
+            return null;
+        }
+        AppSvcPrincipalOfficersDto person = null;
+        //66762
+        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
+        if (appSvcPersonDto != null) {
+            person = MiscUtil.transferEntityDto(appSvcPersonDto, AppSvcPrincipalOfficersDto.class);
+            person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
+        }
+        if (!StringUtil.isEmpty(svcCode) && person != null && !person.isLicPerson()) {
+            svcCode = null;
+        } else if (svcCode == null) {
+            svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
+        }
+        return genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
+    }
+
     public static AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, String svcCode,
             boolean removeCurrExt) {
         if (appSvcPersonAndExtDto == null) {
@@ -2836,23 +2858,28 @@ public final class ApplicationHelper {
 
     private static AppSvcPersonExtDto getPsnExtDtoBySvcCode(List<AppSvcPersonExtDto> appSvcPersonExtDtos, String svcCode) {
         AppSvcPersonExtDto appSvcPersonExtDto = null;
-        if (!IaisCommonUtils.isEmpty(appSvcPersonExtDtos) && !StringUtil.isEmpty(svcCode)) {
-            for (AppSvcPersonExtDto extPsn : appSvcPersonExtDtos) {
-                String serviceCode = extPsn.getServiceCode();
-                String serviceName = extPsn.getServiceName();
-                if (!StringUtil.isEmpty(serviceCode)) {
-                    if (svcCode.equals(serviceCode)) {
-                        appSvcPersonExtDto = extPsn;
-                        break;
-                    }
-                } else if (!StringUtil.isEmpty(serviceName)) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
-                    boolean flag = hcsaServiceDto != null && serviceName.equals(hcsaServiceDto.getSvcName());
-                    if (flag) {
-                        appSvcPersonExtDto = extPsn;
-                        break;
+        if (!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)) {
+            if (!StringUtil.isEmpty(svcCode)) {
+                for (AppSvcPersonExtDto extPsn : appSvcPersonExtDtos) {
+                    String serviceCode = extPsn.getServiceCode();
+                    String serviceName = extPsn.getServiceName();
+                    if (!StringUtil.isEmpty(serviceCode)) {
+                        if (svcCode.equals(serviceCode)) {
+                            appSvcPersonExtDto = extPsn;
+                            break;
+                        }
+                    } else if (!StringUtil.isEmpty(serviceName)) {
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+                        boolean flag = hcsaServiceDto != null && serviceName.equals(hcsaServiceDto.getSvcName());
+                        if (flag) {
+                            appSvcPersonExtDto = extPsn;
+                            break;
+                        }
                     }
                 }
+            } else {
+                appSvcPersonExtDtos.sort(Comparator.comparing(AppSvcPersonExtDto::getServiceCode));
+                appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
             }
         }
         return appSvcPersonExtDto;

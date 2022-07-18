@@ -268,7 +268,7 @@
                     <iais:row cssClass="certIssuedDtRow">
                         <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                            <iais:datePicker cssClass="certIssuedDt" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                            <iais:datePicker cssClass="certIssuedDt field-date" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
 
@@ -518,14 +518,20 @@
     </div>
 </c:forEach>
 <input type="hidden" name="uploadKey" value=""/>
-<div id="selectFileDiv">
-</div>
+<div id="selectFileDiv"></div>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         initPremiseEvent();
-        initPremisePage($('div.premContent'));
+        $('div.premContent').each(function (k, v) {
+            checkPremiseContent($(v));
+        });
+        if ($('div.premContent').length == 1) {
+            $('div.premContent').find('.premHeader').html('');
+        }
+
     });
 
+    //TODO
     function doEditPremise(premContent, isPartEdit) {
 
     }
@@ -548,16 +554,17 @@
         removeBtnEvent();
 
         fileUploadEvent();
+
+        $("[data-toggle='tooltip']").tooltip();
     }
 
-    function initPremisePage($premContent) {
+    function checkPremiseContent($premContent) {
         checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
 
         var premType = $premContent.find('.premTypeValue').val();
         var premSelectVal = $premContent.find('.premSelValue').val();
         checkPremSelect($premContent, premSelectVal, true);
-        console.info("Prem: " + premType + ' | ' + premSelectVal);
         if ('PERMANENT' == premType) {
             showTag($premContent.find('.permanentSelect'));
             hideTag($premContent.find('.conveyanceSelect'));
@@ -637,6 +644,7 @@
     function addPremEvent() {
         $('#addPremBtn').unbind('click');
         $('#addPremBtn').on('click', function () {
+            showWaiting();
             var $target = $('div.premContent:last');
             var premType = $target.find('input.premTypeRadio:checked').val();
             var locateWtihHcsa = $target.find('input[name^="locateWtihHcsa"]:checked').val();
@@ -653,7 +661,9 @@
             //initPremiseData($premContent);
             removeAdditional($premContent);
             refreshPremise($premContent, $('div.premContent').length - 1);
+            $('div.premContent:first').find('.premHeader').html('1');
             initPremiseEvent();
+            dismissWaiting();
         });
     }
 
@@ -661,34 +671,39 @@
         var $target = $(document);
         $target.find('.removeBtn').unbind('click');
         $target.find('.removeBtn').not(':first').on('click', function () {
+            showWaiting();
             $(this).closest('div.premContent').remove();
-            refreshAllPremises();
+            $('div.premContent').each(function (k, v) {
+                refreshPremise($(v), k);
+            });
+            if ($('div.premContent').length == 1) {
+                $('div.premContent').find('.premHeader').html('');
+            }
+            premTypeEvent();
+            premSelectEvent();
+            removeBtnEvent();
+            dismissWaiting();
         });
     }
 
-    function refreshPremise($premContent, k, withEvent) {
+    function refreshPremise($premContent, k) {
         var $target = getJqueryNode($premContent);
         if (isEmptyNode($target)) {
             return;
         }
         //premIndex
         $target.find('.premIndex').val(k);
-        if (k == 0) {
-            $target.find('.premHeader').html('');
-            hideTag($target.find('.removeEditDiv'));
-        } else {
-            $target.find('.premHeader').html(k + 1);
-            showTag($target.find('.removeEditDiv'));
-        }
+        toggleTag($target.find('.removeEditDiv'), k != 0);
+        $target.find('.premHeader').html(k + 1);
         resetIndex($target, k);
         refreshFloorUnit($target, k);
         refreshNonHcsa($target, k);
-        initPremisePage($target);
+        checkPremiseContent($target);
         // file
         $target.find('div.uploadFileShowDiv').attr('id', "uploadFile" + k + "ShowId");
-        var filepart = $target.find('div.uploadFileShowDiv div');
-        if (filepart.length() > 0) {
-            filepart.each(function() {
+        var filePart = $target.find('div.uploadFileShowDiv div');
+        if (filePart.length > 0) {
+            filePart.each(function () {
                 var id = $(this).attr('id');
                 var part = /(.*\D+)(\d+)/g.exec(id);
                 $(this).attr('id', 'uploadFile' + k + 'Div' + part[2]);
@@ -697,19 +712,10 @@
         $target.find('div.uploadFileErrorDiv .error-msg').attr('id', "error_uploadFile" + k + "Error");
     }
 
-    function refreshAllPremises() {
-        $('div.premContent').each(function(k, v){
-            refreshPremise($(v), k , false);
-        });
-        premTypeEvent();
-        premSelectEvent();
-        removeBtnEvent();
-    }
-
     function removeAdditional($premContent) {
         $premContent.find('div.operationDivGroup .operationDiv').remove();
         $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
-        $premContent.find('div.uploadFileShowDiv').emtpy();
+        $premContent.find('div.uploadFileShowDiv').empty();
     }
 
     var premTypeEvent = function () {
@@ -722,11 +728,11 @@
             }
             $premContent.find('.premTypeValue').val(premType);
             $premContent.find('.premSelValue').val('-1');
-            initPremisePage($premContent);
+            checkPremiseContent($premContent);
         });
     }
 
-    var premSelectEvent = function() {
+    var premSelectEvent = function () {
         $('.premSelect').change(function () {
             showWaiting();
             clearErrorMsg();
@@ -779,15 +785,14 @@
             dismissWaiting();
             return;
         }
-        console.info("premSelectCallback");
         fillForm($premContent, data, "", $('div.premContent').index($premContent));
         fillFloorUnit($premContent, data);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
         // date
-        fillValue($premContent.find('.certIssuedDt'), data.certIssuedDtStr);
+        //fillValue($premContent.find('.certIssuedDt'), data.certIssuedDtStr);
         checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
-        if (eqHciCode=='true') {
+        if (eqHciCode == 'true') {
             $premContent.find('input[name="chooseExistData"]').val('0');
         } else {
             $premContent.find('input[name="chooseExistData"]').val('1');
@@ -830,7 +835,7 @@
         }
         var $parent = $premContent.find('div.nonHcsaRowDiv');
         var len = data.length;
-        for(var i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             var $target = $parent.find('.nonHcsaRow').eq(i);
             if ($target.length == 0) {
                 addNonHcsa($parent);
@@ -846,19 +851,16 @@
         if (isEmptyNode($target)) {
             return;
         }
-        $target.find('.nonHcsaRow').each(function(k, v) {
-            console.log("refreshNonHcsa---" + prefix + " - " + k);
+        $target.find('.nonHcsaRow').each(function (k, v) {
             toggleTag($(v).find('.delNonHcsaSvcRow'), k != 0);
             resetField(v, k, prefix);
         });
         var length = $target.find('div.nonHcsaRow').length;
         $target.closest('div.premContent').find('.nonHcsaLength').val(length);
-        console.log('Non Hcsa: ' + length);
     }
 
     function addNonHcsa(ele) {
         showWaiting();
-        console.log("addNonHcsaSvc2");
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.nonHcsaRow:first').clone();
         $premContent.find('div.addNonHcsaSvcRow').before(src);
@@ -874,10 +876,8 @@
         if (isEmptyNode($target)) {
             $target = $(document);
         }
-        console.log("addNonHcsaEvent");
         $target.find('.addNonHcsaSvc').unbind('click');
         $target.find('.addNonHcsaSvc').on('click', function () {
-            console.log("addNonHcsaSvc");
             addNonHcsa(this);
         });
     }
@@ -909,7 +909,7 @@
         var floorUnits = data.appPremisesOperationalUnitDtos;
         var $parent = $premContent.find('div.operationDivGroup');
         var len = floorUnits.length;
-        for(var i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             var $target = $parent.find('.operationDiv').eq(i);
             if ($target.length == 0) {
                 addFloorUnit($parent);
@@ -925,8 +925,7 @@
         if (isEmptyNode($target)) {
             return;
         }
-        $target.find('.operationDiv').each(function(i, ele){
-            console.log("refreshFloorUnit---" + prefix + " - " + i);
+        $target.find('.operationDiv').each(function (i, ele) {
             if (i == 0) {
                 hideTag($(ele).find('.operationAdlDiv'));
             } else {
@@ -972,13 +971,13 @@
         });
     }
 
-    var addrTypeEvent = function(target) {
+    var addrTypeEvent = function (target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.addrType').unbind('change');
-        $target.find('.addrType').on('change', function(){
+        $target.find('.addrType').on('change', function () {
             var $premContent = $(this).closest('div.premContent');
             checkAddressMandatory($premContent);
         });
@@ -994,13 +993,13 @@
         }
     }
 
-    var retrieveAddrEvent = function(target) {
+    var retrieveAddrEvent = function (target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
             $target = $(document);
         }
         $target.find('.retrieveAddr').unbind('click');
-        $target.find('.retrieveAddr').on('click', function(){
+        $target.find('.retrieveAddr').on('click', function () {
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
             var postalCode = $postalCodeEle.find('.postalCode').val();
             retrieveAddr(postalCode, $(this).closest('div.premContent').find('div.address'));
@@ -1010,16 +1009,16 @@
     function retrieveAddr(postalCode, target) {
         var $addressSelectors = $(target);
         var data = {
-            'postalCode':postalCode
+            'postalCode': postalCode
         };
         showWaiting();
         $.ajax({
-            'url':'${pageContext.request.contextPath}/retrieve-address',
-            'dataType':'json',
-            'data':data,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
+            'url': '${pageContext.request.contextPath}/retrieve-address',
+            'dataType': 'json',
+            'data': data,
+            'type': 'GET',
+            'success': function (data) {
+                if (data == null) {
                     // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                     //show pop
                     $('#postalCodePop').modal('show');
@@ -1031,11 +1030,11 @@
                     fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
                     fillValue($addressSelectors.find('.streetName'), data.streetName);
                     fillValue($addressSelectors.find('.buildingName'), data.buildingName);
-                    readonlyContent($addressSelectors);
+                    //readonlyContent($addressSelectors);
                 }
                 dismissWaiting();
             },
-            'error':function () {
+            'error': function () {
                 //show pop
                 $('#postalCodePop').modal('show');
                 clearFields($addressSelectors.find(':input'));
@@ -1051,7 +1050,7 @@
         $('#_singleUpload').val("1");
     }
 
-    var fileUploadEvent = function() {
+    var fileUploadEvent = function () {
         $('.file-upload').unbind('click');
         $('.file-upload').click(function () {
             var index = $(this).closest('.premContent').find('input[name="premIndex"]').val();
@@ -1066,471 +1065,5 @@
     function doActionAfterUploading(data, fileAppendId) {
         fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
     }
-
-
-    /*function ajaxCallUpload(idForm, fileAppendId) {
-        showWaiting();
-        $("#fileAppendId").val(fileAppendId);
-        $("#error_" + fileAppendId + "Error").html("");
-        $("#uploadFormId").val(idForm);
-        var form = new FormData($("#" + idForm)[0]);
-        var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize);
-        //alert('rslt:'+rslt);
-        if (rslt == 'N') {
-            $("#error_" + fileAppendId + "Error").html($("#fileMaxMBMessage").val());
-            clearFlagValueFEFile();
-        } else if (rslt == 'E') {
-            clearFlagValueFEFile();
-        } else {
-            $.ajax({
-                type: "post",
-                url: BASE_CONTEXT_PATH + "/co-non-hcsa-file?stamp=" + new Date().getTime(),
-                data: form,
-                async: true,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    if (data != null && data.description != null) {
-                        if (data.msgType == "Y") {
-                            if (reloadIndex != -1) {
-                                $("#" + fileAppendId + "Div" + reloadIndex).after("<Div id = '" + fileAppendId + "Div" + reloadIndex + "Copy' ></Div>");
-                                deleteFileFeDiv(fileAppendId + "Div" + reloadIndex);
-                                $("#reloadIndex").val(-1);
-                                $("#" + fileAppendId + "Div" + reloadIndex + "Copy").after(data.description);
-                                deleteFileFeDiv(fileAppendId + "Div" + reloadIndex + "Copy");
-                            } else {
-                                $("#" + fileAppendId + "ShowId").append(data.description);
-                                fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
-                            }
-                            $("#error_" + fileAppendId + "Error").html("");
-                            cloneUploadFile();
-                        } else {
-                            $("#error_" + fileAppendId + "Error").html(data.description);
-                        }
-                    }
-                    if (typeof doActionAfterUploading === 'function') {
-                        doActionAfterUploading(data, fileAppendId);
-                    }
-                    dismissWaiting();
-                },
-                error: function (msg) {
-                    //alert("error");
-                    dismissWaiting();
-                }
-            });
-        }
-    }*/
-
-
-    /*function fillForm(ele, data, prefix, suffix) {
-        var $selector = getJqueryNode(ele);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (isEmpty(data)) {
-            clearFields($selector);
-            return;
-        }
-        if (isEmpty(prefix)) {
-            prefix = "";
-        }
-        if (isEmpty(suffix)) {
-            suffix = "";
-        }
-        for (var i in data) {
-            var val = data[i];
-            if (Object.prototype.toString.call(val) === "[object Object]") {
-                fillValue(ele, val, prefix, suffix);
-            }
-            var name = prefix + i + suffix;
-            var $input = $selector.find('[name="' + name + '"]');
-            if ($input.length == 0) {
-                name = prefix + capitalize(i) + suffix;
-                $input = $selector.find('[name="' + name + '"]');
-            }
-            if ($input.length == 0) {
-                continue;
-            }
-            fillValue($input, val, true);
-        }
-    }
-
-    function readonlyContent(targetSelector) {
-        var $selector = getJqueryNode(targetSelector);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (!$selector.is(":input")) {
-            $selector = $selector.find(':input');
-        }
-        if ($selector.length <= 0) {
-            return;
-        }
-        $selector.each(function (i, ele) {
-            var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
-            if (type == 'hidden') {
-                return;
-            }
-            $input.prop('readonly', true);
-            if (tag == 'select') {
-                updateSelectTag($input);
-            }
-        });
-    }
-
-    function unReadlyContent(targetSelector) {
-        var $selector = getJqueryNode(targetSelector);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (!$selector.is(":input")) {
-            $selector = $selector.find(':input');
-        }
-        if ($selector.length <= 0) {
-            return;
-        }
-        $selector.each(function (i, ele) {
-            var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
-            if (type == 'hidden') {
-                return;
-            }
-            $input.prop('readonly', false);
-            if (tag == 'select') {
-                updateSelectTag($input);
-            }
-        });
-    }
-
-    function premisesFunc(){}*/
-
-/*
-    function isEmptyNode(ele) {
-        return ele == null || typeof ele !== "object" || !(ele instanceof jQuery) || ele.length == 0;
-    }
-
-    function resetField(targetTag, index, prefix) {
-        var $target = getJqueryNode(targetTag);
-        if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
-            return;
-        }
-        var tag = $target[0].tagName.toLowerCase();
-        if ($target.is(':input')) {
-            var orgName = $target.attr('name');
-            var orgId = $target.attr('id');
-            if (isEmpty(orgName)) {
-                orgName = orgId;
-            }
-            if (isEmpty(orgName)) {
-                return;
-            }
-            if (isEmpty(prefix)) {
-                prefix = "";
-            }
-            var base = $target.data('base');
-            if (isEmpty(base)) {
-                var result;
-                if (isEmpty(prefix)) {
-                    prefix = "";
-                    result = /(.*\D+)/g.exec(orgName);
-                } else {
-                    result = /(\D+.*\D+)/g.exec(orgName);
-                }
-                base = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            }
-            var newName = prefix + base + index;
-            $target.prop('name', newName);
-            if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
-                $target.prop('id', newName);
-            }
-            var $errorSpan = $target.closest('.form-group').find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
-            if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + newName);
-            }
-            if (tag == 'select') {
-                updateSelectTag($target);
-            }
-        } else {
-            $target.find(':input').each(function() {
-                resetField(this, index, prefix);
-            });
-        }
-    }
-
-    function isEmpty(str) {
-        return typeof str === 'undefined' || str == null || (typeof str !== 'number' && str == '') || str == 'undefined';
-    }
-    function clearFields(targetSelector, withoutClearError) {
-        var $selector = getJqueryNode(targetSelector);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (!$selector.is(":input")) {
-            if (isEmpty(withoutClearError) || !withoutClearError) {
-                $selector.find("span[name='iaisErrorMsg']").each(function () {
-                    $(this).html("");
-                });
-            }
-            $selector = $selector.find(':input[class!="not-clear"]');
-        }
-        if ($selector.length <= 0) {
-            return;
-        }
-        $selector.each(function() {
-            var type = this.type, tag = this.tagName.toLowerCase();
-            if (!$(this).hasClass('not-clear')) {
-                if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
-                    this.value = '';
-                } else if (type == 'checkbox') {
-                    this.checked = false;
-                } else if (type == 'radio') {
-                    this.checked = false;
-                } else if (tag == 'select') {
-                    this.selectedIndex = 0;
-                    updateSelectTag($(this));
-                }
-            }
-        });
-    }
-
-    function capitalize(str){
-        if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
-            return str;
-        }
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function uncapitalize(str){
-        if (isEmpty(str) || Object.prototype.toString.call(str) !== "[object String]") {
-            return str;
-        }
-        return str.charAt(0).toLowerCase() + str.slice(1);
-    }*/
-    /*function hideTag(ele) {
-        var $ele = getJqueryNode(ele);
-        if (isEmpty($ele)) {
-            return;
-        }
-        $ele.hide();
-        $ele.addClass('hidden');
-        clearFields($ele);
-    }*/
-    /*$(document).ready(function() {
-
-    });
-
-    function ajaxCallUpload(idForm, fileAppendId) {
-        showWaiting();
-        $("#fileAppendId").val(fileAppendId);
-        $("#error_" + fileAppendId + "Error").html("");
-        $("#uploadFormId").val(idForm);
-        var form = new FormData($("#" + idForm)[0]);
-        var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize);
-        //alert('rslt:'+rslt);
-        if (rslt == 'N') {
-            $("#error_" + fileAppendId + "Error").html($("#fileMaxMBMessage").val());
-            clearFlagValueFEFile();
-        } else if (rslt == 'E') {
-            clearFlagValueFEFile();
-        } else {
-            $.ajax({
-                type: "post",
-                url: BASE_CONTEXT_PATH + "/co-non-hcsa-file?stamp=" + new Date().getTime(),
-                data: form,
-                async: true,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    if (data != null && data.description != null) {
-                        if (data.msgType == "Y") {
-                            if (reloadIndex != -1) {
-                                $("#" + fileAppendId + "Div" + reloadIndex).after("<Div id = '" + fileAppendId + "Div" + reloadIndex + "Copy' ></Div>");
-                                deleteFileFeDiv(fileAppendId + "Div" + reloadIndex);
-                                $("#reloadIndex").val(-1);
-                                $("#" + fileAppendId + "Div" + reloadIndex + "Copy").after(data.description);
-                                deleteFileFeDiv(fileAppendId + "Div" + reloadIndex + "Copy");
-                            } else {
-                                $("#" + fileAppendId + "ShowId").append(data.description);
-                            }
-                            $("#error_" + fileAppendId + "Error").html("");
-                            cloneUploadFile();
-                        } else {
-                            $("#error_" + fileAppendId + "Error").html(data.description);
-                        }
-                    }
-                    if (typeof doActionAfterUploading === 'function') {
-                        doActionAfterUploading(data, fileAppendId);
-                    }
-                    dismissWaiting();
-                },
-                error: function (msg) {
-                    //alert("error");
-                    dismissWaiting();
-                }
-            });
-        }
-    }
-
-    function initUploadFileData() {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX");
-        $('#_singleUpload').val("1");
-    }
-
-    var cl = function(){
-        $("select[name='onSiteAddressType']").change(function () {
-            if('ADDTY001'==$(this).val()){
-                if( $(this).parent().parent().next().children("label").children().length<1){
-                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                }
-            }else if('ADDTY002'==$( this).val()) {
-                $(this).parent().parent().next().children("label").children().remove();
-                $(this).parent().parent().next().next().children("label").children().remove();
-                $(this).parent().parent().next().next().next().children("label").children().remove();
-            }
-        });
-
-        $("select[name='conveyanceAddrType']").change(function () {
-            if('ADDTY001'==$( this).val()){
-                if( $(this).parent().parent().next().children("label").children().length<1){
-                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                }
-            }else if('ADDTY002'==$( this).val()) {
-                $(this).parent().parent().next().children("label").children().remove();
-                $(this).parent().parent().next().next().children("label").children().remove();
-                $(this).parent().parent().next().next().next().children("label").children().remove();
-            }
-        });
-
-        $("select[name='offSiteAddrType']").change(function () {
-            if('ADDTY001'==$( this).val()){
-                if( $(this).parent().parent().next().children("label").children().length<1){
-                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                }
-            }else if('ADDTY002'==$( this).val()) {
-                $(this).parent().parent().next().children("label").children().remove();
-                $(this).parent().parent().next().next().children("label").children().remove();
-                $(this).parent().parent().next().next().next().children("label").children().remove();
-            }
-        });
-        $("select[name='easMtsAddrType']").change(function (){
-            if('ADDTY001'==$( this).val()){
-                if( $(this).parent().parent().next().children("label").children().length<1){
-                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                }
-            }else if('ADDTY002'==$( this).val()) {
-                $(this).parent().parent().next().children("label").children().remove();
-                $(this).parent().parent().next().next().children("label").children().remove();
-                $(this).parent().parent().next().next().next().children("label").children().remove();
-            }
-        });
-    }
-
-  var preperChange =  function(){
-        if($("select[name='onSiteAddressType']").val()=='ADDTY001'){
-            if($(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if($("select[name='onSiteAddressType']").val()=='ADDTY002'){
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        };
-
-        if($("select[name='conveyanceAddrType']").val()=='ADDTY001'){
-            if( $(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if($("select[name='conveyanceAddrType']").val()=='ADDTY002'){
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        };
-        if($("select[name='offSiteAddrType']").val()=='ADDTY001'){
-            if($(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if($("select[name='offSiteAddrType']").val()=='ADDTY002'){
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        };
-    }
-
-    $("select[name='onSiteAddressType']").change(function () {
-
-        if('ADDTY001'==$(this).val()){
-            if( $(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if('ADDTY002'==$( this).val()) {
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        }
-
-    });
-
-    $("select[name='conveyanceAddrType']").change(function () {
-        if('ADDTY001'==$( this).val()){
-            if( $(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if('ADDTY002'==$( this).val()) {
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        }
-    });
-
-    $("select[name='offSiteAddrType']").change(function () {
-
-        if('ADDTY001'==$( this).val()){
-            if( $(this).parent().parent().next().children("label").children().length<1){
-                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
-            }
-        }else if('ADDTY002'==$( this).val()) {
-            $(this).parent().parent().next().children("label").children().remove();
-            $(this).parent().parent().next().next().children("label").children().remove();
-            $(this).parent().parent().next().next().next().children("label").children().remove();
-        }
-    });
-    $("input[name='easMtsUseOnly0']").change(function (){
-        if($("input[name='easMtsUseOnlyVal']").val()=='UOT001'){
-            if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().length<1){
-                $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').append("<span class=\"mandatory\">*</span>");
-            }
-            if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().length<1){
-                $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').append("<span class=\"mandatory\">*</span>");
-            }
-        }else if($("input[name='easMtsUseOnlyVal']").val()=='UOT002'){
-            $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().remove();
-            $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().remove();
-        }
-    });*/
-
 </script>
 

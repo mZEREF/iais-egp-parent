@@ -165,6 +165,7 @@
     function jumpPage() {
         submit('premises','saveDraft','jumpPage');
     }
+/*
 
 
     var changePsnItem = function () {
@@ -239,7 +240,7 @@
         }else{
             $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
         }
-        /*<!-- speciality-->
+        /!*<!-- speciality-->
         var speciality = data.speciality;
         console.log('speciality'+speciality);
         $CurrentPsnEle.find('.specialty-label').html(speciality);
@@ -248,7 +249,7 @@
         $CurrentPsnEle.find('.sub-specialty-label').html(subSpeciality);
         <!--qualification -->
         var qualification = data.qualification;
-        $CurrentPsnEle.find('.qualification-label').html(qualification);*/
+        $CurrentPsnEle.find('.qualification-label').html(qualification);*!/
         var otherQualification = data.otherQualification;
         if(otherQualification != null && otherQualification !='undefined' && otherQualification != ''){
             $CurrentPsnEle.find('input[name="otherQualification"]').val(otherQualification);
@@ -410,5 +411,6 @@
             $ele.css('color', '#999');
         }
     }
+*/
 
 </script>

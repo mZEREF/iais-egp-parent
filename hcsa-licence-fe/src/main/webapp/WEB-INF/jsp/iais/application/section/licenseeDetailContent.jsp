@@ -158,7 +158,7 @@
 
   function handleVal(selector, val, readonly) {
     $(selector).val(val);
-    $(selector).prop('readonly', readonly);
+    //$(selector).prop('readonly', readonly);
   }
 
 </script>

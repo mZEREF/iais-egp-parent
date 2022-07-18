@@ -1,5 +1,127 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="row control control-caption-horizontal">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                    <label  class="control-label control-set-font control-font-label">
+                        <p class="app-title"><c:out value="${currStepName}"/></p>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <c:set var="personList" value="${currSvcInfoDto.appSvcCgoDtoList}"/>
+    <c:set var="personConfig" value="${currStepConfig}"/>
+
+    <c:choose>
+        <c:when test="${empty personList && personConfig.mandatoryCount > 1}">
+            <c:set var="personCount" value="${personConfig.mandatoryCount}"/>
+        </c:when>
+        <c:when test="${empty personList}">
+            <c:set var="personCount" value="1"/>
+        </c:when>
+        <c:when test="${personConfig.mandatoryCount > personList.size() }">
+            <c:set var="personCount" value="${personConfig.mandatoryCount}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="personCount" value="${personList.size()}"/>
+        </c:otherwise>
+    </c:choose>
+
+
+    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
+        <c:set var="index" value="${status.index}" />
+        <c:set var="person" value="${personList[index]}"/>
+
+        <%@include file="personnelDetail.jsp" %>
+        <%--<div class="form-horizontal personnel-content">
+            <iais:row cssClass="edit-content">
+                <c:if test="${canEdit}">
+                    <div class="text-right app-font-size-16">
+                        <a class="edit psnEdit" href="javascript:void(0);">
+                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                        </a>
+                    </div>
+                </c:if>
+            </iais:row>
+            <iais:row>
+                <div class="col-xs-12 col-md-6">
+                    <p class="app-title">${singleName} <span class="psnHeader"><c:if test="${personCount > 1}">${index+1}</c:if></span></p>
+                </div>
+                <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
+                    <h4 class="text-danger">
+                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                    </h4>
+                </div>
+            </iais:row>
+
+            <c:if test="${isRfc || isRenew || isRfi}">
+                <iais:row>
+                    <div class="col-sm-10">
+                        <label class="control-font-label">
+                            <c:if test="${!empty person.name && !empty person.idNo && !empty person.idType}">
+                                ${person.name}, ${person.idNo} (<iais:code code="${person.idType}"/>)
+                            </c:if>
+                        </label>
+                    </div>
+                </iais:row>
+            </c:if>
+
+            <%@include file="personnelDetail.jsp" %>
+        </div>--%>
+    </c:forEach>
+
+
+    <c:if test="${!isRfi}">
+        <c:set var="needAddPsn" value="true"/>
+        <c:choose>
+            <c:when test="${personConfig.status =='CMSTAT003'}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${personCount >= personConfig.maximumCount}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+        </c:choose>
+        <div class="col-md-12 col-xs-12 addPersonnelDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+            <span class="addPersonnelBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">+ Add <c:out value="${singleName}"/></span>
+            </span>
+        </div>
+    </c:if>
+
+</div>
+
+<%--
+<div class="row">
+    <div class="col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${(isRfc || isRenew) && !isRfi}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+        </c:if>
+    </div>
+</div>
+--%>
+
+
+
+<%--
+
 <style>
     table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
         margin-bottom: 15px;
@@ -967,4 +1089,4 @@
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
-</script>
+</script>--%>

@@ -1409,7 +1409,7 @@ public final class AppDataHelper {
                             //not click edit
                             if (AppConsts.NO.equals(poIsPartEdit[i])) {
                                 appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, poIndexNo,
-                                        HcsaAppConst.PAGE_NAME_PO);
+                                        ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                                 appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                                 //change arr
                                 poIndexNos = removeArrIndex(poIndexNos, i);
@@ -1619,7 +1619,7 @@ public final class AppDataHelper {
                             //not click edit
                             if (AppConsts.NO.equals(dpoIsPartEdit[i])) {
                                 appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, dpoIndexNo,
-                                        HcsaAppConst.PAGE_NAME_PO);
+                                        ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                                 appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                                 //change arr
                                 dpoIndexNos = removeArrIndex(dpoIndexNos, i);
@@ -1769,12 +1769,12 @@ public final class AppDataHelper {
     }
 
     private static AppSvcPrincipalOfficersDto getPsnByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo,
-            String pageName) {
+            String psnType) {
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
             List<AppSvcPrincipalOfficersDto> psnDtos = null;
-            if (HcsaAppConst.PAGE_NAME_PO.equals(pageName)) {
+            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
                 psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-            } else if (HcsaAppConst.PAGE_NAME_MAP.equals(pageName)) {
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
                 psnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
             }
             if (!IaisCommonUtils.isEmpty(psnDtos)) {
@@ -2323,7 +2323,7 @@ public final class AppDataHelper {
                     if (!StringUtil.isEmpty(mapIndexNo)) {
                         //not click edit
                         if (AppConsts.NO.equals(isPartEdit[i])) {
-                            appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, mapIndexNo, HcsaAppConst.PAGE_NAME_MAP);
+                            appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, mapIndexNo, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                             medAlertPersons.add(appSvcPrincipalOfficersDto);
                             //change arr
                             mapIndexNos = removeArrIndex(mapIndexNos, i);

@@ -81,7 +81,6 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_NAME;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
@@ -122,6 +121,9 @@ public class ServiceInfoDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
+
+        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
+        ParamUtil.setSessionAttr(bpc.request, "designationOpList", (Serializable) designationOpList);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
@@ -247,11 +249,11 @@ public class ServiceInfoDelegator {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
 
-        ParamUtil.setRequestAttr(bpc.request, "singleName", singleName);
-        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_NAME, currentStepName);
-        ParamUtil.setRequestAttr(bpc.request, "currentStep", currentStep);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CURR_SINGLE_NAME, singleName);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CURR_STEP_NAME, currentStepName);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CURR_SVC_STEP, currentStep);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "currSvcInfoDto", currSvcInfoDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CURR_SVC_INFO, currSvcInfoDto);
         log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " End ---"));
     }
 
@@ -489,8 +491,6 @@ public class ServiceInfoDelegator {
         specialtyAttr.put("style", "display: none;");
         String specialtyHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialtySelectList, null, null);
         ParamUtil.setRequestAttr(bpc.request, "SpecialtyHtml", specialtyHtml);
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
-        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         //reload
         if (appSvcRelatedInfoDto != null) {
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -572,8 +572,6 @@ public class ServiceInfoDelegator {
         SelectOption deputyFlagOp3 = new SelectOption("1", "Yes");
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
-        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
 
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
@@ -1629,8 +1627,6 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.EASMTSSPECIALTYSELECTLIST, easMtsSpecialtySelectList);
         // Assgined person dropdown options
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PERSON_OPTIONS, ApplicationHelper.genAssignPersonSel(bpc.request, true));
-        List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
-        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
     }
 
