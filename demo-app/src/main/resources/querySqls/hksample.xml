@@ -17,6 +17,7 @@
         <![CDATA[
           select ID,ROOM_TYPE,ROOM_NO from sample.dbo.sample_rooms where 1 = 1
           <#if roomType??> AND ROOM_TYPE = :roomType</#if>
+          <#if roomNo??> AND ROOM_NO = :roomNo</#if>
         ]]>
     </sql>
 </sqls>

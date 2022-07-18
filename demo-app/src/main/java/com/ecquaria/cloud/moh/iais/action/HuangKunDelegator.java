@@ -132,14 +132,28 @@ public class HuangKunDelegator {
         huangKunRoomDto.setRoomNO(roomNo);
         huangKunRoomDto.setRoomType(roomType);
 
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        if (StringUtil.isNotEmpty(roomNo)){
+            searchParam.addFilter("roomNo", roomNo, true);
+        }
+        QueryHelp.setMainSql("roomsample", "queryRoom", searchParam);
+        SearchResult<HuangKunRoomDto> result = huangKunRoomService.doQuery(searchParam);
+
         ValidationResult vResult = WebValidationHelper.validateProperty(huangKunRoomDto, "add");
         if(vResult != null && vResult.isHasErrors()){
             Map<String,String> errorMap = vResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-            huangKunRoomService.addRoom(huangKunRoomDto);
+            if (result.getRowCount()!=0){
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("roomNO", "This roomNO already existed");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            }else {
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+                huangKunRoomService.addRoom(huangKunRoomDto);
+            }
         }
 
     }
