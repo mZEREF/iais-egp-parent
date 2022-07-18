@@ -1033,7 +1033,9 @@
 
     <sql key = "searchByTop" remarks="Search Termination of Pregnancy">
         <![CDATA[
-            select distinct T1.id , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY, T1.DOCTOR_REGN_NO, T1.DOCTOR_NAME, T1.SUBMIT_DT, T1.num  from (
+            select distinct T1.id , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY,
+             T1.DOCTOR_REGN_NO, T1.DOCTOR_NAME,
+             T1.SUBMIT_DT, T1.num  from (
             SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -1075,8 +1077,7 @@
     <sql key = "searchTopAjax" remarks="Search Termination of Pregnancy Ajax">
         <![CDATA[
             select distinct T1.id , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY,
-             case T1.DOCTOR_REGN_NO when '' then '-' else T1.DOCTOR_REGN_NO end DOCTOR_REGN_NO,
-             case T1.DOCTOR_NAME when '' then '-' else T1.DOCTOR_NAME end DOCTOR_NAME,
+             T1.DOCTOR_REGN_NO, T1.DOCTOR_NAME,
              T1.SUBMIT_DT, T1.num  from (
             SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
