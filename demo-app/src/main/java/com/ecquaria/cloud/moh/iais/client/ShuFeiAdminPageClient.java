@@ -47,5 +47,6 @@ public interface ShuFeiAdminPageClient {
     @GetMapping(value = "sf_person/select_by_roomId/{roomId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ShuFeiPersonSampleDto>> selectByRoomId(@PathVariable("roomId") String roomId);
 
-
+    @GetMapping(value = "sf_person/select_displayName/{displayName}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ShuFeiPersonSampleDto> selectByDisPlayName(@PathVariable("displayName") String displayName);
 }

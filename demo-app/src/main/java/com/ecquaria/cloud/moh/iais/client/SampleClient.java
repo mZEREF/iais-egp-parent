@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "iais-sample", configuration = FeignConfiguration.class,
         fallback = SampleClientFallback.class)
 public interface SampleClient {
-    @GetMapping(value = "/new-sequence-id")
+    @GetMapping(value = "new-sequence-id")
     FeignResponseEntity<String> getSeqId();
 
-    @GetMapping(value = "/organization/{uenNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "organization/{uenNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgSampleDto> getOrgByUen(@PathVariable("uenNo") String uenNo);
 }
