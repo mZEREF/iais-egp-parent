@@ -1246,6 +1246,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
      */
     public void doRequestInformationSubmit(BaseProcessClass bpc) throws Exception {
         super.doRequestInformationSubmit(bpc);
+        if (ApplicationHelper.isFrontend()) {
+            String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+            //update message statusdo
+            appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+        }
     }
 
     protected List<AppPremisesRoutingHistoryDto> getRoutingHistoryDtos(String appNo) {

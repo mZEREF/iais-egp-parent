@@ -204,6 +204,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         List<AppSvcVehicleDto> appSvcVehicleDtos = inspectionFeClient.getAppSvcVehicleDtoListByCorrId(appPremCorrId).getEntity();
         //get old data
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationFeClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
+        if (appPremPreInspectionNcDto == null){
+            return  inspecUserRecUploadDtos;
+        }
         String oldNcId = appPremPreInspectionNcDto.getId();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = inspectionFeClient.getNcItemDtoListByAppPremNcId(oldNcId).getEntity();
         String curVersionStr = appPremPreInspectionNcDto.getVersion();
