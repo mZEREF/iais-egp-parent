@@ -4,13 +4,17 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.service.IncidentMOHProcessService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INCIDENT;
 
 /**
  * @author YiMing
@@ -19,14 +23,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAM
 @Delegator(value = "incidentMOHProcessDelegator")
 @Slf4j
 public class IncidentMOHProcessDelegator {
-    private static final String FUNCTION_NAME_DO = "DO Processing";
-    private static final String FUNCTION_NAME_AO = "AO Processing";
-    private static final String FUNCTION_NAME_HM = "HM Processing";
     private static final String PARAM_PROCESS_KEY = "key";
     private static final String PARAM_MODULE_KEY = "module";
 
     private final IncidentMOHProcessService mohProcessService;
 
+    @Autowired
     public IncidentMOHProcessDelegator(IncidentMOHProcessService mohProcessService) {
         this.mohProcessService = mohProcessService;
     }
@@ -35,21 +37,21 @@ public class IncidentMOHProcessDelegator {
         HttpServletRequest request = bpc.request;
         mohProcessService.clearSession(request);
         ParamUtil.setSessionAttr(request,PARAM_PROCESS_KEY,"DO");
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DO);
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT, FUNCTION_DO_PROCESSING);
     }
 
     public void startAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         mohProcessService.clearSession(request);
         ParamUtil.setSessionAttr(request,PARAM_PROCESS_KEY,"AO");
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_AO);
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT, FUNCTION_AO_PROCESSING);
     }
 
     public void startHM(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         mohProcessService.clearSession(request);
         ParamUtil.setSessionAttr(request,PARAM_PROCESS_KEY,"HM");
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_HM);
+        AuditTrailHelper.auditFunction(MODULE_INCIDENT, FUNCTION_HM_PROCESSING);
     }
 
 

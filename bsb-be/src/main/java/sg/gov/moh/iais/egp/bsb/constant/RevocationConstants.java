@@ -28,9 +28,6 @@ public final class RevocationConstants {
     public static final String PARAM_APPLICATION_STATUS_REJECTED = "BSBAPST008";
     public static final String PARAM_APPLICATION_STATUS_APPROVED = "BSBAPST009";
 
-    public static final String MODULE_REVOCATION = "Revocation";
-    public static final String FUNCTION_REVOCATION = "Revocation";
-
     public static final String KEY_APPLICATION_PAGE_INFO = "pageInfo";
     public static final String KEY_APPLICATION_DATA_LIST = "dataList";
     public static final String KEY_ACTION_VALUE = "action_value";

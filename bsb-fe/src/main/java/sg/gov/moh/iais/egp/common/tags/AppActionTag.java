@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.common.tags;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AFCUploadReportJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AppActionJudge;
-import sg.gov.moh.iais.egp.bsb.service.inbox.AppEditableJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AppWithdrawableJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.ApplicantUploadCertReportJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.DraftAppJudge;
@@ -26,7 +25,6 @@ public class AppActionTag extends SimpleTagSupport {
     @Override
     public void doTag() throws JspException, IOException {
         List<AppActionJudge> judgeList = Arrays.asList(
-                new AppEditableJudge(info.getStatus(), info.getAssigned()),
                 new DraftAppJudge(info.getStatus()),
                 new InsReportJudge(info.getStatus()),
                 new AppWithdrawableJudge(info.getAppType(), info.getStatus()),

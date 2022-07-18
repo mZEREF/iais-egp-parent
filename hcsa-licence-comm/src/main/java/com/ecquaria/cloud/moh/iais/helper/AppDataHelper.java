@@ -248,6 +248,7 @@ public final class AppDataHelper {
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
                         appGrpPremisesDto.setExistingData(existingData);
+                        appGrpPremisesDto.setHasError(false);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
@@ -263,6 +264,7 @@ public final class AppDataHelper {
                     }
                     if (!AppConsts.YES.equals(isParyEdit[i])) {
                         appGrpPremisesDto.setExistingData(existingData);
+                        appGrpPremisesDto.setHasError(false);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                         continue;
@@ -274,21 +276,12 @@ public final class AppDataHelper {
                     appGrpPremisesDto = new AppGrpPremisesDto();
                 }
             }
+            appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setExistingData(existingData);
             ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
             appGrpPremisesDto.setPremisesType(premType);
             appGrpPremisesDto.setPremisesSelect(premisesSel);
-            //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
-           /* List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
-            List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
-            List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();*/
-            /*int length = 0;
-            try {
-                length = Integer.parseInt(phLength[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("length can not parse to int"));
-            }*/
             int opLength = 0;
             try {
                 opLength = Integer.parseInt(opLengths[i]);
@@ -301,24 +294,6 @@ public final class AppDataHelper {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
             }
-           /* int weeklyLength = 0;
-            try {
-                weeklyLength = Integer.parseInt(weeklyLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("weekly length can not parse to int"));
-            }
-            int phLength = 0;
-            try {
-                phLength = Integer.parseInt(phLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("ph length can not parse to int"));
-            }
-            int eventLength = 0;
-            try {
-                eventLength = Integer.parseInt(eventLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("event length can not parse to int"));
-            }*/
             if (AppConsts.TRUE.equals(getVal(rfiCanEdit, i))) {
                 appGrpPremisesDto.setRfiCanEdit(true);
             } else {

@@ -310,7 +310,18 @@ def configurePipeline(){
                     If you do not specify any value for this field, the build will still proceed.
                     '''.stripMargin().stripIndent(),
                     name: 'BASELINE_TAG',
-                    trim: true)]
+                    trim: true),
+                choice (
+                    choices: ['CICD2-SIT2', 'CICD2-SIT3'], 
+                    description: '''CICD2-SIT2 <br/>
+                    192.168.88.28 egp.sit.inter.iais.com <br/>
+                    192.168.88.13 egp.sit.intra.iais.com <br/>
+                    <br/>
+                    CICD2-SIT3<br/>
+                    192.168.88.58 egp.sit.inter.iais.com <br/>
+                    192.168.88.43 egp.sit.intra.iais.com <br/>''',
+                    name: 'KATALON')
+                ]
             )
         ])
 }

@@ -13,6 +13,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_VIEW_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_VIEW_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_CONSUME;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_DISPOSAL;
@@ -20,11 +22,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBM
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_RECEIPT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.KEY_DATA_SUBMISSION_TYPE_TRANSFER;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.FUNCTION_NAME;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_NAME;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_CANCELLATION_APPROVAL_APP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_DEREGISTRATION_FAC_CER_REG;
@@ -45,7 +45,7 @@ public class MohBeAppViewDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_PRIMARY_DOC_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
+        AuditTrailHelper.auditFunction(MODULE_VIEW_APPLICATION, FUNCTION_VIEW_APPLICATION);
     }
 
     public void prepareViewForm(BaseProcessClass bpc) {

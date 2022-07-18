@@ -6,7 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -21,11 +22,24 @@ import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_REVOCATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REVOCATION;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.BACK_URL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_CAN_UPLOAD;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_SEARCH;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_HM;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_REVOCATION_DETAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_REVOKE_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.TASK_LIST_URL;
 
 /**
  * @author Zhu Tangtang
@@ -51,13 +65,14 @@ public class AORevocationDelegator {
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_REVOCATION);
+        AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_AO_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_APPLICATION_SEARCH, null);
-        ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
-        ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
-        ParamUtil.setSessionAttr(request, BACK_URL, null);
+        HttpSession session = request.getSession();
+        session.removeAttribute(PARAM_APPLICATION_SEARCH);
+        session.removeAttribute(PARAM_REVOCATION_DETAIL);
+        session.removeAttribute(PARAM_REVOKE_DTO);
+        session.removeAttribute(BACK_URL);
     }
 
     public void prepareData(BaseProcessClass bpc) {

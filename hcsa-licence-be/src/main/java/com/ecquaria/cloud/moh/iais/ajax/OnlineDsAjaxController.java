@@ -68,7 +68,7 @@ public class OnlineDsAjaxController {
         if(patientCode==null){
             return "";
         }
-        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "ar-quick-view").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "ar-quick-view");
 
         PatientInfoDto patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(patientCode);
         int currentFrozenOocytes=0;
