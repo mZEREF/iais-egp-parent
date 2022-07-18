@@ -217,6 +217,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         if (StringUtils.hasLength(medication) && DRUG_DISPENSED.equals(drugSubmission.getDrugType())) {
             drugSubmission.setMedication(medication);
         }
+        String doctorSource = ParamUtil.getString(request, "doctorSource");
         if ("true".equals(drugSubmission.getDoctorInformationPE())) {
             String doctorName = ParamUtil.getString(request, "names");
             String dSpeciality = ParamUtil.getString(request, "dSpecialitys");
@@ -248,7 +249,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
         }
         if("true".equals(drugSubmission.getDoctorInformations())){
-            if (!DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
+            if (!DP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource()) || DP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorSource)) {
                 String dName = ParamUtil.getString(bpc.request, "dName");
                 String dSpeciality = ParamUtil.getString(bpc.request, "dSpeciality");
                 String dSubSpeciality = ParamUtil.getString(bpc.request, "dSubSpeciality");

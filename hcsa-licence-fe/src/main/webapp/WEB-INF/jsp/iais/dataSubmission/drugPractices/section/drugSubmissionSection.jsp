@@ -275,6 +275,7 @@
 </div>
 <input type="hidden" name="doctorInformations" id="doctorInformations" value="${drugSubmission.doctorInformations}">
 <input type="hidden" name="doctorInformationPE" id="doctorInformationPE" value="${drugSubmission.doctorInformationPE}">
+<input type="hidden" name="doctorSource" id="doctorSource" value="">
 <input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
 <input type="hidden" name="action" id="action" value="">
 <input type="hidden" name="haveError" id="haveError" value="${haveError}">
@@ -627,6 +628,7 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
+                    $('#doctorSource').val("DRPT");
                     console.log("1");
                 }else if(isEmpty(data.selection) && isEmpty(!data.selections)){
                     clearPrsInfoElis();
@@ -642,6 +644,7 @@
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
                     $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    $('#doctorSource').val("DRPT");
                     console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
@@ -673,12 +676,14 @@
                         $('#PRS_CLOSE').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        $('#doctorSource').val("DRPT");
                         console.log("8");
                     }else if ('401' == data.selection.statusCode) {
                         $('#doctorInformations').val(true);
                         $('#PRS_PRN').modal('show');
                         $('#doctorInformation').hide();
                         $('#doctorInformationText').show();
+                        $('#doctorSource').val("DRPT");
                         console.log("9");
                     }else if(!isEmpty(data.selections)){
                         console.log('tnull');

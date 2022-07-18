@@ -1033,7 +1033,9 @@
 
     <sql key = "searchByTop" remarks="Search Termination of Pregnancy">
         <![CDATA[
-            select distinct * from (
+            select distinct T1.id , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY,
+             T1.DOCTOR_REGN_NO, T1.DOCTOR_NAME,
+             T1.SUBMIT_DT, T1.num  from (
             SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -1074,7 +1076,9 @@
 
     <sql key = "searchTopAjax" remarks="Search Termination of Pregnancy Ajax">
         <![CDATA[
-            select distinct * from (
+            select distinct T1.id , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY,
+             T1.DOCTOR_REGN_NO, T1.DOCTOR_NAME,
+             T1.SUBMIT_DT, T1.num  from (
             SELECT dds.id, CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -1102,7 +1106,8 @@
 
     <sql key = "searchByVss" remarks="Search Voluntary Sterilisation">
         <![CDATA[
-            SELECT distinct dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+            select distinct T1.ID , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY, T1.MARITAL_STATUS, T1.STERILIZATION_REASON, T1.SUBMIT_DT, T1.num  from (
+            SELECT  dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
@@ -1133,12 +1138,15 @@
             <#if sterilisationReason??> AND  charindex(:sterilisationReason, dvt.STERILIZATION_REASON) >0</#if>
             <#if submissionDateFrom??> AND dds.SUBMIT_DT >= convert(date,:submissionDateFrom)</#if>
             <#if submissionDateTo??> AND dds.SUBMIT_DT <= convert(datetime,:submissionDateTo)</#if>
+            )T1
+
          ]]>
     </sql>
 
     <sql key = "searchVssByAjax" remarks="Search Voluntary Sterilisation Ajax">
         <![CDATA[
-            SELECT distinct dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
+            select distinct T1.ID , case T1.CENTER_NAME when '' then '-' else T1.CENTER_NAME end CENTER_NAME, T1.SUBMISSION_NO, T1.PATIENT_NAME, T1.PATIENT_ID_TYPE, T1.PATIENT_ID_NO, T1.PATIENT_BIRTHDAY, T1.MARITAL_STATUS, T1.STERILIZATION_REASON, T1.SUBMIT_DT, T1.num  from (
+            SELECT  dds.ID ,CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
                   case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
@@ -1156,6 +1164,7 @@
                 GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE ) and dds.STATUS not in ('DS002')
             <#if patientIdType??> AND  charindex(:patientIdType, dvt.PATIENT_ID_TYPE) >0</#if>
             <#if patientIdNo??> AND  charindex(:patientIdNo, dvt.PATIENT_ID_NO) >0</#if>
+            )T1
 
          ]]>
     </sql>
