@@ -1,5 +1,6 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>
 <input type="hidden" name="appType" id="appType" value="${dpSuperDataSubmissionDto.appType}">
+<input type="hidden" name="isNew" id="isNew" value="${isNew}">
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
