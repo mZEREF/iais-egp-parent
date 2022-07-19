@@ -85,7 +85,7 @@ public class SqlMap {
 
     public String getSql(String catalog, String key) {
         try {
-            return getSql(catalog, key, IaisCommonUtils.genNewHashMap());
+            return getSql(catalog, key, IaisCommonUtils.genNewHashMap(), false);
         } catch (IOException| TemplateException e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
@@ -93,6 +93,10 @@ public class SqlMap {
     }
 
     public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
+        return getSql(catalog, key, params, true);
+    }
+
+    private String getSql(String catalog, String key, Map<String, Object> params, boolean needFreeMarkerRep) throws IOException, TemplateException {
         Sql sql = getDocSql(catalog, key);
         String sqlStat = sql.getSqlStr();
         if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isEmpty(sqlStat)) {
@@ -100,7 +104,7 @@ public class SqlMap {
                 sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
             }
         }
-        if (isDynamicSql(sqlStat) && IaisCommonUtils.isNotEmpty(params)) {
+        if (isDynamicSql(sqlStat) && needFreeMarkerRep) {
             StringWriter writer = new StringWriter();
             Template temp = cfg.getTemplate(getKey(sql.getCatalog(), sql.getKey()));
             temp.process(params, writer);
