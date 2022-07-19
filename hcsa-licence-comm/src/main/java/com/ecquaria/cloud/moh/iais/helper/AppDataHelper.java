@@ -21,11 +21,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
@@ -151,7 +155,7 @@ public final class AppDataHelper {
         if (premisesType != null) {
             count = premisesType.length;
         }*/
-        String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
+        //String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
         //String[] premValue = ParamUtil.getStrings(request, "premValue");
         String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
@@ -257,11 +261,11 @@ public final class AppDataHelper {
             } else if (AppConsts.YES.equals(existingData)) {
                 appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premisesSel, request);
                 if (appGrpPremisesDto != null) {
-                    if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+                    /*if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
                         appGrpPremisesDto.setRfiCanEdit(true);
                     } else {
                         appGrpPremisesDto.setRfiCanEdit(false);
-                    }
+                    }*/
                     if (!AppConsts.YES.equals(isParyEdit[i])) {
                         appGrpPremisesDto.setExistingData(existingData);
                         appGrpPremisesDto.setHasError(false);
@@ -293,11 +297,6 @@ public final class AppDataHelper {
                 nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
-            }
-            if (AppConsts.TRUE.equals(getVal(rfiCanEdit, i))) {
-                appGrpPremisesDto.setRfiCanEdit(true);
-            } else {
-                appGrpPremisesDto.setRfiCanEdit(false);
             }
             if (AppConsts.YES.equals(getVal(retrieveflag, i))) {
                 appGrpPremisesDto.setClickRetrieve(true);
@@ -1460,39 +1459,39 @@ public final class AppDataHelper {
                         log.error(e.getMessage(), e);
                     }
                     if (appPsnEditDto.isIdType()) {
-                        ApplicationHelper.setPsnValue(idType, i, appSvcPrincipalOfficersDto, "idType");
+                        setPsnValue(idType, i, appSvcPrincipalOfficersDto, "idType");
                     }
                     if (appPsnEditDto.isSalutation()) {
-                        ApplicationHelper.setPsnValue(salutation, i, appSvcPrincipalOfficersDto, "salutation");
+                        setPsnValue(salutation, i, appSvcPrincipalOfficersDto, "salutation");
                     }
                     if (appPsnEditDto.isNationality()) {
-                        ApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
+                        setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
                     }
                     if (appPsnEditDto.isDesignation()) {
-                        ApplicationHelper.setPsnValue(designation, i, appSvcPrincipalOfficersDto, "designation");
+                        setPsnValue(designation, i, appSvcPrincipalOfficersDto, "designation");
                     }
                     if (appPsnEditDto.isOtherDesignation()) {
                         if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())) {
-                            ApplicationHelper.setPsnValue(otherDesignations, i, appSvcPrincipalOfficersDto, "otherDesignation");
+                            setPsnValue(otherDesignations, i, appSvcPrincipalOfficersDto, "otherDesignation");
                         } else {
                             otherDesignations = removeArrIndex(otherDesignations, i);
                         }
                     }
 
                     if (appPsnEditDto.isName()) {
-                        name = ApplicationHelper.setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
+                        name = setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
                     }
                     if (appPsnEditDto.isIdNo()) {
-                        idNo = ApplicationHelper.setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
+                        idNo = setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
                     }
                     if (appPsnEditDto.isMobileNo()) {
-                        mobileNo = ApplicationHelper.setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
+                        mobileNo = setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
                     }
                     if (appPsnEditDto.isOfficeTelNo()) {
-                        officeTelNo = ApplicationHelper.setPsnValue(officeTelNo, i, appSvcPrincipalOfficersDto, "officeTelNo");
+                        officeTelNo = setPsnValue(officeTelNo, i, appSvcPrincipalOfficersDto, "officeTelNo");
                     }
                     if (appPsnEditDto.isEmailAddr()) {
-                        emailAddress = ApplicationHelper.setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
+                        emailAddress = setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
                     }
                     String poIndexNo = poIndexNos[i];
                     if (!StringUtil.isEmpty(poIndexNo)) {
@@ -1675,37 +1674,37 @@ public final class AppDataHelper {
                         log.error(e.getMessage(), e);
                     }
                     if (appPsnEditDto.isIdType()) {
-                        ApplicationHelper.setPsnValue(deputyIdType, i, appSvcPrincipalOfficersDto, "idType");
+                        setPsnValue(deputyIdType, i, appSvcPrincipalOfficersDto, "idType");
                     }
                     if (appPsnEditDto.isSalutation()) {
-                        ApplicationHelper.setPsnValue(deputySalutation, i, appSvcPrincipalOfficersDto, "salutation");
+                        setPsnValue(deputySalutation, i, appSvcPrincipalOfficersDto, "salutation");
                     }
                     if (appPsnEditDto.isNationality()) {
-                        ApplicationHelper.setPsnValue(deputyNationlity, i, appSvcPrincipalOfficersDto, "nationality");
+                        setPsnValue(deputyNationlity, i, appSvcPrincipalOfficersDto, "nationality");
                     }
                     if (appPsnEditDto.isDesignation()) {
-                        ApplicationHelper.setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
+                        setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
                     }
                     if (appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(
                             appSvcPrincipalOfficersDto.getDesignation())) {
-                        ApplicationHelper.setPsnValue(deputyOtherDesignations, i, appSvcPrincipalOfficersDto, "otherDesignation");
+                        setPsnValue(deputyOtherDesignations, i, appSvcPrincipalOfficersDto, "otherDesignation");
                     }
                     //input
                     if (appPsnEditDto.isName()) {
-                        deputyName = ApplicationHelper.setPsnValue(deputyName, i, appSvcPrincipalOfficersDto, "name");
+                        deputyName = setPsnValue(deputyName, i, appSvcPrincipalOfficersDto, "name");
                     }
                     if (appPsnEditDto.isIdNo()) {
-                        deputyIdNo = ApplicationHelper.setPsnValue(deputyIdNo, i, appSvcPrincipalOfficersDto, "idNo");
+                        deputyIdNo = setPsnValue(deputyIdNo, i, appSvcPrincipalOfficersDto, "idNo");
                     }
                     if (appPsnEditDto.isMobileNo()) {
-                        deputyMobileNo = ApplicationHelper.setPsnValue(deputyMobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
+                        deputyMobileNo = setPsnValue(deputyMobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
                     }
                     if (appPsnEditDto.isOfficeTelNo()) {
-                        deputyOfficeTelNo = ApplicationHelper.setPsnValue(deputyOfficeTelNo, i, appSvcPrincipalOfficersDto,
+                        deputyOfficeTelNo = setPsnValue(deputyOfficeTelNo, i, appSvcPrincipalOfficersDto,
                                 "officeTelNo");
                     }
                     if (appPsnEditDto.isEmailAddr()) {
-                        deputyEmailAddr = ApplicationHelper.setPsnValue(deputyEmailAddr, i, appSvcPrincipalOfficersDto, "emailAddr");
+                        deputyEmailAddr = setPsnValue(deputyEmailAddr, i, appSvcPrincipalOfficersDto, "emailAddr");
                     }
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
@@ -1790,10 +1789,9 @@ public final class AppDataHelper {
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
-        ParamUtil.setSessionAttr(request, HcsaAppConst.ERRORMAP_GOVERNANCEOFFICERS, null);
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto appSvcCgoDto;
-        String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
+        String[] assignSelect = ParamUtil.getStrings(request, "assignSelVal");
         int size = 0;
         if (assignSelect != null && assignSelect.length > 0) {
             size = assignSelect.length;
@@ -1811,40 +1809,25 @@ public final class AppDataHelper {
                 appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean needEdit = rfcOrRenew || isRfi;
-        if (needEdit) {
+        /*if (needEdit) {
             if (indexNos == null) {
                 size = 0;
             } else {
                 size = indexNos.length;
             }
-        }
+        }*/
+
         String[] existingPsn = ParamUtil.getStrings(request, "existingPsn");
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
-        //form display data
-        String[] salutation = ParamUtil.getStrings(request, "salutation");
-        String[] name = ParamUtil.getStrings(request, "name");
-        String[] idType = ParamUtil.getStrings(request, "idType");
-        String[] idNo = ParamUtil.getStrings(request, "idNo");
-        String[] nationality = ParamUtil.getStrings(request, "nationality");
-        String[] designation = ParamUtil.getStrings(request, "designation");
-        String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
-        String[] professionType = ParamUtil.getStrings(request, "professionType");
-        String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
-        //String[] specialty = ParamUtil.getStrings(request, "specialty");
-        //String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
-        //String[] qualification = ParamUtil.getStrings(request, "qualification");
-        String[] otherQualification = ParamUtil.getStrings(request, "otherQualification");
-        String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
-        String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        //new and not rfi
+
         for (int i = 0; i < size; i++) {
             AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
             boolean chooseExisting = false;
             boolean getPageData = false;
             appSvcCgoDto = new AppSvcPrincipalOfficersDto();
             String indexNo = indexNos[i];
-            String assign = assignSelect[i];
+            String assign = getVal(assignSelect, i);
             String licPsn = licPerson[i];
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 if (assign != null) {
@@ -1861,7 +1844,7 @@ public final class AppDataHelper {
                         if (AppConsts.NO.equals(isPartEdit[i])) {
                             appSvcCgoDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto, indexNo);
                             appSvcCgoDtoList.add(appSvcCgoDto);
-                            //change arr
+                            /*//change arr
                             indexNos = removeArrIndex(indexNos, i);
                             isPartEdit = removeArrIndex(isPartEdit, i);
                             licPerson = removeArrIndex(licPerson, i);
@@ -1877,7 +1860,7 @@ public final class AppDataHelper {
                             //specialtyOther = removeArrIndex(specialtyOther,i);
                             //change arr index
                             --i;
-                            --size;
+                            --size;*/
                             continue;
                         }
                     }
@@ -1903,114 +1886,27 @@ public final class AppDataHelper {
                     clearAppPsnEditDto(appPsnEditDto);
                     log.error(e.getMessage(), e);
                 }
-                if (appPsnEditDto.isSalutation()) {
-                    ApplicationHelper.setPsnValue(salutation, i, appSvcPrincipalOfficersDto, "salutation");
-                }
-                if (appPsnEditDto.isIdType()) {
-                    ApplicationHelper.setPsnValue(idType, i, appSvcPrincipalOfficersDto, "idType");
-                }
-                if (appPsnEditDto.isNationality()) {
-                    ApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
-                }
-                if (appPsnEditDto.isDesignation()) {
-                    ApplicationHelper.setPsnValue(designation, i, appSvcPrincipalOfficersDto, "designation");
-                }
-                if (appPsnEditDto.isOtherDesignation()) {
-                    if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())) {
-                        ApplicationHelper.setPsnValue(otherDesignations, i, appSvcPrincipalOfficersDto, "otherDesignation");
-                    } else {
-                        otherDesignations = removeArrIndex(otherDesignations, i);
-                    }
-                }
-                if (appPsnEditDto.isProfessionType()) {
-                    ApplicationHelper.setPsnValue(professionType, i, appSvcPrincipalOfficersDto, "professionType");
-                }
-
-                //input
-                if (appPsnEditDto.isName()) {
-                    name = ApplicationHelper.setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
-                }
-                if (appPsnEditDto.isIdNo()) {
-                    idNo = ApplicationHelper.setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
-                }
-                if (appPsnEditDto.isMobileNo()) {
-                    mobileNo = ApplicationHelper.setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
-                }
-                if (appPsnEditDto.isProfRegNo()) {
-                    professionRegoNo = ApplicationHelper.setPsnValue(professionRegoNo, i, appSvcPrincipalOfficersDto, "profRegNo");
-                }
-                if (appPsnEditDto.isOtherQualification()) {
-                    otherQualification = ApplicationHelper.setPsnValue(otherQualification, i, appSvcPrincipalOfficersDto,
-                            "otherQualification");
-                }
-                if (appPsnEditDto.isEmailAddr()) {
-                    emailAddress = ApplicationHelper.setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
-                }
-                appSvcCgoDto = (AppSvcPrincipalOfficersDto) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDto);
-                appSvcCgoDto.setAssignSelect(assignSelect[i]);
-                appSvcCgoDto.setLicPerson(true);
-                appSvcCgoDto.setSelectDropDown(true);
+                appSvcCgoDto = CopyUtil.copyMutableObject(appSvcPrincipalOfficersDto);
                 if (!StringUtil.isEmpty(indexNo)) {
                     appSvcCgoDto.setIndexNo(indexNo);
                 } else if (StringUtil.isEmpty(appSvcCgoDto.getIndexNo())) {
                     appSvcCgoDto.setIndexNo(UUID.randomUUID().toString());
                 }
-                //
-                boolean needSpcOptList = appSvcCgoDto.isNeedSpcOptList();
-                if (needSpcOptList) {
-                    Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-                    specialtyAttr.put("name", "specialty");
-                    specialtyAttr.put("class", "specialty");
-                    specialtyAttr.put("style", "display: none;");
-                    List<SelectOption> spcOpts = appSvcCgoDto.getSpcOptList();
-                    String specialtySelectStr = ApplicationHelper.generateDropDownHtml(specialtyAttr, spcOpts, null,
-                            appSvcCgoDto.getSpeciality());
-                    appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
-                }
+                appSvcCgoDto = getKeyPersonnel(appSvcCgoDto, appPsnEditDto, String.valueOf(i), false, request);
+                appSvcCgoDto.setLicPerson(true);
+//                appSvcCgoDto.setSelectDropDown(true);
                 appSvcCgoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                 appSvcCgoDtoList.add(appSvcCgoDto);
-                //change arr index
-                indexNos = removeArrIndex(indexNos, i);
-                isPartEdit = removeArrIndex(isPartEdit, i);
-                licPerson = removeArrIndex(licPerson, i);
-                existingPsn = removeArrIndex(existingPsn, i);
-                //dropdown cannot disabled
-                assignSelect = removeArrIndex(assignSelect, i);
-                salutation = removeArrIndex(salutation, i);
-                idType = removeArrIndex(idType, i);
-                nationality = removeArrIndex(nationality, i);
-                designation = removeArrIndex(designation, i);
-                professionType = removeArrIndex(professionType, i);
-                //specialty = removeArrIndex(specialty, i);
-                --i;
-                --size;
+
             } else if (getPageData) {
                 if (StringUtil.isEmpty(indexNo)) {
                     appSvcCgoDto.setIndexNo(UUID.randomUUID().toString());
                 } else {
                     appSvcCgoDto.setIndexNo(indexNos[i]);
                 }
-                appSvcCgoDto.setAssignSelect(assignSelect[i]);
-                appSvcCgoDto.setSalutation(salutation[i]);
-                appSvcCgoDto.setName(name[i]);
-                appSvcCgoDto.setIdType(idType[i]);
-                appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
-                appSvcCgoDto.setNationality(nationality[i]);
-                appSvcCgoDto.setDesignation(designation[i]);
-                if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation[i])) {
-                    appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
-                }
-                appSvcCgoDto.setProfessionType(professionType[i]);
-                appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
-                appSvcCgoDto.setOtherQualification(otherQualification[i]);
-                appSvcCgoDto.setMobileNo(mobileNo[i]);
-                String emailAddr = "";
-                if (emailAddress != null) {
-                    if (!StringUtil.isEmpty(emailAddress[i])) {
-                        emailAddr = StringUtil.viewHtml(emailAddress[i]);
-                    }
-                }
-                appSvcCgoDto.setEmailAddr(emailAddr);
+                boolean needLoadName =!AppConsts.YES.equals(licPerson[i])
+                        && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+                appSvcCgoDto = getKeyPersonnel(appSvcCgoDto, null, String.valueOf(i), needLoadName, request);
                 if (needEdit && AppConsts.YES.equals(licPerson[i])) {
                     appSvcCgoDto.setLicPerson(true);
                     String personKey = ApplicationHelper.getPersonKey(appSvcCgoDto.getNationality(), appSvcCgoDto.getIdType(),
@@ -2025,9 +1921,181 @@ public final class AppDataHelper {
                 appSvcCgoDtoList.add(appSvcCgoDto);
             }
         }
-        ParamUtil.setSessionAttr(request, HcsaAppConst.GOVERNANCEOFFICERSDTOLIST, (Serializable) appSvcCgoDtoList);
         log.info(StringUtil.changeForLog("genAppSvcCgoDto end ...."));
         return appSvcCgoDtoList;
+    }
+
+    private static AppSvcPrincipalOfficersDto getKeyPersonnel(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto,
+            String suffix, boolean needLoadName, HttpServletRequest request) {
+        if (person == null) {
+            person = new AppSvcPrincipalOfficersDto();
+        }
+        String assignSelect = ParamUtil.getString(request, "assignSelect" + suffix);
+        person.setAssignSelect(assignSelect);
+        setPsnValue(person, appPsnEditDto, "salutation", suffix, request);
+        setPsnValue(person, appPsnEditDto, "name", suffix, request);
+        setPsnValue(person, appPsnEditDto, "idType", suffix, request);
+        setPsnValue(person, appPsnEditDto, "idNo", suffix, request);
+        setPsnValue(person, appPsnEditDto, "nationality", suffix, request);
+        setPsnValue(person, appPsnEditDto, "designation", suffix, request);
+        /*if (appPsnEditDto == null || appPsnEditDto.isSalutation()) {
+            String salutation = ParamUtil.getString(request, "salutation"+ suffix);
+            person.setSalutation(salutation);
+        }
+        if (appPsnEditDto == null || appPsnEditDto.isIdType()) {
+            String idType = ParamUtil.getString(request, "idType"+ suffix);
+            person.setIdType(idType);
+        }
+        if (appPsnEditDto == null || appPsnEditDto.isNationality()) {
+            String nationality = ParamUtil.getString(request, "nationality"+ suffix);
+            person.setNationality(nationality);
+        }
+        if (appPsnEditDto == null || appPsnEditDto.isDesignation()) {
+            String designation = ParamUtil.getString(request, "designation"+ suffix);
+            person.setDescription(designation);
+        }*/
+        if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
+            if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
+                String otherDesignation = ParamUtil.getString(request, "otherDesignation"+ suffix);
+                person.setOtherDesignation(otherDesignation);
+            } else {
+                person.setOtherDesignation(null);
+            }
+        }
+        setPsnValue(person, appPsnEditDto, "professionBoard", suffix, request);
+        setPsnValue(person, appPsnEditDto, "professionType", suffix, request);
+        setPsnValue(person, appPsnEditDto, "profRegNo", suffix, request);
+        setPsnValue(person, appPsnEditDto, "typeOfCurrRegi", suffix, request);
+        setPsnValue(person, appPsnEditDto, "currRegiDate", suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "praCerEndDate", suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "typeOfRegister", suffix, request);
+        setPsnValue(person, appPsnEditDto, "specialityOther", suffix, request);
+        setPsnValue(person, appPsnEditDto, "specialtyGetDate", suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "otherQualification", suffix, request);
+        setPsnValue(person, appPsnEditDto, "mobileNo", suffix, request);
+        setPsnValue(person, appPsnEditDto, "emailAddr", suffix, request);
+
+        String profRegNo = person.getProfRegNo();
+        if (!StringUtil.isEmpty(profRegNo)) {
+            ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
+            if (professionalResponseDto != null) {
+                if (IaisCommonUtils.isEmpty(professionalResponseDto.getSpecialty())) {
+                    person.setSpeciality("");
+                } else {
+                    person.setSpeciality(professionalResponseDto.getSpecialty().get(0));
+                }
+                String specialtyGetDateStr = "";
+                List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
+                if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
+                    specialtyGetDateStr = entryDateSpecialist.get(0);
+                }
+                person.setSpecialtyGetDateStr(specialtyGetDateStr);
+                if (StringUtil.isEmpty(specialtyGetDateStr)) {
+                    person.setSpecialtyGetDate(null);
+                } else {
+                    Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+                    person.setSpecialtyGetDate(date);
+                }
+                String typeOfCurrRegi = "";
+                String currRegiDateStr = "";
+                String praCerEndDateStr = "";
+                String typeOfRegister = "";
+                List<RegistrationDto> registrationDtos = professionalResponseDto.getRegistration();
+                if (registrationDtos != null && registrationDtos.size() > 0) {
+                    RegistrationDto registrationDto = registrationDtos.get(0);
+                    typeOfCurrRegi = registrationDto.getRegistrationType();
+                    currRegiDateStr = registrationDto.getRegStartDate();
+                    praCerEndDateStr = registrationDto.getPcEndDate();
+                    typeOfRegister = registrationDto.getRegisterType();
+                }
+                person.setTypeOfCurrRegi(typeOfCurrRegi);
+                person.setTypeOfRegister(typeOfRegister);
+                person.setCurrRegiDateStr(currRegiDateStr);
+                if (StringUtil.isEmpty(currRegiDateStr)) {
+                    person.setCurrRegiDate(null);
+                } else {
+                    Date date = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
+                    person.setCurrRegiDate(date);
+                }
+                person.setPraCerEndDateStr(praCerEndDateStr);
+                if (StringUtil.isEmpty(praCerEndDateStr)) {
+                    person.setPraCerEndDate(null);
+                } else {
+                    Date date = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
+                    person.setPraCerEndDate(date);
+                }
+                if (needLoadName) {
+                    person.setName(professionalResponseDto.getName());
+                }
+            }
+        }
+
+        /*if (appPsnEditDto.isName()) {
+            name = setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
+        }
+        if (appPsnEditDto.isIdNo()) {
+            idNo = setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
+        }
+        if (appPsnEditDto.isMobileNo()) {
+            mobileNo = setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
+        }
+        if (appPsnEditDto.isProfRegNo()) {
+            professionRegoNo = setPsnValue(professionRegoNo, i, appSvcPrincipalOfficersDto, "profRegNo");
+        }
+        if (appPsnEditDto.isOtherQualification()) {
+            otherQualification = setPsnValue(otherQualification, i, appSvcPrincipalOfficersDto,
+                    "otherQualification");
+        }
+        if (appPsnEditDto.isEmailAddr()) {
+            emailAddress = setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
+        }
+        String currRegiDate = ParamUtil.getString(request, "currRegiDate"+ suffix);
+        String praCerEndDate = ParamUtil.getString(request, "praCerEndDate"+ suffix);
+        String specialtyGetDate = ParamUtil.getString(request, "specialtyGetDate"+ suffix);
+        person.setAssignSelect(assignSelect);
+        person.setCurrRegiDateStr(currRegiDate);
+        person.setPraCerEndDateStr(praCerEndDate);
+        person.setSpecialtyGetDateStr(specialtyGetDate);*/
+        return person;
+    }
+
+    private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
+            String suffix, HttpServletRequest request) {
+        setPsnValue(person, appPsnEditDto, fieldName, suffix, false, request);
+    }
+
+    private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
+            String suffix, boolean isDate, HttpServletRequest request) {
+        if (appPsnEditDto != null) {
+            boolean canSet = ReflectionUtil.getPropertyObj(appPsnEditDto, fieldName);
+            if (!canSet) {
+                return;
+            }
+        }
+        if (isDate) {
+            String data = ParamUtil.getString(request, fieldName + suffix);
+            Date value = null;
+            if (CommonValidator.isDate(data)) {
+                try {
+                    value = Formatter.parseDate(data);
+                } catch (ParseException e) {
+                    value = null;
+                }
+            }
+            ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
+            ReflectionUtil.setPropertyObj(fieldName, value, person);
+        } else {
+            String data = ParamUtil.getString(request, fieldName + suffix);
+            ReflectionUtil.setPropertyObj(fieldName, data, person);
+        }
+    }
+
+    private static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
+        if (arr == null || arr.length <= i) {
+            return new String[0];
+        }
+        ReflectionUtil.setPropertyObj(fieldName, arr[i], person);
+        return removeArrIndex(arr, i);
     }
 
     private static AppSvcPrincipalOfficersDto getAppSvcCgoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
@@ -2372,26 +2440,26 @@ public final class AppDataHelper {
                     log.error(e.getMessage(), e);
                 }
                 if (appPsnEditDto.isSalutation()) {
-                    ApplicationHelper.setPsnValue(salutation, i, appSvcPrincipalOfficersDto, "salutation");
+                    setPsnValue(salutation, i, appSvcPrincipalOfficersDto, "salutation");
                 }
                 if (appPsnEditDto.isIdType()) {
-                    ApplicationHelper.setPsnValue(idType, i, appSvcPrincipalOfficersDto, "idType");
+                    setPsnValue(idType, i, appSvcPrincipalOfficersDto, "idType");
                 }
                 //input
                 if (appPsnEditDto.isName()) {
-                    name = ApplicationHelper.setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
+                    name = setPsnValue(name, i, appSvcPrincipalOfficersDto, "name");
                 }
                 if (appPsnEditDto.isIdNo()) {
-                    idNo = ApplicationHelper.setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
+                    idNo = setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
                 }
                 if (appPsnEditDto.isNationality()) {
-                    ApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
+                    setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
                 }
                 if (appPsnEditDto.isMobileNo()) {
-                    mobileNo = ApplicationHelper.setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
+                    mobileNo = setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
                 }
                 if (appPsnEditDto.isEmailAddr()) {
-                    emailAddress = ApplicationHelper.setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
+                    emailAddress = setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
                 }
                 String mapIndexNo = mapIndexNos[i];
                 if(!StringUtil.isEmpty(mapIndexNo)){
@@ -2524,7 +2592,6 @@ public final class AppDataHelper {
     private static boolean isExistingPsn(String assign, String licPsn) {
         return !HcsaAppConst.NEW_PSN.equals(assign) && !assign.equals("-1") && AppConsts.YES.equals(licPsn);
     }
-
 
     private static void clearAppPsnEditDto(AppPsnEditDto appPsnEditDto) {
         appPsnEditDto.setName(false);

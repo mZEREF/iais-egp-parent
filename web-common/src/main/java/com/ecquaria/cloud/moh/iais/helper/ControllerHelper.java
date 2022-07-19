@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -154,7 +157,7 @@ public final class ControllerHelper {
             }
         } else if (Long.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
-            if (StringUtil.isDigit((String) value)) {
+            if (StringUtil.isDigit(value)) {
                 return Long.valueOf((String) value);
             }
         } else if (Double.class.isAssignableFrom(type)) {
@@ -166,7 +169,14 @@ public final class ControllerHelper {
         } else if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
             value = AppConsts.YES.equals(ParamUtil.getString(request, name));
         } else if (Date.class.isAssignableFrom(type)) {
-            value = ParamUtil.getDate(request, name);
+            value = ParamUtil.getString(request, name);
+            if (CommonValidator.isDate((String) value)) {
+                try {
+                    value = Formatter.parseDate((String) value);
+                } catch (ParseException e) {
+                    value = null;
+                }
+            }
         } else if (String[].class.isAssignableFrom(type)) {
             value = ParamUtil.getStrings(request, name);
         } else if (Integer[].class.isAssignableFrom(type) || int[].class.isAssignableFrom(type)) {

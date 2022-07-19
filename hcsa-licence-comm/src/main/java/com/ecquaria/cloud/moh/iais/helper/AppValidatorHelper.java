@@ -83,6 +83,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
+
 /**
  * @Auther chenlei on 5/4/2022.
  */
@@ -385,7 +387,7 @@ public final class AppValidatorHelper {
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
                 doAppSvcCgoDto(currentSvcAllPsnConfig, govenMap, appSvcCgoDtoList);
                 if (govenMap.isEmpty()) {
-                    govenMap.putAll(doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, dto.getServiceCode()));
+                    govenMap.putAll(doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, false));
                 }
                 if (appSvcCgoDtoList != null && govenMap.isEmpty() && "Y".equals(prsFlag)) {
                     int i = 0;
@@ -1609,7 +1611,7 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidateGovernanceOfficers(List<AppSvcPrincipalOfficersDto> appSvcCgoList,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
         if (appSvcCgoList == null) {
             return new HashMap<>(1);
         }
@@ -1668,9 +1670,13 @@ public final class AppValidatorHelper {
 
                 }
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
-                if (!StringUtil.isEmpty(professionRegoNo) && professionRegoNo.length() > 20) {
+                if (!StringUtil.isEmpty(professionRegoNo)) {
+                    if (professionRegoNo.length() > 20) {
                     String general_err0041 = repLength("Professional Regn. No.", "20");
                     errMap.put("professionRegoNo" + i, general_err0041);
+                    } else if (checkPRS) {
+                        validateProfRegNo(errMap, professionRegoNo, "professionRegoNo" + i);
+                    }
                 }
                 String specialty = appSvcCgoList.get(i).getSpeciality();
                 String otherQualification = appSvcCgoList.get(i).getOtherQualification();
@@ -2562,6 +2568,26 @@ public final class AppValidatorHelper {
             WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         }
 
+    }
+
+    private static void validateProfRegNo(Map<String, String> errMap, String profRegNo, String fieldKey) {
+        if (StringUtil.isEmpty(profRegNo)) {
+            return;
+        }
+        ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
+        if (professionalResponseDto != null) {
+            if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(
+                    professionalResponseDto.getStatusCode())) {
+                log.debug(StringUtil.changeForLog("prs svc down ..."));
+                if (professionalResponseDto.isHasException()) {
+                    errMap.put(HcsaAppConst.PRS_SERVICE_DOWN, HcsaAppConst.PRS_SERVICE_DOWN);
+                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                    errMap.put(fieldKey, MessageUtil.getMessageDesc("GENERAL_ERR0054"));
+                } else {
+                    errMap.put(fieldKey, MessageUtil.getMessageDesc("GENERAL_ERR0042"));
+                }
+            }
+        }
     }
 
     public static void doValidateSpecialisedDtoList(Map<String, String> errorMap, List<AppPremSpecialisedDto> appPremSpecialisedDtoList, HttpServletRequest request) {

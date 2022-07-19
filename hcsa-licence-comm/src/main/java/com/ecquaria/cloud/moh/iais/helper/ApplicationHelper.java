@@ -1794,14 +1794,6 @@ public final class ApplicationHelper {
         return appPsnEditDto;
     }
 
-    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
-        if (arr == null || arr.length <= i) {
-            return new String[0];
-        }
-        ReflectionUtil.setPropertyObj(fieldName, arr[i], person);
-        return removeArrIndex(arr, i);
-    }
-
     public static AppSvcPrincipalOfficersDto getKeyPersonnelDto(String psnKey, String svcCode, HttpServletRequest request) {
         Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.PERSONSELECTMAP);

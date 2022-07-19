@@ -63,11 +63,11 @@
         <iais:row cssClass="ind-no">
             <iais:field width="5" mandatory="true" value="ID No."/>
             <iais:value width="3" cssClass="col-md-3">
-                <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${person.idType}"
+                <iais:select name="idType${index}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${person.idType}"
                              cssClass="idTypeSel"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="20" type="text" name="idNumber" value="${person.idNo}" />
+                <iais:input maxLength="20" type="text" name="idNo${index}" value="${person.idNo}" />
             </iais:value>
         </iais:row>
 
@@ -97,7 +97,7 @@
         <iais:row>
             <iais:field width="5" mandatory="false" value="Professional Type"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionType" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${person.professionType}"
+                <iais:select cssClass="professionType" name="professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${person.professionType}"
                              firstOption="Please Select"/>
             </iais:value>
         </iais:row>
@@ -218,7 +218,9 @@
 <script type="text/javascript">
     $(function() {
         assignSelectEvent();
+        addPersonnelEvent();
         removePersonEvent();
+
         $('div.person-content').each(function(k, v) {
             checkPersonContent($(v), true);
         });

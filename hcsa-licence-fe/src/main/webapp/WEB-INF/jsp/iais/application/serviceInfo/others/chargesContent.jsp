@@ -129,7 +129,7 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <c:if test="${ requestInformationConfig==null}">
+                    <c:if test="${!isRfi}">
                         <c:choose>
                             <c:when test="${!empty generalChargesDtoList}">
                                 <c:set var="generalChargesLength" value="${generalChargesDtoList.size()}"/>

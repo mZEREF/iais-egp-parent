@@ -312,6 +312,9 @@ public class ServiceInfoDelegator {
         if (errorMap == null || errorMap.isEmpty()) {
             return true;
         }
+        if (errorMap.containsKey(PRS_SERVICE_DOWN)) {
+            ParamUtil.setRequestAttr(request, PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+        }
         ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
         AppValidatorHelper.setAudiErrMap(ApplicationHelper.checkIsRfi(request), appSubmissionDto.getAppType(),
                 errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
@@ -835,15 +838,15 @@ public class ServiceInfoDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = currentSvcRelatedDto.getAppSvcCgoDtoList();
         if (isGetDataFromPage) {
             appSvcCgoDtoList = AppDataHelper.genAppSvcCgoDto(bpc.request);
-            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
+            /*log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             if ("Y".equals(ApplicationHelper.getPrsFlag()) && !IaisCommonUtils.isEmpty(appSvcCgoDtoList)) {
                 for (int i = 0; i < appSvcCgoDtoList.size(); i++) {
                     AppSvcPrincipalOfficersDto appSvcCgoDto = appSvcCgoDtoList.get(i);
                     String profRegNo = appSvcCgoDto.getProfRegNo();
                     ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                    String specialtyStr = "";
+                   *//* String specialtyStr = "";
                     String subSpecialtyStr = "";
-                    String qualificationStr = "";
+                    String qualificationStr = "";*//*
                     if (professionalResponseDto != null) {
                         if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(
                                 professionalResponseDto.getStatusCode())) {
@@ -858,12 +861,12 @@ public class ServiceInfoDelegator {
                                     errList.put("professionRegoNo" + i, "GENERAL_ERR0042");
                                 }
                             }
-                            appSvcCgoDto.setSpeciality(specialtyStr);
+                            *//*appSvcCgoDto.setSpeciality(specialtyStr);
                             appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
-                            appSvcCgoDto.setQualification(qualificationStr);
+                            appSvcCgoDto.setQualification(qualificationStr);*//*
                             continue;
                         }
-                        String name = professionalResponseDto.getName();
+                        *//*String name = professionalResponseDto.getName();
                         boolean needLoadName =
                                 !appSvcCgoDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         if (needLoadName) {
@@ -891,21 +894,21 @@ public class ServiceInfoDelegator {
                         if (!IaisCommonUtils.isEmpty(qualificationList)) {
                             qualificationStr = qualificationList.get(0);
                         }
-                        appSvcCgoDto.setQualification(qualificationStr);
+                        appSvcCgoDto.setQualification(qualificationStr);*//*
                     } else {
-                        appSvcCgoDto.setSpeciality(specialtyStr);
+                        *//*appSvcCgoDto.setSpeciality(specialtyStr);
                         appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
-                        appSvcCgoDto.setQualification(qualificationStr);
+                        appSvcCgoDto.setQualification(qualificationStr);*//*
                     }
                 }
                 currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
             }
-            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));*/
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         }
         if ("next".equals(actionType)) {
-            Map<String, String> map = AppValidatorHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
+            Map<String, String> map = AppValidatorHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, true);
             //validate mandatory count
             int psnLength = 0;
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList)) {
