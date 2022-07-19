@@ -39,6 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -153,7 +154,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                         orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                 }
-                ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) getSourseList(bpc.request));
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if ("resume".equals(actionValue)) {
@@ -172,9 +172,6 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             } else if ("delete".equals(actionValue)) {
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoRfcDraftByConds(dpSuperDataSubmissionDto.getOrgId(), dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getHciCode(), dpSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
-        }else {
-            List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
-            ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
         }
         DrugSubmissionDto drugSubmission = drugPrescribedDispensedDto.getDrugSubmission();
         if (drugSubmission == null) {
@@ -187,6 +184,22 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             dpSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }
         drugPrescribedDispensedDto.setDrugMedicationDtos(drugMedicationDtos);
+        //
+        if (StringUtils.isEmpty(dpSuperDataSubmissionDto.getPremises())) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            Map<String, PremisesDto> premisesMap = dpDataSubmissionService.getDpCenterPremises(licenseeId);
+            if (!CollectionUtils.isEmpty(premisesMap)) {
+                List<String> keyList = new ArrayList<>(premisesMap.keySet());
+                dpSuperDataSubmissionDto.setPremises(keyList.get(0));
+            }
+        }
+        List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
+        ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
+
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
     }
