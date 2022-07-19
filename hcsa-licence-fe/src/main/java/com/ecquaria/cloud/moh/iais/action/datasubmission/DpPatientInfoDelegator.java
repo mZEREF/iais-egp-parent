@@ -61,10 +61,11 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         }
 
         String cycleStages=dpSuperDataSubmissionDto.getCycleDto().getCycleType();
-        if (cycleStages.equals("DSCL_005")) {
+        if (cycleStages.equals("DSCL_005") || cycleStages.equals("DSCL_014")) {
             dpSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO);
             dpSuperDataSubmissionDto = DataSubmissionHelper.dpReNew(dpSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(request,"isNew","Y");
         }
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {

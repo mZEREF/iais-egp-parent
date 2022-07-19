@@ -5,7 +5,8 @@ $(document).ready(function () {
     });
 
     var appType = $('input[name="appType"]').val();
-    if('DSTY_005'==appType){
+    var isNew = $('input[name="isNew"]').val();
+    if('DSTY_005'==appType && 'Y' != isNew){
         disableContent('div.patient');
     }
     toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
