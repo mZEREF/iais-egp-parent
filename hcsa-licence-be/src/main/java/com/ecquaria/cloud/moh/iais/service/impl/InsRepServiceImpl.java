@@ -81,14 +81,10 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -371,7 +367,8 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         List<TaskDto> newEntity = applicationClient.getActiveTaskList(appPremisesCorrelationId).getEntity();
-        for (TaskDto dto : newEntity) {
+        for (int i = newEntity.size() - 1; i >= 0; i--) {
+            TaskDto dto = newEntity.get(i);
             String roleId = dto.getRoleId();
             String userId = dto.getUserId();
             if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
