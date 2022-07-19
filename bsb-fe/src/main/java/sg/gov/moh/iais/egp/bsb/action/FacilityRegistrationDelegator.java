@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -12,12 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
@@ -27,6 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.DocDtoService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -78,18 +76,18 @@ import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_AD
 @Slf4j
 @Delegator("bsbFacilityRegisterDelegator")
 public class FacilityRegistrationDelegator {
-    private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
     private final OrganizationInfoService organizationInfoService;
+    private final DocDtoService docDtoService;
 
     @Autowired
-    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient,
-                                         FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, OrganizationInfoService organizationInfoService) {
-        this.fileRepoClient = fileRepoClient;
+    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService,
+                                         OrganizationInfoService organizationInfoService, DocDtoService docDtoService) {
         this.facRegClient = facRegClient;
         this.facilityRegistrationService = facilityRegistrationService;
         this.organizationInfoService = organizationInfoService;
+        this.docDtoService = docDtoService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -275,66 +273,28 @@ public class FacilityRegistrationDelegator {
                     // save docs
                     log.info("Save documents into file-repo");
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
-                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
-                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
-                    newFilesToSync.addAll(primaryDocNewFiles);
-                    newFilesToSync.addAll(profileNewFiles);
+                    List<String> createdFileRepoIds = new ArrayList<>(docDtoService.saveDocDtoAndRefresh(primaryDocDto));
 
-                    FacilityCommitteeDto committeeDto = null;
-                    FacilityAuthoriserDto authDto = null;
+                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+                    createdFileRepoIds.addAll(docDtoService.saveDocDtoAndRefresh(profileDto));
+
                     if (!isRf) {
-                        committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
-                        NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
-                        authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-                        NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
-                        if (committeeNewFile != null) {
-                            newFilesToSync.add(committeeNewFile);
-                        }
-                        if (authoriserNewFile != null) {
-                            newFilesToSync.add(authoriserNewFile);
-                        }
+                        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+                        createdFileRepoIds.addAll(docDtoService.saveDocDtoAndRefresh(committeeDto));
+
+                        FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+                        createdFileRepoIds.addAll(docDtoService.saveDocDtoAndRefresh(authDto));
                     }
 
 
                     // save data
                     log.info("Save facility registration data");
-                    FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
+                    FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot, createdFileRepoIds);
                     ResponseDto<AppMainInfo> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
                     AppMainInfo appMainInfo = responseDto.getEntity();
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
-
-                    try {
-                        // delete docs
-                        log.info("Delete already saved documents in file-repo");
-                        List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
-                        List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
-                        if (!isRf && committeeDto.getToBeDeletedRepoId() != null) {
-                            FileRepoDto committeeDeleteDto = new FileRepoDto();
-                            committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
-                            fileRepoClient.removeFileById(committeeDeleteDto);
-                            toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
-                            committeeDto.setToBeDeletedRepoId(null);
-                        }
-                        if (!isRf && authDto.getToBeDeletedRepoId() != null) {
-                            FileRepoDto authoriserDeleteDto = new FileRepoDto();
-                            authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
-                            fileRepoClient.removeFileById(authoriserDeleteDto);
-                            toBeDeletedRepoIds.add(authDto.getToBeDeletedRepoId());
-                            authDto.setToBeDeletedRepoId(null);
-                        }
-                        toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
-                        toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
-                        // sync docs
-                        log.info("Sync new uploaded documents to BE");
-                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
-                    } catch (Exception e) {
-                        log.error("Fail to synchronize documents", e);
-                    }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {

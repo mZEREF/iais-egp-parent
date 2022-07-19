@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,7 +15,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
@@ -30,7 +28,6 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SampleFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
@@ -158,17 +155,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Slf4j
 public class FacilityRegistrationService {
     private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final FacilityRegisterClient facRegClient;
     private final DocSettingService docSettingService;
     private final DraftClient draftClient;
 
     @Autowired
-    public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
+    public FacilityRegistrationService(FileRepoClient fileRepoClient,
                                        FacilityRegisterClient facRegClient,
                                        DocSettingService docSettingService, DraftClient draftClient) {
         this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
         this.docSettingService = docSettingService;
         this.draftClient = draftClient;
@@ -1189,106 +1184,9 @@ public class FacilityRegistrationService {
         return newFilesToSync;
     }
 
-    /** Save new uploaded documents of facility profile
-     * @see #saveNewUploadedDoc(PrimaryDocDto)
-     */
-    public List<NewFileSyncDto> saveProfileNewUploadedDoc(FacilityProfileDto profileDto) {
-        List<NewFileSyncDto> newFilesToSync;
-        if (!profileDto.getNewDocMap().isEmpty()) {
-            MultipartFile[] files = profileDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-            newFilesToSync = profileDto.newFileSaved(repoIds);
-        } else {
-            newFilesToSync = new ArrayList<>(0);
-        }
-        return newFilesToSync;
-    }
-
-    public NewFileSyncDto saveCommitteeNewDataFile(FacilityCommitteeDto committeeDto) {
-        if (committeeDto.getNewFile() != null) {
-            MultipartFile file = committeeDto.getNewFile().getMultipartFile();
-            String repoId = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity().get(0);
-            return committeeDto.newFileSaved(repoId);
-        } else {
-            return null;
-        }
-    }
-
-    public NewFileSyncDto saveAuthoriserNewDataFile(FacilityAuthoriserDto authoriserDto) {
-        if (authoriserDto.getNewFile() != null) {
-            MultipartFile file = authoriserDto.getNewFile().getMultipartFile();
-            String repoId = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity().get(0);
-            return authoriserDto.newFileSaved(repoId);
-        } else {
-            return null;
-        }
-    }
-
-
-    /** Delete unwanted documents in FE file repo.
-     * This method will clear deleted files in DTO too.
-     * @param refInDto reference of the toBeDeletedRepoIds in DTO
-     * @return a list of repo IDs deleted in FE file repo */
-    public List<String> deleteUnwantedDoc(Set<String> refInDto) {
-        List<String> toBeDeletedRepoIds = new ArrayList<>(refInDto);
-        for (String id: toBeDeletedRepoIds) {
-            FileRepoDto fileRepoDto = new FileRepoDto();
-            fileRepoDto.setId(id);
-            fileRepoClient.removeFileById(fileRepoDto);
-            refInDto.remove(id);
-        }
-        return toBeDeletedRepoIds;
-    }
-
-    /** Sync new uploaded documents to BE; delete unwanted documents in BE too.
-     * @param newFilesToSync a list of DTOs contains ID and data
-     * @param toBeDeletedRepoIds a list of repo IDs to be deleted in BE
-     */
-    public void syncNewDocsAndDeleteFiles(List<NewFileSyncDto> newFilesToSync, List<String> toBeDeletedRepoIds) {
-        // sync files to BE file-repo (save new added files, delete useless files)
-        if (!CollectionUtils.isEmpty(newFilesToSync) || !CollectionUtils.isEmpty(toBeDeletedRepoIds)) {
-            /* Ignore the failure of sync files currently.
-             * We should add a mechanism to retry synchronization of files in the future */
-            FileRepoSyncDto syncDto = new FileRepoSyncDto();
-            syncDto.setNewFiles(newFilesToSync);
-            syncDto.setToDeleteIds(toBeDeletedRepoIds);
-            bsbFileClient.saveFiles(syncDto);
-        }
-    }
 
     public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        boolean isRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_RF);
-        boolean isPvRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_PV_RF);
-
-        // save docs
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-        List<NewFileSyncDto> primaryDocNewFiles = saveNewUploadedDoc(primaryDocDto);
-        FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
-        List<NewFileSyncDto> profileNewFiles = saveProfileNewUploadedDoc(profileDto);
-
-        List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
-        newFilesToSync.addAll(primaryDocNewFiles);
-        newFilesToSync.addAll(profileNewFiles);
-
-        FacilityCommitteeDto committeeDto = null;
-        FacilityAuthoriserDto authDto = null;
-        if (!isRf) {
-            committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
-            NewFileSyncDto committeeNewFile = saveCommitteeNewDataFile(committeeDto);
-            if (committeeNewFile != null) {
-                newFilesToSync.add(committeeNewFile);
-            }
-        }
-        if (!isPvRf) {
-            authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-            NewFileSyncDto authoriserNewFile = saveAuthoriserNewDataFile(authDto);
-            if (authoriserNewFile != null) {
-                newFilesToSync.add(authoriserNewFile);
-            }
-        }
-
-
         // save data
         FacilityRegisterDto finalAllDataDto = null;
         if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
@@ -1300,34 +1198,6 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
         selectionDto.setDraftAppNo(draftAppNo);
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
-
-        try {
-            // delete docs
-            log.info("Delete already saved documents in file-repo");
-            List<String> primaryToBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
-            List<String> profileToBeDeletedRepoIds = deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
-            if (!isRf && committeeDto.getToBeDeletedRepoId() != null) {
-                FileRepoDto committeeDeleteDto = new FileRepoDto();
-                committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
-                fileRepoClient.removeFileById(committeeDeleteDto);
-                toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
-                committeeDto.setToBeDeletedRepoId(null);
-            }
-            if (!isPvRf && authDto.getToBeDeletedRepoId() != null) {
-                FileRepoDto authoriserDeleteDto = new FileRepoDto();
-                authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
-                fileRepoClient.removeFileById(authoriserDeleteDto);
-                toBeDeletedRepoIds.add(authDto.getToBeDeletedRepoId());
-                authDto.setToBeDeletedRepoId(null);
-            }
-            toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
-            toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
-            // sync docs
-            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
-        } catch (Exception e) {
-            log.error("Fail to sync files to BE", e);
-        }
 
         ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }
@@ -1590,10 +1460,16 @@ public class FacilityRegistrationService {
     }
 
 
+
+    public static FacilityRegisterDto getRegisterDtoFromFacRegRoot(NodeGroup facRegRoot) {
+        return getRegisterDtoFromFacRegRoot(facRegRoot, null);
+    }
+
+
     /**
      * Convert flow-oriented NodeGroup to a DTO which will be transferred to be saved
      */
-    public static FacilityRegisterDto getRegisterDtoFromFacRegRoot(NodeGroup facRegRoot) {
+    public static FacilityRegisterDto getRegisterDtoFromFacRegRoot(NodeGroup facRegRoot, Collection<String> createdFileRepoIds) {
         FacilityRegisterDto dto = new FacilityRegisterDto();
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
         dto.setFacilitySelectionDto(selectionDto);
@@ -1608,7 +1484,8 @@ public class FacilityRegistrationService {
             isFifthRf = MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityType);
         }
 
-        dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        FacilityProfileDto facilityProfileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+        dto.setFacilityProfileDto(facilityProfileDto);
         dto.setFacilityAdminAndOfficerDto((FacilityAdminAndOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
         dto.setOtherAppInfoDto((OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
@@ -1623,16 +1500,33 @@ public class FacilityRegistrationService {
         }
 
 
-        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(dto.getFacilityProfileDto().getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 2);
-        docRecordInfos.addAll(dto.getFacilityProfileDto().getSavedDocMap().values());
+        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(facilityProfileDto.getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 2);
+        Collection<NewDocInfo> newDocInfos = new ArrayList<>(facilityProfileDto.getNewDocMap().size() + primaryDocDto.getNewDocMap().size() + 2);
+        docRecordInfos.addAll(facilityProfileDto.getSavedDocMap().values());
         docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
-        if ((isCf || isUcf) && dto.getFacilityCommitteeDto().getSavedFile() != null) {
-            docRecordInfos.add(dto.getFacilityCommitteeDto().getSavedFile());
+        newDocInfos.addAll(facilityProfileDto.getNewDocMap().values());
+        newDocInfos.addAll(primaryDocDto.getNewDocMap().values());
+        if (isCf || isUcf) {
+            if (dto.getFacilityCommitteeDto().getSavedFile() != null) {
+                docRecordInfos.add(dto.getFacilityCommitteeDto().getSavedFile());
+            }
+            if (dto.getFacilityCommitteeDto().getNewFile() != null) {
+                newDocInfos.add(dto.getFacilityCommitteeDto().getNewFile());
+            }
         }
-        if ((isCf || isUcf || isFifthRf) && dto.getFacilityAuthoriserDto().getSavedFile() != null) {
-            docRecordInfos.add(dto.getFacilityAuthoriserDto().getSavedFile());
+        if (isCf || isUcf || isFifthRf) {
+            if (dto.getFacilityAuthoriserDto().getSavedFile() != null) {
+                docRecordInfos.add(dto.getFacilityAuthoriserDto().getSavedFile());
+            }
+            if (dto.getFacilityAuthoriserDto().getNewFile() != null) {
+                newDocInfos.add(dto.getFacilityAuthoriserDto().getNewFile());
+            }
         }
         dto.setDocRecordInfos(docRecordInfos);
+        dto.setNewDocInfos(newDocInfos);
+
+        dto.setCreatedFileRepoIds(createdFileRepoIds);
+
 
         if (isCf) {
             dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
@@ -1655,37 +1549,68 @@ public class FacilityRegistrationService {
         boolean isRf = MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(selectionDto.getFacClassification());
         boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
 
-        // split documents for profile
-        Collection<DocRecordInfo> profileDocs = new ArrayList<>();
-        Collection<DocRecordInfo> primaryDocs = new ArrayList<>();
-        DocRecordInfo committeeDoc = null;
-        DocRecordInfo authoriserDoc = null;
-        for (DocRecordInfo info : registerDto.getDocRecordInfos()) {
-            switch (info.getDocType()) {
-                case DocConstants.DOC_TYPE_GAZETTE_ORDER:
-                    profileDocs.add(info);
-                    break;
-                case DocConstants.DOC_TYPE_DATA_COMMITTEE:
-                    committeeDoc = info;
-                    break;
-                case DocConstants.DOC_TYPE_DATA_AUTHORISER:
-                    authoriserDoc = info;
-                    break;
-                default:
-                    primaryDocs.add(info);
-                    break;
+        // split documents
+        Collection<DocRecordInfo> profileSavedDocs = new ArrayList<>();
+        Collection<DocRecordInfo> supportSavedDocs = new ArrayList<>();
+        DocRecordInfo committeeSavedDoc = null;
+        DocRecordInfo authoriserSavedDoc = null;
+        if (!CollectionUtils.isEmpty(registerDto.getDocRecordInfos())) {
+            for (DocRecordInfo info : registerDto.getDocRecordInfos()) {
+                switch (info.getDocType()) {
+                    case DocConstants.DOC_TYPE_GAZETTE_ORDER:
+                        profileSavedDocs.add(info);
+                        break;
+                    case DocConstants.DOC_TYPE_DATA_COMMITTEE:
+                        committeeSavedDoc = info;
+                        break;
+                    case DocConstants.DOC_TYPE_DATA_AUTHORISER:
+                        authoriserSavedDoc = info;
+                        break;
+                    default:
+                        supportSavedDocs.add(info);
+                        break;
+                }
             }
         }
-        registerDto.getFacilityProfileDto().setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileDocs, DocRecordInfo::getRepoId));
+
+        Collection<NewDocInfo> profileNewDocs = new ArrayList<>();
+        Collection<NewDocInfo> supportNewDocs = new ArrayList<>();
+        NewDocInfo committeeNewDoc = null;
+        NewDocInfo authoriserNewDoc = null;
+        if (!CollectionUtils.isEmpty(registerDto.getNewDocInfos())) {
+            for (NewDocInfo info : registerDto.getNewDocInfos()) {
+                switch (info.getDocType()) {
+                    case DocConstants.DOC_TYPE_GAZETTE_ORDER:
+                        profileNewDocs.add(info);
+                        break;
+                    case DocConstants.DOC_TYPE_DATA_COMMITTEE:
+                        committeeNewDoc = info;
+                        break;
+                    case DocConstants.DOC_TYPE_DATA_AUTHORISER:
+                        authoriserNewDoc = info;
+                        break;
+                    default:
+                        supportNewDocs.add(info);
+                        break;
+                }
+            }
+        }
+
+
+        registerDto.getFacilityProfileDto().setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileSavedDocs, DocRecordInfo::getRepoId));
+        registerDto.getFacilityProfileDto().setNewDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileNewDocs, NewDocInfo::getTmpId));
         if (isCf || isUcf) {
-            registerDto.getFacilityCommitteeDto().setSavedFile(committeeDoc);
+            registerDto.getFacilityCommitteeDto().setSavedFile(committeeSavedDoc);
+            registerDto.getFacilityCommitteeDto().setNewFile(committeeNewDoc);
         }
         if (isCf || isUcf || isFifthRf) {
-            registerDto.getFacilityAuthoriserDto().setSavedFile(authoriserDoc);
+            registerDto.getFacilityAuthoriserDto().setSavedFile(authoriserSavedDoc);
+            registerDto.getFacilityAuthoriserDto().setNewFile(authoriserNewDoc);
         }
 
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(primaryDocs, DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(supportSavedDocs, DocRecordInfo::getRepoId));
+        primaryDocDto.setNewDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(supportNewDocs, NewDocInfo::getTmpId));
 
         return newFacRegNodeGroup(name, registerDto, primaryDocDto);
     }

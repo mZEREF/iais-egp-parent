@@ -20,7 +20,12 @@ import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ConsumeNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.DisposalNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ExportNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ReceiptNotificationDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -77,13 +82,11 @@ public class DataSubmissionDelegator {
     private final DataSubmissionClient dataSubmissionClient;
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
-    private final FacilityRegistrationService facilityRegistrationService;
 
-    public DataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, FacilityRegistrationService facilityRegistrationService) {
+    public DataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon) {
         this.dataSubmissionClient = dataSubmissionClient;
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;
-        this.facilityRegistrationService = facilityRegistrationService;
     }
 
     /**
@@ -283,7 +286,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -311,7 +314,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -396,7 +399,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -424,7 +427,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -508,7 +511,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -536,7 +539,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -620,7 +623,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }
@@ -648,7 +651,7 @@ public class DataSubmissionDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error(DATA_SYNC_ERROR_MSG, e);
         }

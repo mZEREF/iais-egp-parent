@@ -25,13 +25,21 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommonDocDto extends ValidatableNodeValue {
+public class CommonDocDto extends ValidatableNodeValue implements RefreshableDocDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -75,6 +83,17 @@ public class CommonDocDto extends ValidatableNodeValue {
     public void clearValidationResult() {
         this.validationResultDto = null;
     }
+
+    @Override
+    public Map<String, byte[]> prepare4Saving() {
+        return Maps.transformValues(newDocMap, i -> i.getMultipartFile().getBytes());
+    }
+
+    @Override
+    public void refreshAfterSave(Map<String, String> idMap) {
+        RefreshableDocDto.refreshDocMap(newDocMap, savedDocMap, idMap);
+    }
+
 
     public List<DocMeta> convertToDocMetaList() {
         List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
