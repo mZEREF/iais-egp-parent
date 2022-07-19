@@ -323,10 +323,12 @@ public class LdtDataSubmissionDelegator {
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
             target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
             String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
             if ("true".equals(isGuide)){
                 target = InboxConst.URL_MAIN_WEB_MODULE + "MohAccessmentGuide/subDateMoh";
+            }
+            if ("Y".equals(cannotCLT)){
+                target += "?cannotCLT=Y";
             }
         }
         StringBuilder url = new StringBuilder();
@@ -406,7 +408,7 @@ public class LdtDataSubmissionDelegator {
                     Collectors.collectingAndThen(
                             Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getHciCode))), ArrayList::new));
             for (AppGrpPremisesDto appGrpPremisesDto : collect) {
-                selectOptions.add(new SelectOption(appGrpPremisesDto.getHciCode(), appGrpPremisesDto.getPremiseLabel()));
+                selectOptions.add(new SelectOption(appGrpPremisesDto.getHciCode(), StringUtil.escapeHtml(StringUtil.viewHtml(appGrpPremisesDto.getHciName()) + ", " + appGrpPremisesDto.getAddress())));
             }
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_PREMISS_OPTION, (Serializable) selectOptions);
