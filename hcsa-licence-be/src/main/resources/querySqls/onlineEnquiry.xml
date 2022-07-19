@@ -1007,8 +1007,8 @@
                   case dcen.BLK_NO when null then null  when '' then '' else ' '+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null  when '' then '' else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null when '' then '' else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else when '' then '' ' #'+dcen.FLOOR_NO end
-               , case dcen.UNIT_NO when null then null else when '' then '' '-'+dcen.UNIT_NO end
+               , case dcen.FLOOR_NO when null then null when '' then '' else ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null when '' then '' else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null when '' then '' else ', '+dcen.POSTAL_CODE end
               ) LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
               case ldt.TEST_STATUS
