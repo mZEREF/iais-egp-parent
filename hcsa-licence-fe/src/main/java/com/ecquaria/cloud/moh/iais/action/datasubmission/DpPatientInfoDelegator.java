@@ -100,7 +100,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
             patientDto.setEthnicGroup("");
         }
         if (StringUtil.isNotEmpty(patientDto.getEthnicGroup()) && !patientDto.getEthnicGroup().equals("ECGP004")) {
-            patientDto.setEthnicGroupOther(null);
+            patientDto.setOtherEthnicGroup(null);
         }
         if (StringUtil.isEmpty(patientDto.getOrgId())) {
             patientDto.setOrgId(dpSuperDataSubmissionDto.getOrgId());

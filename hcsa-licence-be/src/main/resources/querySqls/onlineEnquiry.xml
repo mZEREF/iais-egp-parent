@@ -963,22 +963,22 @@
             select distinct * from (
             SELECT  ldt.ID,null SUBMISSION_ID,
                    CONCAT(case Prem.HCI_NAME
-                  when null then null
+                  when null then null when '' then ''
                   else Prem.HCI_NAME +',' end ,
                   case Prem.BLK_NO
-                  when null then null
+                  when null then null when '' then ''
                   else ' '+Prem.BLK_NO end ,
                case Prem.STREET_NAME
-                  when null then null
+                  when null then null when '' then ''
                   else ' '+Prem.STREET_NAME end
                , case Prem.BUILDING_NAME
-                  when null then null
+                  when null then null when '' then ''
                   else ' '+Prem.BUILDING_NAME end
                , case Prem.FLOOR_NO
-                  when null then null
+                  when null then null when '' then ''
                   else ' #'+Prem.FLOOR_NO end
                , case Prem.UNIT_NO
-                  when null then null
+                  when null then null when '' then ''
                   else '-'+Prem.UNIT_NO end
                ,
                SUBSTRING ((
@@ -989,7 +989,7 @@
 				        FOR XML path('')
 		    ), 1, 1000)
                ,case Prem.POSTAL_CODE
-                  when null then null
+                  when null then null when '' then ''
                   else ', '+Prem.POSTAL_CODE end
               )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
               case ldt.TEST_STATUS
@@ -1004,12 +1004,12 @@
                 UNION ALL
               SELECT  ldt.ID,null SUBMISSION_ID,
                    CONCAT(case dcen.CENTER_NAME when null then '-,' else dcen.CENTER_NAME + ',' end ,
-                  case dcen.BLK_NO when null then null else ' '+dcen.BLK_NO end ,
-               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
-               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
-               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
-               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+                  case dcen.BLK_NO when null then null  when '' then '' else ' '+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null  when '' then '' else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null when '' then '' else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else when '' then '' ' #'+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else when '' then '' '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null when '' then '' else ', '+dcen.POSTAL_CODE end
               ) LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
               case ldt.TEST_STATUS
               when 1 then 'Active'
