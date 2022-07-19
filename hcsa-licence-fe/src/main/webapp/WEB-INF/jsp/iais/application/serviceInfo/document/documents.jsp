@@ -7,7 +7,6 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../../../common/dashboard.jsp" %>
 <form method="post" id="mainForm" enctype="multipart/form-data"  class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>

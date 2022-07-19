@@ -662,7 +662,6 @@ function fillValue(targetSelector, data, includeHidden) {
     }
     if ($selector.is(":input")) {
         var type = $selector[0].type, tag = $selector[0].tagName.toLowerCase();
-        console.info("Tag - " + tag + " : " + type);
         if (type == 'radio') {
             $selector.filter('[value="' + data + '"]').prop('checked', true);
             $selector.filter(':not([value="' + data + '"])').prop('checked', false);

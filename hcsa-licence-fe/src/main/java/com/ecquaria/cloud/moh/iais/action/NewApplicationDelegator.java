@@ -975,7 +975,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                         ParamUtil.setSessionAttr(request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         //set dupForPsn attr
-                        ApplicationHelper.setDupForPersonAttr(request, appSvcRelatedInfoDto);
+                        //ApplicationHelper.setDupForPersonAttr(request, appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
                         ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);

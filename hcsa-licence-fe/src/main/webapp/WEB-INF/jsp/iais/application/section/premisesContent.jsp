@@ -115,7 +115,7 @@
                             <c:when test="${!isRFI && !isRFC && !isRenew}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
                             </c:when>
-                            <c:when test="${((isRFI && appGrpPremisesDto.rfiCanEdit) || isRFC || isRenew)}">
+                            <c:when test="${(isRFI || isRFC || isRenew)}">
                                 <c:set var="canEdit" value="false"/>
                                 <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                     <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
@@ -437,7 +437,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="locateWtihNonHcsaRow">
-                            <iais:field value="Are you co-locating with a service that is licensed under HCSA?" mandatory="true" width="5" />
+                            <iais:field value="Are you co-locating with a service that is not licensed under HCSA?" mandatory="true" width="5" />
                             <iais:value width="3" cssClass="col-md-3 form-check">
                                 <input <c:if test="${'1'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
@@ -531,7 +531,7 @@
 
     });
 
-    //TODO
+    //TODO edit
     function doEditPremise(premContent, isPartEdit) {
 
     }
@@ -679,9 +679,9 @@
             if ($('div.premContent').length == 1) {
                 $('div.premContent').find('.premHeader').html('');
             }
-            premTypeEvent();
+            /*premTypeEvent();
             premSelectEvent();
-            removeBtnEvent();
+            removeBtnEvent();*/
             dismissWaiting();
         });
     }
@@ -714,7 +714,7 @@
 
     function removeAdditional($premContent) {
         $premContent.find('div.operationDivGroup .operationDiv').remove();
-        $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
+        $premContent.find('div.nonHcsaRowDiv .nonHcsaRow:not(:first)').remove();
         $premContent.find('div.uploadFileShowDiv').empty();
     }
 
@@ -788,15 +788,11 @@
         fillForm($premContent, data, "", $('div.premContent').index($premContent));
         fillFloorUnit($premContent, data);
         fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
-        // date
-        //fillValue($premContent.find('.certIssuedDt'), data.certIssuedDtStr);
+
         checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
-        if (eqHciCode == 'true') {
-            $premContent.find('input[name="chooseExistData"]').val('0');
-        } else {
-            $premContent.find('input[name="chooseExistData"]').val('1');
-        }
+
+        $premContent.find('input[name="chooseExistData"]').val(data.existingData);
         $premContent.find('.premSelValue').val(data.premisesSelect);
         $premContent.find('.premTypeValue').val(data.premisesType);
         $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
@@ -812,7 +808,7 @@
         } else {
             var $nonHcsaRowDiv = $row.next('.nonHcsaRowDiv');
             hideTag($nonHcsaRowDiv);
-            $nonHcsaRowDiv.find('.locateWtihNonHcsaRow:not(:first)').remove();
+            $nonHcsaRowDiv.find('.nonHcsaRow:not(:first)').remove();
         }
     }
 
@@ -828,7 +824,7 @@
     }
 
     function fillNonHcsa($premContent, data) {
-        $premContent.find('div.locateWtihNonHcsaRowDiv .locateWtihNonHcsaRow:not(:first)').remove();
+        $premContent.find('div.nonHcsaRowDiv .nonHcsaRow:not(:first)').remove();
         if (isEmpty(data) || !$.isArray(data)) {
             clearFields($premContent.find('div.nonHcsaRowDiv'));
             return;

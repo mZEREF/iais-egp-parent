@@ -225,6 +225,26 @@ public final class ApplicationHelper {
         return (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
     }
 
+    /*
+     * get current svc dto
+     * */
+    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request) {
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        return getAppSvcRelatedInfo(appSubmissionDto, currSvcId, appSubmissionDto.getRfiAppNo());
+    }
+
+    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
+        log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:" + currentSvcId));
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+    }
+
+    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId, String appNo) {
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, appNo);
+    }
+
     public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(AppSubmissionDto appSubmissionDto, String currentSvcId, String appNo) {
         log.info(StringUtil.changeForLog("service id: " + currentSvcId + " - appNo: " + appNo));
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
@@ -241,25 +261,6 @@ public final class ApplicationHelper {
             }
         }
         return appSvcRelatedInfoDto;
-    }
-
-    /*
-     * get current svc dto
-     * */
-    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request) {
-        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        return getAppSvcRelatedInfo(request, currSvcId);
-    }
-
-    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
-        log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:" + currentSvcId));
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-    }
-
-    public static AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId, String appNo) {
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, appNo);
     }
 
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
@@ -1404,26 +1405,21 @@ public final class ApplicationHelper {
 
 
     public static List<SelectOption> genAssignPersonSel(HttpServletRequest request, boolean needFirstOpt) {
-        List<SelectOption> psnSelectList = IaisCommonUtils.genNewArrayList();
-        if (needFirstOpt) {
-            SelectOption sp0 = new SelectOption("-1", HcsaAppConst.FIRESTOPTION);
-            psnSelectList.add(sp0);
-        }
-        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
-        psnSelectList.add(sp1);
-
-        List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.PERSONSELECTMAP);
-        personMap.forEach((k, v) -> {
-            AppSvcPersonDto personDto = v.getPersonDto();
-            SelectOption sp = new SelectOption(k, getPersonView(personDto.getIdType(), personDto.getIdNo(), personDto.getName()));
-            personList.add(sp);
-        });
-        //sort
-        personList.sort(Comparator.comparing(SelectOption::getText));
-        psnSelectList.addAll(personList);
-        return psnSelectList;
+        List<SelectOption> personList = personMap.entrySet().stream()
+                .map(entry -> {
+                    AppSvcPersonDto personDto = entry.getValue().getPersonDto();
+                    return new SelectOption(entry.getKey(), getPersonView(personDto.getIdType(), personDto.getIdNo(),
+                            personDto.getName()));
+                })
+                .sorted(Comparator.comparing(SelectOption::getText))
+                .collect(Collectors.toList());
+        personList.add(0, new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel"));
+        if (needFirstOpt) {
+            personList.add(0, new SelectOption("-1", HcsaAppConst.FIRESTOPTION));
+        }
+        return personList;
     }
 
     public static void setTimeList(HttpServletRequest request) {
@@ -3404,7 +3400,7 @@ public final class ApplicationHelper {
             if (StringUtil.isEmpty(premiseEntry.getExistingData())) {
                 premiseEntry.setExistingData(AppConsts.NO);
             } else if (AppConsts.YES.equals(premiseEntry.getExistingData())) {
-                premiseEntry.setFromDB(true);
+                //premiseEntry.setFromDB(true);
             }
         } else {
             if (!licenceList.isEmpty()) {
@@ -3509,7 +3505,7 @@ public final class ApplicationHelper {
             String premisesSelect = getPremisesKey(premises);
             AppGrpPremisesDto newDto = CopyUtil.copyMutableObject(premises);
             newDto.setRelatedServices(null);// new premise
-            newDto.setFromDB(false);
+            //newDto.setFromDB(false);
             // itself
             List<Map.Entry<String, AppGrpPremisesDto>> entryList = getPremisesFromMap(premises, allData);
             log.info(StringUtil.changeForLog("The same premise index no size in Map: " + (entryList.size())));

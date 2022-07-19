@@ -4,7 +4,7 @@
     <input type="hidden" class="not-refresh assignSelVal" name="assignSelVal" value="${person.assignSelect}"/>
     <input type="hidden" class="not-refresh licPerson" name="licPerson${index}" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh" name="isPartEdit" value="0"/>
-    <input type="hidden" class="not-refresh" name="indexNo" value="${currentCgo.indexNo}"/>
+    <input type="hidden" class="not-refresh indexNo" name="indexNo" value="${currentCgo.indexNo}"/>
     <%--<input type="hidden" class="not-refresh" name="existingPsn" value="0"/>--%>
     <input type="hidden" class="not-refresh psnEditField" name="psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
 
@@ -19,7 +19,7 @@
     </iais:row>
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <p class="app-title">${singleName} <span class="psnHeader">${index+1}</span></p>
+            <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
         </div>
         <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
             <h4 class="text-danger">
@@ -43,7 +43,7 @@
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
         <iais:field width="5" mandatory="true" value="Assign a ${singleName} Person"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select cssClass="assignSel" name="assignSelect" options="personSelectOpts"
+            <iais:select cssClass="assignSel" name="assignSelect${index}" options="personSelectOpts"
                          value="${person.assignSelect}"/>
         </iais:value>
     </iais:row>
@@ -302,6 +302,7 @@
             if (fromUser) {
                 url = "/user-account-info";
             }
+            var indexNo = $currContent.find('input.indexNo').val();
             var arr = assignVal.split(',');
             var nationality = arr[0];
             var idType = arr[1];
@@ -310,7 +311,7 @@
                 'nationality':nationality,
                 'idType':idType,
                 'idNo':idNo,
-                'psnType':psnType
+                'indexNo':indexNo
             };
             $.ajax({
                 'url':'${pageContext.request.contextPath}' + url,

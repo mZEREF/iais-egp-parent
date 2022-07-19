@@ -81,6 +81,8 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_PSN_OPTS;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
@@ -117,8 +119,6 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         //svc
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.GOVERNANCEOFFICERSDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
@@ -127,7 +127,6 @@ public class ServiceInfoDelegator {
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
-
 
     /**
      * StartStep: prepareJumpPage
@@ -155,10 +154,9 @@ public class ServiceInfoDelegator {
         ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
                 ShowServiceFormsDelegator.SERVICESTEPDTO);
         String svcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, svcId);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
-        serviceStepDto = getServiceStepDto(serviceStepDto, action, hcsaServiceDtoList, svcId, appSvcRelatedInfoDto);
+        serviceStepDto = getServiceStepDto(serviceStepDto, action, hcsaServiceDtoList, svcId);
         //reset value
         if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(action)) {
             action = serviceStepDto.getCurrentStep().getStepCode();
@@ -455,49 +453,21 @@ public class ServiceInfoDelegator {
      * @throws
      */
     public void prepareGovernanceOfficers(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
+        log.info(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        int mandatoryCount = 0;
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (!StringUtil.isEmpty(currentSvcId)) {
             //min and max count
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
                 HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
-                mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-                ParamUtil.setSessionAttr(bpc.request, "HcsaSvcPersonnel", hcsaSvcPersonnelDto);
+                ParamUtil.setSessionAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
             }
         }
-        if (appSvcRelatedInfoDto != null) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (appSvcCgoDtoList != null && appSvcCgoDtoList.size() > mandatoryCount) {
-                mandatoryCount = appSvcCgoDtoList.size();
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
-        List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, "CgoSelectList", cgoSelectList);
-
-        List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DROPWOWN_IDTYPESELECT, idTypeSelectList);
-
-        String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        List<SelectOption> specialtySelectList = ApplicationHelper.genSpecialtySelectList(currentSvcCode, true);
-        ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
-        Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-        specialtyAttr.put("name", "specialty");
-        specialtyAttr.put("class", "specialty");
-        specialtyAttr.put("style", "display: none;");
-        String specialtyHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialtySelectList, null, null);
-        ParamUtil.setRequestAttr(bpc.request, "SpecialtyHtml", specialtyHtml);
-        //reload
-        if (appSvcRelatedInfoDto != null) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.GOVERNANCEOFFICERSDTOLIST, appSvcCgoDtoList);
-        }
+        List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
+        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
         ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
-        log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
+        log.info(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
     /**
@@ -664,7 +634,7 @@ public class ServiceInfoDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "svcDocReloadMap", (Serializable) reloadDocMap);
         //set dupForPsn attr
-        ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
+        //ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
 
 
         int sysFileSize = systemParamConfig.getUploadFileLimit();
@@ -707,12 +677,7 @@ public class ServiceInfoDelegator {
         String appNo = ParamUtil.getString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(svcId)) {
             log.info(StringUtil.changeForLog("get current svc info...."));
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto;
-            if (!StringUtil.isEmpty(appNo)) {
-                appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, svcId, appNo);
-            } else {
-                appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, svcId);
-            }
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, svcId, appNo);
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = configCommService.getHcsaServiceStepSchemesByServiceId(
                     svcId);
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
@@ -800,7 +765,7 @@ public class ServiceInfoDelegator {
             List<HcsaSvcDocConfigDto> svcDocConfig = configCommService.getAllHcsaSvcDocs(svcId);
             ParamUtil.setSessionAttr(bpc.request, SVC_DOC_CONFIG, (Serializable) svcDocConfig);
             //set dupForPsn attr
-            ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
+            //ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
             //svc doc add align for dup for prem
             ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, appGrpPremisesDtos);
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
@@ -1875,7 +1840,7 @@ public class ServiceInfoDelegator {
     //=============================================================================
 
     private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto, String action, List<HcsaServiceDto> hcsaServiceDtoList,
-            String svcId, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            String svcId) {
         //get the service information
         int serviceNum = -1;
         if (svcId != null && hcsaServiceDtoList != null && hcsaServiceDtoList.size() > 0) {
@@ -1912,6 +1877,13 @@ public class ServiceInfoDelegator {
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
+                        if (StringUtil.isIn(action, new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES, HcsaConsts.STEP_DISCIPLINE_ALLOCATION})) {
+                            if (currentNumber < i) {
+                                number++;
+                            } else if (currentNumber > i) {
+                                number--;
+                            }
+                        }
                         break;
                     }
                 }

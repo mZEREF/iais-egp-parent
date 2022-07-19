@@ -210,10 +210,9 @@ public class LicCommServiceImpl implements LicCommService {
             return IaisCommonUtils.genNewArrayList();
         }
         return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
-                .map(appGrpPremisesDto -> {
+                .peek(appGrpPremisesDto -> {
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
-                    appGrpPremisesDto.setFromDB(true);
-                    return appGrpPremisesDto;
+                    //appGrpPremisesDto.setFromDB(true);
                 })
                 .collect(Collectors.toList());
     }

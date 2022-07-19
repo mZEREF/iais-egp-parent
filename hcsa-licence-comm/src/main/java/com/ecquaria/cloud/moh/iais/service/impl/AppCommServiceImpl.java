@@ -225,9 +225,9 @@ public class AppCommServiceImpl implements AppCommService {
             return IaisCommonUtils.genNewArrayList();
         }
         return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
-                .map(appGrpPremisesDto -> {
+                .peek(appGrpPremisesDto -> {
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
-                    appGrpPremisesDto.setFromDB(true);
+                    //appGrpPremisesDto.setFromDB(true);
                     /*List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
                     if (relatedServices != null && !relatedServices.isEmpty()) {
                         List<String> svcNames = relatedServices.stream()
@@ -238,7 +238,6 @@ public class AppCommServiceImpl implements AppCommService {
                                 .collect(Collectors.toList());
                         appGrpPremisesDto.setRelatedServices(svcNames);
                     }*/
-                    return appGrpPremisesDto;
                 })
                 .collect(Collectors.toList());
     }

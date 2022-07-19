@@ -33,20 +33,20 @@
                                                     <c:choose>
                                                         <c:when test="${currentStep == 'SVST012'}">
                                                             <div class="business">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/businessContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/businessInfo/businessContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST008'}">
                                                             <div class="vehicles">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/vehiclesContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/vehiclesContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST009'}">
                                                             <div class="clinical-director">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/clinicalDirectorContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/clinicalDirectorContent.jsp"/>
                                                             </div>
                                                         </c:when>
-                                                        <c:when test="${currentStep == 'SVST001'}">
+                                                        <%--<c:when test="${currentStep == 'SVST001'}">
                                                             <div class="laboratory-disciplines">
                                                                 <p class="app-title">${currStepName}</p>
                                                                 <c:choose>
@@ -59,49 +59,49 @@
                                                                 </c:choose>
                                                                 <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/laboratoryDisciplines.jsp"/>
                                                             </div>
-                                                        </c:when>
+                                                        </c:when>--%>
                                                         <c:when test="${currentStep == 'SVST002'}">
                                                             <div class="clinical-governance-officer">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/governanceOfficers.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/governanceOfficers.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST013'}">
                                                             <div class="section-leader">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/sectionLeader.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/sectionLeader.jsp"/>
                                                             </div>
                                                         </c:when>
-                                                        <c:when test="${currentStep == 'SVST003'}">
+                                                        <%--<c:when test="${currentStep == 'SVST003'}">
                                                             <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/disciplineAllocation.jsp"/>
-                                                        </c:when>
+                                                        </c:when>--%>
                                                         <c:when test="${currentStep == 'SVST010'}">
                                                             <div class="charges">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/chargesContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/chargesContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST006'}">
                                                             <div class="clinical-governance-officer">
                                                                 <!--start -->
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/servicePersonnel.jsp" />
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/servicePersonnel.jsp" />
                                                                 <!--end -->
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST004'}">
-                                                            <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/principalOfficers.jsp"/>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/principalOfficers.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
                                                             <div class="key-appointment-holder">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/keyAppointmentHolder.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/keyAppointmentHolder.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST007'}">
                                                             <div class="med-alert-person">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/medAlertContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/medAlertContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST005'}">
                                                             <div class="Service-related-Documents document-upload-gp">
                                                                 <h2>Service-related Documents</h2>
-                                                                <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/CR_Doc.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/CR_Doc.jsp"/>
                                                             </div>
                                                         </c:when>
                                                     </c:choose>

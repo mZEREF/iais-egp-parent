@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -2561,6 +2562,9 @@ public final class AppValidatorHelper {
             WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         }
 
+    }
+
+    public static void doValidateSpecialisedDtoList(Map<String, String> errorMap, List<AppPremSpecialisedDto> appPremSpecialisedDtoList, HttpServletRequest request) {
     }
 
 }

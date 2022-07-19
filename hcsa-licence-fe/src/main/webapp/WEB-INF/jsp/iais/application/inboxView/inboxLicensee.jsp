@@ -31,7 +31,7 @@
                     </iais:row>
                 </c:if>
 
-                <%@include file="/WEB-INF/jsp/iais/view/licensee/previewLicenseeCom.jsp"%>
+                <%@include file="/WEB-INF/jsp/iais/view/licensee/viewLicenseeCom.jsp"%>
             </div>
         </div>
     </div>

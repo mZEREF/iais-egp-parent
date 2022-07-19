@@ -50,6 +50,7 @@ public final class HcsaAppConst {
     public static final String CURR_STEP_CONFIG                             = "currStepConfig";
     public static final String CURR_STEP_NAME                               = "currStepName";
     public static final String CURR_SINGLE_NAME                             = "singleName";
+    public static final String CURR_STEP_PSN_OPTS                           = "personSelectOpts";
 
     public static final String CURRENT_SVC_CODE                             = "CURRENT_SVC_CODE";
 
@@ -111,11 +112,8 @@ public final class HcsaAppConst {
     public static final String ACK_APP_SUBMISSIONS                          = "ackPageAppSubmissionDto";
     public static final String RFC_APP_GRP_PREMISES_DTO_LIST                = "applicationAppGrpPremisesDtoList";
 
-    public static final String GOVERNANCEOFFICERS                           = "GovernanceOfficers";
-    public static final String GOVERNANCEOFFICERSDTO                        = "GovernanceOfficersDto";
     public static final String GOVERNANCEOFFICERSDTOLIST                    = "GovernanceOfficersList";
     public static final String APPSVCRELATEDINFODTO                         = "AppSvcRelatedInfoDto";
-    public static final String ERRORMAP_GOVERNANCEOFFICERS                  = "errorMap_governanceOfficers";
     public static final String RELOADSVCDOC                                 = "ReloadSvcDoc";
     public static final String SERVICEPERSONNELTYPE                         = "ServicePersonnelType";
     public static final String VEHICLEDTOLIST                               = "vehicleDtoList";

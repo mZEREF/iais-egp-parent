@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -223,9 +224,9 @@ public abstract class AppCommDelegator {
                 appGrpPremisesDtos = newAppGrpPremisesDtoList;
             }
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                appGrpPremisesDto.setFromDB(true);
+                //appGrpPremisesDto.setFromDB(true);
                 appGrpPremisesDto.setExistingData(AppConsts.NO);
-                appGrpPremisesDto.setRfiCanEdit(true);
+                //appGrpPremisesDto.setRfiCanEdit(true);
                 //clear operation premId
                 List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                 if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
@@ -434,7 +435,7 @@ public abstract class AppCommDelegator {
         } else if (HcsaAppConst.ACTION_PREMISES.equals(action)) {
             preparePremises(bpc);
         } else if (HcsaAppConst.ACTION_SPECIALISED.equals(action)) {
-            prepareSpecialisedData(bpc.request);
+            prepareSpecialisedData(bpc);
         }
     }
 
@@ -455,18 +456,49 @@ public abstract class AppCommDelegator {
         } else if (HcsaAppConst.ACTION_PREMISES.equals(action)) {
             doPremises(bpc);
         } else if (HcsaAppConst.ACTION_SPECIALISED.equals(action)) {
-            doSpecialisedData(bpc.request);
+            doSpecialisedData(bpc);
         } else {
             jumpToErrorPage(bpc.request, "Invalid Action!");
         }
     }
 
-    public void prepareSpecialisedData(HttpServletRequest request) {
-
+    public void prepareSpecialisedData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        //TODO
     }
 
-    public void doSpecialisedData(HttpServletRequest request) {
+    public void doSpecialisedData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
 
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SPECIALISED, request);
+        log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (isGetDataFromPage) {
+            //TODO
+        }
+        // valiation
+        String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
+            AppValidatorHelper.doValidateSpecialisedDtoList(errorMap, appPremSpecialisedDtoList, request);
+        }
+        HashMap<String, String> coMap = (HashMap<String, String>) request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        if (!errorMap.isEmpty()) {
+            initAction(HcsaAppConst.ACTION_SPECIALISED, errorMap, appSubmissionDto, request);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+        } else {
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
+            if ("rfcSaveDraft".equals(actionAdditional)) {
+                try {
+                    doSaveDraft(bpc);
+                } catch (IOException e) {
+                    log.error("error", e);
+                }
+            }
+        }
+        request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
     }
 
     /**
@@ -563,16 +595,12 @@ public abstract class AppCommDelegator {
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
             AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
         }
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
         if (!errorMap.isEmpty()) {
             initAction(HcsaAppConst.ACTION_LICENSEE, errorMap, appSubmissionDto, bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         } else {
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
             String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(actionAdditional)) {
                 try {
@@ -582,6 +610,7 @@ public abstract class AppCommDelegator {
                 }
             }
         }
+        bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
     }
 
@@ -903,7 +932,6 @@ public abstract class AppCommDelegator {
                 boolean isNeedShowValidation = !"back".equals(crud_action_value);
                 if (isNeedShowValidation) {
                     initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
-                    ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
                 }
                 coMap.put(HcsaAppConst.SECTION_PREMISES, "");
             } else {
@@ -1451,6 +1479,10 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(request, "Msg", errorMap);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, action);
+        if (StringUtil.isIn(action, new String[]{HcsaAppConst.ACTION_LICENSEE,
+                HcsaAppConst.ACTION_PREMISES, HcsaAppConst.ACTION_SPECIALISED})) {
+            ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_KEY, HcsaAppConst.ERROR_VAL);
+        }
     }
 
     private void jumpToErrorPage(HttpServletRequest request, String errorMsg) {

@@ -618,7 +618,8 @@ public class ApplicationAjaxController {
             //for rfc new  renew choose other address ,if no this cannot choose other address from page
             boolean sameOne = premIndexNo != null && premIndexNo.equals(appGrpPremisesDto.getPremisesIndexNo());
             log.info(StringUtil.changeForLog("--- The current one: " + sameOne));
-            appGrpPremisesDto.setEqHciCode(String.valueOf(sameOne));
+            appGrpPremisesDto.setExistingData(sameOne ? AppConsts.YES : AppConsts.NO);
+            //appGrpPremisesDto.setEqHciCode(String.valueOf(sameOne));
         } else {
             log.warn(StringUtil.changeForLog("The Session Map is null for this premise selected - " + premSelectVal));
         }
@@ -688,11 +689,12 @@ public class ApplicationAjaxController {
      * @Designation
      */
     @GetMapping(value = "/person-info")
-    public AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
+    public AppSvcPrincipalOfficersDto getKeyPersonnel(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
         String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
+        String indexNo = ParamUtil.getString(request, "indexNo");
        //String psnType = ParamUtil.getString(request, "psnType");
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
             return null;
@@ -700,6 +702,7 @@ public class ApplicationAjaxController {
         String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
         log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
         AppSvcPrincipalOfficersDto person = ApplicationHelper.getKeyPersonnelDto(psnKey, null, request);
+        person.setIndexNo(indexNo);
         /*Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
