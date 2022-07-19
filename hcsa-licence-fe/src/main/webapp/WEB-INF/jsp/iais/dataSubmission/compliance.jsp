@@ -53,11 +53,23 @@
 
   <input type="hidden" name="crud_type" id="crud_type" />
 </form>
+<c:if test="${param.cannotCLT eq 'Y'}">
+  <iais:confirm msg="CANNOT_SUBMIT" callBack="$('#cannotCltDiv').modal('hide');" popupOrder="cannotCltDiv"
+                yesBtnDesc="Close"
+                yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+</c:if>
 <script type="text/javascript">
-    $("#back").click(function (){
-        showWaiting();
-        submit('back');
-    });
+  $(document).ready(function () {
+    const cannotCltDiv = $('#cannotCltDiv');
+    if (cannotCltDiv.length > 0) {
+      cannotCltDiv.modal('show');
+    }
+  });
+
+  $("#back").click(function () {
+    showWaiting();
+    submit('back');
+  });
 </script>
 
 

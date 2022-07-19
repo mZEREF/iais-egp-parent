@@ -13,7 +13,7 @@
         <%@include file="dashboard.jsp" %>
     </jsp:attribute>
     <jsp:attribute name="innerFooterFrag">
-        <%--@elvariable id="isNewFacilityRegistration" type="java.lang.Boolean"--%>
-        <fac:innerFooter canSaveDraftJudge="${isNewFacilityRegistration}"/>
+        <%--@elvariable id="isAllowToSaveDraft" type="java.lang.Boolean"--%>
+        <fac:innerFooter canSaveDraftJudge="${isAllowToSaveDraft}"/>
     </jsp:attribute>
 </fac:facilityOperator>

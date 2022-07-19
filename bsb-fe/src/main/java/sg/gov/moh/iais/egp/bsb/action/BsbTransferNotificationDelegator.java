@@ -23,7 +23,9 @@ import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -231,7 +233,7 @@ public class BsbTransferNotificationDelegator {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
             // sync docs
-            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
             log.error("Fail to sync files to BE", e);
         }

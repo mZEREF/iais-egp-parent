@@ -17,9 +17,15 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -61,10 +67,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_OT
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_REVIEW;
 
-/**
- * @author : LiRan
- * @date : 2021/12/11
- */
+
 @Slf4j
 @Delegator("renewalFacilityRegisterDelegator")
 public class RenewalFacilityRegistrationDelegator {
@@ -229,15 +232,15 @@ public class RenewalFacilityRegistrationDelegator {
                 if (reviewNode.doValidation()) {
                     reviewNode.passValidation();
 
-                    // save docs
-                    log.info("Save documents into file-repo");
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
-                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
-                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
-                    newFilesToSync.addAll(primaryDocNewFiles);
-                    newFilesToSync.addAll(profileNewFiles);
+//                    // save docs
+//                    log.info("Save documents into file-repo");
+//                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+//                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
+//                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+//                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
+//                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+//                    newFilesToSync.addAll(primaryDocNewFiles);
+//                    newFilesToSync.addAll(profileNewFiles);
 
                     // save data
                     log.info("Save renewal facility registration data");
@@ -245,20 +248,20 @@ public class RenewalFacilityRegistrationDelegator {
 //                    ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
 //                    log.info("save renewal facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
-                    try {
-                        // delete docs
-                        log.info("Delete already saved documents in file-repo");
-                        List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
-                        List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
-                        toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
-                        toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
-                        // sync docs
-                        log.info("Sync new uploaded documents to BE");
-                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
-                    } catch (Exception e) {
-                        log.error("Fail to synchronize documents", e);
-                    }
+//                    try {
+//                        // delete docs
+//                        log.info("Delete already saved documents in file-repo");
+//                        List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
+//                        List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
+//                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+//                        toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
+//                        toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
+//                        // sync docs
+//                        log.info("Sync new uploaded documents to BE");
+//                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//                    } catch (Exception e) {
+//                        log.error("Fail to synchronize documents", e);
+//                    }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.RefreshableDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -37,7 +39,7 @@ import java.util.Map;
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FacilityAuthoriserDto extends ValidatableNodeValue {
+public class FacilityAuthoriserDto extends ValidatableNodeValue implements RefreshableDocDto {
     @Data
     @NoArgsConstructor
     public static class FacilityAuthorisedPersonnel implements Serializable {
@@ -113,6 +115,19 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
     @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+    @Override
+    public Map<String, byte[]> prepare4Saving() {
+        Map<String, byte[]> dataMap = Maps.newHashMapWithExpectedSize(1);
+        dataMap.put(newFile.getTmpId(), newFile.getMultipartFile().getBytes());
+        return dataMap;
+    }
+
+    @Override
+    public void refreshAfterSave(Map<String, String> idMap) {
+        String repoId = idMap.get(newFile.getTmpId());
+        this.savedFile = RefreshableDocDto.refreshDocInfo(this.newFile, repoId);
     }
 
 

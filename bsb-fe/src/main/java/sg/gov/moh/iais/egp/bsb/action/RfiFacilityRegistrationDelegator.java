@@ -13,9 +13,14 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
 import sg.gov.moh.iais.egp.bsb.service.RfiService;
@@ -23,7 +28,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
@@ -46,10 +50,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_CO
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_SELECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_AUTHORISER_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_COMMITTEE_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_APP_ID;
@@ -215,25 +217,25 @@ public class RfiFacilityRegistrationDelegator {
                 if (previewSubmitNode.doValidation()) {
                     previewSubmitNode.passValidation();
 
-                    // save docs
-                    log.info("Save documents into file-repo");
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
-                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
-                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
-                    NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
-                    FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
-                    NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
-                    newFilesToSync.addAll(primaryDocNewFiles);
-                    newFilesToSync.addAll(profileNewFiles);
-                    if (committeeNewFile != null) {
-                        newFilesToSync.add(committeeNewFile);
-                    }
-                    if (authoriserNewFile != null) {
-                        newFilesToSync.add(authoriserNewFile);
-                    }
+//                    // save docs
+//                    log.info("Save documents into file-repo");
+//                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+//                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
+//                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+//                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
+//                    FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+//                    NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
+//                    FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+//                    NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
+//                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
+//                    newFilesToSync.addAll(primaryDocNewFiles);
+//                    newFilesToSync.addAll(profileNewFiles);
+//                    if (committeeNewFile != null) {
+//                        newFilesToSync.add(committeeNewFile);
+//                    }
+//                    if (authoriserNewFile != null) {
+//                        newFilesToSync.add(authoriserNewFile);
+//                    }
 
 
                     // save data
@@ -247,14 +249,14 @@ public class RfiFacilityRegistrationDelegator {
                     ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
                     ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
 
-                    try {
-                        // sync docs
-                        log.info("Sync new uploaded documents to BE");
-                        // don't need to delete file, RFI officer will download old file by repo id
-                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, null);
-                    } catch (Exception e) {
-                        log.error("Fail to synchronize documents", e);
-                    }
+//                    try {
+//                        // sync docs
+//                        log.info("Sync new uploaded documents to BE");
+//                        // don't need to delete file, RFI officer will download old file by repo id
+//                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, null);
+//                    } catch (Exception e) {
+//                        log.error("Fail to synchronize documents", e);
+//                    }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
