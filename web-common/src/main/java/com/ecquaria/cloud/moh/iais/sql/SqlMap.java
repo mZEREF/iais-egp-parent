@@ -95,13 +95,13 @@ public class SqlMap {
     public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
         Sql sql = getDocSql(catalog, key);
         String sqlStat = sql.getSqlStr();
-        log.info("Before replace : ===> {}", sqlStat);
-        if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isEmpty(sqlStat)) {
-            for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
-                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
-            }
-        }
-        log.info("After replace : ===> {}", sqlStat);
+//        log.info("Before replace : ===> {}", sqlStat);
+//        if (!IaisCommonUtils.isEmpty(dbNameMap) && StringUtil.isEmpty(sqlStat)) {
+//            for (Map.Entry<String, String> ent : dbNameMap.entrySet()) {
+//                sqlStat = sqlStat.replaceAll(ent.getKey() + ".", ent.getValue() + ".");
+//            }
+//        }
+//        log.info("After replace : ===> {}", sqlStat);
         if (isDynamicSql(sqlStat)) {
             StringWriter writer = new StringWriter();
             Template temp = cfg.getTemplate(getKey(sql.getCatalog(), sql.getKey()));
