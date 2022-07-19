@@ -376,7 +376,8 @@ public class TopDataSubmissionDelegator {
             premisesMap = topDataSubmissionService.getTopCenterPremises(licenseeId);
         }
         if (premisesMap.size() !=0) {
-            List<PremisesDto> premisesDtos= (List<PremisesDto>) premisesMap.values();
+            List<PremisesDto> premisesDtos= IaisCommonUtils.genNewArrayList();
+            premisesDtos.addAll(premisesMap.values());
             premisesDtos.sort(Comparator.comparing(PremisesDto::getHciName));
             topSuperDataSubmissionDto.setPremisesDto(premisesDtos.get(0));
         }
