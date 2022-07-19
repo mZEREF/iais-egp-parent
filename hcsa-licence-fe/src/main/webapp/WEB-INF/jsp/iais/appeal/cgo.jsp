@@ -465,7 +465,6 @@
         $CurrentPsnEle.find('input[name="licPerson"]').val('1');
         $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
       }
->>>>>>> origin/SZ_Dev
 
         if($('.designationSel').val()=='DES999'){
             $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');

@@ -29,9 +29,19 @@ public class InspDateSvcHoursValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         Pattern pattern = compile("[0-9]*");
         boolean hoursFlag = pattern.matcher(manHours).matches();
-        if(!hoursFlag){
-            errMap.put("inspManHours", "GENERAL_ERR0002");
+        if(!hoursFlag) {
+            errMap.put("inspManHours", "GENERAL_ERR0068");
+        } else {
+            try {
+                int hour = Integer.parseInt(manHours);
+                if (hour <= 0) {
+                    errMap.put("inspManHours", "GENERAL_ERR0068");
+                }
+            } catch (Exception e) {
+                errMap.put("inspManHours", "GENERAL_ERR0068");
+            }
         }
+
         return errMap;
     }
 }

@@ -87,7 +87,7 @@ public interface ApplicationService {
 
     void rollBackInspAo1InspLead(BaseProcessClass bpc, String roleId, String routeBackStatus, String wrkGpId, String userId) throws CloneNotSupportedException;
 
-    void rollBackInsp(BaseProcessClass bpc, String roleId,  String wrkGpId, String userId, String remarks) throws CloneNotSupportedException;
+    void rollBackInsp(BaseProcessClass bpc, String stageId, String roleId, String wrkGpId, String userId, String historyId,String remarks) throws CloneNotSupportedException;
 
     void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
 

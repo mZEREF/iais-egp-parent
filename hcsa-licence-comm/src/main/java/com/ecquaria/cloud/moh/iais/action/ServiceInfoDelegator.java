@@ -3257,8 +3257,7 @@ public class ServiceInfoDelegator {
                         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
                         currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
                         currentSvcRelatedDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
-                        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
-                        ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
+                        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
                     }
                 }
             }

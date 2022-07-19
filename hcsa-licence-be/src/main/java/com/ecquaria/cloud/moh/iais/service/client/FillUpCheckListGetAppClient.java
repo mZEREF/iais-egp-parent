@@ -166,9 +166,6 @@ public interface FillUpCheckListGetAppClient {
     FeignResponseEntity<List<AdhocDraftDto>> getAdhocChecklistDraftsByAdhocItemIdIn(@RequestBody List<String> itemList);
     @PostMapping(value = "/iais-pre-ins-chkl-be/app-premises/pre-inspect-chkl/save-draft-answer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CheckListDraftAllDto> saveDraftAnswerForCheckList(@RequestBody CheckListDraftAllDto checkListDraftAllDto);
-
-    @PutMapping(path = "/iais-pre-ins-chkl-be/rollBack-inspection")
-    FeignResponseEntity<Void> rollBackPreInspect(@RequestParam("appPreCorrId") String appPreCorrId);
     @GetMapping(value = "/iais-pre-ins-chkl-be/AppPremissChklId-appPremId-configId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity< List<AppPremisesPreInspectChklDto>> getPremInsChkls(@RequestParam(name="appPremId")String appPremId,@RequestParam(name="configId") String configId);
 }
