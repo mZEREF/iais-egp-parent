@@ -77,13 +77,6 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -94,6 +87,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * ApplicationServiceImpl
@@ -1395,6 +1394,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        result.put(HcsaAppConst.CAN_RFI, AppConsts.YES);
         if (StringUtil.isEmpty(appGrpNo)) {
             // Can't find the related application.
             result.put(HcsaAppConst.ERROR_APP, MessageUtil.getMessageDesc("PRF_ERR013"));
