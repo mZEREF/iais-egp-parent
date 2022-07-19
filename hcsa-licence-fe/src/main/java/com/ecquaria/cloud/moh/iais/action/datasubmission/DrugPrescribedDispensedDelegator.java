@@ -193,8 +193,17 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }
             Map<String, PremisesDto> premisesMap = dpDataSubmissionService.getDpCenterPremises(licenseeId);
             if (!CollectionUtils.isEmpty(premisesMap)) {
-                List<String> keyList = new ArrayList<>(premisesMap.keySet());
-                dpSuperDataSubmissionDto.setPremises(keyList.get(0));
+                if (premisesMap.size() == 1){
+                    dpSuperDataSubmissionDto.setPremises(new ArrayList<>(premisesMap.keySet()).get(0));
+                }else {
+                    for (Map.Entry<String, PremisesDto> stringPremisesDtoEntry : premisesMap.entrySet()) {
+                        PremisesDto premisesDto = stringPremisesDtoEntry.getValue();
+                        if (premisesDto.getHciCode().equals(drugSubmission.getHspBusinessName())) {
+                            dpSuperDataSubmissionDto.setPremises(stringPremisesDtoEntry.getKey());
+                            break;
+                        }
+                    }
+                }
             }
         }
         List<SelectOption> sourseList = getBusinessNameList(bpc.request,dpSuperDataSubmissionDto.getPremises());
