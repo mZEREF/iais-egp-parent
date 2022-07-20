@@ -83,8 +83,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
-
 /**
  * @Auther chenlei on 5/4/2022.
  */
@@ -749,7 +747,7 @@ public final class AppValidatorHelper {
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errMap;
     }
-    
+
     /**
      * There is an existing licence for this service.
      *
@@ -1615,27 +1613,36 @@ public final class AppValidatorHelper {
         if (appSvcCgoList == null) {
             return new HashMap<>(1);
         }
+        return validateKeyPersonnel(appSvcCgoList, licPersonMap, checkPRS);
+    }
+
+    public static Map<String, String> validateKeyPersonnel(List<AppSvcPrincipalOfficersDto> personList,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+        if (personList == null || personList.isEmpty()) {
+            return new HashMap<>(1);
+        }
 
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < appSvcCgoList.size(); i++) {
-            String assignSelect = appSvcCgoList.get(i).getAssignSelect();
+        for (int i = 0; i < personList.size(); i++) {
+            AppSvcPrincipalOfficersDto person = personList.get(i);
+            String psnType = person.getPsnType();
+            String assignSelect = person.getAssignSelect();
             if ("-1".equals(assignSelect)) {
-                errMap.put("assignSelect" + i,
-                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Add/Assign a Clinical Governance Officer", "field"));
+                errMap.put("assignSelect" + i, "GENERAL_ERR0006");
             } else {
-                String idTyp = appSvcCgoList.get(i).getIdType();
-                String idNo = appSvcCgoList.get(i).getIdNo();
-                String nationality = appSvcCgoList.get(i).getNationality();
+                String idTyp = person.getIdType();
+                String idNo = person.getIdNo();
+                String nationality = person.getNationality();
 
-                String keyIdType = "idTyp" + i;
+                String keyIdType = "idType" + i;
                 String keyIdNo = "idNo" + i;
                 String keyNationality = "nationality" + i;
                 boolean isValid = validateId(nationality, idTyp, idNo, keyNationality, keyIdType, keyIdNo, errMap);
                 // check duplicated
                 if (isValid) {
                     String personKey = ApplicationHelper.getPersonKey(nationality, idTyp, idNo);
-                    boolean licPerson = appSvcCgoList.get(i).isLicPerson();
+                    boolean licPerson = person.isLicPerson();
                     String idTypeNoKey = "idTypeNo" + i;
                     isValid = doPsnCommValidate(errMap, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
                     if (isValid) {
@@ -1647,51 +1654,11 @@ public final class AppValidatorHelper {
                     }
                 }
 
-                String salutation = appSvcCgoList.get(i).getSalutation();
+                String salutation = person.getSalutation();
                 if (StringUtil.isEmpty(salutation)) {
                     errMap.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Salutation", "field"));
                 }
-                String professionType = appSvcCgoList.get(i).getProfessionType();
-                if (StringUtil.isEmpty(professionType)) {
-                    errMap.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type ", "field"));
-                }
-                String designation = appSvcCgoList.get(i).getDesignation();
-                if (StringUtil.isEmpty(designation)) {
-                    errMap.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
-                } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
-                    String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
-                    if (StringUtil.isEmpty(otherDesignation)) {
-                        errMap.put("otherDesignation" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
-                    } else if (otherDesignation.length() > 100) {
-                        String general_err0041 = repLength("Others Designation", "100");
-                        errMap.put("otherDesignation" + i, general_err0041);
-                    }
-
-                }
-                String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
-                if (!StringUtil.isEmpty(professionRegoNo)) {
-                    if (professionRegoNo.length() > 20) {
-                    String general_err0041 = repLength("Professional Regn. No.", "20");
-                    errMap.put("professionRegoNo" + i, general_err0041);
-                    } else if (checkPRS) {
-                        validateProfRegNo(errMap, professionRegoNo, "professionRegoNo" + i);
-                    }
-                }
-                String specialty = appSvcCgoList.get(i).getSpeciality();
-                String otherQualification = appSvcCgoList.get(i).getOtherQualification();
-                if (StringUtil.isEmpty(professionRegoNo) || StringUtil.isEmpty(specialty)) {
-                    if (StringUtil.isEmpty(otherQualification)) {
-                        errMap.put("otherQualification" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
-                    }
-                }
-                // GENERAL_ERR0036 - GENERAL_ERR0041
-                if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
-                    errMap.put("otherQualification" + i, repLength("Other Qualification", "100"));
-                }
-
-                String name = appSvcCgoList.get(i).getName();
+                String name = person.getName();
                 if (StringUtil.isEmpty(name)) {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
@@ -1701,25 +1668,117 @@ public final class AppValidatorHelper {
                     }
                 }
 
-                String mobileNo = appSvcCgoList.get(i).getMobileNo();
+                String designation = person.getDesignation();
+                if (StringUtil.isEmpty(designation)) {
+                    errMap.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+                    String otherDesignation = person.getOtherDesignation();
+                    if (StringUtil.isEmpty(otherDesignation)) {
+                        errMap.put("otherDesignation" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
+                    } else if (otherDesignation.length() > 100) {
+                        String general_err0041 = repLength("Others Designation", "100");
+                        errMap.put("otherDesignation" + i, general_err0041);
+                    }
+
+                }
+
+                String professionType = person.getProfessionType();
+                String professionalRegoNo = person.getProfRegNo();
+                String typeOfCurrRegi = person.getTypeOfCurrRegi();
+                String currRegiDate = person.getCurrRegiDateStr();
+                String praCerEndDate = person.getPraCerEndDateStr();
+                String typeOfRegister = person.getTypeOfRegister();
+                String otherQualification = person.getOtherQualification();
+                if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
+                    if (StringUtil.isEmpty(professionType)) {
+                        errMap.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type ", "field"));
+                    }
+                    if (StringUtil.isEmpty(professionalRegoNo)) {
+                        errMap.put("profRegNo" + i, "GENERAL_ERR0006");
+                    }
+                    if (StringUtil.isEmpty(typeOfCurrRegi)) {
+                        errMap.put("typeOfCurrRegi" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
+                    }
+                    if (StringUtil.isEmpty(currRegiDate)) {
+                        errMap.put("currRegiDate" + i, "GENERAL_ERR0006");
+                    }
+                    if (StringUtil.isEmpty(praCerEndDate)) {
+                        errMap.put("praCerEndDate" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Practicing Certificate End Date", "field"));
+                    }
+                    if (StringUtil.isEmpty(typeOfRegister)) {
+                        errMap.put("typeOfRegister" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Register", "field"));
+                    }
+                    if (StringUtil.isEmpty(otherQualification)) {
+                        errMap.put("otherQualification" + i, "GENERAL_ERR0006");
+                    }
+                }
+
+                if (!StringUtil.isEmpty(professionalRegoNo)) {
+                    if (professionalRegoNo.length() > 20) {
+                        errMap.put("profRegNo" + i, repLength("Professional Regn. No.", "20"));
+                    } else if (checkPRS) {
+                        validateProfRegNo(errMap, professionalRegoNo, "profRegNo" + i);
+                    }
+                }
+                 if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
+                    errMap.put("typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
+                }
+                //Current Registration Date
+                 if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
+                    errMap.put("currRegiDate" + i, "GENERAL_ERR0033");
+                }
+                 if (StringUtil.isNotEmpty(praCerEndDate) && !CommonValidator.isDate(praCerEndDate)) {
+                    errMap.put("praCerEndDate" + i, "GENERAL_ERR0033");
+                }
+                 if (StringUtil.isNotEmpty(typeOfRegister) && typeOfRegister.length() > 50) {
+                    errMap.put("typeOfRegister" + i, AppValidatorHelper.repLength("Type of Register", "50"));
+                }
+                String specialityOther = person.getSpecialityOther();
+                if (StringUtil.isNotEmpty(specialityOther) && specialityOther.length() > 100) {
+                    errMap.put("otherQualification" + i, repLength("Other Specialities", "100"));
+                }
+                String specialtyGetDate = person.getSpecialtyGetDateStr();
+                if (StringUtil.isNotEmpty(specialtyGetDate) && !CommonValidator.isDate(praCerEndDate)) {
+                    errMap.put("specialtyGetDate" + i, "GENERAL_ERR0006");
+                } else if (!CommonValidator.isDate(praCerEndDate)) {
+                    errMap.put("specialtyGetDate" + i, "GENERAL_ERR0033");
+                }
+
+
+                /*String specialty = person.getSpeciality();
+                if (!StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
+                    if (StringUtil.isEmpty(professionalRegoNo) || StringUtil.isEmpty(specialty)) {
+                        if (StringUtil.isEmpty(otherQualification)) {
+                            errMap.put("otherQualification" + i,
+                                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
+                        }
+                    }
+                }*/
+                // GENERAL_ERR0036 - GENERAL_ERR0041
+                if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
+                    errMap.put("otherQualification" + i, repLength("Other Qualification", "100"));
+                }
+
+                String mobileNo = person.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
                     errMap.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
                 } else if (!StringUtil.isEmpty(mobileNo)) {
                     if (mobileNo.length() > 8) {
-                        String general_err0041 = repLength("Mobile No.", "8");
-                        errMap.put("mobileNo" + i, general_err0041);
+                        errMap.put("mobileNo" + i, repLength("Mobile No.", "8"));
                     }
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo" + i, "GENERAL_ERR0007");
                     }
                 }
-                String emailAddr = appSvcCgoList.get(i).getEmailAddr();
+                String emailAddr = person.getEmailAddr();
                 if (StringUtil.isEmpty(emailAddr)) {
                     errMap.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
                 } else {
                     if (emailAddr.length() > 320) {
-                        String general_err0041 = repLength("Email Address", "320");
-                        errMap.put("emailAddr" + i, general_err0041);
+                        errMap.put("emailAddr" + i, repLength("Email Address", "320"));
                     }
                     if (!ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr" + i, "GENERAL_ERR0014");
@@ -1727,7 +1786,6 @@ public final class AppValidatorHelper {
                 }
             }
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 
@@ -2590,7 +2648,8 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSpecialisedDtoList(Map<String, String> errorMap, List<AppPremSpecialisedDto> appPremSpecialisedDtoList, HttpServletRequest request) {
+    public static void doValidateSpecialisedDtoList(Map<String, String> errorMap,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, HttpServletRequest request) {
     }
 
 }

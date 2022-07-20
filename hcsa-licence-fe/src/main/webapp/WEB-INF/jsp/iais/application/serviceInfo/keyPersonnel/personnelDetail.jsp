@@ -282,8 +282,8 @@
             $target.after(src);
             var $currContent = $('div.person-content').last();
             clearFields($currContent);
-            $currContent.find('.assignSelVal').val('-1');
             refreshPerson($currContent, $('div.person-content').length - 1);
+            $currContent.find('.assignSelVal').val('-1');
             $('div.person-content:first').find('.psnHeader').html('1');
             removePersonEvent();
             assignSelectEvent();
