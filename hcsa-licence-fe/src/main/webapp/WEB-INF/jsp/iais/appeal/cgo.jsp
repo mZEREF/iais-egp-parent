@@ -425,7 +425,6 @@
 
         $('#control--runtime--0').children().remove("hr")
         psnSelect();
-        $('select.assignSel').trigger('change');
         var $parentEle = $('select.assignSel').closest('td.first');
         $parentEle.find('> .new-officer-form').removeClass('hidden');
         $parentEle.find('> .profile-info-gp').addClass('hidden');
