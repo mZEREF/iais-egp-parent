@@ -2,19 +2,27 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
 
-<div class="row">
-    <div class="col-md-12 col-xs-12">
-        <div class="row control control-caption-horizontal">
-            <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">
-                        <p class="app-title"><c:out value="${currStepName}"/></p>
-                    </label>
+<div class="row form-horizontal">
+    <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
+            <iais:row>
+                <div class="text-right app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
-            </div>
+            </iais:row>
+        </c:if>
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    </c:if>
+    <iais:row>
+        <div class="col-xs-12">
+            <p class="app-title"><c:out value="${currStepName}"/></p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
-    </div>
+    </iais:row>
 
     <c:set var="personList" value="${currSvcInfoDto.appSvcCgoDtoList}"/>
     <c:set var="personConfig" value="${currStepConfig}"/>
@@ -40,41 +48,6 @@
         <c:set var="person" value="${personList[index]}"/>
 
         <%@include file="personnelDetail.jsp" %>
-        <%--<div class="form-horizontal personnel-content">
-            <iais:row cssClass="edit-content">
-                <c:if test="${canEdit}">
-                    <div class="text-right app-font-size-16">
-                        <a class="edit psnEdit" href="javascript:void(0);">
-                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                        </a>
-                    </div>
-                </c:if>
-            </iais:row>
-            <iais:row>
-                <div class="col-xs-12 col-md-6">
-                    <p class="app-title">${singleName} <span class="psnHeader"><c:if test="${personCount > 1}">${index+1}</c:if></span></p>
-                </div>
-                <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
-                    <h4 class="text-danger">
-                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                    </h4>
-                </div>
-            </iais:row>
-
-            <c:if test="${isRfc || isRenew || isRfi}">
-                <iais:row>
-                    <div class="col-sm-10">
-                        <label class="control-font-label">
-                            <c:if test="${!empty person.name && !empty person.idNo && !empty person.idType}">
-                                ${person.name}, ${person.idNo} (<iais:code code="${person.idType}"/>)
-                            </c:if>
-                        </label>
-                    </div>
-                </iais:row>
-            </c:if>
-
-            <%@include file="personnelDetail.jsp" %>
-        </div>--%>
     </c:forEach>
 
 

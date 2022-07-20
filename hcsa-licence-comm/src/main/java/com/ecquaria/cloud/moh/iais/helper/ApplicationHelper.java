@@ -1801,18 +1801,18 @@ public final class ApplicationHelper {
         if (appSvcPersonAndExtDto == null) {
             return null;
         }
-        AppSvcPrincipalOfficersDto person = null;
+        /*AppSvcPrincipalOfficersDto person = null;
         //66762
         AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
         if (appSvcPersonDto != null) {
             person = MiscUtil.transferEntityDto(appSvcPersonDto, AppSvcPrincipalOfficersDto.class);
             person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
         }
-        if (!StringUtil.isEmpty(svcCode) && person != null && !person.isLicPerson()) {
+        if (!StringUtil.isEmpty(svcCode) && !appSvcPersonAndExtDto.isLicPerson()) {
             svcCode = null;
         } else if (svcCode == null) {
             svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
-        }
+        }*/
         return genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
     }
 

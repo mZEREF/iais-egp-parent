@@ -1,8 +1,8 @@
 
 
-<div class="col-md-12 col-xs-12 form-horizontal person-content">
+<div class="<%--col-md-12 col-xs-12 form-horizontal--%> person-content">
     <input type="hidden" class="not-refresh assignSelVal" name="assignSelVal" value="${person.assignSelect}"/>
-    <input type="hidden" class="not-refresh licPerson" name="licPerson${index}" value="${person.licPerson ? 1 : 0}"/>
+    <input type="hidden" class="not-refresh licPerson" name="licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh" name="isPartEdit" value="0"/>
     <input type="hidden" class="not-refresh indexNo" name="indexNo" value="${currentCgo.indexNo}"/>
     <%--<input type="hidden" class="not-refresh" name="existingPsn" value="0"/>--%>
@@ -21,7 +21,7 @@
         <div class="col-xs-12 col-md-6">
             <p class="bold">${singleName} <span class="psnHeader">${index+1}</span></p>
         </div>
-        <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
+        <div class="col-xs-12 col-md-5 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
             <h4 class="text-danger">
                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
             </h4>
@@ -56,18 +56,32 @@
                              codeCategory="CATE_ID_SALUTATION" value="${person.salutation}" />
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input cssClass="name" maxLength="66" type="text" name="name${index}" value="${person.name}" />
+                <iais:input maxLength="66" type="text" cssClass="name" name="name${index}" value="${person.name}" />
             </iais:value>
         </iais:row>
 
-        <iais:row cssClass="ind-no">
+        <iais:row>
             <iais:field width="5" mandatory="true" value="ID No."/>
             <iais:value width="3" cssClass="col-md-3">
                 <iais:select name="idType${index}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${person.idType}"
-                             cssClass="idTypeSel"/>
+                             cssClass="idType idTypeSel" onchange="toggleOnVal(this, 'IDTYPE003', '.nationalityDiv')"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="20" type="text" name="idNo${index}" value="${person.idNo}" />
+                <iais:input maxLength="20" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}" />
+            </iais:value>
+        </iais:row>
+
+        <iais:row cssClass="nationalityDiv">
+            <iais:field width="5" mandatory="true" value="Country of issuance"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:select firstOption="Please Select" name="nationality${index}" codeCategory="CATE_ID_NATIONALITY"
+                             cssClass="nationality" value="${clinicalDirectorDto.nationality}" />
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${index}"></span>
             </iais:value>
         </iais:row>
 
@@ -75,11 +89,11 @@
             <iais:field width="5" mandatory="true" value="Designation"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="designation" name="designation${index}" value="${person.designation}" options="designationOpList"
-                             firstOption="Please Select" onchange="toggleOnSelect(this, '.othe-Designation-${index}', 'DES999');"/>
+                             firstOption="Please Select" onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
             </iais:value>
         </iais:row>
 
-        <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} other-designation othe-Designation-${index}">
+        <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
             <iais:field width="5" value=""/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}" value="${person.otherDesignation}"/>
@@ -103,35 +117,35 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Professional Regn. No."/>
+            <iais:field width="5" mandatory="false" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Type of Registration Date"/>
+            <iais:field width="5" mandatory="false" value="Type of Current Registration"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${person.typeOfCurrRegi}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Current Registration Date"/>
+            <iais:field width="5" mandatory="false" value="Current Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate${index}" value="${person.currRegiDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Practicing Certificate End Date"/>
+            <iais:field width="5" mandatory="false" value="Practicing Certificate End Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate${index}" value="${person.praCerEndDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Type of Register"/>
+            <iais:field width="5" mandatory="false" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${person.typeOfRegister}"/>
             </iais:value>
@@ -173,7 +187,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Other Qualification"/>
+            <iais:field width="5" mandatory="false" value="Other Qualification"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification${index}" value="${person.otherQualification}"/>
             </iais:value>
@@ -182,7 +196,7 @@
         <iais:row>
             <iais:field width="5" mandatory="true" value="Mobile No."/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="8" cssClass="mobileNo" type="text" name="mobileNo${index}" value="${person.mobileNo}"/>
+                <iais:input maxLength="8" type="text" cssClass="mobileNo" name="mobileNo${index}" value="${person.mobileNo}"/>
             </iais:value>
         </iais:row>
 
@@ -217,11 +231,18 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script type="text/javascript">
     $(function() {
-        assignSelectEvent();
         addPersonnelEvent();
         removePersonEvent();
+        assignSelectEvent();
+        profRegNoEvent();
+        psnEditEvent();
 
-        $('div.person-content').each(function(k, v) {
+        $('div.person-content').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                if ($(v).find('.error-msg:not(:empty)').length > 0) {
+                    $(v).find('.psnEdit').trigger("click");
+                }
+            }
             checkPersonContent($(v), true);
         });
         if ($('div.person-content').length == 1) {
@@ -233,6 +254,19 @@
         }
     });
 
+    var psnEditEvent = function() {
+        $('.psnEdit').unbind('click');
+        $('.psnEdit').on('click', function () {
+            showWaiting();
+            var $currContent = $(this).closest('.person-content');
+            $currContent.find('input[name="isPartEdit"]').val('1');
+            $('#isEditHiddenVal').val('1');
+            hideTag($(this).closest('.edit-content'));
+            unDisableContent($currContent);
+            dismissWaiting();
+        });
+    }
+
     function refreshPerson($target, k) {
         toggleTag($target.find('.removeEditDiv'), k != 0);
         $target.find('.psnHeader').html(k + 1);
@@ -242,6 +276,7 @@
     var addPersonnelEvent = function () {
         $('.addPersonnelBtn').unbind('click');
         $('.addPersonnelBtn').on('click', function () {
+            showWaiting();
             var $target = $('div.person-content:last');
             var src = $target.clone();
             $target.after(src);
@@ -250,7 +285,11 @@
             $currContent.find('.assignSelVal').val('-1');
             refreshPerson($currContent, $('div.person-content').length - 1);
             $('div.person-content:first').find('.psnHeader').html('1');
+            removePersonEvent();
+            assignSelectEvent();
+            profRegNoEvent();
             checkPersonContent($currContent, true);
+            $('#isEditHiddenVal').val('1');
         });
     }
 
@@ -265,6 +304,7 @@
             if ($('div.person-content').length == 1) {
                 $('div.person-content').find('.psnHeader').html('');
             }
+            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         });
     }
@@ -276,7 +316,7 @@
             var assignVal = $(this).val();
             var $currContent = $(this).closest('.person-content');
             $currContent.find('.assignSelVal').val(assignVal);
-            checkPersonContent($currContent, false);
+            checkPersonContent($currContent, false, false);
             removePersonEvent();
         });
     }
@@ -286,17 +326,32 @@
         var $content = $currContent.find('.person-detail');
         if('-1' == assignVal || isEmpty(assignVal)) {
             hideTag($content);
+            $currContent.find('.speciality p').html('');
+            $currContent.find('.subSpeciality p').html('');
+            $currContent.find('.qualification p').html('');
             $content.find('.designation').trigger('change');
+            $content.find('.idTypeSel').trigger('change');
+            $currContent.find('input.licPerson').val('0');
             dismissWaiting();
         } else if('newOfficer' == assignVal) {
             showTag($content);
-            clearFields($content);
+            if (!onlyInit) {
+                clearFields($content);
+                $currContent.find('.speciality p').html('');
+                $currContent.find('.subSpeciality p').html('');
+                $currContent.find('.qualification p').html('');
+                unDisableContent($content);
+            }
             $content.find('.designation').trigger('change');
+            $content.find('.idTypeSel').trigger('change');
             $currContent.find('input.licPerson').val('0');
             dismissWaiting();
         } else {
             showTag($content);
             if (onlyInit) {
+                $content.find('.designation').trigger('change');
+                $content.find('.idTypeSel').trigger('change');
+                checkPersonDisabled($currContent, true);
                 dismissWaiting();
                 return;
             }
@@ -328,7 +383,7 @@
                     if (typeof callback === 'function') {
                         callback($currContent, data);
                     } else {
-                        fillForm($currContent, data);
+                        fillForm($content, data, "",  $('div.person-content').index($currContent));
 
                         $currContent.find('.speciality p').html(data.specialty);
                         $currContent.find('.subSpeciality p').html(data.subspecialty);
@@ -339,6 +394,7 @@
                         $currContent.find('.psnEditField').val(data.psnEditFieldStr);
                         checkPersonDisabled($currContent);
                         $currContent.find('.designation').trigger('change');
+                        $currContent.find('.idTypeSel').trigger('change');
                     }
                     dismissWaiting();
                 },
@@ -349,21 +405,27 @@
         }
     }
 
-    function checkPersonDisabled($currContent) {
+    function checkPersonDisabled($currContent, onlyInit) {
         var data;
         try{
             data = $.parseJSON($currContent.find('.psnEditField:input').val());
         } catch (e) {
             data = {};
         };
-        if ('1' == $currContent.find('.licPerson:input').val()) {
+        if ('1' == $currContent.find('.licPerson').val()) {
             $.each(data, function(i, val) {
                 //console.info(i + " : " + val);
-                var $input = $current.find('.' + i + ':input');
+                var $input = $currContent.find('.' + i + ':input');
                 if ($input.length > 0 && !val) {
                     disableContent($input);
                 }
             });
+        }
+
+        if (!isEmpty($currContent.find('.profRegNo').val())) {
+            disablePrsInfo($currContent, true);
+        } else if (!onlyInit) {
+            disablePrsInfo($currContent, false);
         }
     }
 
@@ -373,13 +435,11 @@
             showWaiting();
             var prgNo = $(this).val();
             var $currContent = $(this).closest('.person-content');
-
             var assignSelectVal = $currContent.find('select.assignSelVal').val();
             var appType = $('input[name="applicationType"]').val();
             var licPerson = $currContent.find('input.licPerson').val();
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-            console.log("isNeedControlName: " + needControlName + " assignSelectVal:" + assignSelectVal
-                + " licPerson:" + licPerson + " appType:" + appType);
+            console.log("isNeedControlName: " + needControlName);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
     };
@@ -388,7 +448,7 @@
         showWaiting();
         if (isEmpty(prgNo)) {
             fillPrsInfo($currContent, null, needControlName);
-            disablePrsInfo(false);
+            disablePrsInfo($currContent, false);
             dismissWaiting();
             if (typeof callback === 'function') {
                 callback($currContent, null);
@@ -424,7 +484,7 @@
                     canFill = true;
                 }
                 fillPrsInfo($currContent, canFill? data : null, needControlName);
-                disablePrsInfo(canFill);
+                disablePrsInfo($currContent, canFill);
                 if (typeof callback === 'function') {
                     callback($currContent, canFill? data : null);
                 }
@@ -432,7 +492,7 @@
             },
             'error': function () {
                 fillPrsInfo($currContent, null, needControlName);
-                disablePrsInfo(false);
+                disablePrsInfo($currContent, false);
                 dismissWaiting();
             }
         });
@@ -486,7 +546,7 @@
         $currContent.find('.typeOfRegister').val(typeOfRegister);
     }
 
-    function disablePrsInfo(flag) {
+    function disablePrsInfo($currContent, flag) {
         if (flag) {
             disableContent($currContent.find('.specialtyGetDate'));
             disableContent($currContent.find('.typeOfCurrRegi'));
@@ -500,6 +560,10 @@
             unDisableContent($currContent.find('.praCerEndDate'));
             unDisableContent($currContent.find('.typeOfRegister'));
         }
+    }
+
+    function toggleOnVal(sel, val, elem){
+        toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
     }
 
     function isNeedControlName(assignSelectVal, licPerson, appType) {
