@@ -34,6 +34,7 @@
         </c:otherwise>
     </c:choose>
     <input type="hidden" name="vehiclesLength" value="${pageLength}" />
+
     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="vehicleStat">
         <c:set var="vehicleDto" value="${vehicleDtoList[vehicleStat.index]}"/>
         <div class="form-horizontal vehicleContent">
@@ -90,6 +91,9 @@
         </div>
     </c:forEach>
 
+    </div>
+
+
     <c:if test="${!isRfi}">
         <c:choose>
             <c:when test="${!empty vehicleDtoList}">
@@ -143,31 +147,17 @@
     });
 
     var addVehicle = function(){
+        $('.addVehicleBtn').unbind('click');
         $('.addVehicleBtn').click(function () {
             showWaiting();
-            var vehicleLength = $('.vehicleContent').length;
-            $.ajax({
-                url: '${pageContext.request.contextPath}/vehicle-html',
-                dataType: 'json',
-                data: {
-                    "vehicleLength": vehicleLength
-                },
-                type: 'POST',
-                success: function (data) {
-                    if ('200' == data.resCode) {
-                        $('.addVehicleDiv').before(data.resultJson+'');
-                        removeVehicle();//bind event
-                        refreshVehicle();
-                        $('#isEditHiddenVal').val('1');
-                    }
-                    dismissWaiting();
-                },
-                error: function (data) {
-                    console.log("err");
-                    dismissWaiting();
-                }
-            });
-
+            var $target = $('div.vehicleContent:first');
+            var src = $target.clone();
+            clearFields(src);
+            $('.addVehicleDiv').before(src);
+            removeVehicle();
+            refreshVehicle();
+            $('#isEditHiddenVal').val('1');
+            dismissWaiting();
         });
     }
 
