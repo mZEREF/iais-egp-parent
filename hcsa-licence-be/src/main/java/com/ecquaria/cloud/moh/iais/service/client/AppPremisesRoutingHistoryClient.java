@@ -31,11 +31,18 @@ public interface AppPremisesRoutingHistoryClient {
     @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppNo(@RequestParam("appNo") String appNo);
 
+    @GetMapping(value = "/iais-application-history/activeAppPremisesRoutingHistorys",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getActiveAppPremisesRoutingHistorysByAppCorrId(@RequestParam("premCorrId") String premCorrId);
+
     @GetMapping(value = "/iais-application-history/appPremisesRoutingHistoryByAppNoAndRoleIds", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(@RequestParam(name ="appNo")  String appNo,
                                                                                                                 @RequestParam(name ="roleIds")  List<String> roleIds);
     @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appNo}/{stageId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(@PathVariable("appNo") String appNo,
+                                                                                                     @PathVariable("stageId") String stageId);
+
+    @RequestMapping(path = "/iais-application-history/activeAppPremisesRoutingHistory/{appNo}/{stageId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesRoutingHistoryDto> getActiveAppPremisesRoutingHistorysByAppNoAndStageId(@PathVariable("appNo") String appNo,
                                                                                                      @PathVariable("stageId") String stageId);
 
     @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appNo}/{stageId}/{roleId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)

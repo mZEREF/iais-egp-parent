@@ -378,7 +378,7 @@ public class TopDataSubmissionDelegator {
         if (premisesMap.size() !=0) {
             List<PremisesDto> premisesDtos= IaisCommonUtils.genNewArrayList();
             premisesDtos.addAll(premisesMap.values());
-            premisesDtos.sort(Comparator.comparing(PremisesDto::getHciName, Comparator.nullsFirst(Comparator.naturalOrder())));
+            premisesDtos.sort(Comparator.comparing(PremisesDto::getBusinessName, Comparator.nullsFirst(Comparator.naturalOrder())));
             topSuperDataSubmissionDto.setPremisesDto(premisesDtos.get(0));
         }
     }

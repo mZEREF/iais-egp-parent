@@ -46,9 +46,9 @@
                                         </div>
                                         <div class="col-xs-6 col-md-6">
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize!=null}">
-                                                <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none"
-                                                <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}" docName="${oldAppGrpPrimaryDocDto[inx.index].docName}"/>
-                                                <c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
+                                                <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
+                                                    <c:out value="${oldAppGrpPrimaryDocDto[inx.index].docName}"/>
+                                                    <c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
                                                 </span>
                                             </c:if>
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize==null}">

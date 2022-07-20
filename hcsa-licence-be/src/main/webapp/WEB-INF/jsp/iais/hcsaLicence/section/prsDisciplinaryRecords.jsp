@@ -12,7 +12,7 @@
                 The Professional has existing disciplinary records in PRS
             </label>
             <span style="position: absolute;right: 0px;color: black" onclick="javascript:closeThis(this);">X&nbsp;</span>
-            <div class="table-responsive">
+            <div class="table-responsive" style="max-height: 64vh; overflow:scroll;">
                 <table aria-describedby="" border="1px"
                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                     <tr>

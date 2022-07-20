@@ -359,10 +359,10 @@
                       </div>
                       <div class="col-xs-6">
                         <c:if test="${oldSvcDoc[inx.index].docSize!=null}">
-                              <span class="oldVal " attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}">
-                                <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldSvcDoc[inx.index].fileRepoId}" docName="${oldSvcDoc[inx.index].docName}"/>
-                                <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
-                            </span>
+                          <span class="oldVal " attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}">
+                            <c:out value="${oldSvcDoc[inx.index].docName}"/>
+                            <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
+                          </span>
                         </c:if>
                         <c:if test="${oldSvcDoc[inx.index].docSize==null}">
                           <span class="oldVal " attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"></span>

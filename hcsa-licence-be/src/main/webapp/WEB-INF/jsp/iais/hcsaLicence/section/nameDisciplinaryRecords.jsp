@@ -8,14 +8,15 @@
     <div class="disciplinary-record ${cssClass}" style="display: none">
         <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 40%">
             <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-            </label><span style="position: absolute;right: 0px;color: black"
-                          onclick="javascript:closeThis(this)">X</span>
-            <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                <tr>
-                    <th scope="col" style="display: none"></th>
-                    <td>${proHashMap[profRegNo].name}</td>
-                </tr>
-            </table>
+            </label><span style="position: absolute;right: 0px;color: black" onclick="javascript:closeThis(this)">X</span>
+            <div style="max-height: 64vh; overflow:scroll;">
+                <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                    <tr>
+                        <th scope="col" style="display: none"></th>
+                        <td>${proHashMap[profRegNo].name}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </c:if>

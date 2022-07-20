@@ -657,6 +657,11 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         return selectOptionArrayList;
     }
 
+    @Override
+    public void syncFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
+        beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos);
+    }
+
     public List<Role> getRolesByDomain(String domain) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         map.put("userDomains", domain);

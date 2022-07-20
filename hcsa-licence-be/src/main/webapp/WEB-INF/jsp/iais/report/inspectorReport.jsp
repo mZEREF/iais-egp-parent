@@ -689,7 +689,9 @@
             $("#period").hide();
             $("#selfPeriod").hide();
         }
-        doChangeVehicleShow(obj);
+        <c:if test="${appType!='APTY007' && appType!='APTY009'}">
+            doChangeVehicleShow(obj);
+        </c:if>
     }
 
 
