@@ -236,13 +236,14 @@
               callBack="$('#confirmTag').modal('hide');mysubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 
 <script>
-<c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
     $(document).ready(function () {
-        changeAoSelect();
-        $("#processSubmit").change(function () {
+        <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
             changeAoSelect();
-            initBackToRow();
-        })
+            $("#processSubmit").change(function () {
+                changeAoSelect();
+                initBackToRow();
+            })
+        </c:if>
         initBackToRow();
     });
 
@@ -284,7 +285,6 @@
         }
     }
 
-</c:if>
     function insSubmit() {
         clearErrorMsg();
         $("#error_rollBackTo1").hide();

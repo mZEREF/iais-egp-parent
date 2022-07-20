@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -627,7 +628,7 @@ public class InspectionServiceImpl implements InspectionService {
             return false;
         }
         if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(currentRole)) {
-            currentRole = RoleConsts.USER_ROLE_AO1;
+            currentRole = RoleConsts.USER_ROLE_INSPECTIOR;
         }
         return StringUtil.isNotEmpty(historyRole) && ROLE.contains(historyRole) && ROLE.indexOf(currentRole) > ROLE.indexOf(historyRole);
     }
@@ -702,10 +703,32 @@ public class InspectionServiceImpl implements InspectionService {
         } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
             rollBackToPsoAso(bpc, taskDto, applicationViewDto, rollBackHistoryDto, remark);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, rollBackHistoryDto.getWrkGrpId(), rollBackHistoryDto.getActionby(), remark);
+            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, rollBackHistoryDto.getRoleId(),rollBackHistoryDto.getStageId(),rollBackHistoryDto.getWrkGrpId(), rollBackHistoryDto.getActionby(), remark);
         } else{
             log.warn("wrong rollBack target, Stage Id is {}",rollBackHistoryDto.getStageId());
         }
+    }
+
+    @Override
+    public void saveRollBackExtInfo(BroadcastApplicationDto broadcastApplicationDto, String premCorrId, String currentTaskId, String historyId, String stageId, String wrkGpId, String userId, String roleId){
+        String tollBackToTaskId = getRollBackToTaskId(premCorrId, stageId, wrkGpId, userId, roleId);
+        AppPremisesRoutingHistoryExtDto ext1 = new AppPremisesRoutingHistoryExtDto();
+        ext1.setComponentName(ApplicationConsts.APPLICATION_ROLL_BACK_TO_INFO);
+        ext1.setComponentValue(historyId+"|"+currentTaskId+"|"+tollBackToTaskId);
+
+        broadcastApplicationDto.setNewTaskHistoryExt(ext1);
+    }
+
+    private String getRollBackToTaskId(String premCorrId, String stageId,String wrkGpId,String userId,String roleId){
+        List<TaskDto> taskDtos = applicationClient.getActiveTaskList(premCorrId).getEntity();
+        if (IaisCommonUtils.isNotEmpty(taskDtos)){
+            for (TaskDto taskDto : taskDtos) {
+                if (stageId.equals(taskDto.getTaskKey()) && wrkGpId.equals(taskDto.getWkGrpId()) && userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                    return taskDto.getId();
+                }
+            }
+        }
+        return null;
     }
 
     @SneakyThrows
@@ -755,10 +778,10 @@ public class InspectionServiceImpl implements InspectionService {
         broadcastOrganizationDto.setEventRefNo(evenRefNum);
         broadcastApplicationDto.setEventRefNo(evenRefNum);
         String submissionId = generateIdClient.getSeqId().getEntity();
+        saveRollBackExtInfo(broadcastApplicationDto,taskDto.getRefNo(),taskDto.getId(),rollBackHistoryDto.getId(),stageId,wrkGpId,userId,roleId);
         log.info(StringUtil.changeForLog(submissionId));
         broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
-
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }

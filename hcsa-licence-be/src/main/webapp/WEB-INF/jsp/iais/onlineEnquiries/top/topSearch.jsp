@@ -15,11 +15,7 @@
 %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/topSearch.js"></script>
 <style>
-    .table-gp table.table > tbody > tr > td p a[data-toggle=collapse] {
-        position: relative;
-        margin-right: 25px;
-        margin-top: -12px;
-    }
+
     .form-horizontal p {
         line-height: 23px;
     }

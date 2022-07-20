@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Maps;
 import com.googlecode.jmapper.JMapper;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
@@ -18,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.RefreshableDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
@@ -29,7 +31,15 @@ import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_ADDRESS;
@@ -37,7 +47,7 @@ import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_AD
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FacilityProfileDto extends ValidatableNodeValue {
+public class FacilityProfileDto extends ValidatableNodeValue implements RefreshableDocDto {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JGlobalMap(excluded = {"metaList"})
@@ -90,7 +100,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     private Map<String, DocRecordInfo> savedDocMap;
     /* docs new uploaded, key is tmpId */
     @JsonIgnore
-    private final Map<String, NewDocInfo> newDocMap;
+    private Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     @JsonIgnore
     private final Set<String> toBeDeletedRepoIds;
@@ -145,6 +155,15 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
+    @Override
+    public Map<String, byte[]> prepare4Saving() {
+        return Maps.transformValues(newDocMap, i -> i.getMultipartFile().getBytes());
+    }
+
+    @Override
+    public void refreshAfterSave(Map<String, String> idMap) {
+        RefreshableDocDto.refreshDocMap(newDocMap, savedDocMap, idMap);
+    }
 
 
     public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
@@ -248,6 +267,10 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
     public Map<String, NewDocInfo> getNewDocMap() {
         return newDocMap;
+    }
+
+    public void setNewDocMap(Map<String, NewDocInfo> newDocMap) {
+        this.newDocMap = newDocMap;
     }
 
     public Set<String> getToBeDeletedRepoIds() {

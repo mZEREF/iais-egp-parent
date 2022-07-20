@@ -7,6 +7,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
     DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
@@ -14,7 +15,7 @@
     CessationFeService cessationFeService = SpringContextHelper.getContext().getBean(CessationFeService.class);
     PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(dsLaboratoryDevelopTestDto.getHciCode());
     if (premisesDto != null) {
-        hciName = premisesDto.getPremiseLabel();
+        hciName = StringUtil.escapeHtml(StringUtil.viewHtml(premisesDto.getHciName()) + ", " + premisesDto.getAddress());
     }
 %>
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>

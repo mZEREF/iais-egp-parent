@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.RefreshableDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -30,13 +31,21 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PrimaryDocDto extends ValidatableNodeValue {
+public class PrimaryDocDto extends ValidatableNodeValue implements RefreshableDocDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -53,7 +62,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     /* docs already saved in DB, key is repoId */
     private Map<String, DocRecordInfo> savedDocMap;
     /* docs new uploaded, key is tmpId */
-    private final Map<String, NewDocInfo> newDocMap;
+    private Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
 
@@ -102,7 +111,15 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     }
 
 
+    @Override
+    public Map<String, byte[]> prepare4Saving() {
+        return Maps.transformValues(newDocMap, i -> i.getMultipartFile().getBytes());
+    }
 
+    @Override
+    public void refreshAfterSave(Map<String, String> idMap) {
+        RefreshableDocDto.refreshDocMap(newDocMap, savedDocMap, idMap);
+    }
 
     /**
      * get a structure used to display the already saved docs
@@ -222,6 +239,10 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     public Map<String, NewDocInfo> getNewDocMap() {
         return newDocMap;
+    }
+
+    public void setNewDocMap(Map<String, NewDocInfo> newDocMap) {
+        this.newDocMap = newDocMap;
     }
 
     public Set<String> getToBeDeletedRepoIds() {

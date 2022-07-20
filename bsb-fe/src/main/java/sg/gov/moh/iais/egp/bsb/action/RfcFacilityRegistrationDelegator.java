@@ -16,18 +16,13 @@ import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_FACILITY_REGISTRATION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_REQUEST_FOR_CHANGE;
@@ -44,10 +39,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OLD_FACI
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
 
 
 @Slf4j
@@ -199,15 +191,15 @@ public class RfcFacilityRegistrationDelegator {
                 if (previewSubmitNode.doValidation()) {
                     previewSubmitNode.passValidation();
 
-                    // save docs
-                    log.info("Save documents into file-repo");
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
-                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
-                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
-                    newFilesToSync.addAll(primaryDocNewFiles);
-                    newFilesToSync.addAll(profileNewFiles);
+//                    // save docs
+//                    log.info("Save documents into file-repo");
+//                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+//                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
+//                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+//                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
+//                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+//                    newFilesToSync.addAll(primaryDocNewFiles);
+//                    newFilesToSync.addAll(profileNewFiles);
 
                     FacilityRegisterDto finalAllDataDto = FacilityRegistrationService.getRegisterDtoFromFacRegRoot(facRegRoot);
                     //rfc compare to decision flowType
@@ -221,20 +213,20 @@ public class RfcFacilityRegistrationDelegator {
                         ResponseDto<String> responseDto = facRegClient.saveAmendmentFacility(finalAllDataDto);
                         log.info("save rfc facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
-                        try {
-                            // delete docs
-                            log.info("Delete already saved documents in file-repo");
-                            List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
-                            List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
-                            toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
-                            toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
-                            // sync docs
-                            log.info("Sync new uploaded documents to BE");
-                            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
-                        } catch (Exception e) {
-                            log.error("Fail to synchronize documents", e);
-                        }
+//                        try {
+//                            // delete docs
+//                            log.info("Delete already saved documents in file-repo");
+//                            List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
+//                            List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
+//                            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+//                            toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
+//                            toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
+//                            // sync docs
+//                            log.info("Sync new uploaded documents to BE");
+//                            facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+//                        } catch (Exception e) {
+//                            log.error("Fail to synchronize documents", e);
+//                        }
                     }
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {

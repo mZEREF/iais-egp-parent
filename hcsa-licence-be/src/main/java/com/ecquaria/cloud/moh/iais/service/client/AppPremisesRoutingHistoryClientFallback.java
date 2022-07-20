@@ -32,6 +32,14 @@ public class AppPremisesRoutingHistoryClientFallback implements AppPremisesRouti
     }
 
     @Override
+    public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getActiveAppPremisesRoutingHistorysByAppCorrId(String premCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(String appNo, List<String> roleIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -41,6 +49,14 @@ public class AppPremisesRoutingHistoryClientFallback implements AppPremisesRouti
 
     @Override
     public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(String appNo, String stageId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesRoutingHistoryDto> getActiveAppPremisesRoutingHistorysByAppNoAndStageId(String appNo, String stageId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
