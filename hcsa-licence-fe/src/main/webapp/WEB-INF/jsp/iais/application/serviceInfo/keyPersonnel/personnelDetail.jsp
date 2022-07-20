@@ -231,7 +231,6 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script type="text/javascript">
     $(function() {
-        addPersonnelEvent();
         removePersonEvent();
         assignSelectEvent();
         profRegNoEvent();
@@ -273,24 +272,21 @@
         resetIndex($target, k);
     }
 
-    var addPersonnelEvent = function () {
-        $('.addPersonnelBtn').unbind('click');
-        $('.addPersonnelBtn').on('click', function () {
-            showWaiting();
-            var $target = $('div.person-content:last');
-            var src = $target.clone();
-            $target.after(src);
-            var $currContent = $('div.person-content').last();
-            clearFields($currContent);
-            refreshPerson($currContent, $('div.person-content').length - 1);
-            $currContent.find('.assignSelVal').val('-1');
-            $('div.person-content:first').find('.psnHeader').html('1');
-            removePersonEvent();
-            assignSelectEvent();
-            profRegNoEvent();
-            checkPersonContent($currContent, true);
-            $('#isEditHiddenVal').val('1');
-        });
+    function addPersonnel () {
+        showWaiting();
+        var $target = $('div.person-content:last');
+        var src = $target.clone();
+        $target.after(src);
+        var $currContent = $('div.person-content').last();
+        clearFields($currContent);
+        refreshPerson($currContent, $('div.person-content').length - 1);
+        $currContent.find('.assignSelVal').val('-1');
+        $('div.person-content:first').find('.psnHeader').html('1');
+        removePersonEvent();
+        assignSelectEvent();
+        profRegNoEvent();
+        checkPersonContent($currContent, true);
+        $('#isEditHiddenVal').val('1');
     }
 
     var removePersonEvent = function () {
