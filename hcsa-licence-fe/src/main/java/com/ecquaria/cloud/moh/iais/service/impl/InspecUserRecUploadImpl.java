@@ -249,7 +249,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
                         //set Vehicle No. To Show
                         inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
-                        inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(appPremisesPreInspectionNcItemDto.getVehicleName()).getEntity();
+                        inspecUserRecUploadDto.setVehicleNo(IaisCommonUtils.isNotEmpty(appSvcVehicleDtoList)?appSvcVehicleDtoList.get(0).getVehicleNum():appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
@@ -280,7 +281,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
                         //set Vehicle No. To Show
                         inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
-                        inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(appPremisesPreInspectionNcItemDto.getVehicleName()).getEntity();
+                        inspecUserRecUploadDto.setVehicleNo(IaisCommonUtils.isNotEmpty(appSvcVehicleDtoList)?appSvcVehicleDtoList.get(0).getVehicleNum():appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
