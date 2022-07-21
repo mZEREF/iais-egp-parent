@@ -41,7 +41,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         }
         log.info(StringUtil.changeForLog("The serviceType is -->;"+serviceType));
 
-        //validate the hcsaServiceDto
+        //validate the hcsaServiceConfigDto
         ValidationResult validationResultHcsaServiceConfigDto = WebValidationHelper.validateProperty(hcsaServiceConfigDto,serviceType);
         if(validationResultHcsaServiceConfigDto.isHasErrors()){
             result.putAll(validationResultHcsaServiceConfigDto.retrieveAll());
@@ -55,7 +55,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         validateSvcCodeAndName(configService,hcsaServiceDto,result);
 
         if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
-            //validate the hcsaServiceDto
+            //validate the hcsaSvcPersonnelDto
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
                 ValidationResult validationResultHcsaSvcPersonnelDto = WebValidationHelper.validateProperty(hcsaSvcPersonnelDto,serviceType);
