@@ -227,11 +227,10 @@
     function checkPersonDisabled($currContent, onlyInit) {
         var data;
         try {
-            data = $.parseJSON($currContent.find('.psnEditField:input').val());
+            data = $.parseJSON($currContent.find('.psnEditField').val());
         } catch (e) {
             data = {};
         }
-        ;
         if ('1' == $currContent.find('.licPerson').val()) {
             $.each(data, function (i, val) {
                 //console.info(i + " : " + val);

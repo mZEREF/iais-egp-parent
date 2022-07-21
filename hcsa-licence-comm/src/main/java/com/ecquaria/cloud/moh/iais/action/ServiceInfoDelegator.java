@@ -809,8 +809,8 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action) || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
             }
@@ -826,8 +826,7 @@ public class ServiceInfoDelegator {
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         }
-        String actionType = bpc.request.getParameter("nextStep");
-        if ("next".equals(actionType)) {
+        if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
                     LICPERSONSELECTMAP);
             Map<String, String> map = AppValidatorHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, true);
@@ -895,6 +894,7 @@ public class ServiceInfoDelegator {
             }
             currSvcInfoDto.setAppSvcDeputyPrincipalOfficersDtoList(dpoList);
         }
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         /*if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             poList = AppDataHelper.genAppSvcPrincipalOfficersDto(bpc.request);
             dpoList = AppDataHelper.genAppSvcDeputyPrincipalOfficersDto(bpc.request);
@@ -918,12 +918,9 @@ public class ServiceInfoDelegator {
             appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
         }*/
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
-                LICPERSONSELECTMAP);
-
-        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if ("next".equals(crud_action_additional)) {
+        if ("next".equals(action)) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+                    LICPERSONSELECTMAP);
             map.putAll(AppValidatorHelper.doValidatePo(poList, licPersonMap, true));
             map.putAll(AppValidatorHelper.doValidateDpo(poList, licPersonMap, true, appSubmissionDto.getSubLicenseeDto()));
             //validate mandatory count
@@ -938,9 +935,9 @@ public class ServiceInfoDelegator {
             reSetChangesForApp(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
         if (isValid && (isGetDataFromPagePo)) {
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
             syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
             syncDropDownAndPsn(appSubmissionDto, dpoList, svcCode, bpc.request);
         }
@@ -952,8 +949,8 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -969,10 +966,9 @@ public class ServiceInfoDelegator {
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         }
-        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
-        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("next".equals(nextStep)) {
+        if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request, LICPERSONSELECTMAP);
             List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList =
