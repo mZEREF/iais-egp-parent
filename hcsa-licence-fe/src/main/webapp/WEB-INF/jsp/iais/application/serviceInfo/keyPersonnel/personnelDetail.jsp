@@ -55,10 +55,10 @@
             <iais:field width="5" mandatory="true" value="Name"/>
             <iais:value width="3" cssClass="col-md-3">
                 <iais:select cssClass="salutation" name="salutation${index}" firstOption="Please Select"
-                             codeCategory="CATE_ID_SALUTATION" value="${person.salutation}" />
+                             codeCategory="CATE_ID_SALUTATION" value="${person.salutation}"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="66" type="text" cssClass="name" name="name${index}" value="${person.name}" />
+                <iais:input maxLength="66" type="text" cssClass="name" name="name${index}" value="${person.name}"/>
             </iais:value>
         </iais:row>
 
@@ -69,7 +69,7 @@
                              cssClass="idType idTypeSel" onchange="toggleOnVal(this, 'IDTYPE003', '.nationalityDiv')"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="20" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}" />
+                <iais:input maxLength="20" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}"/>
             </iais:value>
         </iais:row>
 
@@ -77,7 +77,7 @@
             <iais:field width="5" mandatory="true" value="Country of issuance"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select firstOption="Please Select" name="nationality${index}" codeCategory="CATE_ID_NATIONALITY"
-                             cssClass="nationality" value="${clinicalDirectorDto.nationality}" />
+                             cssClass="nationality" value="${clinicalDirectorDto.nationality}"/>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -90,31 +90,33 @@
         <iais:row>
             <iais:field width="5" mandatory="true" value="Designation"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="designation" name="designation${index}" value="${person.designation}" options="designationOpList"
-                             firstOption="Please Select" onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
+                <iais:select cssClass="designation" name="designation${index}" value="${person.designation}"
+                             options="designationOpList" firstOption="Please Select"
+                             onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
             </iais:value>
         </iais:row>
 
         <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
             <iais:field width="5" value=""/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}" value="${person.otherDesignation}"/>
+                <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}"
+                            value="${person.otherDesignation}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="false" value="Professional Board"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionBoard" name="professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD" value="${person.professionBoard}"
-                             firstOption="Please Select"/>
+                <iais:select cssClass="professionBoard" name="professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
+                             value="${person.professionBoard}" firstOption="Please Select"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Type"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionType" name="professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${person.professionType}"
-                             firstOption="Please Select"/>
+                <iais:select cssClass="professionType" name="professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                             value="${person.professionType}" firstOption="Please Select"/>
             </iais:value>
         </iais:row>
 
@@ -128,70 +130,75 @@
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Current Registration"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${person.typeOfCurrRegi}" />
+                <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}"
+                            value="${person.typeOfCurrRegi}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Current Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate${index}" value="${person.currRegiDateStr}" />
+                <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate${index}" value="${person.currRegiDateStr}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate${index}" value="${person.praCerEndDateStr}" />
+                <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate${index}" value="${person.praCerEndDateStr}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${person.typeOfRegister}"/>
+                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}"
+                            value="${person.typeOfRegister}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Specialty"/>
             <iais:value width="7" cssClass="col-md-7 speciality" display="true">
-                <c:out value="${person.speciality}" />
+                <c:out value="${person.speciality}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Sub-Specialty"/>
             <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
-                <c:out value="${person.subSpeciality}" />
+                <c:out value="${person.subSpeciality}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Other Specialties"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther${index}" value="${person.specialityOther}"/>
+                <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther${index}"
+                            value="${person.specialityOther}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Date when specialty was obtained"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate${index}" value="${person.specialtyGetDateStr}" />
+                <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate${index}"
+                                 value="${person.specialtyGetDateStr}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" value="Qualification"/>
             <iais:value width="7" cssClass="col-md-7 qualification" display="true">
-                <c:out value="${person.qualification}" />
+                <c:out value="${person.qualification}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Other Qualification"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification${index}" value="${person.otherQualification}"/>
+                <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification${index}"
+                            value="${person.otherQualification}"/>
             </iais:value>
         </iais:row>
 
@@ -215,24 +222,26 @@
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body" >
+            <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <span style="font-size: 2rem;" id="prsErrorMsg">
-                          <iais:message key="GENERAL_ERR0048" escape="false" />
-                        </span>
+                    <span style="font-size: 2rem;" id="prsErrorMsg">
+                      <iais:message key="GENERAL_ERR0048" escape="false"/>
+                    </span>
                     </div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="$('#PRS_SERVICE_DOWN').modal('hide');">OK</button>
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal"
+                        onclick="$('#PRS_SERVICE_DOWN').modal('hide');">OK
+                </button>
             </div>
         </div>
     </div>
 </div>
-<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
+<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         removePersonEvent();
         assignSelectEvent();
         profRegNoEvent();
@@ -250,12 +259,12 @@
             $('div.person-content').find('.psnHeader').html('');
         }
 
-        if($('#PRS_SERVICE_DOWN_INPUT').val()=='PRS_SERVICE_DOWN'){
+        if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }
     });
 
-    var psnEditEvent = function() {
+    var psnEditEvent = function () {
         $('.psnEdit').unbind('click');
         $('.psnEdit').on('click', function () {
             showWaiting();
@@ -274,7 +283,7 @@
         resetIndex($target, k);
     }
 
-    function addPersonnel () {
+    function addPersonnel() {
         showWaiting();
         var $target = $('div.person-content:last');
         var src = $target.clone();
@@ -296,7 +305,7 @@
         $('.removeBtn:not(:first)').on('click', function () {
             showWaiting();
             $(this).closest('.person-content').remove();
-            $('div.person-content').each(function(k, v) {
+            $('div.person-content').each(function (k, v) {
                 refreshPerson($(v), k);
             });
             if ($('div.person-content').length == 1) {
@@ -309,7 +318,7 @@
 
     var assignSelectEvent = function () {
         $('.assignSel').unbind('change');
-        $('.assignSel').on('change', function() {
+        $('.assignSel').on('change', function () {
             showWaiting();
             var assignVal = $(this).val();
             var $currContent = $(this).closest('.person-content');
@@ -322,7 +331,7 @@
     function checkPersonContent($currContent, onlyInit, fromUser, callback) {
         var assignVal = $currContent.find('.assignSelVal').val();
         var $content = $currContent.find('.person-detail');
-        if('-1' == assignVal || isEmpty(assignVal)) {
+        if ('-1' == assignVal || isEmpty(assignVal)) {
             hideTag($content);
             $currContent.find('.speciality p').html('');
             $currContent.find('.subSpeciality p').html('');
@@ -331,7 +340,7 @@
             $content.find('.idTypeSel').trigger('change');
             $currContent.find('input.licPerson').val('0');
             dismissWaiting();
-        } else if('newOfficer' == assignVal) {
+        } else if ('newOfficer' == assignVal) {
             showTag($content);
             if (!onlyInit) {
                 clearFields($content);
@@ -363,17 +372,17 @@
             var idType = arr[1];
             var idNo = arr[2];
             var jsonData = {
-                'nationality':nationality,
-                'idType':idType,
-                'idNo':idNo,
-                'indexNo':indexNo
+                'nationality': nationality,
+                'idType': idType,
+                'idNo': idNo,
+                'indexNo': indexNo
             };
             $.ajax({
-                'url':'${pageContext.request.contextPath}' + url,
-                'dataType':'json',
-                'data':jsonData,
-                'type':'GET',
-                'success':function (data) {
+                'url': '${pageContext.request.contextPath}' + url,
+                'dataType': 'json',
+                'data': jsonData,
+                'type': 'GET',
+                'success': function (data) {
                     if (data == null) {
                         clearFields($content);
                         return;
@@ -381,7 +390,7 @@
                     if (typeof callback === 'function') {
                         callback($currContent, data);
                     } else {
-                        fillForm($content, data, "",  $('div.person-content').index($currContent));
+                        fillForm($content, data, "", $('div.person-content').index($currContent));
 
                         $currContent.find('.speciality p').html(data.specialty);
                         $currContent.find('.subSpeciality p').html(data.subspecialty);
@@ -396,7 +405,7 @@
                     }
                     dismissWaiting();
                 },
-                'error':function () {
+                'error': function () {
                     dismissWaiting();
                 }
             });
@@ -405,13 +414,14 @@
 
     function checkPersonDisabled($currContent, onlyInit) {
         var data;
-        try{
+        try {
             data = $.parseJSON($currContent.find('.psnEditField:input').val());
         } catch (e) {
             data = {};
-        };
+        }
+        ;
         if ('1' == $currContent.find('.licPerson').val()) {
-            $.each(data, function(i, val) {
+            $.each(data, function (i, val) {
                 //console.info(i + " : " + val);
                 var $input = $currContent.find('.' + i + ':input');
                 if ($input.length > 0 && !val) {
@@ -481,10 +491,10 @@
                 } else {
                     canFill = true;
                 }
-                fillPrsInfo($currContent, canFill? data : null, needControlName);
+                fillPrsInfo($currContent, canFill ? data : null, needControlName);
                 disablePrsInfo($currContent, canFill);
                 if (typeof callback === 'function') {
-                    callback($currContent, canFill? data : null);
+                    callback($currContent, canFill ? data : null);
                 }
                 dismissWaiting();
             },
@@ -569,7 +579,7 @@
         }
     }
 
-    function toggleOnVal(sel, val, elem){
+    function toggleOnVal(sel, val, elem) {
         toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
     }
 
