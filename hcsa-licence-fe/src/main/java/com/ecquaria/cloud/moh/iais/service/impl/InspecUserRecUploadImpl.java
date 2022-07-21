@@ -18,8 +18,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
@@ -249,8 +249,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
                         //set Vehicle No. To Show
                         inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(appPremisesPreInspectionNcItemDto.getVehicleName()).getEntity();
-                        inspecUserRecUploadDto.setVehicleNo(IaisCommonUtils.isNotEmpty(appSvcVehicleDtoList)?appSvcVehicleDtoList.get(0).getVehicleNum():appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
@@ -281,8 +279,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
                         //set Vehicle No. To Show
                         inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(appPremisesPreInspectionNcItemDto.getVehicleName()).getEntity();
-                        inspecUserRecUploadDto.setVehicleNo(IaisCommonUtils.isNotEmpty(appSvcVehicleDtoList)?appSvcVehicleDtoList.get(0).getVehicleNum():appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
