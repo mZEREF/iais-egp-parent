@@ -1270,12 +1270,12 @@ public class TopDataSubmissionDelegator {
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
-                                if(preTerminationDto.getPatientAppointment().equals("0")){
-                                    if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
-                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
-                                    }else {
-                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
-                                    }
+                            }
+                            if(preTerminationDto.getPatientAppointment().equals("0")){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                         }else {

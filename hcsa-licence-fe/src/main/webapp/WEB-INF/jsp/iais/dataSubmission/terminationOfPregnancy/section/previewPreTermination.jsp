@@ -89,14 +89,24 @@
                         </iais:row>
                     </div>
                 <div <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
-                    <c:if test="${counsellingLateSubmit}">
+                    <c:if test="${counsellingLateSubmit}" var="isLate">
                         <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
-                    <c:if test="${topDates}">
+                    <c:if test="${topDates}" var="isDS_MSG030">
                         <c:set var="toolMsgDS_MSG030"><iais:message key="DS_MSG030" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}${toolMsg}"/>
+                        <c:choose>
+                            <c:when test="${isLate}">
+                                <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>
+                            </c:when>
+                            <c:when test="${isDS_MSG030}">
+                                <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:field width="5" value="Date of Counselling" />
+                            </c:otherwise>
+                        </c:choose>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
