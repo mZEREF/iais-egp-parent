@@ -1708,7 +1708,7 @@ public final class AppDataHelper {
                     }
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
-                    appSvcPrincipalOfficersDto.setSelectDropDown(true);
+                    //appSvcPrincipalOfficersDto.setSelectDropDown(true);
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     appSvcPrincipalOfficersDto.setPsnEditDto(appPsnEditDto);
                     appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
