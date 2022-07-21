@@ -1,31 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
-<c:set var="isRfi" value="${requestInformationConfig != null}"/>
+<c:set var="personList" value="${currSvcInfoDto.appSvcKeyAppointmentHolderDtoList}"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row form-horizontal">
-
-    <%-- <p class="app-title">Key Appointment Holder</p>
-     <hr>
-     <p><iais:message key="NEW_ACK029"/></p>
-     <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>
-     <c:choose>
-         <c:when test="${empty AppSvcKeyAppointmentHolderDtoList && keyAppointmentHolderConfigDto.mandatoryCount > 1}">
-             <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
-         </c:when>
-         <c:when test="${empty AppSvcKeyAppointmentHolderDtoList}">
-             <c:set var="pageLength" value="1"/>
-         </c:when>
-         <c:when test="${keyAppointmentHolderConfigDto.mandatoryCount > AppSvcKeyAppointmentHolderDtoList.size() }">
-             <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
-         </c:when>
-         <c:otherwise>
-             <c:set var="pageLength" value="${AppSvcKeyAppointmentHolderDtoList.size()}"/>
-         </c:otherwise>
-     </c:choose>--%>
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
@@ -45,18 +26,15 @@
         </div>
     </iais:row>
 
-    <c:set var="personList" value="${currSvcInfoDto.appSvcKeyAppointmentHolderDtoList}"/>
-    <c:set var="personConfig" value="${currStepConfig}"/>
-
     <c:choose>
-        <c:when test="${empty personList && personConfig.mandatoryCount > 1}">
-            <c:set var="personCount" value="${personConfig.mandatoryCount}"/>
+        <c:when test="${empty personList && currStepConfig.mandatoryCount > 1}">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
         </c:when>
         <c:when test="${empty personList}">
             <c:set var="personCount" value="1"/>
         </c:when>
-        <c:when test="${personConfig.mandatoryCount > personList.size() }">
-            <c:set var="personCount" value="${personConfig.mandatoryCount}"/>
+        <c:when test="${currStepConfig.mandatoryCount > personList.size() }">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
         </c:when>
         <c:otherwise>
             <c:set var="personCount" value="${personList.size()}"/>
@@ -74,10 +52,10 @@
     <c:if test="${!isRfi}">
         <c:set var="needAddPsn" value="true"/>
         <c:choose>
-            <c:when test="${personConfig.status =='CMSTAT003'}">
+            <c:when test="${currStepConfig.status =='CMSTAT003'}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
-            <c:when test="${personCount >= personConfig.maximumCount}">
+            <c:when test="${personCount >= currStepConfig.maximumCount}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
             <c:when test="${AppSubmissionDto.needEditController && !canEdit}">

@@ -1807,7 +1807,8 @@ public final class AppDataHelper {
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
         String appType = appSubmissionDto.getAppType();
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currSvcId, null);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currSvcId,
+                appSubmissionDto.getRfiAppNo());
 
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         for (int i = 0; i < size; i++) {

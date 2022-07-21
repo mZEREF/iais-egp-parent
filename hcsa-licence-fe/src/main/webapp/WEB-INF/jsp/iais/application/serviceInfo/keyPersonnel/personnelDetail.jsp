@@ -1,6 +1,8 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 
+<c:set var="isCgo" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
 
-<div class="<%--col-md-12 col-xs-12 form-horizontal--%> person-content">
+<div class="person-content">
     <input type="hidden" class="not-refresh assignSelVal" name="assignSelVal" value="${person.assignSelect}"/>
     <input type="hidden" class="not-refresh licPerson" name="licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh" name="isPartEdit" value="0"/>
@@ -109,7 +111,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Professional Type"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Type"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="professionType" name="professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${person.professionType}"
                              firstOption="Please Select"/>
@@ -117,35 +119,35 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Professional Regn. No."/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Type of Current Registration"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Current Registration"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${person.typeOfCurrRegi}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Current Registration Date"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Current Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate${index}" value="${person.currRegiDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate${index}" value="${person.praCerEndDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Type of Register"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${person.typeOfRegister}"/>
             </iais:value>
@@ -173,7 +175,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Date when specialty was obtained"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Date when specialty was obtained"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate${index}" value="${person.specialtyGetDateStr}" />
             </iais:value>
@@ -187,7 +189,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Other Qualification"/>
+            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Other Qualification"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification${index}" value="${person.otherQualification}"/>
             </iais:value>
