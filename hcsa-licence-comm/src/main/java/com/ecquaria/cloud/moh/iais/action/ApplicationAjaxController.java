@@ -3,15 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -22,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -31,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -40,22 +32,18 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
-import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,7 +59,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @Auther chenlei on 5/6/2022.
@@ -118,12 +105,12 @@ public class ApplicationAjaxController {
         return postCodeDto;
     }
 
-
-    /**
+/*
+    *//**
      * @param
      * @description: ajax
      * @author: zixian
-     */
+     *//*
     @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
     public String addPremisesHtml(HttpServletRequest request) {
 //        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
@@ -140,7 +127,7 @@ public class ApplicationAjaxController {
         log.debug(StringUtil.changeForLog("currentLength : " + currentLength));
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml");
-        /*Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
+        *//*Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISESTYPE);
         StringBuilder premTypeBuffer = new StringBuilder();
 
         for (String type : premType) {
@@ -259,9 +246,9 @@ public class ApplicationAjaxController {
         Integer premNo = Integer.parseInt(currentLength) + 1;
         sql = sql.replace("${premNo}", String.valueOf(premNo));
 
-        log.debug(StringUtil.changeForLog("the add premises html end ...."));*/
+        log.debug(StringUtil.changeForLog("the add premises html end ...."));*//*
         return sql;
-    }
+    }*/
 
     /**
      * @param
@@ -324,7 +311,7 @@ public class ApplicationAjaxController {
         log.info(StringUtil.changeForLog("file-repo end ...."));
     }
 
-    @PostMapping(value = "/governance-officer-html")
+    /*@PostMapping(value = "/governance-officer-html")
     public Map<String, String> genGovernanceOfficerHtmlList(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
         Map<String, String> resp = IaisCommonUtils.genNewHashMap();
@@ -359,7 +346,7 @@ public class ApplicationAjaxController {
         }
         return resp;
 
-    }
+    }*/
 
     /**
      * @param
@@ -852,9 +839,9 @@ public class ApplicationAjaxController {
         return MedAlertSelectList;
     }
 
-    @PostMapping(value = "/premises-operational-html")
+   /* @PostMapping(value = "/premises-operational-html")
     public Map<String, Object> genPremOperationalHtml(HttpServletRequest request) {
-        /*String premIndex = ParamUtil.getString(request,"premIndex");
+        *//*String premIndex = ParamUtil.getString(request,"premIndex");
         String premType = ParamUtil.getString(request,"premType");
         String opCount = ParamUtil.getString(request,"opCount");
 
@@ -875,7 +862,7 @@ public class ApplicationAjaxController {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap(2);
         map.put("resCode", "200");
         map.put("resultJson", sql);
-        return map;*/
+        return map;*//*
         return null;
     }
 
@@ -949,7 +936,7 @@ public class ApplicationAjaxController {
         map.put("resCode", "200");
         map.put("resultJson", sql);
         return map;
-    }
+    }*/
 
     @GetMapping(value = "/new-app-ack-print")
     public void generateAckPdf(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1022,7 +1009,7 @@ public class ApplicationAjaxController {
         }
     }
 
-    @PostMapping(value = "/vehicle-html")
+    /*@PostMapping(value = "/vehicle-html")
     public Map<String, Object> generateVehicleHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the generateVehicleHtml start ...."));
         int vehicleLength = ParamUtil.getInt(request, "vehicleLength");
@@ -1077,7 +1064,7 @@ public class ApplicationAjaxController {
         //Designation
         paramMap.put("designationSel",
                 generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation" + cdLength, "designation"));
-        /*
+        *//*
         String aclsOrBcls = "";
         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(currSvcCode)){
             aclsOrBcls = "ACLS";
@@ -1085,7 +1072,7 @@ public class ApplicationAjaxController {
             aclsOrBcls = "BCLS and AED";
         }
         paramMap.put("aclsOrBcls",aclsOrBcls);
-        */
+        *//*
         //specialty
         List<SelectOption> easMtsSpecialtySelectList = ApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
         paramMap.put("specialitySel", generateDropDownHtml(easMtsSpecialtySelectList, "speciality" + cdLength, "speciality", null));
@@ -1101,7 +1088,7 @@ public class ApplicationAjaxController {
         map.put("resCode", "200");
         map.put("resultJson", clinicalDirectorHtml);
         return map;
-    }
+    }*/
 
     @PostMapping(value = "/search-charges-type")
     public Map<String, Object> searchChargesTypeByCategory(HttpServletRequest request) {
@@ -1153,7 +1140,7 @@ public class ApplicationAjaxController {
         return map;
     }
 
-    @PostMapping(value = "/general-charges-html")
+   /* @PostMapping(value = "/general-charges-html")
     public Map<String, Object> generateGeneralChargesHtml(HttpServletRequest request) throws IOException, TemplateException {
         int generalChargeLength = ParamUtil.getInt(request, "generalChargeLength");
         //charges type
@@ -1239,7 +1226,7 @@ public class ApplicationAjaxController {
         map.put("resCode", "200");
         map.put("resultJson", keyAppointmentHolderHtml);
         return map;
-    }
+    }*/
 
     //=============================================================================
     //private method

@@ -1723,17 +1723,17 @@ public final class AppValidatorHelper {
                         validateProfRegNo(errMap, professionalRegoNo, "profRegNo" + i);
                     }
                 }
-                 if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
+                if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
                     errMap.put("typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
                 }
                 //Current Registration Date
-                 if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
+                if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
                     errMap.put("currRegiDate" + i, "GENERAL_ERR0033");
                 }
-                 if (StringUtil.isNotEmpty(praCerEndDate) && !CommonValidator.isDate(praCerEndDate)) {
+                if (StringUtil.isNotEmpty(praCerEndDate) && !CommonValidator.isDate(praCerEndDate)) {
                     errMap.put("praCerEndDate" + i, "GENERAL_ERR0033");
                 }
-                 if (StringUtil.isNotEmpty(typeOfRegister) && typeOfRegister.length() > 50) {
+                if (StringUtil.isNotEmpty(typeOfRegister) && typeOfRegister.length() > 50) {
                     errMap.put("typeOfRegister" + i, AppValidatorHelper.repLength("Type of Register", "50"));
                 }
                 String specialityOther = person.getSpecialityOther();
