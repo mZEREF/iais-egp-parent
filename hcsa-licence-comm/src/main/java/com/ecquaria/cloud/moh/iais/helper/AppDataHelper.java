@@ -1956,7 +1956,7 @@ public final class AppDataHelper {
                     Date date = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
                     person.setPraCerEndDate(date);
                 }
-                if (needLoadName) {
+                if (needLoadName && !StringUtil.isEmpty(professionalResponseDto.getName())) {
                     person.setName(professionalResponseDto.getName());
                 }
             }

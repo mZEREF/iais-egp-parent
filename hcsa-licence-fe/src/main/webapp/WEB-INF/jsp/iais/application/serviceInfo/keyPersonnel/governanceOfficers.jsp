@@ -42,7 +42,7 @@
         </c:otherwise>
     </c:choose>
 
-
+    <c:set var="isCGO" value="true"/>
     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
         <c:set var="index" value="${status.index}" />
         <c:set var="person" value="${personList[index]}"/>

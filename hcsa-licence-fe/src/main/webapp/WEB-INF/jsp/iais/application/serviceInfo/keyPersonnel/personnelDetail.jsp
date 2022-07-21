@@ -109,7 +109,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Professional Type"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Professional Type"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="professionType" name="professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${person.professionType}"
                              firstOption="Please Select"/>
@@ -117,35 +117,35 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Professional Regn. No."/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Type of Current Registration"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Type of Current Registration"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${person.typeOfCurrRegi}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Current Registration Date"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Current Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate${index}" value="${person.currRegiDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Practicing Certificate End Date"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate${index}" value="${person.praCerEndDateStr}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Type of Register"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${person.typeOfRegister}"/>
             </iais:value>
@@ -173,7 +173,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Date when specialty was obtained"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Date when specialty was obtained"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate${index}" value="${person.specialtyGetDateStr}" />
             </iais:value>
@@ -187,7 +187,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" mandatory="false" value="Other Qualification"/>
+            <iais:field width="5" mandatory="${isCGO ? 'true' : 'false'}" value="Other Qualification"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification${index}" value="${person.otherQualification}"/>
             </iais:value>
@@ -542,19 +542,28 @@
         $currContent.find('.typeOfRegister').val(typeOfRegister);
     }
 
-    function disablePrsInfo($currContent, flag) {
+    function disablePrsInfo($currContent, flag, needControlName) {
         if (flag) {
             disableContent($currContent.find('.specialtyGetDate'));
             disableContent($currContent.find('.typeOfCurrRegi'));
             disableContent($currContent.find('.currRegiDate'));
             disableContent($currContent.find('.praCerEndDate'));
             disableContent($currContent.find('.typeOfRegister'));
+            if (needControlName) {
+                var name = $currContent.find('.name').val();
+                if (!isEmpty(name)) {
+                    disableContent($currContent.find('.name'));
+                }
+            }
         } else {
             unDisableContent($currContent.find('.specialtyGetDate'));
             unDisableContent($currContent.find('.typeOfCurrRegi'));
             unDisableContent($currContent.find('.currRegiDate'));
             unDisableContent($currContent.find('.praCerEndDate'));
             unDisableContent($currContent.find('.typeOfRegister'));
+            if (needControlName) {
+                unDisableContent($currContent.find('.name'));
+            }
         }
     }
 
