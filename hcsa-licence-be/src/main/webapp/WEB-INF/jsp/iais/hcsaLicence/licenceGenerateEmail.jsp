@@ -24,7 +24,7 @@
     <iais:action >
         <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
 
-        <button type="button" style="float:right" class="btn btn-secondary" onclick="javascript:;">Preview</button>
+        <button type="button" style="float:right" class="btn btn-secondary" onclick="javascript:doOpenEmailView();">Preview</button>
         <button class="btn btn-primary next" style="float:right" type="button" onclick="javascript:doSaveDraftEmail();">Save Draft</button>
 
     </iais:action>
@@ -54,6 +54,10 @@
             }
         });
         dismissWaiting();
+    }
+
+    function doOpenEmailView() {
+        window.open ("/hcsa-licence-web/eservice/INTRANET/EmailView");
     }
 </script>
 
