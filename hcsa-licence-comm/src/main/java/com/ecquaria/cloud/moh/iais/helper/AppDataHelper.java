@@ -1339,6 +1339,17 @@ public final class AppDataHelper {
         return appSvcChargesPageDto;
     }
 
+
+
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request) {
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "", request);
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcDeputyPrincipalOfficersDto(HttpServletRequest request) {
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "dpo", request);
+    }
+
+    /*
     public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request,
             Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
         log.info(StringUtil.changeForLog("genAppSvcPrincipalOfficersDto start ...."));
@@ -1765,7 +1776,7 @@ public final class AppDataHelper {
         }
         log.info(StringUtil.changeForLog("genAppSvcPrincipalOfficersDto end ...."));
         return appSvcPrincipalOfficersDtos;
-    }
+    }*/
 
     private static AppSvcPrincipalOfficersDto getPsnByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo,
             String psnType) {
@@ -1787,7 +1798,7 @@ public final class AppDataHelper {
         return new AppSvcPrincipalOfficersDto();
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcGovernanceOfficersDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "", request);
         log.info(StringUtil.changeForLog("genAppSvcCgoDto end ...."));

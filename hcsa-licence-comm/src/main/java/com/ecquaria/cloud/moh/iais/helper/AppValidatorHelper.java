@@ -427,8 +427,11 @@ public final class AppValidatorHelper {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                Map<String, String> map = doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap,
-                        dto.getServiceCode(), subLicenseeDto);
+                Map<String, String> map = doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap, false);
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                }
+                map = doValidateDpo(dto.getAppSvcDeputyPrincipalOfficersDtoList(), licPersonMap, false, subLicenseeDto);
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }
@@ -1206,8 +1209,28 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode, SubLicenseeDto subLicenseeDto) {
+    public static Map<String, String> doValidatePo(List<AppSvcPrincipalOfficersDto> poList,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+        return validateKeyPersonnel(poList, "", licPersonMap, checkPRS);
+    }
+
+    public static Map<String, String> doValidateDpo(List<AppSvcPrincipalOfficersDto> dpoList,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS, SubLicenseeDto subLicenseeDto) {
+        return validateKeyPersonnel(dpoList, "dpo", licPersonMap, null, checkPRS, subLicenseeDto);
+    }
+
+    /*public static Map<String, String> doValidatePo(List<AppSvcPrincipalOfficersDto> poList,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS, SubLicenseeDto subLicenseeDto) {
+        if (poList == null || poList.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        Map<String, String> map = validateKeyPersonnel(poList, "", licPersonMap, checkPRS);
+        int poIndex = 0;
+        for (AppSvcPrincipalOfficersDto po : poList) {
+
+            poIndex++;
+        }
+
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
         int poIndex = 0;
@@ -1325,9 +1348,9 @@ public final class AppValidatorHelper {
                 String designation = poDto.get(i).getDesignation();
                 String officeTelNo = poDto.get(i).getOfficeTelNo();
                 String nationality = poDto.get(i).getNationality();
-                /*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
+                *//*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
                     oneErrorMap.put("modeOfMedAlert"+dpoIndex,"GENERAL_ERR0006");
-                }*/
+                }*//*
 
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
@@ -1428,7 +1451,7 @@ public final class AppValidatorHelper {
             }
         }
         return oneErrorMap;
-    }
+    }*/
 
     public static Map<String, String> doValidateKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
@@ -1569,6 +1592,11 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> validateKeyPersonnel(List<AppSvcPrincipalOfficersDto> personList, String prefix,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+        return validateKeyPersonnel(personList, prefix, licPersonMap, null, checkPRS, null);
+    }
+
+    public static Map<String, String> validateKeyPersonnel(List<AppSvcPrincipalOfficersDto> personList, String prefix,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode, boolean checkPRS, SubLicenseeDto subLicenseeDto) {
         if (personList == null || personList.isEmpty()) {
             return new HashMap<>(1);
         }
@@ -1601,6 +1629,16 @@ public final class AppValidatorHelper {
                             errMap.put(keyIdNo, "NEW_ERR0012");
                         } else {
                             stringList.add(personKey);
+                        }
+                        // 113109
+                        if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType) && subLicenseeDto != null
+                                && !OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
+                            String subLicenseeNationality = subLicenseeDto.getNationality();
+                            String subLicenseeKey = ApplicationHelper.getPersonKey(subLicenseeNationality,
+                                    subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
+                            if (Objects.equals(subLicenseeKey, personKey)) {
+                                errMap.put(prefix + "personError" + i, MessageUtil.getMessageDesc("NEW_ERR0034"));
+                            }
                         }
                     }
                 }

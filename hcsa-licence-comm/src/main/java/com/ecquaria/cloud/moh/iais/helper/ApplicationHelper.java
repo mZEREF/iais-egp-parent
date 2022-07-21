@@ -275,6 +275,8 @@ public final class ApplicationHelper {
             sourceList = sourceReletedInfo.getAppSvcMedAlertPersonList();
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
             sourceList = sourceReletedInfo.getAppSvcPrincipalOfficersDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcDeputyPrincipalOfficersDtoList();
         } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
             sourceList = sourceReletedInfo.getAppSvcClinicalDirectorDtoList();
         } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {

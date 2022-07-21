@@ -5,7 +5,7 @@
     <c:set var="psnContent" value="person-content"/>
 </c:if>
 
-<div class="${psnContent}">
+<iais:row cssClass="${psnContent}">
     <input type="hidden" class="not-refresh assignSelVal" name="${perfix}assignSelVal" value="${person.assignSelect}"/>
     <input type="hidden" class="not-refresh licPerson" name="${perfix}licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${perfix}isPartEdit" value="0"/>
@@ -31,6 +31,12 @@
                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
             </h4>
         </div>
+    </iais:row>
+
+    <iais:row>
+        <iais:value width="10" cssClass="col-md-10 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${perfix}personError${index}"></span>
+        </iais:value>
     </iais:row>
 
     <c:if test="${isRfc || isRenew || isRfi}">
