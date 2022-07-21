@@ -1789,17 +1789,17 @@ public final class AppDataHelper {
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "", request);
         log.info(StringUtil.changeForLog("genAppSvcCgoDto end ...."));
         return appSvcCgoDtoList;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genKeyPersonnels(String psnType, HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genKeyPersonnels(String psnType, String prefix, HttpServletRequest request) {
         List<AppSvcPrincipalOfficersDto> personList = IaisCommonUtils.genNewArrayList();
-        String[] licPerson = ParamUtil.getStrings(request, "licPerson");
-        String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
-        String[] indexNos = ParamUtil.getStrings(request, "indexNo");
-        String[] assignSelect = ParamUtil.getStrings(request, "assignSelVal");
+        String[] licPerson = ParamUtil.getStrings(request, prefix + "licPerson");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix + "isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request, prefix + "indexNo");
+        String[] assignSelect = ParamUtil.getStrings(request, prefix + "assignSelVal");
         int size = 0;
         if (assignSelect != null && assignSelect.length > 0) {
             size = assignSelect.length;
@@ -1839,7 +1839,7 @@ public final class AppDataHelper {
                     appPsnEditDto = ApplicationHelper.setNeedEditField(person);
                 }
                 boolean needLoadName = isNeedLoadName(appType, licPsn);
-                person = genKeyPersonnel(person, appPsnEditDto, String.valueOf(i), needLoadName, request);
+                person = genKeyPersonnel(person, appPsnEditDto, prefix, String.valueOf(i), needLoadName, request);
             }
             if (StringUtil.isEmpty(indexNo)) {
                 person.setIndexNo(UUID.randomUUID().toString());
@@ -1855,18 +1855,18 @@ public final class AppDataHelper {
     }
 
     private static AppSvcPrincipalOfficersDto genKeyPersonnel(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto,
-            String suffix, boolean needLoadName, HttpServletRequest request) {
+            String prefix, String suffix, boolean needLoadName, HttpServletRequest request) {
         if (person == null) {
             person = new AppSvcPrincipalOfficersDto();
         }
         /*String assignSelect = ParamUtil.getString(request, "assignSelect" + suffix);
         person.setAssignSelect(assignSelect);*/
-        setPsnValue(person, appPsnEditDto, "salutation", suffix, request);
-        setPsnValue(person, appPsnEditDto, "name", suffix, request);
-        setPsnValue(person, appPsnEditDto, "idType", suffix, request);
-        setPsnValue(person, appPsnEditDto, "idNo", suffix, request);
-        setPsnValue(person, appPsnEditDto, "nationality", suffix, request);
-        setPsnValue(person, appPsnEditDto, "designation", suffix, request);
+        setPsnValue(person, appPsnEditDto, "salutation", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "name", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "idType", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "idNo", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "nationality", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "designation", prefix, suffix, request);
 
         if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
             if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
@@ -1876,18 +1876,18 @@ public final class AppDataHelper {
                 person.setOtherDesignation(null);
             }
         }
-        setPsnValue(person, appPsnEditDto, "professionBoard", suffix, request);
-        setPsnValue(person, appPsnEditDto, "professionType", suffix, request);
-        setPsnValue(person, appPsnEditDto, "profRegNo", suffix, request);
-        setPsnValue(person, appPsnEditDto, "typeOfCurrRegi", suffix, request);
-        setPsnValue(person, appPsnEditDto, "currRegiDate", suffix, true, request);
-        setPsnValue(person, appPsnEditDto, "praCerEndDate", suffix, true, request);
-        setPsnValue(person, appPsnEditDto, "typeOfRegister", suffix, request);
-        setPsnValue(person, appPsnEditDto, "specialityOther", suffix, request);
-        setPsnValue(person, appPsnEditDto, "specialtyGetDate", suffix, true, request);
-        setPsnValue(person, appPsnEditDto, "otherQualification", suffix, request);
-        setPsnValue(person, appPsnEditDto, "mobileNo", suffix, request);
-        setPsnValue(person, appPsnEditDto, "emailAddr", suffix, request);
+        setPsnValue(person, appPsnEditDto, "professionBoard", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "professionType", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "profRegNo", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "typeOfCurrRegi", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "currRegiDate", prefix, suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "praCerEndDate", prefix, suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "typeOfRegister", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "specialityOther", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "specialtyGetDate", prefix, suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "otherQualification", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "mobileNo", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "emailAddr", prefix, suffix, request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {
@@ -1966,12 +1966,12 @@ public final class AppDataHelper {
     }
 
     private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
-            String suffix, HttpServletRequest request) {
-        setPsnValue(person, appPsnEditDto, fieldName, suffix, false, request);
+            String prefix, String suffix, HttpServletRequest request) {
+        setPsnValue(person, appPsnEditDto, fieldName, prefix, suffix, false, request);
     }
 
     private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
-            String suffix, boolean isDate, HttpServletRequest request) {
+            String prefix, String suffix, boolean isDate, HttpServletRequest request) {
         if (appPsnEditDto != null) {
             boolean canSet = ReflectionUtil.getPropertyObj(appPsnEditDto, fieldName);
             if (!canSet) {
@@ -1979,7 +1979,7 @@ public final class AppDataHelper {
             }
         }
         if (isDate) {
-            String data = ParamUtil.getString(request, fieldName + suffix);
+            String data = ParamUtil.getString(request, prefix + fieldName + suffix);
             Date value = null;
             if (CommonValidator.isDate(data)) {
                 try {
@@ -1991,7 +1991,7 @@ public final class AppDataHelper {
             ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
             ReflectionUtil.setPropertyObj(fieldName, value, person);
         } else {
-            String data = ParamUtil.getString(request, fieldName + suffix);
+            String data = ParamUtil.getString(request, prefix + fieldName + suffix);
             ReflectionUtil.setPropertyObj(fieldName, data, person);
         }
     }
@@ -2265,7 +2265,7 @@ public final class AppDataHelper {
             }*//*
             appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
         }*/
-        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, request);
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request);
     }
 
 

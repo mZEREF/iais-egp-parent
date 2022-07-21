@@ -70,6 +70,7 @@
         </div>
     </c:if>
 </div>
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(function() {
         $('.addPersonnelBtn').on('click', function () {

@@ -486,25 +486,18 @@ public class ServiceInfoDelegator {
                 ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                 ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        int mandatory = 0;
-        int deputyMandatory = 0;
+
         if (principalOfficerConfig != null && !principalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
-            ParamUtil.setRequestAttr(bpc.request, "poHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
-            if (hcsaSvcPersonnelDto != null) {
-                mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
-            }
+            ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
 
         if (deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
-            if (hcsaSvcPersonnelDto != null) {
-                deputyMandatory = hcsaSvcPersonnelDto.getMandatoryCount();
-            }
         }
 
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
@@ -521,21 +514,25 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersMandatory", mandatory);
         ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersMandatory", deputyMandatory);
         ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);*/
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (StringUtil.isEmpty(appSvcRelatedInfoDto.getDeputyPoFlag())) {
             ParamUtil.setRequestAttr(bpc.request, "DeputyPoFlag", "0");
         } else {
             ParamUtil.setRequestAttr(bpc.request, "DeputyPoFlag", appSvcRelatedInfoDto.getDeputyPoFlag());
         }
 
-        List<SelectOption> IdTypeSelect = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+      /*  List<SelectOption> IdTypeSelect = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
         List<SelectOption> assignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
         List<SelectOption> deputyAssignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersAssignSelect", deputyAssignSelectList);
+        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersAssignSelect", deputyAssignSelectList);*/
+
+        List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
+        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
 
         List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
         SelectOption deputyFlagOp1 = new SelectOption("-1", HcsaAppConst.FIRESTOPTION);
@@ -982,7 +979,7 @@ public class ServiceInfoDelegator {
             List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList =
                     currentSvcRelatedDto.getAppSvcKeyAppointmentHolderDtoList();
             errorMap = AppValidatorHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList,
-                    licPersonMap, svcCode);
+                    licPersonMap, true);
             //validate mandatory count
             int psnLength = 0;
             if (!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)) {

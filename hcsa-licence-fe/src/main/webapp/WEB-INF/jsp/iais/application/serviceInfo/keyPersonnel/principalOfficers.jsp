@@ -1,5 +1,88 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+
+<%--appSvcDeputyPrincipalOfficersDtoList--%>
+<c:set var="personList" value="${currSvcInfoDto.appSvcPrincipalOfficersDtoList}"/>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+
+<div class="row form-horizontal">
+    <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
+            <iais:row>
+                <div class="text-right app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
+                </div>
+            </iais:row>
+        </c:if>
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    </c:if>
+    <iais:row>
+        <div class="col-xs-12">
+            <p class="app-title"><c:out value="${currStepName}"/></p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
+        </div>
+    </iais:row>
+
+    <c:choose>
+        <c:when test="${empty personList && currStepConfig.mandatoryCount > 1}">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+        </c:when>
+        <c:when test="${empty personList}">
+            <c:set var="personCount" value="1"/>
+        </c:when>
+        <c:when test="${currStepConfig.mandatoryCount > personList.size() }">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="personCount" value="${personList.size()}"/>
+        </c:otherwise>
+    </c:choose>
+
+
+    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
+        <c:set var="index" value="${status.index}"/>
+        <c:set var="person" value="${personList[index]}"/>
+
+        <%@include file="personnelDetail.jsp" %>
+    </c:forEach>
+
+    <c:if test="${!isRfi}">
+        <c:set var="needAddPsn" value="true"/>
+        <c:choose>
+            <c:when test="${currStepConfig.status =='CMSTAT003'}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${personCount >= currStepConfig.maximumCount}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+        </c:choose>
+
+        <div class="addKeyAppointmentHolderDiv">
+            <span class="addKeyAppointmentHolderBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">+ Add <c:out value="${singleName}"/></span>
+            </span>
+        </div>
+    </c:if>
+
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('.addKeyAppointmentHolderBtn').on('click', function () {
+            addPersonnel();
+        });
+    });
+</script>
+
+
+
+<%--
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
@@ -281,10 +364,10 @@
                                 </c:forEach>
                             </c:if>
                             <c:if test="${requestInformationConfig==null}">
-                                <%--<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>--%>
-                                <%--<c:if test="${poDtoLength == '0'}">
+                                &lt;%&ndash;<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>&ndash;%&gt;
+                                &lt;%&ndash;<c:if test="${poDtoLength == '0'}">
                                   <c:set var="poDtoLength" value="1"/>
-                                </c:if>--%>
+                                </c:if>&ndash;%&gt;
                                 <c:choose>
                                     <c:when test="${!empty ReloadPrincipalOfficers }">
                                         <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
@@ -390,7 +473,7 @@
                         <div class="panel-main-content">
                             <h2>Nominee</h2>
                             <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
-                            <div class="dpo-content"><%-- can't be deleted --%></div>
+                            <div class="dpo-content">&lt;%&ndash; can't be deleted &ndash;%&gt;</div>
                             <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController || canEditDpoEdit}" />
                             <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
@@ -1611,4 +1694,4 @@
         });
     };
 
-</script>
+</script>--%>
