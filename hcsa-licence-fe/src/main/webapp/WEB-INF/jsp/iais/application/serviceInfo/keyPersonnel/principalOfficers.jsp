@@ -6,7 +6,8 @@
 <c:set var="dpoList" value="${currSvcInfoDto.appSvcDeputyPrincipalOfficersDtoList}"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" class="dpo-person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <%--<c:set var="perfix" value="PO"/>--%>
 
@@ -154,7 +155,7 @@
         <c:set var="perfix" value="DPO"/>
         <c:set var="psnContent" value="dpo-person-content"/>
         <c:set var="singleName" value="${singleName2}"/>
-        <div class="panel panel-default">
+        <div class="panel panel-default deputy-panel hidden">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" class="" data-toggle="collapse" href="#DPO" aria-expanded="true" aria-controls="DPO">
@@ -194,6 +195,8 @@
 
 <script type="text/javascript">
     $(function() {
+        deputySelectEvent();
+
         $('.addPoBtn').on('click', function () {
             addPersonnel('div.person-content');
         });
@@ -213,44 +216,50 @@
         }
     }
 
-    $('.deputySelect').change(function () {
-        var deputyFlag = $(this).val();
-        var $poContentEle = $(this).closest('div.panel-group');
-        if ("1" == deputyFlag) {
-            $poContentEle.find('div.deputy-content ').removeClass('hidden');
-
-            var $dpoContent = $poContentEle.find('div.deputy-content .panel-main-content');
-            var dpoLength = $dpoContent.find('div.dpo-content').length;
-            if (dpoLength > 1) {
-                $dpoContent.find('.edit-content').removeClass('hidden');
-                //remove hidden
-                /*
-                var $contentEle = $('.dpo-content:eq(1)');
-                // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
-                $contentEle.find('.edit-content').removeClass('hidden');
-                $contentEle.find('input[type="text"]').prop('disabled',false);
-                $contentEle.find('div.nice-select').removeClass('disabled');
-                $contentEle.find('input[type="text"]').css('border-color','');
-                $contentEle.find('input[type="text"]').css('color','');
-                */
+    var deputySelectEvent = function () {
+        $('.deputySelect').change(function () {
+            var deputyFlag = $(this).val();
+            var $mainContent = $(this).closest('div.panel-group');
+            if ("1" == deputyFlag) {
+                showTage($mainContent.find('div.deputy-panel'));
+                $mainContent.find('.dpo-person-content').not(':first').remove();
+                var $currContent = $mainContent.find('.dpo-person-content');
+                clearFields($currContent);
+                $currContent.find('.psnHeader').html('');
+                checkPersonContent($currContent, true);
+                /*var $dpoContent = $poContentEle.find('div.deputy-content .panel-main-content');
+                var dpoLength = $dpoContent.find('div.dpo-content').length;
+                if (dpoLength > 1) {
+                    $dpoContent.find('.edit-content').removeClass('hidden');
+                    //remove hidden
+                    /!*
+                    var $contentEle = $('.dpo-content:eq(1)');
+                    // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
+                    $contentEle.find('.edit-content').removeClass('hidden');
+                    $contentEle.find('input[type="text"]').prop('disabled',false);
+                    $contentEle.find('div.nice-select').removeClass('disabled');
+                    $contentEle.find('input[type="text"]').css('border-color','');
+                    $contentEle.find('input[type="text"]').css('color','');
+                    *!/
+                } else {
+                    //add one
+                    $('#addDpoBtn').trigger('click');
+                    //close dropdown
+                    $('#deputyPrincipalOfficer').removeClass('disabled');
+                    $('#deputyPrincipalOfficer').niceSelect('update');
+                }
+                var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
+                if (!$deputyPoSelectDiv.hasClass('hidden')) {
+                    $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('color','');
+                }*/
             } else {
-                //add one
-                $('#addDpoBtn').trigger('click');
-                //close dropdown
-                $('#deputyPrincipalOfficer').removeClass('disabled');
-                $('#deputyPrincipalOfficer').niceSelect('update');
+                $poContentEle.find('div.deputy-content').addClass('hidden');
             }
-            var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
-            if (!$deputyPoSelectDiv.hasClass('hidden')) {
-                $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
-                $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
-                $deputyPoSelectDiv.find('input[type="text"]').css('color','');
-            }
-        } else {
-            $poContentEle.find('div.deputy-content').addClass('hidden');
-        }
 
-    });
+        });
+    }
 </script>
 
 

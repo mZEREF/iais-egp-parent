@@ -4,7 +4,7 @@
 <c:set var="personList" value="${currSvcInfoDto.appSvcKeyAppointmentHolderDtoList}"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row form-horizontal">
     <c:if test="${AppSubmissionDto.needEditController }">

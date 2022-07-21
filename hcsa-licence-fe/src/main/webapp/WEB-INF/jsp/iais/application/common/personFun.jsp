@@ -66,7 +66,7 @@
             showWaiting();
             var $currContent = $(this).closest(target);
             $currContent.find('input.isPartEdit').val('1');
-            $('#isEditHiddenVal').val('1');
+            $(target + '-edit').val('1');
             hideTag($(this).closest('.edit-content'));
             unDisableContent($currContent);
             dismissWaiting();
@@ -100,7 +100,7 @@
         assignSelectEvent(target);
         profRegNoEvent(target);
         checkPersonContent($currContent, true);
-        $('#isEditHiddenVal').val('1');
+        $(target + '-edit').val('1');
     }
 
     var removePersonEvent = function (target) {
@@ -118,7 +118,7 @@
             if ($target.length == 1) {
                 $target.find('.psnHeader').html('');
             }
-            $('#isEditHiddenVal').val('1');
+            $(target + '-edit').val('1');
             dismissWaiting();
         });
     }
