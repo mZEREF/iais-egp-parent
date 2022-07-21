@@ -124,9 +124,6 @@
         <c:if test="${!canShowAddBtn}">
         $('.addSectionLeaderDiv').remove();
         </c:if>
-
-<%--        --%>
-
     }
 
     function addSectionLeaderBtn () {
