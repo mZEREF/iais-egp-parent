@@ -24,12 +24,25 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
-        removePersonEvent();
-        assignSelectEvent();
-        profRegNoEvent();
-        psnEditEvent();
+        var psnContent = '.${psnContent}';
+        removePersonEvent(psnContent);
+        assignSelectEvent(psnContent);
+        profRegNoEvent(psnContent);
+        psnEditEvent(psnContent);
 
-        $('div.${psnContent}').each(function (k, v) {
+        initPerson(psnContent);
+
+        if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
+            $('#PRS_SERVICE_DOWN').modal('show');
+        }
+    });
+
+    function initPerson(target){
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
                 if ($(v).find('.error-msg:not(:empty)').length > 0) {
                     $(v).find('.psnEdit').trigger("click");
@@ -37,20 +50,21 @@
             }
             checkPersonContent($(v), true);
         });
-        if ($('div.${psnContent}').length == 1) {
-            $('div.${psnContent}').find('.psnHeader').html('');
+        if ($target.length == 1) {
+            $target.find('.psnHeader').html('');
         }
 
-        if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
-            $('#PRS_SERVICE_DOWN').modal('show');
-        }
-    });
+    }
 
-    var psnEditEvent = function () {
-        $('.psnEdit').unbind('click');
-        $('.psnEdit').on('click', function () {
+    var psnEditEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.psnEdit').unbind('click');
+        $target.find('.psnEdit').on('click', function () {
             showWaiting();
-            var $currContent = $(this).closest('.${psnContent}');
+            var $currContent = $(this).closest(target);
             $currContent.find('input.isPartEdit').val('1');
             $('#isEditHiddenVal').val('1');
             hideTag($(this).closest('.edit-content'));
@@ -63,50 +77,65 @@
         toggleTag($target.find('.removeEditDiv'), k != 0);
         $target.find('.psnHeader').html(k + 1);
         resetIndex($target, k);
+        if (typeof refreshPersonOthers === 'function') {
+            refreshPersonOthers($target, k);
+        }
     }
 
-    function addPersonnel() {
+    function addPersonnel(target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
         showWaiting();
-        var $target = $('div.${psnContent}:last');
-        var src = $target.clone();
-        $target.after(src);
-        var $currContent = $('div.${psnContent}').last();
+        var $tgt = $(target + ':last');
+        var src = $tgt.clone();
+        $tgt.after(src);
+        var $currContent = $(target).last();
         clearFields($currContent);
-        refreshPerson($currContent, $('div.${psnContent}').length - 1);
+        refreshPerson($currContent, $(target).length - 1);
+        $(target + ':first').find('.psnHeader').html('1');
         $currContent.find('input.assignSelVal').val('-1');
-        $('div.${psnContent}:first').find('.psnHeader').html('1');
-        removePersonEvent();
-        assignSelectEvent();
-        profRegNoEvent();
+        removePersonEvent(target);
+        assignSelectEvent(target);
+        profRegNoEvent(target);
         checkPersonContent($currContent, true);
         $('#isEditHiddenVal').val('1');
     }
 
-    var removePersonEvent = function () {
-        $('.removeBtn').unbind('click');
-        $('.removeBtn:not(:first)').on('click', function () {
+    var removePersonEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.removeBtn').unbind('click');
+        $target.not(':first').find('.removeBtn').on('click', function () {
             showWaiting();
-            $(this).closest('.${psnContent}').remove();
-            $('div.${psnContent}').each(function (k, v) {
+            $(this).closest(target).remove();
+            $(target).each(function (k, v) {
                 refreshPerson($(v), k);
             });
-            if ($('div.${psnContent}').length == 1) {
-                $('div.${psnContent}').find('.psnHeader').html('');
+            if ($target.length == 1) {
+                $target.find('.psnHeader').html('');
             }
             $('#isEditHiddenVal').val('1');
             dismissWaiting();
         });
     }
 
-    var assignSelectEvent = function () {
-        $('.assignSel').unbind('change');
-        $('.assignSel').on('change', function () {
+    var assignSelectEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.assignSel').unbind('change');
+        $target.find('.assignSel').on('change', function () {
             showWaiting();
             var assignVal = $(this).val();
-            var $currContent = $(this).closest('.${psnContent}');
+            var $currContent = $(this).closest(target);
             $currContent.find('input.assignSelVal').val(assignVal);
             checkPersonContent($currContent, false, false);
-            removePersonEvent();
+            removePersonEvent(target);
         });
     }
 
@@ -172,7 +201,8 @@
                     if (typeof callback === 'function') {
                         callback($currContent, data);
                     } else {
-                        fillForm($content, data, "", $('div.${psnContent}').index($currContent));
+                        var cntClass = $currContent.attr('class');
+                        fillForm($content, data, "", $('div.' + cntClass).index($currContent));
 
                         $currContent.find('.speciality p').html(data.specialty);
                         $currContent.find('.subSpeciality p').html(data.subspecialty);
@@ -219,12 +249,16 @@
         }
     }
 
-    var profRegNoEvent = function () {
-        $('.profRegNo').unbind('blur');
-        $('.profRegNo').on('blur', function () {
+    var profRegNoEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.profRegNo').unbind('blur');
+        $target.find('.profRegNo').on('blur', function () {
             showWaiting();
             var prgNo = $(this).val();
-            var $currContent = $(this).closest('.${psnContent}');
+            var $currContent = $(this).closest(target);
             var assignSelectVal = $currContent.find('.assignSelVal').val();
             var appType = $('input[name="applicationType"]').val();
             var licPerson = $currContent.find('input.licPerson').val();

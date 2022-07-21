@@ -74,7 +74,12 @@
 <script type="text/javascript">
     $(function() {
         $('.addPersonnelBtn').on('click', function () {
-            addPersonnel();
+            addPersonnel('div.person-content');
         });
     });
+
+    function refreshPersonOthers($target, k) {
+        var maxCount = eval('${currStepConfig.maximumCount}');
+        toggleTag('.addPersonnelDiv', $('div.person-content').length < maxCount);
+    }
 </script>

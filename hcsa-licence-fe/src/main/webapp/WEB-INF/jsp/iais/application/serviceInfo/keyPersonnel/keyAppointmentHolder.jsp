@@ -63,7 +63,7 @@
             </c:when>
         </c:choose>
 
-        <div class="addKeyAppointmentHolderDiv">
+        <div class="col-md-12 col-xs-12 addKeyAppointmentHolderDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addKeyAppointmentHolderBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
@@ -74,9 +74,14 @@
 <script type="text/javascript">
     $(function() {
         $('.addKeyAppointmentHolderBtn').on('click', function () {
-            addPersonnel();
+            addPersonnel('div.person-content');
         });
     });
+
+    function refreshPersonOthers($target, k) {
+        var maxCount = eval('${currStepConfig.maximumCount}');
+        toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
+    }
 </script>
 <%--
 <script>

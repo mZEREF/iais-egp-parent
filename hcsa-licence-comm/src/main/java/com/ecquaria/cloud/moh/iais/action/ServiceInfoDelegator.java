@@ -543,6 +543,9 @@ public class ServiceInfoDelegator {
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
 
+        ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee (Optional)");
+        ParamUtil.setRequestAttr(bpc.request, "singleName2", "Nominee");
+
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
