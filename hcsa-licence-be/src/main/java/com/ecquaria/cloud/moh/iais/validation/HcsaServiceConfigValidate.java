@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -54,7 +53,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         //validate the svcCode and svcName repetition
         validateSvcCodeAndName(configService,hcsaServiceDto,result);
 
-        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+       // if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
             //validate the hcsaSvcPersonnelDto
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
@@ -80,7 +79,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                 }
             }
-        }
+       // }
 
 
 

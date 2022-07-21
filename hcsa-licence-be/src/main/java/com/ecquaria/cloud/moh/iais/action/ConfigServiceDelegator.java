@@ -713,6 +713,11 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto charges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES, request);
         HcsaSvcPersonnelDto otherCharges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES_OTHER, request);
         HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
+
+        HcsaSvcPersonnelDto SP001 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, request);
+        HcsaSvcPersonnelDto SP002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
+        HcsaSvcPersonnelDto SP003 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, request);
+
         HcsaSvcPersonnelDto sottn = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_OPERATING_THEATRE_TRAINED_NURSE, request);
         HcsaSvcPersonnelDto snic = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE, request);
         HcsaSvcPersonnelDto snms = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSES_MEDICAL_SERVICE, request);
@@ -743,6 +748,9 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(charges);//General Conveyance Charges
             hcsaSvcPersonnelDtos.add(otherCharges);//Medical Equipment and Other Charges
             hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
+            hcsaSvcPersonnelDtos.add(SP001);//Embryologist
+            hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
+            hcsaSvcPersonnelDtos.add(SP003);//Nurses
             hcsaSvcPersonnelDtos.add(sottn);//Operating Theatre Trained Nurse
             hcsaSvcPersonnelDtos.add(snic);//Nurse in Charge
             hcsaSvcPersonnelDtos.add(snms);//Nurses (Medical Service)
