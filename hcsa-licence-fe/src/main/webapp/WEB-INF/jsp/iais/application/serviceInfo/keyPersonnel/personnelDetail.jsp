@@ -5,7 +5,7 @@
     <c:set var="psnContent" value="person-content"/>
 </c:if>
 
-<iais:row cssClass="${psnContent}">
+<div css="${psnContent}">
     <input type="hidden" class="not-refresh assignSelVal" name="${perfix}assignSelVal" value="${person.assignSelect}"/>
     <input type="hidden" class="not-refresh licPerson" name="${perfix}licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${perfix}isPartEdit" value="0"/>
