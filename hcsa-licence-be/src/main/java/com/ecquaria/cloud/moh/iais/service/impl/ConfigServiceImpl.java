@@ -246,6 +246,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         Map<String, List<HcsaConfigPageDto>> tables = this.getTables(request);
         request.setAttribute("routingStagess", tables);
+
         List<HcsaServiceDto> baseHcsaServiceDto = hcsaConfigClient.baseHcsaService().getEntity();
         List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDto.size());
         for(HcsaServiceDto hcsaServiceDto : baseHcsaServiceDto){

@@ -88,10 +88,11 @@ public class ConfigServiceDelegator {
         preparePage(bpc.request);
         //todo
         configService.addNewService(bpc.request);
+        /*
         Object individualPremises = bpc.request.getAttribute("individualPremises");
         if(individualPremises==null){
             bpc.request.setAttribute("individualPremises","0");
-        }
+        }*/
         log.info(StringUtil.changeForLog("confige prepareAddNewService  end"));
     }
 
