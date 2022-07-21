@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -11,6 +12,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -44,4 +46,12 @@ public interface AppPremisesCorrClient {
 
     @GetMapping(value = "/opera-unit-floor/premises-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getUnitNoAndFloorByPremisesId(@RequestParam("premisesId") String premisesId);
+
+    @GetMapping(value = "/iais-email/draft-email/{appPremCorrId}/{type}")
+    FeignResponseEntity<AppPremisesUpdateEmailDto> retrieveEmailDraft(@PathVariable("appPremCorrId") String appPremCorrId, @PathVariable("type") String type);
+
+    @PostMapping(value = "/iais-email/email-draft", consumes =  MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveEmailDraft(@RequestBody AppPremisesUpdateEmailDto appPremisesUpdateEmailDto);
+
+
 }

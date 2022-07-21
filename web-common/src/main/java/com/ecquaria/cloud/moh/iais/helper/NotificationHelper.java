@@ -200,7 +200,7 @@ public class NotificationHelper {
 		return email;
 	}
 
-	private String replaceText(String text, HashMap<String, String> params){
+	public String replaceText(String text, HashMap<String, String> params){
 		for (Map.Entry<String, String> entry : params.entrySet()){
 			String sign = entry.getKey();
 			String value = entry.getValue();
