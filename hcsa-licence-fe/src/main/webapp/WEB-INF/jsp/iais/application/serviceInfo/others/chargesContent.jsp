@@ -33,9 +33,9 @@
 </div>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden"  name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group premContent" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading " id="generate-charges-heading"  role="tab">
             <h4 class="panel-title">
@@ -96,7 +96,7 @@
                             </div>
                             <div class="col-md-12 col-xs-12 ">
                                 <div class="row control control-caption-horizontal">
-                                    <div class=" form-group form-horizontal formgap">
+                                    <div class=" form-group form-horizontal formgap copy">
                                         <div class="control-label formtext col-md-5 col-xs-5">
                                             <iais:select cssClass="chargesType"  name="chargesType${gcStat.index}" codeCategory="CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE" value="${generalChargesDto.chargesType}" firstOption="Please Select" />
                                         </div>
@@ -116,9 +116,8 @@
                                         <div class="control-label formtext col-md-2 col-xs-2">
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
                                         </div>
-                                        <div class="control-label formtext col-md-1 col-xs-1">
-                                            <c:if test="${(gcStat.index - generalChargesConfig.mandatoryCount >= 0) &&
-                                            (!AppSubmissionDto.needEditController || canEdit)}">
+                                        <div class="control-label formtext col-md-1 col-xs-1 removeBtn <c:if test="${status.first}">hidden</c:if>">
+                                            <c:if test="${!isRfi && !isRFC && !isRenew}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                                 </h4>
@@ -247,6 +246,7 @@
                                                     <div class="col-md-6 col-xs-6">
                                                         <iais:select cssClass="otherChargesCategory"  name="otherChargesCategory${ocStat.index}" codeCategory="CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY" value="${otherChargesDto.chargesCategory}" firstOption="Please Select" />
                                                     </div>
+
                                                     <div class="col-md-6 col-xs-6 other-charges-type-div">
                                                         <iais:select cssClass="otherChargesType"  name="otherChargesType${ocStat.index}" codeCategory="${otherChargesDto.cateRelationType}" value="${otherChargesDto.chargesType}" firstOption="Please Select" />
                                                     </div>
@@ -268,8 +268,8 @@
                                             <div class="control-label formtext col-md-2 col-xs-2">
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
-                                            <div class="control-label formtext col-md-1 col-xs-1">
-                                                <c:if test="${(ocStat.index - otherChargesConfig.mandatoryCount >= 0) && (!AppSubmissionDto.needEditController || canEdit)}">
+                                            <div class="control-label formtext col-md-1 col-xs-1 removeBtn">
+                                                <c:if test="${!isRFI && !isRFC && !isRenew}">
                                                     <h4 class="text-danger">
                                                         <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
                                                     </h4>
@@ -341,12 +341,12 @@
 
     });
 
-    var searchChargesTypeByCategory = function () {
+    let searchChargesTypeByCategory = function () {
         $('select.otherChargesCategory').unbind('change');
         $('select.otherChargesCategory').change(function () {
-            var thisVal = $(this).val();
-            var $currContent = $(this).closest('.other-charges-div');
-            var chargesSuffix = $currContent.find('.currChargesSuffix').val();
+            let thisVal = $(this).val();
+            let $currContent = $(this).closest('.other-charges-div');
+            let chargesSuffix = $currContent.find('.currChargesSuffix').val();
             showWaiting();
             $.ajax({
                 url: '${pageContext.request.contextPath}/search-charges-type',
@@ -371,87 +371,135 @@
         });
     };
 
-    var addGeneralChargesHtml = function () {
-        $('.addGeneralChargesBtn').click(function () {
+    function addGeneralChargesHtml(){
+        let generalChargeLength = $('.general-charges-content').length;
+        refresh();
+        $('.addGeneralChargesBtn').unbind('click');
+        $('.addGeneralChargesBtn').on('click', function () {
             showWaiting();
-            var generalChargeLength = $('.general-charges-content').length;
-            $.ajax({
-                url: '${pageContext.request.contextPath}/general-charges-html',
-                dataType: 'json',
-                data: {
-                    "generalChargeLength": generalChargeLength
-                },
-                type: 'POST',
-                success: function (data) {
-                    if ('200' == data.resCode) {
-                        $('.addGeneralChargesDiv').before(data.resultJson+'');
-                        //
-                        removeGeneralChargesHtml();
+            let target = $('div.charges-content:first');
+            let src = target.clone();
+            $('div.addGeneralChargesDiv').before(src);
+            generalChargeLength = generalChargeLength+1;
+            $(".generalChargeLength").attr("value",generalChargeLength);
+            clearFields($('div.charges-content:last'));
+            removeGeneralChargesHtml();
+            refreshPremise();
+            dismissWaiting();
+        })
+    }
 
-                        var generalChargeLength = $('.general-charges-content').length;
-                        $('input[name="generalChargeLength"]').val(generalChargeLength);
-                        //hidden add more
-                        if (generalChargeLength >= '${generalChargesConfig.maximumCount}') {
-                            $('.addGeneralChargesDiv').addClass('hidden');
-                        }
-                        $('#isEditHiddenVal').val('1');
-                    }
-                    dismissWaiting();
-                },
-                error: function (data) {
-                    console.log("err");
-                    dismissWaiting();
-                }
+    function refreshPremise() {
+        refresh();
+    }
 
-            });
+    function refresh(){
+        let generalChargeLength = $('.general-charges-content').length;
+        $('input[name="generalChargeLength"]').val(generalChargeLength);
+        $('.general-charges-content').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+            $(this).find('select.chargesType').prop('name','chargesType'+ k);
+            $(this).find('select.chargesType').prop('id','chargesType'+ k);
+            $(this).find('input.minAmount').prop('name','minAmount'+ k);
+            $(this).find('input.maxAmount').prop('name','maxAmount'+ k);
+            $(this).find('input.remarks').prop('name','remarks'+ k);
+            $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
+            $(this).find('.chargesIndexNo').prop('name','chargesIndexNo'+k);
         });
-    };
+        if (generalChargeLength < '${generalChargesConfig.maximumCount}') {
+            $('.addGeneralChargesDiv').removeClass('hidden');
+        }
+        $('#isEditHiddenVal').val('1');
+    }
 
-    var addOtherChargesHtml = function () {
-        $('.addOtherChargesBtn').click(function () {
+    function addOtherChargesHtml(){
+        let otherChargeLength = $('.other-charges-content').length;
+        refreshOther();
+        $('.addOtherChargesBtn').unbind('click');
+        $('.addOtherChargesBtn').on('click', function () {
             showWaiting();
-            var otherChargeLength = $('.other-charges-content').length;
-            $.ajax({
-                url: '${pageContext.request.contextPath}/other-charges-html',
-                dataType: 'json',
-                data: {
-                    "otherChargeLength": otherChargeLength
-                },
-                type: 'POST',
-                success: function (data) {
-                    if ('200' == data.resCode) {
-                        $('.addOtherChargesDiv').before(data.resultJson+'');
-                        //
-                        removeOtherChargesHtml();
-                        searchChargesTypeByCategory();
+            let target = $('div.other-charges-content:first');
+            let src = target.clone();
+            $('div.addOtherChargesDiv').before(src);
+            otherChargeLength = otherChargeLength+1;
+            $(".otherChargeLength").attr("value",otherChargeLength);
+            clearFields($('div.other-charges-content:last'));
+            removeOtherChargesHtml();
+            searchChargesTypeByCategory();
+            refreshOtherPremise();
+            dismissWaiting();
+        })
 
-                        var otherChargeLength = $('.other-charges-content').length;
-                        $('input[name="otherChargeLength"]').val(otherChargeLength);
-                        //hidden add more
-                        if (otherChargeLength >= '${generalChargesConfig.maximumCount}') {
-                            $('.addOtherChargesDiv').addClass('hidden');
-                        }
-                        $('#isEditHiddenVal').val('1');
-                    }
-                    dismissWaiting();
-                },
-                error: function (data) {
-                    console.log("err");
-                    dismissWaiting();
-                }
+    }
 
-            });
+    function refreshOtherPremise(){
+        refreshOther();
+    }
+
+    function refreshOther(){
+        let otherChargeLength = $('.other-charges-content').length;
+        $('input[name="otherChargeLength"]').val(otherChargeLength);
+        $('.other-charges-content').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+            $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
+            $(this).find('select.otherChargesType').prop('name','otherChargesType'+ k);
+            $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
+            $(this).find('input.otherAmountMax').prop('name','otherAmountMax'+ k);
+            $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
+            $(this).find('.isPartEdit').prop('name','otherChargesIsPartEdit'+k);
+            $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
         });
+        //display add btn
+        if (otherChargeLength < '${otherChargesConfig.maximumCount}') {
+            $('.addOtherChargesDiv').removeClass('hidden');
+        }
+        $('#isEditHiddenVal').val('1');
+    }
+    <%--var addOtherChargesHtml = function () {--%>
+    <%--    $('.addOtherChargesBtn').click(function () {--%>
+    <%--        showWaiting();--%>
+    <%--        var otherChargeLength = $('.other-charges-content').length;--%>
+    <%--        $.ajax({--%>
+    <%--            url: '${pageContext.request.contextPath}/other-charges-html',--%>
+    <%--            dataType: 'json',--%>
+    <%--            data: {--%>
+    <%--                "otherChargeLength": otherChargeLength--%>
+    <%--            },--%>
+    <%--            type: 'POST',--%>
+    <%--            success: function (data) {--%>
+    <%--                if ('200' == data.resCode) {--%>
+    <%--                    $('.addOtherChargesDiv').before(data.resultJson+'');--%>
+    <%--                    //--%>
+    <%--                    removeOtherChargesHtml();--%>
+    <%--                    searchChargesTypeByCategory();--%>
 
-    };
+    <%--                    var otherChargeLength = $('.other-charges-content').length;--%>
+    <%--                    $('input[name="otherChargeLength"]').val(otherChargeLength);--%>
+    <%--                    //hidden add more--%>
+    <%--                    if (otherChargeLength >= '${generalChargesConfig.maximumCount}') {--%>
+    <%--                        $('.addOtherChargesDiv').addClass('hidden');--%>
+    <%--                    }--%>
+    <%--                    $('#isEditHiddenVal').val('1');--%>
+    <%--                }--%>
+    <%--                dismissWaiting();--%>
+    <%--            },--%>
+    <%--            error: function (data) {--%>
+    <%--                console.log("err");--%>
+    <%--                dismissWaiting();--%>
+    <%--            }--%>
 
-    var removeGeneralChargesHtml = function () {
+    <%--        });--%>
+    <%--    });--%>
+
+    <%--};--%>
+
+    let removeGeneralChargesHtml = function () {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
-            var $currContent = $(this).closest('div.general-charges-content');
+            let $currContent = $(this).closest('div.general-charges-content');
             $currContent.remove();
             //reset number
-            var generalChargeLength = $('.general-charges-content').length;
+            let generalChargeLength = $('.general-charges-content').length;
             $('input[name="generalChargeLength"]').val(generalChargeLength);
             $('.general-charges-content').each(function (k,v) {
                 $(this).find('select.chargesType').prop('name','chargesType'+ k);
@@ -470,13 +518,13 @@
     };
 
 
-    var removeOtherChargesHtml = function () {
+    let removeOtherChargesHtml = function () {
         $('.ocRemoveBtn').unbind('click');
         $('.ocRemoveBtn').click(function () {
-            var $currContent = $(this).closest('div.other-charges-content');
+            let $currContent = $(this).closest('div.other-charges-content');
             $currContent.remove();
             //reset number
-            var otherChargeLength = $('.other-charges-content').length;
+            let otherChargeLength = $('.other-charges-content').length;
             $('input[name="otherChargeLength"]').val(otherChargeLength);
             $('.other-charges-content').each(function (k,v) {
                 $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
@@ -495,7 +543,7 @@
         });
     };
 
-    var doEdite = function () {
+    let doEdite = function () {
         $('a.chargesEdit').click(function () {
             var $currContent = $(this).closest('div.general-charges-content');
             $currContent.find('input.isPartEdit').val('1');
