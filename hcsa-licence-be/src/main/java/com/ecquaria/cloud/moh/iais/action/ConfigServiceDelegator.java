@@ -115,7 +115,25 @@ public class ConfigServiceDelegator {
         selectOptions.add(new SelectOption("mandatory","Mandatory"));
         selectOptions.add(new SelectOption("optional","Optional"));
         request.setAttribute("selectOptions",selectOptions);
+
+        // get all Specialised service
+        List<HcsaServiceDto>  specHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
+        ParamUtil.setRequestAttr(request,"specHcsaServiceOptions",getSelectOptionForHcsaServiceDtos(specHcsaServiceDtos));
+        //get all Other service
+        List<HcsaServiceDto>  otherHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_OTHERS);
+        ParamUtil.setRequestAttr(request,"otherHcsaServiceOptions",getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
     }
+
+    private List<SelectOption> getSelectOptionForHcsaServiceDtos(List<HcsaServiceDto> hcsaServiceDtos){
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
+         if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
+             for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos ){
+                 result.add(new SelectOption(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcDisplayDesc()));
+             }
+         }
+        return result;
+    }
+
     // 		doCreate->OnStepProcess
     public void doCreate(BaseProcessClass bpc) throws Exception{
         log.info(StringUtil.changeForLog("confige doCreate start"));

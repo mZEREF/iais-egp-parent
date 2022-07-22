@@ -140,6 +140,11 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
+    public List<HcsaServiceDto> getActiveServicesBySvcType(String svcType) {
+        return hcsaConfigClient.getActiveServicesBySvcType(svcType).getEntity();
+    }
+
+    @Override
     public void viewPageInfo(HttpServletRequest request) {
         String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         String crud_action_type = request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
