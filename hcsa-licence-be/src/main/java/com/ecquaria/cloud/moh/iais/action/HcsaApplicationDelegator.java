@@ -4242,7 +4242,8 @@ public class HcsaApplicationDelegator {
                 //62875
                 //role is ao3 && status is 'Pending AO3 Approval'  have no verified
                 if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus)
+                        && ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationStatus))) {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
@@ -4257,7 +4258,7 @@ public class HcsaApplicationDelegator {
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
-                || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
+                || RoleConsts.USER_ROLE_AO3.equals(taskRole))&&!applicationStatus.equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)) {
             Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
                     applicationViewDto.getApplicationGroupDto().getGroupNo());
             String canEdit = map.get(HcsaAppConst.CAN_RFI);
