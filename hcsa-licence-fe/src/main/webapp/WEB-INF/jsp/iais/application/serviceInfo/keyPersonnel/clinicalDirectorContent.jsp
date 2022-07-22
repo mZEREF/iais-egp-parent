@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<style>
+<%--<style>
     input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
         color:#999999 !important;
     }
@@ -23,7 +23,7 @@
     .radio-disabled{
         border-color: #999999 !important;
     }
-</style>
+</style>--%>
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">

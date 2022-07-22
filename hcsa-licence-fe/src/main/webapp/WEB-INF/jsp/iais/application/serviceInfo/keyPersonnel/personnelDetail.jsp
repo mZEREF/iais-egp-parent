@@ -33,6 +33,12 @@
         </div>
     </iais:row>
 
+    <iais:row>
+        <iais:value width="10" cssClass="col-md-10 col-xs-12">
+            <span class="error-msg" name="iaisErrorMSg" id="error_${perfix}personError${index}"></span>
+        </iais:value>
+    </iais:row>
+
     <c:if test="${isRfc || isRenew || isRfi}">
         <iais:row>
             <div class="col-sm-10">

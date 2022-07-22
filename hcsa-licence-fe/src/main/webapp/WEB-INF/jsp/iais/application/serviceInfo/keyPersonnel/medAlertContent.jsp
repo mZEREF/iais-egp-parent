@@ -7,6 +7,7 @@
 </style>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <div class="row">
     <div class="col-xs-12">
         <p class="app-title">MedAlert Person</p>
@@ -42,8 +43,7 @@
                 </c:if>
             </c:if>
         </div>
-        <div class="medAlertContent">
-        </div>
+
         <c:choose>
             <c:when test="${AppSvcMedAlertPsn.size()>mandatoryCount}">
                 <c:set var="pageLength" value="${AppSvcMedAlertPsn.size()}"/>
@@ -52,8 +52,11 @@
                 <c:set var="pageLength" value="${mandatoryCount}"/>
             </c:otherwise>
         </c:choose>
+
         <c:set var="editControl" value="${(!empty AppSvcMedAlertPsn && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+
         <c:if test="${pageLength >0 && editControl}">
+
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
             <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[status.index]}"/>
             <div class="medAlertContent">
@@ -69,6 +72,7 @@
                 <input type="hidden" name="isPartEdit" value="0"/>
                 <input type="hidden" name="mapIndexNo" value="${medAlertPsn.indexNo}"/>
                 <input type="hidden" name="loadingType" value="${medAlertPsn.loadingType}"/>
+                <input type="hidden" class="not-refresh assignSelVal" name="assignSelVal" value="${medAlertPsn.assignSelect}"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -78,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-5 col-md-4 text-right">
-                                <c:if test="${status.index - mandatoryCount >=0}">
+                                <c:if test="${!isRfi}">
                                     <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 mapDelBtn cursorPointer"></em></h4>
                                 </c:if>
                             </div>
@@ -115,8 +119,7 @@
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect">
                                     <div class="">
-                                        <iais:select cssClass="assignSel"  name="assignSel" options="MedAlertAssignSelect" needSort="false"  value="${medAlertPsn.assignSelect}" ></iais:select>
-                                        <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                        <iais:select cssClass="assignSel"  name="assignSel${index}" options="MedAlertAssignSelect" needSort="false"  value="${medAlertPsn.assignSelect}" ></iais:select>
                                     </div>
                                 </div>
                             </div>
@@ -133,12 +136,10 @@
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
                                     <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${medAlertPsn.salutation}" firstOption="Please Select"></iais:select>
-                                    <span class="error-msg" id="error_salutation${status.index}" name="iaisErrorMsg"></span>
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
                                     <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
-                                    <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
@@ -154,13 +155,10 @@
                                 <div class="col-sm-3 col-xs-12">
                                     <div class="">
                                         <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
-                                        <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idNoVal" maxLength="20" type="text" name="idNo"
-                                                value="${medAlertPsn.idNo}" />
-                                    <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
+                                    <iais:input cssClass="idNoVal" maxLength="20" type="text" name="idNo" value="${medAlertPsn.idNo}" />
                                 </div>
                             </div>
                         </div>
@@ -176,7 +174,6 @@
                                     <div class="">
                                         <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
                                                      cssClass="nationality" value="${medAlertPsn.nationality}" needErrorSpan="false"/>
-                                        <span id="error_nationality${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
@@ -202,7 +199,6 @@
                                 </div>
                                 <div class="col-sm-4 col-md-7">
                                     <iais:input maxLength="8" type="text" name="mobileNo" value="${medAlertPsn.mobileNo}"></iais:input>
-                                    <span class="error-msg" id="error_mobileNo${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
@@ -216,40 +212,16 @@
                                 </div>
                                 <div class="col-sm-4 col-md-7">
                                     <iais:input maxLength="320" type="text" name="emailAddress" value="${medAlertPsn.emailAddr}"></iais:input>
-                                    <span class="error-msg" id="error_emailAddr${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                   <%-- <div class="row">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Description</label>
-                                    <span class="mandatory">*</span>
-                                </div>
-                                <div class="col-sm-4 col-md-7">
-                                    <iais:input maxLength="66" type="text" name="description" value="${medAlertPsn.description}"></iais:input>
-                                    <span class="error-msg" id="error_descriptionModeVal${status.index}" name="iaisErrorMsg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>--%>
                 </div>
                 <br/>
             </div>
         </c:forEach>
         </c:if>
         <c:if test="${requestInformationConfig==null}">
-            <%--<c:choose>
-                <c:when test="${!empty AppSvcMedAlertPsn}">
-                    <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="mapDtoLength" value="0"/>
-                </c:otherwise>
-            </c:choose>--%>
-
             <c:choose>
                 <c:when test="${!empty AppSvcMedAlertPsn }">
                     <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
@@ -303,57 +275,44 @@
     $(function () {
         //init start
         init = 0;
+        initDelBtn();
         addMAP();
-
         assignSel();
-
         mapDel();
-
         retrieveData();
-
         $('select.assignSel').trigger('change');
-
         $('input[name="licPerson"]').each(function (k,v) {
             if('1' == $(this).val()){
                 var $currentPsn = $(this).closest('.medAlertContent').find('.medAlertPerson');
                 disabledPartPage($currentPsn);
             }
         });
-
         initNationality('div.medAlertContent', '.idType', '.nationalityDiv');
-
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
-            // $('#addMapBtn').addClass('hidden');
         }
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
-        //new and not rfi
         if('APTY002' == appType && '0' == rfiObj){
             <c:choose>
                 <c:when test="${!empty AppSvcMedAlertPsn}">
-            console.log('map true');
                     <c:set var="psnLength" value="${AppSvcMedAlertPsn.size()-1}"/>
                 </c:when>
                 <c:otherwise>
                     <c:set var="psnLength" value="0"/>
                 </c:otherwise>
             </c:choose>
-            console.log('psnLength:'+${psnLength});
             <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
                 var $currentPsn = $('.medAlertContent').eq(${stat.index+1}).find('.medAlertPerson');
-                //remove dis style
                 $currentPsn.find('input[type="text"]').css('border-color','');
                 $currentPsn.find('input[type="text"]').css('color','');
-                //add edit and set style
                 var psnDto = {};
                 <c:if test="${!empty AppSvcMedAlertPsn[stat.index].psnEditFieldStr}">
                 psnDto = ${AppSvcMedAlertPsn[stat.index].psnEditFieldStr};
                 </c:if>
-                setPsnDisabled($currentPsn,psnDto);
+                // setPsnDisabled($currentPsn,psnDto);
             </c:forEach>
         }
-        //doEdit();
         //init end
         init =1;
         if($("#errorMapIs").val()=='error'){
@@ -361,13 +320,16 @@
         }
     })
 
+    var initDelBtn=function () {
+        $('.medAlertContent:first .mapDelBtn').hide();
+    }
 
     var mapDel = function () {
         $('.mapDelBtn').click(function () {
             $(this).closest('div.medAlertContent').remove();
             changePsnItem();
             //show add more
-            var psnLength = $('.medAlertContent').length-1;
+            var psnLength = $('.medAlertContent').length;
             if(psnLength <'${mapHcsaSvcPersonnel.maximumCount}'){
                 $('#addPsnDiv').removeClass('hidden');
             }
@@ -378,99 +340,115 @@
         });
     }
 
-
     var assignSel= function () {
-
-        $('.assignSel').change(function () {
-            var assignSelVal = $(this).val();
-            var $medAlertContentEle = $(this).closest('div.medAlertContent');
-            if('-1' == assignSelVal){
-                $medAlertContentEle.find('div.medAlertPerson').addClass('hidden');
-                if(1 == init){
-                    var emptyData = {};
-                    fillPsnForm($medAlertContentEle,emptyData);
-                    $medAlertContentEle.find('input[name="licPerson"]').val('0');
-                    $medAlertContentEle.find('input[name="loadingType"]').val('');
-                }
-            }else if('newOfficer' == assignSelVal){
-                $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
-                unDisabledPartPage($medAlertContentEle.find('.medAlertPerson'));
-                if(1 == init){
-                    var emptyData = {};
-                    fillPsnForm($medAlertContentEle,emptyData);
-                    $medAlertContentEle.find('input[name="licPerson"]').val('0');
-                    $medAlertContentEle.find('input[name="loadingType"]').val('');
-                }
-            }else{
-                $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
-                if(1 == init){
-                    var arr = $(this).val().split(',');
-                    var nationality = arr[0];
-                    var idType = arr[1];
-                    var idNo = arr[2];
-                    loadSelectPsn($medAlertContentEle, nationality, idType, idNo, 'MAP');
-                }
-            }
+        $('.assignSel').unbind('change');
+        $('.assignSel').on('change', function() {
+            showWaiting();
+            var assignVal = $(this).val();
+            var $currContent = $(this).closest('div.medAlertContent');
+            $currContent.find('.assignSelVal').val(assignVal);
+            checkPersonContent($currContent, false, false);
         });
+    }
+
+    function checkPersonContent($currContent, onlyInit, fromUser, callback) {
+        var assignVal = $currContent.find('.assignSelVal').val();
+        var $content = $currContent.find('div.medAlertPerson');
+        if('-1' == assignVal || isEmpty(assignVal)) {
+            hideTag($content);
+            dismissWaiting();
+        } else if('newOfficer' == assignVal) {
+            showTag($content);
+            dismissWaiting();
+        }else {
+            showTag($content);
+            if (onlyInit) {
+                $content.find('.designation').trigger('change');
+                $content.find('.idTypeSel').trigger('change');
+                checkPersonDisabled($currContent, true);
+                dismissWaiting();
+                return;
+            }
+            var url = "/person-info";
+            if (fromUser) {
+                url = "/user-account-info";
+            }
+            var indexNo = $currContent.find('input.indexNo').val();
+            var arr = assignVal.split(',');
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
+            var jsonData = {
+                'nationality':nationality,
+                'idType':idType,
+                'idNo':idNo,
+                'indexNo':indexNo
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}' + url,
+                'dataType':'json',
+                'data':jsonData,
+                'type':'GET',
+                'success':function (data) {
+                    console.log(data);
+                    if (data == null) {
+                        clearFields($content);
+                        return;
+                    }
+                    if (typeof callback === 'function') {
+                        callback($currContent, data);
+                    } else {
+                        fillForm($content, data, "",  $('div.person-content').index($currContent));
+                        $currContent.find('input[name="indexNo"]').val(data.indexNo);
+                        $currContent.find('.psnEditField').val(data.psnEditFieldStr);
+                        $currContent.find('.idTypeSel').trigger('change');
+                    }
+                    dismissWaiting();
+                },
+                'error':function () {
+                    dismissWaiting();
+                }
+            });
+        }
     }
 
 
     var addMAP = function(){
+        $('#addMapBtn').unbind('click');
         $('#addMapBtn').click(function () {
             showWaiting();
-            var hasNumber = $('.medAlertContent').length - 1;
-            console.log("hasNumber" + hasNumber);
-            $.ajax({
-                url:'${pageContext.request.contextPath}/med-alert-person-html',
-                dataType:'json',
-                type:'POST',
-                data:{
-                    'HasNumber':hasNumber,
-                },
-                'success':function (data) {
-                    if ('success' == data.res) {
-                        console.log("suc");
-                        $('.medAlertContent:last').after(data.sucInfo);
-                        $('.assignSel').unbind();
+            var $target = $('div.medAlertContent:last');
+            var src = $target.clone();
+            src.find('.mapDelBtn').show();
+            src.find('div.medAlertPerson').addClass('hidden');
+            clearFields(src);
+            $('.medAlertContent:last').after(src);
+            $('.assignSel').unbind();
 
-                        assignSel();
+            assignSel();
+            mapDel();
+            changePsnItem();
+            retrieveData();
 
-                        mapDel();
-
-                        changePsnItem();
-
-                        retrieveData();
-                        <!--set Scrollbar -->
-                        /*$("div.assignSel->ul").mCustomScrollbar({
-                                advanced:{
-                                    updateOnContentResize: true
-                                }
-                            }
-                        );*/
-                        //hidden add more
-                        var psnLength = $('.medAlertContent').length-1;
-                        if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
-                            $('#addPsnDiv').addClass('hidden');
-                        }
-                        if(psnLength <='${mapHcsaSvcPersonnel.mandatoryCount}'){
-                            $('.medAlertContent:last .mapDelBtn').remove();
-                        }
-                        //get data from page
-                        $('#isEditHiddenVal').val('1');
-
-                        initNationality('div.medAlertContent:last', '.idType', '.nationalityDiv');
-                    }else{
-                        $('.mapErrorMsg').html(data.errInfo);
-                    }
-                    dismissWaiting();
-                },
-                error:function (data) {
-                    console.log("err");
-                    dismissWaiting();
-                }
-            });
+            var psnLength = $('.medAlertContent').length;
+            if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
+                $('#addPsnDiv').addClass('hidden');
+            }
+            if(psnLength <='${mapHcsaSvcPersonnel.mandatoryCount}'){
+                $('.medAlertContent:last .mapDelBtn').remove();
+            }
+            //get data from page
+            $('#isEditHiddenVal').val('1');
+            initNationality('div.medAlertContent:last', '.idType', '.nationalityDiv');
+            dismissWaiting();
         });
     }
+
+    var changePsnItem = function () {
+        $('.assign-psn-item').each(function (k, v) {
+            $(this).html(k + 1);
+        });
+    };
 
     $('.edit').click(function () {
 

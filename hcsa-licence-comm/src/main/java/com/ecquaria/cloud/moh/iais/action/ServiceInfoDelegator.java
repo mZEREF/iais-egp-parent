@@ -469,7 +469,7 @@ public class ServiceInfoDelegator {
         }
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
-        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
+        //ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
         log.info(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -535,12 +535,9 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
 
         List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
-        SelectOption deputyFlagOp1 = new SelectOption("-1", HcsaAppConst.FIRESTOPTION);
-        deputyFlagSelect.add(deputyFlagOp1);
-        SelectOption deputyFlagOp2 = new SelectOption("0", "No");
-        deputyFlagSelect.add(deputyFlagOp2);
-        SelectOption deputyFlagOp3 = new SelectOption("1", "Yes");
-        deputyFlagSelect.add(deputyFlagOp3);
+        deputyFlagSelect.add(new SelectOption("-1", HcsaAppConst.FIRESTOPTION));
+        deputyFlagSelect.add(new SelectOption("0", "No"));
+        deputyFlagSelect.add(new SelectOption("1", "Yes"));
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
 
         ParamUtil.setRequestAttr(bpc.request, "currStepName2", "Nominee (Optional)");
@@ -812,8 +809,8 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action) || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
             }
@@ -825,12 +822,11 @@ public class ServiceInfoDelegator {
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, bpc.request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
-            appSvcCgoDtoList = AppDataHelper.genAppSvcCgoDto(bpc.request);
+            appSvcCgoDtoList = AppDataHelper.genAppSvcGovernanceOfficersDto(bpc.request);
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         }
-        String actionType = bpc.request.getParameter("nextStep");
-        if ("next".equals(actionType)) {
+        if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
                     LICPERSONSELECTMAP);
             Map<String, String> map = AppValidatorHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, true);
@@ -866,7 +862,7 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
@@ -883,10 +879,25 @@ public class ServiceInfoDelegator {
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         boolean isGetDataFromPageDpo = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEditDpo, isRfi);
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        if (isGetDataFromPagePo || isGetDataFromPageDpo) {
-            appSvcPrincipalOfficersDtoList = AppDataHelper.genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo,
-                    isGetDataFromPageDpo);
+        List<AppSvcPrincipalOfficersDto> poList = currSvcInfoDto.getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcDeputyPrincipalOfficersDtoList();
+        if (isGetDataFromPagePo) {
+            poList = AppDataHelper.genAppSvcPrincipalOfficersDto(bpc.request);
+            currSvcInfoDto.setAppSvcPrincipalOfficersDtoList(poList);
+        }
+        String deputySelect = ParamUtil.getString(bpc.request, "deputyPrincipalOfficer");
+        if (isGetDataFromPageDpo) {
+            if (AppConsts.NO.equals(deputySelect)) {
+                dpoList = IaisCommonUtils.genNewArrayList();
+            } else {
+                dpoList = AppDataHelper.genAppSvcDeputyPrincipalOfficersDto(bpc.request);
+            }
+            currSvcInfoDto.setAppSvcDeputyPrincipalOfficersDtoList(dpoList);
+        }
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
+        /*if (isGetDataFromPagePo || isGetDataFromPageDpo) {
+            poList = AppDataHelper.genAppSvcPrincipalOfficersDto(bpc.request);
+            dpoList = AppDataHelper.genAppSvcDeputyPrincipalOfficersDto(bpc.request);
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
                     appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || isRfi) {
@@ -905,48 +916,30 @@ public class ServiceInfoDelegator {
                 appSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
             }
             appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
-        }
+        }*/
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
-                LICPERSONSELECTMAP);
-
-        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if ("next".equals(crud_action_additional)) {
-            map = AppValidatorHelper.doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap, svcCode,
-                    appSubmissionDto.getSubLicenseeDto());
+        if ("next".equals(action)) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+                    LICPERSONSELECTMAP);
+            map.putAll(AppValidatorHelper.doValidatePo(poList, licPersonMap, true));
+            map.putAll(AppValidatorHelper.doValidateDpo(poList, licPersonMap, true, appSubmissionDto.getSubLicenseeDto()));
             //validate mandatory count
-            int poLength = 0;
-            int dpoLength = 0;
-            if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtoList)) {
-                for (AppSvcPrincipalOfficersDto psnDto : appSvcPrincipalOfficersDtoList) {
-                    String psnType = psnDto.getPsnType();
-                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-                        poLength++;
-                    } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
-                        dpoLength++;
-                    }
-                }
-            }
             List<HcsaSvcPersonnelDto> poPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
             List<HcsaSvcPersonnelDto> dpoPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            if (!isRfi) {
-                map = AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poLength,
-                        "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
-                if (dpoLength > 0) {
-                    map = AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
-                            dpoLength, "dpoPsnMandatory", HcsaConsts.NOMINEE);
-                }
-            }
+            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poList.size(),
+                    "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
+            AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
+                    dpoList.size(), "dpoPsnMandatory", HcsaConsts.NOMINEE);
             reSetChangesForApp(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
-        if (isValid && (isGetDataFromPagePo || isGetDataFromPageDpo)) {
-            syncDropDownAndPsn(appSubmissionDto, appSvcPrincipalOfficersDtoList, svcCode, bpc.request);
+        if (isValid && (isGetDataFromPagePo)) {
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
+            syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, dpoList, svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
@@ -956,8 +949,8 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appType)) {
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -973,10 +966,9 @@ public class ServiceInfoDelegator {
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         }
-        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
-        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
+
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("next".equals(nextStep)) {
+        if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request, LICPERSONSELECTMAP);
             List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList =
@@ -2089,7 +2081,6 @@ public class ServiceInfoDelegator {
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         //remove dirty psn doc info
         String dupForPerson = null;
-        String dupForPerson2 = null;
         String personType = personList.get(0).getPsnType();
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(personType)) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CGO;
@@ -2097,13 +2088,12 @@ public class ServiceInfoDelegator {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(personType)) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_MAP;
-        } else if (StringUtil.isIn(personType,
-                new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_PO, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO})) {
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(personType)) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_PO;
-            dupForPerson2 = ApplicationConsts.DUP_FOR_PERSON_DPO;
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(personType)) {
+            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_DPO;
         }
         removeDirtyPsnDoc(dupForPerson, request);
-        removeDirtyPsnDoc(dupForPerson2, request);
 
         return newPersonMap;
     }

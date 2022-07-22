@@ -7,7 +7,7 @@
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
-<input type="hidden" class="dpo-person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" class="dpo-person-content-edit" name="isEditDpo" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <%--<c:set var="perfix" value="PO"/>--%>
 
@@ -96,7 +96,7 @@
                             <c:when test="${empty dpoList}">
                                 <c:set var="dpoCount" value="1"/>
                             </c:when>
-                            <c:when test="${dpoHcsaSvcPersonnelDto.mandatoryCount > dpoList.size() }">
+                            <c:when test="${dpoHcsaSvcPersonnelDto.mandatoryCount > dpoList.size()}">
                                 <c:set var="dpoCount" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
                             </c:when>
                             <c:otherwise>
@@ -138,11 +138,11 @@
                         </c:if>
 
                         <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
-                            <iais:row>
+                            <iais:row cssClass="dpoDropDownDiv">
                                 <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
                                 <iais:field width="5" value="${currStepName2}" info="${toolMsg}"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select cssClass="deputySelect" name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false" value="${DeputyPoFlag}" />
+                                    <iais:select cssClass="deputySelect" name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false" value="${currSvcInfoDto.deputyPoFlag}" />
                                 </iais:value>
                             </iais:row>
                         </c:if>
@@ -152,7 +152,7 @@
             </div>
         </div>
 
-        <c:set var="perfix" value="DPO"/>
+        <c:set var="perfix" value="dpo"/>
         <c:set var="psnContent" value="dpo-person-content"/>
         <c:set var="singleName" value="${singleName2}"/>
         <div class="panel panel-default deputy-panel hidden">
@@ -195,6 +195,7 @@
 
 <script type="text/javascript">
     $(function() {
+        editdpoDropDownEvent();
         deputySelectEvent();
 
         $('.addPoBtn').on('click', function () {
@@ -214,6 +215,33 @@
             var maxPoCount = eval('${currStepConfig.maximumCount}');
             toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);
         }
+    }
+
+    /*var assignSelectEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.assignSel').unbind('change');
+        $target.find('.assignSel').on('change', function () {
+            showWaiting();
+            var assignVal = $(this).val();
+            var $currContent = $(this).closest(target);
+            $currContent.find('input.assignSelVal').val(assignVal);
+            checkPersonContent($currContent, false, true);
+            removePersonEvent(target);
+        });
+    }*/
+
+    var editdpoDropDownEvent = function() {
+        $('#edit-dpo').click(function () {
+            hideTage($('#edit-dpo'));
+            unDisableContent('.dpoDropDownDiv');
+            /*var dpoLength = eval('${dpoList.size()}');
+            if (dpoLength == 0) {
+                $('.dpo-person-content-edit').val('1');
+            }*/
+        });
     }
 
     var deputySelectEvent = function () {
@@ -255,7 +283,7 @@
                     $deputyPoSelectDiv.find('input[type="text"]').css('color','');
                 }*/
             } else {
-                $poContentEle.find('div.deputy-content').addClass('hidden');
+                hideTage($mainContent.find('div.deputy-panel'));
             }
 
         });
