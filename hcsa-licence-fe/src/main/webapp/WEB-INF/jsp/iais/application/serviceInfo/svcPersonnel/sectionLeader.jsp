@@ -108,7 +108,7 @@
         var isEdit =  $('#isEditHiddenVal').val();
         $content.each(function (index,v) {
             if (index < '${sectionLeaderConfig.mandatoryCount}') {
-                $(v).find('.removeSectionLeaderDiv').remove();
+                $(v).find('.removeSectionLeaderDiv').hide();
             } else {
                 $(v).find('.removeSectionLeaderDiv').show();
             }
@@ -130,31 +130,16 @@
         $('.addSectionLeaderBtn').unbind('click');
         $('.addSectionLeaderBtn').click(function () {
             showWaiting();
-            var slLength = $('.sectionLaderContent').length;
+         let target =  $('div.sectionLaderContent:last')
+            let src = target.clone();
+            $('div.addSectionLeaderDiv').before(src);
+            refreshBtn()
+            refreshSectionLeaderIndex()
+            $('#isEditHiddenVal').val('1');
+            removeSectionLeader()
+            dismissWaiting();
 
-            $.ajax({
-                url: '${pageContext.request.contextPath}/section-leader-html',
-                dataType: 'json',
-                data: {
-                    "slLength": slLength
-                },
-                type: 'POST',
-                success: function (data) {
-                    if ('200' == data.resCode) {
-                        $('.addSectionLeaderDiv').before(data.resultJson+'');
-                        // init
-                        $('div.sectionLaderContent select').niceSelect();
-                        refreshSectionLeaderIndex();
-                        initSectionLeader();
-                        $('#isEditHiddenVal').val('1');
-                    }
-                    dismissWaiting();
-                },
-                error: function (data) {
-                    console.log("err");
-                    dismissWaiting();
-                }
-            });
+
         });
     };
 

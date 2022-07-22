@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -58,6 +59,22 @@ public class AppPremisesCorrClientFallback implements AppPremisesCorrClient{
 
     @Override
     public FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getUnitNoAndFloorByPremisesId(String premisesId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesUpdateEmailDto> retrieveEmailDraft(String appPremCorrId, String type) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> saveEmailDraft(AppPremisesUpdateEmailDto appPremisesUpdateEmailDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

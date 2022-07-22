@@ -263,6 +263,29 @@ public final class ApplicationHelper {
         return appSvcRelatedInfoDto;
     }
 
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnels(String psnType, HttpServletRequest request) {
+        return getKeyPersonnels(psnType, getAppSvcRelatedInfo(request));
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnels(String psnType, AppSvcRelatedInfoDto sourceReletedInfo) {
+        List<AppSvcPrincipalOfficersDto> sourceList = null;
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcCgoDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcMedAlertPersonList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcPrincipalOfficersDtoList();
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcClinicalDirectorDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        }
+        if (sourceList == null) {
+            sourceList = IaisCommonUtils.genNewArrayList();
+        }
+        return sourceList;
+    }
+
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             AppEditSelectDto appEditSelectDto) {
         reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
@@ -1801,18 +1824,18 @@ public final class ApplicationHelper {
         if (appSvcPersonAndExtDto == null) {
             return null;
         }
-        AppSvcPrincipalOfficersDto person = null;
+        /*AppSvcPrincipalOfficersDto person = null;
         //66762
         AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
         if (appSvcPersonDto != null) {
             person = MiscUtil.transferEntityDto(appSvcPersonDto, AppSvcPrincipalOfficersDto.class);
             person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
         }
-        if (!StringUtil.isEmpty(svcCode) && person != null && !person.isLicPerson()) {
+        if (!StringUtil.isEmpty(svcCode) && !appSvcPersonAndExtDto.isLicPerson()) {
             svcCode = null;
         } else if (svcCode == null) {
             svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
-        }
+        }*/
         return genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
     }
 

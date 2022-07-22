@@ -1,5 +1,270 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+
+<%--appSvcDeputyPrincipalOfficersDtoList--%>
+<c:set var="personList" value="${currSvcInfoDto.appSvcPrincipalOfficersDtoList}"/>
+<c:set var="dpoList" value="${currSvcInfoDto.appSvcDeputyPrincipalOfficersDtoList}"/>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" class="dpo-person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+
+<%--<c:set var="perfix" value="PO"/>--%>
+
+<div class="row form-horizontal">
+    <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
+            <iais:row>
+                <div class="text-right app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
+                </div>
+            </iais:row>
+        </c:if>
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    </c:if>
+
+    <div class="panel-group" id="Principal" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" class="" data-toggle="collapse" href="#PO" aria-expanded="true" aria-controls="PO">
+                        <c:out value="${currStepName}"/>
+                    </a>
+                </h4>
+            </div>
+            <div id="PO" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="panel-main-content">
+                        <iais:row>
+                            <div class="col-xs-12">
+                                <h2 class="app-title">Principal Officer</h2>
+                                <p><h4><iais:message key="NEW_ACK024"/></h4></p>
+                                <p><span class="error-msg" name="iaisErrorMSg" id="error_poPsnMandatory"></span></p>
+                            </div>
+                        </iais:row>
+
+                        <c:choose>
+                            <c:when test="${empty personList && currStepConfig.mandatoryCount > 1}">
+                                <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+                            </c:when>
+                            <c:when test="${empty personList}">
+                                <c:set var="personCount" value="1"/>
+                            </c:when>
+                            <c:when test="${currStepConfig.mandatoryCount > personList.size() }">
+                                <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="personCount" value="${personList.size()}"/>
+                            </c:otherwise>
+                        </c:choose>
+
+
+                        <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
+                            <c:set var="index" value="${status.index}"/>
+                            <c:set var="person" value="${personList[index]}"/>
+
+                            <%@include file="personnelDetail.jsp" %>
+                        </c:forEach>
+
+                        <c:if test="${!isRfi}">
+                            <c:set var="needAddPsn" value="true"/>
+                            <c:choose>
+                                <c:when test="${currStepConfig.status =='CMSTAT003'}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                                <c:when test="${personCount >= currStepConfig.maximumCount}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                            </c:choose>
+
+                            <div class="col-md-12 col-xs-12 addPoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                                <span class="addPoBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <span style="">+ Add <c:out value="${singleName}"/></span>
+                                </span>
+                            </div>
+                        </c:if>
+
+                        <c:choose>
+                            <c:when test="${empty dpoList && dpoHcsaSvcPersonnelDto.mandatoryCount > 1}">
+                                <c:set var="dpoCount" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
+                            </c:when>
+                            <c:when test="${empty dpoList}">
+                                <c:set var="dpoCount" value="1"/>
+                            </c:when>
+                            <c:when test="${dpoHcsaSvcPersonnelDto.mandatoryCount > dpoList.size() }">
+                                <c:set var="dpoCount" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="dpoCount" value="${dpoList.size()}"/>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <c:if test="${AppSubmissionDto.needEditController }">
+                            <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                                <c:if test="${'APPSPN05' == clickEditPage}">
+                                    <c:set var="isClickEditDpo" value="true"/>
+                                </c:if>
+                            </c:forEach>
+                            <c:choose>
+                                <c:when test="${'true' != isClickEditDpo && !(isRfc || isRenew)}">
+                                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:if test="${!isClickEditDpo}">
+                                <c:set var="showPreview" value="true"/>
+                                <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit && dpoHcsaSvcPersonnelDto.mandatoryCount > 0}"/>
+                                <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
+                                    <c:choose>
+                                        <c:when test="${canEditDpoEdit}">
+                                            <div class="text-right app-font-size-16">
+                                                <a id="edit-dpo" class="dpoSelectEdit" href="javascript:void(0);">
+                                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                </a>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </c:if>
+                        </c:if>
+
+                        <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
+                            <iais:row>
+                                <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
+                                <iais:field width="5" value="${currStepName2}" info="${toolMsg}"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select cssClass="deputySelect" name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false" value="${DeputyPoFlag}" />
+                                </iais:value>
+                            </iais:row>
+                        </c:if>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <c:set var="perfix" value="DPO"/>
+        <c:set var="psnContent" value="dpo-person-content"/>
+        <c:set var="singleName" value="${singleName2}"/>
+        <div class="panel panel-default deputy-panel hidden">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" class="" data-toggle="collapse" href="#DPO" aria-expanded="true" aria-controls="DPO">
+                        <c:out value="${currStepName2}"/>
+                    </a>
+                </h4>
+            </div>
+            <div id="DPO" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="panel-main-content">
+                        <iais:row>
+                            <div class="col-xs-12">
+                                <h2 class="app-title"><c:out value="${singleName}"/></h2>
+                                <p><span class="error-msg" name="iaisErrorMSg" id="error_dpoPsnMandatory"></span></p>
+                            </div>
+                        </iais:row>
+
+
+                        <c:forEach begin="0" end="${dpoCount - 1}" step="1" varStatus="status">
+                            <c:set var="index" value="${status.index}"/>
+                            <c:set var="person" value="${dpoList[index]}"/>
+                            <%@include file="personnelDetail.jsp" %>
+                        </c:forEach>
+
+                        <div class="col-md-12 col-xs-12 addDpoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                                <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <span style="">+ Add <c:out value="${singleName}"/></span>
+                                </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        deputySelectEvent();
+
+        $('.addPoBtn').on('click', function () {
+            addPersonnel('div.person-content');
+        });
+        $('.addDpoBtn').on('click', function () {
+            addPersonnel('div.dpo-person-content');
+        });
+    });
+
+    function refreshPersonOthers($target, k) {
+        var cntClass = $currContent.attr('class');
+        if ('dpo-person-content' == cntClass) {
+            var maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
+            toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
+        } else {
+            var maxPoCount = eval('${currStepConfig.maximumCount}');
+            toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);
+        }
+    }
+
+    var deputySelectEvent = function () {
+        $('.deputySelect').change(function () {
+            var deputyFlag = $(this).val();
+            var $mainContent = $(this).closest('div.panel-group');
+            if ("1" == deputyFlag) {
+                showTage($mainContent.find('div.deputy-panel'));
+                $mainContent.find('.dpo-person-content').not(':first').remove();
+                var $currContent = $mainContent.find('.dpo-person-content');
+                clearFields($currContent);
+                $currContent.find('.psnHeader').html('');
+                checkPersonContent($currContent, true);
+                /*var $dpoContent = $poContentEle.find('div.deputy-content .panel-main-content');
+                var dpoLength = $dpoContent.find('div.dpo-content').length;
+                if (dpoLength > 1) {
+                    $dpoContent.find('.edit-content').removeClass('hidden');
+                    //remove hidden
+                    /!*
+                    var $contentEle = $('.dpo-content:eq(1)');
+                    // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
+                    $contentEle.find('.edit-content').removeClass('hidden');
+                    $contentEle.find('input[type="text"]').prop('disabled',false);
+                    $contentEle.find('div.nice-select').removeClass('disabled');
+                    $contentEle.find('input[type="text"]').css('border-color','');
+                    $contentEle.find('input[type="text"]').css('color','');
+                    *!/
+                } else {
+                    //add one
+                    $('#addDpoBtn').trigger('click');
+                    //close dropdown
+                    $('#deputyPrincipalOfficer').removeClass('disabled');
+                    $('#deputyPrincipalOfficer').niceSelect('update');
+                }
+                var $deputyPoSelectDiv = $('div.deputyPoSelectDiv');
+                if (!$deputyPoSelectDiv.hasClass('hidden')) {
+                    $deputyPoSelectDiv.find('div.nice-select').removeClass('disabled');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('border-color','');
+                    $deputyPoSelectDiv.find('input[type="text"]').css('color','');
+                }*/
+            } else {
+                $poContentEle.find('div.deputy-content').addClass('hidden');
+            }
+
+        });
+    }
+</script>
+
+
+
+<%--
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
@@ -281,10 +546,10 @@
                                 </c:forEach>
                             </c:if>
                             <c:if test="${requestInformationConfig==null}">
-                                <%--<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>--%>
-                                <%--<c:if test="${poDtoLength == '0'}">
+                                &lt;%&ndash;<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>&ndash;%&gt;
+                                &lt;%&ndash;<c:if test="${poDtoLength == '0'}">
                                   <c:set var="poDtoLength" value="1"/>
-                                </c:if>--%>
+                                </c:if>&ndash;%&gt;
                                 <c:choose>
                                     <c:when test="${!empty ReloadPrincipalOfficers }">
                                         <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
@@ -390,7 +655,7 @@
                         <div class="panel-main-content">
                             <h2>Nominee</h2>
                             <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
-                            <div class="dpo-content"><%-- can't be deleted --%></div>
+                            <div class="dpo-content">&lt;%&ndash; can't be deleted &ndash;%&gt;</div>
                             <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController || canEditDpoEdit}" />
                             <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
@@ -1611,4 +1876,4 @@
         });
     };
 
-</script>
+</script>--%>

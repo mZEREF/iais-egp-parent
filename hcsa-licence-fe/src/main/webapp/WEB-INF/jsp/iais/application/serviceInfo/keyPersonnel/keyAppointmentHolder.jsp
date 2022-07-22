@@ -1,200 +1,89 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
-<c:set var="isRfi" value="${requestInformationConfig != null}"/>
+<c:set var="personList" value="${currSvcInfoDto.appSvcKeyAppointmentHolderDtoList}"/>
 
-<input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
-<div class="row">
-    <div class="col-xs-12 col-md-12 text-right">
-        <c:if test="${AppSubmissionDto.needEditController }">
-            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                <div class="app-font-size-16">
+<div class="row form-horizontal">
+    <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
+            <iais:row>
+                <div class="text-right app-font-size-16">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
                         Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
                     </a>
                 </div>
-            </c:if>
-            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+            </iais:row>
         </c:if>
-    </div>
-</div>
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    </c:if>
+    <iais:row>
+        <div class="col-xs-12">
+            <p class="app-title"><c:out value="${currStepName}"/></p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
+        </div>
+    </iais:row>
 
-<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+    <c:choose>
+        <c:when test="${empty personList && currStepConfig.mandatoryCount > 1}">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+        </c:when>
+        <c:when test="${empty personList}">
+            <c:set var="personCount" value="1"/>
+        </c:when>
+        <c:when test="${currStepConfig.mandatoryCount > personList.size() }">
+            <c:set var="personCount" value="${currStepConfig.mandatoryCount}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="personCount" value="${personList.size()}"/>
+        </c:otherwise>
+    </c:choose>
 
-<div class="row">
-    <div class="col-xs-12">
-        <p class="app-title">Key Appointment Holder</p>
-        <hr>
-        <p><iais:message key="NEW_ACK029"/></p>
-        <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>
+
+    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
+        <c:set var="index" value="${status.index}"/>
+        <c:set var="person" value="${personList[index]}"/>
+
+        <%@include file="personnelDetail.jsp" %>
+    </c:forEach>
+
+    <c:if test="${!isRfi}">
+        <c:set var="needAddPsn" value="true"/>
         <c:choose>
-            <c:when test="${empty AppSvcKeyAppointmentHolderDtoList && keyAppointmentHolderConfigDto.mandatoryCount > 1}">
-                <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
+            <c:when test="${currStepConfig.status =='CMSTAT003'}">
+                <c:set var="needAddPsn" value="false"/>
             </c:when>
-            <c:when test="${empty AppSvcKeyAppointmentHolderDtoList}">
-                <c:set var="pageLength" value="1"/>
+            <c:when test="${personCount >= currStepConfig.maximumCount}">
+                <c:set var="needAddPsn" value="false"/>
             </c:when>
-            <c:when test="${keyAppointmentHolderConfigDto.mandatoryCount > AppSvcKeyAppointmentHolderDtoList.size() }">
-                <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
+            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                <c:set var="needAddPsn" value="false"/>
             </c:when>
-            <c:otherwise>
-                <c:set var="pageLength" value="${AppSvcKeyAppointmentHolderDtoList.size()}"/>
-            </c:otherwise>
         </c:choose>
 
-        <input type="hidden" name="keyAppointmentHolderLength" value="${pageLength}" />
-        <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="keyAppointmentHolderStatus">
-            <c:set var="index" value="${keyAppointmentHolderStatus.index}" />
-            <c:set var="AppSvcKeyAppointmentHolderDto" value="${AppSvcKeyAppointmentHolderDtoList[index]}"/>
-            <div class="keyAppointmentHolderContent">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
-                <input type="hidden" class="indexNo" name="indexNo${index}" value="${AppSvcKeyAppointmentHolderDto.indexNo}"/>
-
-                <div class="row">
-                    <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-6 control-label formtext col-md-8">
-                                <div class="cgo-header">
-                                    <strong>Key Appointment Holder <label class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></label></strong>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 col-xs-7 text-right">
-                                <c:if test="${index - keyAppointmentHolderConfigDto.mandatoryCount >=0}">
-                                    <div class="removeKeyAppointmentHolderBtn">
-                                        <h4 class="text-danger">
-                                            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                        </h4>
-                                    </div>
-                                </c:if>
-                            </div>
-
-                            <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
-                                <div class="col-sm-10">
-                                    <label class="control-font-label">
-                                        <c:if test="${!empty AppSvcKeyAppointmentHolderDto.name && !empty AppSvcKeyAppointmentHolderDto.idNo && !empty AppSvcKeyAppointmentHolderDto.idType}">
-                                            ${AppSvcKeyAppointmentHolderDto.name}, ${AppSvcKeyAppointmentHolderDto.idNo} (<iais:code code="${AppSvcKeyAppointmentHolderDto.idType}"/>)
-                                        </c:if>
-                                    </label>
-                                </div>
-                                <div class="col-sm-2 text-right">
-                                    <div class="edit-content">
-                                        <c:if test="${'true' == canEdit}">
-                                            <div class="text-right app-font-size-16">
-                                                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
-                                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                                </a>
-                                            </div>
-                                        </c:if>
-                                    </div>
-                                </div>
-                            </c:if>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row <c:if test="${AppSubmissionDto.needEditController && '-1' != AppSvcKeyAppointmentHolderDto.assignSelect && not empty AppSvcKeyAppointmentHolderDto.assignSelect}">hidden</c:if>">
-                    <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-6 control-label formtext col-md-5">
-                                <label  class="control-label control-set-font control-font-label">Add/Assign a Key Appointment Holder</label>
-                                <span class="mandatory">*</span>
-                            </div>
-
-                            <div class="col-sm-5 col-md-7">
-                                <div class="">
-                                    <iais:select cssClass="assignSel"  name="assignSel${index}" options="KeyAppointmentHolderAssignSelect" needSort="false" value="${AppSvcKeyAppointmentHolderDto.assignSelect}"></iais:select>
-                                    <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="keyAppointmentHolder">
-                    <div class="row">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Name</label>
-                                    <span class="mandatory">*</span>
-                                </div>
-                                <div class="col-sm-3 col-xs-12">
-                                    <iais:select cssClass="salutation"  name="salutation${index}" codeCategory="CATE_ID_SALUTATION" value="${AppSvcKeyAppointmentHolderDto.salutation}" firstOption="Please Select"></iais:select>
-                                </div>
-
-                                <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="name" maxLength="66" type="text" name="name${index}" value="${AppSvcKeyAppointmentHolderDto.name}"></iais:input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
-                                        <span class="mandatory">*</span>
-                                    </label>
-                                </div>
-                                <div class="col-sm-3 col-xs-12">
-                                    <div class="">
-                                        <iais:select cssClass="idType"  name="idType${index}" needSort="false" value="${AppSvcKeyAppointmentHolderDto.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idNo" maxLength="20" type="text" name="idNo${index}"
-                                                value="${AppSvcKeyAppointmentHolderDto.idNo}"></iais:input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row nationalityDiv">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-6 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Country of issuance</label>
-                                    <span class="mandatory">*</span>
-                                </div>
-                                <div class="col-sm-5 col-md-7">
-                                    <div class="">
-                                        <iais:select firstOption="Please Select" name="nationality${index}" codeCategory="CATE_ID_NATIONALITY"
-                                                     cssClass="nationality" value="${AppSvcKeyAppointmentHolderDto.nationality}" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-3 control-label formtext col-md-5">
-                                </div>
-                                <div class="col-sm-7">
-                                    <span class="error-msg" id="error_idTypeNo${index}" name="iaisErrorMsg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </c:forEach>
-
-        <div class="addKeyAppointmentHolderDiv">
+        <div class="col-md-12 col-xs-12 addKeyAppointmentHolderDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addKeyAppointmentHolderBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Key Appointment Holder</span>
+                <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
         </div>
-
-    </div>
+    </c:if>
 </div>
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<script type="text/javascript">
+    $(function() {
+        $('.addKeyAppointmentHolderBtn').on('click', function () {
+            addPersonnel('div.person-content');
+        });
+    });
+
+    function refreshPersonOthers($target, k) {
+        var maxCount = eval('${currStepConfig.maximumCount}');
+        toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
+    }
+</script>
+<%--
 <script>
     var initEnd = false;
     $(function () {
@@ -204,7 +93,7 @@
         doEdit();
         addDisabled();
         removeKeyAppointmentHolder();
-        $('.assignSel').closest('div.row').each(function (idx, ele){
+        $('.assignSel').closest('div.row').each(function (idx, ele) {
             if ($(ele).is(':visible')) {
                 $(ele).find('select.assignSel').trigger('change');
             }
@@ -212,34 +101,34 @@
 
         initNationality('div.keyAppointmentHolderContent', 'select[name^="idType"]', '.nationalityDiv');
 
-        if("${errormapIs}"=='error'){
+        if ("${errormapIs}" == 'error') {
             $('.svcPsnEdit').trigger('click');
         }
         initEnd = true;
     });
 
-    var assignSel= function () {
+    var assignSel = function () {
         $('.assignSel').change(function () {
             var assignSelVal = $(this).val();
             var $keyAppointmentHolder = $(this).closest('div.keyAppointmentHolderContent').find('div.keyAppointmentHolder');
-            if('-1' == assignSelVal){
+            if ('-1' == assignSelVal) {
                 $keyAppointmentHolder.addClass('hidden');
-                if (initEnd){
+                if (initEnd) {
                     clearFields($keyAppointmentHolder);
                 }
                 toggleOnSelect($keyAppointmentHolder.find('select[name^="idType"]'), 'IDTYPE003',
                     $keyAppointmentHolder.find('.nationalityDiv'));
-            }else if('newOfficer' == assignSelVal){
+            } else if ('newOfficer' == assignSelVal) {
                 $keyAppointmentHolder.removeClass('hidden');
                 unDisabledPartPage($keyAppointmentHolder);
-                if (initEnd){
+                if (initEnd) {
                     clearFields($keyAppointmentHolder);
-                }else {
+                } else {
                     addDisabled();
                 }
                 toggleOnSelect($keyAppointmentHolder.find('select[name^="idType"]'), 'IDTYPE003',
                     $keyAppointmentHolder.find('.nationalityDiv'));
-            }else{
+            } else {
                 $keyAppointmentHolder.removeClass('hidden');
                 var arr = $(this).val().split(',');
                 var nationality = arr[0];
@@ -250,7 +139,7 @@
         });
     };
 
-    var addKeyAppointmentHolder = function(){
+    var addKeyAppointmentHolder = function () {
         $('.addKeyAppointmentHolderBtn').unbind('click');
         $('.addKeyAppointmentHolderBtn').click(function () {
             showWaiting();
@@ -264,7 +153,7 @@
                 type: 'POST',
                 success: function (data) {
                     if ('200' == data.resCode) {
-                        $('.addKeyAppointmentHolderDiv').before(data.resultJson+'');
+                        $('.addKeyAppointmentHolderDiv').before(data.resultJson + '');
                         $('#isEditHiddenVal').val('1');
                         removeKeyAppointmentHolder();
                         refreshKeyAppointmentHolder();
@@ -281,7 +170,7 @@
         });
     };
 
-    var doEdit = function (){
+    var doEdit = function () {
         $('.svcPsnEdit').click(function () {
             console.log(".svcPsnEdit:click")
             var $currContent = $(this).closest('div.keyAppointmentHolderContent');
@@ -331,7 +220,7 @@
         myRefreshIndex($content);
         var keyAppointmentHolderLength = $content.length;
         $('input[name="keyAppointmentHolderLength"]').val(keyAppointmentHolderLength);
-        $content.each(function (k,v) {
+        $content.each(function (k, v) {
             if (keyAppointmentHolderLength <= 1 && k == 0) {
                 $(this).find('.assign-psn-item').html('');
             } else {
@@ -346,7 +235,7 @@
         var kahLength = $content.length;
         $('input[name="keyAppointmentHolderLength"]').val(kahLength);
         console.info("length: " + kahLength);
-        $content.each(function (index,v) {
+        $content.each(function (index, v) {
             let isPartEdit = $(v).find(".isPartEdit").val();
             if (index < '${keyAppointmentHolderConfigDto.mandatoryCount}') {
                 $(v).find('.removeKeyAppointmentHolderBtn').remove();
@@ -371,25 +260,25 @@
     var loadSelectKah = function ($CurrentPsnEle, nationality, idType, idNo) {
         showWaiting();
         var jsonData = {
-            'nationality':nationality,
-            'idType':idType,
-            'idNo':idNo,
-            'psnType':'MAP'
+            'nationality': nationality,
+            'idType': idType,
+            'idNo': idNo,
+            'psnType': 'MAP'
         };
         $.ajax({
-            'url':'${pageContext.request.contextPath}/person-info/svc-code',
-            'dataType':'json',
-            'data':jsonData,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
+            'url': '${pageContext.request.contextPath}/person-info/svc-code',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if (data == null) {
                     console.log("loadSelectKah data == null");
                     return;
                 }
                 fillKahForm($CurrentPsnEle, data);
                 dismissWaiting();
             },
-            'error':function () {
+            'error': function () {
                 console.log("loadSelectKah error");
                 dismissWaiting();
             }
@@ -418,15 +307,15 @@
         toggleOnSelect($CurrentPsnEle.find('select[name^="idType"]'), 'IDTYPE003', $CurrentPsnEle.find('.nationalityDiv'));
 
         var isLicPerson = data.licPerson;
-        if('1' == isLicPerson){
+        if ('1' == isLicPerson) {
             //add disabled not add input disabled style
             personDisable($CurrentPsnEle, '', 'Y');
             var psnEditDto = data.psnEditDto;
             setPsnDisabled($CurrentPsnEle, psnEditDto);
-        }else{
+        } else {
             unDisabledPartPage($CurrentPsnEle);
         }
-        if(!initEnd || '1' != $CurrentPsnEle.closest('div.keyAppointmentHolderContent').find('input.isPartEdit').val()){
+        if (!initEnd || '1' != $CurrentPsnEle.closest('div.keyAppointmentHolderContent').find('input.isPartEdit').val()) {
             addDisabled();
         }
         console.log("fillKahForm end")
@@ -439,7 +328,7 @@
         if ($(targetSelector).length == 0) {
             return;
         }
-        $(targetSelector).each(function (k,v) {
+        $(targetSelector).each(function (k, v) {
             var $ele = $(v);
             var $selector = $ele.find(':input');
             if ($selector.length == 0) {
@@ -462,11 +351,11 @@
                 if (orgName == orgId) {
                     $input.prop('id', name + k);
                 }
-                var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+                var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_' + orgName + '"]');
                 if ($errorSpan.length > 0) {
                     $errorSpan.prop('id', 'error_' + name + k);
                 }
             });
         });
     }
-</script>
+</script>--%>

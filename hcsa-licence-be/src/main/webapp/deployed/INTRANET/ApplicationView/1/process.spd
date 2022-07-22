@@ -170,6 +170,13 @@
     <JavaCode defClass="" executor="" methodName="rollBack_OnStepProcess_0" name="rollBack_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="AsoEmail" x="1030" y="650">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="asoEmail_OnStepProcess_0" name="asoEmail_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="140">
@@ -319,10 +326,16 @@
    <position>{(940,670)(330,840)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/RollBack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(330,460)(85,700)}</position>
+   <position>{(330,460)(60,670)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RollBack" style="oblique">
-   <position>{(85,700)(330,840)}</position>
+   <position>{(60,670)(330,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AsoEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(1075,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AsoEmail" style="oblique">
+   <position>{(1075,700)(330,840)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -349,6 +362,7 @@
    <SwitchCase component="/Steps/AutomaticStep/LienceStartDate" value="&quot;PROCLSD&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/ApproveWithdrawal" value="&quot;PROCWAP&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/RollBack" value="&quot;RollBack&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AsoEmail" value="&quot;PROCEMAIL&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

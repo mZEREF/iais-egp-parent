@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -41,7 +40,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         }
         log.info(StringUtil.changeForLog("The serviceType is -->;"+serviceType));
 
-        //validate the hcsaServiceDto
+        //validate the hcsaServiceConfigDto
         ValidationResult validationResultHcsaServiceConfigDto = WebValidationHelper.validateProperty(hcsaServiceConfigDto,serviceType);
         if(validationResultHcsaServiceConfigDto.isHasErrors()){
             result.putAll(validationResultHcsaServiceConfigDto.retrieveAll());
@@ -54,8 +53,8 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         //validate the svcCode and svcName repetition
         validateSvcCodeAndName(configService,hcsaServiceDto,result);
 
-        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
-            //validate the hcsaServiceDto
+       // if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+            //validate the hcsaSvcPersonnelDto
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
                 ValidationResult validationResultHcsaSvcPersonnelDto = WebValidationHelper.validateProperty(hcsaSvcPersonnelDto,serviceType);
@@ -80,7 +79,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                 }
             }
-        }
+       // }
 
 
 

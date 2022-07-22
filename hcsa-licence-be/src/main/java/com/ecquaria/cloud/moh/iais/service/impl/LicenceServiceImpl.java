@@ -7,7 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -42,31 +44,31 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelati
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
@@ -117,8 +119,7 @@ public class LicenceServiceImpl implements LicenceService {
     @Autowired
     OrganizationClient organizationClient;
 
-    @Autowired
-    private GenerateIdClient generateIdClient;
+
 
     @Autowired
     private EventBusHelper eventBusHelper;
@@ -151,7 +152,7 @@ public class LicenceServiceImpl implements LicenceService {
     private NotificationHelper notificationHelper;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private TaskService taskService;
     @Autowired
     private SystemParamConfig systemParamConfig;
 
@@ -302,6 +303,48 @@ public class LicenceServiceImpl implements LicenceService {
                 for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
                     for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
                         sendNotification(superLicDto);
+
+                        if(superLicDto != null) {
+                            LicenceDto licenceDto = superLicDto.getLicenceDto();
+                            if(licenceDto != null){
+                                List<String> appIdList = hcsaLicenceClient.getAppIdsByLicId(superLicDto.getLicenceDto().getId()).getEntity();
+                                log.debug(StringUtil.changeForLog("send approve email --- get app list by licence id : " + superLicDto.getLicenceDto().getId()));
+                                if(appIdList != null && appIdList.size() >0) {
+                                    for(String applicationId : appIdList){
+                                        ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+                                        if(applicationDto != null&&applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)) {
+                                            //getAppPremisesCorrelationsByAppId
+                                            AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity().get(0);
+                                            if (appPremisesCorrelationDto != null) {
+                                                List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
+                                                TaskDto taskDto=null;
+                                                if(oldTaskDtos.size()!=0){
+                                                    for (TaskDto task:oldTaskDtos
+                                                    ) {
+                                                        if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                                            taskDto=task;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if(taskDto!=null){
+                                                    taskDto.setDateAssigned(new Date());
+                                                    taskDto.setId(null);
+                                                    taskDto.setSlaDateCompleted(null);
+                                                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                                                    AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+                                                    taskDto.setAuditTrailDto(auditTrailDto);
+                                                    List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+
+                                                    taskDtos.add(taskDto);
+                                                    taskService.createTasks(taskDtos);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -544,7 +587,7 @@ public class LicenceServiceImpl implements LicenceService {
                                     String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
                                     log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
                                     if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
+                                        //sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
                                     }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                         sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                                         sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);

@@ -8,7 +8,7 @@
             </strong>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right removeSectionLeaderDiv">
-            <c:if test="${index > 0}">
+            <c:if test="${!isRfi}">
                 <h4 class="text-danger">
                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                 </h4>

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -54,12 +55,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.healthhub.OperatingHour;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -103,10 +104,12 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -223,6 +226,8 @@ public class HcsaApplicationDelegator {
     private CessationBeService cessationBeService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -230,6 +235,13 @@ public class HcsaApplicationDelegator {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
+    @Value("${iais.system.two.address}")
+    private String systemAddressTwo;
+
+    @Value("${iais.system.phone.number}")
+    private String systemPhoneNumber;
+    @Autowired
+    InspEmailService inspEmailService;
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
 
@@ -309,6 +321,22 @@ public class HcsaApplicationDelegator {
         return ajaxResDto;
     }
 
+
+    @PostMapping(value = "/save-draft-email")
+    public @ResponseBody
+    void saveDraftEmail(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do checkAo start ...."));
+
+        String subject = ParamUtil.getString(request, "subject");
+        String mailContent = ParamUtil.getString(request, "mailContent");
+        AppPremisesUpdateEmailDto emailDto= (AppPremisesUpdateEmailDto) ParamUtil.getSessionAttr(request,"appPremisesUpdateEmailDto");
+        emailDto.setSubject(subject);
+        emailDto.setMailContent(mailContent);
+        appPremisesCorrClient.saveEmailDraft(emailDto);
+        ParamUtil.setSessionAttr(request,"appPremisesUpdateEmailDto",emailDto);
+
+        log.info(StringUtil.changeForLog("the do checkAo end ...."));
+    }
     private List<SelectOption> getAoSelect(HttpServletRequest request, String stageId) {
         log.info(StringUtil.changeForLog("the getAoSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
@@ -665,7 +693,10 @@ public class HcsaApplicationDelegator {
             if (!StringUtil.isEmpty(rollBackCr) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(stage)) {
                 nextStage = stage;
             }
+            if(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationViewDto.getApplicationDto().getStatus())){
+                nextStage = stage;
 
+            }
             //request for information
             if (ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(stage)) {
                 nextStage = stage;
@@ -1132,6 +1163,70 @@ public class HcsaApplicationDelegator {
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_AO3,  RoleConsts.USER_ROLE_AO3, wrkGpId, userId);
         }
         log.debug(StringUtil.changeForLog("the do rollBack end ...."));
+    }
+
+
+    /**
+     * StartStep: internalEnquiry
+     *
+     * @param bpc
+     * @throws
+     */
+    public void asoEmail(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do asoSendEmail start ...."));
+        HttpServletRequest request=bpc.request;
+        String subject = ParamUtil.getString(request, "subject");
+        String mailContent = ParamUtil.getString(request, "mailContent");
+        AppPremisesUpdateEmailDto emailDto= (AppPremisesUpdateEmailDto) ParamUtil.getSessionAttr(request,"appPremisesUpdateEmailDto");
+        emailDto.setSubject(subject);
+        emailDto.setMailContent(mailContent);
+        appPremisesCorrClient.saveEmailDraft(emailDto);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationNo=applicationDto.getApplicationNo();
+        inspEmailService.completedTask(taskDto);
+
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+        map.put("msgContent",mailContent);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
+        emailParam.setTemplateContent(map);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationNo);
+        emailParam.setSubject(subject);
+        //send email
+        log.info(StringUtil.changeForLog("send new application email"));
+        notificationHelper.sendNotification(emailParam);
+        log.info(StringUtil.changeForLog("send new application email end"));
+        //send sms
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID);
+        smsParam.setSubject(subject);
+        smsParam.setQueryCode(applicationNo);
+        smsParam.setReqRefNum(applicationNo);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        smsParam.setRefId(applicationNo);
+        log.info(StringUtil.changeForLog("send new application sms"));
+        notificationHelper.sendNotification(smsParam);
+        log.info(StringUtil.changeForLog("send new application sms end"));
+        //send message
+        EmailParam messageParam = new EmailParam();
+        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID);
+        messageParam.setTemplateContent(map);
+        messageParam.setQueryCode(applicationNo);
+        messageParam.setReqRefNum(applicationNo);
+        messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        messageParam.setRefId(applicationNo);
+        messageParam.setSubject(subject);
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        messageParam.setServiceTypes(svcDto.getSvcCode());
+        log.info(StringUtil.changeForLog("send new application message"));
+        notificationHelper.sendNotification(messageParam);
+        log.info(StringUtil.changeForLog("send new application message end"));
+        log.debug(StringUtil.changeForLog("the do asoSendEmail end ...."));
     }
 
     /**
@@ -3579,6 +3674,9 @@ public class HcsaApplicationDelegator {
         setCessation(bpc.request, applicationViewDto, correlationId);
         //set choose inspection
         setChooseInspectionValue(bpc.request, applicationViewDto);
+
+        //set Aso Email
+        setAsoEmail(bpc.request,applicationViewDto);
     }
 
     private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto,TaskDto taskDto){
@@ -3834,6 +3932,71 @@ public class HcsaApplicationDelegator {
         setRecommendationOtherDropdownValue(request);
         //set appeal recommendation dropdown value
         setAppealRecommendationDropdownValue(request, applicationViewDto);
+    }
+
+    public void setAsoEmail(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
+
+        if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+
+
+            AppPremisesUpdateEmailDto emailDto=appPremisesCorrClient.retrieveEmailDraft(applicationViewDto.getAppPremisesCorrelationId(),ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL).getEntity();
+            if(emailDto==null){
+
+                LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(applicationDto.getId()).getEntity();
+                LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
+                String licenceNo=licenceDto.getLicenceNo();
+                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
+                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+
+                String applicationNo = applicationDto.getApplicationNo();
+                log.debug(StringUtil.changeForLog("send approve email --- get app by applicationNo : " + applicationNo));
+                String applicationType = applicationDto.getApplicationType();
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+                String appGrpId = applicationDto.getAppGrpId();
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+                String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+                String MohName = AppConsts.MOH_AGENCY_NAME;
+                String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+                log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+
+                if(licenseeDto != null && orgUserDto != null){
+                    String applicantName = orgUserDto.getDisplayName();
+                    log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
+                    String organizationId = licenseeDto.getOrganizationId();
+                    OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
+
+                    if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+                        AppPremisesRecommendationDto  inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+                        EmailParam emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcDto,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation,applicationViewDto.getHciAddress());
+                        String mesContext=null;
+                        String subject =null;
+                        MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(emailParam.getTemplateId()).getEntity();
+                        Map<String, Object> templateContent = emailParam.getTemplateContent();
+                        subject = emailParam.getSubject();
+
+                        try {
+                            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+                        }catch (IOException | TemplateException e) {
+                            log.error(e.getMessage(), e);
+                            throw new IaisRuntimeException(e);
+                        }
+
+                        emailDto=new AppPremisesUpdateEmailDto();
+                        emailDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
+                        emailDto.setEmailType(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL);
+                        emailDto.setSubject(subject);
+                        emailDto.setMailContent(mesContext);
+                    }
+                }
+            }
+
+            ParamUtil.setSessionAttr(request,"appPremisesUpdateEmailDto",emailDto);
+        }
+
+
     }
 
     private void setRouteBackReview(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId, TaskDto taskDto, String status) {
@@ -4148,6 +4311,10 @@ public class HcsaApplicationDelegator {
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, "Roll Back"));
             }
         }
+        if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationStatus)
+                && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Send Email"));
+        }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);
         ParamUtil.setRequestAttr(request, "hasRollBackHistoryList", hasRollBackHistoryList);
         ParamUtil.setSessionAttr(request, "nextStages", (Serializable) nextStageList);
@@ -4419,5 +4586,72 @@ public class HcsaApplicationDelegator {
         emailClient.sendNotification(emailDto).getEntity();
 
         return mesContext;
+    }
+
+    private EmailParam sendNewAppApproveNotification(String applicantName,
+                                               String applicationTypeShow,
+                                               String applicationNo,
+                                               String appDate,
+                                               String licenceNo,
+                                               HcsaServiceDto hcsaServiceDto,
+                                               String loginUrl,
+                                               String corpPassUrl,
+                                               String MohName,
+                                               OrganizationDto organizationDto,
+                                               AppPremisesRecommendationDto inspectionRecommendation,
+                                                     String mosd){
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("ApplicantName", applicantName);
+        map.put("ApplicationType", applicationTypeShow);
+        map.put("ApplicationNumber", applicationNo);
+        map.put("applicationDate", appDate);
+        map.put("licenceNumber", licenceNo);
+        map.put("isSpecial", "N");
+        map.put("isCorpPass", "N");
+        map.put("svcNameMOSD", hcsaServiceDto.getSvcName()+"("+mosd+")");
+        map.put("SpecialisedOrDiscipline", "N");
+        map.put("ss1ss2", "N");
+        if(inspectionRecommendation != null){
+            map.put("inInspection", "Y");
+            map.put("inspectionText", inspectionRecommendation.getRemarks());
+        }else {
+            map.put("inInspection", "N");
+        }
+        if(organizationDto != null){
+            if(StringUtil.isEmpty(organizationDto.getUenNo())){
+                map.put("isCorpPass", "Y");
+                map.put("corpPassLink", corpPassUrl);
+            }
+        }
+        map.put("systemLink", loginUrl);
+
+        map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+        map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+        map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
+        map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
+        map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
+
+        map.put("phoneNumber", systemPhoneNumber);
+        map.put("emailAddress1", systemAddressOne);
+        map.put("emailAddress2", systemAddressTwo);
+        map.put("MOH_AGENCY_NAME", MohName);
+
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", applicationTypeShow);
+        subMap.put("ApplicationNumber", applicationNo);
+        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subMap);
+
+        log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
+        emailParam.setTemplateContent(map);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationNo);
+        emailParam.setSubject(emailSubject);
+        //send email
+        return emailParam;
     }
 }

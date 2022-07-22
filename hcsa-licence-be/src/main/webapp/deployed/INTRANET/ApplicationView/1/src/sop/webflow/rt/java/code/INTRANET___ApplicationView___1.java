@@ -138,6 +138,11 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 // 		RollBack->OnStepProcess
 	}
 
+	public void asoEmail_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "asoEmail", this);
+// 		AsoEmail->OnStepProcess
+	}
+
 
 
 
