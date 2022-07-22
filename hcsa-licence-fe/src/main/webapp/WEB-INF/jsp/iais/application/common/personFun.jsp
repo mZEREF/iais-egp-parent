@@ -24,7 +24,7 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
-        var psnContent = '.${psnContent}';
+        let psnContent = '.${psnContent}';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         profRegNoEvent(psnContent);
@@ -142,6 +142,7 @@
     function checkPersonContent($currContent, onlyInit, fromUser, callback) {
         var assignVal = $currContent.find('input.assignSelVal').val();
         var $content = $currContent.find('.person-detail');
+        console.info("Assign Val: " + assignVal);
         if ('-1' == assignVal || isEmpty(assignVal)) {
             hideTag($content);
             $currContent.find('.speciality p').html('');
@@ -225,18 +226,25 @@
     }
 
     function checkPersonDisabled($currContent, onlyInit) {
-        var data;
+        let data;
         try {
             data = $.parseJSON($currContent.find('.psnEditField').val());
         } catch (e) {
             data = {};
         }
+
         if ('1' == $currContent.find('.licPerson').val()) {
             $.each(data, function (i, val) {
-                //console.info(i + " : " + val);
-                var $input = $currContent.find('.' + i + ':input');
+                let $input = $currContent.find('.' + i + ':input');
                 if ($input.length > 0 && !val) {
                     disableContent($input);
+                }
+            });
+        } else if (!onlyInit) {
+            $.each(data, function (i, val) {
+                let $input = $currContent.find('.' + i + ':input');
+                if ($input.length > 0 && !val) {
+                    unDisableContent($input);
                 }
             });
         }
