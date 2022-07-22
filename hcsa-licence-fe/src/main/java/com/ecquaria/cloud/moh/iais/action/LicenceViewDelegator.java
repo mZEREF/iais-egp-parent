@@ -111,8 +111,6 @@ public class LicenceViewDelegator {
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //set dupForPsn attr
-                        ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
                         ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);

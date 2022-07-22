@@ -39,7 +39,13 @@
                                 </td>
                             </tr>
                         </c:forEach>--%>
-                            <c:set var="reloadMap" value="${currentPreviewSvcInfo.multipleSvcDoc}"/>
+                            <c:forEach var="doc" items="${currSvcInfoDto.documentShowDtoList}" varStatus="configStat">
+                                <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${currSvcInfoDto.premisesVal}"/>
+                                <c:if test="${doc.existDoc}">
+                                <%@include file="viewSvcDocContent.jsp"%>
+                                </c:if>
+                            </c:forEach>
+                            <%--<c:set var="reloadMap" value="${currentPreviewSvcInfo.multipleSvcDoc}"/>
                             <c:forEach var="config" items="${svcDocConfig}" varStatus="configStat">
                                 <c:choose>
                                     <c:when test="${'0' == config.dupForPrem}">
@@ -70,7 +76,7 @@
                                         </c:forEach>
                                     </c:when>
                                 </c:choose>
-                            </c:forEach>
+                            </c:forEach>--%>
                     </table>
                 </div>
             </div>

@@ -585,20 +585,19 @@ public class WithOutRenewalDelegator {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if(appSvcRelatedInfoDtos != null && appSvcRelatedInfoDtos.size() > 0){
                     AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+                    ApplicationHelper.init(appSvcRelatedInfoDto);
                     String svcId = appSvcRelatedInfoDto.getServiceId();
                     if(!StringUtil.isEmpty(svcId)){
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                         appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
-                        //set dupForPsn attr
-                        ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
                         ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set svc doc title
                         Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                         appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                        /*List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                         if(appSvcPrincipalOfficersDtoList!=null){
                             List<AppSvcPrincipalOfficersDto> poList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
                             List<AppSvcPrincipalOfficersDto> dpoList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
@@ -611,7 +610,7 @@ public class WithOutRenewalDelegator {
                             }
                             appSvcRelatedInfoDto.setPoList(poList);
                             appSvcRelatedInfoDto.setDpoList(dpoList);
-                        }
+                        }*/
                     }
                 }
 

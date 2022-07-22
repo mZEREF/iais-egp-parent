@@ -55,7 +55,13 @@
 <div id="selectFileDiv">
     <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
 </div>
-<c:set var="docType" value="svcDoc"/>
+<c:forEach var="doc" items="${currSvcInfoDto.documentShowDtoList}" varStatus="configStat">
+    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${currSvcInfoDto.premisesVal}"/>
+    <%@include file="docContent.jsp"%>
+</c:forEach>
+
+<%--<c:set var="docType" value="svcDoc"/>--%>
+<%--
 <c:forEach var="config" items="${svcDocConfig}" varStatus="configStat">
     <c:choose>
         <c:when test="${'0' == config.dupForPrem}">
@@ -94,6 +100,7 @@
         </c:otherwise>
     </c:choose>
 </c:forEach>
+--%>
 
 <%--<%@ include file="../../appeal/FeFileCallAjax.jsp" %>--%>
 <script>

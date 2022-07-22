@@ -426,12 +426,10 @@ public final class AppValidatorHelper {
                 }
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
-                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                Map<String, String> map = doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap, false);
-                if (!map.isEmpty()) {
-                    errorMap.putAll(map);
-                }
-                map = doValidateDpo(dto.getAppSvcDeputyPrincipalOfficersDtoList(), licPersonMap, false, subLicenseeDto);
+                List<AppSvcPrincipalOfficersDto> poList = dto.getAppSvcPrincipalOfficersDtoList();
+                List<AppSvcPrincipalOfficersDto> dpoList = dto.getAppSvcNomineeDtoList();
+                Map<String, String> map = doValidatePoAndDpo(poList, dpoList, dto.getDeputyPoFlag(), licPersonMap,
+                        false, subLicenseeDto);
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }
@@ -1209,12 +1207,24 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidatePo(List<AppSvcPrincipalOfficersDto> poList,
+    public static Map<String, String> doValidatePoAndDpo(List<AppSvcPrincipalOfficersDto> poList,
+            List<AppSvcPrincipalOfficersDto> dpoList, String deputySelect, Map<String, AppSvcPersonAndExtDto> licPersonMap,
+            boolean checkPRS, SubLicenseeDto subLicenseeDto) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        map.putAll(doValidatePo(poList, licPersonMap, checkPRS));
+        map.putAll(doValidateDpo(dpoList, licPersonMap, checkPRS, subLicenseeDto));
+        /*if ("-1".equals(deputySelect)) {
+            map.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
+        }*/
+        return map;
+    }
+
+    private static Map<String, String> doValidatePo(List<AppSvcPrincipalOfficersDto> poList,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
         return validateKeyPersonnel(poList, "", licPersonMap, checkPRS);
     }
 
-    public static Map<String, String> doValidateDpo(List<AppSvcPrincipalOfficersDto> dpoList,
+    private static Map<String, String> doValidateDpo(List<AppSvcPrincipalOfficersDto> dpoList,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS, SubLicenseeDto subLicenseeDto) {
         return validateKeyPersonnel(dpoList, "dpo", licPersonMap, null, checkPRS, subLicenseeDto);
     }
@@ -1598,9 +1608,8 @@ public final class AppValidatorHelper {
     public static Map<String, String> validateKeyPersonnel(List<AppSvcPrincipalOfficersDto> personList, String prefix,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode, boolean checkPRS, SubLicenseeDto subLicenseeDto) {
         if (personList == null || personList.isEmpty()) {
-            return new HashMap<>(1);
+            return IaisCommonUtils.genNewHashMap();
         }
-
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < personList.size(); i++) {

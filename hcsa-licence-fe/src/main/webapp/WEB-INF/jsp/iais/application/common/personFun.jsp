@@ -29,7 +29,7 @@
         assignSelectEvent(psnContent);
         profRegNoEvent(psnContent);
         psnEditEvent(psnContent);
-
+        // init page
         initPerson(psnContent);
 
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
@@ -37,7 +37,7 @@
         }
     });
 
-    function initPerson(target){
+    function initPerson(target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
@@ -53,7 +53,6 @@
         if ($target.length == 1) {
             $target.find('.psnHeader').html('');
         }
-
     }
 
     var psnEditEvent = function (target) {
@@ -112,11 +111,12 @@
         $target.not(':first').find('.removeBtn').on('click', function () {
             showWaiting();
             $(this).closest(target).remove();
-            $(target).each(function (k, v) {
+            let $currContent = $(target);
+            $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
             });
-            if ($target.length == 1) {
-                $target.find('.psnHeader').html('');
+            if ($currContent.length == 1) {
+                $currContent.find('.psnHeader').html('');
             }
             $(target + '-edit').val('1');
             dismissWaiting();
@@ -205,8 +205,8 @@
                         var cntClass = $currContent.attr('class');
                         fillForm($content, data, "", $('div.' + cntClass).index($currContent));
 
-                        $currContent.find('.speciality p').html(data.specialty);
-                        $currContent.find('.subSpeciality p').html(data.subspecialty);
+                        $currContent.find('.speciality p').html(data.speciality);
+                        $currContent.find('.subSpeciality p').html(data.subSpeciality);
                         $currContent.find('.qualification p').html(data.qualification);
                         $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
                         $currContent.find('input.isPartEdit').val(1);
@@ -243,7 +243,7 @@
         } else if (!onlyInit) {
             $.each(data, function (i, val) {
                 let $input = $currContent.find('.' + i + ':input');
-                if ($input.length > 0 && !val) {
+                if ($input.length > 0) {
                     unDisableContent($input);
                 }
             });
@@ -408,6 +408,42 @@
 
     function isNeedControlName(assignSelectVal, licPerson, appType) {
         return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
+    }
+
+    function fillForm(ele, data, prefix, suffix) {
+        var $selector = getJqueryNode(ele);
+        if (isEmptyNode($selector)) {
+            return;
+        }
+        if (isEmpty(data)) {
+            clearFields($selector);
+            return;
+        }
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        if (isEmpty(suffix)) {
+            suffix = "";
+        }
+        for (var i in data) {
+            var val = data[i];
+            if (Object.prototype.toString.call(val) === "[object Object]") {
+                fillValue(ele, val, prefix, suffix);
+            }
+            var name = prefix + i + suffix;
+            var $input = $selector.find('[name="' + name + '"]');
+            if ($input.length == 0) {
+                name = prefix + capitalize(i) + suffix;
+                $input = $selector.find('[name="' + name + '"]');
+            }
+            if ($input.length == 0) {
+                continue;
+            }
+            if ($input.hasClass('field-date')) {
+                val = data[i + 'Str'];
+            }
+            fillValue($input, val, true);
+        }
     }
 
 </script>

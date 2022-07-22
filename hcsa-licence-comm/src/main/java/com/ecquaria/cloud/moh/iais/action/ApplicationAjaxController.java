@@ -60,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
+
 /**
  * @Auther chenlei on 5/6/2022.
  */
@@ -682,55 +684,14 @@ public class ApplicationAjaxController {
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String indexNo = ParamUtil.getString(request, "indexNo");
-       //String psnType = ParamUtil.getString(request, "psnType");
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
             return null;
         }
         String psnKey = ApplicationHelper.getPersonKey(nationality, idType, idNo);
         log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
-        AppSvcPrincipalOfficersDto person = ApplicationHelper.getKeyPersonnelDto(psnKey, null, request);
+        String svcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
+        AppSvcPrincipalOfficersDto person = ApplicationHelper.getKeyPersonnelDto(psnKey, svcCode, request);
         person.setIndexNo(indexNo);
-        /*Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
-                HcsaAppConst.PERSONSELECTMAP);
-        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
-*/
-        /*if (person == null) {
-            log.info(StringUtil.changeForLog("can not get data from person dropdown ..."));
-            return new AppSvcPrincipalOfficersDto();
-        }
-        String currentSvcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            List<SelectOption> specialityOpts = ApplicationHelper.genSpecialtySelectList(currentSvcCode, true);
-            person.setSpcOptList(specialityOpts);
-            Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-            specialtyAttr.put("name", "specialty");
-            specialtyAttr.put("class", "specialty");
-            specialtyAttr.put("style", "display: none;");
-            String specialityHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null,
-                    person.getSpeciality());
-            person.setSpecialityHtml(specialityHtml);
-        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-            Date specialtyGetDate = person.getSpecialtyGetDate();
-            if (specialtyGetDate != null) {
-                person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
-            }
-            Date currRegiDate = person.getCurrRegiDate();
-            if (currRegiDate != null) {
-                person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
-            }
-            Date praCerEndDate = person.getPraCerEndDate();
-            if (praCerEndDate != null) {
-                person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
-            }
-            Date acls = person.getAclsExpiryDate();
-            if (acls != null) {
-                person.setAclsExpiryDateStr(Formatter.formatDate(acls));
-            }
-            Date bcls = person.getBclsExpiryDate();
-            if (bcls != null) {
-                person.setBclsExpiryDateStr(Formatter.formatDate(bcls));
-            }
-        }*/
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
         return person;
     }

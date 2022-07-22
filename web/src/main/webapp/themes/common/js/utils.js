@@ -645,7 +645,7 @@ function fillForm(ele, data, prefix, suffix) {
             continue;
         }
         if ($input.hasClass('field-date')) {
-            val = data[val + 'Str'];
+            val = data[i + 'Str'];
         }
         fillValue($input, val, true);
     }

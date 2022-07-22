@@ -99,7 +99,7 @@
     <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
     <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-      <%@include file="../common/premFun.jsp"%>
+      <%--<%@include file="../common/premFun.jsp"%>--%>
     </div>
   </div>
   <%--<div class="modal fade" id="rfc_ERROR" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">

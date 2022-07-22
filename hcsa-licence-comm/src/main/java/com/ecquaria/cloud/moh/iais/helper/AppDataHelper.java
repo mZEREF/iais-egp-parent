@@ -251,6 +251,7 @@ public final class AppDataHelper {
                     }
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
+                        appGrpPremisesDto.setSeqNum(i + 1);
                         appGrpPremisesDto.setExistingData(existingData);
                         appGrpPremisesDto.setHasError(false);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
@@ -267,6 +268,7 @@ public final class AppDataHelper {
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }*/
                     if (!AppConsts.YES.equals(isParyEdit[i])) {
+                        appGrpPremisesDto.setSeqNum(i + 1);
                         appGrpPremisesDto.setExistingData(existingData);
                         appGrpPremisesDto.setHasError(false);
                         ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
@@ -280,6 +282,7 @@ public final class AppDataHelper {
                     appGrpPremisesDto = new AppGrpPremisesDto();
                 }
             }
+            appGrpPremisesDto.setSeqNum(i + 1);
             appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setExistingData(existingData);
             ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
@@ -1341,11 +1344,11 @@ public final class AppDataHelper {
 
 
 
-    public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDtos(HttpServletRequest request) {
         return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "", request);
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genAppSvcDeputyPrincipalOfficersDto(HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcNomineeDtos(HttpServletRequest request) {
         return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "dpo", request);
     }
 
@@ -1857,6 +1860,7 @@ public final class AppDataHelper {
             } else {
                 person.setIndexNo(indexNo);
             }
+            person.setLicPerson(AppConsts.YES.equals(licPsn));
             person.setAssignSelect(assign);
             person.setPsnType(psnType);
             personList.add(person);
