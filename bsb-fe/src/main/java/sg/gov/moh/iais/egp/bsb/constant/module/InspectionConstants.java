@@ -32,7 +32,6 @@ public class InspectionConstants {
     public static final String KEY_REVIEW_AFC_REPORT_DTO = "reviewAFCReportDto";
 
     //Reschedule Appointment
-    public static final String MODULE_NAME = "Inbox";
     public static final String KEY_APPOINTMENT_LIST_DATA_LIST = "dataList";
     public static final String KEY_APPOINTMENT_PAGE_INFO = "pageInfo";
 
