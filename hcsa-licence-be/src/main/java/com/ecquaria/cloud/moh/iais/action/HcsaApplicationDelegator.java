@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.EmailAttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -103,8 +104,8 @@ import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -1197,6 +1198,14 @@ public class HcsaApplicationDelegator {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationNo);
         emailParam.setSubject(subject);
+        if(IaisCommonUtils.isNotEmpty(emailDto.getAttachmentDtos())){
+            Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
+            for (EmailAttachmentDto attachmentDto:emailDto.getAttachmentDtos()
+                 ) {
+                attachments.put(attachmentDto.getFileName(),attachmentDto.getContent());
+            }
+            emailParam.setAttachments(attachments);
+        }
         //send email
         log.info(StringUtil.changeForLog("send new application email"));
         notificationHelper.sendNotification(emailParam);
