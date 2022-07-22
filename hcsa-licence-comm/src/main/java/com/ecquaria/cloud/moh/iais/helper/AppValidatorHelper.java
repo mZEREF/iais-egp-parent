@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -59,12 +58,6 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -86,6 +79,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Auther chenlei on 5/4/2022.
@@ -2065,9 +2063,11 @@ public final class AppValidatorHelper {
                     errorMap.put(errorId + index + j, errMsg);
                     continue;
                 }
-                int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
-                int time1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
-                if (time >= time1) {
+                int stime = getTime(list.get(i).getStartFromHH(), list.get(i).getStartFromMM());
+                int etime = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
+                int stime1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
+                int etime1 = getTime(list.get(j).getEndToHH(), list.get(j).getEndToMM());
+                if (stime <= etime1 && etime >= stime1) {
                     errorMap.put(errorId + index + j, errMsg);
                 }
             }
