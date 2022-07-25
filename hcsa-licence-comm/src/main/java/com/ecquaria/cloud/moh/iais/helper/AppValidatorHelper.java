@@ -1245,7 +1245,7 @@ public final class AppValidatorHelper {
                 String nationality = medAlertPsnDtos.get(i).getNationality();
 
                 // check person key
-                String keyIdType = "idTyp" + i;
+                String keyIdType = "idType" + i;
                 String keyIdNo = "idNo" + i;
                 String keyNationality = "nationality" + i;
                 boolean isValid = validateId(nationality, idTyp, idNo, keyNationality, keyIdType, keyIdNo, errMap);
