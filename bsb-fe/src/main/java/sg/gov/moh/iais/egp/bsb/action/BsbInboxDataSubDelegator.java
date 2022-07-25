@@ -27,15 +27,14 @@ import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERRO
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 
 @Slf4j
 @Delegator("bsbInboxDataSubDelegator")
 public class BsbInboxDataSubDelegator {
     private static final String KEY_INBOX_DATA_SUB_SEARCH_DTO = "inboxDataSubmissionSearchDto";
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;

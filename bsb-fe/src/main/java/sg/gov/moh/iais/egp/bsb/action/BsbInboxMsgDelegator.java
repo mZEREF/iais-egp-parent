@@ -38,6 +38,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_MSG_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 
 
 @Slf4j
@@ -52,8 +54,6 @@ public class BsbInboxMsgDelegator {
     private static final String KEY_SEARCH_MSG_DATE_FROM = "searchMsgDateFrom";
     private static final String KEY_SEARCH_MSG_DATE_TO = "searchMsgDateTo";
 
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
     private static final String KEY_SIGN_EQUAL = "=";
     private static final String KEY_MESSAGE_PAGE = "msgPage";
     public static final String KEY_INBOX = "inbox";

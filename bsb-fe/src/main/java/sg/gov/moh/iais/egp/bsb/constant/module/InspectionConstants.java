@@ -37,9 +37,6 @@ public class InspectionConstants {
 
     public static final String KEY_APPOINTMENT_SEARCH_DTO = "apptSearchDto";
 
-    public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
     //AFC
     public static final String KEY_AFC_DASHBOARD_MSG = "AFC Certification Documents Submission";
     public static final String KEY_APPLICANT_DASHBOARD_MSG = "AFC Certification Documents Review";

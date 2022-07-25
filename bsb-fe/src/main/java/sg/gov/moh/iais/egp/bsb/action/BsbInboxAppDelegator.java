@@ -29,6 +29,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 
 
 @Slf4j
@@ -36,9 +38,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class BsbInboxAppDelegator {
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
     private static final String KEY_STATUS = "searchStatus";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
@@ -157,7 +156,7 @@ public class BsbInboxAppDelegator {
         dto.setSearchAppNo(request.getParameter("searchAppNo"));
         dto.setSearchProcessType(request.getParameter("searchProcessType"));
         dto.setSearchFacilityName(request.getParameter("searchFacilityName"));
-        dto.setSearchStatus(request.getParameter("searchStatus"));
+        dto.setSearchStatus(request.getParameter(KEY_STATUS));
         dto.setSearchAppType(request.getParameter("searchAppType"));
         dto.setSearchSubmissionDateFrom(request.getParameter("searchSubmissionDateFrom"));
         dto.setSearchSubmissionDateTo(request.getParameter("searchSubmissionDateTo"));

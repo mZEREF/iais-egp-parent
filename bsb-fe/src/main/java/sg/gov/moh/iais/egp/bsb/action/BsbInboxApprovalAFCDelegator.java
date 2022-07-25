@@ -8,12 +8,11 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAfcResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalSearchDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAFCResultDto;
 import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -23,27 +22,33 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPROVAL_AFC_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_APPROVAL_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_APPROVAL_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_EXPIRY_DATE_FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_EXPIRY_DATE_TO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_START_DATE_FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_START_DATE_TO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 
 
 @Slf4j
-@Delegator("bsbInboxApprovalAfcDelegator")
-public class BsbInboxApprovalAfcDelegator {
-    private static final String KEY_INBOX_APPROVAL_SEARCH_DTO = "inboxApprovalSearchDto";
-    private static final String KEY_INBOX_APPROVAL_PAGE_INFO = "pageInfo";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
+@Delegator("bsbInboxApprovalAFCDelegator")
+public class BsbInboxApprovalAFCDelegator {
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
     @Autowired
-    public BsbInboxApprovalAfcDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
+    public BsbInboxApprovalAFCDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
         this.inboxService = inboxService;
     }
@@ -51,7 +56,6 @@ public class BsbInboxApprovalAfcDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_APPROVAL_SEARCH_DTO);
-
         AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPROVAL_AFC_ADMIN);
     }
 
@@ -63,27 +67,28 @@ public class BsbInboxApprovalAfcDelegator {
         HttpServletRequest request = bpc.request;
 
         InboxApprovalSearchDto searchDto = getSearchDto(request);
-        searchDto.setSearchProcessType(MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG); // this module only search AFC
         ParamUtil.setSessionAttr(request, KEY_INBOX_APPROVAL_SEARCH_DTO, searchDto);
 
         // call API to get dashboard data
 
         inboxService.retrieveDashboardData(request);
 
-        ResponseDto<InboxApprovalAfcResultDto> resultDto = inboxClient.getInboxApprovalForAfcAdmin(searchDto);
+        ResponseDto<InboxApprovalAFCResultDto> resultDto = inboxClient.getInboxApprovalForAFCAdmin(searchDto);
         if (resultDto.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APPROVAL_PAGE_INFO, resultDto.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApprovalInfos());
         } else {
             log.warn("Search Inbox Approval for Facility Administrator Fail");
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APPROVAL_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, ValidationResultDto.toErrorMsg(resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG)));
             }
         }
 
-
+        List<SelectOption> processTypeOps = new ArrayList<>(1);
+        processTypeOps.add(new SelectOption(PROCESS_TYPE_FAC_CERTIFIER_REG, "Facility Certifier Registration"));
+        ParamUtil.setRequestAttr(request, "processTypeOps", processTypeOps);
         List<SelectOption> approvalStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
         ParamUtil.setRequestAttr(request, "approvalStatusOps", approvalStatusOps);
     }
@@ -140,13 +145,13 @@ public class BsbInboxApprovalAfcDelegator {
 
     private InboxApprovalSearchDto bindModel(HttpServletRequest request) {
         InboxApprovalSearchDto dto = getSearchDto(request);
-        dto.setSearchApprovalNo(request.getParameter("searchApprovalNo"));
-        dto.setSearchProcessType(request.getParameter("searchProcessType"));
-        dto.setSearchStatus(request.getParameter("searchStatus"));
-        dto.setSearchStartDateFrom(request.getParameter("searchStartDateFrom"));
-        dto.setSearchStartDateTo(request.getParameter("searchStartDateTo"));
-        dto.setSearchExpiryDateFrom(request.getParameter("searchExpiryDateFrom"));
-        dto.setSearchExpiryDateTo(request.getParameter("searchExpiryDateTo"));
+        dto.setSearchApprovalNo(request.getParameter(KEY_SEARCH_APPROVAL_NO));
+        dto.setSearchProcessType(request.getParameter(KEY_SEARCH_PROCESS_TYPE));
+        dto.setSearchStartDateFrom(request.getParameter(KEY_SEARCH_START_DATE_FROM));
+        dto.setSearchStartDateTo(request.getParameter(KEY_SEARCH_START_DATE_TO));
+        dto.setSearchExpiryDateFrom(request.getParameter(KEY_SEARCH_EXPIRY_DATE_FROM));
+        dto.setSearchExpiryDateTo(request.getParameter(KEY_SEARCH_EXPIRY_DATE_TO));
+        dto.setSearchStatus(request.getParameter(KEY_STATUS));
         return dto;
     }
 }

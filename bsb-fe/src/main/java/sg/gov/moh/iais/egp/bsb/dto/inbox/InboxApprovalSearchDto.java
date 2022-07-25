@@ -14,10 +14,14 @@ import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class InboxApprovalSearchDto extends PagingAndSortingDto {
     private String searchApprovalNo;
+    // "Application Sub-Type"
     private String searchProcessType;
     private String searchFacilityName;
+    // "Approval Status"
     private String searchStatus;
+    // "Approval Date From"
     private String searchStartDateFrom;
+    // "Approval Date To"
     private String searchStartDateTo;
     private String searchExpiryDateFrom;
     private String searchExpiryDateTo;

@@ -8,12 +8,22 @@ public class FeInboxConstants {
     public static final String KEY_DASHBOARD_ACTIVE_FACILITY_AMT = "activeFacilityAmt";
     public static final String KEY_DASHBOARD_ACTIVE_APPROVAL_AMT = "activeApprovalAmt";
 
-    public static final String KEY_INBOX_MSG_SEARCH_DTO = "inboxMsgSearchDto";
-    public static final String KEY_INBOX_APP_SEARCH_DTO = "inboxAppSearchDto";
-    public static final String KEY_INBOX_FAC_SEARCH_DTO = "InboxFacSearchDto";
+    public static final String KEY_INBOX_MSG_SEARCH_DTO        = "inboxMsgSearchDto";
+    public static final String KEY_INBOX_APP_SEARCH_DTO        = "inboxAppSearchDto";
+    public static final String KEY_INBOX_FAC_SEARCH_DTO        = "InboxFacSearchDto";
+    public static final String KEY_INBOX_APPROVAL_SEARCH_DTO   = "inboxApprovalSearchDto";
 
-    public static final String KEY_INBOX_DATA_LIST = "dataList";
+    public static final String KEY_INBOX_DATA_LIST                     = "dataList";
+    public static final String KEY_INBOX_PAGE_INFO                     = "pageInfo";
 
+    public static final String KEY_SEARCH_APPROVAL_NO                  = "searchApprovalNo";
+    public static final String KEY_SEARCH_PROCESS_TYPE                 = "searchProcessType";
+    public static final String KEY_SEARCH_START_DATE_FROM              = "searchStartDateFrom";
+    public static final String KEY_SEARCH_START_DATE_TO                = "searchStartDateTo";
+    public static final String KEY_SEARCH_EXPIRY_DATE_FROM             = "searchExpiryDateFrom";
+    public static final String KEY_SEARCH_EXPIRY_DATE_TO               = "searchExpiryDateTo";
+    public static final String KEY_STATUS                              = "searchStatus";
+    public static final String KEY_SEARCH_FACILITY_NAME                = "searchFacilityName";
 
     public static final String KEY_ACTION_AVAILABLE = "actionAvailable";
 
