@@ -131,8 +131,6 @@ public final class HcsaAppConst {
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT                        = "IdTypeSelect";
 
-    public static final String PSN_KEY_LIST                                 = "PSN_KEY_LIST";
-
     public static final String PERSON_OPTIONS                               = "PERSON_OPTIONS";
 
     public static final String SECTION_LEADER_LIST                          = "sectionLeaderList";

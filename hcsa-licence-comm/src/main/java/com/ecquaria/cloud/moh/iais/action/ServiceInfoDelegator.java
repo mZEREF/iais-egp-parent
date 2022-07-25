@@ -931,8 +931,8 @@ public class ServiceInfoDelegator {
         if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
                     LICPERSONSELECTMAP);
-            map.putAll(AppValidatorHelper.doValidatePoAndDpo(poList, dpoList, deputySelect, licPersonMap, true,
-                    appSubmissionDto.getSubLicenseeDto()));
+            map.putAll(AppValidatorHelper.doValidatePoAndDpo(poList, dpoList, deputySelect, licPersonMap,
+                    appSubmissionDto.getSubLicenseeDto(), true));
             //validate mandatory count
             List<HcsaSvcPersonnelDto> poPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
