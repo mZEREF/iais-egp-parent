@@ -1099,6 +1099,7 @@ public class ServiceInfoDelegator {
             //premIndexNo+configId+seqnum
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
             int[] psnTypeNumArr = new int[]{maxPsnTypeNum};
+            if(IaisCommonUtils.isNotEmpty(hcsaSvcDocConfigDtos)){
             for (int i = 0; i < hcsaSvcDocConfigDtos.size(); i++) {
                 HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaSvcDocConfigDtos.get(i);
                 String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
@@ -1117,7 +1118,7 @@ public class ServiceInfoDelegator {
                     }
                 }
             }
-
+            }
         }
         String crud_action_values = mulReq.getParameter("nextStep");
         if ("next".equals(crud_action_values)) {
@@ -1460,7 +1461,7 @@ public class ServiceInfoDelegator {
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        if (isGetDataFromPage && !isRfi) {
+        if (isGetDataFromPage) {
             //get data from page
             List<AppSvcVehicleDto> appSvcVehicleDtos = AppDataHelper.genAppSvcVehicleDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
