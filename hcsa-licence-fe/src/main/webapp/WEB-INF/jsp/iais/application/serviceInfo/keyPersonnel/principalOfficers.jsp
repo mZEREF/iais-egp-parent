@@ -12,7 +12,8 @@
 <input type="hidden" class="dpo-person-content-edit" name="isEditDpo" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <input type="hidden" class="dpo-select-edit" name="isEditDpoSelect" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
-<%--<c:set var="perfix" value="PO"/>--%>
+<%--<c:set var="prepsn" value="po"/>--%>
+<%--<c:set var="psnContent" value="person-content"/>--%>
 
 <div class="row form-horizontal">
     <c:if test="${AppSubmissionDto.needEditController }">
@@ -155,7 +156,7 @@
             </div>
         </div>
 
-        <c:set var="perfix" value="dpo"/>
+        <c:set var="prepsn" value="dpo"/>
         <c:set var="psnContent" value="dpo-person-content"/>
         <c:set var="singleName" value="${singleName2}"/>
         <div class="panel panel-default deputy-panel ${currSvcInfoDto.deputyPoFlag == '1' ? '' : 'hidden'}">

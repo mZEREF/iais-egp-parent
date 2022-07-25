@@ -1212,6 +1212,7 @@ public final class AppValidatorHelper {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         map.putAll(doValidatePo(poList, licPersonMap, checkPRS));
         map.putAll(doValidateDpo(dpoList, licPersonMap, checkPRS, subLicenseeDto));
+        map.remove(HcsaAppConst.PSN_KEY_LIST);
         /*if ("-1".equals(deputySelect)) {
             map.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
         }*/
@@ -1609,13 +1610,17 @@ public final class AppValidatorHelper {
         if (personList == null || personList.isEmpty()) {
             return IaisCommonUtils.genNewHashMap();
         }
+        String psnType = null;
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<String> stringList = IaisCommonUtils.genNewArrayList();
+        List<String> psnList = JsonUtil.parseToList(errMap.get(HcsaAppConst.PSN_KEY_LIST), String.class);
+        if (psnList == null) {
+            psnList = IaisCommonUtils.genNewArrayList();
+        }
         for (int i = 0; i < personList.size(); i++) {
             AppSvcPrincipalOfficersDto person = personList.get(i);
-            String psnType = person.getPsnType();
+            psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if ("-1".equals(assignSelect)) {
+            if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
             } else {
                 String idTyp = person.getIdType();
@@ -1633,10 +1638,10 @@ public final class AppValidatorHelper {
                     String idTypeNoKey = prefix + "idTypeNo" + i;
                     isValid = doPsnCommValidate(errMap, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
                     if (isValid) {
-                        if (stringList.contains(personKey)) {
+                        if (psnList.contains(personKey)) {
                             errMap.put(keyIdNo, "NEW_ERR0012");
                         } else {
-                            stringList.add(personKey);
+                            psnList.add(personKey);
                         }
                         // 113109
                         if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType) && subLicenseeDto != null
@@ -1784,6 +1789,9 @@ public final class AppValidatorHelper {
                     }
                 }
             }
+        }
+        if (IaisCommonUtils.isNotEmpty(psnList) && StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_PO})) {
+            errMap.put(HcsaAppConst.PSN_KEY_LIST, JsonUtil.parseToJson(psnList));
         }
         return errMap;
     }
@@ -1954,8 +1962,8 @@ public final class AppValidatorHelper {
     public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         boolean isValid = true;
-        if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(personKey) && !StringUtil.isEmpty(
-                idNo) && !licPerson) {
+        if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(personKey)
+                && !StringUtil.isEmpty(idNo) && !licPerson) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if (appSvcPersonAndExtDto != null) {
                 errMap.put(errKey, MessageUtil.replaceMessage("NEW_ERR0006", idNo, "ID No."));
