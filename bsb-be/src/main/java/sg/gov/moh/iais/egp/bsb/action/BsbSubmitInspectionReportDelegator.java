@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
@@ -88,7 +88,7 @@ public class BsbSubmitInspectionReportDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
 
         // judge whether we need to send email
-        InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId, RoleConstants.ROLE_BSB_DO);
+        InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId, RoleConsts.USER_ROLE_BSB_DO);
 
         // submission details info
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
