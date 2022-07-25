@@ -69,6 +69,7 @@
                                 <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${appSvcPersonnelDto.otherDesignation}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
                             </iais:value>
+
                 </div>
      </iais:row>
 
