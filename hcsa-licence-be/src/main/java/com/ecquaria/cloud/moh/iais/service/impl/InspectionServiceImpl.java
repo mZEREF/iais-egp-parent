@@ -707,12 +707,34 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public void saveRollBackExtInfo(BroadcastApplicationDto broadcastApplicationDto, String premCorrId, String currentTaskId, String historyId, String stageId, String wrkGpId, String userId, String roleId){
-        String tollBackToTaskId = getRollBackToTaskId(premCorrId, stageId, wrkGpId, userId, roleId);
+    public void saveRollBackExtInfo(BroadcastApplicationDto broadcastApplicationDto, String premCorrId, String currentTaskId, String historyId, String stageId, String wrkGpId, String userId, String roleId) {
+        String rollBackHistoryId = historyId;
+        String rollBackStageId = stageId;
+        String rollBackWrkGpId = wrkGpId;
+        String rollBackUserId = userId;
+        String rollBackRoleId = roleId;
+        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+            // because roll back to inspection history is ao1 decs, so change to inspection start stage.
+            AppPremisesRoutingHistoryDto rollBackToHistory = null;
+            List<AppPremisesRoutingHistoryDto> activeHistoryDtos = appPremisesRoutingHistoryClient.getActiveAppPremisesRoutingHistorysByAppCorrId(premCorrId).getEntity();
+            for (AppPremisesRoutingHistoryDto historyDto : activeHistoryDtos) {
+                if (HcsaConsts.ROUTING_STAGE_INS.equals(historyDto.getStageId())) {
+                    rollBackToHistory = historyDto;
+                    break;
+                }
+            }
+            if (!Objects.isNull(rollBackToHistory)) {
+                rollBackHistoryId = rollBackToHistory.getId();
+                rollBackStageId = rollBackToHistory.getStageId();
+                rollBackWrkGpId = rollBackToHistory.getWrkGrpId();
+                rollBackUserId = rollBackToHistory.getActionby();
+                rollBackRoleId = rollBackToHistory.getRoleId();
+            }
+        }
+        String rollBackToTaskId = getRollBackToTaskId(premCorrId, rollBackStageId, rollBackWrkGpId, rollBackUserId, rollBackRoleId);
         AppPremisesRoutingHistoryExtDto ext1 = new AppPremisesRoutingHistoryExtDto();
         ext1.setComponentName(ApplicationConsts.APPLICATION_ROLL_BACK_TO_INFO);
-        ext1.setComponentValue(historyId+"|"+currentTaskId+"|"+tollBackToTaskId);
-
+        ext1.setComponentValue(rollBackHistoryId + "|" + currentTaskId + "|" + rollBackToTaskId);
         broadcastApplicationDto.setNewTaskHistoryExt(ext1);
     }
 
