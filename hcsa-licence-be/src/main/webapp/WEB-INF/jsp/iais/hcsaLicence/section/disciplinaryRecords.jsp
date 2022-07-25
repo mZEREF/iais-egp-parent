@@ -10,7 +10,7 @@
         <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 100%;margin-top: 5%;${style}">
             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label>
             <span style="position: absolute;right: 0px;color: black" onclick="javascript:closeThis(this);">X&nbsp;</span>
-            <div class="table-responsive" style="max-height: 64vh; overflow:scroll;">
+            <div class="table-responsive" style="max-height: 45vh; overflow:scroll;">
                 <table aria-describedby="" border="1px"
                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                     <tr>
