@@ -28,7 +28,9 @@ import java.util.stream.Collectors;
 public class HalpSearchResultHelper {
 
     public final static List<String> allDsTypes = Arrays.asList(DataSubmissionConsts.DS_AR,DataSubmissionConsts.DS_DRP,
-            DataSubmissionConsts.DS_LDT,DataSubmissionConsts.DS_TOP,DataSubmissionConsts.DS_VSS);
+            DataSubmissionConsts.DS_LDT,DataSubmissionConsts.DS_TOP,DataSubmissionConsts.DS_VSS,
+            DataSubmissionConsts.DS_DRP_NEW,DataSubmissionConsts.DS_AR_NEW,DataSubmissionConsts.DS_TOP_NEW,DataSubmissionConsts.DS_LDT_NEW,
+            DataSubmissionConsts.DS_DRP_SUP,DataSubmissionConsts.DS_AR_SUP,DataSubmissionConsts.DS_TOP_SUP,DataSubmissionConsts.DS_LDT_SUP);
 
     public static SearchParam getSearchParam(HttpServletRequest request, String searchClassName) {
         return getSearchParam(request, searchClassName,false);
@@ -274,7 +276,7 @@ public class HalpSearchResultHelper {
      * @description Get the value of SERVICE_NAME from SERVICE_CODE
      */
     public static String splitServiceName(String serviceCode){
-        if(StringUtil.isEmpty(serviceCode) || StringUtil.isIn(serviceCode, HalpSearchResultHelper.allDsTypes)){
+        if(StringUtil.isEmpty(serviceCode) || HalpSearchResultHelper.allDsTypes.contains(serviceCode)){
             return "N/A";
         }
         StringBuilder draftServiceName = new StringBuilder();
@@ -288,6 +290,8 @@ public class HalpSearchResultHelper {
                 }else{
                     draftServiceName.append(hcsaServiceDto.getSvcName());
                 }
+            }else {
+                return "N/A";
             }
         }
         return draftServiceName.toString();

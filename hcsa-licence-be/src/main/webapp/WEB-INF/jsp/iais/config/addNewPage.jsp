@@ -1057,14 +1057,25 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="pageName">
+                <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
                 <span name="iaisErrorMsg" class="error-msg" id="error_pageName3"></span>
               </div>
             </div>
           </div>
+          <div class="add col-xs-12 col-md-9 marg-1">
+            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+            <div class="col-xs-10 col-md-4">
+              <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
+            </div>
+            <div class="col-xs-12 col-md-1">
+              <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+            </div>
+          </div>
+
+
 
           <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItems" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this)"> + </a><label for="addCategory"> Add Item</label>
           </div>
           <div class="col-xs-12 col-md-9 marg-1">
             <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
@@ -1079,25 +1090,18 @@
           <div >
             <div class="view col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
               <div class="col-xs-12 col-md-5" style="padding-right: 20%;" >
-               <%-- <input class="add" type="text"  style="margin-left:0px" name="subType" maxlength="100" value="${hcsaSvcSubtypeOrSubsumed.name}">
-                <span name="iaisErrorMsg" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed}"></span>--%>
-                 <iais:select name="isMandatory" options="selectOptions" firstOption="Please Select"/>
-               <%-- <c:set value="${j+1}" var="j"></c:set>--%>
+                <iais:select name="specHcsaServiceAdd" options="specHcsaServiceOptions" firstOption="Please Select"/>
               </div>
               <div class="value">
                 <input type="text" value="0" name="level" style="display: none">
               </div>
-              <div  class="col-xs-12 col-md-2" >
+              <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
                 <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
               </div>
-              <div  class="col-xs-12 col-md-2">
+              <div  class="col-xs-12 col-md-2" >
                 <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
               </div>
-              <%--<div class="col-xs-12 col-md-2 up">
-                <a class="btn  btn-secondary up view" onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
-                <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
-              </div>--%>
-              <div class="col-xs-12 col-md-2">
+              <div class="col-xs-12 col-md-1">
                 <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
               </div>
             </div>
@@ -1340,11 +1344,11 @@
     }
 
     function removeThis(obj) {
-        $(obj).closest("div").closest("div.view").remove();
-        a();
+        $(obj).closest("div").closest("div.add").remove();
+       // a();
     }
 
-    function up(obj) {
+/*    function up(obj) {
         let val = $(obj).closest("div").closest("div.view").children('div.col-xs-12.col-md-4').children("input");
         let val1 = $(obj).closest("div").closest("div.view").prev("div.view").children('div.col-xs-12.col-md-4').children("input");
         if("undefined" !=typeof val1.val()){
@@ -1368,7 +1372,20 @@
             val.html(upValue1);
             val1.html(upValue);
         }
+    }*/
+
+    function addCategory(obj) {
+        $(obj).closest("div").prev("div").after("<div class=\"add col-xs-12 col-md-9 marg-1\">\n" +
+            "            <label class=\"col-xs-12 col-md-7 control-label\" >Category / Discipline</label>\n" +
+            "            <div class=\"col-xs-10 col-md-4\">\n" +
+            "              <input type=\"text\" maxlength=\"100\" value=\"\" name=\"categoryPermanent\">\n" +
+            "            </div>\n" +
+            "            <div class=\"col-xs-12 col-md-1\">\n" +
+            "              <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
+            "            </div>\n" +
+            "          </div>");
     }
+
     function addAsItem(obj) {
         $(obj).closest("div").prev("div").after(" <div class=\"view col-xs-12 col-md-12\">\n" +
             "          <div class=\"col-xs-12 col-md-4\" style=\"padding-right: 20%;\" >\n" +
@@ -1394,14 +1411,14 @@
           a();
     }
 
-   var  a = function upDown() {
+   /*var  a = function upDown() {
         let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
         if (length == 1) {
             $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
         } else {
             $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
         }
-    }
+    }*/
     function indents(obj) {
         let jQuery = $(obj).closest('div.view').children("div.col-md-5").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
@@ -1439,7 +1456,7 @@
     }
 
     function outdent(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
+        let jQuery = $(obj).closest('div.view').children("div.col-md-5").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){

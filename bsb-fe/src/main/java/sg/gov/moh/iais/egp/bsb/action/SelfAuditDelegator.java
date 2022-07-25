@@ -63,8 +63,8 @@ public class SelfAuditDelegator {
         AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_SELF_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
-        ParamUtil.setSessionAttr(request, SELF_AUDIT_DATA, null);
+        request.getSession().removeAttribute(PARAM_AUDIT_SEARCH);
+        request.getSession().removeAttribute(SELF_AUDIT_DATA);
     }
 
     public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {

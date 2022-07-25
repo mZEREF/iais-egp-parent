@@ -1,4 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="permanent" value="PERMANENT" />
 <c:set var="conv" value="CONVEYANCE" />
 <c:set var="easMts" value="EASMTS" />

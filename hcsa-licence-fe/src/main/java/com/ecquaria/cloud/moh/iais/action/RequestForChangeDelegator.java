@@ -392,6 +392,7 @@ public class RequestForChangeDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+            ApplicationHelper.init(appSvcRelatedInfoDto);
             String svcId = appSvcRelatedInfoDto.getServiceId();
             if(!StringUtil.isEmpty(svcId)){
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
@@ -400,10 +401,6 @@ public class RequestForChangeDelegator {
                 List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                //set dupForPsn attr
-                ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
-                //svc doc add align for dup for prem
-                ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
                 appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                 //set svc doc title
                 Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);

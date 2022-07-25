@@ -79,7 +79,7 @@
                                                         <%-- RFC hci Name change --%>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <%@include file="section/declarations.jsp"%>
+                                                        <%@include file="declarations/declarations.jsp"%>
                                                     </c:otherwise>
                                                 </c:choose>
 

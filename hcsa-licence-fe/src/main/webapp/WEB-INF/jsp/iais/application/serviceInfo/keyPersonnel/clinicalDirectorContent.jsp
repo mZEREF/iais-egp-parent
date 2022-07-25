@@ -112,7 +112,7 @@
         </div>
     </c:if>
 </div>
-<%@include file="../../common/prsLoading.jsp"%>
+<%--<%@include file="../../common/prsLoading.jsp"%>--%>
 <script>
     $(document).ready(function () {
         holdCerByEMS();

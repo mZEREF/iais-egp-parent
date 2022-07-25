@@ -12,6 +12,5 @@
             </iais:row>
         </c:forEach>
     </div>
-
 </div>
 

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
@@ -378,9 +379,30 @@ public class TopDataSubmissionDelegator {
         if (premisesMap.size() !=0) {
             List<PremisesDto> premisesDtos= IaisCommonUtils.genNewArrayList();
             premisesDtos.addAll(premisesMap.values());
-            premisesDtos.sort(Comparator.comparing(PremisesDto::getHciName, Comparator.nullsFirst(Comparator.naturalOrder())));
+            premisesDtos.sort(this::comparePremisesDto);
             topSuperDataSubmissionDto.setPremisesDto(premisesDtos.get(0));
         }
+    }
+
+    private int comparePremisesDto(PremisesDto a, PremisesDto b){
+        if(a != null && b!=null){
+            try{
+                if(StringUtil.isEmpty(a.getBusinessName())){
+                    return -1;
+                }
+                if(StringUtil.isEmpty(b.getBusinessName())){
+                    return 1;
+                }
+                String aBn=a.getBusinessName().toUpperCase();
+                String bBn=b.getBusinessName().toUpperCase();
+
+                return aBn.compareTo(bBn);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+
+            }
+        }
+        return 0;
     }
     /**
      * Step: DoStep
@@ -1270,12 +1292,12 @@ public class TopDataSubmissionDelegator {
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
-                                if(preTerminationDto.getPatientAppointment().equals("0")){
-                                    if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
-                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
-                                    }else {
-                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
-                                    }
+                            }
+                            if(preTerminationDto.getPatientAppointment().equals("0")){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                         }else {

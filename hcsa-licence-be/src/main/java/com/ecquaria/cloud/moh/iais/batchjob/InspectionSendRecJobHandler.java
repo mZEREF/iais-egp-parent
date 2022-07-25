@@ -128,6 +128,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             }
             List<AppPremPreInspectionNcDto> appPremPreInspectionNcDtos = IaisCommonUtils.genNewArrayList();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
             AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -138,6 +139,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     String appPremCorrId = dto.getAppPremisesCorrelationId();
                     JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
                     if(jobRemindMsgTrackingDto2 == null) {
+                        appSvcVehicleDtos.addAll(appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appPremCorrId).getEntity());
                         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(aDto.getId());
                         inspEmailFieldDtos = inspectionRectificationProService.sortInspEmailFieldDtoByCategory(inspEmailFieldDtos);
                         String applicantId;
@@ -218,6 +220,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     continue;
                 }
             }
+            inspRectificationSaveDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
             inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
             inspRectificationSaveDto.setAuditTrailDto(intranet);

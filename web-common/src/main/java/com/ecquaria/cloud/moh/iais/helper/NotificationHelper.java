@@ -412,7 +412,7 @@ public class NotificationHelper {
 									MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 									signature2.date(), signature2.authorization(), String.class);
 						} else {
-							emailSmsClient.sendEmail(emailDto, null);
+							emailSmsClient.sendEmail(emailDto, emailParam.getAttachments());
 						}
 						if (jrDto != null) {
 							List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
@@ -462,7 +462,7 @@ public class NotificationHelper {
 										MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 										signature2.date(), signature2.authorization(), String.class);
 							} else {
-								emailSmsClient.sendEmail(emailDto, null);
+								emailSmsClient.sendEmail(emailDto, emailParam.getAttachments());
 							}
 						}
 						if (!jobRemindFlag && jrDto != null) {

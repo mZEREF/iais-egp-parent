@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.EmailAttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -103,8 +104,8 @@ import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -1153,7 +1154,7 @@ public class HcsaApplicationDelegator {
             inspectionService.rollBackInspectionRecord(applicationViewDto.getAppPremisesCorrelationId(), applicationViewDto.getApplicationDto());
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, stageId, wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
+            applicationService.rollBackInsp(bpc, stageId,RoleConsts.USER_ROLE_INSPECTIOR,  wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
@@ -1197,6 +1198,14 @@ public class HcsaApplicationDelegator {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationNo);
         emailParam.setSubject(subject);
+        if(IaisCommonUtils.isNotEmpty(emailDto.getAttachmentDtos())){
+            Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
+            for (EmailAttachmentDto attachmentDto:emailDto.getAttachmentDtos()
+                 ) {
+                attachments.put(attachmentDto.getFileName(),attachmentDto.getContent());
+            }
+            emailParam.setAttachments(attachments);
+        }
         //send email
         log.info(StringUtil.changeForLog("send new application email"));
         notificationHelper.sendNotification(emailParam);
@@ -4242,7 +4251,8 @@ public class HcsaApplicationDelegator {
                 //62875
                 //role is ao3 && status is 'Pending AO3 Approval'  have no verified
                 if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus)
+                        && ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationStatus))) {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
@@ -4257,7 +4267,7 @@ public class HcsaApplicationDelegator {
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
-                || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
+                || RoleConsts.USER_ROLE_AO3.equals(taskRole))&&!applicationStatus.equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)) {
             Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
                     applicationViewDto.getApplicationGroupDto().getGroupNo());
             String canEdit = map.get(HcsaAppConst.CAN_RFI);

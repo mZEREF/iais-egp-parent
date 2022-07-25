@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -43,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -239,7 +237,8 @@ public class RetriggerGiroPaymentDelegator {
 
 //            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
             List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                ApplicationHelper.init(appSvcRelatedInfoDto);
                 String currentSvcId = appSvcRelatedInfoDto.getServiceId();
 //                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
                 hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
@@ -265,8 +264,6 @@ public class RetriggerGiroPaymentDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                //set dupForPsn attr
-                ApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
                 //svc doc add align for dup for prem
                 ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
                 appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);

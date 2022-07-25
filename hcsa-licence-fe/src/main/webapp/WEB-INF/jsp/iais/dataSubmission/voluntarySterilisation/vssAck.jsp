@@ -21,7 +21,7 @@
 
 <%-- current page: ack --%>
 
-<%@ include file="common/vssHeader.jsp" %>
+<%@ include file="common/vssAckHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="../common/formHidden.jsp" %>

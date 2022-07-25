@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="document-upload-list">
     <h3>
-        <c:if test="${'1' == config.dupForPrem}">Mode of Service Delivery&nbsp;${premStat.index+1}:&nbsp;</c:if>
+        <%--<c:if test="${'1' == config.dupForPrem}">Mode of Service Delivery&nbsp;${premStat.index+1}:&nbsp;</c:if>
         <c:if test="${'svcDoc' == docType}">
             <c:choose>
                 <c:when test="${'1' == config.dupForPerson}">
@@ -26,13 +26,13 @@
                     <%=HcsaConsts.SECTION_LEADER%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
             </c:choose>
-        </c:if>
-        ${config.docTitle}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if>
+        </c:if>--%>
+        <c:out value="${doc.displayTitle}"/><c:if test="${doc.configDto.isMandatory}"><span class="mandatory"> *</span></c:if>
     </h3>
     <div class="file-upload-gp">
         <input type="hidden" name="configIndex" value="${configIndex}"/>
         <span name="${configIndex}ShowId" id="${configIndex}ShowId">
-            <c:forEach var="file" items="${fileList}" varStatus="fileStat">
+            <c:forEach var="file" items="${doc.appSvcDocDtoList}" varStatus="fileStat">
                 <div id="${configIndex}Div${file.seqNum}">
                     <c:choose>
                         <c:when test="${!file.passValidate}">

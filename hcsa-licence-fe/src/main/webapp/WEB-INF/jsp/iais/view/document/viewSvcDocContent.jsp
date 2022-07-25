@@ -1,8 +1,8 @@
-<c:forEach var="svcDoc" items="${fileList}" varStatus="status">
+<c:forEach var="svcDoc" items="${doc.appSvcDocDtoList}" varStatus="status">
     <c:if test="${status.first}">
         <tr>
             <td>
-                <div class="field col-sm-12 control-label formtext" style="font-size:16px;"><label>${svcDoc.displayTitle}</label></div>
+                <div class="field col-sm-12 control-label formtext" style="font-size:16px;"><label>${doc.displayTitle}</label></div>
             </td>
         </tr>
     </c:if>

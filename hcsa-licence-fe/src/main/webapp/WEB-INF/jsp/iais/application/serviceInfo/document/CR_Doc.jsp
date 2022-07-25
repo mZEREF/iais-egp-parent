@@ -63,7 +63,7 @@
                 <c:when test="${empty config.dupForPerson}">
                     <c:set var="fileList" value="${svcDocReloadMap[config.id]}"/>
                     <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}"/>
-                    <%@include file="../../common/docContent.jsp"%>
+                    <%@include file="docContent.jsp"%>
                     <br/>
                 </c:when>
                 <c:otherwise>
