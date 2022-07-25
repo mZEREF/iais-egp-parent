@@ -6,7 +6,7 @@
 %>
 <script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
 
-<input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
+<%--<input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>--%>
 <c:if test="${requestInformationConfig == null}">
     <c:set var="isClickEdit" value="true"/>
 </c:if>
@@ -56,7 +56,7 @@
     <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
 </div>
 <c:forEach var="doc" items="${currSvcInfoDto.documentShowDtoList}" varStatus="configStat">
-    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${currSvcInfoDto.premisesVal}"/>
+    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${doc.premisesVal}"/>
     <%@include file="docContent.jsp"%>
 </c:forEach>
 

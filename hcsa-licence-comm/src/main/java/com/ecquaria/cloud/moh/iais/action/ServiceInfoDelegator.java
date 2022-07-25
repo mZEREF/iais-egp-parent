@@ -53,6 +53,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HEAD;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -1089,25 +1090,6 @@ public class ServiceInfoDelegator {
             }
             //premIndexNo+configId+seqnum
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-<<<<<<< HEAD
-            int[] psnTypeNumArr = new int[]{maxPsnTypeNum};
-            if(IaisCommonUtils.isNotEmpty(hcsaSvcDocConfigDtos)){
-            for (int i = 0; i < hcsaSvcDocConfigDtos.size(); i++) {
-                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaSvcDocConfigDtos.get(i);
-                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
-                if ("0".equals(dupForPrem)) {
-                    String docKey = i + "svcDoc" + currSvcCode;
-                    genSvcPersonDoc(hcsaSvcDocConfigDto, appSvcRelatedInfoDto, docKey, saveFileMap, appSvcDocDtos, newAppSvcDocDtoList,
-                            oldDocs, isRfi, appGrpId, appNo, "", "", mulReq, bpc.request, psnTypeNumArr);
-                } else if ("1".equals(dupForPrem)) {
-                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                        String docKey = i + "svcDoc" + currSvcCode + appGrpPremisesDto.getPremisesIndexNo();
-                        String premVal = appGrpPremisesDto.getPremisesIndexNo();
-                        String premType = appGrpPremisesDto.getPremisesType();
-                        genSvcPersonDoc(hcsaSvcDocConfigDto, appSvcRelatedInfoDto, docKey, saveFileMap, appSvcDocDtos,
-                                newAppSvcDocDtoList, oldDocs, isRfi, appGrpId, appNo, premVal, premType, mulReq, bpc.request,
-                                psnTypeNumArr);
-=======
             int size = currSvcInfoDto.getDocumentShowDtoList().size();
             for (int i = 0; i < size; i++) {
                 DocumentShowDto documentShowDto = documentShowDtoList.get(i);
@@ -1135,18 +1117,13 @@ public class ServiceInfoDelegator {
                 for (DocumentShowDto documentShowDto : documentShowDtoList) {
                     if (!documentShowDto.isExistDoc()) {
                         continue;
->>>>>>> c4f6a325a9 (HCSA P2)
                     }
                     appSvcDocDtos.addAll(documentShowDto.getAppSvcDocDtoList());
                 }
             }
-<<<<<<< HEAD
-            }
-=======
             saveSvcFileAndSetFileId(appSvcDocDtos, saveFileMap);
             currSvcInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
             currSvcInfoDto.setDocumentShowDtoList(documentShowDtoList);
->>>>>>> c4f6a325a9 (HCSA P2)
         }
         // check validation
         String crud_action_values = mulReq.getParameter("nextStep");
@@ -1468,20 +1445,24 @@ public class ServiceInfoDelegator {
         }
         String currentSvcId = ApplicationHelper.getCurrentServiceId(bpc.request);
         AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
+                RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = currentSvcRelatedDto.getAppSvcMedAlertPersonList();
         if (isGetDataFromPage) {
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = AppDataHelper.genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "", bpc.request);
+            appSvcMedAlertPersonList = AppDataHelper.genAppSvcMedAlertPerson(bpc.request);
             currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
-            reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         }
+        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
         String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("next".equals(action)) {
-            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
-                    LICPERSONSELECTMAP);
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = currentSvcRelatedDto.getAppSvcMedAlertPersonList();
+        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+                LICPERSONSELECTMAP);
+        if ("next".equals(nextStep)) {
+            reSetChangesForApp(appSubmissionDto);
             errorMap = AppValidatorHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
             //validate mandatory count
             int psnLength = 0;
@@ -1490,12 +1471,14 @@ public class ServiceInfoDelegator {
             }
             List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-            AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap,
-                    psnLength, "psnMandatory", HcsaConsts.MEDALERT_PERSON);
+            if (!isRfi) {
+                errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap,
+                        psnLength, "psnMandatory", HcsaConsts.MEDALERT_PERSON);
+            }
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_MEDALERT_PERSON, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
-            syncDropDownAndPsn(appSubmissionDto, currentSvcRelatedDto.getAppSvcMedAlertPersonList(), svcCode, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, appSvcMedAlertPersonList, svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
@@ -1880,7 +1863,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION, HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,HcsaConsts.STEP_SECTION_LEADER,HcsaConsts.STEP_PRINCIPAL_OFFICERS};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
