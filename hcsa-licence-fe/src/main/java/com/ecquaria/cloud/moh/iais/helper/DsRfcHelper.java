@@ -43,9 +43,9 @@ public final class DsRfcHelper {
         }
         patient.setEthnicGroup(StringUtil.getNonNull(patient.getEthnicGroup()));
         if (DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(patient.getEthnicGroup())) {
-            patient.setOtherEthnicGroup(StringUtil.getNonNull(patient.getOtherEthnicGroup()));
+            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
         } else {
-            patient.setOtherEthnicGroup(null);
+            patient.setEthnicGroupOther(null);
         }
         if (StringUtil.isEmpty(patient.getPatientType()) || force) {
             patient.setPatientType(patientType);

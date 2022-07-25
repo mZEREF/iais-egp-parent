@@ -113,11 +113,11 @@ public class DpPatientInfoValidator implements CustomizeValidator {
             }
         }
         if(StringUtil.isNotEmpty(patientDto.getEthnicGroup())){
-            if("ECGP004".equals(patientDto.getEthnicGroup()) && StringUtil.isEmpty(patientDto.getOtherEthnicGroup())){
-                errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
-            }else if(StringUtil.isNotEmpty(patientDto.getOtherEthnicGroup())&&patientDto.getOtherEthnicGroup().length()>20){
+            if("ECGP004".equals(patientDto.getEthnicGroup()) && StringUtil.isEmpty(patientDto.getEthnicGroupOther())){
+                errorMap.put("ethnicGroupOther", "GENERAL_ERR0006");
+            }else if(StringUtil.isNotEmpty(patientDto.getEthnicGroupOther())&&patientDto.getEthnicGroupOther().length()>20){
                 String general_err0041 = AppValidatorHelper.repLength("Other Ethnic Group", "20");
-                errorMap.put("otherEthnicGroup", general_err0041);
+                errorMap.put("ethnicGroupOther", general_err0041);
             }
         }
         if(!StringUtil.isEmpty(patientDto.getAddrType())){
