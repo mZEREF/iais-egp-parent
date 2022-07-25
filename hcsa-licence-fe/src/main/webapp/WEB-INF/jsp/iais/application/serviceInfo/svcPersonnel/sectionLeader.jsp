@@ -132,14 +132,13 @@
             showWaiting();
          let target =  $('div.sectionLaderContent:last')
             let src = target.clone();
+            clearFields(src);
             $('div.addSectionLeaderDiv').before(src);
             refreshBtn()
             refreshSectionLeaderIndex()
             $('#isEditHiddenVal').val('1');
             removeSectionLeader()
             dismissWaiting();
-
-
         });
     };
 
