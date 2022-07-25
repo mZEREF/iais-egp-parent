@@ -1099,6 +1099,7 @@ public class ServiceInfoDelegator {
             //premIndexNo+configId+seqnum
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
             int[] psnTypeNumArr = new int[]{maxPsnTypeNum};
+            if(IaisCommonUtils.isNotEmpty(hcsaSvcDocConfigDtos)){
             for (int i = 0; i < hcsaSvcDocConfigDtos.size(); i++) {
                 HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaSvcDocConfigDtos.get(i);
                 String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
@@ -1117,7 +1118,7 @@ public class ServiceInfoDelegator {
                     }
                 }
             }
-
+            }
         }
         String crud_action_values = mulReq.getParameter("nextStep");
         if ("next".equals(crud_action_values)) {
