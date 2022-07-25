@@ -44,8 +44,10 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,6 +214,7 @@ public class RetriggerGiroPaymentDelegator {
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
+        DealSessionUtil.init(appSubmissionDto, true, bpc.request);
         //set premises info
         /*if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -238,7 +241,6 @@ public class RetriggerGiroPaymentDelegator {
 //            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
             List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                ApplicationHelper.init(appSvcRelatedInfoDto);
                 String currentSvcId = appSvcRelatedInfoDto.getServiceId();
 //                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
                 hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
@@ -249,28 +251,6 @@ public class RetriggerGiroPaymentDelegator {
                     appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                     appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
                 }
-                //set doc name
-                List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-                ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
-                //set dpo select flag
-                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-                    for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                        if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                            appSvcRelatedInfoDto.setDeputyPoFlag(AppConsts.YES);
-                            break;
-                        }
-                    }
-                }
-                ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                //svc doc add align for dup for prem
-                ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
-                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                //set svc doc title
-                Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-                appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-
             }
 //            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
             //do sort

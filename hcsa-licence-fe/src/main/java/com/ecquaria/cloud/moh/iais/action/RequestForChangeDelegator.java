@@ -383,31 +383,11 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
-        // set doc info
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-
+        // init
+        DealSessionUtil.init(appSubmissionDto, false, null);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-            ApplicationHelper.init(appSvcRelatedInfoDto);
-            String svcId = appSvcRelatedInfoDto.getServiceId();
-            if(!StringUtil.isEmpty(svcId)){
-                List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
-                appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-
-                List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                //set svc doc title
-                Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-                appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-            }
-        }
         log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
 

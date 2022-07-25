@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -140,6 +141,8 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
     private FillupChklistService fillupChklistService;
+    @Autowired
+    private LicCommService licCommService;
 
     //getInsRepDto and  when app status APST019 save ReportResultDto
     @Override
@@ -435,7 +438,7 @@ public class InsRepServiceImpl implements InsRepService {
         String applicationTypeOldDesc = "";
         if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
             if (!StringUtil.isEmpty(licenceId)) {
-                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+                List<LicAppCorrelationDto> licAppCorrelationDtos = licCommService.getLicCorrBylicId(licenceId);
                 if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
                     String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
                     ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();

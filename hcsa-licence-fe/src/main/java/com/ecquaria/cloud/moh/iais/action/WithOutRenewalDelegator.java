@@ -85,6 +85,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.DeclarationsUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -579,41 +580,7 @@ public class WithOutRenewalDelegator {
             List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,
                     HcsaAppConst.PRIMARY_DOC_CONFIG);
             for(AppSubmissionDto appSubmissionDto:newAppSubmissionDtos){
-
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                if(appSvcRelatedInfoDtos != null && appSvcRelatedInfoDtos.size() > 0){
-                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-                    ApplicationHelper.init(appSvcRelatedInfoDto);
-                    String svcId = appSvcRelatedInfoDto.getServiceId();
-                    if(!StringUtil.isEmpty(svcId)){
-                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                        appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
-                        //svc doc add align for dup for prem
-                        ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
-                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //set svc doc title
-                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                        /*List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                        if(appSvcPrincipalOfficersDtoList!=null){
-                            List<AppSvcPrincipalOfficersDto> poList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
-                            List<AppSvcPrincipalOfficersDto> dpoList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
-                            for(AppSvcPrincipalOfficersDto aspoDto : appSvcPrincipalOfficersDtoList){
-                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(aspoDto.getPsnType())){
-                                    dpoList.add(aspoDto);
-                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(aspoDto.getPsnType())){
-                                    poList.add(aspoDto);
-                                }
-                            }
-                            appSvcRelatedInfoDto.setPoList(poList);
-                            appSvcRelatedInfoDto.setDpoList(dpoList);
-                        }*/
-                    }
-                }
-
+                DealSessionUtil.init(appSubmissionDto);
             }
            if(newAppSubmissionDtos.size()==1){
                AppDataHelper.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),

@@ -953,6 +953,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
                 filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, newPremisesDtos);
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
+                DealSessionUtil.init(appSubmissionDto);
                 String svcId = applicationDto.getServiceId();
                 if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
@@ -977,7 +978,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         //set dupForPsn attr
                         //ApplicationHelper.setDupForPersonAttr(request, appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
-                        ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
+                        //ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set svc doc title
                         Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,

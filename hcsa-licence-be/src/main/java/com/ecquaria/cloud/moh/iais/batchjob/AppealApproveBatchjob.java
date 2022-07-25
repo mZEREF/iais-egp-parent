@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -110,6 +111,8 @@ public class AppealApproveBatchjob {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
+    @Autowired
+    private LicCommService licCommService;
 
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
@@ -655,7 +658,7 @@ public class AppealApproveBatchjob {
             }
             try {
                 //get old recommendation
-                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
+                List<LicAppCorrelationDto> licAppCorrelationDtos = licCommService.getLicCorrBylicId(licenceDto.getId());
                 if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
                     log.debug(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
                     for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {

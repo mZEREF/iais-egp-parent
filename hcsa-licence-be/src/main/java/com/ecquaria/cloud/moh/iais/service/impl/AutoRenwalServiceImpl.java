@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -94,6 +95,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private NotificationHelper notificationHelper;
+    @Autowired
+    private LicCommService licCommService;
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
@@ -664,7 +667,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
     private String getApplicantNameByLicId(String id) {
         String applicantName = "-";
-        List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenClient.getLicCorrBylicId(id).getEntity();
+        List<LicAppCorrelationDto> licAppCorrelationDtos = licCommService.getLicCorrBylicId(id);
         if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)){
             for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
                 if(licAppCorrelationDto != null){

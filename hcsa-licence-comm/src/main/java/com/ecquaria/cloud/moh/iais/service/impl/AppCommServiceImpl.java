@@ -111,6 +111,15 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
+    public ApplicationDto getApplicationById(String appId) {
+        log.info(StringUtil.changeForLog("AppId is " + appId));
+        if (StringUtil.isEmpty(appId)) {
+            return null;
+        }
+        return appCommClient.getApplicationById(appId).getEntity();
+    }
+
+    @Override
     public ApplicationDto getApplicationDtoByAppNo(String appNo) {
         log.info(StringUtil.changeForLog("AppNo is " + appNo));
         if (StringUtil.isEmpty(appNo)) {
@@ -676,6 +685,18 @@ public class AppCommServiceImpl implements AppCommService {
     @Override
     public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
         return appCommClient.getMaxVersionSvcComDoc(appGrpId,configDocId,seqNum).getEntity();
+    }
+
+    @Override
+    public AppSvcDocDto getMaxVersionSvcSpecDoc(String svcDocId, String appGrpId, String appNo, int seqNum) {
+        if (!StringUtil.isEmpty(appGrpId) && !StringUtil.isEmpty(svcDocId) && !StringUtil.isEmpty(appNo)) {
+            AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
+            appSvcDocDto.setAppGrpId(appGrpId);
+            appSvcDocDto.setSvcDocId(svcDocId);
+            appSvcDocDto.setSeqNum(seqNum);
+            return getMaxVersionSvcSpecDoc(appSvcDocDto, appNo);
+        }
+        return null;
     }
 
     @Override

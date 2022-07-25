@@ -139,7 +139,7 @@
         });
     }
 
-    function checkPersonContent($currContent, onlyInit, fromUser, callback) {
+    function checkPersonContent($currContent, onlyInit, fromUser) {
         var assignVal = $currContent.find('input.assignSelVal').val();
         var $content = $currContent.find('.person-detail');
         console.info("Assign Val: " + assignVal);
@@ -183,47 +183,42 @@
             var nationality = arr[0];
             var idType = arr[1];
             var idNo = arr[2];
-            var jsonData = {
+            var data = {
                 'nationality': nationality,
                 'idType': idType,
                 'idNo': idNo,
                 'indexNo': indexNo
             };
-            $.ajax({
-                'url': '${pageContext.request.contextPath}' + url,
-                'dataType': 'json',
-                'data': jsonData,
-                'type': 'GET',
-                'success': function (data) {
-                    if (data == null) {
-                        clearFields($content);
-                        return;
-                    }
-                    if (typeof callback === 'function') {
-                        callback($currContent, data);
-                    } else {
-                        var cntClass = $currContent.attr('class');
-                        var prefix = $currContent.find('.prepsn').val();
-                        fillForm($content, data, prefix, $('div.' + cntClass).index($currContent));
-
-                        $currContent.find('.speciality p').html(data.speciality);
-                        $currContent.find('.subSpeciality p').html(data.subSpeciality);
-                        $currContent.find('.qualification p').html(data.qualification);
-                        $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
-                        $currContent.find('input.isPartEdit').val(1);
-                        $currContent.find('input.indexNo').val(data.indexNo);
-                        $currContent.find('input.psnEditField').val(data.psnEditFieldStr);
-                        checkPersonDisabled($currContent);
-                        $currContent.find('.designation').trigger('change');
-                        $currContent.find('.idType').trigger('change');
-                    }
-                    dismissWaiting();
-                },
-                'error': function () {
-                    dismissWaiting();
-                }
-            });
+            var opt = {
+                url: '${pageContext.request.contextPath}' + url,
+                type: 'GET',
+                data: data
+            };
+            callCommonAjax(opt, "personSelCallback", $currContent);
         }
+    }
+
+    function personSelCallback(data, $currContent) {
+        var $content = $currContent.find('.person-detail');
+        if (data == null) {
+            clearFields($content);
+            return;
+        }
+        var cntClass = $currContent.attr('class');
+        var prefix = $currContent.find('.prepsn').val();
+        fillForm($content, data, prefix, $('div.' + cntClass).index($currContent));
+
+        $currContent.find('.speciality p').html(data.speciality);
+        $currContent.find('.subSpeciality p').html(data.subSpeciality);
+        $currContent.find('.qualification p').html(data.qualification);
+        $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
+        $currContent.find('input.isPartEdit').val(1);
+        $currContent.find('input.indexNo').val(data.indexNo);
+        $currContent.find('input.psnEditField').val(data.psnEditFieldStr);
+        checkPersonDisabled($currContent);
+        $currContent.find('.designation').trigger('change');
+        $currContent.find('.idType').trigger('change');
+        dismissWaiting();
     }
 
     function checkPersonDisabled($currContent, onlyInit) {

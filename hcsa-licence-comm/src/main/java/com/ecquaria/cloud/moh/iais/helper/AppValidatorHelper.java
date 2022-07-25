@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -291,7 +292,7 @@ public final class AppValidatorHelper {
             return IaisCommonUtils.genNewHashMap();
         }
         String serviceId = dto.getServiceId();
-        if (StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(dto.getServiceName())) {
+        /*if (StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(dto.getServiceName())) {
             HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(dto.getServiceName());
             if (serviceDto != null) {
                 serviceId = serviceDto.getId();
@@ -306,7 +307,7 @@ public final class AppValidatorHelper {
                 dto.setServiceCode(serviceDto.getSvcCode());
                 dto.setServiceName(serviceDto.getSvcName());
             }
-        }
+        }*/
         String prsFlag = ApplicationHelper.getPrsFlag();
         SystemParamConfig systemParamConfig = getSystemParamConfig();
         int uploadFileLimit = systemParamConfig.getUploadFileLimit();
@@ -451,22 +452,7 @@ public final class AppValidatorHelper {
                 }
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
-                List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
-                doSvcDocument(errorMap, appSvcDocDtoLit, uploadFileLimit, sysFileType);
-                List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-                List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
-                List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = configCommService.getAllHcsaSvcDocs(dto.getServiceId());
-                if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
-                    for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
-                        if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                            svcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                        } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                            premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
-                        }
-                    }
-                }
-                ApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, dto.getAppSvcDocDtoLit(), appGrpPremisesDtos, dto,
-                        errorMap);
+                doValidateSvcDocuments(dto.getDocumentShowDtoList(), dto.getServiceCode(), errorMap);
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             }
         }
@@ -2059,23 +2045,47 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, int uploadFileLimit,
-            String sysFileType) {
-        if (appSvcDocDtoLit != null) {
+    public static void doValidateSvcDocuments(List<DocumentShowDto> documentShowDtoList, String currSvcCode,
+            Map<String, String> errorMap) {
+        if (IaisCommonUtils.isEmpty(documentShowDtoList)) {
+            return;
+        }
+        SystemParamConfig systemParamConfig = getSystemParamConfig();
+        int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+        String sysFileType = systemParamConfig.getUploadFileType();
+        int size = documentShowDtoList.size();
+        for (int i = 0; i < size; i++) {
+            DocumentShowDto documentShowDto = documentShowDtoList.get(i);
+            String docKey = ApplicationHelper.getSvcDocKey(i, currSvcCode, documentShowDto.getPremisesVal());
+            List<AppSvcDocDto> appSvcDocDtoList = documentShowDto.getAppSvcDocDtoList();
+            validateSvcDocuments(errorMap, appSvcDocDtoList, docKey, uploadFileLimit, sysFileType);
+            if (documentShowDto.getConfigDto().getIsMandatory() && (appSvcDocDtoList == null || appSvcDocDtoList.isEmpty())) {
+                errorMap.put(docKey + "Error", "GENERAL_ERR0006");
+            }
+        }
+    }
+
+    private static void validateSvcDocuments(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, String preKey,
+            int uploadFileLimit, String sysFileType) {
+        if (appSvcDocDtoLit != null && !appSvcDocDtoLit.isEmpty()) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+                boolean isValid = true;
                 Integer docSize = appSvcDocDto.getDocSize();
                 String docName = appSvcDocDto.getDocName();
                 if (docName == null) {
                     continue;
                 }
+                String errorKey = preKey + appSvcDocDto.getSeqNum() + "Error";
                 Boolean flag = Boolean.FALSE;
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 if (docSize / 1024 > uploadFileLimit) {
-                    map.put("svcDocError", "error");
+                    isValid = false;
+                    map.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit), "sizeMax"));
                 }
 
                 if (docName.length() > 100) {
-                    map.put("svcDocError", "error");
+                    isValid = false;
+                    map.put(errorKey, "GENERAL_ERR0022");
                 }
 
                 String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
@@ -2085,10 +2095,11 @@ public final class AppValidatorHelper {
                     }
                 }
                 if (!flag) {
-                    map.put("svcDocError", "error");
+                    isValid = false;
+                    map.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
                 }
+                appSvcDocDto.setPassValidate(isValid);
             }
-
         }
     }
 

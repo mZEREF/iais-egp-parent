@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:if test="${empty printView}">
     <c:choose>
         <c:when test="${!FirstView}">

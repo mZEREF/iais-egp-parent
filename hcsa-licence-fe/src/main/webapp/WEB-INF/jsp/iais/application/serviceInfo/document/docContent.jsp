@@ -49,6 +49,7 @@
                         ReUpload
                     </button>
                 </div>
+                <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}${file.seqNum}Error"></span>
             </c:forEach>
         </span>
         <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}Error"></span>

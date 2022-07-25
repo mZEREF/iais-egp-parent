@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -84,6 +85,7 @@ public class LicenceViewDelegator {
         if(!StringUtil.isEmpty(licencId)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.viewAppSubmissionDto(licencId);
             if(appSubmissionDto != null){
+                DealSessionUtil.init(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -94,53 +96,10 @@ public class LicenceViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(appSvcRelatedInfoDto != null){
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSvcRelatedInfoDto.getServiceName());
-                    if(hcsaServiceDto != null){
-                        appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-                        appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-                        appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                        appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                        appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                        //set service step
-                        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(hcsaServiceDto.getId());
-                        appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
-                        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
-                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //svc doc add align for dup for prem
-                        ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
-                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //set svc doc title
-                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-
-                        //set po dpo
-                        appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                        ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-                        //set DisciplineAllocationMap
-                        //get lic_app svc id
-                        String licAlignAppSvcId = "";
-                        List<LicAppCorrelationDto> licAppCorrelationDtos =  appSubmissionService.getLicDtoByLicId(appSubmissionDto.getLicenceId());
-                        if(licAppCorrelationDtos != null && licAppCorrelationDtos.size() >0){
-                            LicAppCorrelationDto licAppCorrelationDto = licAppCorrelationDtos.get(0);
-                            ApplicationDto applicationDto = appSubmissionService.getAppById(licAppCorrelationDto.getApplicationId());
-                            if(applicationDto != null){
-                                licAlignAppSvcId = applicationDto.getServiceId();
-                            }
-                        }
-                        if(!StringUtil.isEmpty(licAlignAppSvcId)){
-                            appSvcRelatedInfoDto.setServiceId(licAlignAppSvcId);
-                            //692590
-                            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                        }
-                    }else{
-                        log.info(StringUtil.changeForLog("current svc name:"+appSvcRelatedInfoDto.getServiceName()+" can not found hcsaServiceDto"));
-                    }
+                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                    appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+                    ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);

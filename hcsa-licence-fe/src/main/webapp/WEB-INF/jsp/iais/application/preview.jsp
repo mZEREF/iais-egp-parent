@@ -369,7 +369,7 @@
         var maskId = $svcEle.find('input[name="maskId"]').val();
         var iframeId = $svcEle.find('input[name="iframeId"]').val();
         $svcEle.find('input[name="svcCount"]').val(1);
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohServiceRelatedInformation/PrepareView", request)%>';
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohServiceRelatedInformation/PrepareView", request)%>';
         if(url.indexOf('/PrepareView?') != -1){
             url = url + '&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId;
         }else{

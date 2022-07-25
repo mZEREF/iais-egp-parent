@@ -1,54 +1,3 @@
-<%--<style>
-    input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color:#999999 !important;
-    }
-    .disabled-placeHolder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-        color:#999999!important;
-    }
-    .disabled-placeHolder::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color:#999999!important;
-    }
-    input.disabled-placeHolder:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color:#999999!important;
-    }
-    input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
-        color:#999999!important;
-    }
-    .radio-disabled::before{
-        background-color: #999999 !important;
-        /*border: 1px solid #999999 !important;*/
-    }
-    .radio-disabled{
-        border-color: #999999 !important;
-    }
-    input.allDay {
-        -ms-transform: scale(2,2); /* IE */
-        -moz-transform: scale(2,2); /* FireFox */
-        -webkit-transform: scale(2,2); /* Safari and Chrome */
-        -o-transform: scale(2,2); /* Opera */
-    }
-
-    .input-padding {
-        padding-right:5px;
-        padding-left: 15px;
-    }
-
-    .label-padding {
-        padding-left: 0px;
-        padding-top: 14px;
-        margin-left: -3px;
-    }
-
-    .multi-sel-padding {
-        padding-bottom: 15px;
-    }
-
-    .all-day-position {
-        margin: 14px 20px 20px 5px;
-        padding: 0;
-    }
-
-</style>--%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -766,7 +715,7 @@
             clearFields($premMainContent);
             var premType = $premContent.find('.premTypeValue').val();
             var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
-            var jsonData = {
+            var data = {
                 'premIndexNo': premisesIndexNo,
                 'premSelectVal': premSelectVal,
                 'premisesType': premType
@@ -774,7 +723,7 @@
             var opt = {
                 url: '${pageContext.request.contextPath}/lic-premises',
                 type: 'GET',
-                data: jsonData
+                data: data
             };
             callCommonAjax(opt, "premSelectCallback", $premContent);
         }

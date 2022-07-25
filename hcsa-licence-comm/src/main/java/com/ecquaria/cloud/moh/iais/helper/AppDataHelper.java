@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -2585,5 +2587,88 @@ public final class AppDataHelper {
             return null;
         }
         return arrs[index];
+    }
+
+    public static List<AppSvcDocDto> genSvcPersonDoc(DocumentShowDto documentShowDto, String docKey, String appGrpId, String appNo,
+            Map<String, File> saveFileMap, HttpServletRequest request) {
+        List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+        if (fileMap != null) {
+            fileMap.forEach((k, v) -> {
+                int index = k.indexOf(docKey);
+                String seqNumStr = k.substring(index + docKey.length());
+                int seqNum = -1;
+                try {
+                    seqNum = Integer.parseInt(seqNumStr);
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
+                }
+                AppSvcDocDto appSvcDocDto = getAppSvcDoc(documentShowDto, seqNum);
+                if (v != null) {
+                    if (appSvcDocDto == null) {
+                        appSvcDocDto = new AppSvcDocDto();
+                    }
+                    String premVal = documentShowDto.getPremisesVal();
+                    String svcDocId = documentShowDto.getConfigId();
+                    String psnIndexNo = documentShowDto.getPsnIndexNo();
+                    appSvcDocDto.setSvcDocId(svcDocId);
+                    appSvcDocDto.setUpFileName(documentShowDto.getDocTitle());
+                    appSvcDocDto.setDocName(v.getName());
+                    long size = v.length() / 1024;
+                    appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                    appSvcDocDto.setMd5Code(FileUtils.getFileMd5(v));
+                    appSvcDocDto.setPremisesVal(premVal);
+                    appSvcDocDto.setPremisesType(documentShowDto.getPremisesType());
+                    appSvcDocDto.setPsnIndexNo(psnIndexNo);
+                    appSvcDocDto.setSeqNum(seqNum);
+                    appSvcDocDto.setDupForPrem(documentShowDto.getDupForPrem());
+                    appSvcDocDto.setDupForPerson(documentShowDto.getDupForPerson());
+                    appSvcDocDto.setPersonType(documentShowDto.getPsnType());
+                    setAppSvcDocDtoFileds(appSvcDocDto, appGrpId, appNo);
+                    String key = new StringBuilder()
+                            .append(StringUtil.getNonNull(premVal))
+                            .append(svcDocId)
+                            .append(StringUtil.getNonNull(psnIndexNo))
+                            .append(seqNum)
+                            .toString();
+                    saveFileMap.put(key, v);
+                }
+                //the data is retrieved from the DTO a second time
+                fileMap.put(k, null);
+                if (appSvcDocDto != null) {
+                    newAppSvcDocDtoList.add(appSvcDocDto);
+                }
+            });
+        }
+        return newAppSvcDocDtoList;
+    }
+
+    private static AppSvcDocDto getAppSvcDoc(DocumentShowDto documentShowDto, int seqNum) {
+        if (!documentShowDto.isExistDoc()) {
+            return null;
+        }
+        return documentShowDto.getAppSvcDocDtoList().stream()
+                .filter(doc -> seqNum == doc.getSeqNum())
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(null);
+    }
+
+    private static void setAppSvcDocDtoFileds(AppSvcDocDto appSvcDocDto, String appGrpId, String appNo) {
+        String svcDocId = appSvcDocDto.getSvcDocId();
+        int seqNum = appSvcDocDto.getSeqNum();
+        Integer version = 1;
+        AppSvcDocDto maxVersionSDoc = getAppCommService().getMaxVersionSvcSpecDoc(svcDocId, appGrpId, appNo, seqNum);
+        if (maxVersionSDoc != null && maxVersionSDoc.getVersion() != null) {
+            version = maxVersionSDoc.getVersion();
+        }
+        if (appSvcDocDto.getSubmitDt() == null) {
+            appSvcDocDto.setSubmitDt(new Date());
+        }
+        if (StringUtil.isEmpty(appSvcDocDto.getSubmitBy())) {
+            appSvcDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
+        }
+        appSvcDocDto.setVersion(version);
     }
 }

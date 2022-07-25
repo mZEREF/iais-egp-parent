@@ -167,14 +167,6 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrByappId(String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -27,7 +27,9 @@ public interface ConfigCommService {
 
     HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
 
-    List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids);
+    HcsaServiceDto getHcsaServiceDtoById(String id);
+
+    List<HcsaServiceDto> getHcsaServiceDtosByIds(List<String> ids);
 
     List<HcsaServiceDto> getActiveHcsaSvcByNames(List<String> names);
 
