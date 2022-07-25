@@ -1811,7 +1811,7 @@ public class ServiceInfoDelegator {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
                         boolean toNext = currentNumber < i;
-                        while (StringUtil.isIn(hcsaServiceStepSchemeDtos.get(++i).getStepCode(), skipList)) {
+                        while (StringUtil.isIn(hcsaServiceStepSchemeDtos.get(i++).getStepCode(), skipList)) {
                             if (toNext) {
                                 number++;
                             } else {
