@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
@@ -292,4 +293,10 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
+
+    @GetMapping(value = "/lic-common/ds-center-org-id-hci-code-center-type", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DsCenterDto> getDsCenterDto(@RequestParam("orgId") String orgId, @RequestParam("hciCode") String hciCode, @RequestParam("centerType") String centerType);
+
+    @PostMapping(value = "/lic-common/ds-centers",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> saveDsCenters(@RequestBody List<DsCenterDto> dsCenterDtos);
 }

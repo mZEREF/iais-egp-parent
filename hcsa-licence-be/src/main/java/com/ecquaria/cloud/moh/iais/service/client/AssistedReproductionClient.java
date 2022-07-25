@@ -30,6 +30,8 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -152,4 +154,10 @@ public interface AssistedReproductionClient {
 
     @GetMapping(value = "/doc-common/rfc-doctor-information/doctorInformationId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DoctorInformationDto> getRfcDoctorInformationDtoByConds(@RequestParam("doctorInformationId") String doctorInformationId);
+
+    @PostMapping(value = "/doc-common/doctor-information", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DoctorInformationDto>> saveDoctorInformationDtos(@RequestBody List<DoctorInformationDto> doctorInformationDtos);
+
+    @DeleteMapping(value = "/doc-common/doctor-information/prn-doctor-source", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> deleteDoctorByConds(@RequestBody List<String> prns, @RequestParam("doctorSource") String doctorSource);
 }

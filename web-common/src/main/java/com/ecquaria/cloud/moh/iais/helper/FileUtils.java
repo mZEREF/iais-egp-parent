@@ -126,6 +126,9 @@ public final class FileUtils {
     public static <T> List<T> transformCsvToJavaBean(final File file, final Class<T> clz, boolean defaultValueNull) {
         return SimpleCsvReader.readToBean(file, clz, defaultValueNull);
     }
+    public static <T> List<T> transformCsvToJavaBean(final File file, final Class<T> clz, boolean defaultValueNull, char delimiter) {
+        return SimpleCsvReader.readToBean(file, clz, defaultValueNull, delimiter);
+    }
 
     public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
         List<?> objects = ExcelReader.readerToBean(file, clz);
@@ -167,6 +170,25 @@ public final class FileUtils {
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);
                 }
+            }
+        }
+    }
+
+    public static void copyFileToOtherPosition(String src, String dst) throws IOException {
+        File file = MiscUtil.generateFile(src);
+        if (!file.exists()){
+            log.info("don't have file");
+            return;
+        }
+
+        if (file.exists()) {
+            log.info("Start to copy ===>");
+            String srcName = file.getName();
+            String path = dst + srcName;
+            File dstFile = MiscUtil.generateFile(path);
+            MiscUtil.deleteFile(dstFile);
+            if (dstFile.createNewFile()) {
+                org.apache.commons.io.FileUtils.copyFile(file, dstFile);
             }
         }
     }
