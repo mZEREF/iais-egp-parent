@@ -1154,7 +1154,7 @@ public class HcsaApplicationDelegator {
             inspectionService.rollBackInspectionRecord(applicationViewDto.getAppPremisesCorrelationId(), applicationViewDto.getApplicationDto());
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, stageId, wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
+            applicationService.rollBackInsp(bpc, stageId,RoleConsts.USER_ROLE_INSPECTIOR,  wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);

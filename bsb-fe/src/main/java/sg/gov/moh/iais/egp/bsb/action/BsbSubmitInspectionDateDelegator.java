@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DEFINE_PREF_DATE_RANGE;
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_MAIN_FUNCTION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 
@@ -48,7 +48,7 @@ public class BsbSubmitInspectionDateDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(PARAM_INSPECTION_DATE_DTO);
         // set audit trail info (We can set appNo here, may be added in future)
-        AuditTrailHelper.auditFunction(MODULE_MAIN_FUNCTION, FUNCTION_DEFINE_PREF_DATE_RANGE);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_DEFINE_PREF_DATE_RANGE);
     }
 
     public void prepareData(BaseProcessClass bpc) {

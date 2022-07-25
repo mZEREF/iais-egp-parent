@@ -1466,7 +1466,7 @@ public class ServiceInfoDelegator {
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        if (isGetDataFromPage && !isRfi) {
+        if (isGetDataFromPage) {
             //get data from page
             List<AppSvcVehicleDto> appSvcVehicleDtos = AppDataHelper.genAppSvcVehicleDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);

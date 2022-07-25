@@ -1168,7 +1168,7 @@ def runAutomatedTests(){
                     """
                 }
         }
-/*
+
         try{
             withCredentials(KATALON_OFFLINE_LICENSE_CREDENTIALS) {
                 // invoke katalon
@@ -1273,7 +1273,6 @@ def runAutomatedTests(){
                 println("Unable to archive katalon-reports.zip -- checkouts-at/Reports doesn't exist.")
             }
 		}
-        */
     }
 }
 

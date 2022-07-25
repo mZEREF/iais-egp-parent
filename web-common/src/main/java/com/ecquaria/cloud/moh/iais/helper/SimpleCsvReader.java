@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.File;
@@ -36,10 +37,9 @@ public class SimpleCsvReader {
             throw new IaisRuntimeException("excel bean class error");
         }
         List<T> result = new ArrayList<>();
-        try {
-            Iterable<CSVRecord> csvRecord = CSVFormat.DEFAULT.withDelimiter(delimiter)
-                    .withFirstRecordAsHeader()
-                    .parse(new FileReader(file));
+        try (CSVParser csvRecord = CSVFormat.DEFAULT.withDelimiter(delimiter)
+                .withFirstRecordAsHeader()
+                .parse(new FileReader(file))){
             Map<Integer, Method> methods = setMethods(clz);
             int min = methods.keySet().stream().min(Integer::compareTo).orElse(0);
             for (CSVRecord record : csvRecord) {

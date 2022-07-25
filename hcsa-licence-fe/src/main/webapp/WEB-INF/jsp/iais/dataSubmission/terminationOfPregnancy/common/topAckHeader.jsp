@@ -5,16 +5,19 @@
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/vss_common.js"></script>
-<c:set value="${vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(vssSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
+<%--<c:set var="smallTitle" value="You are submitting for <strong>Termination Of Pregnancy</strong>" />--%>
+
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/top_common.js"></script>
+<c:set value="${topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
        var="isRfc"/>
 <input type="hidden" name="isRfc" value="${isRfc}"/>
-<input type="hidden" name="vss_page" value="${currentPageStage}"/>
+<input type="hidden" name="top_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">
+
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;overflow:visible">
-        <div class="container" >
+        <div class="container" style="padding: 0 90px;">
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
             </div>
@@ -26,7 +29,7 @@
 </c:if>
 <c:if test="${not empty title}">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-        <div class="container" >
+        <div class="container" style="padding: 0 90px;">
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
             </div>
