@@ -48,21 +48,21 @@ p, span {
 
 .min-row .form-group {
     margin-bottom: 0 !important;
-    line-height: 1.42857143;
+    line-height: 36px;
 }
 
 .min-row .form-group strong, .min-row .form-group h3 {
     margin-bottom: 1%;
-    line-height: 36px;
+    line-height: 40px;
 }
 
 .min-row .form-group label {
-    line-height: 1.42857143 !important;
+    line-height: 36px !important;
     font-weight: normal;
 }
 
 .min-row .form-group p {
-    line-height: 1.42857143;
+    line-height: 36px;
     margin: 0;
 }
 
