@@ -3,6 +3,7 @@
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
 <input type="hidden" id="configFileSize" value="${configFileSize}"/>
 <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
+<link href="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT%>css/rightpanelstyle.css" rel="stylesheet"  >
 
 <iais:section title="" id="process_email">
     <div class="form-group">
@@ -46,12 +47,25 @@
         </div>
     </div>
 </iais:section>
+
+<div class="cd-panel cd-panel--from-right js-cd-panel-main">
+    <div class="cd-panel__header">
+        <h3>Preview</h3>
+        <a  class="cd-panel__close js-cd-close">Close</a>
+    </div>
+    <div class="cd-panel__container">
+        <div class="cd-panel__content quickBodyDiv">
+
+        </div> <!-- cd-panel__content -->
+    </div> <!-- cd-panel__container -->
+</div>
 <p class="text-right text-center-mobile">
 
     <iais:action >
         <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-
-        <button type="button" style="float:right" class="btn btn-secondary" onclick="javascript:doOpenEmailView();">Preview</button>
+        <button type="button" onclick="javascript:doOpenEmailView();"   data-panel="main" class=" btn btn-secondary cd-btn js-cd-panel-trigger">
+            Preview
+        </button>
         <button class="btn btn-primary next" style="float:right" type="button" onclick="javascript:doSaveDraftEmail();">Save Draft</button>
 
     </iais:action>
@@ -84,7 +98,29 @@
     }
 
     function doOpenEmailView() {
-        window.open ("/hcsa-licence-web/eservice/INTRANET/EmailView");
+        var subject = $('#subject').val();
+        var mailContent = $('#htmlEditroArea').val();
+
+        var data = {
+            'subject':subject,
+            'mailContent':mailContent
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/email-view',
+            'dataType':'json',
+            'data':data,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                $('.quickBodyDiv').html(data);
+
+
+            },
+            'error':function () {
+            }
+        });
     }
 
     $('#selectFile').change(function (event) {
