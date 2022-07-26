@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<c:set var="personList" value="${currSvcInfoDto.appSvcMedAlertPersonList}"/>
+
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
@@ -47,12 +49,12 @@
 
     <c:set var="editControl" value="${(!empty AppSvcMedAlertPsn && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
 
+
     <c:if test="${pageLength >0 && editControl}">
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
             <c:set var="index" value="${status.index}"/>
-            <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[index]}"/>
-
-            <%@include file="medAlertDetail.jsp" %>
+            <c:set var="person" value="${personList[index]}"/>
+            <%@include file="personnelDetail.jsp" %>
         </c:forEach>
     </c:if>
 
@@ -72,6 +74,7 @@
                 </c:choose>
             </c:otherwise>
         </c:choose>
+
         <c:set var="needAddPsn" value="true"/>
         <c:choose>
             <c:when test="${mapHcsaSvcPersonnel.status =='CMSTAT003'}">
@@ -84,14 +87,30 @@
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
         </c:choose>
-        <div class="col-md-12 col-xs-12 <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv">
-            <span id="addMapBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another MedAlert Person</span>
+
+        <div class="col-md-12 col-xs-12 addMedAlertPersonDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+            <span class="addMedAlertPersonBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">+ Add Another MedAlert Person</span>
+            </span>
         </div>
     </c:if>
 </div>
 
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script>
-    var init;
+    $(function() {
+        $('.addMedAlertPersonBtn').on('click', function () {
+            addPersonnel('div.person-content');
+        });
+    });
+
+    function refreshPersonOthers($target, k) {
+        var maxCount = eval('${currStepConfig.maximumCount}');
+        toggleTag('.addMedAlertPersonDiv', $('div.person-content').length < maxCount);
+    }
+</script>
+<%--
+var init;
     $(function () {
         //init start
         init = 0;
@@ -130,8 +149,10 @@
                 <c:if test="${!empty AppSvcMedAlertPsn[stat.index].psnEditFieldStr}">
                     psnDto = ${AppSvcMedAlertPsn[stat.index].psnEditFieldStr};
                 </c:if>
-            var a="${AppSvcMedAlertPsn[stat.index]}";
-            console.log(a);
+                var b="${personList[stat.index]}";
+                var a="${isMap}"
+                console.log(b);
+                console.log(a);
             </c:forEach>
         }
         //init end
@@ -402,4 +423,4 @@
         $mapContentEle.find('input[name="licPerson"]').val('1');
         $mapContentEle.find('input[name="existingPsn"]').val('1');
     }
-</script>
+--%>

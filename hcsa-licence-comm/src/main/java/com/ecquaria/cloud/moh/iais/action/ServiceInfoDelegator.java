@@ -53,7 +53,6 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.HEAD;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -71,17 +70,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_PSN_OPTS;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.SECTION_LEADER_LIST;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.*;
 
 /**
  * @Auther chenlei on 5/5/2022.
@@ -1413,7 +1402,7 @@ public class ServiceInfoDelegator {
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         List<SelectOption> assignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, "MedAlertAssignSelect", assignSelectList);
+        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, assignSelectList);
         ParamUtil.setRequestAttr(bpc.request, "AppSvcMedAlertPsn", medAlertPsnDtos);
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson end ...."));
     }
@@ -1850,7 +1839,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_PRINCIPAL_OFFICERS};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
