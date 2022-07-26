@@ -27,24 +27,73 @@
         </iais:row>
     </div>
     <div class="form-group">
-        <iais:field value="Attachments" required="false"/>
-        <div class="document-upload-gp col-xs-8 col-md-8">
-            <div class="document-upload-list">
-                <div class="file-upload-gp">
-                    <input id="selectFile" name="selectFile" type="file" class="iptFile" style="display: none;">
-                    <div id="uploadFileBox" class="file-upload-gp">
-                        <c:forEach var="attachmentDto" items="${appPremisesUpdateEmailDto.attachmentDtos}"
-                                   varStatus="status">
-                            <p class="fileList">${attachmentDto.fileName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button></p>
-                        </c:forEach>
-                    </div>
-                    <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                    <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
-                    <ul class="upload-enclosure-ul">
-                    </ul>
-                </div>
-            </div>
+        <div class="text ">
+            <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
+            </p>
         </div>
+        <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+                <th scope="col" width="30%">Document</th>
+                <th scope="col" width="20%">File</th>
+                <th scope="col" width="10%">Size</th>
+                <th scope="col" width="20%">Submitted By</th>
+                <th scope="col" width="10%">Date Submitted</th>
+                <th scope="col" width="10%">Action</th>
+            </tr>
+            </thead>
+            <tbody id="tbodyFileListId">
+            <c:choose>
+                <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                    <tr>
+                        <td colspan="6" align="left">
+                            <iais:message key="GENERAL_ACK018"
+                                          escape="true"/>
+                        </td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
+                               varStatus="status">
+                        <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT}">
+                            <tr>
+                                <td >
+                                    <p>
+                                        Officer Document Upload
+                                    </p>
+                                </td>
+                                <td >
+                                    <p>
+                                        <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
+                                           title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
+                                        <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')">
+                                            <c:out value="${interalFile.docName}.${interalFile.docType}"/>
+                                        </a>
+                                    </p>
+                                </td>
+                                <td >
+                                    <p><c:out value="${interalFile.docSize}"/></p>
+                                </td>
+                                <td >
+                                    <p><c:out value="${interalFile.submitByName}"/></p>
+                                </td>
+                                <td >
+                                    <p>${interalFile.submitDtString}</p>
+                                </td>
+                                <td >
+                                    <button type="button" class="btn btn-secondary-del btn-sm"
+                                            onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
+                                                                                            value="${interalFile.id}"/>');">
+                                        Delete</button>
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+
+            </tbody>
+        </table>
     </div>
 </iais:section>
 
@@ -63,6 +112,9 @@
 
     <iais:action >
         <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+        <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+            Upload Document
+        </button>
         <button type="button" onclick="javascript:doOpenEmailView();"   data-panel="main" class=" btn btn-secondary cd-btn js-cd-panel-trigger">
             Preview
         </button>

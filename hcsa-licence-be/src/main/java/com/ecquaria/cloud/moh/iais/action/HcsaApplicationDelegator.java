@@ -1197,12 +1197,31 @@ public class HcsaApplicationDelegator {
         String subject = ParamUtil.getString(request, "subject");
         String mailContent = ParamUtil.getString(request, "mailContent");
         AppPremisesUpdateEmailDto emailDto= (AppPremisesUpdateEmailDto) ParamUtil.getSessionAttr(request,"appPremisesUpdateEmailDto");
-        emailDto.setSubject(subject);
-        emailDto.setMailContent(mailContent);
-        appPremisesCorrClient.saveEmailDraft(emailDto);
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        emailDto.setSubject(subject);
+        emailDto.setMailContent(mailContent);
+        List<AppIntranetDocDto> appIntranetDocDtoList=applicationViewDto.getAppIntranetDocDtoList();
+        List<EmailAttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+
+        if(IaisCommonUtils.isNotEmpty(appIntranetDocDtoList)){
+            for (AppIntranetDocDto doc:appIntranetDocDtoList
+                 ) {
+                if(doc.getAppDocType().equals(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT)){
+                    byte[] data = fileRepoClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();;
+                    EmailAttachmentDto attachmentDto = new EmailAttachmentDto();
+                    attachmentDto.setContent(data);
+                    attachmentDto.setFileName(doc.getDocName());
+                    attachmentDtos.add(attachmentDto);
+                }
+            }
+        }
+        if(IaisCommonUtils.isNotEmpty(attachmentDtos)){
+            emailDto.setAttachmentDtos(attachmentDtos);
+        }
+        appPremisesCorrClient.saveEmailDraft(emailDto);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+
         String applicationNo=applicationDto.getApplicationNo();
         inspEmailService.completedTask(taskDto);
 
