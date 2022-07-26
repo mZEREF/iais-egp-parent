@@ -6,6 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
@@ -44,9 +48,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Wenkang
@@ -364,26 +371,29 @@ public class DealSessionUtil {
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
-
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentShowDtoList(currSvcInfoDto, appGrpPremisesDtos);
+        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentList(currSvcInfoDto, appGrpPremisesDtos);
         if (documentShowDtos != null && request != null) {
-            int size = currSvcInfoDto.getDocumentShowDtoList().size();
-            String currSvcCode = currSvcInfoDto.getServiceCode();
             HttpSession session = request.getSession();
-            for (int i = 0; i < size; i++) {
-                DocumentShowDto documentShowDto = currSvcInfoDto.getDocumentShowDtoList().get(i);
-                String docKey = ApplicationHelper.getSvcDocKey(i, currSvcCode, documentShowDto.getPremisesVal());
-                if (documentShowDto.isExistDoc()) {
-                    Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
-                    fileMap.put(docKey, null);
-                    session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
-                } else {
-                    session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+            for (DocumentShowDto documentShowDto : documentShowDtos) {
+                for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                    String svcCode = docSectionDto.getSvcCode();
+                    String premisesVal = documentShowDto.getPremisesVal();
+                    List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
+                    int secSize = docSecDetailList.size();
+                    for (int j = 0; j < secSize; j++) {
+                        String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
+                        DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
+                        if (docSecDetailDto.isExistDoc()) {
+                            Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
+                            fileMap.put(docKey, null);
+                            session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
+                        } else {
+                            session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+                        }
+                    }
                 }
             }
         }
-
-
         return currSvcInfoDto;
     }
 

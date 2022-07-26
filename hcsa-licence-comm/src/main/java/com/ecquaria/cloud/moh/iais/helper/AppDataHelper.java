@@ -4,7 +4,8 @@ import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
@@ -44,9 +45,9 @@ import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -234,7 +235,7 @@ public final class AppDataHelper {
                 premisesSel = ParamUtil.getString(request, "remoteSel" + i);
             }
             String premIndexNo = getVal(premisesIndexNos, i);
-                    //ParamUtil.getString(request, "premisesIndexNo" + i);
+            //ParamUtil.getString(request, "premisesIndexNo" + i);
             if (StringUtil.isEmpty(premIndexNo)) {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
@@ -303,11 +304,7 @@ public final class AppDataHelper {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
             }
-            if (AppConsts.YES.equals(getVal(retrieveflag, i))) {
-                appGrpPremisesDto.setClickRetrieve(true);
-            } else {
-                appGrpPremisesDto.setClickRetrieve(false);
-            }
+            appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
 
             ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
             String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
@@ -319,7 +316,7 @@ public final class AppDataHelper {
             appGrpPremisesDto.setUnitNo(unitNo);
 
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-            for(int k = 1; k < opLength; k++) {
+            for (int k = 1; k < opLength; k++) {
                 floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
                 unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
                 if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
@@ -335,7 +332,7 @@ public final class AppDataHelper {
             }
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
             List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
-            for(int k = 0; k < nonHcsaLength; k++) {
+            for (int k = 0; k < nonHcsaLength; k++) {
                 String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
                 String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
                 if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
@@ -753,9 +750,8 @@ public final class AppDataHelper {
         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
         HashMap<String, File> map = IaisCommonUtils.genNewHashMap();
         Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-        for (int i = 0, len = appDeclarationDocDtos.size(); i < len; i++) {
-            AppDeclarationDocDto viewDoc = appDeclarationDocDtos.get(i);
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElseGet(() -> 0));
+        for (AppDeclarationDocDto viewDoc : appDeclarationDocDtos) {
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
             PageShowFileDto pageShowFileDto = new PageShowFileDto();
             pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
             pageShowFileDto.setIndex(index);
@@ -763,7 +759,7 @@ public final class AppDataHelper {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(() -> 1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
@@ -924,7 +920,7 @@ public final class AppDataHelper {
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(() -> 1));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
                     oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -1346,7 +1342,6 @@ public final class AppDataHelper {
         appSvcChargesPageDto.setOtherChargesDtos(otherChargesDtos);
         return appSvcChargesPageDto;
     }
-
 
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDtos(HttpServletRequest request) {
@@ -1839,7 +1834,7 @@ public final class AppDataHelper {
             boolean nonChanged = false;
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 pageData = true;
-            } else if (AppConsts.YES.equals(isPartEdit)) {
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
                 pageData = true;
             } else if (!StringUtil.isEmpty(indexNo)) {
                 nonChanged = true;
@@ -1859,6 +1854,9 @@ public final class AppDataHelper {
                 }
                 boolean needLoadName = isNeedLoadName(appType, licPsn);
                 person = genKeyPersonnel(person, appPsnEditDto, prefix, String.valueOf(i), needLoadName, request);
+            } else {
+                log.info(StringUtil.changeForLog("Invalid data!!!"));
+                continue;
             }
             if (StringUtil.isEmpty(indexNo)) {
                 person.setIndexNo(UUID.randomUUID().toString());
@@ -1890,7 +1888,7 @@ public final class AppDataHelper {
 
         if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
             if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
-                String otherDesignation = ParamUtil.getString(request, "otherDesignation"+ suffix);
+                String otherDesignation = ParamUtil.getString(request, "otherDesignation" + suffix);
                 person.setOtherDesignation(otherDesignation);
             } else {
                 person.setOtherDesignation(null);
@@ -2005,7 +2003,7 @@ public final class AppDataHelper {
                 try {
                     value = Formatter.parseDate(data);
                 } catch (ParseException e) {
-                    value = null;
+                    log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
             ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
@@ -2158,7 +2156,7 @@ public final class AppDataHelper {
         return appSvcPersonnelDtos;
     }
 
-    private static AppSvcPersonnelDto getAppSvcPersonnelDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+    private static AppSvcPersonnelDto getAppSvcPersonnelDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtoList)) {
@@ -2251,7 +2249,7 @@ public final class AppDataHelper {
                     appSvcKeyAppointmentHolderDto.setAssignSelect(ApplicationHelper.getAssignSelect(nationality, idType, idNo,
                             "-1"));
                 }*//*
-               *//* AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
+         *//* AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
                     appPsnEditDto = ApplicationHelper.setNeedEditField(appSvcKeyAppointmentHolderDto);
                     appSvcKeyAppointmentHolderDto.setPsnEditDto(appPsnEditDto);
@@ -2294,7 +2292,8 @@ public final class AppDataHelper {
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
         String appType = appSubmissionDto.getAppType();
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
+                appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
         boolean needEdit = rfcOrRenew || isRfi;
         String[] existingPsn = ParamUtil.getStrings(request, "existingPsn");
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
@@ -2306,14 +2305,14 @@ public final class AppDataHelper {
         String[] nationality = ParamUtil.getStrings(request, "nationality");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
-        String[] mapIndexNos = ParamUtil.getStrings(request,"mapIndexNo");
-        String[] loadingTypes = ParamUtil.getStrings(request,"loadingType");
+        String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
+        String[] mapIndexNos = ParamUtil.getStrings(request, "mapIndexNo");
+        String[] loadingTypes = ParamUtil.getStrings(request, "loadingType");
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         int length = 0;
-        if(assignSelect != null){
+        if (assignSelect != null) {
             length = assignSelect.length;
         }
         //new and not rfi
@@ -2326,13 +2325,13 @@ public final class AppDataHelper {
             boolean getPageData = false;
             String loadingType = loadingTypes[i];
             boolean loadingByBlur = HcsaAppConst.NEW_PSN.equals(assign) && AppConsts.YES.equals(licPsn)
-                            && ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(loadingType);
+                    && ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(loadingType);
             //String existPsn = existingPsn[i];
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 if (assign != null) {
                     if (isExistingPsn(assign, licPsn)) {
                         chooseExisting = true;
-                    }else if(loadingByBlur){
+                    } else if (loadingByBlur) {
                         chooseExisting = true;
                     } else {
                         getPageData = true;
@@ -2344,13 +2343,14 @@ public final class AppDataHelper {
                     if (!StringUtil.isEmpty(mapIndexNo)) {
                         //not click edit
                         if (AppConsts.NO.equals(isPartEdit[i])) {
-                            appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, mapIndexNo, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                            appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, mapIndexNo,
+                                    ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                             medAlertPersons.add(appSvcPrincipalOfficersDto);
                             //change arr
                             mapIndexNos = removeArrIndex(mapIndexNos, i);
                             isPartEdit = removeArrIndex(isPartEdit, i);
                             licPerson = removeArrIndex(licPerson, i);
-                            loadingTypes = removeArrIndex(loadingTypes,i);
+                            loadingTypes = removeArrIndex(loadingTypes, i);
                             //dropdown cannot disabled
                             assignSelect = removeArrIndex(assignSelect, i);
                             salutation = removeArrIndex(salutation, i);
@@ -2365,22 +2365,22 @@ public final class AppDataHelper {
                         }
                     }
                     //isPartEdit->1.click edit button 2.add more psn
-                    if(isExistingPsn(assign,licPsn)){
+                    if (isExistingPsn(assign, licPsn)) {
                         //add cgo and choose existing
                         chooseExisting = true;
-                    }else if(loadingByBlur){
+                    } else if (loadingByBlur) {
                         chooseExisting = true;
-                    }else{
+                    } else {
                         getPageData = true;
                     }
                 }
             } else {
                 log.info(StringUtil.changeForLog("The current type is not supported"));
             }
-            log.info(StringUtil.changeForLog("chooseExisting:"+chooseExisting));
-            log.info(StringUtil.changeForLog("getPageData:"+getPageData));
+            log.info(StringUtil.changeForLog("chooseExisting:" + chooseExisting));
+            log.info(StringUtil.changeForLog("getPageData:" + getPageData));
             String assignSel = assignSelect[i];
-            if(chooseExisting){
+            if (chooseExisting) {
                 if (loadingByBlur) {
                     assignSel = ApplicationHelper.getPersonKey(nationality[i], idType[i], idNo[i]);
                 }
@@ -2415,10 +2415,10 @@ public final class AppDataHelper {
                     emailAddress = setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
                 }
                 String mapIndexNo = mapIndexNos[i];
-                if(!StringUtil.isEmpty(mapIndexNo)){
+                if (!StringUtil.isEmpty(mapIndexNo)) {
                     appSvcPrincipalOfficersDto.setIndexNo(mapIndexNo);
                 }
-                if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getIndexNo())){
+                if (StringUtil.isEmpty(appSvcPrincipalOfficersDto.getIndexNo())) {
                     appSvcPrincipalOfficersDto.setIndexNo(UUID.randomUUID().toString());
                 }
                 appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
@@ -2429,8 +2429,8 @@ public final class AppDataHelper {
                 medAlertPersons.add(appSvcPrincipalOfficersDto);
                 //change arr index
                 licPerson = removeArrIndex(licPerson, i);
-                existingPsn = removeArrIndex(existingPsn,i);
-                loadingTypes = removeArrIndex(loadingTypes,i);
+                existingPsn = removeArrIndex(existingPsn, i);
+                loadingTypes = removeArrIndex(loadingTypes, i);
                 //dropdown cannot disabled
                 assignSelect = removeArrIndex(assignSelect, i);
                 salutation = removeArrIndex(salutation, i);
@@ -2438,7 +2438,7 @@ public final class AppDataHelper {
                 nationality = removeArrIndex(nationality, i);
                 --i;
                 --length;
-            }else if(getPageData){
+            } else if (getPageData) {
                 String mapIndexNo = mapIndexNos[i];
                 if (StringUtil.isEmpty(mapIndexNo)) {
                     appSvcPrincipalOfficersDto.setIndexNo(UUID.randomUUID().toString());
@@ -2454,8 +2454,8 @@ public final class AppDataHelper {
                 appSvcPrincipalOfficersDto.setNationality(nationality[i]);
                 appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                 String emailAddr = "";
-                if(emailAddress != null){
-                    if(!StringUtil.isEmpty(emailAddress[i])){
+                if (emailAddress != null) {
+                    if (!StringUtil.isEmpty(emailAddress[i])) {
                         emailAddr = StringUtil.viewHtml(emailAddress[i]);
                     }
                 }
@@ -2465,7 +2465,7 @@ public final class AppDataHelper {
                     String personKey = ApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getNationality(),
                             appSvcPrincipalOfficersDto.getIdType(), appSvcPrincipalOfficersDto.getIdNo());
                     AppSvcPrincipalOfficersDto licsPerson = ApplicationHelper.getPsnInfoFromLic(request, personKey);
-                    if(licsPerson != null){
+                    if (licsPerson != null) {
                         appSvcPrincipalOfficersDto.setCurPersonelId(licsPerson.getCurPersonelId());
                     }
                 }
@@ -2478,41 +2478,41 @@ public final class AppDataHelper {
 
     public static List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request,
             List<AppGrpPremisesDto> appGrpPremisesDtos,
-            String appType){
+            String appType) {
         List<AppSvcBusinessDto> appSvcBusinessDtos = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             int i = 0;
-            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 AppSvcBusinessDto appSvcBusinessDto = null;
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
-                String isPartEdit = ParamUtil.getString(request,"isPartEdit" + i);
-                String businessIndexNo = ParamUtil.getString(request,"businessIndexNo" + i);
-                if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
+                String businessIndexNo = ParamUtil.getString(request, "businessIndexNo" + i);
+                if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     getPageData = true;
-                }else if(AppConsts.YES.equals(isPartEdit)){
+                } else if (AppConsts.YES.equals(isPartEdit)) {
                     getPageData = true;
-                }else if(!StringUtil.isEmpty(businessIndexNo)){
+                } else if (!StringUtil.isEmpty(businessIndexNo)) {
                     getDataByIndexNo = true;
                 }
-                log.debug("get data by index no. is {}",getDataByIndexNo);
-                log.debug("get page data is {}",getPageData);
-                if(getDataByIndexNo){
+                log.debug("get data by index no. is {}", getDataByIndexNo);
+                log.debug("get page data is {}", getPageData);
+                if (getDataByIndexNo) {
                     appSvcBusinessDto = getAppSvcBusinessDtoByIndexNo(appSvcRelatedInfoDto, businessIndexNo);
-                }else if(getPageData){
-                    String businessName = ParamUtil.getString(request,"businessName" + i);
+                } else if (getPageData) {
+                    String businessName = ParamUtil.getString(request, "businessName" + i);
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     appSvcBusinessDto.setBusinessName(businessName);
-                    if(StringUtil.isEmpty(businessIndexNo)){
+                    if (StringUtil.isEmpty(businessIndexNo)) {
                         appSvcBusinessDto.setBusinessIndexNo(UUID.randomUUID().toString());
-                    }else{
+                    } else {
                         appSvcBusinessDto.setBusinessIndexNo(businessIndexNo);
                     }
                 }
-                if(appSvcBusinessDto != null){
+                if (appSvcBusinessDto != null) {
                     appSvcBusinessDto.setPremIndexNo(appGrpPremisesDto.getPremisesIndexNo());
                     appSvcBusinessDto.setPremType(appGrpPremisesDto.getPremisesType());
                     appSvcBusinessDto.setPremAddress(appGrpPremisesDto.getAddress());
@@ -2525,13 +2525,13 @@ public final class AppDataHelper {
         return appSvcBusinessDtos;
     }
 
-    private static AppSvcBusinessDto getAppSvcBusinessDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String businessIndexNo){
+    private static AppSvcBusinessDto getAppSvcBusinessDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String businessIndexNo) {
         AppSvcBusinessDto result = null;
-        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(businessIndexNo)){
+        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(businessIndexNo)) {
             List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
-            if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
-                for(AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos){
-                    if(businessIndexNo.equals(appSvcBusinessDto.getBusinessIndexNo())){
+            if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
+                for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
+                    if (businessIndexNo.equals(appSvcBusinessDto.getBusinessIndexNo())) {
                         result = appSvcBusinessDto;
                         break;
                     }
@@ -2589,8 +2589,40 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static List<AppSvcDocDto> genSvcPersonDoc(DocumentShowDto documentShowDto, String docKey, String appGrpId, String appNo,
-            Map<String, File> saveFileMap, HttpServletRequest request) {
+    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, String appGrpId, String appNo,
+            int maxPsnTypeNum, Map<String, File> saveFileMap, HttpServletRequest request) {
+        if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
+            return;
+        }
+        for (DocumentShowDto documentShowDto : documentShowDtoList) {
+            String premisesVal = documentShowDto.getPremisesVal();
+            List<DocSectionDto> docSectionList = documentShowDto.getDocSectionList();
+            for (DocSectionDto docSectionDto : docSectionList) {
+                String svcCode = docSectionDto.getSvcCode();
+                List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
+                int secSize = docSecDetailList.size();
+                for (int j = 0; j < secSize; j++) {
+                    String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
+                    DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
+                    List<AppSvcDocDto> appSvcDocDtoList = genSvcPersonDoc(documentShowDto, docSectionDto, docSecDetailDto, docKey,
+                            appGrpId, appNo, saveFileMap, request);
+                    if (StringUtil.isNotEmpty(docSecDetailDto.getPsnType()) && !appSvcDocDtoList.isEmpty()) {
+                        Optional<Integer> max = appSvcDocDtoList.stream()
+                                .map(AppSvcDocDto::getPersonTypeNum)
+                                .filter(Objects::nonNull)
+                                .max(Comparator.naturalOrder());
+                        Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;
+                        appSvcDocDtoList.forEach(doc -> doc.setPersonTypeNum(psnTypeNum));
+                    }
+                    docSecDetailDto.setAppSvcDocDtoList(appSvcDocDtoList);
+                }
+            }
+        }
+    }
+
+    private static List<AppSvcDocDto> genSvcPersonDoc(DocumentShowDto documentShowDto, DocSectionDto docSectionDto,
+            DocSecDetailDto docSecDetailDto, String docKey, String appGrpId, String appNo, Map<String, File> saveFileMap,
+            HttpServletRequest request) {
         List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
@@ -2604,16 +2636,18 @@ public final class AppDataHelper {
                 } catch (Exception e) {
                     log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
                 }
-                AppSvcDocDto appSvcDocDto = getAppSvcDoc(documentShowDto, seqNum);
+                AppSvcDocDto appSvcDocDto = getAppSvcDoc(docSecDetailDto, seqNum);
                 if (v != null) {
                     if (appSvcDocDto == null) {
                         appSvcDocDto = new AppSvcDocDto();
                     }
                     String premVal = documentShowDto.getPremisesVal();
-                    String svcDocId = documentShowDto.getConfigId();
-                    String psnIndexNo = documentShowDto.getPsnIndexNo();
+                    String svcDocId = docSecDetailDto.getConfigId();
+                    String psnIndexNo = docSecDetailDto.getPsnIndexNo();
+                    String svcId = docSectionDto.getSvcId();
+                    appSvcDocDto.setSvcId(svcId);
                     appSvcDocDto.setSvcDocId(svcDocId);
-                    appSvcDocDto.setUpFileName(documentShowDto.getDocTitle());
+                    appSvcDocDto.setUpFileName(docSecDetailDto.getDocTitle());
                     appSvcDocDto.setDocName(v.getName());
                     long size = v.length() / 1024;
                     appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
@@ -2622,16 +2656,11 @@ public final class AppDataHelper {
                     appSvcDocDto.setPremisesType(documentShowDto.getPremisesType());
                     appSvcDocDto.setPsnIndexNo(psnIndexNo);
                     appSvcDocDto.setSeqNum(seqNum);
-                    appSvcDocDto.setDupForPrem(documentShowDto.getDupForPrem());
-                    appSvcDocDto.setDupForPerson(documentShowDto.getDupForPerson());
-                    appSvcDocDto.setPersonType(documentShowDto.getPsnType());
+                    //appSvcDocDto.setDupForPrem(documentShowDto.getDupForPrem());
+                    appSvcDocDto.setDupForPerson(docSecDetailDto.getDupForPerson());
+                    appSvcDocDto.setPersonType(docSecDetailDto.getPsnType());
                     setAppSvcDocDtoFileds(appSvcDocDto, appGrpId, appNo);
-                    String key = new StringBuilder()
-                            .append(StringUtil.getNonNull(premVal))
-                            .append(svcDocId)
-                            .append(StringUtil.getNonNull(psnIndexNo))
-                            .append(seqNum)
-                            .toString();
+                    String key = ApplicationHelper.getFileMapKey(premVal, svcId, svcDocId, psnIndexNo, seqNum);
                     saveFileMap.put(key, v);
                 }
                 //the data is retrieved from the DTO a second time
@@ -2644,13 +2673,12 @@ public final class AppDataHelper {
         return newAppSvcDocDtoList;
     }
 
-    private static AppSvcDocDto getAppSvcDoc(DocumentShowDto documentShowDto, int seqNum) {
-        if (!documentShowDto.isExistDoc()) {
+    private static AppSvcDocDto getAppSvcDoc(DocSecDetailDto docSecDetailDto, int seqNum) {
+        if (!docSecDetailDto.isExistDoc()) {
             return null;
         }
-        return documentShowDto.getAppSvcDocDtoList().stream()
+        return docSecDetailDto.getAppSvcDocDtoList().stream()
                 .filter(doc -> seqNum == doc.getSeqNum())
-                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
     }
@@ -2663,12 +2691,13 @@ public final class AppDataHelper {
         if (maxVersionSDoc != null && maxVersionSDoc.getVersion() != null) {
             version = maxVersionSDoc.getVersion();
         }
+        appSvcDocDto.setVersion(version);
         if (appSvcDocDto.getSubmitDt() == null) {
             appSvcDocDto.setSubmitDt(new Date());
         }
         if (StringUtil.isEmpty(appSvcDocDto.getSubmitBy())) {
             appSvcDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
         }
-        appSvcDocDto.setVersion(version);
     }
+
 }

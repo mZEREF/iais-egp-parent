@@ -7,6 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -70,7 +73,17 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.*;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_PSN_OPTS;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.SECTION_LEADER_LIST;
 
 /**
  * @Auther chenlei on 5/5/2022.
@@ -154,10 +167,12 @@ public class ServiceInfoDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, action);
         }
 
+        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+
         String crudActionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if (StringUtil.isEmpty(crudActionType)) {
-            crudActionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, crudActionType);
+            crudActionType = actionType;
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, crudActionType);
         log.debug(StringUtil.changeForLog("The crud_action_type  is -->;" + crudActionType));
@@ -549,84 +564,15 @@ public class ServiceInfoDelegator {
      * @throws
      */
     public void prepareDocuments(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
+        log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-            ApplicationHelper.initDocumentShowDtoList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList());
+            ApplicationHelper.initDocumentList(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList());
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
-        /*List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.genDocumentShowDtoList(svcDocConfigDtos,
-                appSubmissionDto.getAppGrpPremisesDtoList(), currSvcInfoDto);
-        currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);*/
-        /*if (hcsaSvcDocDtos != null && !hcsaSvcDocDtos.isEmpty()) {
-            List<HcsaSvcDocConfigDto> serviceDocConfigDto = IaisCommonUtils.genNewArrayList();
-            List<HcsaSvcDocConfigDto> premServiceDocConfigDto = IaisCommonUtils.genNewArrayList();
-            for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
-                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    serviceDocConfigDto.add(hcsaSvcDocConfigDto);
-                } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    premServiceDocConfigDto.add(hcsaSvcDocConfigDto);
-                }
-            }
-            ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) serviceDocConfigDto);
-            ParamUtil.setSessionAttr(bpc.request, "premServiceDocConfigDto", (Serializable) premServiceDocConfigDto);
-        }
-        ParamUtil.setSessionAttr(bpc.request, SVC_DOC_CONFIG, (Serializable) hcsaSvcDocDtos);
-
-        Map<String, AppSvcDocDto> reloadSvcDo = IaisCommonUtils.genNewHashMap();
-        if (appSvcRelatedInfoDto != null) {
-            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            if (appSvcDocDtos != null && !appSvcDocDtos.isEmpty()) {
-                for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                    *//*String premVal = appSvcDocDto.getPremisesVal();
-                    if(StringUtil.isEmpty(premVal)){
-                        reloadSvcDo.put(appSvcDocDto.getSvcDocId(), appSvcDocDto);
-                    }else{
-                        reloadSvcDo.put("prem" + appSvcDocDto.getSvcDocId() + premVal, appSvcDocDto);
-                    }*//*
-                    reloadSvcDo.put(appSvcDocDto.getPrimaryDocReloadName(), appSvcDocDto);
-                }
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, (Serializable) reloadSvcDo);
-
-        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-        Map<String, List<AppSvcDocDto>> reloadDocMap = IaisCommonUtils.genNewHashMap();
-        if (!IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-            for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                String reloadDocMapKey;
-                String premVal = appSvcDocDto.getPremisesVal();
-                if (StringUtil.isEmpty(premVal)) {
-                    reloadDocMapKey = appSvcDocDto.getSvcDocId();
-                } else {
-                    reloadDocMapKey = premVal + appSvcDocDto.getSvcDocId();
-                }
-                String psnIndexNo = appSvcDocDto.getPsnIndexNo();
-                if (!StringUtil.isEmpty(psnIndexNo)) {
-                    reloadDocMapKey = reloadDocMapKey + psnIndexNo;
-                }
-
-                List<AppSvcDocDto> appSvcDocDtos1 = reloadDocMap.get(reloadDocMapKey);
-                if (IaisCommonUtils.isEmpty(appSvcDocDtos1)) {
-                    appSvcDocDtos1 = IaisCommonUtils.genNewArrayList();
-                }
-                appSvcDocDtos1.add(appSvcDocDto);
-                reloadDocMap.put(reloadDocMapKey, appSvcDocDtos1);
-            }
-            //do sort
-            reloadDocMap.forEach((k, v) -> Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum)));
-        }
-        ParamUtil.setSessionAttr(bpc.request, "svcDocReloadMap", (Serializable) reloadDocMap);*/
-        //set dupForPsn attr
-        //ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
-
-
-       /* int sysFileSize = systemParamConfig.getUploadFileLimit();
-        ParamUtil.setRequestAttr(bpc.request, "sysFileSize", sysFileSize);*/
-        log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
+        log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
     /**
@@ -744,7 +690,7 @@ public class ServiceInfoDelegator {
             }*/
 //            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            ApplicationHelper.initDocumentShowDtoList(appSvcRelatedInfoDto, appGrpPremisesDtos);
+            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appGrpPremisesDtos);
 //            List<HcsaSvcDocConfigDto> svcDocConfig = configCommService.getAllHcsaSvcDocs(svcId);
 
             //ParamUtil.setSessionAttr(bpc.request, SVC_DOC_CONFIG, (Serializable) svcDocConfig);
@@ -1005,52 +951,31 @@ public class ServiceInfoDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doDocuments start ...."));
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(
-                HttpHandler.SOP6_MULTIPART_REQUEST);
+        HttpServletRequest request = bpc.request;
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-        String crudActionTypeTab = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        String crudActionTypeForm = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
-        String crudActionTypeFormPage = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
-        String formTab = mulReq.getParameter(IaisEGPConstant.FORM_TAB);
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_TAB, crudActionTypeTab);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, crudActionTypeForm);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE, crudActionTypeFormPage);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB, formTab);
-        if (!StringUtil.isEmpty(crudActionTypeFormPage)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, crudActionTypeFormPage);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
-        }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String action = mulReq.getParameter("nextStep");
-        ParamUtil.setRequestAttr(bpc.request, "nextStep", action);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String action = ParamUtil.getRequestString(request, "nextStep");
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
                 appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 //clear
-                ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
+                ParamUtil.setSessionAttr(request, HcsaAppConst.RELOADSVCDOC, null);
                 return;
             }
         }
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        String isEdit = ParamUtil.getString(mulReq, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        String isEdit = ParamUtil.getString(request, IS_EDIT);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         List<DocumentShowDto> documentShowDtoList = currSvcInfoDto.getDocumentShowDtoList();
         List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
         Map<String, File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
-            AppSubmissionDto oldSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            AppSubmissionDto oldSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
             String appGrpId = "";
             String appNo = "";
@@ -1075,48 +1000,22 @@ public class ServiceInfoDelegator {
                 reSetChangesForApp(appSubmissionDto);
             }
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-            int size = currSvcInfoDto.getDocumentShowDtoList().size();
-            for (int i = 0; i < size; i++) {
-                DocumentShowDto documentShowDto = documentShowDtoList.get(i);
-                String docKey = ApplicationHelper.getSvcDocKey(i, currSvcCode, documentShowDto.getPremisesVal());
-                List<AppSvcDocDto> appSvcDocDtoList = AppDataHelper.genSvcPersonDoc(documentShowDto, docKey, appGrpId, appNo,
-                        saveFileMap, bpc.request);
-                documentShowDto.setAppSvcDocDtoList(appSvcDocDtoList);
-                if (StringUtil.isNotEmpty(documentShowDto.getPsnType()) && !appSvcDocDtoList.isEmpty()) {
-                    Optional<Integer> max = appSvcDocDtoList.stream()
-                            .map(AppSvcDocDto::getPersonTypeNum)
-                            .filter(Objects::nonNull)
-                            .max(Comparator.naturalOrder());
-                    Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;
-                    appSvcDocDtoList.forEach(doc -> doc.setPersonTypeNum(psnTypeNum));
-                }
-            }
+            AppDataHelper.genSvcDocuments(documentShowDtoList, appGrpId, appNo, maxPsnTypeNum, saveFileMap, request);
         }
-        AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, currSvcCode, errorMap);
+        AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {
-            appSvcDocDtos = IaisCommonUtils.genNewArrayList();
-            if (!documentShowDtoList.isEmpty()) {
-                for (DocumentShowDto documentShowDto : documentShowDtoList) {
-                    if (!documentShowDto.isExistDoc()) {
-                        continue;
-                    }
-                    appSvcDocDtos.addAll(documentShowDto.getAppSvcDocDtoList());
-                }
-            }
+            appSvcDocDtos = ApplicationHelper.getAppSvcDocList(documentShowDtoList);
             saveSvcFileAndSetFileId(appSvcDocDtos, saveFileMap);
             currSvcInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
             currSvcInfoDto.setDocumentShowDtoList(documentShowDtoList);
         }
         // check validation
-        String crud_action_values = mulReq.getParameter("nextStep");
-        if (!"next".equals(crud_action_values) && isGetDataFromPage) {
+        //String crud_action_values = request.getParameter("nextStep");
+        if (!"next".equals(action) && isGetDataFromPage) {
             errorMap.clear();//no need to block page
         }
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
-        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_DOCUMENTS, appSubmissionDto, bpc.request);
-        if (!isValid) {
-            mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_DOCUMENTS);
-        }
+        setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
+        checkAction(errorMap, HcsaConsts.STEP_DOCUMENTS, appSubmissionDto, request);
         log.info(StringUtil.changeForLog("the do doDocuments end ...."));
     }
 
@@ -1127,12 +1026,8 @@ public class ServiceInfoDelegator {
         Map<String, File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
         for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
             if (appSvcDocDto.isPassValidate()) {
-                String fileMapKey = new StringBuilder()
-                        .append(StringUtil.getNonNull(appSvcDocDto.getPremisesVal()))
-                        .append(appSvcDocDto.getSvcDocId())
-                        .append(StringUtil.getNonNull(appSvcDocDto.getPsnIndexNo()))
-                        .append(appSvcDocDto.getSeqNum())
-                        .toString();
+                String fileMapKey = ApplicationHelper.getFileMapKey(appSvcDocDto.getPremisesVal(), appSvcDocDto.getSvcId(),
+                        appSvcDocDto.getSvcDocId(), appSvcDocDto.getPsnIndexNo(), appSvcDocDto.getSeqNum());
                 File file = saveFileMap.get(fileMapKey);
                 if (file != null) {
                     passValidateFileMap.put(fileMapKey, file);
@@ -1144,12 +1039,8 @@ public class ServiceInfoDelegator {
             List<String> fileRepoIdList = configCommService.saveFileRepo(fileList);
             int i = 0;
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                String fileMapKey = new StringBuilder()
-                        .append(StringUtil.getNonNull(appSvcDocDto.getPremisesVal()))
-                        .append(appSvcDocDto.getSvcDocId())
-                        .append(StringUtil.getNonNull(appSvcDocDto.getPsnIndexNo()))
-                        .append(appSvcDocDto.getSeqNum())
-                        .toString();
+                String fileMapKey = ApplicationHelper.getFileMapKey(appSvcDocDto.getPremisesVal(), appSvcDocDto.getSvcId(),
+                        appSvcDocDto.getSvcDocId(), appSvcDocDto.getPsnIndexNo(), appSvcDocDto.getSeqNum());
                 File file = passValidateFileMap.get(fileMapKey);
                 if (file != null) {
                     appSvcDocDto.setFileRepoId(fileRepoIdList.get(i));
@@ -1402,7 +1293,7 @@ public class ServiceInfoDelegator {
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         List<SelectOption> assignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, assignSelectList);
+        ParamUtil.setRequestAttr(bpc.request, "MedAlertAssignSelect", assignSelectList);
         ParamUtil.setRequestAttr(bpc.request, "AppSvcMedAlertPsn", medAlertPsnDtos);
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson end ...."));
     }
@@ -1839,7 +1730,11 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_PRINCIPAL_OFFICERS};
+                        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+                        HcsaConsts.STEP_PRINCIPAL_OFFICERS,
+                        HcsaConsts.STEP_SERVICE_PERSONNEL,
+                        HcsaConsts.STEP_MEDALERT_PERSON,
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

@@ -27,7 +27,7 @@
                 </c:when>
             </c:choose>
         </c:if>--%>
-        <c:out value="${doc.displayTitle}"/><c:if test="${doc.configDto.isMandatory}"><span class="mandatory"> *</span></c:if>
+        <c:out value="${doc.displayTitle}"/><c:if test="${doc.mandatory}"><span class="mandatory"> *</span></c:if>
     </h3>
     <div class="file-upload-gp">
         <input type="hidden" name="configIndex" value="${configIndex}"/>

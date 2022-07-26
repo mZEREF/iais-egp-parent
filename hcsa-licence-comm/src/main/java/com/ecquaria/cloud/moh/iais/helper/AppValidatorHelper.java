@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
@@ -34,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
@@ -452,7 +453,7 @@ public final class AppValidatorHelper {
                 }
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
-                doValidateSvcDocuments(dto.getDocumentShowDtoList(), dto.getServiceCode(), errorMap);
+                doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             }
         }
@@ -2045,22 +2046,28 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSvcDocuments(List<DocumentShowDto> documentShowDtoList, String currSvcCode,
-            Map<String, String> errorMap) {
+    public static void doValidateSvcDocuments(List<DocumentShowDto> documentShowDtoList, Map<String, String> errorMap) {
         if (IaisCommonUtils.isEmpty(documentShowDtoList)) {
             return;
         }
         SystemParamConfig systemParamConfig = getSystemParamConfig();
         int uploadFileLimit = systemParamConfig.getUploadFileLimit();
         String sysFileType = systemParamConfig.getUploadFileType();
-        int size = documentShowDtoList.size();
-        for (int i = 0; i < size; i++) {
-            DocumentShowDto documentShowDto = documentShowDtoList.get(i);
-            String docKey = ApplicationHelper.getSvcDocKey(i, currSvcCode, documentShowDto.getPremisesVal());
-            List<AppSvcDocDto> appSvcDocDtoList = documentShowDto.getAppSvcDocDtoList();
-            validateSvcDocuments(errorMap, appSvcDocDtoList, docKey, uploadFileLimit, sysFileType);
-            if (documentShowDto.getConfigDto().getIsMandatory() && (appSvcDocDtoList == null || appSvcDocDtoList.isEmpty())) {
-                errorMap.put(docKey + "Error", "GENERAL_ERR0006");
+        for (DocumentShowDto documentShowDto : documentShowDtoList) {
+            String premisesVal = documentShowDto.getPremisesVal();
+            for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                String svcCode = docSectionDto.getSvcCode();
+                List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
+                int secSize = docSecDetailList.size();
+                for (int j = 0; j < secSize; j++) {
+                    String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
+                    DocSecDetailDto docSecDetail = docSecDetailList.get(j);
+                    List<AppSvcDocDto> appSvcDocDtoList = docSecDetail.getAppSvcDocDtoList();
+                    validateSvcDocuments(errorMap, appSvcDocDtoList, docKey, uploadFileLimit, sysFileType);
+                    if (docSecDetail.isMandatory() && (appSvcDocDtoList == null || appSvcDocDtoList.isEmpty())) {
+                        errorMap.put(docKey + "Error", "GENERAL_ERR0006");
+                    }
+                }
             }
         }
     }
