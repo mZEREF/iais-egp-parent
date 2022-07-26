@@ -79,7 +79,7 @@ public interface BsbInboxClient {
     @PostMapping(value = "/fe-inbox/validate/archive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInboxMsgArchive(@RequestBody List<String> msgIds);
 
-    // todo: update
+    // todo: liran update
     @GetMapping(value = "/fe-inbox/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxFacPageInfoResultInfo> searchInboxAFC(@SpringQueryMap InboxFacSearchDto dto);
 

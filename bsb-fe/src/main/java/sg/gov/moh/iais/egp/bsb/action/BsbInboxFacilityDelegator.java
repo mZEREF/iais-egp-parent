@@ -24,8 +24,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_FAC_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
+
 
 @Delegator("bsbInboxFacDelegator")
 @Slf4j
@@ -90,21 +89,7 @@ public class BsbInboxFacilityDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InboxFacSearchDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        switch (actionValue) {
-            case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
-                searchDto.setPage(0);
-                searchDto.setSize(pageSize);
-                break;
-            case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
-                searchDto.setPage(pageNo - 1);
-                break;
-            default:
-                log.warn("page, action_value is invalid: {}", actionValue);
-                break;
-        }
+        BsbInboxService.page(request, searchDto);
         ParamUtil.setSessionAttr(request, KEY_INBOX_FAC_SEARCH_DTO, searchDto);
     }
 
