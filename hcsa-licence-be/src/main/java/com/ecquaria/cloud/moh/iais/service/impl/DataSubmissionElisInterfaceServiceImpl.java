@@ -55,7 +55,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.organization.Organizat
 @Slf4j
 @Service
 public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionElisInterfaceService {
-    @Value("${iais.syncFileTracking.shared.path}")
+    @Value("${iais.datasubmission.elis.path}")
     private String sharedPath;
 
     private static final String LICENCE_FILE = "eLIS_HALP_Licence_Data_";
@@ -90,7 +90,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processLicence() {
         log.info("start processLicence");
-        String path = sharedPath + LICENCE_FILE + DATE_STR + ".txt";
+        String path = sharedPath + "/" + LICENCE_FILE + DATE_STR + ".txt";
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
@@ -265,7 +265,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processUsers() {
         log.info("start processUsers");
-        String path = sharedPath + USER_FILE + DATE_STR + ".txt";
+        String path = sharedPath + "/" + USER_FILE + DATE_STR + ".txt";
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
         boolean flag = true;
         if (userFile.exists()) {
@@ -379,8 +379,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processDoctor() {
         log.info("start processDoctor");
-        String topPath = sharedPath + TOP_DOCTOR_FILE + DATE_STR + ".txt";
-        String dpPath = sharedPath + DP_DOCTOR_FILE + DATE_STR + ".txt";
+        String topPath = sharedPath + "/" + TOP_DOCTOR_FILE + DATE_STR + ".txt";
+        String dpPath = sharedPath + "/" + DP_DOCTOR_FILE + DATE_STR + ".txt";
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
