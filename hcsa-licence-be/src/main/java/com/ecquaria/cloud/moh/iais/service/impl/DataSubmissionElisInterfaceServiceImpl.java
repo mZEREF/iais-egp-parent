@@ -68,7 +68,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static final String DATE_STR = convertToString(new Date(), DATE_STR_FORMAT);
-    private static final String NEW_PATH = "E:/" + DATE_STR + "ELIS/";
+    private static final String NEW_PATH = DATE_STR + "ELIS/";
 
     @Autowired
     OrganizationClient organizationClient;
@@ -90,8 +90,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processLicence() {
         log.info("start processLicence");
-        String path = "E:" + sharedPath + LICENCE_FILE + DATE_STR + ".txt";
-        File licenceFile = MiscUtil.generateFile("E:" + sharedPath, LICENCE_FILE + DATE_STR + ".txt");
+        String path = sharedPath + LICENCE_FILE + DATE_STR + ".txt";
+        File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -265,8 +265,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processUsers() {
         log.info("start processUsers");
-        String path = "E:" + sharedPath + USER_FILE + DATE_STR + ".txt";
-        File userFile = MiscUtil.generateFile("E:" + sharedPath, USER_FILE + DATE_STR + ".txt");
+        String path = sharedPath + USER_FILE + DATE_STR + ".txt";
+        File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
         boolean flag = true;
         if (userFile.exists()) {
             List<DsElisUserDto> dsElisUserDtoList = FileUtils.transformCsvToJavaBean(userFile, DsElisUserDto.class, false, '|');
@@ -379,10 +379,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processDoctor() {
         log.info("start processDoctor");
-        String topPath = "E:" + sharedPath + TOP_DOCTOR_FILE + DATE_STR + ".txt";
-        String dpPath = "E:" + sharedPath + DP_DOCTOR_FILE + DATE_STR + ".txt";
-        File topDoctorFile = MiscUtil.generateFile("E:" + sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
-        File dpDoctorFile = MiscUtil.generateFile("E:" + sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
+        String topPath = sharedPath + TOP_DOCTOR_FILE + DATE_STR + ".txt";
+        String dpPath = sharedPath + DP_DOCTOR_FILE + DATE_STR + ".txt";
+        File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
+        File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
