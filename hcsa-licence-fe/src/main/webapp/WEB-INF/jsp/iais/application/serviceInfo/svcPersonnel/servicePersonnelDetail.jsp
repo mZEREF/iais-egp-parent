@@ -32,13 +32,13 @@
     <input type="hidden" name="isPartEdit" value="0"/>
 
 
-    <iais:row cssClass="control control-caption-horizontal svcPsnSel">
+    <iais:row cssClass="control  svcPsnSel">
           <div class="personnel-sel">
                 <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
 
                 <iais:value width="7" cssClass="col-sm-5 col-md-7">
                     <iais:select cssClass="personnelSel"  name="personnelSel" options="ServicePersonnelType" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_personnelSelErrorMsg${status.index}" ></span>
+<%--                    <span class="error-msg" name="iaisErrorMsg" id="error_personnelSelErrorMsg${status.index}" ></span>--%>
                 </iais:value>
             </div>
     </iais:row>
@@ -46,16 +46,16 @@
     <div class="new-svc-personnel-form">
 
 <%--        name--%>
-    <iais:row cssClass="personnel-name hidden control-caption-horizontal">
+    <iais:row cssClass="personnel-name hidden ">
                             <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}" />
-                                <iais:input maxLength="66" type="text" name="name"  value="${appSvcPersonnelDto.name}"></iais:input>
+                                <iais:input maxLength="66" type="text" name="name" value="${appSvcPersonnelDto.name}"></iais:input>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                             </iais:value>
     </iais:row>
 <%--   designation --%>
-    <iais:row cssClass="personnel-designation hidden control-caption-horizontal">
+    <iais:row cssClass="personnel-designation hidden ">
                             <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <iais:select cssClass="designation"  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
@@ -63,7 +63,7 @@
                             </iais:value>
     </iais:row>
      <iais:row cssClass="${appSvcPersonnelDto.designation !='Others' ? 'hidden' : ''} otherDesignationDiv">
-                <div  class="personnel-designation hidden control-caption-horizontal">
+                <div  class="personnel-designation hidden ">
                             <iais:field width="5" mandatory="true" value="otherDesignation" cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${appSvcPersonnelDto.otherDesignation}"/>
@@ -74,7 +74,7 @@
      </iais:row>
 
 <%--    qualification--%>
-     <iais:row cssClass="personnel-qualification hidden control-caption-horizontal">
+     <iais:row cssClass="personnel-qualification hidden ">
                             <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <iais:input maxLength="100" type="text" name="qualification"  value="${appSvcPersonnelDto.qualification}"></iais:input>
@@ -83,7 +83,7 @@
      </iais:row>
 
 <%--    regnNo--%>
-     <iais:row cssClass="personnel-regnNo hidden control-caption-horizontal">
+     <iais:row cssClass="personnel-regnNo hidden ">
                             <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <iais:input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}" onblur="aaa(this)"></iais:input>
@@ -92,7 +92,7 @@
      </iais:row>
 
 <%--    years--%>
-     <iais:row cssClass="personnel-wrkExpYear hidden control-caption-horizontal">
+     <iais:row cssClass="personnel-wrkExpYear hidden ">
                             <iais:field width="5" mandatory="true" value="Relevant working experience (Years)" cssClass="col-sm-5"/>
                             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                                 <iais:input maxLength="2" type="text" name="wrkExpYear"  value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>

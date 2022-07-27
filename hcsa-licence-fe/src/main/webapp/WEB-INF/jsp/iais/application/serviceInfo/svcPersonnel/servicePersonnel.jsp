@@ -1,38 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="isis" uri="http://www.ecq.com/iais" %>
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
 
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
 
-<%--<div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">--%>
-<%--  <div id="wizard-page-title"></div>--%>
-<%--  <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">--%>
-
-<%--    <div id="control--runtime--0" class="page control control-area  container-p-1">--%>
-
-
-<%--      <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>--%>
-<%--      <table aria-describedby="" class="control-grid columns1" style="width:100%;">--%>
-<%--&lt;%&ndash;        <thead style="display: none">&ndash;%&gt;--%>
-<%--&lt;%&ndash;        <tr><th scope="col"></th></tr>&ndash;%&gt;--%>
-<%--&lt;%&ndash;        </thead>&ndash;%&gt;--%>
-<%--        <tbody>--%>
-<%--&lt;%&ndash;        <tr height="1">&ndash;%&gt;--%>
-<%--&lt;%&ndash;          <td class="first last" style="width: 100%;">&ndash;%&gt;--%>
-<%--&lt;%&ndash;            <div id="control--runtime--85" class="control control-caption-horizontal">&ndash;%&gt;--%>
-<%--&lt;%&ndash;            </div>&ndash;%&gt;--%>
-<%--&lt;%&ndash;          </td>&ndash;%&gt;--%>
-<%--&lt;%&ndash;        </tr>&ndash;%&gt;--%>
-<%--&lt;%&ndash;        <tr>&ndash;%&gt;--%>
-<%--&lt;%&ndash;        </tr>&ndash;%&gt;--%>
-
-
-<%--        <tr height="1">--%>
-<%--          <td class="" style="width: 100%;">--%>
             <div id="control--runtime--1" class="section control  container-s-1">
               <div class="control-set-font control-font-header control-font-header section-header">
+<%--                --%>
+                <input type="hidden" id="curr" name="currentSvcCode" value="${currentSvcCode}"/>
+<%--  --%>
                 <c:choose>
                   <c:when test="${'BLB' ==currentSvcCode}">
                     <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
@@ -74,6 +53,7 @@
                 <c:set var="spMandatoryCount" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
                 <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
                   <input class="not-refresh not-clear premIndex" type="hidden" name="premIndex" value="${status.index}"/>
+                  <c:set var="index" value="${status.index}" />
                   <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                     <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                   </c:if>
@@ -122,16 +102,8 @@
 
               </c:if>
             </div>
-<%--          </td>--%>
-<%--        </tr>--%>
-<%--        </tbody>--%>
-<%--      </table>--%>
-<%--    </div>--%>
 
-<%--  </div>--%>
-
-<%--</div>--%>
-<%@include file="servicePersonnelFun.jsp"%>
+<%@include file="servicePersonnelOthers.jsp"%>
 
 
 
@@ -163,13 +135,19 @@
     pageController('');
 
     <!--for reload when have personnelSel-->
-    <c:if test="${'NMI' ==currentSvcCode || 'NMA'== currentSvcCode}">
-    $('.personnel-content').each(function (k,v) {
-      var personnelSel = $(this).find('.personnelSel').val();
-      var $personnelContentEle = $(this);
-      personnelSelFun(personnelSel,$personnelContentEle);
-    });
-    </c:if>
+
+//    -------
+<%--    <c:if test="${'NMI' ==currentSvcCode || 'NMA'== currentSvcCode}">--%>
+    let flag = $("#curr").val();
+    if (flag == 'NMI' || 'NMA'== flag) {
+      $('.personnel-content').each(function (k, v) {
+        var personnelSel = $(this).find('.personnelSel').val();
+        var $personnelContentEle = $(this);
+        personnelSelFun(personnelSel, $personnelContentEle);
+      });
+    }
+<%--    </c:if>--%>
+<%--    -------- --%>
 
     if(${AppSubmissionDto.needEditController && !isClickEdit}){
       disabledPage();
@@ -198,6 +176,7 @@
     init = 1;
     let btn = document.getElementsByClassName('removeSpBtn')[0];
     $(btn).hide()
+
   });
 
   var absencePsnSel = function (val,$Ele) {
@@ -324,8 +303,8 @@
     let src = target.clone();
     src.find('.removeSpBtn').show()
     clearFields(src);
-
     $('.personnel-content-point').before(src);
+
     pageController($('.personnel-content:last'));
     spRemove();
     var psnLength = $('.personnel-content').length;
@@ -357,26 +336,23 @@
   }
 
   var pageController = function ($Ele) {
-    <c:choose>
-    <c:when test="${'NMI' ==currentSvcCode || 'NMA'== currentSvcCode}">
-    personnelSel();
-    if($Ele == ''){
-      //triggering event
-      $('.personnelSel').trigger('change');
+    let flag = $("#curr").val();
+    if (flag == 'NMI' || flag == 'NMA'){
+      personnelSel();
+      if($Ele == ''){
+        //triggering event
+        $('.personnelSel').trigger('change');
+      }else {
+        $Ele.find('.personnelSel').trigger('change');
+      }
+    }else if ('BLB' == flag){
+      absencePsnSel('Blood Banking',$Ele);
+    }else if ('TSB'== flag){
+      absencePsnSel('Tissue Banking p1',$Ele);
     }else {
-      $Ele.find('.personnelSel').trigger('change');
+      absencePsnSel('other service',$Ele);
     }
-    </c:when>
-    <c:when test="${'BLB' ==currentSvcCode}">
-    absencePsnSel('Blood Banking',$Ele);
-    </c:when>
-    <c:when test="${'TSB'== currentSvcCode}">
-    absencePsnSel('Tissue Banking p1',$Ele);
-    </c:when>
-    <c:otherwise>
-    absencePsnSel('other service',$Ele);
-    </c:otherwise>
-    </c:choose>
+
   }
 
 
