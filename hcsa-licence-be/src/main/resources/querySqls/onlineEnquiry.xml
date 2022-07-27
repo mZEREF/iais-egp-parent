@@ -1320,4 +1320,27 @@
 
         ]]>
     </sql>
+
+    <sql key = "aso-email-view" remarks="aso-email-view">
+        <![CDATA[
+
+            <div class="row">
+                <h4>
+                    <span>subject</span>
+                </h4>
+                <div >
+                    <span>messageContent</span>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <h4><a class=" js-cd-close" >close</a></h4>
+            </div>
+
+
+
+        ]]>
+    </sql>
+
 </sqls>

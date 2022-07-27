@@ -20,14 +20,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -39,6 +31,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhilin
@@ -113,11 +114,15 @@ public class HcsaApplicationAjaxController{
                 String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
                 appIntranetDocDto.setFileRepoId(repo_id);
     //            appIntranetDocDto.set
-                appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
+                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+                if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                    appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT);
+                }else {
+                    appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
+                }
                 String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
                 appIntranetDocDto.setId(id);
              // set appIntranetDocDto to seesion
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
             List<AppIntranetDocDto> appIntranetDocDtos;
             if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
                 appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();

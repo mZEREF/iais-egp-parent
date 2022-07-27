@@ -122,6 +122,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -130,6 +131,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -326,7 +328,7 @@ public class HcsaApplicationDelegator {
     @PostMapping(value = "/save-draft-email")
     public @ResponseBody
     void saveDraftEmail(HttpServletRequest request) {
-        log.info(StringUtil.changeForLog("the do checkAo start ...."));
+        log.info(StringUtil.changeForLog("the do saveDraftEmail start ...."));
 
         String subject = ParamUtil.getString(request, "subject");
         String mailContent = ParamUtil.getString(request, "mailContent");
@@ -336,7 +338,23 @@ public class HcsaApplicationDelegator {
         appPremisesCorrClient.saveEmailDraft(emailDto);
         ParamUtil.setSessionAttr(request,"appPremisesUpdateEmailDto",emailDto);
 
-        log.info(StringUtil.changeForLog("the do checkAo end ...."));
+        log.info(StringUtil.changeForLog("the do saveDraftEmail end ...."));
+    }
+
+    @GetMapping(value = "/email-view")
+    public @ResponseBody
+    String preViewEmail(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do preViewEmail start ...."));
+
+        String subject = ParamUtil.getString(request, "subject");
+        String mailContent = ParamUtil.getString(request, "mailContent");
+        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "aso-email-view");
+        sql=sql.replaceAll("subject", subject);
+        sql=sql.replaceAll("messageContent",mailContent);
+        log.info(StringUtil.changeForLog("the do preViewEmail end ...."));
+
+        return sql;
+
     }
     private List<SelectOption> getAoSelect(HttpServletRequest request, String stageId) {
         log.info(StringUtil.changeForLog("the getAoSelect start ...."));
@@ -1179,12 +1197,31 @@ public class HcsaApplicationDelegator {
         String subject = ParamUtil.getString(request, "subject");
         String mailContent = ParamUtil.getString(request, "mailContent");
         AppPremisesUpdateEmailDto emailDto= (AppPremisesUpdateEmailDto) ParamUtil.getSessionAttr(request,"appPremisesUpdateEmailDto");
-        emailDto.setSubject(subject);
-        emailDto.setMailContent(mailContent);
-        appPremisesCorrClient.saveEmailDraft(emailDto);
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        emailDto.setSubject(subject);
+        emailDto.setMailContent(mailContent);
+        List<AppIntranetDocDto> appIntranetDocDtoList=applicationViewDto.getAppIntranetDocDtoList();
+        List<EmailAttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+
+        if(IaisCommonUtils.isNotEmpty(appIntranetDocDtoList)){
+            for (AppIntranetDocDto doc:appIntranetDocDtoList
+                 ) {
+                if(doc.getAppDocType().equals(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT)){
+                    byte[] data = fileRepoClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();;
+                    EmailAttachmentDto attachmentDto = new EmailAttachmentDto();
+                    attachmentDto.setContent(data);
+                    attachmentDto.setFileName(doc.getDocName());
+                    attachmentDtos.add(attachmentDto);
+                }
+            }
+        }
+        if(IaisCommonUtils.isNotEmpty(attachmentDtos)){
+            emailDto.setAttachmentDtos(attachmentDtos);
+        }
+        appPremisesCorrClient.saveEmailDraft(emailDto);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+
         String applicationNo=applicationDto.getApplicationNo();
         inspEmailService.completedTask(taskDto);
 

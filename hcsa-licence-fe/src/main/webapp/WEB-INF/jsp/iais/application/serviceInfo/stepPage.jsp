@@ -100,7 +100,6 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST005'}">
                                                             <div class="Service-related-Documents document-upload-gp">
-                                                                <h2>Service-related Documents</h2>
                                                                 <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/document.jsp"/>
                                                             </div>
                                                         </c:when>
