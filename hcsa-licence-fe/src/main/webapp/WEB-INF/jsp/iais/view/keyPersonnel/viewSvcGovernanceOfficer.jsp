@@ -7,7 +7,9 @@
     <div class="amend-preview-info form-horizontal min-row">
         <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
             <iais:row>
-                <p><strong>Clinical Governance Officer<c:if test="${currentPreviewSvcInfo.appSvcCgoDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
+                <div class="col-xs-12">
+                    <p><strong>Clinical Governance Officer<c:if test="${currentPreviewSvcInfo.appSvcCgoDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
+                </div>
             </iais:row>
             <%@include file="viewPersonnelDetail.jsp"%>
         </c:forEach>

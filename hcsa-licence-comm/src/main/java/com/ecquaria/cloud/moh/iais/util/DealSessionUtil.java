@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
@@ -17,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -31,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
@@ -364,26 +364,29 @@ public class DealSessionUtil {
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
-
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentShowDtoList(currSvcInfoDto, appGrpPremisesDtos);
+        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentList(currSvcInfoDto, appGrpPremisesDtos);
         if (documentShowDtos != null && request != null) {
-            int size = currSvcInfoDto.getDocumentShowDtoList().size();
-            String currSvcCode = currSvcInfoDto.getServiceCode();
             HttpSession session = request.getSession();
-            for (int i = 0; i < size; i++) {
-                DocumentShowDto documentShowDto = currSvcInfoDto.getDocumentShowDtoList().get(i);
-                String docKey = ApplicationHelper.getSvcDocKey(i, currSvcCode, documentShowDto.getPremisesVal());
-                if (documentShowDto.isExistDoc()) {
-                    Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
-                    fileMap.put(docKey, null);
-                    session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
-                } else {
-                    session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+            for (DocumentShowDto documentShowDto : documentShowDtos) {
+                for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                    String svcCode = docSectionDto.getSvcCode();
+                    String premisesVal = documentShowDto.getPremisesVal();
+                    List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
+                    int secSize = docSecDetailList.size();
+                    for (int j = 0; j < secSize; j++) {
+                        String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
+                        DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
+                        if (docSecDetailDto.isExistDoc()) {
+                            Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
+                            fileMap.put(docKey, null);
+                            session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
+                        } else {
+                            session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+                        }
+                    }
                 }
             }
         }
-
-
         return currSvcInfoDto;
     }
 

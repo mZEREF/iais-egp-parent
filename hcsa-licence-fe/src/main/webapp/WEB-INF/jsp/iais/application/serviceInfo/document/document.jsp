@@ -6,8 +6,8 @@
 %>
 <script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
 
-<%--<input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>--%>
-<c:if test="${requestInformationConfig == null}">
+<div class="row form-horizontal">
+<c:if test="${isRfi}">
     <c:set var="isClickEdit" value="true"/>
 </c:if>
 <c:if test="${AppSubmissionDto.needEditController}">
@@ -32,12 +32,17 @@
             </a>
         </div>
     </c:if>
-    <c:if test="${'true' != isClickEdit}">
+</c:if>
+
+<h2>Service-related Documents</h2>
+
+<c:if test="${AppSubmissionDto.needEditController}">
+    <c:if test="${!isClickEdit}">
         <c:set var="locking" value="true"/>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
         <div id="edit-content">
             <c:choose>
-                <c:when test="${'true' == canEdit}">
+                <c:when test="${canEdit}">
                     <div class="text-right app-font-size-16">
                         <a id="edit" class="svcDocEdit" href="javascript:void(0);">
                             <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
@@ -55,54 +60,39 @@
 <div id="selectFileDiv">
     <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
 </div>
-<c:forEach var="doc" items="${currSvcInfoDto.documentShowDtoList}" varStatus="configStat">
-    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${doc.premisesVal}"/>
-    <%@include file="docContent.jsp"%>
+<c:forEach var="docShowDto" items="${currSvcInfoDto.documentShowDtoList}" varStatus="stat">
+    <iais:row>
+        <div class="col-xs-12 app-title">
+            <p><c:out value="${docShowDto.premName}"/></p>
+            <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
+        </div>
+    </iais:row>
+    <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
+        <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
+            <c:set var="panelKey">${docShowDto.premisesVal}-${secDto.svcId}</c:set>
+            <div class="panel panel-default deputy-panel">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                        <a role="button" class="" data-toggle="collapse" href="#${panelKey}" aria-expanded="true" aria-controls="${panelKey}">
+                            <c:out value="${secDto.sectionName}"/>
+                        </a>
+                    </h4>
+                </div>
+                <div id="${panelKey}" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="panel-main-content">
+                            <c:forEach var="doc" items="${secDto.docSecDetailList}" varStatus="docStat">
+                                <c:set var="configIndex" value="${docStat.index}svcDoc${secDto.svcCode}${docShowDto.premisesVal}"/>
+                                <%@include file="docContent.jsp"%>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:forEach>
+    </div>
 </c:forEach>
-
-<%--<c:set var="docType" value="svcDoc"/>--%>
-<%--
-<c:forEach var="config" items="${svcDocConfig}" varStatus="configStat">
-    <c:choose>
-        <c:when test="${'0' == config.dupForPrem}">
-            <c:choose>
-                <c:when test="${empty config.dupForPerson}">
-                    <c:set var="fileList" value="${svcDocReloadMap[config.id]}"/>
-                    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}"/>
-                    <%@include file="docContent.jsp"%>
-                    <br/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="premIndexNo" value=""/>
-                    <%@include file="dupForPerson.jsp"%>
-                </c:otherwise>
-            </c:choose>
-        </c:when>
-        <c:when test="${'1' == config.dupForPrem}">
-            <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStat">
-                <c:choose>
-                    <c:when test="${empty config.dupForPerson}">
-                        <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
-                        <c:set var="fileList" value="${svcDocReloadMap[mapKey]}"/>
-                        <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${prem.premisesIndexNo}"/>
-                        <%@include file="docContent.jsp"%>
-                        <br/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="premIndexNo" value="${prem.premisesIndexNo}"/>
-                        <%@include file="dupForPerson.jsp"%>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-
-        </c:otherwise>
-    </c:choose>
-</c:forEach>
---%>
-
-<%--<%@ include file="../../appeal/FeFileCallAjax.jsp" %>--%>
+</div>
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
@@ -140,7 +130,6 @@
             }
         }
     }
-
     <!-- 108635 end-->
 
     $('.delBtn').click(function () {
@@ -191,15 +180,15 @@
         return $file;
     }
 
-    function reUploadFileFeAjax(fileAppendId, index, idForm) {
+   /* function reUploadFileFeAjax(fileAppendId, index, idForm) {
         $("#reloadIndex").val(index);
         $("#fileAppendId").val(fileAppendId);
         $("#uploadFormId").val(idForm);
         //$("#selectedFile").click();
         getFileTag(fileAppendId).click();
-    }
+    }*/
 
-    function validateFileSizeMaxOrEmpty(maxSize) {
+    /*function validateFileSizeMaxOrEmpty(maxSize) {
         var $file = getFileTag($("#fileAppendId").val());
         var fileV = $file.val();
         var file = $file.get(0).files[0];
@@ -216,6 +205,6 @@
             return "N";
         }
         return "Y";
-    }
+    }*/
 
 </script>

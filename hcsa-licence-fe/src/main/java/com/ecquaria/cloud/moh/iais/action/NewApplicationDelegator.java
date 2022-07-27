@@ -755,7 +755,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
-
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
