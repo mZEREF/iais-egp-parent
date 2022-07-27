@@ -18,8 +18,6 @@
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
-        <%--<input class="not-refresh not-clear" type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>--%>
-        <%--<input class="not-refresh not-clear premValue" type="hidden" name="premValue" value="${status.index}"/>--%>
         <input class="not-refresh not-clear premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
@@ -224,14 +222,14 @@
                     <iais:row cssClass="vehicleRow">
                         <iais:field value="Vehicle No." mandatory="true" width="5"/>
                         <iais:value width="7" cssClass="col-md-5">
-                            <iais:input maxLength="10" type="text" name="vehicleNo${status.index}" value="${appGrpPremisesDto.vehicleNo}"/>
+                            <iais:input maxLength="10" type="text" cssClass="vehicleNo" name="vehicleNo${status.index}" value="${appGrpPremisesDto.vehicleNo}"/>
                         </iais:value>
                     </iais:row>
 
                     <iais:row>
                         <iais:field value="Business Name" mandatory="true" width="5"/>
                         <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
-                            <iais:input cssClass="" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
+                            <iais:input cssClass="hciName" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
                         </iais:value>
                     </iais:row>
 
@@ -705,6 +703,7 @@
                 checkLocateWtihNonHcsa($premContent);
             }
             showTag($premMainContent);
+            showTag($premContent.find('.retrieveAddr'));
             dismissWaiting();
         } else {
             showTag($premMainContent);
@@ -734,19 +733,36 @@
             dismissWaiting();
             return;
         }
-        fillForm($premContent, data, "", $('div.premContent').index($premContent));
+        //fillForm($premContent, data, "", $('div.premContent').index($premContent));
+        var suffix = $('div.premContent').index($premContent);
+        fillValue($premContent.find('.vehicleNo'), data.vehicleNo);
+        fillValue($premContent.find('.hciName'), data.hciName);
+        fillValue($premContent.find('.postalCode'), data.postalCode);
+        fillForm($premContent.find('.address'), data, "", suffix);
+        fillValue($premContent.find('.addrType'), data.addrType);
         fillFloorUnit($premContent, data);
-        fillNonHcsa($premContent, data.appPremNonLicRelationDtos);
 
-        checkAddressMandatory($premContent);
-        checkLocateWtihNonHcsa($premContent);
-
-        $premContent.find('input[name="chooseExistData"]').val(data.existingData);
+        $premContent.find('.chooseExistData').val(data.existingData);
         $premContent.find('.premSelValue').val(data.premisesSelect);
         $premContent.find('.premTypeValue').val(data.premisesType);
         $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
         $premContent.find('.isPartEdit').val('0');
+
+        checkAddressMandatory($premContent);
+        let existData = $premContent.find('.chooseExistData').val();
+        checkPremDisabled($premContent, '1' == existData);
         dismissWaiting();
+    }
+
+    function checkPremDisabled($premContent, disabled) {
+        checkDisabled($premContent.find('.vehicleNo'), disabled);
+        checkDisabled($premContent.find('.hciName'), disabled);
+        checkDisabled($premContent.find('.postalCode'), disabled);
+        toggleTag($premContent.find('.retrieveAddr'), !disabled);
+        checkDisabled($premContent.find('.address'), disabled);
+        checkDisabled($premContent.find('.addrType'), disabled);
+        checkDisabled($premContent.find('.operationDiv'), disabled);
+        toggleTag($premContent.find('.opDel:first'), !disabled);
     }
 
     function checkLocateWtihNonHcsa($premContent) {

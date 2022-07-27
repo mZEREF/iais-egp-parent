@@ -631,9 +631,9 @@ function fillForm(ele, data, prefix, suffix) {
         suffix = "";
     }
     for (var i in data) {
-        var val = data[i];
-        if (Object.prototype.toString.call(val) === "[object Object]") {
-            fillValue(ele, val, prefix, suffix);
+        var value = data[i];
+        if (Object.prototype.toString.call(value) === "[object Object]") {
+            fillForm(ele, value, prefix, suffix);
         }
         var name = prefix + i + suffix;
         var $input = $selector.find('[name="' + name + '"]');
@@ -645,9 +645,9 @@ function fillForm(ele, data, prefix, suffix) {
             continue;
         }
         if ($input.hasClass('field-date')) {
-            val = data[i + 'Str'];
+            value = data[i + 'Str'];
         }
-        fillValue($input, val, true);
+        fillValue($input, value, true);
     }
 }
 
@@ -711,6 +711,37 @@ function fillValue(targetSelector, data, includeHidden) {
             fillValue($input, val);
         });
     }
+}
+
+function checkDisabled(targetSelector, disabled) {
+    var $selector = getJqueryNode(targetSelector);
+    if (isEmptyNode($selector)) {
+        return;
+    }
+    if (!$selector.is(":input")) {
+        $selector = $selector.find(':input');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function (i, ele) {
+        var type = ele.type, tag = ele.tagName.toLowerCase(), $input = $(ele);
+        if (type == 'hidden') {
+            return;
+        }
+        if (disabled) {
+            $input.prop('disabled', true);
+            $input.css('border-color', '#ededed');
+            $input.css('color', '#999');
+        } else {
+            $input.prop('disabled', false);
+            $input.css('border-color', '');
+            $input.css('color', '');
+        }
+        if (tag == 'select') {
+            updateSelectTag($input);
+        }
+    });
 }
 
 function disableContent(targetSelector) {

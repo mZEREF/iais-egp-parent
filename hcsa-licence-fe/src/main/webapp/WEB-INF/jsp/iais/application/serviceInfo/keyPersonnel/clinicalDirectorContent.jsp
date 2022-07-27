@@ -385,7 +385,6 @@
         </div>
     </c:if>
 </div>
-<%--<%@include file="../../common/prsLoading.jsp"%>--%>
 <script>
     $(document).ready(function () {
         refresh();
