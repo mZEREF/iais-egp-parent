@@ -28,6 +28,8 @@ public interface AppCommService {
 
     List<ApplicationDto> getApplicationsByGroupNo(String appGrpNo);
 
+    ApplicationDto getApplicationById(String appId);
+
     ApplicationDto getApplicationDtoByAppNo(String appNo);
 
     String getDraftNo(String appType);
@@ -69,6 +71,8 @@ public interface AppCommService {
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
 
     AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId, String valueOf);
+
+    AppSvcDocDto getMaxVersionSvcSpecDoc(String svcDocId, String appGrpId, String appNo, int seqNum);
 
     AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
 

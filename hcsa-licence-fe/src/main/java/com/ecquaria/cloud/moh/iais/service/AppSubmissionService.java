@@ -109,8 +109,6 @@ public interface AppSubmissionService {
 
     void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
 
-    List<LicAppCorrelationDto> getLicDtoByLicId(String licId);
-
     ApplicationDto getAppById(String appId);
 
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);

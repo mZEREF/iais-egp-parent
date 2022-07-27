@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -75,6 +76,8 @@ public class LicenceExpiredBatchJob {
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     OrganizationClient organizationClient;
+    @Autowired
+    private LicCommService licCommService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
@@ -171,7 +174,7 @@ public class LicenceExpiredBatchJob {
             updateLicenceDtos.add(licenceDto);
 
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
+                String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
@@ -357,7 +360,7 @@ public class LicenceExpiredBatchJob {
             String licenceNo = licenceDto.getLicenceNo();
             try {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
+                String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){

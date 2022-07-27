@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.EmailAttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -103,8 +104,8 @@ import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -121,6 +122,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -129,6 +131,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -325,7 +328,7 @@ public class HcsaApplicationDelegator {
     @PostMapping(value = "/save-draft-email")
     public @ResponseBody
     void saveDraftEmail(HttpServletRequest request) {
-        log.info(StringUtil.changeForLog("the do checkAo start ...."));
+        log.info(StringUtil.changeForLog("the do saveDraftEmail start ...."));
 
         String subject = ParamUtil.getString(request, "subject");
         String mailContent = ParamUtil.getString(request, "mailContent");
@@ -335,7 +338,23 @@ public class HcsaApplicationDelegator {
         appPremisesCorrClient.saveEmailDraft(emailDto);
         ParamUtil.setSessionAttr(request,"appPremisesUpdateEmailDto",emailDto);
 
-        log.info(StringUtil.changeForLog("the do checkAo end ...."));
+        log.info(StringUtil.changeForLog("the do saveDraftEmail end ...."));
+    }
+
+    @GetMapping(value = "/email-view")
+    public @ResponseBody
+    String preViewEmail(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do preViewEmail start ...."));
+
+        String subject = ParamUtil.getString(request, "subject");
+        String mailContent = ParamUtil.getString(request, "mailContent");
+        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "aso-email-view");
+        sql=sql.replaceAll("subject", subject);
+        sql=sql.replaceAll("messageContent",mailContent);
+        log.info(StringUtil.changeForLog("the do preViewEmail end ...."));
+
+        return sql;
+
     }
     private List<SelectOption> getAoSelect(HttpServletRequest request, String stageId) {
         log.info(StringUtil.changeForLog("the getAoSelect start ...."));
@@ -1153,7 +1172,7 @@ public class HcsaApplicationDelegator {
             inspectionService.rollBackInspectionRecord(applicationViewDto.getAppPremisesCorrelationId(), applicationViewDto.getApplicationDto());
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, RoleConsts.USER_ROLE_INSPECTIOR, stageId, wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
+            applicationService.rollBackInsp(bpc, stageId,RoleConsts.USER_ROLE_INSPECTIOR,  wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
@@ -1178,12 +1197,31 @@ public class HcsaApplicationDelegator {
         String subject = ParamUtil.getString(request, "subject");
         String mailContent = ParamUtil.getString(request, "mailContent");
         AppPremisesUpdateEmailDto emailDto= (AppPremisesUpdateEmailDto) ParamUtil.getSessionAttr(request,"appPremisesUpdateEmailDto");
-        emailDto.setSubject(subject);
-        emailDto.setMailContent(mailContent);
-        appPremisesCorrClient.saveEmailDraft(emailDto);
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        emailDto.setSubject(subject);
+        emailDto.setMailContent(mailContent);
+        List<AppIntranetDocDto> appIntranetDocDtoList=applicationViewDto.getAppIntranetDocDtoList();
+        List<EmailAttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+
+        if(IaisCommonUtils.isNotEmpty(appIntranetDocDtoList)){
+            for (AppIntranetDocDto doc:appIntranetDocDtoList
+                 ) {
+                if(doc.getAppDocType().equals(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT)){
+                    byte[] data = fileRepoClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();;
+                    EmailAttachmentDto attachmentDto = new EmailAttachmentDto();
+                    attachmentDto.setContent(data);
+                    attachmentDto.setFileName(doc.getDocName());
+                    attachmentDtos.add(attachmentDto);
+                }
+            }
+        }
+        if(IaisCommonUtils.isNotEmpty(attachmentDtos)){
+            emailDto.setAttachmentDtos(attachmentDtos);
+        }
+        appPremisesCorrClient.saveEmailDraft(emailDto);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+
         String applicationNo=applicationDto.getApplicationNo();
         inspEmailService.completedTask(taskDto);
 
@@ -1197,6 +1235,14 @@ public class HcsaApplicationDelegator {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationNo);
         emailParam.setSubject(subject);
+        if(IaisCommonUtils.isNotEmpty(emailDto.getAttachmentDtos())){
+            Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
+            for (EmailAttachmentDto attachmentDto:emailDto.getAttachmentDtos()
+                 ) {
+                attachments.put(attachmentDto.getFileName(),attachmentDto.getContent());
+            }
+            emailParam.setAttachments(attachments);
+        }
         //send email
         log.info(StringUtil.changeForLog("send new application email"));
         notificationHelper.sendNotification(emailParam);
@@ -4242,7 +4288,8 @@ public class HcsaApplicationDelegator {
                 //62875
                 //role is ao3 && status is 'Pending AO3 Approval'  have no verified
                 if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus)
+                        && ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationStatus))) {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
@@ -4257,7 +4304,7 @@ public class HcsaApplicationDelegator {
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
         if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
-                || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
+                || RoleConsts.USER_ROLE_AO3.equals(taskRole))&&!applicationStatus.equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)) {
             Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
                     applicationViewDto.getApplicationGroupDto().getGroupNo());
             String canEdit = map.get(HcsaAppConst.CAN_RFI);

@@ -156,15 +156,6 @@ public class FePrintViewDelegator {
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     String svcId = appSvcRelatedInfoDto.getServiceId();
-                    //set po dpo
-                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                    List<AppSvcPrincipalOfficersDto> reloadPoList = IaisCommonUtils.genNewArrayList();
-                    List<AppSvcPrincipalOfficersDto> reloadDpoList = IaisCommonUtils.genNewArrayList();
-                    if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-                        ApplicationHelper.assignPoDpoDto(appSvcPrincipalOfficersDtos,reloadPoList,reloadDpoList);
-                    }
-                    appSvcRelatedInfoDto.setReloadPoDtoList(reloadPoList);
-                    appSvcRelatedInfoDto.setReloadDpoList(reloadDpoList);
                     //set step
                     List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);

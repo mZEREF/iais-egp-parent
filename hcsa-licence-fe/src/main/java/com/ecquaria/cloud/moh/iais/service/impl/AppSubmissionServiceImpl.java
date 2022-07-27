@@ -288,11 +288,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<LicAppCorrelationDto> getLicDtoByLicId(String licId) {
-        return licenceClient.getLicCorrBylicId(licId).getEntity();
-    }
-
-    @Override
     public ApplicationDto getAppById(String appId) {
         return applicationFeClient.getApplicationById(appId).getEntity();
     }

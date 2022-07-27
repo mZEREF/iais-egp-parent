@@ -17,7 +17,7 @@
 
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;overflow:visible">
-        <div class="container" style="padding: 0 90px;">
+        <div class="container" >
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
             </div>
@@ -29,7 +29,7 @@
 </c:if>
 <c:if test="${not empty title}">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-        <div class="container" style="padding: 0 90px;">
+        <div class="container" >
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
             </div>

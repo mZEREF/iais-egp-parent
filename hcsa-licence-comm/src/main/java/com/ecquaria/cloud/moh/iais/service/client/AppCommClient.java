@@ -35,6 +35,10 @@ public interface AppCommClient {
     @GetMapping(value = "/application-group-no", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(@RequestParam("groupNo") String groupNo);
 
+    @GetMapping(value = "applicationdto-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "appId") String appId);
+
     @GetMapping(value = "/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
 

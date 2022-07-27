@@ -126,6 +126,9 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/active-service/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getActiveServices(@PathVariable("type") String type);
 
+    @GetMapping(value = "/iais-hcsa-service/active-services/{svcType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getActiveServicesBySvcType(@PathVariable("svcType") String svcType);
+
     @GetMapping(value = "/iais-hcsa-service/svc-p1-name-results", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> listServiceP1Name();
 

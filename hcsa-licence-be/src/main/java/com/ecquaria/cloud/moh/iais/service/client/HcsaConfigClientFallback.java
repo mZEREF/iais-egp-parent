@@ -200,6 +200,11 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getActiveServicesBySvcType(String svcType) {
+        return getFeignResponseEntity(svcType);
+    }
+
+    @Override
     public FeignResponseEntity<List<String>> listServiceP1Name() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

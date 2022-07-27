@@ -54,7 +54,6 @@ public final class HcsaAppConst {
 
     public static final String CURRENT_SVC_CODE                             = "CURRENT_SVC_CODE";
 
-    public static final String ERRORMAP_PREMISES                            = "errorMap_premises";
     public static final String PREMISESTYPE                                 = "premisesType";
     public static final String HCSASERVICEDTO                               = "hcsaServiceDto";
     public static final String CURRENTSERVICEID                             = "currentServiceId";
@@ -63,8 +62,6 @@ public final class HcsaAppConst {
     public static final String OLDAPPSUBMISSIONDTO                          = "oldAppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO                    = "commonHcsaSvcDocConfigDto";
     public static final String PREMHCSASVCDOCCONFIGDTO                      = "premHcsaSvcDocConfigDto";
-    //public static final String RELOADAPPGRPPRIMARYDOCMAP                    = "reloadAppGrpPrimaryDocMap";
-    public static final String APPGRPPRIMARYDOCERRMSGMAP                    = "appGrpPrimaryDocErrMsgMap";
     public static final String PRIMARY_DOC_CONFIG                           = "primaryDocConfig";
     public static final String SVC_DOC_CONFIG                               = "svcDocConfig";
     public static final String ALL_SVC_NAMES                                = "allSvcNames";

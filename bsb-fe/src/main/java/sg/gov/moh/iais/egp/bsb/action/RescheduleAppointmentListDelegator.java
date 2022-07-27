@@ -17,10 +17,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_NAME_RESCHEDULE_APPOINTMENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APPOINTMENT_LIST_DATA_LIST;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.MODULE_NAME;
 
 @Slf4j
 @Delegator("rescheduleAppointmentListDelegator")
@@ -37,7 +38,7 @@ public class RescheduleAppointmentListDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction(MODULE_NAME, "Reschedule Appointments");
+        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_NAME_RESCHEDULE_APPOINTMENT);
         HttpServletRequest request = bpc.request;
         ResponseDto<List<AppointmentViewDto>> resultDto = bsbAppointmentClient.searchRescheduleAppt();
         if (resultDto.ok()) {

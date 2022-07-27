@@ -328,7 +328,7 @@ public abstract class AppCommDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<String> serviceConfigIds = appSvcRelatedInfoDtos.stream()
                 .map(AppSvcRelatedInfoDto::getServiceId).collect(Collectors.toList());
-        List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosById(serviceConfigIds);
+        List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
         ParamUtil.setSessionAttr(request, HcsaAppConst.HCSAS_GRP_SVC_LIST, (Serializable) hcsaServiceDtoList);
         log.info(StringUtil.changeForLog("the group config service size: " + hcsaServiceDtoList.size()));
     }
@@ -377,7 +377,7 @@ public abstract class AppCommDelegator {
 
         List<HcsaServiceDto> hcsaServiceDtoList = null;
         if (!serviceConfigIds.isEmpty()) {
-            hcsaServiceDtoList = configCommService.getHcsaServiceDtosById(serviceConfigIds);
+            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
         } else if (!names.isEmpty()) {
             hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
         }

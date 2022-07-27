@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,12 +72,24 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
-    public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
+    public HcsaServiceDto getHcsaServiceDtoById(String id) {
+        if (StringUtil.isEmpty(id)) {
+            return null;
+        }
+        List<HcsaServiceDto> result = getHcsaServiceDtosByIds(Collections.singletonList(id));
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }
+
+    @Override
+    public List<HcsaServiceDto> getHcsaServiceDtosByIds(List<String> ids) {
         log.info(StringUtil.changeForLog("Id List: " + ids));
         if (ids == null || ids.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();
         }
-        return configCommClient.getHcsaServiceDtosById(ids).getEntity();
+        return configCommClient.getHcsaServiceDtosByIds(ids).getEntity();
     }
 
     @Override

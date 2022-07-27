@@ -1,10 +1,12 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <style type="text/css">
     table {
         table-layout: fixed;
         word-break: break-all;
     }
 </style>
-<c:forEach items="${currentviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
+<c:forEach items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
     <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}" scope="request"/>
     <%--<c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST001'}">
         <jsp:include page="/WEB-INF/jsp/iais/common/viewSvcDisciplines.jsp"/>

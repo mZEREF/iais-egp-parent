@@ -64,6 +64,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ApplicationClient
@@ -431,4 +432,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/activeTaskList/{premCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getActiveTaskList(@PathVariable("premCorrId") String premCorrId);
+
+    @GetMapping(value = "/iais-application-be/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Set<String>> getActiveInspectorByCorrelationId(@RequestParam(name = "appNo") String appNo, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
 }

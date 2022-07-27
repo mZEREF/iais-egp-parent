@@ -268,6 +268,15 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
+    public List<LicAppCorrelationDto> getLicCorrBylicId(String licenceId) {
+        log.info(StringUtil.changeForLog("--------- Licence Id: " + licenceId + " --------"));
+        if (StringUtil.isEmpty(licenceId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getLicCorrBylicId(licenceId).getEntity();
+    }
+
+    @Override
     public List<LicAppCorrelationDto> getInactiveLicAppCorrelations() {
         return licCommClient.getInactiveLicAppCorrelations().getEntity();
     }

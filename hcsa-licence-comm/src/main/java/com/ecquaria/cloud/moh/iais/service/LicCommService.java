@@ -66,6 +66,8 @@ public interface LicCommService {
 
     List<PremisesDto> getPremisesByLicseeIdAndSvcName(String licenseeId, List<String> svcNames);
 
+    List<LicAppCorrelationDto> getLicCorrBylicId(String licenceId);
+
     List<LicAppCorrelationDto> getInactiveLicAppCorrelations();
 
     List<AppSubmissionDto> getAlginAppSubmissionDtos(String licenceId, boolean checkSpec);

@@ -36,7 +36,7 @@ public class EmailParam {
     private String recipientEmail;
     private String recipientName;
     private String serviceTypes;
-
+    private Map<String, byte[]> attachments;
     public EmailParam() {
     }
 

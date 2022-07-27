@@ -42,6 +42,7 @@ public interface LicCommClient {
     FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode") String hciCode,
             @RequestParam("licenseeId") String licenseeId);
 
+
     @RequestMapping(path = "/licence-submission", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId") String licenceId);
 
@@ -61,6 +62,9 @@ public interface LicCommClient {
 
     @PostMapping(value = "/giro-info-licId", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountsByLicIds(@RequestBody List<String> licIds);
+
+    @GetMapping(path= "/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(@PathVariable(value = "licenceId") String licenceId);
 
     @GetMapping(path = "/all-related-lic-app-corrs", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getAllRelatedLicAppCorrs(@RequestParam("licenceId") String licenceId,

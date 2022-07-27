@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -51,12 +52,10 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
     FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
+    @Autowired
+    private LicCommService licCommService;
 
     public static final Double DEFAULTSCORE = 1.25;
-
-    public List<LicAppCorrelationDto> getLicDtoByLicId(String licId){
-        return hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-    }
 
     public HcsaLastInspectionDto getLastAndSecLastInpection( List<InspectionInfoDto> infoList) {//use
         HcsaLastInspectionDto lastInspection = new HcsaLastInspectionDto();
@@ -87,7 +86,7 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         HcsaLastInspectionDto lstInpDto = null;
         List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();
         InspectionInfoDto info = new InspectionInfoDto();
-        List<LicAppCorrelationDto> licCorrDtoList = getLicDtoByLicId(licId);
+        List<LicAppCorrelationDto> licCorrDtoList = licCommService.getLicCorrBylicId(licId);
         if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
             for (LicAppCorrelationDto licAppCorr : licCorrDtoList) {
                 String appId = licAppCorr.getApplicationId();

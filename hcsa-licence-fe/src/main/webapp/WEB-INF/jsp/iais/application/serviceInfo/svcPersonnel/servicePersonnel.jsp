@@ -6,26 +6,31 @@
 
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
 
-<div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
-  <div id="wizard-page-title"></div>
-  <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
-    <div id="control--runtime--0" class="page control control-area  container-p-1">
-      <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table aria-describedby="" class="control-grid columns1" style="width:100%;">
-        <thead style="display: none">
-        <tr><th scope="col"></th></tr>
-        </thead>
-        <tbody>
-        <tr height="1">
-          <td class="first last" style="width: 100%;">
-            <div id="control--runtime--85" class="control control-caption-horizontal">
-            </div>
-          </td>
-        </tr>
-        <tr>
-        </tr>
-        <tr height="1">
-          <td class="" style="width: 100%;">
+<%--<div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">--%>
+<%--  <div id="wizard-page-title"></div>--%>
+<%--  <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">--%>
+
+<%--    <div id="control--runtime--0" class="page control control-area  container-p-1">--%>
+
+
+<%--      <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>--%>
+<%--      <table aria-describedby="" class="control-grid columns1" style="width:100%;">--%>
+<%--&lt;%&ndash;        <thead style="display: none">&ndash;%&gt;--%>
+<%--&lt;%&ndash;        <tr><th scope="col"></th></tr>&ndash;%&gt;--%>
+<%--&lt;%&ndash;        </thead>&ndash;%&gt;--%>
+<%--        <tbody>--%>
+<%--&lt;%&ndash;        <tr height="1">&ndash;%&gt;--%>
+<%--&lt;%&ndash;          <td class="first last" style="width: 100%;">&ndash;%&gt;--%>
+<%--&lt;%&ndash;            <div id="control--runtime--85" class="control control-caption-horizontal">&ndash;%&gt;--%>
+<%--&lt;%&ndash;            </div>&ndash;%&gt;--%>
+<%--&lt;%&ndash;          </td>&ndash;%&gt;--%>
+<%--&lt;%&ndash;        </tr>&ndash;%&gt;--%>
+<%--&lt;%&ndash;        <tr>&ndash;%&gt;--%>
+<%--&lt;%&ndash;        </tr>&ndash;%&gt;--%>
+
+
+<%--        <tr height="1">--%>
+<%--          <td class="" style="width: 100%;">--%>
             <div id="control--runtime--1" class="section control  container-s-1">
               <div class="control-set-font control-font-header control-font-header section-header">
                 <c:choose>
@@ -51,19 +56,6 @@
               <div class="personnel-edit">
                 <c:if test="${AppSubmissionDto.needEditController }">
                   <c:set var="isClickEdit" value="false"/>
-                  <%--<c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN07' == clickEditPage}">
-                      <c:set var="isClickEdit" value="true"/>
-                    </c:if>
-                  </c:forEach>
-                  <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                    </c:otherwise>
-                  </c:choose>--%>
                   <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                     <div class="text-right app-font-size-16">
                       <a class="back" id="RfcSkip" href="javascript:void(0);">
@@ -81,190 +73,15 @@
               <c:if test="${ServicePersonnelMandatory>0 && editControl}">
                 <c:set var="spMandatoryCount" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
                 <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
+                  <input class="not-refresh not-clear premIndex" type="hidden" name="premIndex" value="${status.index}"/>
                   <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                     <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                   </c:if>
-                  <table aria-describedby="" class="personnel-content" id="personnelRemoveId${status.index}">
-                    <thead style="display: none">
-                    <tr><th scope="col"></th></tr>
-                    </thead>
-                    <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
-                    <tbody>
-                    <tr height="1" class="personnel-header">
-                      <td class="" style="width: 100%;">
-                        <div  class="personnel-header control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-8 control-label formtext ">
-                              <div class="cgo-header">
-                                <strong>Service Personnel <label class="assign-psn-item"><c:if test="${AppSvcPersonnelDtoList.size() > 1}">${status.index+1}</c:if></label></strong>
-                              </div>
-                            </div>
-                            <div class="col-sm-5 col-md-4 text-right">
-                              <c:if test="${status.index - spMandatoryCount >=0}">
-                                <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeSpBtn cursorPointer"></em></h4>
-                              </c:if>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr height="1">
-                      <td class="" >
-                        <div class="col-sm-12 text-right">
-                          <div class="edit-content">
-                            <c:if test="${'true' == canEdit}">
-                              <div class="text-right app-font-size-16">
-                                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
-                                  <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                </a>
-                              </div>
-                            </c:if>
-                          </div>
-                        </div>
-                        <input type="hidden" name="isPartEdit" value="0"/>
-                        <div id="control--runtime--2" class="control control-caption-horizontal svcPsnSel">
-                          <div class=" form-group form-horizontal personnel-sel">
-                            <div class="col-sm-5 control-label formtext ">
-                              <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Select Service Personnel</label>
-                              <span class="mandatory">*</span>
-                              <span class="upload_controls"></span>
-                            </div>
-                            <div class="col-sm-5 col-md-7">
-                              <div class="">
-                                <iais:select cssClass="personnelSel"  name="personnelSel" options="ServicePersonnelType" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_personnelSelErrorMsg${status.index}" ></span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="new-svc-personnel-form">
-                          <table aria-describedby="" class="control-grid" style="width:100%;">
-                            <thead style="display: none">
-                            <tr><th scope="col"></th></tr>
-                            </thead>
-                            <tbody>
-                            <tr height="1" class="">
-                              <td class="">
-                                <div  class="personnel-name hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Name</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}" />
-                                      <iais:input maxLength="66" type="text" name="name"  value="${appSvcPersonnelDto.name}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1" class="">
-                              <td class="" style="width: 100%;">
-                                <div  class="personnel-designation hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Designation</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <iais:select cssClass="designation"  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1" class="otherDesignationDiv
-                                                                <c:if test="${appSvcPersonnelDto.designation != 'Others' }">
-                                                                    hidden
-                                                                </c:if>">
-                              <td class="" style="width: 100%;">
-                                <div  class="personnel-designation hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 col-md-5">
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${appSvcPersonnelDto.otherDesignation}"/>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1" class="">
-                              <td class="">
-                                <div  class="personnel-qualification hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Qualification</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <iais:input maxLength="100" type="text" name="qualification"  value="${appSvcPersonnelDto.qualification}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1" class="">
-                              <td class="">
-                                <div  class="personnel-regnNo hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Professional Regn. No. </label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}" onblur="aaa(this)">
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_regnNo${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1" class="">
-                              <td class="">
-                                <div  class="personnel-wrkExpYear hidden control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-5 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Relevant working experience (Years)</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5 col-md-7">
-                                      <iais:input maxLength="2" type="text" name="wrkExpYear"  value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_wrkExpYear${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
+                  <%@include file="servicePersonnelDetail.jsp" %>
                 </c:forEach>
               </c:if>
               <div class="personnel-content-point"></div>
               <c:if test="${requestInformationConfig==null}">
-                <%-- <c:choose>
-                   <c:when test="${!empty AppSvcPersonnelDtoList}">
-                     <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
-                   </c:when>
-                   <c:otherwise>
-                     <c:set var="spDtoLength" value="0"/>
-                   </c:otherwise>
-                 </c:choose>--%>
                 <c:choose>
                   <c:when test="${!empty AppSvcPersonnelDtoList}">
                     <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
@@ -293,6 +110,7 @@
                     <c:set var="needAddPsn" value="false"/>
                   </c:when>
                 </c:choose>
+
                 <div id="addPsnDiv" class="row <c:if test="${!needAddPsn}">hidden</c:if>">
                   <div class="col-sm-5">
                     <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
@@ -301,38 +119,22 @@
                     <span class="spErrorMsg" style="color: red;"></span>
                   </div>
                 </div>
+
               </c:if>
             </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body" >
-        <div class="row">
-          <div class="col-md-12">
-            <span style="font-size: 2rem;" id="prsErrorMsg">
-              <iais:message key="GENERAL_ERR0048" escape="false" />
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div style="display: none;">
-  <select id="nice_select_effect"></select>
-</div>
-<input type="hidden" value="goveOffice" name="pageCon">
-<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
+<%--          </td>--%>
+<%--        </tr>--%>
+<%--        </tbody>--%>
+<%--      </table>--%>
+<%--    </div>--%>
+
+<%--  </div>--%>
+
+<%--</div>--%>
+<%@include file="servicePersonnelFun.jsp"%>
+
+
+
 <script type="text/javascript">
   var init = 0;
   $(document).ready(function() {
@@ -394,6 +196,8 @@
 
     /* notLoadingSpl();*/
     init = 1;
+    let btn = document.getElementsByClassName('removeSpBtn')[0];
+    $(btn).hide()
   });
 
   var absencePsnSel = function (val,$Ele) {
@@ -405,35 +209,35 @@
     }
     $eles.each(function (k,v) {
       if('Blood Banking' == val){
-        $(this).find('div.personnel-sel').addClass('hidden');
-        $(this).find('div.new-svc-personnel-form').removeClass('hidden');
-        $(this).find('div.personnel-designation').removeClass('hidden');
-        $(this).find('div.personnel-name').removeClass('hidden');
-        $(this).find('div.personnel-qualification').addClass('hidden');
-        $(this).find('div.personnel-regnNo ').removeClass('hidden');
-        $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+        $(this).find('.personnel-sel').addClass('hidden');
+        $(this).find('.new-svc-personnel-form').removeClass('hidden');
+        $(this).find('.personnel-designation').removeClass('hidden');
+        $(this).find('.personnel-name').removeClass('hidden');
+        $(this).find('.personnel-qualification').addClass('hidden');
+        $(this).find('.personnel-regnNo ').removeClass('hidden');
+        $(this).find('.personnel-wrkExpYear').removeClass('hidden');
         if("Y" == prsFlag){
           inputReadonly($(this).find('input[name="name"]'));
         }
       }else if('Tissue Banking p1' == val){
-        $(this).find('div.personnel-sel').addClass('hidden');
-        $(this).find('div.new-svc-personnel-form').removeClass('hidden');
-        $(this).find('div.personnel-designation').addClass('hidden');
-        $(this).find('div.personnel-name').removeClass('hidden');
-        $(this).find('div.personnel-qualification').removeClass('hidden');
-        $(this).find('div.personnel-regnNo ').addClass('hidden');
-        $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+        $(this).find('.personnel-sel').addClass('hidden');
+        $(this).find('.new-svc-personnel-form').removeClass('hidden');
+        $(this).find('.personnel-designation').addClass('hidden');
+        $(this).find('.personnel-name').removeClass('hidden');
+        $(this).find('.personnel-qualification').removeClass('hidden');
+        $(this).find('.personnel-regnNo ').addClass('hidden');
+        $(this).find('.personnel-wrkExpYear').removeClass('hidden');
         if("Y" == prsFlag){
           inputCancelReadonly($(this).find('input[name="name"]'));
         }
       }else {
-        $(this).find('div.personnel-sel').addClass('hidden');
-        $(this).find('div.new-svc-personnel-form').removeClass('hidden');
-        $(this).find('div.personnel-designation').addClass('hidden');
-        $(this).find('div.personnel-name').removeClass('hidden');
-        $(this).find('div.personnel-qualification').removeClass('hidden');
-        $(this).find('div.personnel-regnNo ').addClass('hidden');
-        $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+        $(this).find('.personnel-sel').addClass('hidden');
+        $(this).find('.new-svc-personnel-form').removeClass('hidden');
+        $(this).find('.personnel-designation').addClass('hidden');
+        $(this).find('.personnel-name').removeClass('hidden');
+        $(this).find('.personnel-qualification').removeClass('hidden');
+        $(this).find('.personnel-regnNo ').addClass('hidden');
+        $(this).find('.personnel-wrkExpYear').removeClass('hidden');
         if("Y" == prsFlag){
           inputCancelReadonly($(this).find('input[name="name"]'));
         }
@@ -444,18 +248,18 @@
   var personnelSel = function(){
     $('.personnelSel').change(function () {
       var personnelSel = $(this).val();
-      var $personnelContentEle = $(this).closest('table.personnel-content');
+      var $personnelContentEle = $(this).closest('.personnel-content');
       var prsFlag = $('input[name="prsFlag"]').val();
       if(init != 0){
         //clear data;
-        $personnelContentEle.find('div.personnel-designation select[name="designation"]').val('');
-        var designation = $personnelContentEle.find('div.personnel-designation  option[value=""]').html();
+        $personnelContentEle.find('.personnel-designation select[name="designation"]').val('');
+        var designation = $personnelContentEle.find('.personnel-designation  option[value=""]').html();
         $personnelContentEle.find('select[name="designation"]').next().find('.current').html(designation);
 
-        $personnelContentEle.find('div.personnel-name input[name="name"]').val('');
-        $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');
-        $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
-        $personnelContentEle.find('div.personnel-qualification input[name="qualification"]').val('');
+        $personnelContentEle.find('.personnel-name input[name="name"]').val('');
+        $personnelContentEle.find('.personnel-regnNo input[name="regnNo"]').val('');
+        $personnelContentEle.find('.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
+        $personnelContentEle.find('.personnel-qualification input[name="qualification"]').val('');
         if('Y' == prsFlag){
           inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
         }
@@ -465,99 +269,87 @@
   };
 
   var personnelSelFun = function(personnelSel,$personnelContentEle){
-    $personnelContentEle.find('div.new-svc-personnel-form ').removeClass('hidden');
+    $personnelContentEle.find('.new-svc-personnel-form ').removeClass('hidden');
     var prsFlag = $('input[name="prsFlag"]').val();
     if('SPPT001' == personnelSel){
-      $personnelContentEle.find('div.personnel-designation').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-name').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+      $personnelContentEle.find('.personnel-designation').removeClass('hidden');
+      $personnelContentEle.find('.personnel-name').removeClass('hidden');
+      $personnelContentEle.find('.personnel-qualification').removeClass('hidden');
+      $personnelContentEle.find('.personnel-wrkExpYear').removeClass('hidden');
+      $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
       if('Y' == prsFlag){
         inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
       }
     }else if('SPPT002' == personnelSel){
-      $personnelContentEle.find('div.personnel-designation').addClass('hidden');
-      $personnelContentEle.find('div.personnel-name').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+      $personnelContentEle.find('.personnel-designation').addClass('hidden');
+      $personnelContentEle.find('.personnel-name').removeClass('hidden');
+      $personnelContentEle.find('.personnel-qualification').removeClass('hidden');
+      $personnelContentEle.find('.personnel-wrkExpYear').removeClass('hidden');
+      $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
       if('Y' == prsFlag){
         inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
       }
     }else if('SPPT003' == personnelSel){
-      $personnelContentEle.find('div.personnel-designation').addClass('hidden');
-      $personnelContentEle.find('div.personnel-name').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
-      $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
-      $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+      $personnelContentEle.find('.personnel-designation').addClass('hidden');
+      $personnelContentEle.find('.personnel-name').removeClass('hidden');
+      $personnelContentEle.find('.personnel-qualification').addClass('hidden');
+      $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
+      $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
       inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
     }else if('SPPT004' == personnelSel){
-      $personnelContentEle.find('div.personnel-designation').addClass('hidden');
-      $personnelContentEle.find('div.personnel-name').removeClass('hidden');
-      $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
-      $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
-      $personnelContentEle.find('div.personnel-regnNo ').removeClass('hidden');
+      $personnelContentEle.find('.personnel-designation').addClass('hidden');
+      $personnelContentEle.find('.personnel-name').removeClass('hidden');
+      $personnelContentEle.find('.personnel-qualification').addClass('hidden');
+      $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
+      $personnelContentEle.find('.personnel-regnNo ').removeClass('hidden');
       //regnNo.
       if('Y' == prsFlag){
         inputReadonly($personnelContentEle.find('input[name="name"]'));
       }
     }else if('' == personnelSel){
-      $personnelContentEle.find('div.personnel-designation').addClass('hidden');
-      $personnelContentEle.find('div.personnel-name').addClass('hidden');
-      $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
-      $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
-      $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
+      $personnelContentEle.find('.personnel-designation').addClass('hidden');
+      $personnelContentEle.find('.personnel-name').addClass('hidden');
+      $personnelContentEle.find('.personnel-qualification').addClass('hidden');
+      $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
+      $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
       if('Y' == prsFlag){
         inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
       }
     }
   }
 
-
   $('.addListBtn').click(function () {
     showWaiting();
-    var HasNumber = $(".personnel-content").length;
-    console.log("HasNumber"+HasNumber);
-    $.ajax({
-      url:'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
-      dataType:'json',
-      data:{
-        'HasNumber':HasNumber
-      },
-      type:'POST',
-      success:function (data) {
-        if ("success" == data.res){
-          $('.personnel-content-point').before(data.sucInfo);
-          pageController($('.personnel-content:last'));
-          spRemove();
-          //hidden add more
-          var psnLength = $('.personnel-content').length;
-          if(psnLength >='${spHcsaSvcPersonnelDto.maximumCount}'){
-            $('#addPsnDiv').addClass('hidden');
-          }
-          if(psnLength <= '${spHcsaSvcPersonnelDto.mandatoryCount}'){
-            $('.personnel-content:last em.removeSpBtn').remove();
-          }
-          $('#isEditHiddenVal').val('1');
-          changePsnItem();
-          designationChange();
-          /*$("div.designation->ul").mCustomScrollbar({
-                  advanced: {
-                      updateOnContentResize: true
-                  }
-              }
-          );*/
-        }else{
-          $('.spErrorMsg').html(data.errInfo);
-        }
-        dismissWaiting();
-      },
-      error:function (data) {
-        dismissWaiting();
-      }
-    });
+    let target =  $('.personnel-content:last')
+    let src = target.clone();
+    src.find('.removeSpBtn').show()
+    clearFields(src);
+
+    $('.personnel-content-point').before(src);
+    pageController($('.personnel-content:last'));
+    spRemove();
+    var psnLength = $('.personnel-content').length;
+    if(psnLength >='${spHcsaSvcPersonnelDto.maximumCount}'){
+      $('#addPsnDiv').addClass('hidden');
+    }
+    if(psnLength <= '${spHcsaSvcPersonnelDto.mandatoryCount}'){
+      $('.personnel-content:last em.removeSpBtn').remove();
+    }
+    $('#isEditHiddenVal').val('1');
+    changePsnItem();
+    designationChange();
+    dismissWaiting();
   });
+
+
+  function refreshIndex($premContent, k){
+    var $target = getJqueryNode($premContent);
+    if (isEmptyNode($target)) {
+      return;
+    }
+    $target.find('.premIndex').val(k);
+    toggleTag($target.find('.removeEditDiv'), k != 0);
+  }
 
   function removeSp(){
     console.log("SP --->");
@@ -628,7 +420,7 @@
   function aaa(obj) {
     console.log('loading prs info ...');
     showWaiting();
-    var $loadingContent =$(obj).closest('table.personnel-content');
+    var $loadingContent =$(obj).closest('.personnel-content');
     var prgNo =  $(obj).val();
     if(prgNo == "" || prgNo == null || prgNo == undefined){
       clearPrsInfo($loadingContent);
@@ -678,7 +470,7 @@
   };
 
   function loadingSp(data,obj) {
-    var $CurrentPsnEle = $(obj).closest('table.personnel-content');
+    var $CurrentPsnEle = $(obj).closest('.personnel-content');
     const name = data.name;
     $CurrentPsnEle.find("input[name='name']").val(name);
     var prsFlag = $('input[name="prsFlag"]').val();
@@ -728,14 +520,15 @@
     $('.designation').change(function () {
       var thisVal = $(this).val();
       if("Others" == thisVal){
-        $(this).closest('table.personnel-content').find('tr.otherDesignationDiv').removeClass('hidden');
+        $(this).closest('.personnel-content').find('.otherDesignationDiv').removeClass('hidden');
       }else{
-        $(this).closest('table.personnel-content').find('tr.otherDesignationDiv').addClass('hidden');
+        $(this).closest('.personnel-content').find('.otherDesignationDiv').addClass('hidden');
       }
     });
   };
 
 </script>
+
 
 
 

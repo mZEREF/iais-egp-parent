@@ -305,7 +305,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
     @Override
     public List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId,Set<String> appIds){
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+        List<LicAppCorrelationDto> licAppCorrelationDtos=licCommService.getLicCorrBylicId(licenceId);
         for(LicAppCorrelationDto appCorrelationDto:licAppCorrelationDtos){
             if(!appIds.contains(appCorrelationDto.getApplicationId())){
                 ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();

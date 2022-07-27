@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_NAME_RESCHEDULE_APPOINTMENT;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APPOINTMENT_LIST_DATA_LIST;
 
 @Slf4j
 @Delegator("rescheduleAppointmentDelegator")
 public class RescheduleAppointmentDelegator {
-    private static final String MODULE_NAME = "Inspection";
-    private static final String FUNCTION_NAME_RESCHEDULE_APPOINTMENT = "Reschedule Appointments";
     private static final String KEY_APPOINTMENT_VIEW_LIST = "appointmentViewList";
     private static final String ACTION_TYPE = "action_type";
     private static final String ACTION_TYPE_NEXT = "next";
@@ -46,7 +46,7 @@ public class RescheduleAppointmentDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_RESCHEDULE_APPOINTMENT);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_NAME_RESCHEDULE_APPOINTMENT);
         request.getSession().removeAttribute(KEY_APPOINTMENT_VIEW_LIST);
     }
 

@@ -45,7 +45,7 @@ import java.util.Set;
 public class ConfigCommClientFallback implements ConfigCommClient {
 
     @Override
-    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtosById(List<String> ids) {
+    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceDtosByIds(List<String> ids) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
