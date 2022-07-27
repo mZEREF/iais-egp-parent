@@ -4,13 +4,13 @@
     <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
  <div class="panel panel-default">
     <div class="panel-heading">
-        <h4 class="panel-title">
-            <strong>
+        <h4  class="panel-title">
+            <a data-toggle="collapse" href="#dpAmendment">
                 Amendment
-            </strong>
+            </a>
         </h4>
     </div>
-    <div id="patientAmentment" class="panel-collapse collapse in">
+    <div id="dpAmendment" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:if test="${dpSuperDataSubmissionDto.dataSubmissionDto.submissionType eq 'DP_TP001'}">
