@@ -5,7 +5,7 @@
         <label class="app-title">${currStepName}</label>
     </iais:row>
     <div class="amend-preview-info form-horizontal min-row">
-        <c:forEach var="keyAppointmentHoldeDto" items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}" varStatus="status">
+        <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}" varStatus="status">
             <iais:row>
                 <div  class="col-xs-12">
                     <p><strong>Key Appointment Holder<c:if test="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>

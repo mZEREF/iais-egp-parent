@@ -230,6 +230,14 @@ public class ServiceInfoDelegator {
             prePareMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
             prepareDocuments(bpc);
+        } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(currentStep)) {
+            prepareOtherInformation(bpc);
+        } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(currentStep)) {
+            prepareSupplementaryForm(bpc);
+        } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(currentStep)) {
+            prepareSpecialServicesForm(bpc);
+        } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
+            prepareDocuments(bpc);
         } else {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
@@ -286,12 +294,43 @@ public class ServiceInfoDelegator {
             doKeyAppointmentHolder(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             doMedAlertPerson(bpc);
+        } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(currentStep)) {
+            doOtherInformation(bpc);
+        } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(currentStep)) {
+            doSupplementaryForm(bpc);
+        } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(currentStep)) {
+            doSpecialServicesForm(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
             doDocuments(bpc);
         } else {
             log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
         }
         log.info(StringUtil.changeForLog("--- Do " + currentStepName + " End ---"));
+    }
+
+    private void prepareSpecialServicesForm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+    private void doSpecialServicesForm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+    private void prepareSupplementaryForm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+    private void doSupplementaryForm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+
+    private void prepareOtherInformation(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+    private void doOtherInformation(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
@@ -596,112 +635,22 @@ public class ServiceInfoDelegator {
      * @throws
      */
     public void prepareView(BaseProcessClass bpc) throws Exception {
-        log.debug(StringUtil.changeForLog("the do prepareView start ...."));
+        log.info(StringUtil.changeForLog("the do prepareView start ...."));
         String iframeId = ParamUtil.getString(bpc.request, "iframeId");
         String maskName = ParamUtil.getString(bpc.request, "maskName");
         String svcId = ParamUtil.getMaskedString(bpc.request, maskName);
         String appNo = ParamUtil.getString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(svcId)) {
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             log.info(StringUtil.changeForLog("get current svc info...."));
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
-            /*List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = configCommService.getHcsaServiceStepSchemesByServiceId(
-                    svcId);
-            appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-            //sort po,dpo
-            for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemesByServiceId) {
-                switch (hcsaServiceStepSchemeDto.getStepCode()) {
-                    case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
-                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                        if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
-                            for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
-                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcCgoDto,
-                                        AppSvcPrincipalOfficersDto.class);
-                                boolean isAllFieldNull = ApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
-                                if (!isAllFieldNull) {
-                                    reloadDto.add(appSvcCgoDto);
-                                }
-                            }
-                            if (IaisCommonUtils.isEmpty(reloadDto)) {
-                                appSvcRelatedInfoDto.setAppSvcCgoDtoList(null);
-                            } else {
-                                appSvcRelatedInfoDto.setAppSvcCgoDtoList(reloadDto);
-                            }
-                        }
-                        break;
-                    case HcsaConsts.STEP_PRINCIPAL_OFFICERS:
-                        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                        if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
-                            removeEmptyPsn(appSvcPrincipalOfficersDtos, reloadDto);
-                            if (IaisCommonUtils.isEmpty(reloadDto)) {
-                                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(null);
-                            } else {
-                                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(reloadDto);
-                            }
-                        }
-                        break;
-                    case HcsaConsts.STEP_SERVICE_PERSONNEL:
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-                        if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-                            List<AppSvcPersonnelDto> reloadDto = IaisCommonUtils.genNewArrayList();
-                            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos) {
-                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,
-                                        AppSvcPrincipalOfficersDto.class);
-                                boolean isAllFieldNull = ApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
-                                if (!isAllFieldNull) {
-                                    reloadDto.add(appSvcPersonnelDto);
-                                }
-                            }
-                            if (IaisCommonUtils.isEmpty(reloadDto)) {
-                                appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(null);
-                            } else {
-                                appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(reloadDto);
-                            }
-                        }
-                        break;
-                    case HcsaConsts.STEP_MEDALERT_PERSON:
-                        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-                        if (!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)) {
-                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
-                            removeEmptyPsn(appSvcMedAlertPersonList, reloadDto);
-                            if (IaisCommonUtils.isEmpty(reloadDto)) {
-                                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(null);
-                            } else {
-                                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(reloadDto);
-                            }
-                        }
-                        break;
-                    case HcsaConsts.STEP_LABORATORY_DISCIPLINES:
-                        break;
-                    case HcsaConsts.STEP_DOCUMENTS:
-                        break;
-                    default:
-                        break;
-                }
-            }*/
-//            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appGrpPremisesDtos);
-//            List<HcsaSvcDocConfigDto> svcDocConfig = configCommService.getAllHcsaSvcDocs(svcId);
-
-            //ParamUtil.setSessionAttr(bpc.request, SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-            //set dupForPsn attr
-            //ApplicationHelper.setDupForPersonAttr(bpc.request, appSvcRelatedInfoDto);
-            //svc doc add align for dup for prem
-           /* ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, appGrpPremisesDtos);
-            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-            //set svc doc title
-            Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig, appGrpPremisesDtos,
-                    appSvcRelatedInfoDto);
-            appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);*/
-
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
         }
 
-        log.debug(StringUtil.changeForLog("the do prepareView end ...."));
+        log.info(StringUtil.changeForLog("the do prepareView end ...."));
     }
 
     private Map<String, String> isAllChecked(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
@@ -1304,7 +1253,8 @@ public class ServiceInfoDelegator {
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, bpc.request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = AppDataHelper.genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "", bpc.request);
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = AppDataHelper.genKeyPersonnels(
+                    ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "", bpc.request);
             currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
@@ -1312,7 +1262,8 @@ public class ServiceInfoDelegator {
         String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
-            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                    bpc.request,
                     LICPERSONSELECTMAP);
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = currentSvcRelatedDto.getAppSvcMedAlertPersonList();
             errorMap = AppValidatorHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
