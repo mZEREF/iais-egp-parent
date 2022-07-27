@@ -63,11 +63,6 @@
                                                     style="display: block"><a href="#tabInspection"
                                                                               aria-controls="tabInspection" role="tab"
                                                                               data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></li>
-                                                <c:if test="${applicationViewDto.applicationDto.status=='APST050'}">
-                                                    <li class="complete" id="letter" role="presentation"><a href="#tabLetter"
-                                                                                                              aria-controls="tabLetter" role="tab"
-                                                                                                              data-toggle="tab">Letter</a></li>
-                                                </c:if>
                                                 <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
                                                                                                            aria-controls="tabProcessing" role="tab"
                                                                                                            data-toggle="tab">Processing</a></li>
@@ -99,11 +94,7 @@
                                                     <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
                                                 </div>
                                                     <%--         Inspection end                       --%>
-                                                <c:if test="${applicationViewDto.applicationDto.status=='APST050'}">
-                                                    <div class="tab-pane" id="tabLetter" role="tabpanel">
-                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/licenceGenerateEmail.jsp" %>
-                                                    </div>
-                                                </c:if>
+
                                                 <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                     <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                     <br/><br/>

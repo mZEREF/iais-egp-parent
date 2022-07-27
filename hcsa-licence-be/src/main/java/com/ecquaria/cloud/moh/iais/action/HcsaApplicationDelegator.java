@@ -4360,7 +4360,7 @@ public class HcsaApplicationDelegator {
         }
         if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationStatus)
                 && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Send Email"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
         }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);
         ParamUtil.setRequestAttr(request, "hasRollBackHistoryList", hasRollBackHistoryList);
