@@ -16,8 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
