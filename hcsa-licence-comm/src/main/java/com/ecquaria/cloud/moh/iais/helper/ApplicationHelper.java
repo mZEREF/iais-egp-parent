@@ -2259,11 +2259,10 @@ public final class ApplicationHelper {
             String premisesVal = Optional.ofNullable(appGrpPremisesDto).map(AppGrpPremisesDto::getPremisesIndexNo).orElse("");
             if (StringUtil.isEmpty(dupForPerson)) {
                 DocSecDetailDto dto = new DocSecDetailDto();
-                dto.setDocConfigDto(svcDocConfig);
+                dto.setDocConfigDto(svcDocConfig, isBackend());
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
                         svcConfig.getId(), svcConfig.getSvcCode());
                 dto.setAppSvcDocDtoList(appSvcDocDtoList);
-                dto.setBE(isBackend());
                 result.add(dto);
             } else {
                 List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(currSvcInfoDto, dupForPerson);
@@ -2273,10 +2272,9 @@ public final class ApplicationHelper {
                     List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
                             psn.getIndexNo(), svcConfig.getId(), svcConfig.getSvcCode());
                     DocSecDetailDto dto = new DocSecDetailDto();
-                    dto.setDocConfigDto(svcDocConfig);
+                    dto.setDocConfigDto(svcDocConfig, isBackend());
                     dto.setAppSvcDocDtoList(appSvcDocDtoList);
                     dto.setPsnIndexNo(psn.getIndexNo());
-                    dto.setBE(isBackend());
                     if (needPsnTypeIndex) {
                         dto.setPsnTypeIndex(i++);
                     }
