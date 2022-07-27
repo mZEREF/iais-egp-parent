@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +127,13 @@ public class HcsaApplicationAjaxController{
             }
             Integer index = (Integer) ParamUtil.getSessionAttr(request,"AppIntranetDocDtoIndex");
             int fileSizes = appIntranetDocDtos.size();
+            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                fileSizes = appIntranetDocDtos
+                        .stream()
+                        .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
+                        .collect(Collectors.toList())
+                        .size();
+            }
             if(index == null){
                 index = fileSizes;
             }else {
@@ -190,8 +198,16 @@ public class HcsaApplicationAjaxController{
             applicationViewDto.setIsUpload(isUpload);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : appIntranetDocDtos.size());
-            if(appIntranetDocDtos.size() == 0){
+            int fileSizes = appIntranetDocDtos.size();
+            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                fileSizes = appIntranetDocDtos
+                        .stream()
+                        .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
+                        .collect(Collectors.toList())
+                        .size();
+            }
+            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : fileSizes);
+            if(fileSizes == 0){
                 map.put("noFilesMessage", MessageUtil.getMessageDesc("GENERAL_ACK018"));
             }
         }

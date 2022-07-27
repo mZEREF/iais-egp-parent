@@ -717,8 +717,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public ApplicationViewDto getApplicationViewDto(String correlationId, String currentRoleId) {
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId, currentRoleId);
-        return applicationViewDto;
+        return applicationViewService.getApplicationViewDtoByCorrId(correlationId, currentRoleId);
     }
 
     @Override
@@ -1113,7 +1112,7 @@ public class InsRepServiceImpl implements InsRepService {
             }
             reportDtoForAo.setReportedBy(reportBy);
 
-            Set<String> inspectiors = taskService.getInspectiors(applicationNo, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
+            Set<String> inspectiors = applicationClient.getActiveInspectorByCorrelationId(taskDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR).getEntity();
             List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for (String inspector : inspectiors) {
                 inspectors.add(inspector);
