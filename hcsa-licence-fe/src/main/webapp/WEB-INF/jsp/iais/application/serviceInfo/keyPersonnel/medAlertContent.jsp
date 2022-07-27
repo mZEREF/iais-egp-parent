@@ -11,8 +11,9 @@
     <iais:row>
         <div class="col-xs-12">
             <p class="app-title"><c:out value="${currStepName}"/></p>
-            <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
             <hr>
+            <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
     </iais:row>
 
@@ -28,12 +29,6 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-    <iais:row>
-        <div class="col-xs-12">
-            <p class="app-title"><c:out value="${currStepName}"/></p>
-            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
-        </div>
-    </iais:row>
 
     <c:choose>
         <c:when test="${empty personList && currStepConfig.mandatoryCount > 1}">

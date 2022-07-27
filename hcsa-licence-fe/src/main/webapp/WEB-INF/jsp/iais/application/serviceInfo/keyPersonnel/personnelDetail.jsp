@@ -2,6 +2,7 @@
 
 <c:set var="isCgo" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
 <c:set var="isMap" value="${person.psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
+<script>console.log("${isMap}")</script>
 <c:if test="${empty psnContent}">
     <c:set var="psnContent" value="person-content"/>
 </c:if>
@@ -99,6 +100,7 @@
         </iais:row>
 
         <c:if test="${!isMap}">
+            <script>console.log("111")</script>
             <iais:row>
                 <iais:field width="5" mandatory="true" value="Designation"/>
                 <iais:value width="7" cssClass="col-md-7">
