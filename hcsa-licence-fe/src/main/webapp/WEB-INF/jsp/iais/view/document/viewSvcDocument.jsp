@@ -13,6 +13,7 @@
                         <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
                     </div>
                 </iais:row>
+                <br/>
                 <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
                     <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
                         <c:if test="${secDto.existDoc}">
