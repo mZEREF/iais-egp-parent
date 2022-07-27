@@ -20,9 +20,6 @@
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST004'}">
         <jsp:include page="/WEB-INF/jsp/iais/view/keyPersonnel/viewSvcPrincipalOfficers.jsp"/>
     </c:if><%--STEP_PRINCIPAL_OFFICERS--%>
-    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST005'}">
-        <jsp:include page="/WEB-INF/jsp/iais/view/document/viewSvcDocument.jsp"/>
-    </c:if><%--STEP_DOCUMENTS--%>
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST006'}">
         <jsp:include page="/WEB-INF/jsp/iais/view/svcPersonnel/viewSvcPerson.jsp"/>
     </c:if><%--STEP_SERVICE_PERSONNEL--%>
@@ -47,4 +44,19 @@
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
         <jsp:include page="/WEB-INF/jsp/iais/view/keyPersonnel/viewKeyAppointmentHolder.jsp"/>
     </c:if>
+    <c:when test="${currentStep == 'SVST015'}">
+        <jsp:include page="/WEB-INF/jsp/iais/view/otherInfo/viewOtherInformation.jsp"/>
+    </c:when>
+    <c:when test="${currentStep == 'SVST016'}">
+        <jsp:include page="/WEB-INF/jsp/iais/view/supplementaryForm/viewSupplementaryForm.jsp"/>
+    </c:when>
+    <c:when test="${currentStep == 'SVST017'}">
+        <jsp:include page="/WEB-INF/jsp/iais/view/specialServicesForm/viewSpecialServicesForm.jsp"/>
+    </c:when>
+    <c:when test="${currentStep == 'SVST005'}">
+        <jsp:include page="/WEB-INF/jsp/iais/view/document/viewSvcDocument.jsp"/>
+    </c:when>
+    <c:when test="${currentStep == 'SVST018'}">
+        <jsp:include page="/WEB-INF/jsp/iais/view/outsourced/viewOutsourcedProviders.jsp"/>
+    </c:when>
 </c:forEach>

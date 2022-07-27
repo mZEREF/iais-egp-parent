@@ -32,14 +32,10 @@
                                                 <div class="application-service-steps">
                                                     <c:choose>
                                                         <c:when test="${currentStep == 'SVST012'}">
-                                                            <div class="business">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/businessInfo/businessContent.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/businessInfo/businessContent.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST008'}">
-                                                            <div class="vehicles">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/vehiclesContent.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/vehiclesContent.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST009'}">
                                                             <div class="clinical-director">
@@ -61,47 +57,45 @@
                                                             </div>
                                                         </c:when>--%>
                                                         <c:when test="${currentStep == 'SVST002'}">
-                                                            <div class="clinical-governance-officer">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/governanceOfficers.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/governanceOfficers.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST013'}">
-                                                            <div class="section-leader">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/sectionLeader.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/sectionLeader.jsp"/>
                                                         </c:when>
                                                         <%--<c:when test="${currentStep == 'SVST003'}">
                                                             <jsp:include page="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/disciplineAllocation.jsp"/>
                                                         </c:when>--%>
                                                         <c:when test="${currentStep == 'SVST010'}">
-                                                            <div class="charges">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/chargesContent.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/others/chargesContent.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST006'}">
-                                                            <div class="clinical-governance-officer">
-                                                                <!--start -->
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/servicePersonnel.jsp" />
-                                                                <!--end -->
-                                                            </div>
+                                                            <!--start -->
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/servicePersonnel.jsp" />
+                                                            <!--end -->
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST004'}">
                                                             <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/principalOfficers.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
-                                                            <div class="key-appointment-holder">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/keyAppointmentHolder.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/keyAppointmentHolder.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST007'}">
-                                                            <div class="med-alert-person">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/medAlertContent.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/medAlertContent.jsp"/>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST015'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/otherInfo/otherInformation.jsp"/>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST016'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/supplementaryForm.jsp"/>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST017'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/specialServicesForm/specialServicesForm.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST005'}">
-                                                            <div class="Service-related-Documents document-upload-gp">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/document.jsp"/>
-                                                            </div>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/document.jsp"/>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST018'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/outsourced/outsourcedProviders.jsp"/>
                                                         </c:when>
                                                     </c:choose>
                                                 </div>

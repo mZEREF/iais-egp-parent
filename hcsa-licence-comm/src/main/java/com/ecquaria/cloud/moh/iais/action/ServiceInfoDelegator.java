@@ -148,7 +148,7 @@ public class ServiceInfoDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, serviceStepDto);
 
-        if (StringUtil.isEmpty(action) || IaisEGPConstant.YES.equals(formTab)) {
+        if (StringUtil.isEmpty(action)) {
             if (serviceStepDto.getCurrentStep() != null) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,
                         serviceStepDto.getCurrentStep().getStepCode());
@@ -189,11 +189,11 @@ public class ServiceInfoDelegator {
         HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
                 .map(ServiceStepDto::getCurrentStep)
                 .orElseGet(HcsaServiceStepSchemeDto::new);
-        String currentStepName = Optional.ofNullable(step)
+        String currentStepName = Optional.of(step)
                 .map(HcsaServiceStepSchemeDto::getStepName)
                 .orElse(HcsaConsts.BUSINESS_NAME);
         log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " Start ---"));
-        String currentStep = Optional.ofNullable(step)
+        String currentStep = Optional.of(step)
                 .map(HcsaServiceStepSchemeDto::getStepCode)
                 .orElse(HcsaConsts.STEP_BUSINESS_NAME);
         String singleName = "";
@@ -228,16 +228,16 @@ public class ServiceInfoDelegator {
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             singleName = HcsaConsts.MEDALERT_PERSON;
             prePareMedAlertPerson(bpc);
-        } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
-            prepareDocuments(bpc);
         } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(currentStep)) {
-            prepareOtherInformation(bpc);
+            prepareOtherInformation(bpc.request);
         } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(currentStep)) {
-            prepareSupplementaryForm(bpc);
+            prepareSupplementaryForm(bpc.request);
         } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(currentStep)) {
-            prepareSpecialServicesForm(bpc);
+            prepareSpecialServicesForm(bpc.request);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
             prepareDocuments(bpc);
+        } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(currentStep)) {
+            prepareOutsourcedProviders(bpc.request);
         } else {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
@@ -262,11 +262,11 @@ public class ServiceInfoDelegator {
         HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
                 .map(ServiceStepDto::getCurrentStep)
                 .orElseGet(HcsaServiceStepSchemeDto::new);
-        String currentStepName = Optional.ofNullable(step)
+        String currentStepName = Optional.of(step)
                 .map(HcsaServiceStepSchemeDto::getStepName)
                 .orElse(HcsaConsts.BUSINESS_NAME);
         log.info(StringUtil.changeForLog("--- Do " + currentStepName + " Start ---"));
-        String currentStep = Optional.ofNullable(step)
+        String currentStep = Optional.of(step)
                 .map(HcsaServiceStepSchemeDto::getStepCode)
                 .orElse(HcsaConsts.STEP_BUSINESS_NAME);
         String pageStep = ParamUtil.getString(bpc.request, "currentStep");
@@ -295,42 +295,43 @@ public class ServiceInfoDelegator {
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             doMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(currentStep)) {
-            doOtherInformation(bpc);
+            doOtherInformation(bpc.request);
         } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(currentStep)) {
-            doSupplementaryForm(bpc);
+            doSupplementaryForm(bpc.request);
         } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(currentStep)) {
-            doSpecialServicesForm(bpc);
+            doSpecialServicesForm(bpc.request);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
             doDocuments(bpc);
+        } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(currentStep)) {
+            doOutsourcedProviders(bpc.request);
         } else {
             log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
         }
         log.info(StringUtil.changeForLog("--- Do " + currentStepName + " End ---"));
     }
 
-    private void prepareSpecialServicesForm(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void prepareSpecialServicesForm(HttpServletRequest request) {
     }
 
-    private void doSpecialServicesForm(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void doSpecialServicesForm(HttpServletRequest request) {
     }
 
-    private void prepareSupplementaryForm(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void prepareSupplementaryForm(HttpServletRequest request) {
     }
 
-    private void doSupplementaryForm(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void doSupplementaryForm(HttpServletRequest request) {
     }
 
-
-    private void prepareOtherInformation(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void prepareOtherInformation(HttpServletRequest request) {
     }
 
-    private void doOtherInformation(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+    private void doOtherInformation(HttpServletRequest request) {
+    }
+
+    private void prepareOutsourcedProviders(HttpServletRequest request) {
+    }
+
+    private void doOutsourcedProviders(HttpServletRequest request) {
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
@@ -1664,10 +1665,6 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
-                        HcsaConsts.STEP_PRINCIPAL_OFFICERS,
-                        HcsaConsts.STEP_SERVICE_PERSONNEL,
-                        HcsaConsts.STEP_MEDALERT_PERSON,
                         HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
