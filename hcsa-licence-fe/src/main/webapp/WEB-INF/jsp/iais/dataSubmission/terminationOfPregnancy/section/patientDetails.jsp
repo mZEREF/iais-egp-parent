@@ -222,6 +222,7 @@
     $(function () {
         $("#childrenNum").keyup(function () {
             $('#numMax').show();
+            $("#childrenNumMsg").text('');
             var value = $(this).val();
             $("#genders").empty();
             for (var i = 0; i < value; i++) {
