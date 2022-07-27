@@ -683,7 +683,7 @@ public final class ExcelWriter {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

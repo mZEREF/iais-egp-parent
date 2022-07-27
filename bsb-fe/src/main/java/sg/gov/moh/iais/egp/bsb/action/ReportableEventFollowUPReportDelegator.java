@@ -106,7 +106,7 @@ public class ReportableEventFollowUPReportDelegator {
                 FollowupReport1BDto report1BDto = mapper.readValue(draft.getDraftData(),FollowupReport1BDto.class);
                 retrieveByFollowupReport1BDto(request,report1BDto);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -124,7 +124,7 @@ public class ReportableEventFollowUPReportDelegator {
               FollowupReport1ADto report1ADto = mapper.readValue(draft.getDraftData(),FollowupReport1ADto.class);
               retrieveByFollowupReport1ADto(request,report1ADto);
            } catch (JsonProcessingException e) {
-               e.printStackTrace();
+               log.error(e.getMessage(), e);
            }
        }
 

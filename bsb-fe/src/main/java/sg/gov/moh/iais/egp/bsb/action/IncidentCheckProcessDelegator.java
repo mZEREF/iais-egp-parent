@@ -64,7 +64,7 @@ public class IncidentCheckProcessDelegator {
                     ParamUtil.setSessionAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE,processType);
                     request.removeAttribute(KEY_EDIT_APP_ID);
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
                 ParamUtil.setSessionAttr(request,KEY_DRAFT,draft);
                 ParamUtil.setSessionAttr(request,"processKey",KEY_DRAFT);

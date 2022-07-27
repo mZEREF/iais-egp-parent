@@ -30,7 +30,6 @@ public class GlobalConstantsTag extends SimpleTagSupport {
                 }
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             throw new JspTagException("Class not found: " + this.classFullName);
         } catch (IllegalAccessException e) {
             throw new JspTagException("Illegal access: " + this.classFullName);
