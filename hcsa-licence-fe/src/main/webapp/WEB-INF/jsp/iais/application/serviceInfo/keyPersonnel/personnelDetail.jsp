@@ -84,7 +84,7 @@
             </iais:value>
         </iais:row>
 
-        <iais:row cssClass="nationalityDiv ${isMap? 'hidden':''}">
+        <iais:row cssClass="nationalityDiv">
             <iais:field width="5" mandatory="true" value="Country of issuance"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select firstOption="Please Select" name="${prepsn}nationality${index}" codeCategory="CATE_ID_NATIONALITY"
@@ -98,120 +98,121 @@
             </iais:value>
         </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="true" value="Designation"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
-                             options="designationOpList" firstOption="Please Select"
-                             onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
-            </iais:value>
-        </iais:row>
+        <c:if test="${!isMap}">
+            <iais:row>
+                <iais:field width="5" mandatory="true" value="Designation"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
+                                 options="designationOpList" firstOption="Please Select"
+                                 onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
+                </iais:value>
+            </iais:row>
+            <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
+                <iais:field width="5" value=""/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prepsn}otherDesignation${index}"
+                                value="${person.otherDesignation}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
-            <iais:field width="5" value=""/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prepsn}otherDesignation${index}"
-                            value="${person.otherDesignation}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="false" value="Professional Board"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
+                                 value="${person.professionBoard}" firstOption="Please Select"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="false" value="Professional Board"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
-                             value="${person.professionBoard}" firstOption="Please Select"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Type"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:select cssClass="professionType" name="${prepsn}professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                 value="${person.professionType}" firstOption="Please Select"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Type"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionType" name="${prepsn}professionType${index}" codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                             value="${person.professionType}" firstOption="Please Select"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn. No."/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn. No."/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Current Registration"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prepsn}typeOfCurrRegi${index}"
+                                value="${person.typeOfCurrRegi}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Current Registration"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prepsn}typeOfCurrRegi${index}"
-                            value="${person.typeOfCurrRegi}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Current Registration Date"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:datePicker cssClass="currRegiDate field-date" name="${prepsn}currRegiDate${index}" value="${person.currRegiDateStr}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Current Registration Date"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="currRegiDate field-date" name="${prepsn}currRegiDate${index}" value="${person.currRegiDateStr}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:datePicker cssClass="praCerEndDate field-date" name="${prepsn}praCerEndDate${index}" value="${person.praCerEndDateStr}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="praCerEndDate field-date" name="${prepsn}praCerEndDate${index}" value="${person.praCerEndDateStr}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Register"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
+                                value="${person.typeOfRegister}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Type of Register"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
-                            value="${person.typeOfRegister}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" value="Specialty"/>
+                <iais:value width="7" cssClass="col-md-7 speciality" display="true">
+                    <c:out value="${person.speciality}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" value="Specialty"/>
-            <iais:value width="7" cssClass="col-md-7 speciality" display="true">
-                <c:out value="${person.speciality}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" value="Sub-Specialty"/>
+                <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
+                    <c:out value="${person.subSpeciality}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" value="Sub-Specialty"/>
-            <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
-                <c:out value="${person.subSpeciality}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" value="Other Specialties"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prepsn}specialityOther${index}"
+                                value="${person.specialityOther}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" value="Other Specialties"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prepsn}specialityOther${index}"
-                            value="${person.specialityOther}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Date when specialty was obtained"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
+                                     value="${person.specialtyGetDateStr}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Date when specialty was obtained"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
-                                 value="${person.specialtyGetDateStr}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" value="Qualification"/>
+                <iais:value width="7" cssClass="col-md-7 qualification" display="true">
+                    <c:out value="${person.qualification}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" value="Qualification"/>
-            <iais:value width="7" cssClass="col-md-7 qualification" display="true">
-                <c:out value="${person.qualification}"/>
-            </iais:value>
-        </iais:row>
-
-        <iais:row cssClass="${isMap? 'hidden':''}">
-            <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Other Qualification"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" cssClass="otherQualification" name="${prepsn}otherQualification${index}"
-                            value="${person.otherQualification}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" mandatory="${isCgo ? 'true' : 'false'}" value="Other Qualification"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="100" type="text" cssClass="otherQualification" name="${prepsn}otherQualification${index}"
+                                value="${person.otherQualification}"/>
+                </iais:value>
+            </iais:row>
+        </c:if>
 
         <iais:row>
             <iais:field width="5" mandatory="true" value="Mobile No."/>

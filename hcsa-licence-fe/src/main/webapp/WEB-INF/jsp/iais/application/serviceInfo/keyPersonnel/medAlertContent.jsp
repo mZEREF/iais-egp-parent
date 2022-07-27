@@ -10,7 +10,7 @@
 
     <iais:row>
         <div class="col-xs-12">
-            <p class="app-title">MedAlert Person</p>
+            <p class="app-title"><c:out value="${currStepName}"/></p>
             <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
             <hr>
         </div>
