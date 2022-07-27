@@ -127,7 +127,6 @@
                     </iais:value>
                 </iais:row>
             </div>
-<%--            <c:if test="${'-1' != clinicalDirectorDto.assignSelect || !empty clinicalDirectorDto.assignSelect}">--%>
 
             <div class="col-md-12 col-xs-12 person-detail <c:if test="${'-1' == clinicalDirectorDto.assignSelect || empty clinicalDirectorDto.assignSelect}">hidden</c:if>">
                 <c:choose>
@@ -153,7 +152,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5 profRegNoLabel" id="p" mandatory="${pcdType ? 'true' : 'false'}" value="Professional Regn. No."/>
+                        <iais:field width="5" cssClass="col-md-5 profRegNoLabel" id="p" mandatory="true" value="Professional Regn. No."/>
                         <c:if test="${'EAS' == currentSvcCode}">
                             <span class="mandatory">*</span>
                         </c:if>
@@ -235,7 +234,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5 specialtyGetDateLabel" mandatory="${pcdType ? 'true' : 'false'}" value="Date when specialty was obtained"/>
+                        <iais:field width="5" cssClass="col-md-5 specialtyGetDateLabel" mandatory="false" value="Date when specialty was obtained"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker cssClass="specialtyGetDate field-date" name="${perfix}specialtyGetDate${index}"
                                              value="${clinicalDirectorDto.specialtyGetDateStr}"/>
@@ -245,7 +244,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${pcdType ? 'true' : 'false'}" value="Type of Registration Date"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Registration Date"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${perfix}typeOfCurrRegi${index}"
                                         value="${clinicalDirectorDto.typeOfCurrRegi}"/>
@@ -255,7 +254,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${pcdType ? 'true' : 'false'}" value="Current Registration Date"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Current Registration Date"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker cssClass="currRegiDate field-date" name="${perfix}currRegiDate${index}" value="${clinicalDirectorDto.currRegiDateStr}"/>
                         </iais:value>
@@ -264,7 +263,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${pcdType ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Practicing Certificate End Date"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker cssClass="praCerEndDate field-date" name="${perfix}praCerEndDate${index}" value="${clinicalDirectorDto.praCerEndDateStr}"/>
                         </iais:value>
@@ -273,7 +272,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${pcdType ? 'true' : 'false'}" value="Type of Register"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Register"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${perfix}typeOfRegister${index}"
                                         value="${clinicalDirectorDto.typeOfRegister}"/>
@@ -283,7 +282,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="${pcdType ? 'true' : 'false'}" value="Relevant Experience"/>
+                        <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}"
                                         value="${clinicalDirectorDto.typeOfRegister}"/>
@@ -293,7 +292,7 @@
                     <%--TODO....--%>
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap holdCerByEMSDiv">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop&nbsp;"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop&nbsp;"/>
                         <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${clinicalDirectorDto.holdCerByEMS}"/>
                         <div class="form-check col-md-3 col-xs-3">
                             <input class="form-check-input holdCerByEMS" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
@@ -309,7 +308,7 @@
 
                 <iais:row cssClass="row control control-caption-horizontal">
                     <div class="form-group form-horizontal formgap">
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${pcdType ? 'true' : 'false'}" value="Expiry Date (ACLS)"/>
+                        <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Expiry Date (ACLS)"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker cssClass="aclsExpiryDate" name="${perfix}aclsExpiryDate${index}"
                                              value="${clinicalDirectorDto.aclsExpiryDateStr}"/>
@@ -348,7 +347,6 @@
                 </iais:row>
                 <hr/>
             </div>
-<%--            </c:if>--%>
         </div>
     </c:forEach>
 
@@ -475,7 +473,7 @@
            // console.info("init ---- " + assignSelVal);
            if (assignSelVal == -1) {
                let s = $currContent.find('.assignSel').unbind('change');
-               // console.log(s)
+               console.log(s)
                assignSel(s, $(s).closest('div.clinicalDirectorContent').find('div.person-detail'));
            }
            removeClinicalDirector();
@@ -672,7 +670,6 @@
                 praCerEndDate = registration['PC End Date'];
                 typeOfRegister = registration['Register Type'];
             }
-
 
             $prsLoadingEle.find('.specialty-label').html(specialty);
             if(needControlName){
