@@ -387,7 +387,7 @@
     <iais:row >
         <iais:field width="5" value="Other Qualification"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <iais:input maxLength="1024" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
+            <iais:input maxLength="100" type="text" name="otherQualification" value="${terminationDto.otherQualification}" />
         </iais:value>
     </iais:row>
 </div>
