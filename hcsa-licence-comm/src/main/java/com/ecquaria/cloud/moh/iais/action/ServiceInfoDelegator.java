@@ -1,82 +1,32 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.annotation.*;
+import com.ecquaria.cloud.moh.iais.common.constant.*;
+import com.ecquaria.cloud.moh.iais.common.constant.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.*;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.*;
+import com.ecquaria.cloud.moh.iais.common.exception.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
-import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
-import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
-import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
-import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
-import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
-import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.constant.*;
+import com.ecquaria.cloud.moh.iais.dto.*;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.validation.*;
+import lombok.extern.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
+import sop.util.*;
+import sop.webflow.rt.api.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_PSN_OPTS;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.SECTION_LEADER_LIST;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.*;
 
 /**
  * @Auther chenlei on 5/5/2022.
@@ -1394,105 +1344,49 @@ public class ServiceInfoDelegator {
     public void doClinicalDirector(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doClinicalDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String currSvcId = ApplicationHelper.getCurrentServiceId(bpc.request);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
-        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
-                RfcConst.EDIT_SERVICE, isEdit, isRfi);
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
+                return;
+            }
+        }
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList = currentSvcRelatedDto.getAppSvcClinicalDirectorDtoList();
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(
+                RfcConst.EDIT_SERVICE, bpc.request);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        Map<String, String> map = new HashMap<>(17);
         if (isGetDataFromPage) {
             //get data from page
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = AppDataHelper.genAppSvcClinicalDirectorDto(bpc.request,
-                    appSubmissionDto.getAppType());
-            currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-            log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info start ..."));
-            log.debug("prs server flag {}", prsFlag);
-            String appType = appSubmissionDto.getAppType();
-            if ("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)) {
-                for (int i = 0; i < appSvcClinicalDirectorDtos.size(); i++) {
-                    AppSvcPrincipalOfficersDto appSvcPsnDto = appSvcClinicalDirectorDtos.get(i);
-                    String profRegNo = appSvcPsnDto.getProfRegNo();
-                    ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                    String specialtyStr = "";
-                    String specialtyGetDateStr = "";
-                    String typeOfCurrRegi = "";
-                    String currRegiDateStr = "";
-                    String praCerEndDateStr = "";
-                    String typeOfRegister = "";
-                    if (professionalResponseDto != null) {
-                        boolean needLoadName =
-                                !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-                        String name = professionalResponseDto.getName();
-                        log.info(StringUtil.changeForLog("Need Load Name: " + needLoadName + "; PRS Name: " + name));
-                        if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(
-                                professionalResponseDto.getStatusCode())) {
-                            if (StringUtil.isEmpty(actionType) || "next".equals(actionType)) {
-                                if (professionalResponseDto.isHasException()) {
-                                    bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                    map.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
-                                    map.put("profRegNo" + i, "GENERAL_ERR0054");
-                                } else {
-                                    map.put("profRegNo" + i, "GENERAL_ERR0042");
-                                }
-                            }
-                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi,
-                                    currRegiDateStr, praCerEndDateStr, typeOfRegister);
-                            continue;
-                        }
-                        if (needLoadName) {
-                            appSvcPsnDto.setName(name);
-                        }
-                        //retrieve data from prs server
-                        List<String> specialtyList = professionalResponseDto.getSpecialty();
-                        if (!IaisCommonUtils.isEmpty(specialtyList)) {
-                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
-                            for (String value : specialtyList) {
-                                if (!StringUtil.isEmpty(value)) {
-                                    notNullList.add(value);
-                                }
-                            }
-                            specialtyStr = String.join(",", notNullList);
-                        }
-                        List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
-                        if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
-                            specialtyGetDateStr = entryDateSpecialist.get(0);
-                        }
-                        List<RegistrationDto> registrationDtos = professionalResponseDto.getRegistration();
-                        if (registrationDtos != null && registrationDtos.size() > 0) {
-                            RegistrationDto registrationDto = registrationDtos.get(0);
-                            typeOfCurrRegi = registrationDto.getRegistrationType();
-                            currRegiDateStr = registrationDto.getRegStartDate();
-                            praCerEndDateStr = registrationDto.getPcEndDate();
-                            typeOfRegister = registrationDto.getRegisterType();
-                        }
-                        setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr,
-                                praCerEndDateStr, typeOfRegister);
-                    } else if (!StringUtil.isEmpty(profRegNo)) {
-                        setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr,
-                                praCerEndDateStr, typeOfRegister);
-                    }
-                }
-                currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-            }
-            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+            appSvcClinicalDirectorList = AppDataHelper.genAppSvcClinicalDirectorDto(bpc.request);
+            currentSvcRelatedDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorList);
+//            reSetChangesForApp(appSubmissionDto);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
             log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info end ..."));
         }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         if ("next".equals(actionType)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request,
                     LICPERSONSELECTMAP);
-            new ValidateClincalDirector().doValidateClincalDirector(map, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(),
-                    licPersonMap,
-                    currSvcCode);
+            errorMap = AppValidatorHelper.doValidateClincalDirector(appSvcClinicalDirectorList,
+                    licPersonMap, true);
+            int psnLength = 0;
+            if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorList)) {
+                psnLength = appSvcClinicalDirectorList.size();
+            }
+            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                    ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+            AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, errorMap,
+                    psnLength, "psnMandatory", HcsaConsts.CLINICAL_DIRECTOR);
         }
-        boolean isValid = checkAction(map, HcsaConsts.STEP_CLINICAL_DIRECTOR, appSubmissionDto, bpc.request);
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_CLINICAL_DIRECTOR, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
-            syncDropDownAndPsn(appSubmissionDto, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), null, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, currentSvcRelatedDto.getAppSvcClinicalDirectorDtoList(), currSvcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
     }
@@ -1580,7 +1474,7 @@ public class ServiceInfoDelegator {
         List<AppSvcBusinessDto> appSvcBusinessDtos = currSvcInfoDto.getAppSvcBusinessDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
-                premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
+//                premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
@@ -1665,7 +1559,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.CLINICAL_GOVERNANCE_OFFICER};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

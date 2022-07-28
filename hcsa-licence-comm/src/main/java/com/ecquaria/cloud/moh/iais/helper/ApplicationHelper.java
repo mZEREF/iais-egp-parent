@@ -2257,30 +2257,32 @@ public final class ApplicationHelper {
             String dupForPerson = svcDocConfig.getDupForPerson();
             String configId = svcDocConfig.getId();
             String premisesVal = Optional.ofNullable(appGrpPremisesDto).map(AppGrpPremisesDto::getPremisesIndexNo).orElse("");
-            if (StringUtil.isEmpty(dupForPerson)) {
-                DocSecDetailDto dto = new DocSecDetailDto();
-                dto.setDocConfigDto(svcDocConfig, isBackend());
-                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
-                        svcConfig.getId(), svcConfig.getSvcCode());
-                dto.setAppSvcDocDtoList(appSvcDocDtoList);
-                result.add(dto);
-            } else {
-                List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(currSvcInfoDto, dupForPerson);
-                int i = 1;
-                boolean needPsnTypeIndex = psnList.size() > 1;
-                for (AppSvcPrincipalOfficersDto psn : psnList) {
-                    List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
-                            psn.getIndexNo(), svcConfig.getId(), svcConfig.getSvcCode());
-                    DocSecDetailDto dto = new DocSecDetailDto();
-                    dto.setDocConfigDto(svcDocConfig, isBackend());
-                    dto.setAppSvcDocDtoList(appSvcDocDtoList);
-                    dto.setPsnIndexNo(psn.getIndexNo());
-                    if (needPsnTypeIndex) {
-                        dto.setPsnTypeIndex(i++);
-                    }
-                    result.add(dto);
-                }
-            }
+//            if (StringUtil.isEmpty(dupForPerson)) {
+//                DocSecDetailDto dto = new DocSecDetailDto();
+//                dto.setDocConfigDto(svcDocConfig);
+//                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
+//                        svcConfig.getId(), svcConfig.getSvcCode());
+//                dto.setAppSvcDocDtoList(appSvcDocDtoList);
+//                dto.setBE(isBackend());
+//                result.add(dto);
+//            } else {
+//                List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(currSvcInfoDto, dupForPerson);
+//                int i = 1;
+//                boolean needPsnTypeIndex = psnList.size() > 1;
+//                for (AppSvcPrincipalOfficersDto psn : psnList) {
+//                    List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
+//                            psn.getIndexNo(), svcConfig.getId(), svcConfig.getSvcCode());
+//                    DocSecDetailDto dto = new DocSecDetailDto();
+//                    dto.setDocConfigDto(svcDocConfig);
+//                    dto.setAppSvcDocDtoList(appSvcDocDtoList);
+//                    dto.setPsnIndexNo(psn.getIndexNo());
+//                    dto.setBE(isBackend());
+//                    if (needPsnTypeIndex) {
+//                        dto.setPsnTypeIndex(i++);
+//                    }
+//                    result.add(dto);
+//                }
+//            }
         }
         return result.stream()
                 .sorted(Comparator.comparing(DocSecDetailDto::getDispOrder)
