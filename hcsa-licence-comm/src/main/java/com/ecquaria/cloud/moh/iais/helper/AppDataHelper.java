@@ -1877,8 +1877,6 @@ public final class AppDataHelper {
         if (person == null) {
             person = new AppSvcPrincipalOfficersDto();
         }
-        /*String assignSelect = ParamUtil.getString(request, "assignSelect" + suffix);
-        person.setAssignSelect(assignSelect);*/
         setPsnValue(person, appPsnEditDto, "salutation", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "name", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "idType", prefix, suffix, request);
@@ -2171,118 +2169,6 @@ public final class AppDataHelper {
     }
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request) {
-        /*List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = IaisCommonUtils.genNewArrayList();
-        String[] licPerson = ParamUtil.getStrings(request, "licPerson");
-        String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
-        String[] indexNos = ParamUtil.getStrings(request, "indexNo");
-        String[] assignSelect = ParamUtil.getStrings(request, "assignSelVal");
-        int size = 0;
-        if (assignSelect != null && assignSelect.length > 0) {
-            size = assignSelect.length;
-        }
-        String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        for(int i = 0; i < size; i++){
-            *//*boolean getDataByIndexNo = false;
-            boolean getPageData = false;
-            String indexNo = indexNos[i];
-            //String assign = assignSelect[i];
-            String licPsn = licPerson[i];
-            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-                getPageData = true;
-            }else if(AppConsts.YES.equals(isPartEdit)){
-                getPageData = true;
-            }else if(!StringUtil.isEmpty(indexNo)){
-                getDataByIndexNo = true;
-            }*//*
-            AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolderDto = null;
-            String indexNo = indexNos[i];
-            String assign = assignSelect[i];
-            String licPsn = licPerson[i];
-            boolean chooseExisting = false;
-            boolean getPageData = false;
-            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-                if (isExistingPsn(assign, licPsn)) {
-                    chooseExisting = true;
-                } else {
-                    getPageData = true;
-                }
-            } else {
-                if (assign != null) {
-                    if (!StringUtil.isEmpty(indexNo)) {
-                        //not click edit
-                        if (AppConsts.NO.equals(isPartEdit[i])) {
-                            appSvcKeyAppointmentHolderDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto, indexNo);
-                            appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
-                            continue;
-                        }
-                    }
-                    if (isExistingPsn(assign, licPsn)) {
-                        chooseExisting = true;
-                    } else {
-                        getPageData = true;
-                    }
-                }
-            }
-            log.info(StringUtil.changeForLog("chooseExisting:" + chooseExisting));
-            log.info(StringUtil.changeForLog("getPageData:" + getPageData));
-            if (StringUtil.isEmpty(indexNo)) {
-                indexNo = UUID.randomUUID().toString();
-            }
-            if (chooseExisting) {
-
-            }
-
-            boolean getDataByIndexNo = false;
-
-            if(getDataByIndexNo){
-                appSvcKeyAppointmentHolderDto = getKeyAppointmentHolderByIndexNo(appSvcRelatedInfoDto, indexNo);
-            }else if(getPageData){
-                boolean needLoadName =!AppConsts.YES.equals(licPsn)
-                        && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-                appSvcKeyAppointmentHolderDto = genKeyPersonnel(appSvcKeyAppointmentHolderDto, null, String.valueOf(i), needLoadName, request);
-                appSvcKeyAppointmentHolderDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_KAH);
-                *//*if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !ApplicationHelper.isEmpty(assignSel)) {
-                    appSvcKeyAppointmentHolderDto.setAssignSelect(assignSel);
-                } else {
-                    appSvcKeyAppointmentHolderDto.setAssignSelect(ApplicationHelper.getAssignSelect(nationality, idType, idNo,
-                            "-1"));
-                }*//*
-         *//* AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
-                if (appPsnEditDto == null) {
-                    appPsnEditDto = ApplicationHelper.setNeedEditField(appSvcKeyAppointmentHolderDto);
-                    appSvcKeyAppointmentHolderDto.setPsnEditDto(appPsnEditDto);
-                }
-                boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(indexNo);
-                boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel) || !appSvcKeyAppointmentHolderDto.isLicPerson();
-                if (isNewOfficer && (appPsnEditDto.isSalutation() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setSalutation(salutation);
-                }
-                if (isNewOfficer && (appPsnEditDto.isName() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setName(name);
-                }
-                if (isNewOfficer && (appPsnEditDto.isIdType() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setIdType(idType);
-                }
-                if (isNewOfficer && (appPsnEditDto.isIdNo() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setIdNo(StringUtil.toUpperCase(idNo));
-                }
-                if (isNewOfficer && (appPsnEditDto.isNationality() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setNationality(nationality);
-                }
-                if (StringUtil.isEmpty(indexNo)) {
-                    appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());
-                } else {
-                    appSvcKeyAppointmentHolderDto.setIndexNo(indexNo);
-                }*//*
-            }
-            *//*if (appSvcKeyAppointmentHolderDto == null) {
-                appSvcKeyAppointmentHolderDto = new AppSvcPrincipalOfficersDto();
-                appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());
-            }*//*
-            appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
-        }*/
         return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request);
     }
 
