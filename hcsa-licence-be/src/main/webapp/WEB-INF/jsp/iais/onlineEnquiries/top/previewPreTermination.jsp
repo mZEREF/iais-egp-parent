@@ -84,7 +84,15 @@
                         </iais:value>
                     </iais:row>
                 </div>
-
+                <div
+                        <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${preTerminationDto.counsellingReignNo}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <div
                         <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
                     <c:if test="${counsellingLateSubmit}">
@@ -162,12 +170,6 @@
                 </div>
                 <div
                         <c:if test="${preTerminationDto.counsellingGiven == false}">style="display: none"</c:if> >
-                    <iais:row>
-                        <iais:field width="5" value="Doctor's Professional Regn / MCR No."/>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${preTerminationDto.counsellingReignNo}"/>
-                        </iais:value>
-                    </iais:row>
                     <c:if test="${preTerminationDto.counsellingAge<16 && patientInformationDto.maritalStatus !='TOPMS002' && preTerminationDto.counsellingPlace != 'AR_SC_001'}">
                         <c:set var="toolMsgAge"><iais:message
                                 key="This patient is below 16 years old from the date of Termination of Pregnancy, not married and pre-counselling is not done at Health Promotion Board Counselling Centre or Student Health Centre"
