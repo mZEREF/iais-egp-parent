@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
@@ -53,6 +52,12 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -63,15 +68,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
-import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR;
-import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
-import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX;
 import static com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper.VSS_CURRENT_STEP;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_FROM_ELIS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOCTOR_INFO_FROM_PRS;
@@ -128,8 +125,9 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request, "vssFiles", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedVssFile_MaxIndex", null);
-        ParamUtil.clearSession(bpc.request, HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedVssFile", SEESION_FILES_MAP_AJAX
-                + "selectedVssFile" + SEESION_FILES_MAP_AJAX_MAX_INDEX, GLOBAL_MAX_INDEX_SESSION_ATTR);
+        ParamUtil.clearSession(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile",
+                IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile" + IaisEGPConstant.SEESION_FILES_MAP_AJAX_MAX_INDEX,
+                IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_VSS);
 
         String orgId = "";
@@ -212,8 +210,8 @@ public class VssDataSubmissionDelegator {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, DataSubmissionConstant.PAGE_STAGE_PAGE);
             //set docs from draft
             if (!CollectionUtils.isEmpty(vssSuperDataSubmissionDto.getFileMap())) {
-                ParamUtil.setSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile", (Serializable) vssSuperDataSubmissionDto.getFileMap());
-                ParamUtil.setSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile" + SEESION_FILES_MAP_AJAX_MAX_INDEX, vssSuperDataSubmissionDto.getFileMap().size());
+                ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile", (Serializable) vssSuperDataSubmissionDto.getFileMap());
+                ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile" + IaisEGPConstant.SEESION_FILES_MAP_AJAX_MAX_INDEX, vssSuperDataSubmissionDto.getFileMap().size());
             }
         } else if (crud_action_type.equals("delete")) {
             vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
@@ -564,7 +562,7 @@ public class VssDataSubmissionDelegator {
     private void setFiles(GuardianAppliedPartDto guardianAppliedPartDto, HttpServletRequest request) {
         List<VssDocumentDto> vssDoc = new ArrayList<>();
         log.info("-----------ajax-upload-file start------------");
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX + "selectedVssFile");
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile");
         IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
         if (IaisCommonUtils.isNotEmpty(map)) {
             Date date = new Date();
@@ -814,7 +812,7 @@ public class VssDataSubmissionDelegator {
         if (vssSuperDataSubmissionDto != null) {
             vssSuperDataSubmissionDto.setDraftNo(vssDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_VSS,
                     vssSuperDataSubmissionDto.getDraftNo()));
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request, SEESION_FILES_MAP_AJAX + "selectedVssFile");
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedVssFile");
             vssSuperDataSubmissionDto.setFileMap(map);
             vssSuperDataSubmissionDto = vssDataSubmissionService.saveDataSubmissionDraft(vssSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);

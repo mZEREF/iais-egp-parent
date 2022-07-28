@@ -156,10 +156,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         super.doStart(bpc);
     }
 
+    @Override
     protected void loadingDraft(HttpServletRequest request, String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         Object draftNumber = request.getSession().getAttribute(HcsaAppConst.DRAFT_NUMBER);
@@ -239,6 +241,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
 
+    @Override
     protected void requestForInformationLoading(HttpServletRequest request, String appNo) {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String msgId = (String) ParamUtil.getSessionAttr(request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
@@ -329,6 +332,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         }
     }
 
+    @Override
     protected void loadingNewAppInfo(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
@@ -373,6 +377,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void preparePayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -468,6 +473,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void doPremises(BaseProcessClass bpc) {
         super.doPremises(bpc);
     }
@@ -478,6 +484,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void doPayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -690,6 +697,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSaveDraft start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(
@@ -721,7 +729,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         appSubmissionDto.setOldDraftNo(oldDraftNo);
 
         ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
-        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;
         }
@@ -738,6 +746,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
+    @Override
     public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
@@ -754,6 +763,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         }
     }
 
+    @Override
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
@@ -972,13 +982,13 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                        ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
+                        //ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                         ParamUtil.setSessionAttr(request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         //set dupForPsn attr
                         //ApplicationHelper.setDupForPersonAttr(request, appSvcRelatedInfoDto);
                         //svc doc add align for dup for prem
                         //ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
-                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set svc doc title
                         Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
                                 newPremisesDtos, appSvcRelatedInfoDto);
@@ -1202,6 +1212,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         super.doSubmit(bpc);
     }
@@ -1222,6 +1233,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void controlSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do controlSwitch start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -1406,6 +1418,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void prepareAckPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
@@ -1466,6 +1479,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void prepareJump(BaseProcessClass bpc) throws Exception {
         super.prepareJump(bpc);
     }

@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -16,6 +17,8 @@
 <c:set var="hasError" value="${not empty errorMsg}" />
 <c:set var="hasItems" value="${not empty SOVENOR_INVENTORY_LIST ? 1 : 0}" />
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
+
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
 <%@ include file="common/dpHeader.jsp" %>
 
@@ -97,6 +100,5 @@
             </div>
         </div>
     </div>
-    <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>

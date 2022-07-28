@@ -176,17 +176,17 @@ public final class AppValidatorHelper {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(bpc.request),
                 oldAppSubmissionDto, false, bpc.request);
-        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto, bpc);
+        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, bpc);
         return previewAndSubmitMap;
     }
 
     public static Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap,
-            AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, BaseProcessClass bpc) {
+            AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         StringBuilder errorSvcConfig = new StringBuilder();
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.PREMISES_HCI_LIST);
-        List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, isRfi, errorSvcConfig);
+        List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, premisesHciList, isRfi,
+                errorSvcConfig);
         HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.CO_MAP);
         if (errorList.contains(HcsaAppConst.SECTION_LICENSEE)) {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
@@ -227,7 +227,7 @@ public final class AppValidatorHelper {
     }
 
     private static List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
-            AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, boolean isRfi, StringBuilder errorSvcConfig) {
+            List<String> premisesHciList, boolean isRfi, StringBuilder errorSvcConfig) {
         List<String> errorList = IaisCommonUtils.genNewArrayList();
         if (appSubmissionDto == null) {
             return errorList;
@@ -242,8 +242,7 @@ public final class AppValidatorHelper {
             errorList.add(HcsaAppConst.SECTION_LICENSEE);
         }
         // premises
-        Map<String, String> premissMap = doValidatePremises(appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, isRfi, false);
+        Map<String, String> premissMap = doValidatePremises(appSubmissionDto, premisesHciList, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);
@@ -549,8 +548,8 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidatePremises(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
-            List<String> premisesHciList, boolean rfi, boolean checkOthers) {
+    public static Map<String, String> doValidatePremises(AppSubmissionDto appSubmissionDto, List<String> premisesHciList,
+            boolean checkOthers) {
         //do validate one premiss
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> list = IaisCommonUtils.genNewArrayList();
@@ -574,23 +573,13 @@ public final class AppValidatorHelper {
             } else {
                 String premisesSelect = appGrpPremisesDto.getPremisesSelect();
                 String appType = appSubmissionDto.getAppType();
-                boolean needValidate = false;
-
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                        appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-                    String oldPremSel = oldAppSubmissionDto == null ? "-1" :
-                            oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
-                    if ("-1".equals(oldPremSel) || !StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)) {
-                        needValidate = true;
-                    }
-                }
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
                     if ("".equals(selectPremises)) {
                         selectPremises = MessageUtil.replaceMessage("GENERAL_ERR0006", "Add or select a premises from the list",
                                 "field");
                     }
                     errorMap.put("premisesSelect" + i, selectPremises);
-                } else if (needValidate || !StringUtil.isEmpty(premisesSelect) || "newPremise".equals(premisesSelect)) {
+                } else {
                     //List<String> floorUnitNo = new ArrayList<>(10);
                     List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
                     String hciName = appGrpPremisesDto.getHciName();

@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -17,6 +18,7 @@
 <c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <%@ include file="common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
@@ -99,6 +101,5 @@
             </div>
         </div>
     </div>
-    <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>

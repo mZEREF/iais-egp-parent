@@ -307,7 +307,24 @@ public class DealSessionUtil {
             init(currSvcInfoDto, appGrpPremisesDtoList, licenceId, newConfig, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                setOldHciCode(appGrpPremisesDto);
+            }
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
         return appSubmissionDto;
+    }
+
+    public static AppGrpPremisesDto setOldHciCode(AppGrpPremisesDto appGrpPremisesDto) {
+        if (appGrpPremisesDto == null) {
+            return appGrpPremisesDto;
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
+            appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
+        }
+        return appGrpPremisesDto;
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,

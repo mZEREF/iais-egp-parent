@@ -3,16 +3,17 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page import="java.net.URLEncoder" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <c:set var="individualType" value="LICTSUB002" />
 <webui:setLayout name="iais-internet"/>
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
+
 <form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="maxFile" id ="maxFile" value="${maxFile}">
@@ -233,7 +234,6 @@
   </div>
   <br/>
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-  <%@ include file="../appeal/FeFileCallAjax.jsp" %>
 </form>
 
 

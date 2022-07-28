@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -31,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -108,8 +108,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         boolean charity = ApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         int maxSeqNum = 0;
-        if (ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
-            maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if (ParamUtil.getSessionAttr(httpServletRequest, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
         for (WithdrawnDto h : withdrawnDtoList) {
 
@@ -250,7 +250,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public List<WithdrawnDto>  saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
-        int maxSeqNum = (int) ParamUtil.getSessionAttr(httpRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        int maxSeqNum = (int) ParamUtil.getSessionAttr(httpRequest, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         withdrawnDtoList.forEach(h -> {
             h.setMaxFileIndex(maxSeqNum);
             String appId = h.getNewApplicationId();

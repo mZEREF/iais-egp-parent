@@ -205,6 +205,10 @@ public class LicCommServiceImpl implements LicCommService {
 
     @Override
     public List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtos = licCommClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
         if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();

@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
-import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -54,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -1432,8 +1432,8 @@ public class AppealServiceImpl implements AppealService {
 
     private String applicationPresmies(HttpServletRequest request, String applicationId) {
         int maxFileIndex = 0;
-        if (ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
-            maxFileIndex = (int) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if (ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            maxFileIndex = (int) ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
         ApplicationDto applicationDto = applicationFeClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
@@ -1613,7 +1613,7 @@ public class AppealServiceImpl implements AppealService {
             AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(entity.getAppGrpId(),
                     ApplicationConsts.APP_GROUP_MISC_TYPE_MAX_FILE_INDEX, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if (grpMisc != null) {
-                ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,
                         Integer.valueOf(grpMisc.getMiscValue()));
             }
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {

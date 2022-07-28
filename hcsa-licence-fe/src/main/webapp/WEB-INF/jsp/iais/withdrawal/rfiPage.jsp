@@ -7,6 +7,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <%@include file="./dashboard.jsp" %>
 <style>
     .document-upload-gp .document-upload-list {
@@ -223,7 +224,6 @@
             </c:otherwise>
         </c:choose>
         <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-        <%@ include file="../appeal/FeFileCallAjax.jsp" %>
     </form>
 </div>
 <script type="text/javascript">

@@ -1550,41 +1550,4 @@ public class ApplicationAjaxController {
         }
     }
 
-    private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
-        if (selectedFile == null || selectedFile.isEmpty()) {
-            return MessageUtil.getMessageDesc("GENERAL_ACK018");
-        }
-        if (maxSize <= 0) {
-            maxSize = systemParamConfig.getUploadFileLimit();
-        }
-        if (StringUtil.isEmpty(fileTypesString)) {
-            fileTypesString = systemParamConfig.getUploadFileType();
-        }
-        log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
-        List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
-        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
-        Boolean fileSize = booleanMap.get("fileSize");
-        Boolean fileType = booleanMap.get("fileType");
-        //size
-        if (!fileSize) {
-            return MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize), "sizeMax");
-        }
-        //type
-        if (!fileType) {
-            String type = FileUtils.getFileTypeMessage(fileTypesString);
-            return MessageUtil.replaceMessage("GENERAL_ERR0018", type, "fileType");
-        }
-
-        //name
-        String orginName = selectedFile.getOriginalFilename();
-        if (orginName != null) {
-            String[] fileSplit = orginName.split("\\.");
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
-            if (fileName.length() > 100) {
-                return MessageUtil.getMessageDesc("GENERAL_ERR0022");
-            }
-        }
-        return "";
-    }
-
 }

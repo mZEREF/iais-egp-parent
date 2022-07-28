@@ -2,12 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <%@include file="./dashboard.jsp" %>
 <style>
     .document-upload-gp .document-upload-list {
@@ -296,7 +297,6 @@
             </div>
         </div>
         <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-        <%@ include file="../appeal/FeFileCallAjax.jsp" %>
     </form>
 </div>
 <script type="text/javascript">

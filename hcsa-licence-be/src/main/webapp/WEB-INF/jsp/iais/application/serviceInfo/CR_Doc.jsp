@@ -1,10 +1,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%
-    String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
-%>
-<script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
+
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
+
 <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
 <c:if test="${requestInformationConfig == null}">
     <c:set var="isClickEdit" value="true"/>

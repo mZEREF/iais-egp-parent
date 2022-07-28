@@ -1,28 +1,68 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.job.executor.util.*;
-import com.ecquaria.cloud.moh.iais.common.constant.*;
-import com.ecquaria.cloud.moh.iais.common.constant.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.*;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
-import com.ecquaria.cloud.moh.iais.common.validation.*;
-import com.ecquaria.cloud.moh.iais.constant.*;
-import com.ecquaria.cloud.moh.iais.dto.*;
-import com.ecquaria.cloud.moh.iais.service.*;
-import lombok.extern.slf4j.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import lombok.extern.slf4j.Slf4j;
 import sop.util.DateUtil;
 
-import javax.servlet.http.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.*;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
 
 /**
  * @Auther chenlei on 5/4/2022.
@@ -96,95 +136,25 @@ public final class AppDataHelper {
      */
     public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        boolean onlySpecifiedSvc = false;
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(
-                        appSvcRelatedInfoDto.getAlignLicenceNo())) {
-                    onlySpecifiedSvc = true;
-                    break;
-                }
-            }
-        }
-        if (onlySpecifiedSvc) {
+        boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
+        if (readonly) {
             return appSubmissionDto.getAppGrpPremisesDtoList();
         }
-
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
-       /* String[] premisesType = ParamUtil.getStrings(request, "premCount");
-        String[] hciName = ParamUtil.getStrings(request, "onSiteHciName");
-        if (premisesType != null) {
-            count = premisesType.length;
-        }*/
-        //String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
-        //String[] premValue = ParamUtil.getStrings(request, "premValue");
-        String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
         String[] opLengths = ParamUtil.getStrings(request, "opLength");
         String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
         String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
-        /*String[] premisesIndexNo = ParamUtil.getStrings(request, "premisesIndexNo");
-        String[] rfiCanEdit = ParamUtil.getStrings(request, "rfiCanEdit");
-        //onsite
-        String[] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
-        String[] postalCode = ParamUtil.getStrings(request, "onSitePostalCode");
-        String[] blkNo = ParamUtil.getStrings(request, "onSiteBlkNo");
-        String[] streetName = ParamUtil.getStrings(request, "onSiteStreetName");
-        String[] floorNo = ParamUtil.getStrings(request, "onSiteFloorNo");
-        String[] unitNo = ParamUtil.getStrings(request, "onSiteUnitNo");
-        String[] buildingName = ParamUtil.getStrings(request, "onSiteBuildingName");
-        String[] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
-        String[] siteEmail = ParamUtil.getStrings(request, "onSiteEmail");
-        String[] offTelNo = ParamUtil.getStrings(request, "onSiteOffTelNo");
-        String[] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
-        String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
-        //conveyance
-        String[] conveyanceHciName = ParamUtil.getStrings(request, "conveyanceHciName");
-        String[] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
-        String[] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
-        String[] conPostalCode = ParamUtil.getStrings(request, "conveyancePostalCode");
-        String[] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlkNo");
-        String[] conStreetName = ParamUtil.getStrings(request, "conveyanceStreetName");
-        String[] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
-        String[] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
-        String[] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
-        String[] conEmail = ParamUtil.getStrings(request, "conveyanceEmail");
-        String[] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
-        //offSite
-        String[] offSiteHciName = ParamUtil.getStrings(request, "offSiteHciName");
-        String[] offSitePremisesSelect = ParamUtil.getStrings(request, "offSiteSelect");
-        String[] offSitePostalCode = ParamUtil.getStrings(request, "offSitePostalCode");
-        String[] offSiteBlkNo = ParamUtil.getStrings(request, "offSiteBlkNo");
-        String[] offSiteStreetName = ParamUtil.getStrings(request, "offSiteStreetName");
-        String[] offSiteFloorNo = ParamUtil.getStrings(request, "offSiteFloorNo");
-        String[] offSiteUnitNo = ParamUtil.getStrings(request, "offSiteUnitNo");
-        String[] offSiteBuildingName = ParamUtil.getStrings(request, "offSiteBuildingName");
-        String[] offSiteEmail = ParamUtil.getStrings(request, "offSiteEmail");
-        String[] offSiteSiteAddressType = ParamUtil.getStrings(request, "offSiteAddrType");
-
-        String[] easMtsPremisesSelect = ParamUtil.getStrings(request, "easMtsSelect");
-        //every prem's ph length
-        String[] phLengths = ParamUtil.getStrings(request, "phLength");
-        String[] premValue = ParamUtil.getStrings(request, "premValue");
-        String[] isParyEdit = ParamUtil.getStrings(request, "isPartEdit");
-        String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
-        String[] opLengths = ParamUtil.getStrings(request, "opLength");
-        String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
-        String[] weeklyLengths = ParamUtil.getStrings(request, "weeklyLength");
-        String[] eventLengths = ParamUtil.getStrings(request, "eventLength");*/
         int count = premisesIndexNos.length;
         if (!isMultiPremService) {
             count = 1;
         }
         for (int i = 0; i < count; i++) {
             String premType = ParamUtil.getString(request, "premType" + i);
-            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             String premisesSel = "";
             if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premType)) {
                 premisesSel = ParamUtil.getString(request, "permanentSel" + i);
@@ -198,466 +168,124 @@ public final class AppDataHelper {
                 premisesSel = ParamUtil.getString(request, "remoteSel" + i);
             }
             String premIndexNo = getVal(premisesIndexNos, i);
-            //ParamUtil.getString(request, "premisesIndexNo" + i);
             if (StringUtil.isEmpty(premIndexNo)) {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
             }
             String existingData = getVal(chooseExistData, i);
-            String appType = appSubmissionDto.getAppType();
-            boolean newApp = !isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-            if (newApp) {
-                if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1")
-                        && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(existingData)) {
-                    AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
-                    if (licPremise != null) {
-                        appGrpPremisesDto = CopyUtil.copyMutableObject(licPremise);
-                    } else {
-                        log.info(StringUtil.changeForLog("can not found this existing premises data ...."));
-                    }
-                    if (appGrpPremisesDto != null) {
-                        //get value for jsp page
-                        appGrpPremisesDto.setSeqNum(i + 1);
-                        appGrpPremisesDto.setExistingData(existingData);
-                        appGrpPremisesDto.setHasError(false);
-                        ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                        appGrpPremisesDtoList.add(appGrpPremisesDto);
-                    }
-                    continue;
+            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+            AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
+            if (AppConsts.YES.equals(existingData)) {
+                setDataFromExisting(appGrpPremisesDto, licPremise);
+            } else {
+                appGrpPremisesDto = new AppGrpPremisesDto();
+                ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+                String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
+                appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
+                setPremise(appGrpPremisesDto, premIndexNo, ApplicationHelper.getOldAppSubmissionDto(request));
+                if (licPremise != null) {
+                    appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
+                    appGrpPremisesDto.setHciCode(licPremise.getHciCode());
                 }
-            } else if (AppConsts.YES.equals(existingData)) {
-                appGrpPremisesDto = ApplicationHelper.getPremisesFromMap(premisesSel, request);
-                if (appGrpPremisesDto != null) {
-                    /*if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
-                        appGrpPremisesDto.setRfiCanEdit(true);
-                    } else {
-                        appGrpPremisesDto.setRfiCanEdit(false);
-                    }*/
-                    if (!AppConsts.YES.equals(isParyEdit[i])) {
-                        appGrpPremisesDto.setSeqNum(i + 1);
-                        appGrpPremisesDto.setExistingData(existingData);
-                        appGrpPremisesDto.setHasError(false);
-                        ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                        appGrpPremisesDtoList.add(appGrpPremisesDto);
+                int opLength = 0;
+                try {
+                    opLength = Integer.parseInt(opLengths[i]);
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("operation length can not parse to int"));
+                }
+                int nonHcsaLength = 0;
+                try {
+                    nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
+                }
+                appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
+                String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
+                String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
+                appGrpPremisesDto.setFloorNo(floorNo);
+                appGrpPremisesDto.setUnitNo(unitNo);
+
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
+                for (int k = 1; k < opLength; k++) {
+                    floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
+                    unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
+                    if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
                         continue;
-                    } else {
-                        log.info(StringUtil.changeForLog("Get data from page for " + StringUtil.clarify(premisesSel)));
                     }
-                } else {
-                    log.warn(StringUtil.changeForLog("##### warn Data: " + premIndexNo));
-                    appGrpPremisesDto = new AppGrpPremisesDto();
+                    AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
+                    dto.setFloorNo(floorNo);
+                    dto.setUnitNo(unitNo);
+                    dto.setPremType(premType);
+                    dto.setPremVal(premIndexNo);
+                    dto.setSeqNum(k);
+                    appPremisesOperationalUnitDtos.add(dto);
                 }
+                appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+                List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
+                for (int k = 0; k < nonHcsaLength; k++) {
+                    String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
+                    String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
+                    if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                        continue;
+                    }
+                    AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+                    dto.setBusinessName(coBusinessName);
+                    dto.setProvidedService(coSvcName);
+                    dto.setSeqNum(k);
+                    appPremNonLicRelationDtos.add(dto);
+                }
+                appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
+                appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
             }
             appGrpPremisesDto.setSeqNum(i + 1);
             appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setExistingData(existingData);
-            ApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-            // set premise type
+            appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
             appGrpPremisesDto.setPremisesType(premType);
             appGrpPremisesDto.setPremisesSelect(premisesSel);
-            int opLength = 0;
-            try {
-                opLength = Integer.parseInt(opLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("operation length can not parse to int"));
-            }
-            int nonHcsaLength = 0;
-            try {
-                nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
-            }
-            appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
-
-            ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
-            String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
-            appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
-
-            String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
-            String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
-            appGrpPremisesDto.setFloorNo(floorNo);
-            appGrpPremisesDto.setUnitNo(unitNo);
-
-            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-            for (int k = 1; k < opLength; k++) {
-                floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
-                unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
-                if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
-                    continue;
-                }
-                AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
-                dto.setFloorNo(floorNo);
-                dto.setUnitNo(unitNo);
-                dto.setPremType(premType);
-                dto.setPremVal(premIndexNo);
-                dto.setSeqNum(k);
-                appPremisesOperationalUnitDtos.add(dto);
-            }
-            appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
-            List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
-            for (int k = 0; k < nonHcsaLength; k++) {
-                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
-                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
-                if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
-                    continue;
-                }
-                AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
-                dto.setBusinessName(coBusinessName);
-                dto.setProvidedService(coSvcName);
-                dto.setSeqNum(k);
-                appPremNonLicRelationDtos.add(dto);
-            }
-            appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
-
-            /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
-                String premVal = premValue[i];
-                String fireSafetyCertIssuedDateStr = ParamUtil.getString(request, premVal + "onSiteFireSafetyCertIssuedDate");
-                appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
-                appGrpPremisesDto.setHciName(hciName[i]);
-                appGrpPremisesDto.setPostalCode(postalCode[i]);
-                appGrpPremisesDto.setBlkNo(blkNo[i]);
-                appGrpPremisesDto.setStreetName(streetName[i]);
-                appGrpPremisesDto.setFloorNo(floorNo[i]);
-                appGrpPremisesDto.setUnitNo(unitNo[i]);
-                appGrpPremisesDto.setBuildingName(buildingName[i]);
-                appGrpPremisesDto.setEasMtsPubEmail(siteEmail[i]);
-                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
-                appGrpPremisesDto.setAddrType(siteAddressType[i]);
-                appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, Formatter.DATE);
-                appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-                String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
-                appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
-                if (AppConsts.YES.equals(isOtherLic[i])) {
-                    appGrpPremisesDto.setLocateWithOthers(AppConsts.YES);
-                } else if (AppConsts.NO.equals(isOtherLic[i])) {
-                    appGrpPremisesDto.setLocateWithOthers(AppConsts.NO);
-                }
-
-                //weekly
-                for (int j = 0; j < weeklyLength; j++) {
-                    OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
-                    String[] weeklyVal = ParamUtil.getStrings(request, genPageName(premVal, "onSiteWeekly", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "onSiteWeeklyAllDay", j));
-                    //reload
-                    String weeklySelect = StringUtil.arrayToString(weeklyVal);
-                    weeklyDto.setSelectVal(weeklySelect);
-                    if (weeklyVal != null) {
-                        List<String> selectValList = Arrays.asList(weeklyVal);
-                        weeklyDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        weeklyDto.setSelectAllDay(true);
-                        weeklyDto.setStartFromHH(null);
-                        weeklyDto.setStartFromMM(null);
-                        weeklyDto.setEndToHH(null);
-                        weeklyDto.setEndToMM(null);
-                    } else {
-                        String weeklyStartHH = ParamUtil.getString(request, genPageName(premVal, "onSiteWeeklyStartHH", j));
-                        String weeklyStartMM = ParamUtil.getString(request, genPageName(premVal, "onSiteWeeklyStartMM", j));
-                        String weeklyEndHH = ParamUtil.getString(request, genPageName(premVal, "onSiteWeeklyEndHH", j));
-                        String weeklyEndMM = ParamUtil.getString(request, genPageName(premVal, "onSiteWeeklyEndMM", j));
-                        weeklyDto.setStartFromHH(weeklyStartHH);
-                        weeklyDto.setStartFromMM(weeklyStartMM);
-                        weeklyDto.setEndToHH(weeklyEndHH);
-                        weeklyDto.setEndToMM(weeklyEndMM);
-                    }
-                    weeklyDtoList.add(weeklyDto);
-                }
-                //ph
-                for (int j = 0; j < phLength; j++) {
-                    OperationHoursReloadDto phDto = new OperationHoursReloadDto();
-                    String[] phVal = ParamUtil.getStrings(request, genPageName(premVal, "onSitePubHoliday", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "onSitePhAllDay", j));
-                    //reload
-                    String phSelect = StringUtil.arrayToString(phVal);
-                    phDto.setSelectVal(phSelect);
-                    if (phSelect != null) {
-                        List<String> selectValList = Arrays.asList(phVal);
-                        phDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        phDto.setSelectAllDay(true);
-                        phDto.setStartFromHH(null);
-                        phDto.setStartFromMM(null);
-                        phDto.setEndToHH(null);
-                        phDto.setEndToMM(null);
-                        phDtoList.add(phDto);
-                    } else {
-                        String phStartHH = ParamUtil.getString(request, genPageName(premVal, "onSitePhStartHH", j));
-                        String phStartMM = ParamUtil.getString(request, genPageName(premVal, "onSitePhStartMM", j));
-                        String phEndHH = ParamUtil.getString(request, genPageName(premVal, "onSitePhEndHH", j));
-                        String phEndMM = ParamUtil.getString(request, genPageName(premVal, "onSitePhEndMM", j));
-                        phDto.setStartFromHH(phStartHH);
-                        phDto.setStartFromMM(phStartMM);
-                        phDto.setEndToHH(phEndHH);
-                        phDto.setEndToMM(phEndMM);
-                        if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
-                                phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
-                            phDtoList.add(phDto);
-                        }
-                    }
-
-                }
-                //event
-                for (int j = 0; j < eventLength; j++) {
-                    AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
-                    String eventName = ParamUtil.getString(request, genPageName(premVal, "onSiteEvent", j));
-                    String eventStartStr = ParamUtil.getString(request, genPageName(premVal, "onSiteEventStart", j));
-                    Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
-                    String eventEndStr = ParamUtil.getString(request, genPageName(premVal, "onSiteEventEnd", j));
-                    Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
-                    appPremEventPeriodDto.setEventName(eventName);
-                    appPremEventPeriodDto.setStartDate(eventStart);
-                    appPremEventPeriodDto.setStartDateStr(eventStartStr);
-                    appPremEventPeriodDto.setEndDate(eventEnd);
-                    appPremEventPeriodDto.setEndDateStr(eventEndStr);
-                    if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
-                            eventEndStr)) {
-                        eventList.add(appPremEventPeriodDto);
-                    }
-                }
-                addFloorNoAndUnitNo(premValue[i], "onSiteFloorNo", "onSiteUnitNo", opLength,
-                        appPremisesOperationalUnitDtos, request);
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
-
-                appGrpPremisesDto.setConveyanceHciName(conveyanceHciName[i]);
-                appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
-                appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
-                appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);
-                appGrpPremisesDto.setConveyanceBlockNo(conBlkNo[i]);
-                appGrpPremisesDto.setConveyanceStreetName(conStreetName[i]);
-                appGrpPremisesDto.setConveyanceFloorNo(conFloorNo[i]);
-                appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
-                appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
-                appGrpPremisesDto.setConveyanceEmail(conEmail[i]);
-                appGrpPremisesDto.setEasMtsPubEmail(conEmail[i]);
-                appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-
-                //weekly
-                String premVal = premValue[i];
-                for (int j = 0; j < weeklyLength; j++) {
-                    OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
-                    String[] weeklyVal = ParamUtil.getStrings(request, genPageName(premVal, "conveyanceWeekly", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "conveyanceWeeklyAllDay", j));
-                    //reload
-                    String weeklySelect = StringUtil.arrayToString(weeklyVal);
-                    weeklyDto.setSelectVal(weeklySelect);
-                    if (weeklyVal != null) {
-                        List<String> selectValList = Arrays.asList(weeklyVal);
-                        weeklyDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        weeklyDto.setSelectAllDay(true);
-                        weeklyDto.setStartFromHH(null);
-                        weeklyDto.setStartFromMM(null);
-                        weeklyDto.setEndToHH(null);
-                        weeklyDto.setEndToMM(null);
-                    } else {
-                        String weeklyStartHH = ParamUtil.getString(request, genPageName(premVal, "conveyanceWeeklyStartHH", j));
-                        String weeklyStartMM = ParamUtil.getString(request, genPageName(premVal, "conveyanceWeeklyStartMM", j));
-                        String weeklyEndHH = ParamUtil.getString(request, genPageName(premVal, "conveyanceWeeklyEndHH", j));
-                        String weeklyEndMM = ParamUtil.getString(request, genPageName(premVal, "conveyanceWeeklyEndMM", j));
-                        weeklyDto.setStartFromHH(weeklyStartHH);
-                        weeklyDto.setStartFromMM(weeklyStartMM);
-                        weeklyDto.setEndToHH(weeklyEndHH);
-                        weeklyDto.setEndToMM(weeklyEndMM);
-                    }
-                    weeklyDtoList.add(weeklyDto);
-                }
-                //ph
-                for (int j = 0; j < phLength; j++) {
-                    OperationHoursReloadDto phDto = new OperationHoursReloadDto();
-                    String[] phVal = ParamUtil.getStrings(request, genPageName(premVal, "conveyancePubHoliday", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "conveyancePhAllDay", j));
-                    //reload
-                    String phSelect = StringUtil.arrayToString(phVal);
-                    phDto.setSelectVal(phSelect);
-                    if (phSelect != null) {
-                        List<String> selectValList = Arrays.asList(phVal);
-                        phDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        phDto.setSelectAllDay(true);
-                        phDto.setStartFromHH(null);
-                        phDto.setStartFromMM(null);
-                        phDto.setEndToHH(null);
-                        phDto.setEndToMM(null);
-                        phDtoList.add(phDto);
-                    } else {
-                        String phStartHH = ParamUtil.getString(request, genPageName(premVal, "conveyancePhStartHH", j));
-                        String phStartMM = ParamUtil.getString(request, genPageName(premVal, "conveyancePhStartMM", j));
-                        String phEndHH = ParamUtil.getString(request, genPageName(premVal, "conveyancePhEndHH", j));
-                        String phEndMM = ParamUtil.getString(request, genPageName(premVal, "conveyancePhEndMM", j));
-                        phDto.setStartFromHH(phStartHH);
-                        phDto.setStartFromMM(phStartMM);
-                        phDto.setEndToHH(phEndHH);
-                        phDto.setEndToMM(phEndMM);
-                        if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
-                                phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
-                            phDtoList.add(phDto);
-                        }
-                    }
-
-                }
-                //event
-                for (int j = 0; j < eventLength; j++) {
-                    AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
-                    String eventName = ParamUtil.getString(request, genPageName(premVal, "conveyanceEvent", j));
-                    String eventStartStr = ParamUtil.getString(request, genPageName(premVal, "conveyanceEventStart", j));
-                    Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
-                    String eventEndStr = ParamUtil.getString(request, genPageName(premVal, "conveyanceEventEnd", j));
-                    Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
-                    appPremEventPeriodDto.setEventName(eventName);
-                    appPremEventPeriodDto.setStartDate(eventStart);
-                    appPremEventPeriodDto.setStartDateStr(eventStartStr);
-                    appPremEventPeriodDto.setEndDate(eventEnd);
-                    appPremEventPeriodDto.setEndDateStr(eventEndStr);
-                    if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
-                            eventEndStr)) {
-                        eventList.add(appPremEventPeriodDto);
-                    }
-                }
-                addFloorNoAndUnitNo(premValue[i], "conveyanceFloorNo", "conveyanceUnitNo", opLength,
-                        appPremisesOperationalUnitDtos, request);
-            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
-                appGrpPremisesDto.setOffSiteHciName(offSiteHciName[i]);
-                appGrpPremisesDto.setPremisesSelect(offSitePremisesSelect[i]);
-                appGrpPremisesDto.setOffSitePostalCode(offSitePostalCode[i]);
-                appGrpPremisesDto.setOffSiteBlockNo(offSiteBlkNo[i]);
-                appGrpPremisesDto.setOffSiteStreetName(offSiteStreetName[i]);
-                appGrpPremisesDto.setOffSiteFloorNo(offSiteFloorNo[i]);
-                appGrpPremisesDto.setOffSiteUnitNo(offSiteUnitNo[i]);
-                appGrpPremisesDto.setOffSiteBuildingName(offSiteBuildingName[i]);
-                appGrpPremisesDto.setOffSiteEmail(offSiteEmail[i]);
-                appGrpPremisesDto.setEasMtsPubEmail(offSiteEmail[i]);
-                appGrpPremisesDto.setOffSiteAddressType(offSiteSiteAddressType[i]);
-                //weekly
-                String premVal = premValue[i];
-                for (int j = 0; j < weeklyLength; j++) {
-                    OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
-                    String[] weeklyVal = ParamUtil.getStrings(request, genPageName(premVal, "offSiteWeekly", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "offSiteWeeklyAllDay", j));
-                    //reload
-                    String weeklySelect = StringUtil.arrayToString(weeklyVal);
-                    weeklyDto.setSelectVal(weeklySelect);
-                    if (weeklyVal != null) {
-                        List<String> selectValList = Arrays.asList(weeklyVal);
-                        weeklyDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        weeklyDto.setSelectAllDay(true);
-                        weeklyDto.setStartFromHH(null);
-                        weeklyDto.setStartFromMM(null);
-                        weeklyDto.setEndToHH(null);
-                        weeklyDto.setEndToMM(null);
-                    } else {
-                        String weeklyStartHH = ParamUtil.getString(request, genPageName(premVal, "offSiteWeeklyStartHH", j));
-                        String weeklyStartMM = ParamUtil.getString(request, genPageName(premVal, "offSiteWeeklyStartMM", j));
-                        String weeklyEndHH = ParamUtil.getString(request, genPageName(premVal, "offSiteWeeklyEndHH", j));
-                        String weeklyEndMM = ParamUtil.getString(request, genPageName(premVal, "offSiteWeeklyEndMM", j));
-                        weeklyDto.setStartFromHH(weeklyStartHH);
-                        weeklyDto.setStartFromMM(weeklyStartMM);
-                        weeklyDto.setEndToHH(weeklyEndHH);
-                        weeklyDto.setEndToMM(weeklyEndMM);
-                    }
-                    weeklyDtoList.add(weeklyDto);
-                }
-                //ph
-                for (int j = 0; j < phLength; j++) {
-                    OperationHoursReloadDto phDto = new OperationHoursReloadDto();
-                    String[] phVal = ParamUtil.getStrings(request, genPageName(premVal, "offSitePubHoliday", j));
-                    String allDay = ParamUtil.getString(request, genPageName(premVal, "offSitePhAllDay", j));
-                    //reload
-                    String phSelect = StringUtil.arrayToString(phVal);
-                    phDto.setSelectVal(phSelect);
-                    if (phSelect != null) {
-                        List<String> selectValList = Arrays.asList(phVal);
-                        phDto.setSelectValList(selectValList);
-                    }
-                    if (AppConsts.TRUE.equals(allDay)) {
-                        phDto.setSelectAllDay(true);
-                        phDto.setStartFromHH(null);
-                        phDto.setStartFromMM(null);
-                        phDto.setEndToHH(null);
-                        phDto.setEndToMM(null);
-                        phDtoList.add(phDto);
-                    } else {
-                        String phStartHH = ParamUtil.getString(request, genPageName(premVal, "offSitePhStartHH", j));
-                        String phStartMM = ParamUtil.getString(request, genPageName(premVal, "offSitePhStartMM", j));
-                        String phEndHH = ParamUtil.getString(request, genPageName(premVal, "offSitePhEndHH", j));
-                        String phEndMM = ParamUtil.getString(request, genPageName(premVal, "offSitePhEndMM", j));
-                        phDto.setStartFromHH(phStartHH);
-                        phDto.setStartFromMM(phStartMM);
-                        phDto.setEndToHH(phEndHH);
-                        phDto.setEndToMM(phEndMM);
-                        if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
-                                phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
-                            phDtoList.add(phDto);
-                        }
-                    }
-
-                }
-                //event
-                for (int j = 0; j < eventLength; j++) {
-                    AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
-                    String eventName = ParamUtil.getString(request, genPageName(premVal, "offSiteEvent", j));
-                    String eventStartStr = ParamUtil.getString(request, genPageName(premVal, "offSiteEventStart", j));
-                    Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
-                    String eventEndStr = ParamUtil.getString(request, genPageName(premVal, "offSiteEventEnd", j));
-                    Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
-                    appPremEventPeriodDto.setEventName(eventName);
-                    appPremEventPeriodDto.setStartDate(eventStart);
-                    appPremEventPeriodDto.setStartDateStr(eventStartStr);
-                    appPremEventPeriodDto.setEndDate(eventEnd);
-                    appPremEventPeriodDto.setEndDateStr(eventEndStr);
-                    if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
-                            eventEndStr)) {
-                        eventList.add(appPremEventPeriodDto);
-                    }
-                }
-                addFloorNoAndUnitNo(premValue[i], "offSiteFloorNo", "offSiteUnitNo", opLength,
-                        appPremisesOperationalUnitDtos, request);
-            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType[i])) {
-                String easMtsHciName = ParamUtil.getString(request, "easMtsHciName");
-                String easMtsPostalCode = ParamUtil.getString(request, "easMtsPostalCode");
-                String easMtsBlkNo = ParamUtil.getString(request, "easMtsBlkNo");
-                String easMtsStreetName = ParamUtil.getString(request, "easMtsStreetName");
-                String easMtsFloorNo = ParamUtil.getString(request, "easMtsFloorNo");
-                String easMtsUnitNo = ParamUtil.getString(request, "easMtsUnitNo");
-                String easMtsBuildingName = ParamUtil.getString(request, "easMtsBuildingName");
-                String easMtsAddressType = ParamUtil.getString(request, "easMtsAddrType");
-                String easMtsUseOnly = ParamUtil.getString(request, "easMtsUseOnlyVal");
-                String easMtsPubEmail = ParamUtil.getString(request, "easMtsPubEmail");
-                String easMtsPubHotline = ParamUtil.getString(request, "easMtsPubHotline");
-                appGrpPremisesDto.setEasMtsHciName(easMtsHciName);
-                appGrpPremisesDto.setPremisesSelect(easMtsPremisesSelect[i]);
-                appGrpPremisesDto.setEasMtsPostalCode(easMtsPostalCode);
-                appGrpPremisesDto.setEasMtsAddressType(easMtsAddressType);
-                appGrpPremisesDto.setEasMtsBlockNo(easMtsBlkNo);
-                appGrpPremisesDto.setEasMtsFloorNo(easMtsFloorNo);
-                appGrpPremisesDto.setEasMtsUnitNo(easMtsUnitNo);
-                appGrpPremisesDto.setEasMtsStreetName(easMtsStreetName);
-                appGrpPremisesDto.setEasMtsBuildingName(easMtsBuildingName);
-                appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
-                appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
-                appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
-                addFloorNoAndUnitNo(premValue[i], "easMtsFloorNo", "easMtsUnitNo", opLength,
-                        appPremisesOperationalUnitDtos, request);
-            }*/
-            //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
-            appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
-            /*appGrpPremisesDto.setWeeklyDtoList(weeklyDtoList);
-            appGrpPremisesDto.setPhDtoList(phDtoList);
-            appGrpPremisesDto.setEventDtoList(eventList);*/
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-        /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-            //set premises edit status
-            ApplicationHelper.setPremEditStatus(appGrpPremisesDtoList, getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
-        }*/
         return appGrpPremisesDtoList;
+    }
+
+    private static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
+        String oldHciCode = null;
+        List<LicenceDto> licenceDtos = null;
+        if (oldAppSubmissionDto != null && oldAppSubmissionDto.getAppGrpPremisesDtoList() != null) {
+            oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                    .map(AppGrpPremisesDto::getHciCode)
+                    .filter(Objects::nonNull)
+                    .findAny()
+                    .orElse(null);
+            licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                    .map(AppGrpPremisesDto::getLicenceDtos)
+                    .filter(Objects::nonNull)
+                    .findAny()
+                    .orElse(null);
+            appGrpPremisesDto.setLicenceDtos(licenceDtos);
+        }
+        log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
+        log.info(StringUtil.changeForLog("--- Maybe Affected Licence size: " + (licenceDtos == null ? 0 : licenceDtos.size())));
+        appGrpPremisesDto.setHciCode(oldHciCode);
+        appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+    }
+
+    private static void setDataFromExisting(AppGrpPremisesDto dto, AppGrpPremisesDto licPremise) {
+        dto.setPremisesSelect(licPremise.getPremisesSelect());
+        dto.setHciName(licPremise.getHciName());
+        dto.setPostalCode(licPremise.getPostalCode());
+        dto.setAddrType(licPremise.getAddrType());
+        dto.setBlkNo(licPremise.getBlkNo());
+        dto.setFloorNo(licPremise.getFloorNo());
+        dto.setUnitNo(licPremise.getUnitNo());
+        dto.setAppPremisesOperationalUnitDtos(MiscUtil.transferEntityDtos(licPremise.getAppPremisesOperationalUnitDtos(),
+                AppPremisesOperationalUnitDto.class));
+        dto.setStreetName(licPremise.getStreetName());
+        dto.setBuildingName(licPremise.getBuildingName());
+        dto.setHciCode(licPremise.getHciCode());
+        dto.setRelatedServices(licPremise.getRelatedServices());
     }
 
     private static String genPageName(Object prefix, String name, Object suffix) {
@@ -1035,11 +663,180 @@ public final class AppDataHelper {
         return result;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request, String appType) {
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "", request);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request, CURRENTSVCCODE);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
+        int cdLength = ParamUtil.getInt(request, "cdLength");
+        for (int i = 0; i < cdLength; i++) {
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
+            String cdIndexNo = ParamUtil.getString(request, "cdIndexNo" + i);
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                getPageData = true;
+            } else if (AppConsts.YES.equals(isPartEdit)) {
+                getPageData = true;
+            } else if (!StringUtil.isEmpty(cdIndexNo)) {
+                getDataByIndexNo = true;
+            }
+            log.debug("get data by index no. is {}", getDataByIndexNo);
+            log.debug("get page data is {}", getPageData);
+            if (getDataByIndexNo) {
+                AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = getClinicalDirectorByIndexNo(appSvcRelatedInfoDto, cdIndexNo);
+                if (appSvcClinicalDirectorDto != null) {
+                    appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
+                }
+            } else if (getPageData) {
+                String professionBoard = ParamUtil.getString(request, "professionBoard" + i);
+                String profRegNo = ParamUtil.getString(request, "profRegNo" + i);
+                String name = ParamUtil.getString(request, "name" + i);
+                String salutation = ParamUtil.getString(request, "salutation" + i);
+                String idType = ParamUtil.getString(request, "idType" + i);
+                String idNo = ParamUtil.getString(request, "idNo" + i);
+                String nationality = ParamUtil.getString(request, "nationality" + i);
+                String designation = ParamUtil.getString(request, "designation" + i);
+                String otherDesignation = ParamUtil.getString(request, "otherDesignation" + i);
+//                String specialty = ParamUtil.getString(request,"speciality"+i);
+//                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
+                String specialtyGetDateStr = ParamUtil.getString(request, "specialtyGetDate" + i);
+                String typeOfCurrRegi = ParamUtil.getString(request, "typeOfCurrRegi" + i);
+                String currRegiDateStr = ParamUtil.getString(request, "currRegiDate" + i);
+                String praCerEndDateStr = ParamUtil.getString(request, "praCerEndDate" + i);
+                String typeOfRegister = ParamUtil.getString(request, "typeOfRegister" + i);
+                String relevantExperience = ParamUtil.getString(request, "relevantExperience" + i);
+                String holdCerByEMS = ParamUtil.getString(request, "holdCerByEMS" + i);
+                String aclsExpiryDateStr = ParamUtil.getString(request, "aclsExpiryDate" + i);
+                String bclsExpiryDateStr = ParamUtil.getString(request, "bclsExpiryDate" + i);
+                String mobileNo = ParamUtil.getString(request, "mobileNo" + i);
+                String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
+                String noRegWithProfBoard = ParamUtil.getString(request, "noRegWithProfBoardVal" + i);
+                String transportYear = ParamUtil.getString(request, "transportYear" + i);
+
+                String assignSel = ParamUtil.getString(request, "assignSel" + i);
+                AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = ApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+                log.info(StringUtil.changeForLog("Clinical Governance Officer assgined select: " + assignSel));
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !ApplicationHelper.isEmpty(assignSel)) {
+                    appSvcClinicalDirectorDto.setAssignSelect(assignSel);
+                } else {
+                    appSvcClinicalDirectorDto.setAssignSelect(ApplicationHelper.getAssignSelect(nationality, idType, idNo,
+                            "-1"));
+                }
+                AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
+                if (appPsnEditDto == null) {
+                    appPsnEditDto = ApplicationHelper.setNeedEditField(appSvcClinicalDirectorDto);
+                    appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
+                }
+                boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(cdIndexNo);
+                boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
+                        assignSel) || !appSvcClinicalDirectorDto.isLicPerson();
+                if (canSetValue(appPsnEditDto.isProfessionBoard(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
+                }
+                if (canSetValue(appPsnEditDto.isProfRegNo(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
+                }
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setName(name);
+                }
+                if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setSalutation(salutation);
+                }
+                if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setIdType(idType);
+                }
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setIdNo(StringUtil.toUpperCase(idNo));
+                }
+                if (canSetValue(appPsnEditDto.isNationality(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setNationality(nationality);
+                }
+                if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setDesignation(designation);
+                }
+
+                if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcClinicalDirectorDto.getDesignation())) {
+                    if (canSetValue(appPsnEditDto.isOtherDesignation(), isNewOfficer, partEdit)) {
+                        appSvcClinicalDirectorDto.setOtherDesignation(otherDesignation);
+                    }
+                } else {
+                    appSvcClinicalDirectorDto.setOtherDesignation(null);
+                }
+                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setSpeciality(null);
+                }
+                if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
+                }
+                if (canSetValue(appPsnEditDto.isHoldCerByEMS(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
+                }
+                if (canSetValue(appPsnEditDto.isMobileNo(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setMobileNo(mobileNo);
+                }
+                if (canSetValue(appPsnEditDto.isEmailAddr(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
+                }
+                if (canSetValue(appPsnEditDto.isTypeOfCurrRegi(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
+                }
+                if (canSetValue(appPsnEditDto.isRelevantExperience(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
+                }
+                if (StringUtil.isEmpty(cdIndexNo)) {
+                    appSvcClinicalDirectorDto.setIndexNo(UUID.randomUUID().toString());
+                } else {
+                    appSvcClinicalDirectorDto.setIndexNo(cdIndexNo);
+                }
+
+                //date pick
+                if (canSetValue(appPsnEditDto.isSpecialtyGetDate(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
+                    Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+                    appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
+                }
+                if (canSetValue(appPsnEditDto.isPraCerEndDate(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
+                    Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
+                    appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
+                }
+                if (canSetValue(appPsnEditDto.isCurrRegiDate(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
+                    Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
+                    appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
+                }
+                if (canSetValue(appPsnEditDto.isAclsExpiryDate(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
+                    Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
+                    appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
+                }
+                if (canSetValue(appPsnEditDto.isBclsExpiryDate(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
+                    Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
+                    appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
+                }
+
+                if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)) {
+                    if (canSetValue(appPsnEditDto.isNoRegWithProfBoard(), isNewOfficer, partEdit)) {
+                        if (AppConsts.YES.equals(noRegWithProfBoard)) {
+                            appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
+                        } else {
+                            appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
+                        }
+                    }
+                    if (canSetValue(appPsnEditDto.isTransportYear(), isNewOfficer, partEdit)) {
+                        appSvcClinicalDirectorDto.setTransportYear(transportYear);
+                    }
+                }
+                appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
+            }
+        }
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto end ..."));
-        return appSvcCgoDtoList;
+        return appSvcClinicalDirectorDtos;
     }
 
     private static boolean canSetValue(boolean canEdit, boolean isNewOfficer, boolean isPartEdit) {
@@ -1678,7 +1475,6 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "nationality", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "designation", prefix, suffix, request);
 
-
         if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
             if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
                 String otherDesignation = ParamUtil.getString(request, "otherDesignation" + suffix);
@@ -1699,10 +1495,6 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "otherQualification", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "mobileNo", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "emailAddr", prefix, suffix, request);
-        setPsnValue(person,appPsnEditDto,"holdCerByEMS",prefix,suffix,request);
-        setPsnValue(person,appPsnEditDto,"aclsExpiryDate",prefix,suffix,true,request);
-        setPsnValue(person,appPsnEditDto,"relevantExperience",prefix,suffix,request);
-        setPsnValue(person,appPsnEditDto,"bclsExpiryDate",prefix,suffix,true,request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {
@@ -2212,17 +2004,17 @@ public final class AppDataHelper {
 
     private static AppSvcBusinessDto getAppSvcBusinessDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String businessIndexNo) {
         AppSvcBusinessDto result = null;
-//        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(businessIndexNo)) {
-//            List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
-//            if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
-//                for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
-//                    if (businessIndexNo.equals(appSvcBusinessDto.getBusinessIndexNo())) {
-//                        result = appSvcBusinessDto;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(businessIndexNo)) {
+            List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
+            if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
+                for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
+                    if (businessIndexNo.equals(appSvcBusinessDto.getBusinessIndexNo())) {
+                        result = appSvcBusinessDto;
+                        break;
+                    }
+                }
+            }
+        }
         return result;
     }
 

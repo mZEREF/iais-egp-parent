@@ -530,11 +530,8 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
 
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, oldAppSubmissionDto, null,
-                isRfi, true);
+        Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, true);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
         String crud_action_additional = bpc.request.getParameter("crud_action_additional");

@@ -1,3 +1,7 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
+
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
@@ -146,7 +150,6 @@
     </div>
 </div>
 </div>
-<%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
 <script>
     $(function () {
         initUploadFileData();

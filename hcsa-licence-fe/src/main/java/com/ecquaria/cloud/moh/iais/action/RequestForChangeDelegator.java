@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -29,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -49,9 +47,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -61,16 +57,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +67,16 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -221,18 +217,18 @@ public class RequestForChangeDelegator {
         HcsaServiceCacheHelper.flushServiceMapping();
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
-        ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
+        ParamUtil.setSessionAttr(bpc.request, "SvcName", null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", null);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request, "AmendTypeValue", null);
         ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", null);
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
-        init(bpc,licenceId);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
+        init(bpc, licenceId);
         removeSession(bpc.request);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
@@ -352,7 +348,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
         }
         ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", amendType);
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedFile", null);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedFile", null);
         log.debug(StringUtil.changeForLog("the do doChoose end ...."));
     }
 
@@ -462,7 +458,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", premisesIndexNo);
         }
 
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<PageShowFileDto> pageShowFileDtos = FileUtils.transForFileMapToPageShowFileDto(map);
 
         int maxFile = systemParamConfig.getUploadFileLimit();
@@ -516,7 +512,7 @@ public class RequestForChangeDelegator {
             String general_err0041= AppValidatorHelper.repLength("This","300");
             error.put("reasonError",general_err0041);
         }
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
@@ -613,7 +609,7 @@ public class RequestForChangeDelegator {
             String general_err0041= AppValidatorHelper.repLength("This","300");
             error.put("reasonError",general_err0041);
         }
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,IaisEGPConstant.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
@@ -906,7 +902,8 @@ public class RequestForChangeDelegator {
                 log.debug(StringUtil.changeForLog("do request for change ------ licence no:"+appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
                 //set file max seq num
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,appSubmissionDto.getMaxFileIndex()+1);
+                ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,
+                        appSubmissionDto.getMaxFileIndex()+1);
                 //set audit trail licNo
                 String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
@@ -1003,7 +1000,7 @@ public class RequestForChangeDelegator {
             }
             String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
             ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
-            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         }else{
             action = "error";
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"error !!!");

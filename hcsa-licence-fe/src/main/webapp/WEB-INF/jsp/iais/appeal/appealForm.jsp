@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-internet"/>
@@ -10,6 +11,8 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
 <%@include file="./dashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
@@ -168,7 +171,6 @@
     <input type="hidden"  id="saveDraftSuccess" name="saveDraftSuccess" value="${saveDraftSuccess}">
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-    <%@ include file="./FeFileCallAjax.jsp" %>
     <input type="hidden" value="${need_print}" id="need_print" />
   </form>
 </div>

@@ -9,6 +9,7 @@
 %>
 <c:set var="individualType" value="LICTSUB002" />
 <webui:setLayout name="iais-internet"/>
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
 <form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -261,7 +262,6 @@
   </div>
   <br/>
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-  <%@ include file="../appeal/FeFileCallAjax.jsp" %>
 </form>
 
 <%--

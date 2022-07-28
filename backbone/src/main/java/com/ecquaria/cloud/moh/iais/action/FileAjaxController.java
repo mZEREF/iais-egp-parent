@@ -50,7 +50,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @auther wangyu and chenlei on 4/19/2022.
+ * @author wangyu and chenlei on 4/19/2022.
  */
 @RestController
 @Slf4j
@@ -135,8 +135,8 @@ public class FileAjaxController {
 
     private void checkAddtionalData(Map<String, Object> result, File toFile, HttpServletRequest request) {
         // premise - co-location non-licenced
-        String[] premTypes = ParamUtil.getStrings(request, "premType");
-        if (!IaisCommonUtils.isEmpty(premTypes)) {
+        boolean forNonLicenced = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "premType"));
+        if (forNonLicenced) {
             parsFile(result, toFile, "appPremNonLicRelationDtos", (data) -> {
                 AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
                 dto.setBusinessName(data.get(0));
@@ -164,7 +164,7 @@ public class FileAjaxController {
             result.put("msgType", "N");
         } else {
             // data
-            List<T> objList = data.stream().map(func::apply)
+            List<T> objList = data.stream().map(func)
                     .collect(Collectors.toList());
             result.put(name, objList);
         }

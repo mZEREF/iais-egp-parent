@@ -43,12 +43,6 @@
                       </div>
                     </c:if>
                   </c:if>
-                  <c:set var="readOnly" value="false"/>
-                  <c:forEach var="appSvcDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
-                    <c:if test="${!empty appSvcDto.relLicenceNo || !empty appSvcDto.alignLicenceNo }">
-                      <c:set var="readOnly" value="true"/>
-                    </c:if>
-                  </c:forEach>
                   <!--prem content -->
                   <%@include file="section/premisesContent.jsp"%>
                 </div>

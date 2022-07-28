@@ -90,7 +90,7 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
-        ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
@@ -137,7 +137,7 @@ public class WithdrawalDelegator {
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request,
-                    HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, withdrawnDto.getMaxFileIndex());
+                    IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, withdrawnDto.getMaxFileIndex());
             getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);

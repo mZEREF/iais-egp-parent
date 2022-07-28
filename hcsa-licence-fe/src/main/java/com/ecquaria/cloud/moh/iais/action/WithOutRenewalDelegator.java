@@ -46,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -205,8 +204,8 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         bpc.request.getSession().removeAttribute("declaration_page_is");
-        ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
+        ParamUtil.setSessionAttr(bpc.request, "viewPrint", null);
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -427,7 +426,7 @@ public class WithOutRenewalDelegator {
         }else{
             maxFileIndex ++;
         }
-        ParamUtil.setSessionAttr(request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+        ParamUtil.setSessionAttr(request,IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         return appSubmissionDto;
     }
 
@@ -871,7 +870,7 @@ public class WithOutRenewalDelegator {
 
     private void setMacFileIndex(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request){
         if(appSubmissionDtos.size() == 1){
-            Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+            Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(request,IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
             if(maxFileIndex == null){
                 maxFileIndex = 0;
             }
@@ -1277,12 +1276,7 @@ public class WithOutRenewalDelegator {
                 int count = 0;
                 for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                     Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
-                    if (renewDto.getAppSubmissionDtos().size() > 1) {
-                        AppValidatorHelper.doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, appSubmissionDto, bpc);
-                    } else {
-                        AppValidatorHelper.doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto,
-                                bpc);
-                    }
+                    AppValidatorHelper.doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, bpc);
                     errMap.put(appSubmissionDto.getServiceName() + count, previewAndSubmitMap);
                     count++;
                 }

@@ -1082,7 +1082,6 @@ public class ServiceMenuDelegator {
                     appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 }
             }
-
         }else{
             for(HcsaServiceDto hcsaServiceDto:appSelectSvcDto.getBaseSvcDtoList()){
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();

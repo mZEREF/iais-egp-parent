@@ -1,10 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<%
-    String webroot2 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
-%>
-<script type="text/javascript" src="<%=webroot2%>js/file-upload.js"></script>
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
 <c:set var="permanent" value="PERMANENT" />
 <c:set var="conv" value="CONVEYANCE" />
@@ -464,7 +461,7 @@
         </div>
     </div>
 </c:forEach>
-<input type="hidden" name="uploadKey" value=""/>
+<%--<input type="hidden" name="uploadKey" value=""/>--%>
 <div id="selectFileDiv"></div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -1016,7 +1013,7 @@
         $('.file-upload').click(function () {
             var index = $(this).closest('.premContent').find('input[name="premIndex"]').val();
             var uploadKey = "uploadFile" + index;
-            $('input[name="uploadKey"]').val(uploadKey);
+            /*$('input[name="uploadKey"]').val(uploadKey);*/
             clearFlagValueFEFile();
             $('#selectFileDiv').html('<input id="' + uploadKey + '" class="selectedFile" name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="ajaxCallUpload(\'mainForm\',\'' + uploadKey + '\');" aria-label="selectedFile">');
             $('input[type="file"]').click();

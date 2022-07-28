@@ -341,6 +341,7 @@ public class ApplicationDelegator extends AppCommDelegator {
      * @param bpc
      * @throws
      */
+    @Override
     public void controlSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do controlSwitch start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);

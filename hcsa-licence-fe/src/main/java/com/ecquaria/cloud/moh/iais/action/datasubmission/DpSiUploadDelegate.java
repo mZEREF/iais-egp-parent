@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -70,7 +69,7 @@ public class DpSiUploadDelegate {
     private static final String SOVENOR_INVENTORY_LIST = "SOVENOR_INVENTORY_LIST";
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
-    private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
+    private static final String SEESION_FILES_MAP_AJAX = IaisEGPConstant.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
 
 

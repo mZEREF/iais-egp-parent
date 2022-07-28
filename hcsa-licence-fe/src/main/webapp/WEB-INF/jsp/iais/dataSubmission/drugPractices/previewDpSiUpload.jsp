@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -12,6 +13,8 @@
     }
 %>
 <webui:setLayout name="iais-internet"/>
+
+<script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 <c:set var="hasItems" value="${not empty SOVENOR_INVENTORY_LIST ? 1 : 0}" />
@@ -113,8 +116,6 @@
 
         </div>
     </div>
-    <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
-
 </form>
 
 <script type="text/javascript" >
