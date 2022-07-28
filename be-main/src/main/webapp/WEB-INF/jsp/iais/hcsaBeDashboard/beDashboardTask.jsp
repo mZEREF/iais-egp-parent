@@ -262,7 +262,7 @@
 
     <c:if test="${flag eq 'false' && not empty successInfo}">
     $(document).ready(function() {
-        $('#approveAo .modal-body span').html('${successInfo}');
+        $('#approveAo .modal-body span').html(formatHTMLEnCode('${successInfo}'));
         $('#approveAo').modal('show');
     });
     </c:if>
