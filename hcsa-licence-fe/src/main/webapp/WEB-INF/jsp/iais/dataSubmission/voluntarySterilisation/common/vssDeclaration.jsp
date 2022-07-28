@@ -2,14 +2,14 @@
     <c:set var="declaration" value="${vssSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 </c:if>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading ">
         <h4 class="panel-title">
-            <a  data-toggle="collapse" href="#vss-declaration">
+            <a <c:if test="${headingSigns == 'hide'}">class="collapsed" </c:if> data-toggle="collapse" href="#vss-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="vss-declaration" class="panel-collapse collapse in">
+    <div id="vss-declaration" class="panel-collapse collapse <c:if test="${headingSigns != 'hide'}">in</c:if>">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>

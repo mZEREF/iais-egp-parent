@@ -235,10 +235,10 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
+        ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 

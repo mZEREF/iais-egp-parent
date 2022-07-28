@@ -2,14 +2,14 @@
 <c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 </c:if>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading <c:if test="${headingSigns != 'hide'}">completed</c:if>">
         <h4 class="panel-title">
-            <a data-toggle="collapse" href="#ar-declaration">
+            <a <c:if test="${headingSigns == 'hide'}">class="collapsed" </c:if> data-toggle="collapse" href="#ar-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="ar-declaration" class="panel-collapse collapse in">
+    <div id="ar-declaration" class="panel-collapse collapse <c:if test="${headingSigns != 'hide'}">in</c:if>">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
