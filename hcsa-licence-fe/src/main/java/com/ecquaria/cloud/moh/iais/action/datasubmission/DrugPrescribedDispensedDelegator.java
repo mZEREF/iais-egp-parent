@@ -119,6 +119,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         } else if ("confirm".equals(action)) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }
+        //set back url
+        DataSubmissionHelper.setGoBackUrl(request);
     }
 
     @Override
@@ -211,6 +213,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+
     }
 
     @Override

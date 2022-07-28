@@ -30,7 +30,7 @@ public class INTERNET___MohDPDrugPrescribed___1 extends BaseProcessClass {
 
 	public void return_OnStepProcess_0() throws Exception {
 	// 		Return->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doReturn", this);
+//		EngineHelper.delegate(DELEGATOR, "doReturn", this);
 	}
 
 	public void preparePage_OnStepProcess_0() throws Exception {

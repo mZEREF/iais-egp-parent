@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
@@ -27,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -36,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,6 +54,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.AR_CYCLE_AR;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 /**
  * @Description Data Submission Helper
@@ -306,7 +315,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
-            if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
+            if (AR_CYCLE_AR.equals(lastStage)) {
                 if (selectionDto.isFreshNatural() || selectionDto.isFreshStimulated()) {
                     result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
                 }
@@ -389,7 +398,7 @@ public final class DataSubmissionHelper {
     }
 
     private static void addStartStages(List<String> result) {
-        result.add(DataSubmissionConsts.AR_CYCLE_AR);
+        result.add(AR_CYCLE_AR);
         result.add(DataSubmissionConsts.AR_CYCLE_IUI);
         result.add(DataSubmissionConsts.AR_CYCLE_EFO);
     }
@@ -410,7 +419,7 @@ public final class DataSubmissionHelper {
                 DataSubmissionConsts.AR_STAGE_DONATION,
                 DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
-        } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
+        } else if (AR_CYCLE_AR.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_AR;
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_IUI;
@@ -679,6 +688,141 @@ public final class DataSubmissionHelper {
             opts.add(0, new SelectOption("", firstOption));
         }
         return opts;
+    }
+
+    public static List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request) {
+        String currentCycle = ParamUtil.getString(request, "stage");
+        String actionValue = ParamUtil.getString(request, "action_value");
+        String stage = StringUtils.hasLength(actionValue) ? actionValue : currentCycle;
+        List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
+        List<String> options = getAllARCycleStages();
+        if (IaisCommonUtils.isNotEmpty(options)) {
+            for (String option : options) {
+                String codeDesc;
+                if (DataSubmissionConsts.AR_STAGE_THAWING.equals(option)){
+                    codeDesc = "Thawing";
+                } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)){
+                    codeDesc = "Preimplantation Genetic Testing";
+                } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(option)){
+                    codeDesc = "Outcome";
+                } else if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(option)){
+                    codeDesc = "Transfer In & Out";
+                } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)){
+                    codeDesc = "Completed/Abandoned Cycle";
+                }else {
+                    codeDesc = MasterCodeUtil.getCodeDesc(option);
+                }
+                if (option.equals(stage)) {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING));
+                } else {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_NOT_SUBMITTED));
+                }
+            }
+        }
+        return arCycleStageDtos;
+    }
+
+    protected static List<String> getAllARCycleStages() {
+        List<String> stages = new ArrayList<>(14);
+        stages.add(DataSubmissionConsts.AR_CYCLE_AR);
+        stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
+        stages.add(DataSubmissionConsts.AR_STAGE_FREEZING);
+        stages.add(DataSubmissionConsts.AR_STAGE_THAWING);
+        stages.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
+        stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
+        stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);//todo may change OutCome
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+        stages.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
+        stages.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+
+        return stages;
+    }
+
+    public static void jumpJudgement(HttpServletRequest request){
+        ArSuperDataSubmissionDto currentArDataSubmission = getCurrentArDataSubmission(request);
+        String actionType = ParamUtil.getString(request, ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, "action_value");
+        String haveJump = (String) ParamUtil.getRequestAttr(request, "haveJump");
+        if ("jumpStage".equals(actionType)){
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, actionValue);
+            if ("Y".equals(haveJump)){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
+                ParamUtil.setRequestAttr(request, JUMP_ACTION_TYPE, "jump");
+            }
+//            if (currentArDataSubmission != null){
+//                CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+//                if (selectionDto != null){
+//                    selectionDto.setLatestStage(selectionDto.getStage());
+//                    selectionDto.setStage(actionValue);
+//                }
+//            }
+
+//            switch (actionValue){
+//                case DataSubmissionConsts.AR_CYCLE_AR:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_CYCLE_IUI:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_CYCLE_EFO:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_FERTILISATION:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_THAWING:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_OUTCOME:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_FREEZING:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_DONATION:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_DISPOSAL:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_END_CYCLE:
+//
+//                    break;
+//                case DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT:
+//
+//                    break;
+//            }
+        }
     }
 
     public static List<SelectOption> genOptions(Map<String, String> map, String firstOption, boolean sort) {
@@ -1047,6 +1191,16 @@ public final class DataSubmissionHelper {
             dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
         return dataSubmission;
+    }
+
+    public static void setGoBackUrl(HttpServletRequest request){
+        String URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(request.getServerName())
+                .append(URL);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+        ParamUtil.setRequestAttr(request,"goBackUrl",tokenUrl);
     }
 
 }

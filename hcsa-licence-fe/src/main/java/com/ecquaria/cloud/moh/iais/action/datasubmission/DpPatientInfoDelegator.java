@@ -49,6 +49,8 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
+        //set back url
+        DataSubmissionHelper.setGoBackUrl(bpc.request);
     }
 
     @Override

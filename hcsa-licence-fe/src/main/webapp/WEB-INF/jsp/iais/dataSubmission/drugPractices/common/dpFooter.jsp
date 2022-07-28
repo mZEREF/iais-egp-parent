@@ -1,8 +1,17 @@
 <div class="application-tab-footer">
     <div class="col-xs-12 col-sm-4 col-md-2 text-left">
-        <a style="padding-left: 5px;" class="back" id="backBtn">
-            <em class="fa fa-angle-left">&nbsp;</em> Back
-        </a>
+        <c:choose>
+            <c:when test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005' && dpSuperDataSubmissionDto.submissionType eq 'DP_TP002'}">
+                <a href="${goBackUrl}" style="padding-left: 5px;" <c:if test="${goBackUrl eq null || goBackUrl eq ''}">id="backBtn"</c:if> >
+                    <em class="fa fa-angle-left">&nbsp;</em> Back
+                </a>
+            </c:when>
+            <c:otherwise>
+                <a style="padding-left: 5px;" class="back" id="backBtn">
+                    <em class="fa fa-angle-left">&nbsp;</em> Back
+                </a>
+            </c:otherwise>
+        </c:choose>
     </div>
     <div class="col-xs-12 col-sm-8 col-md-10">
         <div class="button-group">
