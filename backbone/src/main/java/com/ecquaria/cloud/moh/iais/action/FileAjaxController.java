@@ -46,10 +46,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @Auther wangyu and chenlei on 4/19/2022.
+ * @auther wangyu and chenlei on 4/19/2022.
  */
 @RestController
 @Slf4j
@@ -133,32 +134,39 @@ public class FileAjaxController {
     }
 
     private void checkAddtionalData(Map<String, Object> result, File toFile, HttpServletRequest request) {
+        // premise - co-location non-licenced
         String[] premTypes = ParamUtil.getStrings(request, "premType");
         if (!IaisCommonUtils.isEmpty(premTypes)) {
-            List<List<String>> data = null;
-            try {
-                data = ExcelReader.readerToList(toFile, 0, 1, null);
-            } catch (Exception e) {
-                log.warn(StringUtil.changeForLog(e.getMessage()), e);
-            }
-            if (IaisCommonUtils.isEmpty(data)) {
-                // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
-                result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
-                result.put("msgType", "N");
-            } else if (IaisCommonUtils.isEmpty(data.get(0))) {
-                // PRF_ERR006 - No records found.
-                result.put("description", MessageUtil.getMessageDesc("PRF_ERR006"));
-                result.put("msgType", "N");
-            } else {
-                // data
-                List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = data.stream().map(list -> {
-                    AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
-                    dto.setBusinessName(list.get(0));
-                    dto.setProvidedService(list.get(1));
-                    return dto;
-                }).collect(Collectors.toList());
-                result.put("appPremNonLicRelationDtos", appPremNonLicRelationDtos);
-            }
+            parsFile(result, toFile, "appPremNonLicRelationDtos", (data) -> {
+                AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+                dto.setBusinessName(data.get(0));
+                dto.setProvidedService(data.get(1));
+                return dto;
+            });
+        }
+        // others
+    }
+
+    private <T> void parsFile(Map<String, Object> result, File toFile, String name, Function<List<String>, T> func) {
+        List<List<String>> data = null;
+        try {
+            data = ExcelReader.readerToList(toFile, 0, 1, null);
+        } catch (Exception e) {
+            log.warn(StringUtil.changeForLog(e.getMessage()), e);
+        }
+        if (IaisCommonUtils.isEmpty(data)) {
+            // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+            result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
+            result.put("msgType", "N");
+        } else if (IaisCommonUtils.isEmpty(data.get(0))) {
+            // PRF_ERR006 - No records found.
+            result.put("description", MessageUtil.getMessageDesc("PRF_ERR006"));
+            result.put("msgType", "N");
+        } else {
+            // data
+            List<T> objList = data.stream().map(func::apply)
+                    .collect(Collectors.toList());
+            result.put(name, objList);
         }
     }
 
@@ -175,12 +183,12 @@ public class FileAjaxController {
                 cssClass = "btn btn-secondary btn-sm";
             }
             String[] fileSplit = fileName.split("\\.");
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            String csrfToken = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
             data.append("<div ").append(" id ='").append(fileAppendId).append("Div").append(index).append("' >")
                     .append("<a href=\"").append(request.getContextPath())
                     .append("/file/download-session-file?fileAppendIdDown=").append(fileAppendId)
                     .append("&fileIndexDown=").append(index)
-                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(CSRF))
+                    .append("&OWASP_CSRFTOKEN=").append(StringUtil.getNonNull(csrfToken))
                     .append("\" title=\"Download\" class=\"downloadFile\">")
                     .append(IaisCommonUtils.getDocNameByStrings(fileSplit))
                     .append('.').append(fileSplit[fileSplit.length - 1])
@@ -234,7 +242,7 @@ public class FileAjaxController {
         }
         log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
         List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
-        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024l));
+        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile, fileTypes, (maxSize * 1024 * 1024L));
         Boolean fileSize = booleanMap.get("fileSize");
         Boolean fileType = booleanMap.get("fileType");
         //size
@@ -357,12 +365,12 @@ public class FileAjaxController {
     }
 
     @PostMapping("/init")
-    public String initFileData(HttpServletRequest request) {
-        Map<String, String> data = new HashMap<>();
+    public String initFileData() {
+        Map<String, String> data = new HashMap<>(3);
         String fileMaxSize = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileLimit());
         data.put("fileMaxSize", fileMaxSize);
-        String fileMaxMBMessage = MessageUtil.replaceMessage("GENERAL_ERR0019", fileMaxSize, "sizeMax");
-        data.put("fileMaxMBMessage", fileMaxMBMessage);
+        String fileMaxMessage = MessageUtil.replaceMessage("GENERAL_ERR0019", fileMaxSize, "sizeMax");
+        data.put("fileMaxMBMessage", fileMaxMessage);
         String fileType = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileType());
         data.put("fileType", fileType);
         return JsonUtil.parseToJson(data);
