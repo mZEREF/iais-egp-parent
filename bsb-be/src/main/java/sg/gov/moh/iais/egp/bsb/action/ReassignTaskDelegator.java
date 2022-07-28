@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -31,13 +32,23 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
-import static sg.gov.moh.iais.egp.bsb.constant.RoleConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ASSIGN_RESULT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_CUR_ROLE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ROLE_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_ROLE_OPTIONS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TASK_LIST_SEARCH_DTO;
 
 
 @Slf4j
@@ -100,11 +111,11 @@ public class ReassignTaskDelegator {
             setUserIdList(tasks, doUserIds, aoUserIds, hmUserIds);
             //
             List<OrgUserDto> userDtoList = new ArrayList<>();
-            if (curRoleId.equals(ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
+            if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
                 userDtoList = organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
-            } else if (curRoleId.equals(ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
+            } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
                 userDtoList = organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
-            } else if (curRoleId.equals(ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
+            } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
                 userDtoList = organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
             }
             Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
@@ -143,11 +154,11 @@ public class ReassignTaskDelegator {
     private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
         for (TaskDto task : tasks) {
             if (task.getApplication() != null) {
-                if (curRoleId.equals(ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
+                if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
                     task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());
-                } else if (curRoleId.equals(ROLE_BSB_AO) && StringUtils.hasLength(task.getApplication().getAoUserId())) {
+                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && StringUtils.hasLength(task.getApplication().getAoUserId())) {
                     task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
-                } else if (curRoleId.equals(ROLE_BSB_HM) && StringUtils.hasLength(task.getApplication().getHmUserId())) {
+                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && StringUtils.hasLength(task.getApplication().getHmUserId())) {
                     task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
                 }
             }

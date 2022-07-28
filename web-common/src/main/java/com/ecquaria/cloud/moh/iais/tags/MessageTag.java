@@ -66,8 +66,8 @@ public final class MessageTag extends DivTagSupport {
                 Objects.requireNonNull(replaceName);
                 paramMap.put(replaceName, SystemParamHelper.getConfigValueByKey(propertiesKey));
             } else if (!StringUtil.isEmpty(paramKeys) && !StringUtil.isEmpty(paramValues)) {
-                String[] keys = paramKeys.split("\\s*,\\s*");
-                String[] values = paramValues.split("\\s*,\\s*");
+                String[] keys = paramKeys.split("\\s{0,5},\\s{0,5}");
+                String[] values = paramValues.split("\\s{0,5},\\s{0,5}");
                 if (keys.length == values.length) {
                     paramMap = new HashMap<>();
                     for (int i = 0; i < keys.length; i++) {

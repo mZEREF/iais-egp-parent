@@ -663,6 +663,22 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<DsCenterDto> getDsCenterDto(String orgId, String hciCode, String centerType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<DsCenterDto>> saveDsCenters(List<DsCenterDto> dsCenterDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<Void> updateVssDocumentStatusByTreId(String treatmentId, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

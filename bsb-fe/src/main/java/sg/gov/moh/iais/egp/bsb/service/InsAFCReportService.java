@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
@@ -23,7 +23,8 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
@@ -123,7 +124,7 @@ public class InsAFCReportService {
     //get afc action data
     private void bindAFCParam(HttpServletRequest request, ReviewAFCReportDto dto) {
         List<CertificationDocDisPlayDto> certificationDocDtos = dto.getCertificationDocDisPlayDtos();
-        bindSavedCertDocParam(request,certificationDocDtos,dto,RoleConstants.ROLE_AFC_ADMIN);
+        bindSavedCertDocParam(request, certificationDocDtos, dto, RoleConsts.USER_ROLE_BSB_AFC_USER);
     }
 
     //get applicant action data
@@ -131,13 +132,13 @@ public class InsAFCReportService {
         List<CertificationDocDisPlayDto> certificationDocDtos = dto.getCertificationDocDisPlayDtos();
         Map<String, CertificationDocDto> newDocMap = commonDocDto.getNewDocMap();
         //mark previous doc as final
-        bindSavedCertDocParam(request,certificationDocDtos,dto,RoleConstants.ROLE_APPLICANT);
+        bindSavedCertDocParam(request, certificationDocDtos, dto, RoleConsts.USER_ROLE_BSB_FACILITY_USER);
         //mark new doc as final
         if (!CollectionUtils.isEmpty(newDocMap)) {
             List<CertificationDocDisPlayDto> dtoList = newDocMap.values().stream().map(CertificationDocDto::getDisPlayDto).collect(Collectors.toList());
             List<String> maskedRepoIds = dtoList.stream().map(CertificationDocDisPlayDto::getMaskedRepoId).collect(Collectors.toList());
             for (String maskedRepoId : maskedRepoIds) {
-                String checked = ParamUtil.getString(request, maskedRepoId + RoleConstants.ROLE_APPLICANT);
+                String checked = ParamUtil.getString(request, maskedRepoId + RoleConsts.USER_ROLE_BSB_FACILITY_USER);
                 String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
                 newDocMap.get(repoId).getDisPlayDto().setApplicantMarkFinal(checked);
             }
@@ -156,10 +157,10 @@ public class InsAFCReportService {
                 if (!StringUtils.isEmpty(checked)&&checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
-                if (role.equals(RoleConstants.ROLE_APPLICANT)) {
+                if (role.equals(RoleConsts.USER_ROLE_BSB_FACILITY_USER)) {
                     docDtoMap.get(repoId).setApplicantMarkFinal(checked);
                 }
-                if (role.equals(RoleConstants.ROLE_AFC_ADMIN)) {
+                if (role.equals(RoleConsts.USER_ROLE_BSB_AFC_USER)) {
                     docDtoMap.get(repoId).setAfcMarkFinal(checked);
                 }
             }

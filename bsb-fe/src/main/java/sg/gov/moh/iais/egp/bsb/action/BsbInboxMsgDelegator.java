@@ -52,8 +52,6 @@ public class BsbInboxMsgDelegator {
     private static final String KEY_SEARCH_MSG_DATE_FROM = "searchMsgDateFrom";
     private static final String KEY_SEARCH_MSG_DATE_TO = "searchMsgDateTo";
 
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
     private static final String KEY_SIGN_EQUAL = "=";
     private static final String KEY_MESSAGE_PAGE = "msgPage";
     public static final String KEY_INBOX = "inbox";
@@ -179,21 +177,7 @@ public class BsbInboxMsgDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InboxMsgSearchDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        switch (actionValue) {
-            case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
-                searchDto.setPage(0);
-                searchDto.setSize(pageSize);
-                break;
-            case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
-                searchDto.setPage(pageNo - 1);
-                break;
-            default:
-                log.warn("page, action_value is invalid: {}", actionValue);
-                break;
-        }
+        BsbInboxService.page(request, searchDto);
         ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
     }
 

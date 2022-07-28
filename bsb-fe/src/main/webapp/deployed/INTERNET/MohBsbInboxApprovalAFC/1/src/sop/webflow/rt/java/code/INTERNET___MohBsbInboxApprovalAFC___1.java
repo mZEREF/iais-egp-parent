@@ -14,8 +14,8 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___MohBsbInboxApprovaAfc___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbInboxApprovalAfcDelegator";
+public class INTERNET___MohBsbInboxApprovalAFC___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbInboxApprovalAFCDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);

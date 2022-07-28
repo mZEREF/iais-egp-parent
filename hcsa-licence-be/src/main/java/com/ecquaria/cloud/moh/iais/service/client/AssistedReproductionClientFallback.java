@@ -262,4 +262,20 @@ public class AssistedReproductionClientFallback implements AssistedReproductionC
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<DoctorInformationDto>> saveDoctorInformationDtos(List<DoctorInformationDto> doctorInformationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> deleteDoctorByConds(List<String> prns, String doctorSource) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

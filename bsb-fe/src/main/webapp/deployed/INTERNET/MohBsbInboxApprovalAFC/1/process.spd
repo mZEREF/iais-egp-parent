@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBsbInboxApprovaAfc" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbInboxApprovalAFC" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
@@ -51,7 +51,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxApprovalAfcListPage" stageIndicator="" x="400" y="260">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxApprovalAFCListPage" stageIndicator="" x="360" y="252">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -66,11 +66,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
    <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InboxApprovalAfcListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
-   <position>{(420,120)(420,280)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/InboxApprovalAFCListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(420,120)(380,272)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxApprovalAfcListPage" style="oblique">
-   <position>{(420,280)(420,400)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxApprovalAFCListPage" style="oblique">
+   <position>{(380,272)(420,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindAction" style="oblique">
    <position>{(420,400)(570,400)}</position>

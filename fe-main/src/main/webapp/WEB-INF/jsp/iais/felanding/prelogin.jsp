@@ -148,7 +148,7 @@
                           <div class="form-check-gp">
                             <div class="form-check">
                               <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
-                              <label class="form-check-label"  for="oldSystem"><span class="check-square"></span><strong>Biosafety Branch (BSB)</strong></label>
+                              <label class="form-check-label" for="bsb"><span class="check-square"></span><strong>Biosafety Branch (BSB) (Login as a facility user)</strong></label>
                             </div>
                           </div>
                         </div>
@@ -157,9 +157,28 @@
                         </div>
                         <div class="col-xs-12 col-lg-12" >
                           <div id="bsb-info" class="collapse halp-infobox"  style="height: 100px">
-                            <div class="col-xs-4 col-md-11 col-sm-4">Register New Facility</div><br>
-                            <div class="col-xs-4 col-md-11 col-sm-4">Approval for  Approval</div><br>
-                            <div class="col-xs-4 col-md-11 col-sm-4">Apply to New Facility Certifier</div>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply New Facility</div><br>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply New Approval to Possess</div><br>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply New Approval to Large-scale Production</div>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply New Special Approval to Handle</div>
+                          </div>
+                        </div>
+
+                        <div class="col-xs-12 col-lg-8" style="padding-top:15px">
+                          <div class="form-check-gp">
+                            <div class="form-check">
+                              <input class="form-check-input" id="bsb-afc" value="bsb-afc" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
+                              <label class="form-check-label" for="bsb-afc"><span class="check-square"></span><strong>Biosafety Branch (BSB) (Login as a MOH-AFC user)</strong></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
+                          <a data-toggle="collapse" data-target="#bsb-afc-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        </div>
+                        <div class="col-xs-12 col-lg-12" >
+                          <div id="bsb-afc-info" class="collapse halp-infobox"  style="height: 100px">
+                            <div class="col-xs-4 col-md-11 col-sm-4">Apply New Approved Facility Certifier</div><br>
+                            <div class="col-xs-4 col-md-11 col-sm-4">Submit Certification Report</div><br>
                           </div>
                         </div>
                       </div>
@@ -265,9 +284,14 @@
     if ($("input[id='bsb']")[0].checked) {
       $('#singpass').addClass("disabled");
       $.cookie('service_bsb', 'Y', { path: '/main-web/eservice/INTERNET' });
+    } else {
+      $.cookie('service_bsb', null, { path: '/main-web/eservice/INTERNET' });
     }
-    else {
-      $.cookie('service_bsb', '', { path: '/main-web/eservice/INTERNET' });
+    if ($("input[id='bsb-afc']")[0].checked) {
+      $('#singpass').addClass("disabled");
+      $.cookie('service_bsb_afc', 'Y', { path: '/main-web/eservice/INTERNET' });
+    } else {
+      $.cookie('service_bsb_afc', null, { path: '/main-web/eservice/INTERNET' });
     }
   }
 </script>

@@ -21,7 +21,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
@@ -34,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
@@ -145,6 +150,21 @@ public class AccessUtil {
                 loginContext.setUenNo(lDto.getUenNo());
                 loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
+
+                // Check bsb login selection and set the specific role
+                boolean bsbSelectedRoleSet = false;
+                for (Cookie cookie : request.getCookies()) {
+                    if ("service_bsb".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
+                        loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_FACILITY_USER);
+                        bsbSelectedRoleSet = true;
+                    } else if ("service_bsb_afc".equals(cookie.getName()) && "Y".equals(cookie.getValue())) {
+                        loginContext.setCurRoleId(RoleConsts.USER_ROLE_BSB_AFC_USER);
+                        bsbSelectedRoleSet = true;
+                    }
+                    if (bsbSelectedRoleSet) {
+                        break;
+                    }
+                }
             }
         }
         setLoginContextPrivilege(loginContext);

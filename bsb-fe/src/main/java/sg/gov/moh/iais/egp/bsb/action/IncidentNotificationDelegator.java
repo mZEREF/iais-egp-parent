@@ -144,7 +144,7 @@ public class IncidentNotificationDelegator {
                 NodeGroup incidentNotRoot = notificationDto.toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
                 ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
 

@@ -103,16 +103,24 @@
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
-                    <c:choose>
-                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
-                            <tr>
-                                <td colspan="6" align="left">
-                                    <iais:message key="GENERAL_ACK018"
-                                                  escape="true"/>
-                                </td>
-                            </tr>
-                        </c:when>
-                        <c:otherwise>
+                <c:set var="isEmptyIntranetDocDtoList" value="true"/>
+                <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
+                    <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
+                            <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+                <c:choose>
+                    <c:when test="${isEmptyIntranetDocDtoList}">
+                        <tr>
+                            <td colspan="6" align="left">
+                                <iais:message key="GENERAL_ACK018"
+                                              escape="true"/>
+                            </td>
+                        </tr>
+                    </c:when>
+                    <c:otherwise>
                             <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
                                        varStatus="status">
                                 <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">

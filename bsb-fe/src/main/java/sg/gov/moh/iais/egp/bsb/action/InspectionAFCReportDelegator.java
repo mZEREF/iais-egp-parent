@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.service.InsAFCReportService;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -100,7 +103,7 @@ public class InspectionAFCReportDelegator {
         }
         ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setRequestAttr(request, KEY_DASHBOARD_MSG, KEY_AFC_DASHBOARD_MSG);
-        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_AFC_ADMIN);
+        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConsts.USER_ROLE_BSB_AFC_USER);
         ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
     }
 

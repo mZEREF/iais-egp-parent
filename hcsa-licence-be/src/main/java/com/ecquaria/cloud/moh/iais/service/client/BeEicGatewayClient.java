@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ELISInterfaceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -30,6 +31,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -386,5 +389,29 @@ public class BeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/ext-sync-app-file-track", HttpMethod.POST, processFileTrackDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
                 String.class);
+    }
+
+    public FeignResponseEntity<Void> saveOrganizationDto(OrganizationDto organizationDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sync-org-to-fe", HttpMethod.POST, organizationDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                Void.class);
+    }
+
+    public FeignResponseEntity<Void> saveElisInterfaceDto(ELISInterfaceDto elisInterfaceDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sync-elis-info", HttpMethod.POST, elisInterfaceDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                Void.class);
+    }
+
+    public FeignResponseEntity<Void> syncFeUser(FeUserDto feUserDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/licensee-user-sync", HttpMethod.POST, feUserDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), Void.class);
     }
 }

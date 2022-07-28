@@ -107,7 +107,7 @@ public class AckOfReceiptOfTransferDelegator {
                 ParamUtil.setSessionAttr(request,RECEIPT_SAVED,saved);
                 ParamUtil.setSessionAttr(request,ACK_TRANSFER_RECEIPT_DTO,dto);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
     }

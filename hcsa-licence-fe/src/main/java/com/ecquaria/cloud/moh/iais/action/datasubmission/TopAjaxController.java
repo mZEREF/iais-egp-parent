@@ -54,7 +54,7 @@ public class TopAjaxController {
         String idNo = ParamUtil.getString(request, "idNo");
         PatientInformationDto patientInformation = new PatientInformationDto();
         patientInformation.setIdType(idType);
-        patientInformation.setIdNumber(idNo);
+        patientInformation.setIdNumber(idNo.toUpperCase());
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult vr = WebValidationHelper.validateProperty(patientInformation, "ART");

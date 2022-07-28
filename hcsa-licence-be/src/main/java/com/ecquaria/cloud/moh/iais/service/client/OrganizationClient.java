@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -226,4 +227,16 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-orguser-be/monitoring-user-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MonitoringSheetsDto> getMonitoringUserSheetsDto();
+
+    @GetMapping(value = "/iais-orguser-be/organization/uen-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> getByUenNoAndStatus(@RequestParam("uenNo")String uenNo, @RequestParam("status")String status);
+
+    @PostMapping(value = "organization/org-licensee", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> saveOrgAndLicensee(@RequestBody OrganizationDto organizationDto);
+
+    @GetMapping(value = "/iais-orguser-be/user-userId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getUserDtoByUserId(@RequestParam("userId") String userId);
+
+    @PostMapping(value = "/iais-orguser-be/ds-users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FeUserDto>> createDSUserAccounts(@RequestBody List<OrgUserDto> orgUserDtos);
 }

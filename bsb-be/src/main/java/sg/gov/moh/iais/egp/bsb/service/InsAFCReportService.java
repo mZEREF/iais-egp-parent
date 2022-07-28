@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +11,22 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.ReviewAFCReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
@@ -80,7 +86,7 @@ public class InsAFCReportService {
     public void validateDo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_DO);
+        bindOfficerParam(request, dto,commonDocDto, RoleConsts.USER_ROLE_BSB_DO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
@@ -122,7 +128,7 @@ public class InsAFCReportService {
     public void validateAo(HttpServletRequest request) {
         ReviewAFCReportDto dto = getDisplayDto(request);
         AFCCommonDocDto commonDocDto = getAFCCommonDocDto(request);
-        bindOfficerParam(request, dto,commonDocDto,RoleConstants.ROLE_BSB_AO);
+        bindOfficerParam(request, dto,commonDocDto, RoleConsts.USER_ROLE_BSB_AO);
         List<DocMeta> docMetas = commonDocDto.convertToDocMetaList();
         dto.setDocMetas(docMetas);
         dto.setProfile(getProfile(dto.getAppStatus()));
@@ -189,7 +195,7 @@ public class InsAFCReportService {
                 if (!StringUtils.isEmpty(checked) && checked.equals(YES)){
                     dto.setActionOnOld(true);
                 }
-                if (role.equals(RoleConstants.ROLE_BSB_DO)||role.equals(RoleConstants.ROLE_BSB_AO)) {
+                if (role.equals(RoleConsts.USER_ROLE_BSB_DO)||role.equals(RoleConsts.USER_ROLE_BSB_AO)) {
                     docDtoMap.get(repoId).setMohMarkFinal(checked);
                 }
             }

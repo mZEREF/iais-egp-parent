@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
@@ -60,7 +59,6 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -250,14 +248,26 @@ public class TopDataSubmissionDelegator {
     //TODO from ar center
     protected final List<SelectOption> getSourseList(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         return selectOptions;
     }
     //TODO from ar center
     protected final List<SelectOption> getSourseListAge(HttpServletRequest request){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setTopPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
         return selectOptions;
@@ -635,6 +645,7 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         String[] livingChildrenGenders= ParamUtil.getStrings(request, "livingChildrenGenders");
         ControllerHelper.get(request, patientInformationDto);
+        patientInformationDto.setIdNumber(patientInformationDto.getIdNumber().toUpperCase());
         if( !IaisCommonUtils.isEmpty(livingChildrenGenders)){
 
             patientInformationDto.setLivingChildrenGenders(Arrays.asList(livingChildrenGenders));

@@ -26,20 +26,25 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APPROVAL_STATUS_OPS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_APPROVAL_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_PROCESS_TYPE_OPS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_APPROVAL_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_EXPIRY_DATE_FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_EXPIRY_DATE_TO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_FACILITY_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_START_DATE_FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_START_DATE_TO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 
 @Slf4j
 @Delegator("bsbInboxApprovalFacAdminDelegator")
 public class BsbInboxApprovalFacAdminDelegator {
-    private static final String KEY_INBOX_APPROVAL_SEARCH_DTO = "inboxApprovalSearchDto";
-    private static final String KEY_INBOX_APPROVAL_PAGE_INFO = "pageInfo";
-    private static final String KEY_STATUS = "searchStatus";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
@@ -52,7 +57,6 @@ public class BsbInboxApprovalFacAdminDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_APPROVAL_SEARCH_DTO);
-
         AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPROVAL_FACILITY_ADMIN);
     }
 
@@ -64,7 +68,7 @@ public class BsbInboxApprovalFacAdminDelegator {
         HttpServletRequest request = bpc.request;
 
         InboxApprovalSearchDto searchDto = getSearchDto(request);
-        String searchStatus = request.getParameter(KEY_STATUS);
+        String searchStatus = request.getParameter(KEY_SEARCH_STATUS);
         if(StringUtils.hasLength(searchStatus)){
             searchDto.setSearchStatus(searchStatus);
         }
@@ -75,11 +79,11 @@ public class BsbInboxApprovalFacAdminDelegator {
 
         ResponseDto<InboxApprovalFacAdminResultDto> resultDto = inboxClient.getInboxApprovalForFacAdmin(searchDto);
         if (resultDto.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APPROVAL_PAGE_INFO, resultDto.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApprovalInfos());
         } else {
             log.warn("Search Inbox Approval for Facility Administrator Fail");
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APPROVAL_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, ValidationResultDto.toErrorMsg(resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG)));
@@ -89,9 +93,9 @@ public class BsbInboxApprovalFacAdminDelegator {
 
 
         List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
-        ParamUtil.setRequestAttr(request, "processTypeOps", processTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
         List<SelectOption> approvalStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
-        ParamUtil.setRequestAttr(request, "approvalStatusOps", approvalStatusOps);
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_STATUS_OPS, approvalStatusOps);
     }
 
     public void search(BaseProcessClass bpc) {
@@ -113,21 +117,7 @@ public class BsbInboxApprovalFacAdminDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InboxApprovalSearchDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        switch (actionValue) {
-            case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
-                searchDto.setPage(0);
-                searchDto.setSize(pageSize);
-                break;
-            case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
-                searchDto.setPage(pageNo - 1);
-                break;
-            default:
-                log.warn("page, action_value is invalid: {}", actionValue);
-                break;
-        }
+        BsbInboxService.page(request, searchDto);
         ParamUtil.setSessionAttr(request, KEY_INBOX_APPROVAL_SEARCH_DTO, searchDto);
     }
 
@@ -145,14 +135,14 @@ public class BsbInboxApprovalFacAdminDelegator {
 
     private InboxApprovalSearchDto bindModel(HttpServletRequest request) {
         InboxApprovalSearchDto dto = getSearchDto(request);
-        dto.setSearchApprovalNo(request.getParameter("searchApprovalNo"));
-        dto.setSearchProcessType(request.getParameter("searchProcessType"));
-        dto.setSearchFacilityName(request.getParameter("searchFacilityName"));
-        dto.setSearchStatus(request.getParameter("searchStatus"));
-        dto.setSearchStartDateFrom(request.getParameter("searchStartDateFrom"));
-        dto.setSearchStartDateTo(request.getParameter("searchStartDateTo"));
-        dto.setSearchExpiryDateFrom(request.getParameter("searchExpiryDateFrom"));
-        dto.setSearchExpiryDateTo(request.getParameter("searchExpiryDateTo"));
+        dto.setSearchApprovalNo(request.getParameter(KEY_SEARCH_APPROVAL_NO));
+        dto.setSearchProcessType(request.getParameter(KEY_SEARCH_PROCESS_TYPE));
+        dto.setSearchFacilityName(request.getParameter(KEY_SEARCH_FACILITY_NAME));
+        dto.setSearchStatus(request.getParameter(KEY_SEARCH_STATUS));
+        dto.setSearchStartDateFrom(request.getParameter(KEY_SEARCH_START_DATE_FROM));
+        dto.setSearchStartDateTo(request.getParameter(KEY_SEARCH_START_DATE_TO));
+        dto.setSearchExpiryDateFrom(request.getParameter(KEY_SEARCH_EXPIRY_DATE_FROM));
+        dto.setSearchExpiryDateTo(request.getParameter(KEY_SEARCH_EXPIRY_DATE_TO));
         return dto;
     }
 }

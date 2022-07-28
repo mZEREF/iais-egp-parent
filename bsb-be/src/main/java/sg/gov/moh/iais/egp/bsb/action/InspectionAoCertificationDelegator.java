@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,7 +16,6 @@ import sg.gov.moh.iais.egp.bsb.client.InspectionAFCClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
@@ -155,7 +155,7 @@ public class InspectionAoCertificationDelegator {
         }
         ParamUtil.setSessionAttr(request, KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setRequestAttr(request, KEY_DASHBOARD_MSG, KEY_AFC_DASHBOARD_MSG);
-        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConstants.ROLE_BSB_AO);
+        ParamUtil.setRequestAttr(request, PARAM_CAN_ACTION_ROLE, RoleConsts.USER_ROLE_BSB_AO);
         ParamUtil.setSessionAttr(request, KEY_REVIEW_AFC_REPORT_DTO, dto);
 
         // view application

@@ -51,7 +51,7 @@
 
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchProcessType">Application Sub-Type:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchProcessType">Application Sub-Type:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchProcessType" class="searchProcessTypeDropDown" name="searchProcessType">
                                                 <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>

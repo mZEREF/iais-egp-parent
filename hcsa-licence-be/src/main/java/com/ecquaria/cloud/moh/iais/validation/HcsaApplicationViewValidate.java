@@ -32,14 +32,13 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class HcsaApplicationViewValidate implements CustomizeValidator {
+    private static final String ERROR_CODE_GENERAL_ERR0006 = "GENERAL_ERR0006";
+
     private final String VERIFIED = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
     private final String ROLLBACK = ApplicationConsts.PROCESSING_DECISION_ROLLBACK;
     private final String DECISION_APPROVAL = "decisionApproval";
     private final String DECISION_REJECT = "decisionReject";
     private final String RECOMMENDATION_REJECT = "reject";
-
-
-
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -102,7 +101,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             checkRecommendationOtherDropdown(errMap, recommendationStr, request, applicationType, roleId, taskDto.getTaskKey(), nextStage);
         }
         //DMS recommendation
-        String generalErrSix = MessageUtil.replaceMessage("GENERAL_ERR0006","Processing Decision", "field");
+        String generalErrSix = MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Processing Decision", "field");
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
             checkIsUploadDMS(applicationViewDto,errMap);
@@ -188,14 +187,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
-                            errMap.put("rollBack", MessageUtil.replaceMessage("GENERAL_ERR0006","Route Back To", "field"));
+                            errMap.put("rollBack", MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Route Back To", "field"));
                         }
                     }else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage)) {
                         String rollBack = ParamUtil.getRequestString(request, "rollBackCr");
                         ParamUtil.setRequestAttr(request, "selectRollBackCr", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
                             //Route Back To
-                            errMap.put("rollBackCr", MessageUtil.replaceMessage("GENERAL_ERR0006","Roll Back To", "field"));
+                            errMap.put("rollBackCr", MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Roll Back To", "field"));
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
                         //Prevent duplicate submissions
@@ -258,12 +257,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     //status not empty
                     if(appVeh){
                         if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
-                            errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                            errMap.put("vehicleNoRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
                             appSvcVehicleDtos.get(i).setStatus(null);
                         } else {
                             String vehicleNoRadio = vehicleNoRadios[0];
                             if (StringUtil.isEmpty(vehicleNoRadio)) {
-                                errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                                errMap.put("vehicleNoRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
                                 appSvcVehicleDtos.get(i).setStatus(null);
                             } else {
                                 String vehicleNoStatusCode;
@@ -469,7 +468,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private void tcuVerification(Map<String, String> errMap, ApplicationViewDto applicationViewDto){
         if(applicationViewDto.isShowTcu() && applicationViewDto.isTcuFlag()){
             if( StringUtil.isEmpty(applicationViewDto.getTuc())){
-                errMap.put("tcuDate","GENERAL_ERR0006");
+                errMap.put("tcuDate",ERROR_CODE_GENERAL_ERR0006);
             }else {
                 try {
                     Date tcuDate = Formatter.parseDate(applicationViewDto.getTuc());

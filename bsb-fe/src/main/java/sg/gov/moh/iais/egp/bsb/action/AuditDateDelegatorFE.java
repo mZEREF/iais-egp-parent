@@ -29,6 +29,8 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AUDIT_DATE;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
 
 /**
  * @author Zhu Tangtang
@@ -153,12 +155,12 @@ public class AuditDateDelegatorFE {
         String actionValue = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
         switch (actionValue) {
             case "changeSize":
-                int pageSize = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_SIZE);
+                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
                 searchDto.setPage(0);
                 searchDto.setSize(pageSize);
                 break;
             case "changePage":
-                int pageNo = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_NO);
+                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
                 searchDto.setPage(pageNo - 1);
                 break;
             default:

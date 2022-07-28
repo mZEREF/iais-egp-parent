@@ -33,4 +33,8 @@ public class ModuleCommonConstants {
     public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
 
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
+
+    // paging
+    public static final String KEY_PAGE_SIZE                        = "pageJumpNoPageSize";
+    public static final String KEY_PAGE_NO                          = "pageJumpNoTextchangePage";
 }

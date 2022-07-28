@@ -116,7 +116,7 @@ public class InvestigationReportDelegator {
                 NodeGroup investRepoRoot = investReportDto.toInvestReportDto(KEY_ROOT_NODE_GROUP_INVEST_REPORT);
                 ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if (newIncidentNot) {

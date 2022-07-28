@@ -76,7 +76,7 @@ public class BsbRequestForTransferDelegator {
                 ParamUtil.setSessionAttr(request, KEY_TRANSFER_REQUEST_DTO, dto);
                 ParamUtil.setSessionAttr(request, KEY_FAC_ID, dto.getFacId());
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
     }

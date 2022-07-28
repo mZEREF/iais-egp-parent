@@ -20,7 +20,6 @@ public class SingleConstantTag extends SimpleTagSupport {
             Field field = clazz.getField(constantName);
             value = field.get(clazz);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             throw new JspTagException("Class not found: " + this.classFullName);
         } catch (IllegalAccessException e) {
             throw new JspTagException("Illegal access: " + this.classFullName);

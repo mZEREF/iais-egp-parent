@@ -9,6 +9,14 @@
             })
         </script>
     </c:when>
+    <c:when test="${cookie['service_bsb_afc'].value eq 'Y'}">
+        <webui:setLayout name="iais-blank"/>
+        <script>
+            $(function () {
+                document.location ="/bsb-web/eservice/INTERNET/MohBSBInboxMsg"
+            })
+        </script>
+    </c:when>
     <c:otherwise>
         <%@include file="/WEB-INF/jsp/iais/interInbox/msg/msgViewPage.jsp"%>
     </c:otherwise>

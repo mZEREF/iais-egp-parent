@@ -34,9 +34,6 @@ public class BsbInboxDataSubDelegator {
     private static final String KEY_INBOX_DATA_SUB_SEARCH_DTO = "inboxDataSubmissionSearchDto";
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
 
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
@@ -102,21 +99,7 @@ public class BsbInboxDataSubDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InboxDataSubSearchDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        switch (actionValue) {
-            case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
-                searchDto.setPage(0);
-                searchDto.setSize(pageSize);
-                break;
-            case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
-                searchDto.setPage(pageNo - 1);
-                break;
-            default:
-                log.warn("page, action_value is invalid: {}", actionValue);
-                break;
-        }
+        BsbInboxService.page(request, searchDto);
         ParamUtil.setSessionAttr(request, KEY_INBOX_DATA_SUB_SEARCH_DTO, searchDto);
     }
 
