@@ -1,7 +1,7 @@
 <iais:row>
     <iais:field width="5" value="Name (as per NRIC/Passport)" mandatory="true"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="66" type="text" name="name${suffix}" id="name${suffix}" value="${person.name}"/>
+        <iais:input maxLength="66" type="text" name="name${suffix}" id="patientName${suffix}" value="${person.name}"/>
     </iais:value>
 </iais:row>
 <iais:row>
@@ -19,7 +19,7 @@
 <iais:row>
     <iais:field width="5" value="Date of Birth" mandatory="true"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:datePicker name="birthDate${suffix}" value="${person.birthDate}"/>
+        <iais:datePicker name="birthDate${suffix}" id="birthDate${suffix}" value="${person.birthDate}"/>
     </iais:value>
 </iais:row>
 <iais:row>
