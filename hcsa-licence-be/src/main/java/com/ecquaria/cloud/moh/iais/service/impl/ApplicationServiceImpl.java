@@ -1487,7 +1487,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo) {
         log.info(StringUtil.changeForLog("Params: " + check + " | " + curRoleId + " | " + appType + " | " + appGrpNo));
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
             if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
                     RoleConsts.USER_ROLE_ASO,
@@ -1510,6 +1510,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                         ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
                         ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
+                    String canRfi = checkMap.get(HcsaAppConst.CAN_RFI);
+                    if (AppConsts.YES.equals(canRfi)) {
+                        return map;
+                    }
                     String appError = checkMap.get(HcsaAppConst.ERROR_APP);
                     if (StringUtil.isNotEmpty(appError)) {
                         map.put(HcsaAppConst.ERROR_APP, appError);
