@@ -577,29 +577,19 @@
     $(document).ready(function () {
         $('#topType').change(function () {
             topType();
-        });
-        $('#topType').change(function () {
+
             spTypes();
-        });
-        $('#topType').change(function () {
+
             performedOwns();
-        });
-        $('input[name=performedOwn]').change(function () {
-            topPlacelaceLabel();
-        });
-        $('#topType').change(function () {
+
             pregnancyOwns();
-        });
-        $('#topType').change(function () {
+
             prescribeTopPlaceLabel();
-        });
-        $('#topType').change(function () {
+
             takenOwns();
-        });
-        $('#topType').change(function () {
+
             takenOwnLabel();
-        });
-        $('#topType').change(function () {
+
             anTypes();
         });
         $('#anType').change(function () {
@@ -615,6 +605,7 @@
             complicationForOperRslt();
         });
         $('input[name=performedOwn]').change(function () {
+            topPlacelaceLabel();
             performedOwn();
         });
         $('input[name=pregnancyOwn]').change(function () {
@@ -741,6 +732,17 @@
 
     function topType() {
         var topType = $('#topType').val();
+        if (topType == "TOPTTP001" ) {
+            $('#pregnancyOwnYes').prop('checked',true);
+            $('#prescribeTopPlace').show();
+            $('#prescribeTopPlaces').hide();
+            $('#takenOwnYes').prop('checked',true);
+            $('#topDrugPlace').show();
+            $('#topDrugPlaces').hide();
+            $('#otherTopDrugPlaces').hide();
+            fillValue($('#otherTopDrugPlace'), null);
+            $('#otherTopDrugPlaceText').val(null);
+        }
         if (topType == "TOPTTP001" || topType == "TOPTTP002") {
             $('#drugTypes').show();
         } else {
