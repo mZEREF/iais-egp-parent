@@ -7,12 +7,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a <c:if test="${headingSigns == 'hide'}">class="collapsed" </c:if> data-toggle="collapse" href="#ar-declaration">
+            <a  data-toggle="collapse" href="#ar-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="ar-declaration" class="panel-collapse collapse <c:if test="${headingSigns != 'hide'}">in</c:if>">
+    <div id="ar-declaration" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:if test="${drugSubmission.drugType eq 'DPD002' and drugSubmission.getReasonMandatory() ==true and drugSubmission.medication eq 'MED001'}">

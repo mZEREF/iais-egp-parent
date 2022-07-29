@@ -4,12 +4,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a <c:if test="${headingSigns == 'hide'}">class="collapsed" </c:if> data-toggle="collapse" href="#vss-declaration">
+            <a  data-toggle="collapse" href="#vss-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="vss-declaration" class="panel-collapse collapse <c:if test="${headingSigns != 'hide'}">in</c:if>">
+    <div id="vss-declaration" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
