@@ -1393,6 +1393,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
+        return checkApplicationByAppGrpNo(appGrpNo, false);
+    }
+
+    private Map<String, String> checkApplicationByAppGrpNo(String appGrpNo, boolean isApproveAction) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         result.put(HcsaAppConst.CAN_RFI, AppConsts.YES);
         if (StringUtil.isEmpty(appGrpNo)) {
@@ -1409,9 +1413,13 @@ public class ApplicationServiceImpl implements ApplicationService {
             // "There is a related application is in doing RFI, please wait for it."
             appError = MessageUtil.getMessageDesc("PRF_ERR014");
             canRFI = AppConsts.NO;
-        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT))) {
+        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT)) && !isApproveAction) {
             // The application is pending payment
             appError = MessageUtil.getMessageDesc("NEW_ERR0023");
+            canRFI = AppConsts.NO;
+        } else if (AppConsts.YES.equals(map.get(ApplicationConsts.STATUS_END)) && !isApproveAction) {
+            // There is an approved application in the group, Cannot do RFI or edit
+            appError = MessageUtil.replaceMessage("GENERAL_ERR0061", "edited", "action");
             canRFI = AppConsts.NO;
         } else {
             String appGrpStatus = map.get(HcsaAppConst.STATUS_GRP);
@@ -1426,7 +1434,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
                 appError = MessageUtil.getMessageDesc("PRF_ERR015");
                 canRFI = AppConsts.NO;
-            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
+            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus) && !isApproveAction) {
                 // "The application can't be edited."
                 appError = MessageUtil.replaceMessage("GENERAL_ERR0061",
                         "edited", "action");
@@ -1437,6 +1445,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         result.put(HcsaAppConst.CAN_RFI, canRFI);
         log.info(StringUtil.changeForLog("Check Application result: " + result));
+
         return result;
     }
 
@@ -1504,16 +1513,13 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
-            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
-            if (check == HcsaAppConst.CHECKED_BTN_APR) {
+            boolean isBtnApprove = check == HcsaAppConst.CHECKED_BTN_APR;
+            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo, isBtnApprove);
+            if (isBtnApprove) {
                 if (StringUtil.isIn(appType, new String[]{
                         ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
                         ApplicationConsts.APPLICATION_TYPE_RENEWAL})) {
-                    String canRfi = checkMap.get(HcsaAppConst.CAN_RFI);
-                    if (AppConsts.YES.equals(canRfi)) {
-                        return map;
-                    }
                     String appError = checkMap.get(HcsaAppConst.ERROR_APP);
                     if (StringUtil.isNotEmpty(appError)) {
                         map.put(HcsaAppConst.ERROR_APP, appError);
