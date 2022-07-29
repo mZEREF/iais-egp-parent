@@ -106,7 +106,7 @@ public class SupervisorAssignmentPoolDelegator {
                 }
                 Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
                 //set current owner by current role and the user id from task
-                setTaskCurOwner(tasks, curRoleId, userDtoMap);
+//                setTaskCurOwner(tasks, curRoleId, userDtoMap);
                 ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
                 ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, tasks);
             }
@@ -140,19 +140,19 @@ public class SupervisorAssignmentPoolDelegator {
         }
     }
 
-    private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
-        for (TaskDto task : tasks) {
-            if (task.getApplication() != null) {
-                if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
-                    task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());
-                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && StringUtils.hasLength(task.getApplication().getAoUserId())) {
-                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
-                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && StringUtils.hasLength(task.getApplication().getHmUserId())) {
-                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
-                }
-            }
-        }
-    }
+//    private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
+//        for (TaskDto task : tasks) {
+//            if (task.getApplication() != null) {
+//                if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
+//                    task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());
+//                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && StringUtils.hasLength(task.getApplication().getAoUserId())) {
+//                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
+//                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && StringUtils.hasLength(task.getApplication().getHmUserId())) {
+//                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
+//                }
+//            }
+//        }
+//    }
 
     public void search(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;

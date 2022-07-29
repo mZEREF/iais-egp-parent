@@ -16,7 +16,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.MESSAGE_END_DATE_EARLIER_THAN_START_DATE;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_APPLICATION_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_APPLICATION_STATUS;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_FROM;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_TO;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_APPLICATION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_BIOLOGICAL_AGENT;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_FACILITY_CLASSIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_FACILITY_TYPES;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_PROCESS_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT;
+import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.PARAM_SCHEDULE_TYPE;
 
 @Data
 @ToString(callSuper = true)
@@ -29,9 +40,6 @@ public class AppSearchDto extends PagingAndSortingDto {
     private String appSubmissionDtFrom;
     @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkAppSubmissionDtTo", parameterType = String.class, profiles = {"app"})
     private String appSubmissionDtTo;
-    private String approvalDtFrom;
-    @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkApprovalDtTo", parameterType = String.class, profiles = {"app"})
-    private String approvalDtTo;
     private String facClassification;
     private List<String> facTypes;
     private String facName;
@@ -47,8 +55,6 @@ public class AppSearchDto extends PagingAndSortingDto {
         this.appStatus = "";
         this.appSubmissionDtFrom = "";
         this.appSubmissionDtTo = "";
-        this.approvalDtFrom = "";
-        this.approvalDtTo = "";
         this.facClassification = "";
         this.facTypes = null;
         this.facName = "";
@@ -65,21 +71,12 @@ public class AppSearchDto extends PagingAndSortingDto {
         return DateUtil.parseToLocalDateTime(appSubmissionDtTo).after(DateUtil.parseToLocalDateTime(appSubmissionDtFrom));
     }
 
-    private boolean checkApprovalDtTo(String approvalDateTo) {// NOSONAR
-        if (approvalDateTo == null || approvalDtFrom == null){
-            return true;
-        }
-        return DateUtil.parseToLocalDateTime(approvalDateTo).after(DateUtil.parseToLocalDateTime(approvalDtFrom));
-    }
-
     public void reqObjMapping(HttpServletRequest request){
        this.appNo = ParamUtil.getString(request,PARAM_APPLICATION_NO);
        this.appType = ParamUtil.getString(request,PARAM_APPLICATION_TYPE);
        this.appStatus = ParamUtil.getString(request,PARAM_APPLICATION_STATUS);
        this.appSubmissionDtFrom = ParamUtil.getString(request,PARAM_APPLICATION_SUBMISSION_DATE_FROM);
        this.appSubmissionDtTo = ParamUtil.getString(request,PARAM_APPLICATION_SUBMISSION_DATE_TO);
-       this.approvalDtFrom = ParamUtil.getString(request,PARAM_APPROVAL_DATE_FROM);
-       this.approvalDtTo = ParamUtil.getString(request,PARAM_APPROVAL_DATE_TO);
        this.facClassification = ParamUtil.getString(request,PARAM_FACILITY_CLASSIFICATION);
        String[] facilityTypes = ParamUtil.getStrings(request,PARAM_FACILITY_TYPES);
        if(facilityTypes != null && facilityTypes.length > 0){
