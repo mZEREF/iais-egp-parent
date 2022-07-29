@@ -48,12 +48,8 @@
                         <c:out value="${familyPlanDto.firstDayOfLastMenstPer}"/>
                     </iais:value>
                 </iais:row>
-                <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek>24}">
-                    <c:set var="week"><iais:message key="DS_MSG031" paramKeys="1" paramValues="counsellor"
-                                                    escape="false"/></c:set>
-                </c:if>
                 <iais:row>
-                    <iais:field width="5" value="Gestation Age based on Ultrasound(Weeks)" info="${week}"/>
+                    <iais:field width="5" value="Gestation Age based on Ultrasound(Weeks)" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${familyPlanDto.gestAgeBaseOnUltrWeek}"/>
                     </iais:value>
