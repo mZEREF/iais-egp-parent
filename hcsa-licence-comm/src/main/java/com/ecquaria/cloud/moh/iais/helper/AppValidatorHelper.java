@@ -1204,6 +1204,14 @@ public final class AppValidatorHelper {
         return validateKeyPersonnel(appSvcKeyAppointmentHolderList, "", licPersonMap, checkPRS);
     }
 
+    public static Map<String, String> doValidateClincalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList,
+                                          Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+        if (appSvcClinicalDirectorList == null) {
+            return new HashMap<>(1);
+        }
+        return validateKeyPersonnel(appSvcClinicalDirectorList, "", licPersonMap, checkPRS);
+    }
+
     public static Map<String, String> doValidateMedAlertPsn(List<AppSvcPrincipalOfficersDto> medAlertPsnDtos,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -1349,6 +1357,7 @@ public final class AppValidatorHelper {
         if (psnList == null) {
             psnList = IaisCommonUtils.genNewArrayList();
         }
+        List<String> assignList = new ArrayList<>();
         for (int i = 0; i < personList.size(); i++) {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
@@ -1386,6 +1395,13 @@ public final class AppValidatorHelper {
                                 errMap.put(prefix + "personError" + i, MessageUtil.getMessageDesc("NEW_ERR0034"));
                             }
                         }
+                    }
+                }
+                if (isValid) {
+                    if (assignList.contains(assignSelect)) {
+                        errMap.put("assignSelect" + i, "NEW_ERR0012");
+                    } else if (!HcsaAppConst.NEW_PSN.equals(assignSelect)) {
+                        assignList.add(assignSelect);
                     }
                 }
 
@@ -1453,6 +1469,28 @@ public final class AppValidatorHelper {
                     }
                 }
 
+                if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR})) {
+                    if (StringUtil.isEmpty(professionalRegoNo)) {
+                        errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
+                    }
+                    if (StringUtil.isEmpty(typeOfCurrRegi)) {
+                        errMap.put(prefix + "typeOfCurrRegi" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
+                    }
+                    if (StringUtil.isEmpty(currRegiDate)) {
+                        errMap.put(prefix + "currRegiDate" + i, "GENERAL_ERR0006");
+                    }
+                    if (StringUtil.isEmpty(praCerEndDate)) {
+                        errMap.put(prefix + "praCerEndDate" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Practicing Certificate End Date", "field"));
+                    }
+                    if (StringUtil.isEmpty(typeOfRegister)) {
+                        errMap.put(prefix + "typeOfRegister" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Register", "field"));
+                    }
+
+                }
+
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
                         errMap.put(prefix + "profRegNo" + i, repLength("Professional Regn. No.", "20"));
@@ -1483,22 +1521,27 @@ public final class AppValidatorHelper {
                 } else if (!CommonValidator.isDate(praCerEndDate)) {
                     errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
                 }
-
-
-                /*String specialty = person.getSpeciality();
-                if (!StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
-                    if (StringUtil.isEmpty(professionalRegoNo) || StringUtil.isEmpty(specialty)) {
-                        if (StringUtil.isEmpty(otherQualification)) {
-                            errMap.put(prefix + "otherQualification" + i,
-                                    MessageUtil.replaceMessage("GENERAL_ERR0006", "Other Qualification", "field"));
-                        }
-                    }
-                }*/
-                // GENERAL_ERR0036 - GENERAL_ERR0041
                 if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Qualification", "100"));
                 }
-
+                String holdCerByEMS = person.getHoldCerByEMS();
+                if (StringUtil.isEmpty(holdCerByEMS)) {
+                    errMap.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
+                } else if (AppConsts.NO.equals(holdCerByEMS)) {
+                    errMap.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
+                }
+                String aclsExpiryDate = person.getAclsExpiryDateStr();
+                if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
+                    errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
+                }
+                String relevantExperience = person.getRelevantExperience();
+                if (StringUtil.isNotEmpty(relevantExperience) && relevantExperience.length() > 100) {
+                    errMap.put(prefix + "relevantExperience" + i, repLength("Relevant Experience", "100"));
+                }
+                String bclsExpiryDate = person.getBclsExpiryDateStr();
+                if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
+                    errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
+                }
                 String mobileNo = person.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
                     errMap.put(prefix + "mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));

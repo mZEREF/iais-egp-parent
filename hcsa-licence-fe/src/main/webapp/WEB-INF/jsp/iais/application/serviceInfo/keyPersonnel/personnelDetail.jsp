@@ -1,13 +1,10 @@
-<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="isCgo" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
-<c:set var="isCd" value="${pcdType == ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
 <c:set var="isMap" value="${person.psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
-<script>console.log("${isMap}")</script>
+
 <c:if test="${empty psnContent}">
     <c:set var="psnContent" value="person-content"/>
 </c:if>
-
 <div class="${psnContent}">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
@@ -49,29 +46,16 @@
         </iais:row>
     </c:if>
 
-    <c:if test="${('CD' == (isCd ? 'CD' : 'CGO'))}">
-        <iais:row cssClass="assignSelDiv ${'true' == canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-            <iais:field width="5"  cssClass="col-md-5"  mandatory="true" value="Assign a ${singleName} Person"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="PERSON_OPTIONS"
-                             value="${person.assignSelect}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
-
-    <c:if test="${('CGO' == (isCgo ? 'CGO' : 'CD'))}">
-        <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName} Person"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
+    <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName} Person"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
+        </iais:value>
+    </iais:row>
 
     <div class="person-detail">
         <c:if test="${!isMap}">
             <script>console.log("111")</script>
-            <c:if test="${'CGO' == (isCGO ? 'CGO' : 'CD')}">
                 <iais:row>
                     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>
                     <iais:value width="3" cssClass="col-md-3">
@@ -223,145 +207,6 @@
                     </iais:value>
                 </iais:row>
             </c:if>
-        </c:if>
-
-        <C:if test="${'CD' == (isCd ? 'CD' : 'CGO')}">
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Professional Board"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
-                                 value="${person.professionBoard}" firstOption="Please Select"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Professional Regn. No."/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>
-                <iais:value width="3" cssClass="col-md-3">
-                    <iais:select cssClass="salutation" name="${prepsn}salutation${index}" firstOption="Please Select"
-                                 codeCategory="CATE_ID_SALUTATION" value="${person.salutation}"/>
-                </iais:value>
-                <iais:value width="4" cssClass="col-md-4">
-                    <iais:input maxLength="66" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="ID No."/>
-                <iais:value width="3" cssClass="col-md-3">
-                    <iais:select name="${prepsn}idType${index}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${person.idType}"
-                                 cssClass="idType" onchange="toggleOnVal(this, 'IDTYPE003', '.nationalityDiv')"/>
-                </iais:value>
-                <iais:value width="4" cssClass="col-md-4">
-                    <iais:input maxLength="20" type="text" cssClass="idNo" name="${prepsn}idNo${index}" value="${person.idNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
-                                 options="designationOpList" firstOption="Please Select"
-                                 onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" value="Specialty"/>
-                <iais:value width="7" cssClass="col-md-7 speciality" display="true">
-                    <c:out value="${person.speciality}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Date when specialty was obtained"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="specialtyGetDate field-date" name="${prepsn}specialtyGetDate${index}"
-                                     value="${person.specialtyGetDateStr}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Type of Current Registration"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prepsn}typeOfCurrRegi${index}"
-                                value="${person.typeOfCurrRegi}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Current Registration Date"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="currRegiDate field-date" name="${prepsn}currRegiDate${index}" value="${person.currRegiDateStr}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Practicing Certificate End Date"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="praCerEndDate field-date" name="${prepsn}praCerEndDate${index}" value="${person.praCerEndDateStr}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Type of Register"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
-                                value="${person.typeOfRegister}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.typeOfRegister}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop&nbsp;"/>
-                <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${person.holdCerByEMS}"/>
-                <iais:value width="3" cssClass="form-check col-md-3">
-                    <input class="form-check-input holdCerByEMS" <c:if test="${'1' == person.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="${perfix}holdCerByEMS${index}" value = "1" aria-invalid="false">
-                    <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-                </iais:value>
-
-                <iais:value width="3" cssClass="form-check col-md-3">
-                    <input class="form-check-input holdCerByEMS" <c:if test="${'0' == person.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="${perfix}holdCerByEMS${index}" value = "0" aria-invalid="false">
-                    <label class="form-check-label" ><span class="check-circle"></span>No</label>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
-                <iais:value width="7" cssClass="col-md-7 col-xs-12">
-                    <span class="error-msg" name="iaisErrorMSg" id="${prepsn}holdCerByEMS${index}"></span>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (ACLS)"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:datePicker cssClass="aclsExpiryDate" name="${perfix}aclsExpiryDate${index}" value="${person.aclsExpiryDateStr}"/>
-                </iais:value>
-            </iais:row>
-
-            <c:if test="${'MTS' == currentSvcCode}">
-                <iais:row>
-                        <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Expiry Date (BCLS and AED)"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker cssClass="bclsExpiryDate" name="${perfix}bclsExpiryDate${index}"
-                                             value="${person.bclsExpiryDateStr}"/>
-                        </iais:value>
-                </iais:row>
-            </c:if>
-        </C:if>
 
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>

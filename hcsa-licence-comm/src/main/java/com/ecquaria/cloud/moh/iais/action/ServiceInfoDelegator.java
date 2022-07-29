@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -41,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
-import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1411,14 +1409,12 @@ public class ServiceInfoDelegator {
                 ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
         if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CLINICALDIRECTORCONFIG, hcsaSvcPersonnelDto);
+            ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
-        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = currSvcInfoDto.getAppSvcClinicalDirectorDtoList();
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.CLINICALDIRECTORDTOLIST, appSvcClinicalDirectorDtos);
-        List<SelectOption> easMtsSpecialtySelectList = ApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.EASMTSSPECIALTYSELECTLIST, easMtsSpecialtySelectList);
+
         // Assgined person dropdown options
-        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PERSON_OPTIONS, ApplicationHelper.genAssignPersonSel(bpc.request, true));
+        List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
+        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
         log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
     }
 
@@ -1431,105 +1427,52 @@ public class ServiceInfoDelegator {
     public void doClinicalDirector(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doClinicalDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String currSvcId = ApplicationHelper.getCurrentServiceId(bpc.request);
+        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
+                return;
+            }
+        }
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList = currSvcInfoDto.getAppSvcClinicalDirectorDtoList();
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(
+                appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        Map<String, String> map = new HashMap<>(17);
         if (isGetDataFromPage) {
             //get data from page
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = AppDataHelper.genAppSvcClinicalDirectorDto(bpc.request,
-                    appSubmissionDto.getAppType());
-            currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-            log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info start ..."));
-            log.debug("prs server flag {}", prsFlag);
-            String appType = appSubmissionDto.getAppType();
-            if ("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)) {
-                for (int i = 0; i < appSvcClinicalDirectorDtos.size(); i++) {
-                    AppSvcPrincipalOfficersDto appSvcPsnDto = appSvcClinicalDirectorDtos.get(i);
-                    String profRegNo = appSvcPsnDto.getProfRegNo();
-                    ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                    String specialtyStr = "";
-                    String specialtyGetDateStr = "";
-                    String typeOfCurrRegi = "";
-                    String currRegiDateStr = "";
-                    String praCerEndDateStr = "";
-                    String typeOfRegister = "";
-                    if (professionalResponseDto != null) {
-                        boolean needLoadName =
-                                !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-                        String name = professionalResponseDto.getName();
-                        log.info(StringUtil.changeForLog("Need Load Name: " + needLoadName + "; PRS Name: " + name));
-                        if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(
-                                professionalResponseDto.getStatusCode())) {
-                            if (StringUtil.isEmpty(actionType) || "next".equals(actionType)) {
-                                if (professionalResponseDto.isHasException()) {
-                                    bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                    map.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
-                                    map.put("profRegNo" + i, "GENERAL_ERR0054");
-                                } else {
-                                    map.put("profRegNo" + i, "GENERAL_ERR0042");
-                                }
-                            }
-                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi,
-                                    currRegiDateStr, praCerEndDateStr, typeOfRegister);
-                            continue;
-                        }
-                        if (needLoadName) {
-                            appSvcPsnDto.setName(name);
-                        }
-                        //retrieve data from prs server
-                        List<String> specialtyList = professionalResponseDto.getSpecialty();
-                        if (!IaisCommonUtils.isEmpty(specialtyList)) {
-                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
-                            for (String value : specialtyList) {
-                                if (!StringUtil.isEmpty(value)) {
-                                    notNullList.add(value);
-                                }
-                            }
-                            specialtyStr = String.join(",", notNullList);
-                        }
-                        List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
-                        if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
-                            specialtyGetDateStr = entryDateSpecialist.get(0);
-                        }
-                        List<RegistrationDto> registrationDtos = professionalResponseDto.getRegistration();
-                        if (registrationDtos != null && registrationDtos.size() > 0) {
-                            RegistrationDto registrationDto = registrationDtos.get(0);
-                            typeOfCurrRegi = registrationDto.getRegistrationType();
-                            currRegiDateStr = registrationDto.getRegStartDate();
-                            praCerEndDateStr = registrationDto.getPcEndDate();
-                            typeOfRegister = registrationDto.getRegisterType();
-                        }
-                        setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr,
-                                praCerEndDateStr, typeOfRegister);
-                    } else if (!StringUtil.isEmpty(profRegNo)) {
-                        setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr,
-                                praCerEndDateStr, typeOfRegister);
-                    }
-                }
-                currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-            }
+            appSvcClinicalDirectorList = AppDataHelper.genAppSvcClinicalDirectorDto(bpc.request);
+            currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorList);
+            reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
             log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info end ..."));
         }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         if ("next".equals(actionType)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     bpc.request,
                     LICPERSONSELECTMAP);
-            new ValidateClincalDirector().doValidateClincalDirector(map, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(),
-                    licPersonMap,
-                    currSvcCode);
+            errorMap = AppValidatorHelper.doValidateClincalDirector(appSvcClinicalDirectorList,
+                    licPersonMap, true);
+            int psnLength = 0;
+            if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorList)) {
+                psnLength = appSvcClinicalDirectorList.size();
+            }
+            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
+                    ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+            AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, errorMap,
+                    psnLength, "psnMandatory", HcsaConsts.CLINICAL_DIRECTOR);
         }
-        boolean isValid = checkAction(map, HcsaConsts.STEP_CLINICAL_DIRECTOR, appSubmissionDto, bpc.request);
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_CLINICAL_DIRECTOR, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
-            syncDropDownAndPsn(appSubmissionDto, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), null, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), currSvcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
     }
@@ -1702,7 +1645,9 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
+                HcsaConsts.STEP_PRINCIPAL_OFFICERS,HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

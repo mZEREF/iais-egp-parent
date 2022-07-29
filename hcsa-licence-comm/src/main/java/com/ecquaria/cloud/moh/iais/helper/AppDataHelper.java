@@ -7,33 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -47,22 +27,12 @@ import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
 
 /**
  * @Auther chenlei on 5/4/2022.
@@ -663,180 +633,11 @@ public final class AppDataHelper {
         return result;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request, String appType) {
+    public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
-        String currSvcCode = (String) ParamUtil.getSessionAttr(request, CURRENTSVCCODE);
-        String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
-        int cdLength = ParamUtil.getInt(request, "cdLength");
-        for (int i = 0; i < cdLength; i++) {
-            boolean getDataByIndexNo = false;
-            boolean getPageData = false;
-            String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-            String cdIndexNo = ParamUtil.getString(request, "cdIndexNo" + i);
-            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-                getPageData = true;
-            } else if (AppConsts.YES.equals(isPartEdit)) {
-                getPageData = true;
-            } else if (!StringUtil.isEmpty(cdIndexNo)) {
-                getDataByIndexNo = true;
-            }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
-            if (getDataByIndexNo) {
-                AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = getClinicalDirectorByIndexNo(appSvcRelatedInfoDto, cdIndexNo);
-                if (appSvcClinicalDirectorDto != null) {
-                    appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
-                }
-            } else if (getPageData) {
-                String professionBoard = ParamUtil.getString(request, "professionBoard" + i);
-                String profRegNo = ParamUtil.getString(request, "profRegNo" + i);
-                String name = ParamUtil.getString(request, "name" + i);
-                String salutation = ParamUtil.getString(request, "salutation" + i);
-                String idType = ParamUtil.getString(request, "idType" + i);
-                String idNo = ParamUtil.getString(request, "idNo" + i);
-                String nationality = ParamUtil.getString(request, "nationality" + i);
-                String designation = ParamUtil.getString(request, "designation" + i);
-                String otherDesignation = ParamUtil.getString(request, "otherDesignation" + i);
-//                String specialty = ParamUtil.getString(request,"speciality"+i);
-//                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
-                String specialtyGetDateStr = ParamUtil.getString(request, "specialtyGetDate" + i);
-                String typeOfCurrRegi = ParamUtil.getString(request, "typeOfCurrRegi" + i);
-                String currRegiDateStr = ParamUtil.getString(request, "currRegiDate" + i);
-                String praCerEndDateStr = ParamUtil.getString(request, "praCerEndDate" + i);
-                String typeOfRegister = ParamUtil.getString(request, "typeOfRegister" + i);
-                String relevantExperience = ParamUtil.getString(request, "relevantExperience" + i);
-                String holdCerByEMS = ParamUtil.getString(request, "holdCerByEMS" + i);
-                String aclsExpiryDateStr = ParamUtil.getString(request, "aclsExpiryDate" + i);
-                String bclsExpiryDateStr = ParamUtil.getString(request, "bclsExpiryDate" + i);
-                String mobileNo = ParamUtil.getString(request, "mobileNo" + i);
-                String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
-                String noRegWithProfBoard = ParamUtil.getString(request, "noRegWithProfBoardVal" + i);
-                String transportYear = ParamUtil.getString(request, "transportYear" + i);
-
-                String assignSel = ParamUtil.getString(request, "assignSel" + i);
-                AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = ApplicationHelper.getPsnInfoFromLic(request, assignSel);
-                appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
-                log.info(StringUtil.changeForLog("Clinical Governance Officer assgined select: " + assignSel));
-                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !ApplicationHelper.isEmpty(assignSel)) {
-                    appSvcClinicalDirectorDto.setAssignSelect(assignSel);
-                } else {
-                    appSvcClinicalDirectorDto.setAssignSelect(ApplicationHelper.getAssignSelect(nationality, idType, idNo,
-                            "-1"));
-                }
-                AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
-                if (appPsnEditDto == null) {
-                    appPsnEditDto = ApplicationHelper.setNeedEditField(appSvcClinicalDirectorDto);
-                    appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
-                }
-                boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(cdIndexNo);
-                boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
-                        assignSel) || !appSvcClinicalDirectorDto.isLicPerson();
-                if (canSetValue(appPsnEditDto.isProfessionBoard(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
-                }
-                if (canSetValue(appPsnEditDto.isProfRegNo(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
-                }
-                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setName(name);
-                }
-                if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setSalutation(salutation);
-                }
-                if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setIdType(idType);
-                }
-                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setIdNo(StringUtil.toUpperCase(idNo));
-                }
-                if (canSetValue(appPsnEditDto.isNationality(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setNationality(nationality);
-                }
-                if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setDesignation(designation);
-                }
-
-                if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcClinicalDirectorDto.getDesignation())) {
-                    if (canSetValue(appPsnEditDto.isOtherDesignation(), isNewOfficer, partEdit)) {
-                        appSvcClinicalDirectorDto.setOtherDesignation(otherDesignation);
-                    }
-                } else {
-                    appSvcClinicalDirectorDto.setOtherDesignation(null);
-                }
-                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setSpeciality(null);
-                }
-                if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
-                }
-                if (canSetValue(appPsnEditDto.isHoldCerByEMS(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
-                }
-                if (canSetValue(appPsnEditDto.isMobileNo(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setMobileNo(mobileNo);
-                }
-                if (canSetValue(appPsnEditDto.isEmailAddr(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
-                }
-                if (canSetValue(appPsnEditDto.isTypeOfCurrRegi(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
-                }
-                if (canSetValue(appPsnEditDto.isRelevantExperience(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
-                }
-                if (StringUtil.isEmpty(cdIndexNo)) {
-                    appSvcClinicalDirectorDto.setIndexNo(UUID.randomUUID().toString());
-                } else {
-                    appSvcClinicalDirectorDto.setIndexNo(cdIndexNo);
-                }
-
-                //date pick
-                if (canSetValue(appPsnEditDto.isSpecialtyGetDate(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
-                    Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
-                    appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
-                }
-                if (canSetValue(appPsnEditDto.isPraCerEndDate(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
-                    Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
-                    appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
-                }
-                if (canSetValue(appPsnEditDto.isCurrRegiDate(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
-                    Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
-                    appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
-                }
-                if (canSetValue(appPsnEditDto.isAclsExpiryDate(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
-                    Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
-                    appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
-                }
-                if (canSetValue(appPsnEditDto.isBclsExpiryDate(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
-                    Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
-                    appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
-                }
-
-                if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)) {
-                    if (canSetValue(appPsnEditDto.isNoRegWithProfBoard(), isNewOfficer, partEdit)) {
-                        if (AppConsts.YES.equals(noRegWithProfBoard)) {
-                            appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
-                        } else {
-                            appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
-                        }
-                    }
-                    if (canSetValue(appPsnEditDto.isTransportYear(), isNewOfficer, partEdit)) {
-                        appSvcClinicalDirectorDto.setTransportYear(transportYear);
-                    }
-                }
-                appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
-            }
-        }
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "", request);
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto end ..."));
-        return appSvcClinicalDirectorDtos;
+        return appSvcCgoDtoList;
     }
 
     private static boolean canSetValue(boolean canEdit, boolean isNewOfficer, boolean isPartEdit) {
@@ -1495,6 +1296,10 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "otherQualification", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "mobileNo", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "emailAddr", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "holdCerByEMS",prefix,suffix,request);
+        setPsnValue(person, appPsnEditDto, "aclsExpiryDate",prefix,suffix,true,request);
+        setPsnValue(person, appPsnEditDto, "relevantExperience",prefix,suffix,request);
+        setPsnValue(person, appPsnEditDto, "bclsExpiryDate",prefix,suffix,true,request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {

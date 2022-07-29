@@ -106,22 +106,7 @@ public class ValidateClincalDirector {
                         map.put("otherDesignation" + i, general_err0041);
                     }
                 }
-//                String specialty = appSvcClinicalDirectorDto.getSpeciality();
-//                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
-//                    map.put("speciality"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "speciality", "field"));
-//                }else {
-//
-//                }
                 String typeOfCurrRegi = appSvcClinicalDirectorDto.getTypeOfCurrRegi();
-                /*Date specialtyGetDate = appSvcClinicalDirectorDto.getSpecialtyGetDate();
-                String specialtyStr = appSvcClinicalDirectorDto.getSpeciality();
-                String regNo = appSvcClinicalDirectorDto.getProfRegNo();
-                //non-mandatory when no return Specialty value from PRS
-                if(!(!StringUtil.isEmpty(regNo) && !StringUtil.isEmpty(typeOfCurrRegi) && StringUtil.isEmpty(specialtyStr))){
-                    if(StringUtil.isEmpty(specialtyGetDate)) {
-                        map.put("specialtyGetDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "specialtyGetDate", "field"));
-                    }
-                }*/
                 if (StringUtil.isEmpty(typeOfCurrRegi)) {
                     map.put("typeOfCurrRegi" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
                 } else {

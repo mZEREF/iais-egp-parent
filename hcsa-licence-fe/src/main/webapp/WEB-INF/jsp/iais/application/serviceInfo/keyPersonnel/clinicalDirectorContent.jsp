@@ -20,7 +20,6 @@
 </iais:row>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
 <div class="row form-horizontal">
     <iais:row cssClass="col-md-12 col-xs-12">
@@ -52,9 +51,9 @@
 
     <input type="hidden" name="cdLength" value="${pageLength}" />
     <c:forEach begin="0" end="${personCount-1}" step="1" varStatus="cdStat">
-        <c:set var="index" value="${status.index}" />
+        <c:set var="index" value="${cdStat.index}"/>
         <c:set var="person" value="${personList[index]}"/>
-        <%@include file="personnelDetail.jsp" %>
+        <%@include file="clinicalDirectorDetail.jsp" %>
     </c:forEach>
 
     <c:if test="${!isRfi}">
@@ -80,7 +79,7 @@
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(document).ready(function () {
-        refresh();
+        //refresh();
     });
 
 
@@ -93,27 +92,6 @@
     function refreshPersonOthers($target, k) {
         var maxCount = eval('${currStepConfig.maximumCount}');
         toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
-    }
-
-    function refresh(){
-        var cdLength = $('.person-content').length;
-        $('input[name="cdLength"]').val(cdLength);
-        //reset number
-        $('div.person-content').each(function (k,v) {
-            toggleTag($(this).find('div.removeBtn'), k != 0);
-            $(this).find('select.assignSel').prop('name','assignSel'+k);
-            $(this).find('select.assignSel').prop('id','assignSel'+k);
-
-            $('div.person-content').find('select').niceSelect('update');
-            //display add more
-            if (cdLength < '${person-content.maximumCount}') {
-                $('.addClinicalDirectorDiv').removeClass('hidden');
-            }
-            if(cdLength <= 1){
-                $('.person-content:eq(0) .assign-psn-item').html('');
-            }
-            $('#isEditHiddenVal').val('1');
-        });
     }
 
 </script>
