@@ -609,6 +609,9 @@ function clearFields(targetSelector, withoutClearError) {
                 this.checked = false;
             } else if (tag == 'select') {
                 this.selectedIndex = 0;
+                if (this.multiple) {
+                    this.selectedIndex = -1;
+                }
                 updateSelectTag($(this));
             }
         }
