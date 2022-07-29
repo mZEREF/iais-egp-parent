@@ -134,6 +134,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         CrudHelper.doPaging(ldtParam,bpc.request);
         LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ldtParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
+        ldtParam.addFilter("dc_userId",loginContext.getUserId(),true);
         QueryHelp.setMainSql("onlineEnquiry","searchLaboratoryDevelopTest",ldtParam);
 
         SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto> ldtResult = assistedReproductionService.searchDsLdtByParam(ldtParam);
