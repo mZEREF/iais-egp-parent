@@ -300,31 +300,27 @@ public class DealSessionUtil {
         if(appSubmissionDto == null) {
             return appSubmissionDto;
         }
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String licenceId = appSubmissionDto.getLicenceId();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
+                    appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
+                }
+                if (StringUtil.isEmpty(appGrpPremisesDto.getExistingData())) {
+                    appGrpPremisesDto.setExistingData(AppConsts.NO);
+                }
+            }
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
             init(currSvcInfoDto, appGrpPremisesDtoList, licenceId, newConfig, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                setOldHciCode(appGrpPremisesDto);
-            }
-        }
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
         return appSubmissionDto;
-    }
-
-    public static AppGrpPremisesDto setOldHciCode(AppGrpPremisesDto appGrpPremisesDto) {
-        if (appGrpPremisesDto == null) {
-            return appGrpPremisesDto;
-        }
-        if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
-            appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
-        }
-        return appGrpPremisesDto;
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
@@ -361,13 +357,6 @@ public class DealSessionUtil {
             currSvcInfoDto.setServiceType(hcsaServiceDto.getSvcType());
             currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
         }
-        /*String relLicenceNo = currSvcInfoDto.getRelLicenceNo();
-        if (!StringUtil.isEmpty(relLicenceNo)) {
-            LicenceDto licenceDto = getLicCommService().getActiveLicenceById(relLicenceNo);
-            HcsaServiceDto relSvcDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
-            currSvcInfoDto.setBaseServiceId(relSvcDto.getId());
-            currSvcInfoDto.setBaseServiceName(relSvcDto.getSvcName());
-        }*/
         //set service step
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId =
                 getConfigCommService().getHcsaServiceStepSchemesByServiceId(svcId);

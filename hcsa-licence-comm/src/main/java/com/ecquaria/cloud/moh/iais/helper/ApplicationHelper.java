@@ -584,27 +584,12 @@ public final class ApplicationHelper {
         return seqNum;
     }
 
-    public static int getMaxFileIndex(Integer maxSeqNum) {
-        return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
-    }
-
     public static void reSetMaxFileIndex(Integer maxSeqNum, HttpServletRequest request) {
         getMaxFileIndex(maxSeqNum, true, request);
     }
 
     public static void reSetMaxFileIndex(Integer maxSeqNum) {
         reSetMaxFileIndex(maxSeqNum, MiscUtil.getCurrentRequest());
-    }
-
-    public static List<SelectOption> getIdTypeSelOp() {
-        List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("", HcsaAppConst.FIRESTOPTION);
-        idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption(OrganizationConstants.ID_TYPE_NRIC, "NRIC");
-        SelectOption idType2 = new SelectOption(OrganizationConstants.ID_TYPE_FIN, "FIN");
-        idTypeSelectList.add(idType2);
-        idTypeSelectList.add(idType1);
-        return idTypeSelectList;
     }
 
     public static AppSubmissionDto setSubmissionDtoSvcData(HttpServletRequest request, AppSubmissionDto appSubmissionDto)
@@ -3204,38 +3189,44 @@ public final class ApplicationHelper {
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
             HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        return checkPremisesMap(appSubmissionDto.getAppGrpPremisesDtoList(), reSetCurrent, reSetSesstion, request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = Optional.ofNullable(getOldAppSubmissionDto(request))
+                .map(AppSubmissionDto::getAppGrpPremisesDtoList)
+                .orElse(null);
+        return checkPremisesMap(appGrpPremisesDtoList, reSetCurrent, reSetSesstion, request);
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(final List<AppGrpPremisesDto> appGrpPremisesDtoList,
             boolean reSetCurrent, boolean reSetSesstion, HttpServletRequest request) {
         LicCommService licCommService = SpringHelper.getBean(LicCommService.class);
         String licenseeId = getLicenseeId(request);
-        boolean handleCurrent = appGrpPremisesDtoList != null;
+        boolean handleExisted = IaisCommonUtils.isNotEmpty(appGrpPremisesDtoList);
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.LIC_PREMISES_MAP);
         if (reSetSesstion || licAppGrpPremisesDtoMap == null) {
             List<AppGrpPremisesDto> licencePremisesDtoList = licCommService.getLicencePremisesDtoList(licenseeId);
-            licAppGrpPremisesDtoMap = IaisCommonUtils.getMap(licencePremisesDtoList.stream()
-                    .peek(premisesDto -> {
-                        if (handleCurrent) {
-                            for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                    premisesDto.setExistingData(AppConsts.NO);
-                                } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
-                                    premisesDto.setExistingData(dto.getExistingData());
+            if (IaisCommonUtils.isEmpty(licencePremisesDtoList)) {
+                licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
+            } else {
+                licAppGrpPremisesDtoMap = licencePremisesDtoList.stream()
+                        .peek(premisesDto -> {
+                            if (handleExisted) {
+                                for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
+                                        premisesDto.setExistingData(AppConsts.NO);
+                                    } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
+                                        premisesDto.setExistingData(dto.getExistingData());
+                                    }
                                 }
                             }
-                        }
-                    })
-                    .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
-                        if (AppConsts.NO.equals(v2.getExistingData())) {
-                            v1.setExistingData(AppConsts.NO);
-                        }
-                        v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
-                        return v1;
-                    })));
+                        })
+                        .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
+                            if (AppConsts.NO.equals(v2.getExistingData())) {
+                                v1.setExistingData(AppConsts.NO);
+                            }
+                            v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
+                            return v1;
+                        }));
+            }
         }
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -3243,27 +3234,38 @@ public final class ApplicationHelper {
         if (reSetSesstion || appPremisesMap == null) {
             AppCommService appCommService = SpringHelper.getBean(AppCommService.class);
             List<AppGrpPremisesDto> activePendingPremiseList = appCommService.getActivePendingPremiseList(licenseeId);
-            appPremisesMap = IaisCommonUtils.getMap(activePendingPremiseList.stream()
-                    .peek(premisesDto -> {
-                        if (handleCurrent) {
-                            for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                    premisesDto.setExistingData(AppConsts.NO);
-                                } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
-                                    premisesDto.setExistingData(dto.getExistingData());
+            if (IaisCommonUtils.isEmpty(activePendingPremiseList)) {
+                appPremisesMap = IaisCommonUtils.genNewHashMap();
+            } else {
+                appPremisesMap = activePendingPremiseList.stream()
+                        .peek(premisesDto -> {
+                            if (handleExisted) {
+                                for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
+                                        premisesDto.setExistingData(AppConsts.NO);
+                                    } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
+                                        premisesDto.setExistingData(dto.getExistingData());
+                                    }
                                 }
                             }
-                        }
-                    })
-                    .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
-                        v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
-                        return v1;
-                    })));
+                        })
+                        .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
+                            v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
+                            return v1;
+                        }));
+            }
 
             // Remove duplicated
             for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
                 if (!licAppGrpPremisesDtoMap.containsKey(entry.getKey())) {
                     newAppMap.put(entry.getKey(), entry.getValue());
+                } else {
+                    String existingData = entry.getValue().getExistingData();
+                    if (AppConsts.NO.equals(existingData)) {
+                        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(entry.getKey());
+                        appGrpPremisesDto.setExistingData(AppConsts.NO);
+                        licAppGrpPremisesDtoMap.put(entry.getKey(), appGrpPremisesDto);
+                    }
                 }
             }
         } else {
@@ -3280,108 +3282,7 @@ public final class ApplicationHelper {
         return allData;
     }
 
-    /**
-     * @param licAppGrpPremisesDtoMap
-     * @param newAppMap
-     * @param licenceList
-     * @param appList
-     * @param srcDto
-     * @param check 1: PremisesSelect; 2: premiseIndexNo; 3:RFI
-     * @return premises select key
-     */
-    private static String initCurrentPremises(Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap,
-            Map<String, AppGrpPremisesDto> newAppMap, List<AppGrpPremisesDto> licenceList, List<AppGrpPremisesDto> appList,
-            AppGrpPremisesDto srcDto, int check) {
-        if (check <= 0) {
-            return null;
-        }
-        List<AppGrpPremisesDto> entryList = IaisCommonUtils.genNewArrayList();
-        entryList.addAll(licenceList);
-        entryList.addAll(appList);
-        if (entryList.isEmpty()) {
-            return null;
-        }
-        AppGrpPremisesDto premiseEntry = null;
-        boolean isLicence = false;
-        if (check == 3) {
-            premiseEntry = CopyUtil.copyMutableObject(srcDto);
-            if (StringUtil.isEmpty(premiseEntry.getExistingData())) {
-                premiseEntry.setExistingData(AppConsts.NO);
-            } else if (AppConsts.YES.equals(premiseEntry.getExistingData())) {
-                //premiseEntry.setFromDB(true);
-            }
-        } else {
-            if (!licenceList.isEmpty()) {
-                premiseEntry = licenceList.stream()
-                        .filter(dto -> checkPremises(srcDto, dto, check))
-                        .findAny()
-                        .orElse(null);
-            }
-            if (premiseEntry != null) {
-                isLicence = true;
-            } else if (!appList.isEmpty()) {
-                isLicence = false;
-                premiseEntry = appList.stream()
-                        .filter(dto -> checkPremises(srcDto, dto, check))
-                        .findAny()
-                        .orElse(null);
-            }
-        }
-        if (premiseEntry != null) {
-            String key = premiseEntry.getPremisesSelect();
-            AppGrpPremisesDto tarDto = premiseEntry;
-            List<String> relatedServices = entryList.stream()
-                    .filter(entry -> checkPremises(entry, tarDto, check))
-                    .map(AppGrpPremisesDto::getRelatedServices)
-                    .filter(Objects::nonNull)
-                    .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
-            AppGrpPremisesDto appGrpPremisesDto = newAppMap.remove(key);
-            if (appGrpPremisesDto != null) {
-                relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
-            }
-            if (isLicence) {
-                appGrpPremisesDto = licAppGrpPremisesDtoMap.get(key);
-                if (appGrpPremisesDto != null) {
-                    relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
-                }
-                premiseEntry.setRelatedServices(relatedServices);
-                licAppGrpPremisesDtoMap.put(key, premiseEntry);
-            } else {
-                appGrpPremisesDto = licAppGrpPremisesDtoMap.remove(key);
-                if (appGrpPremisesDto != null) {
-                    relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
-                }
-                premiseEntry.setRelatedServices(relatedServices);
-                newAppMap.put(key, premiseEntry);
-            }
-            return key;
-        }
-        return null;
-    }
-
-    /**
-     * @param srcDto
-     * @param tarDto
-     * @param check  1: PremisesSelect; 2: premiseIndexNo; 3:RFI
-     * @return
-     */
-    private static boolean checkPremises(AppGrpPremisesDto srcDto, AppGrpPremisesDto tarDto, int check) {
-        if (srcDto == null || tarDto == null || check <= 0) {
-            return false;
-        }
-        if (1 == check) {
-            return Objects.equals(srcDto.getPremisesSelect(), tarDto.getPremisesSelect());
-        } else if (2 == check) {
-            return Objects.equals(srcDto.getPremisesIndexNo(), tarDto.getPremisesIndexNo());
-        } else if (3 == check) {
-            return Objects.equals(srcDto.getPremisesSelect(), tarDto.getPremisesSelect())
-                    || Objects.equals(srcDto.getPremisesIndexNo(), tarDto.getPremisesIndexNo());
-        } else {
-            return false;
-        }
-    }
-
-    private static void reSetCurrentPremises(Map<String, AppGrpPremisesDto> allData, HttpServletRequest request) {
+    public static void reSetCurrentPremises(Map<String, AppGrpPremisesDto> allData, HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;

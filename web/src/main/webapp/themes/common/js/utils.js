@@ -636,7 +636,8 @@ function fillForm(ele, data, prefix, suffix) {
     for (var i in data) {
         var value = data[i];
         if (Object.prototype.toString.call(value) === "[object Object]") {
-            fillForm(ele, value, prefix, suffix);
+            //fillForm(ele, value, prefix, suffix);
+            continue;
         }
         var name = prefix + i + suffix;
         var $input = $selector.find('[name="' + name + '"]');

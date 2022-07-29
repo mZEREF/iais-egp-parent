@@ -699,9 +699,9 @@ public final class AppValidatorHelper {
                     }
                 }
             }
-            if (!errMap.isEmpty()) {
+            if (!errorMap.isEmpty()) {
                 appGrpPremisesDto.setHasError(true);
-                errMap.putAll(errMap);
+                errMap.putAll(errorMap);
             } else {
                 appGrpPremisesDto.setHasError(false);
             }

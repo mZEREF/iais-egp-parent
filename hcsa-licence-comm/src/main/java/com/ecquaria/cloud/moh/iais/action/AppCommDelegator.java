@@ -498,14 +498,7 @@ public abstract class AppCommDelegator {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
-            String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
-            if ("rfcSaveDraft".equals(actionAdditional)) {
-                try {
-                    doSaveDraft(bpc);
-                } catch (IOException e) {
-                    log.error("error", e);
-                }
-            }
+            saveDraft(bpc);
         }
         request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
     }
@@ -610,14 +603,7 @@ public abstract class AppCommDelegator {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
         } else {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
-            String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
-            if ("rfcSaveDraft".equals(actionAdditional)) {
-                try {
-                    doSaveDraft(bpc);
-                } catch (IOException e) {
-                    log.error("error", e);
-                }
-            }
+            saveDraft(bpc);
         }
         bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -866,13 +852,7 @@ public abstract class AppCommDelegator {
                 coMap.put(HcsaAppConst.SECTION_PREMISES, "");
             } else {
                 coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-                if ("rfcSaveDraft".equals(crud_action_additional)) {
-                    try {
-                        doSaveDraft(bpc);
-                    } catch (IOException e) {
-                        log.error("error", e);
-                    }
-                }
+                saveDraft(bpc);
             }
             // coMap.put("serviceConfig", sB.toString());
             bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
@@ -1239,6 +1219,17 @@ public abstract class AppCommDelegator {
         }
 
         log.info(StringUtil.changeForLog("the do preInvoke start ...."));
+    }
+
+    private void saveDraft(BaseProcessClass bpc) {
+        String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
+        if ("rfcSaveDraft".equals(actionAdditional)) {
+            try {
+                doSaveDraft(bpc);
+            } catch (IOException e) {
+                log.error("error", e);
+            }
+        }
     }
 
     /**
