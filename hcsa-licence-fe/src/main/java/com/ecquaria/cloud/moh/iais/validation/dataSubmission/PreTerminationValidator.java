@@ -11,10 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,12 +75,9 @@ public class PreTerminationValidator implements CustomizeValidator {
                             if(preTerminationDto.getCounsellingAge()==null){
                                 try {
                                     String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
-                                    if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
-                                        String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
-                                        int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                                        terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(age);
-
-                                    }
+                                    String counsellingGiven = preTerminationDto.getCounsellingDate();
+                                    int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
+                                    preTerminationDto.setCounsellingAge(age);
                                 }catch (Exception e){
                                     log.error(e.getMessage(),e);
                                 }
@@ -93,7 +93,7 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
             if(!"TOPPCR004".equals(preTerminationDto.getCounsellingResult())){
                 if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                    if (preTerminationDto.getCounsellingGiven()==true && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
+                    if (preTerminationDto.getCounsellingGiven() && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                         if(StringUtil.isEmpty(preTerminationDto.getPatientAppointment())){
                             errorMap.put("patientAppointment", "GENERAL_ERR0006");
                         }
@@ -103,10 +103,26 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
             if(!"TOPPCR004".equals(preTerminationDto.getCounsellingResult())){
                 if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                    if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) && preTerminationDto.getCounsellingGiven() == true){
+                    if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) && preTerminationDto.getCounsellingGiven()){
                         if ("1".equals(preTerminationDto.getPatientAppointment())) {
                             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
                                 errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
+                            }else if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+                                try {
+                                    Date oneDate=Formatter.parseDate(preTerminationDto.getCounsellingDate());
+                                    Date secDate=Formatter.parseDate(preTerminationDto.getSecCounsellingDate());
+                                    if(secDate.before(oneDate)){
+                                        Map<String, String> params = IaisCommonUtils.genNewHashMap();
+                                        params.put("field1", "Date of Second or Final Pre-Counselling");
+                                        params.put("field2", "Date of Counselling");
+                                        errorMap.put("secCounsellingDate", MessageUtil.getMessageDesc("DS_ERR069", params));
+                                    }
+                                }catch (ParseException ignored){
+                                    log.error("ParseException");
+                                }
+
+
+
                             }
                             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingResult())){
                                 errorMap.put("secCounsellingResult", "GENERAL_ERR0006");
