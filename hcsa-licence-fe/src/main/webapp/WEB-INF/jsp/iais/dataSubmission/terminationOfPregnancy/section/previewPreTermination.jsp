@@ -14,12 +14,9 @@
                 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}"/>
                 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
                 <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
-                <c:if test="${preTerminationDto.counsellingGiven == false }">
-                    <c:set var="beforeConsultation"><iais:message key="DS_MSG032" paramKeys="1"
-                                                                  paramValues="counsellor"/></c:set>
-                </c:if>
+
                 <iais:row>
-                    <iais:field width="6" value="Whether Given Counselling" info="${beforeConsultation}"/>
+                    <iais:field width="6" value="Whether Given Counselling" />
                     <iais:value width="6" display="true">
                         <c:if test="${preTerminationDto.counsellingGiven == true }">
                             Yes
