@@ -4,9 +4,19 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
@@ -30,15 +40,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class ArCycleStageDelegator extends DonorCommonDelegator{
 
-    private final static String  CURRENT_AR_TREATMENT_SESSION    = "currentArTreatments";
-    private final static String  NO_CHILDREN_DROP_DOWN           = "noChildrenDropDown";
-    private final static String  NUMBER_ARC_PREVIOUSLY_DROP_DOWN = "numberArcPreviouslyDropDown";
-    private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
-    private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
+    private static final String  CURRENT_AR_TREATMENT_SESSION    = "currentArTreatments";
+    private static final String  NO_CHILDREN_DROP_DOWN           = "noChildrenDropDown";
+    private static final String  NUMBER_ARC_PREVIOUSLY_DROP_DOWN = "numberArcPreviouslyDropDown";
+    private static final String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
+    private static final String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
 
-    private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
-    private final static String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
-    private final static String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
+    private static final String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
+    private static final String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
+    private static final String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
 
     @Override
     public void start(BaseProcessClass bpc) {

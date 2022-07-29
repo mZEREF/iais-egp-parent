@@ -3,6 +3,9 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -133,4 +136,6 @@ public interface ArDataSubmissionService {
     DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto);
 
     void remindAndDeleteDraftSubJob();
+
+    List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request);
 }

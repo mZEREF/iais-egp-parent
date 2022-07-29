@@ -1,323 +1,320 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohARCycleStagesManual" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="7" minorVersion="0" name="MohARCycleStagesManual" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="550">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareCycleStageSelection" x="190" y="550">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareCycleStageSelection_OnStepProcess_0" name="prepareCycleStageSelection_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareCycleStageSelection_OnStepProcess_0" name="prepareCycleStageSelection_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareStage" x="460" y="550">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareStage_OnStepProcess_0" name="prepareStage_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareStage_OnStepProcess_0" name="prepareStage_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareARCycle" x="830" y="20">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareARCycle_OnStepProcess_0" name="prepareARCycle_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareARCycle_OnStepProcess_0" name="prepareARCycle_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareIUICycle" x="830" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareIUICycle_OnStepProcess_0" name="prepareIUICycle_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareIUICycle_OnStepProcess_0" name="prepareIUICycle_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareEFOCycle" x="820" y="170">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareEFOCycle_OnStepProcess_0" name="prepareEFOCycle_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareEFOCycle_OnStepProcess_0" name="prepareEFOCycle_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareOocyteRetrieval" x="810" y="250">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareOocyteRetrieval_OnStepProcess_0" name="prepareOocyteRetrieval_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareOocyteRetrieval_OnStepProcess_0" name="prepareOocyteRetrieval_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareFertilisation" x="820" y="340">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareFertilisation_OnStepProcess_0" name="prepareFertilisation_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareFertilisation_OnStepProcess_0" name="prepareFertilisation_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="ARCycle" processname="MohARCycleStage" project="INTERNET" version="-1" x="1070" y="20">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="IUICycle" processname="MohIUICycleStage" project="INTERNET" version="-1" x="1070" y="100">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="EFOCycle" processname="MohEFOCycleStage" project="INTERNET" version="-1" x="1060" y="170">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="OocyteRetrieval" processname="MohOocyteRetrieval" project="INTERNET" version="-1" x="1050" y="250">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Fertilisation" processname="MohFertilisation" project="INTERNET" version="-1" x="1060" y="340">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareEmbryoCreated" x="810" y="410">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareEmbryoCreated_OnStepProcess_0" name="prepareEmbryoCreated_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareEmbryoCreated_OnStepProcess_0" name="prepareEmbryoCreated_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="EmbryoCreated" processname="MohEmbryoCreated" project="INTERNET" version="-1" x="1050" y="410">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareThawing" x="830" y="480">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareThawing_OnStepProcess_0" name="prepareThawing_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareThawing_OnStepProcess_0" name="prepareThawing_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Thawing" processname="MohThawing" project="INTERNET" version="-1" x="1070" y="480">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Preimplantation" processname="MohPreimplantation" project="INTERNET" version="-1" x="1050" y="550">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreparePreimplantation" x="810" y="550">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preparePreimplantation_OnStepProcess_0" name="preparePreimplantation_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preparePreimplantation_OnStepProcess_0" name="preparePreimplantation_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="EmbryoTransfer" processname="MohEmbryoTransfer" project="INTERNET" version="-1" x="1050" y="610">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareEmbryoTransfer" x="810" y="610">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareEmbryoTransfer_OnStepProcess_0" name="prepareEmbryoTransfer_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareEmbryoTransfer_OnStepProcess_0" name="prepareEmbryoTransfer_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="ARTreatmentSubsidies" processname="MohARTreatmentSubsidies" project="INTERNET" version="-1" x="1030" y="670">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareARTreatmentSubsidies" x="790" y="670">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareARTreatmentSubsidies_OnStepProcess_0" name="prepareARTreatmentSubsidies_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareARTreatmentSubsidies_OnStepProcess_0" name="prepareARTreatmentSubsidies_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareIUITreatmentSubsidies" x="790" y="740">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareIUITreatmentSubsidies_OnStepProcess_0" name="prepareIUITreatmentSubsidies_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareIUITreatmentSubsidies_OnStepProcess_0" name="prepareIUITreatmentSubsidies_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="IUITreatmentSubsidies" processname="MohIUITreatmentSubsidies" project="INTERNET" version="-1" x="1030" y="740">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="OutcomeEmbryoTransferred" processname="MohOutcomeEmbryoTransferred" project="INTERNET" version="-1" x="1010" y="800">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcomeEmbryoTransferred" x="770" y="800">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareOutcomeEmbryoTransferred_OnStepProcess_0" name="prepareOutcomeEmbryoTransferred_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareOutcomeEmbryoTransferred_OnStepProcess_0" name="prepareOutcomeEmbryoTransferred_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcome" x="820" y="860">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareOutcome_OnStepProcess_0" name="prepareOutcome_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareOutcome_OnStepProcess_0" name="prepareOutcome_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Outcome" processname="MohOutcome" project="INTERNET" version="-1" x="1060" y="860">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcomePregnancy" x="800" y="920">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareOutcomePregnancy_OnStepProcess_0" name="prepareOutcomePregnancy_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareOutcomePregnancy_OnStepProcess_0" name="prepareOutcomePregnancy_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="OutcomePregnancy" processname="MohOutcomePregnancy" project="INTERNET" version="-1" x="1040" y="920">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Freezing" processname="MohFreezing" project="INTERNET" version="-1" x="1070" y="980">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareFreezing" x="830" y="980">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareFreezing_OnStepProcess_0" name="prepareFreezing_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareFreezing_OnStepProcess_0" name="prepareFreezing_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Donation" processname="MohDonation" project="INTERNET" version="-1" x="1060" y="1060">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareDonation" x="820" y="1060">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDonation_OnStepProcess_0" name="prepareDonation_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDonation_OnStepProcess_0" name="prepareDonation_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="MohDisposal" project="INTERNET" version="-1" x="1070" y="1140">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareDisposal" x="830" y="1140">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDisposal_OnStepProcess_0" name="prepareDisposal_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDisposal_OnStepProcess_0" name="prepareDisposal_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="EndCycle" processname="MohEndCycle" project="INTERNET" version="-1" x="1060" y="1210">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareEndCycle" x="820" y="1210">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareEndCycle_OnStepProcess_0" name="prepareEndCycle_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareEndCycle_OnStepProcess_0" name="prepareEndCycle_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="TransferInOut" processname="MohTransferInOut" project="INTERNET" version="-1" x="1050" y="1280">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareTransferInOut" x="800" y="1270">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareTransferInOut_OnStepProcess_0" name="prepareTransferInOut_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareTransferInOut_OnStepProcess_0" name="prepareTransferInOut_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Back" x="590" y="410">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Return" x="590" y="290">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
   </ReturnInvokeProcessStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareRegisterPatient" x="550" y="790">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareRegisterPatient_OnStepProcess_0" name="prepareRegisterPatient_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareRegisterPatient_OnStepProcess_0" name="prepareRegisterPatient_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Patient" processname="MohARPatientInformationManual" project="" version="-1" x="240" y="790">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="Draft" x="580" y="910">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CycleStageSelection" stageIndicator="" x="310" y="550">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(120,570)(210,570)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/CycleStageSelection" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCycleStageSelection" style="oblique">
-   <position>{(210,570)(330,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CycleStageSelection" style="oblique">
    <position>{(330,570)(480,570)}</position>
@@ -515,51 +512,65 @@
    <position>{(570,810)(260,810)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/Patient" style="rectanular">
-   <position>{(260,810)(210,570)}</position>
+   <position>{(260,810)(259,645)(210,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(610,570)(600,930)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Draft" style="rectanular">
-   <position>{(600,930)(260,929)(210,570)}</position>
+   <position>{(600,930)(260,929)(260,760)(210,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CycleStageSelection" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(360,460)(330,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(360,460)(480,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCycleStageSelection" style="oblique">
+   <position>{(210,570)(360,460)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/CycleStageSelection" componentIfTrue="/Steps/AutomaticStep/PrepareStage" defClass="" executor="" icon="" leftOperand="jump_action_type" name="Cond1" operator="=" rightOperand="&quot;jump&quot;" x="340" y="440">
+   <Description />
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_ct" name="Switch1" x="590" y="550">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareARCycle" value="&quot;AR_CL001&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareIUICycle" value="&quot;AR_CL002&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareEFOCycle" value="&quot;AR_CL003&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareOocyteRetrieval" value="&quot;AR_STG001&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareFertilisation" value="&quot;AR_STG002&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoCreated" value="&quot;AR_STG003&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareThawing" value="&quot;AR_STG004&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePreimplantation" value="&quot;AR_STG005&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoTransfer" value="&quot;AR_STG006&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareARTreatmentSubsidies" value="&quot;AR_STG007&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareIUITreatmentSubsidies" value="&quot;AR_STG008&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomeEmbryoTransferred" value="&quot;AR_STG009&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcome" value="&quot;AR_STG010&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomePregnancy" value="&quot;AR_STG011&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareFreezing" value="&quot;AR_STG012&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDonation" value="&quot;AR_STG013&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDisposal" value="&quot;AR_STG014&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareEndCycle" value="&quot;AR_STG015&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareTransferInOut" value="&quot;AR_STG016&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareCycleStageSelection" value="&quot;current&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareRegisterPatient" value="&quot;patient&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareARCycle" value="&quot;AR_CL001&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareIUICycle" value="&quot;AR_CL002&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEFOCycle" value="&quot;AR_CL003&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOocyteRetrieval" value="&quot;AR_STG001&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareFertilisation" value="&quot;AR_STG002&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoCreated" value="&quot;AR_STG003&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareThawing" value="&quot;AR_STG004&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreimplantation" value="&quot;AR_STG005&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoTransfer" value="&quot;AR_STG006&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareARTreatmentSubsidies" value="&quot;AR_STG007&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareIUITreatmentSubsidies" value="&quot;AR_STG008&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomeEmbryoTransferred" value="&quot;AR_STG009&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcome" value="&quot;AR_STG010&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomePregnancy" value="&quot;AR_STG011&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareFreezing" value="&quot;AR_STG012&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDonation" value="&quot;AR_STG013&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDisposal" value="&quot;AR_STG014&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEndCycle" value="&quot;AR_STG015&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareTransferInOut" value="&quot;AR_STG016&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCycleStageSelection" value="&quot;current&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareRegisterPatient" value="&quot;patient&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1220" y="740">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+
