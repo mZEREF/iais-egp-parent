@@ -1351,10 +1351,6 @@ public final class ApplicationHelper {
         return timeMinList;
     }
 
-    public static boolean intiPremises() {
-
-    }
-
     public static boolean readonlyPremises(AppSubmissionDto appSubmissionDto) {
         boolean readonly = false;
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
