@@ -18,6 +18,8 @@ public class DataSubmissionConstant {
     public static String CRUD_ACTION_TYPE_DP                = "crud_action_type_dp";
     public static String CRUD_ACTION_TYPE_VSS               = "crud_action_type_vss";
     public static String CRUD_ACTION_TYPE_TOP               = "crud_action_type_top";
+    public static String JUMP_ACTION_TYPE                   = "jump_action_type";
+    public static String ACTION_TYPE                        = "action_type";
 
     public static String ACTION_STATUS                      = "DS_ACTION_STATUS";
 
@@ -113,4 +115,10 @@ public class DataSubmissionConstant {
     public static String VS_DOCTOR_INFO_FROM_PRS           = "VSSP"; //VSS get doctor info from PRS
     public static String VS_DOCTOR_INFO_FROM_ELIS          = "VSSE"; //VSS get doctor info from eLis
     public static String VS_DOCTOR_INFO_USER_NEW_REGISTER  = "VSST"; //VSS register new doctor
+
+    //AR Cycle stage status
+    public static String AR_CYCLE_STAGE_STATUS_ONGOING        = "ongoingStage";      //ongoing stage
+    public static String AR_CYCLE_STAGE_STATUS_SUBMITTED      = "submittedStage";    //submitted stage
+    public static String AR_CYCLE_STAGE_STATUS_NOT_SUBMITTED  = "notSubmittedStage"; //not submitted stage
+    public static String AR_CYCLE_STAGE_STATUS_Invalid        = "invalidStage";      //invalid stage
 }
