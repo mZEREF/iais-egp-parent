@@ -349,8 +349,10 @@ public class VssDataSubmissionDelegator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request, treatmentDto);
         try {
-            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate());
-            treatmentDto.setAge(age / 365);
+            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
+            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+
+            treatmentDto.setAge(ageNew);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

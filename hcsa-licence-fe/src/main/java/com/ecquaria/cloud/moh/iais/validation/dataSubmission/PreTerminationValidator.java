@@ -77,7 +77,9 @@ public class PreTerminationValidator implements CustomizeValidator {
                                     String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
                                     String counsellingGiven = preTerminationDto.getCounsellingDate();
                                     int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                                    preTerminationDto.setCounsellingAge(age);
+                                    int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
+
+                                    preTerminationDto.setCounsellingAge(ageNew);
                                 }catch (Exception e){
                                     log.error(e.getMessage(),e);
                                 }
