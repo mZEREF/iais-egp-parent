@@ -62,12 +62,13 @@ public class InsAFCReportService {
 
     public String getProfile(String appStatus) {
         String profile;
+        // TODO: check this app status
         switch (appStatus) {
             case APP_STATUS_PEND_AFC_REPORT_UPLOAD:
                 profile = ValidationConstants.PROFILE_AFC_ADMIN_FIRST_SUBMIT;
                 break;
             case APP_STATUS_PEND_AFC_INPUT:
-            case APP_STATUS_PEND_APPLICANT_REPORT_REVIEW:
+            case APP_STATUS_PEND_APPLICANT_INPUT:
                 profile = ValidationConstants.PROFILE_AFC_REPORT_SUBMIT;
                 break;
             default:

@@ -235,7 +235,7 @@
 
                                                                                 <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_CHECKLIST_SUBMISSION}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
                                                                             </c:if>
                                                                             <c:if test="${AppWithdrawableJudge}">
@@ -250,7 +250,7 @@
                                                                             <c:if test="${InspectionFollowUpJudge}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Submit follow-up action</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
                                                                             </c:if>
                                                                             <c:if test="${AFCUploadReportJudge}">
