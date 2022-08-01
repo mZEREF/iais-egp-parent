@@ -37,6 +37,7 @@
               </div>
               <iais:body >
                 <iais:section title="" id = "self_assessment">
+                  <%--@elvariable id="commonDto" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem> java.util.List"--%>
                   <c:if test="${!empty commonDto}">
                     <h3>Common</h3>
                   </c:if>
@@ -66,6 +67,7 @@
                       </tbody>
                       </table>
                   </div>
+                  <%--@elvariable id="serListDto123" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig>"--%>
                   <c:forEach var ="cdto" items ="${serListDto123}">
                     <h3>${cdto.svcName}</h3>
                     <div class="table-gp">

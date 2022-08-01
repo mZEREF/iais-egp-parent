@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -19,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -122,8 +124,16 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String svcName = hcsaServiceDto.getSvcName();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
-            ChecklistConfigDto serviceConfig = configCommClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            List<ChecklistConfigDto> serviceConfigs = IaisCommonUtils.genNewArrayList();
+            ChecklistConfigDto appServiceConfig = configCommClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            if (!Objects.isNull(appServiceConfig)){
+                serviceConfigs.add(appServiceConfig);
+            }
             List<AppPremisesCorrelationDto> correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
+            List<ChecklistConfigDto> specSvcChecklistConfig = getSpecSvcChecklistConfigDtos(type, module, correlationList);
+            if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
+                serviceConfigs.addAll(specSvcChecklistConfig);
+            }
             for (AppPremisesCorrelationDto correlation : correlationList) {
                 String corrId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
@@ -140,18 +150,20 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 List<SelfAssessmentConfig> configList = IaisCommonUtils.genNewArrayList();
                 configList.add(commonConfig);
                 // check list
-                if (serviceConfig != null) {
-                    SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
-                    svcConfig.setSvcId(svcId);
-                    svcConfig.setSvcName(svcName);
-                    svcConfig.setConfigId(serviceConfig.getId());
-                    svcConfig.setCommon(false);
-                    svcConfig.setSvcCode(serviceConfig.getSvcCode());
-                    svcConfig.setSvcName(serviceConfig.getSvcName());
-
-                    LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
-                    svcConfig.setSqMap(serviceQuestion);
-                    configList.add(svcConfig);
+                if (IaisCommonUtils.isNotEmpty(serviceConfigs)){
+                    for (ChecklistConfigDto serviceConfig : serviceConfigs){
+                        SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
+                        svcConfig.setSvcId(svcId);
+                        svcConfig.setSvcName(svcName);
+                        svcConfig.setConfigId(serviceConfig.getId());
+                        svcConfig.setCommon(false);
+                        svcConfig.setSvcCode(serviceConfig.getSvcCode());
+                        svcConfig.setSvcName(serviceConfig.getSvcName());
+    
+                        LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                        svcConfig.setSqMap(serviceQuestion);
+                        configList.add(svcConfig);
+                    }
                 }
                 selfAssessment.setSelfAssessmentConfig(configList);
                 selfAssessmentList.add(selfAssessment);
@@ -159,6 +171,24 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         return selfAssessmentList;
+    }
+
+    private List<ChecklistConfigDto> getSpecSvcChecklistConfigDtos(String type, String module, List<AppPremisesCorrelationDto> correlationList) {
+        List<AppPremSpecialisedDto> appPremSpecialisedDtos = appCommService.getAppPremSpecialisedDtoList(
+                correlationList.stream()
+                        .map(AppPremisesCorrelationDto::getId)
+                        .collect(Collectors.toList())
+        );
+        List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAppPremSubSvcRelDtos()){
+                ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(appPremSubSvcRelDto.getSvcCode(), type, module).getEntity();
+                if (!Objects.isNull(specSvceConfig)){
+                    specSvcChecklistConfig.add(specSvceConfig);
+                }
+            }
+        }
+        return specSvcChecklistConfig;
     }
 
     @Override

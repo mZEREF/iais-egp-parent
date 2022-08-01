@@ -12,12 +12,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,7 +38,9 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -137,21 +140,30 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                     log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig));
                     inspChecklist.add(commonConfig);
                 }
-
-                ChecklistConfigDto svcConfig = null;
                 // issue 65522
-                if (!StringUtil.isEmpty(hciCode)) {
-                    svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", hciCode).getEntity();
-                }
-                if (svcConfig == null) {
-                    svcConfig = MiscUtil.transferEntityDto(baseSvcConfig, ChecklistConfigDto.class);
-                }
+                ChecklistConfigDto svcConfig = getChecklistConfigDtoWithHciCode(svcCode, chklModule, type, baseSvcConfig, hciCode);
 
                 log.info(StringUtil.changeForLog("inspection pick up service config hci code ====>>>>" + hciCode));
                 log.info(StringUtil.changeForLog("inspection pick up service config ====>>>>" + svcConfig));
 
                 if (svcConfig != null){
                     inspChecklist.add(svcConfig);
+                }
+                // specialised service checklist configs
+                List<AppPremSpecialisedDto> appPremSpecialisedDtos = appCommService.getAppPremSpecialisedDtoList(Collections.singletonList(corrId));
+                if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)){
+                    List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
+                    for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
+                        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAppPremSubSvcRelDtos()){
+                            ChecklistConfigDto specSvceConfig = getChecklistConfigDtoWithHciCode(appPremSubSvcRelDto.getSvcCode(), chklModule, type, baseSvcConfig, hciCode);
+                            if (!Objects.isNull(specSvceConfig)){
+                                specSvcChecklistConfig.add(specSvceConfig);
+                            }
+                        }
+                    }
+                    if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
+                        inspChecklist.addAll(specSvcChecklistConfig);
+                    }
                 }
 
                 log.info(StringUtil.changeForLog("inspection pick up vehicle service config ====>>>>" + vehicleConfig));
@@ -165,6 +177,17 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }
 
         return inspChecklist;
+    }
+
+    private ChecklistConfigDto getChecklistConfigDtoWithHciCode(String svcCode, String chklModule, String type, ChecklistConfigDto baseSvcConfig, String hciCode) {
+        ChecklistConfigDto svcConfig = null;
+        if (!StringUtil.isEmpty(hciCode)) {
+            svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", hciCode).getEntity();
+        }
+        if (svcConfig == null) {
+            svcConfig = MiscUtil.transferEntityDto(baseSvcConfig, ChecklistConfigDto.class);
+        }
+        return svcConfig;
     }
 
     @Override
