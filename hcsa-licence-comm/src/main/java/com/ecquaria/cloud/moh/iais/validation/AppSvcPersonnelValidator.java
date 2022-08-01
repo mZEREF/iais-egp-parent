@@ -22,7 +22,8 @@ import java.util.Objects;
  */
 public class AppSvcPersonnelValidator implements CustomizeValidator {
 
-    public Map<String, String> validate(Object obj, HttpServletRequest request) {
+    @Override
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (!(obj instanceof AppSvcPersonnelDto)) {
             return errorMap;
@@ -48,7 +49,6 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
                 }
             }
         }
-        String profile = (String) request.getAttribute(this.getClass().getSimpleName() + "_profile");
         if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(profile) && StringUtil.isDigit(svcPersonnel.getWrkExpYear())) {
             int workExpYear = Integer.parseInt(svcPersonnel.getWrkExpYear());
             String svcCode = (String) request.getAttribute(HcsaAppConst.CURRENT_SVC_CODE);

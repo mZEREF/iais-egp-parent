@@ -116,6 +116,11 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
+    public List<HcsaServiceDto> getSpecialServices(String baseSvcId) {
+        return IaisCommonUtils.genNewArrayList();
+    }
+
+    @Override
     public List<HcsaServiceDto> allHcsaService() {
         return configCommClient.allHcsaService().getEntity();
     }
@@ -291,6 +296,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         return configCommClient.getSvcSubtypeOrSubsumedByIdList(idList).getEntity();
     }
 
+    @Override
     public List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String serviceId, String psnType) {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("serviceId", serviceId);
@@ -327,6 +333,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         return postCodeDto;
     }
 
+    @Override
     public List<String> saveFileRepo(List<File> files) {
         if (IaisCommonUtils.isEmpty(files)) {
             return IaisCommonUtils.genNewArrayList();

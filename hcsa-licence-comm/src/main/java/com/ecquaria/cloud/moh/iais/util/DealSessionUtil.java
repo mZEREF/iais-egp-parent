@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -315,16 +316,21 @@ public class DealSessionUtil {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
+        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
-            init(currSvcInfoDto, appGrpPremisesDtoList, licenceId, newConfig, request);
+            init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(),
+                    licenceId, newConfig, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         return appSubmissionDto;
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
-            String licenceId, boolean newConfig, HttpServletRequest request) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, String licenceId, boolean newConfig, HttpServletRequest request) {
         if (currSvcInfoDto == null) {
             return currSvcInfoDto;
         }
@@ -370,7 +376,7 @@ public class DealSessionUtil {
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentList(currSvcInfoDto, appGrpPremisesDtos);
+        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
         if (documentShowDtos != null && request != null) {
             HttpSession session = request.getSession();
             for (DocumentShowDto documentShowDto : documentShowDtos) {

@@ -35,6 +35,8 @@ public interface ConfigCommService {
 
     List<HcsaServiceDto> getHcsaServiceByNames(List<String> svcNames);
 
+    List<HcsaServiceDto> getSpecialServices(String baseSvcId);
+
     List<HcsaServiceDto> allHcsaService();
 
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
