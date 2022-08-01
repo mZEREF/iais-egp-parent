@@ -30,6 +30,9 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_SUBMIT_INSPECTION_REPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_REPORT_REVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_NC_NOTIFICATION_EMAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFTER_SAVE_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_STATUS;
@@ -192,7 +195,8 @@ public class BsbSubmitInspectionReportDelegator {
         inspectionClient.submitInspectionReportToAO(appId, taskId, processDto);
         String appStatus = (String) ParamUtil.getSessionAttr(request, KEY_APP_STATUS);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_REVIEW));
+        // TODO: check this app status
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_INSPECTION_REPORT_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
     }
 
@@ -204,7 +208,7 @@ public class BsbSubmitInspectionReportDelegator {
         inspectionClient.routeInspectionReportToApplicant(appId, taskId, processDto);
         String appStatus = (String) ParamUtil.getSessionAttr(request, KEY_APP_STATUS);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(appStatus));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INPUT));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
 
@@ -220,7 +224,7 @@ public class BsbSubmitInspectionReportDelegator {
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextStatus));
         if (nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION)) {
             ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
-        } else if (nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_DO) || nextStatus.equals(MasterCodeConstants.APP_STATUS_PEND_DO_NC_EMAIL_DRAFT)) {
+        } else if (nextStatus.equals(APP_STATUS_PEND_DO_RECOMMENDATION) || nextStatus.equals(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL)) {
             ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
         }
     }

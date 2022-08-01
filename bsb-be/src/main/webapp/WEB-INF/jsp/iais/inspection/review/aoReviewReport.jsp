@@ -102,7 +102,8 @@
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq 'BSBAPST049'}">
+                                                            <%--todo: check this app status and logic--%>
+                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq 'BSBAPST304'}">
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">HM Decision</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">

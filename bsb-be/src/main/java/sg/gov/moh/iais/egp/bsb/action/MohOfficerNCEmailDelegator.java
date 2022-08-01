@@ -33,6 +33,8 @@ import java.util.List;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_NC_EMAIL;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_NC_EMAIL_DRAFT;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_NC_EMAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_NC_NOTIFICATION_EMAIL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_NC_EMAIL_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
@@ -167,8 +169,8 @@ public class MohOfficerNCEmailDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsNCEmailDto ncEmailDto = (InsNCEmailDto) ParamUtil.getSessionAttr(request,KEY_INS_NC_EMAIL_DTO);
         inspectionClient.inspectionNCEmailDORouteToAO(appId,taskId,ncEmailDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO_NC_EMAIL_DRAFT));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_NC_EMAIL_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
     }
 
@@ -178,7 +180,7 @@ public class MohOfficerNCEmailDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsNCEmailDto ncEmailDto = (InsNCEmailDto) ParamUtil.getSessionAttr(request,KEY_INS_NC_EMAIL_DTO);
         inspectionClient.inspectionNCEmailRouteToApplicant(appId,taskId, StageConstants.ROLE_DO,ncEmailDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO_NC_EMAIL_DRAFT));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
@@ -189,7 +191,7 @@ public class MohOfficerNCEmailDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsNCEmailDto ncEmailDto = (InsNCEmailDto) ParamUtil.getSessionAttr(request,KEY_INS_NC_EMAIL_DTO);
         inspectionClient.inspectionNCEmailRouteToApplicant(appId,taskId, StageConstants.ROLE_AO,ncEmailDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_NC_EMAIL_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
@@ -200,8 +202,8 @@ public class MohOfficerNCEmailDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsNCEmailDto ncEmailDto = (InsNCEmailDto) ParamUtil.getSessionAttr(request,KEY_INS_NC_EMAIL_DTO);
         inspectionClient.inspectionNCEmailAORouteBackToDO(appId,taskId,ncEmailDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_NC_EMAIL_REVIEW));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO_NC_EMAIL_DRAFT));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
     }
 

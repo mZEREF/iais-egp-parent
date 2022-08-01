@@ -113,7 +113,8 @@
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <span data-err-ind="error_message" class="error-msg"></span>
-                                                            <c:if test="${hasNonCompliance eq 'Y' && submissionDetailsInfo.applicationStatus eq 'BSBAPST029'}">
+                                                            <%--todo: check this app status and logic--%>
+                                                            <c:if test="${hasNonCompliance eq 'Y' && submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_APPROVAL}">
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Draft NC Email? <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10 control-label">
@@ -138,7 +139,8 @@
                                                                         <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                             <option value="">Please Select</option>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
-                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_REPORT_FINALISATION}">
+                                                                            <%--todo: check this app status and logic--%>
+                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_APPROVAL}">
                                                                                 <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
                                                                                 <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}">selected="selected"</c:if>>Mark report as final</option>
                                                                             </c:if>

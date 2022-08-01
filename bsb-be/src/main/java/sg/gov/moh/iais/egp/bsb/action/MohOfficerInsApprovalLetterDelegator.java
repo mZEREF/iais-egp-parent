@@ -32,6 +32,8 @@ import java.util.List;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_APPROVAL_LETTER_REVIEW;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_APPROVAL_LETTER_DRAFT;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_APPROVAL_LETTER;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DTO_INS_LETTER;
@@ -172,8 +174,8 @@ public class MohOfficerInsApprovalLetterDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsApprovalLetterDto letterDto = (InsApprovalLetterDto) ParamUtil.getSessionAttr(request,KEY_INS_DTO_INS_LETTER);
         inspectionClient.inspectionApprovalLetterDOSubmitToAO(appId,taskId,letterDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
     }
 
@@ -183,7 +185,7 @@ public class MohOfficerInsApprovalLetterDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsApprovalLetterDto letterDto = (InsApprovalLetterDto) ParamUtil.getSessionAttr(request,KEY_INS_DTO_INS_LETTER);
         inspectionClient.inspectionApprovalLetterAOApprove(appId,taskId,letterDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW));
     }
 
     public void routeToDO(BaseProcessClass bpc) {
@@ -192,8 +194,8 @@ public class MohOfficerInsApprovalLetterDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsApprovalLetterDto letterDto = (InsApprovalLetterDto) ParamUtil.getSessionAttr(request,KEY_INS_DTO_INS_LETTER);
         inspectionClient.inspectionApprovalLetterAORouteBackToDO(appId,taskId,letterDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
     }
 

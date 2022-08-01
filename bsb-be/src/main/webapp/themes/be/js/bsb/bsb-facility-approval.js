@@ -14,7 +14,8 @@ $(function (){
     $("#processingDecision").change(function () {
         var decision = $("#processingDecision").val();
         var currentStatus = $("#currentStatus").val();
-        if (decision === 'MOHPRO007' && currentStatus === 'BSBAPST001' || decision === 'MOHPRO009' && currentStatus === 'BSBAPST002') {
+        // TODO: check these app status
+        if (decision === 'MOHPRO007' && currentStatus === 'BSBAPST030' || decision === 'BSBAPST031' && currentStatus === 'BSBAPST032') {
             $("#selectMohUserDiv").show();
             $("#rfiDiv").hide();
         } else if (decision === 'MOHPRO002') {
