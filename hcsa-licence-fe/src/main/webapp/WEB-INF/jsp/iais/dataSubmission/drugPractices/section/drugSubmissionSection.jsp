@@ -30,18 +30,20 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Nationality" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" style="width: 232px;">
-                        <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
-                                     value="${drugSubmission.nationality}" cssClass="nationalitySel" onchange="clearSelection()"/>
-                    </iais:value>
-                    <iais:value width="2" cssClass="col-md-3 patientData" display="true" style="width: 330px;" id="retrieveDataDiv">
-                        <a class="retrieveIdentification" onclick="retrieveValidateDrug()">
-                            Validate Patient
-                        </a>
-                    </iais:value>
-                </iais:row>
+                <div class="nationality">
+                    <iais:row>
+                        <iais:field width="5" value="Nationality" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7" style="width: 232px;">
+                            <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
+                                         value="${drugSubmission.nationality}" cssClass="nationalitySel" onchange="clearSelection()"/>
+                        </iais:value>
+                        <iais:value width="2" cssClass="col-md-3 patientData" display="true" style="width: 330px;" id="retrieveDataDiv">
+                            <a class="retrieveIdentification" onclick="retrieveValidateDrug()">
+                                Validate Patient
+                            </a>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row cssClass="patientData">
                     <iais:field width="5" value="Patient's Name"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="name">
@@ -410,6 +412,7 @@
     $(document).ready(function() {
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.patient');
+        $('div.nationality').hide();
         </c:if>
         ifClickValidateButton();
         $('#drugType').change(function () {
