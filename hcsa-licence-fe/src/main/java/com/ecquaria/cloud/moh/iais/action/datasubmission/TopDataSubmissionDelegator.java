@@ -606,10 +606,7 @@ public class TopDataSubmissionDelegator {
                 errMap.put("declaration", "GENERAL_ERR0006");
             }
         }
-        if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
-            return 0;
-        }else if(isRfc(request)){
+        if(isRfc(request)){
             if("next".equals(actionType)){
                 TopSuperDataSubmissionDto topOldSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(request);
                 /*TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();*/
@@ -621,7 +618,11 @@ public class TopDataSubmissionDelegator {
                                     if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
                                         if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
                                             ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                                            return 0;
+
+                                            if(!errMap.isEmpty()){
+                                                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+                                                return 0;
+                                            }
                                         }
                                     }
                                 }
@@ -630,6 +631,10 @@ public class TopDataSubmissionDelegator {
                     }
                 }
             }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
         }
         return 2 ;
     }

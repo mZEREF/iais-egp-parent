@@ -4,7 +4,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a  data-toggle="collapse" href="#vss-declaration">
+            <a class="collapsed" data-toggle="collapse" href="#vss-declaration">
                 Declarations
             </a>
         </h4>
