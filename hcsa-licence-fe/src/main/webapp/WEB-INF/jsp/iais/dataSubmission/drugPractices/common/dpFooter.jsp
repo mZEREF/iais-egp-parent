@@ -1,8 +1,8 @@
 <div class="application-tab-footer">
     <div class="col-xs-12 col-sm-4 col-md-2 text-left">
         <c:choose>
-            <c:when test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005' && dpSuperDataSubmissionDto.submissionType eq 'DP_TP002'}">
-                <a href="${goBackUrl}" style="padding-left: 5px;" <c:if test="${goBackUrl eq null || goBackUrl eq ''}">id="backBtn"</c:if> >
+            <c:when test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005' && goBackUrl ne null && goBackUrl ne ''}">
+                <a href="${goBackUrl}" style="padding-left: 5px;" >
                     <em class="fa fa-angle-left">&nbsp;</em> Back
                 </a>
             </c:when>
