@@ -27,7 +27,6 @@
         <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
     </c:when>--%>
 
-    <h3>Preview & Submit</h3>
     <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
     <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
     <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
