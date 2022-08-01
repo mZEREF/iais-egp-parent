@@ -20,7 +20,7 @@
                                                                      paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="6" value="Whether Given Counselling" info="${afterConsultation}"/>
+                        <iais:field width="6" value="Whether Given Counselling" />
                         <iais:value width="6" display="true">
                             <c:if test="${postTerminationDto.givenPostCounselling == true }">
                                 Yes
