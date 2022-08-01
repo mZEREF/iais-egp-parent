@@ -1555,14 +1555,21 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("prepare business start ..."));
 
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+
+        ParamUtil.setRequestAttr(bpc.request,"maxCount", 3);
+
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
         Map<String, AppSvcBusinessDto> premAlignBusinessMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcBusinessDto> appSvcBusinessDtos = currSvcInfoDto.getAppSvcBusinessDtoList();
+        String serviceCode = currSvcInfoDto.getServiceCode();
+        ParamUtil.setRequestAttr(bpc.request,"serviceCode", serviceCode);
         if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
+        ApplicationHelper.setTimeList(bpc.request);
+
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PREMALIGNBUSINESSMAP, premAlignBusinessMap);

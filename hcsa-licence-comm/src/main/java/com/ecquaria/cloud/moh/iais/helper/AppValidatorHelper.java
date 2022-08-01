@@ -66,7 +66,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1014,139 +1016,6 @@ public final class AppValidatorHelper {
 
     }
 
-    //event
-    private static void validateEvent(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        /*List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
-        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        if (!IaisCommonUtils.isEmpty(eventDtos)) {
-            int j = 0;
-            for (AppPremEventPeriodDto eventDto : eventDtos) {
-                String eventName = eventDto.getEventName();
-                Date startDate = eventDto.getStartDate();
-                Date endDate = eventDto.getEndDate();
-                if (!StringUtil.isEmpty(eventName) || startDate != null || endDate != null) {
-                    boolean dateIsEmpty = false;
-                    if (StringUtil.isEmpty(eventName)) {
-                        errorMap.put(prefix + "Event" + i + j, emptyErrMsg);
-                    } else if (eventName.length() > 100) {
-                        errorMap.put(prefix + "Event" + i + j, repLength("Event Name", "100"));
-                    }
-                    if (startDate == null) {
-                        errorMap.put(prefix + "EventStart" + i + j, emptyErrMsg);
-                        dateIsEmpty = true;
-                    }
-                    if (endDate == null) {
-                        errorMap.put(prefix + "EventEnd" + i + j, emptyErrMsg);
-                        dateIsEmpty = true;
-                    }
-                    if (!dateIsEmpty) {
-                        if (startDate.after(endDate)) {
-                            errorMap.put(prefix + "EventDate" + i + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
-                        }
-                    }
-                }
-                j++;
-            }
-        }*/
-    }
-
-    //ph
-    private static void validatePh(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        /*List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
-        if (!IaisCommonUtils.isEmpty(phDtos)) {
-            int j = 0;
-            for (OperationHoursReloadDto phDto : phDtos) {
-                Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", prefix + "PubHoliday");
-                errNameMap.put("start", prefix + "PhStart");
-                errNameMap.put("end", prefix + "PhEnd");
-                errNameMap.put("time", prefix + "PhTime");
-                doOperationHoursValidate(phDto, errorMap, errNameMap, i + "" + j, false);
-                j++;
-            }
-            appGrpPremisesDto.setPhDtoList(phDtos);
-        }*/
-    }
-
-    //weekly
-    private static void validateWeek(AppGrpPremisesDto appGrpPremisesDto, int i, String prefix, Map<String, String> errorMap) {
-        /*List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
-        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        if (IaisCommonUtils.isEmpty(weeklyDtos)) {
-            errorMap.put(prefix + "Weekly" + i + 0, emptyErrMsg);
-            errorMap.put(prefix + "WeeklyStart" + i + 0, emptyErrMsg);
-            errorMap.put(prefix + "WeeklyEnd" + i + 0, emptyErrMsg);
-        } else {
-            int j = 0;
-            for (OperationHoursReloadDto weeklyDto : weeklyDtos) {
-                Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", prefix + "Weekly");
-                errNameMap.put("start", prefix + "WeeklyStart");
-                errNameMap.put("end", prefix + "WeeklyEnd");
-                errNameMap.put("time", prefix + "WeeklyTime");
-                doOperationHoursValidate(weeklyDto, errorMap, errNameMap, i + "" + j, true);
-                j++;
-            }
-            appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
-        }*/
-    }
-
-    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto, Map<String, String> errorMap,
-            Map<String, String> errNameMap, String count, boolean isMandatory) {
-        /*boolean isEmpty = false;
-        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
-        String selectVal = operationHoursReloadDto.getSelectVal();
-        String startHH = operationHoursReloadDto.getStartFromHH();
-        String startMM = operationHoursReloadDto.getStartFromMM();
-        String endHH = operationHoursReloadDto.getEndToHH();
-        String endMM = operationHoursReloadDto.getEndToMM();
-        if (!isMandatory) {
-            if (StringUtil.isEmpty(selectVal) &&
-                    StringUtil.isEmpty(startHH) &&
-                    StringUtil.isEmpty(startMM) &&
-                    StringUtil.isEmpty(endHH) &&
-                    StringUtil.isEmpty(endMM)) {
-                return;
-            }
-        }
-
-
-        if (StringUtil.isEmpty(selectVal)) {
-            errorMap.put(errNameMap.get("select") + count, emptyErrMsg);
-        }
-        if (selectAllDay) {
-            if (!isEmpty) {
-                Time time = Time.valueOf(LocalTime.of(0, 0, 0));
-                operationHoursReloadDto.setStartFrom(time);
-                operationHoursReloadDto.setEndTo(time);
-            }
-        } else {
-            if (StringUtil.isEmpty(startHH) || StringUtil.isEmpty(startMM)) {
-                errorMap.put(errNameMap.get("start") + count, emptyErrMsg);
-                isEmpty = true;
-            }
-            if (StringUtil.isEmpty(endHH) || StringUtil.isEmpty(endMM)) {
-                errorMap.put(errNameMap.get("end") + count, emptyErrMsg);
-                isEmpty = true;
-            }
-
-            if (!isEmpty) {
-                LocalTime startTime = LocalTime.of(Integer.parseInt(startHH), Integer.parseInt(startMM));
-                operationHoursReloadDto.setStartFrom(Time.valueOf(startTime));
-                LocalTime endTime = LocalTime.of(Integer.parseInt(endHH), Integer.parseInt(endMM));
-                operationHoursReloadDto.setEndTo(Time.valueOf(endTime));
-                //compare
-                if (startTime.isAfter(endTime)) {
-                    errorMap.put(errNameMap.get("time") + count, MessageUtil.getMessageDesc("NEW_ERR0015"));
-                } else if (startTime.equals(endTime)) {
-                    errorMap.put(errNameMap.get("time") + count, MessageUtil.getMessageDesc("NEW_ERR0019"));
-                }
-
-            }
-        }*/
-    }
-
     public static boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto,
             HttpServletRequest request) {
         if (subLicenseeDto == null) {
@@ -1709,6 +1578,9 @@ public final class AppValidatorHelper {
             return;
         }
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
+
+            String prefix="";
+
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
                 errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
@@ -1728,6 +1600,167 @@ public final class AppValidatorHelper {
                         errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0016"));
                     }
                 }
+            }
+
+            String ContactNo = appSvcBusinessDtos.get(i).getContactNo();
+            if (StringUtil.isEmpty(ContactNo)) {
+                errorMap.put("contactNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Contact No. ", "field"));
+            } else if (!StringUtil.isEmpty(ContactNo)) {
+                if (ContactNo.length() > 8) {
+                    String general_err0041 = repLength("Contact No.", "8");
+                    errorMap.put("contactNo" + i, general_err0041);
+                }
+                if (!ContactNo.matches("^[3|6|8|9][0-9]{7}$")) {
+                    errorMap.put("contactNo" + i, "GENERAL_ERR0007");
+                }
+            }
+
+            String emailAddr = appSvcBusinessDtos.get(i).getEmailAddr();
+            if (StringUtil.isEmpty(emailAddr)) {
+                errorMap.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+            } else if (!StringUtil.isEmpty(emailAddr)) {
+                if (emailAddr.length() > 320) {
+                    String general_err0041 = repLength("Email Address", "320");
+                    errorMap.put("emailAddr" + i, general_err0041);
+                }
+                if (!ValidationUtils.isEmail(emailAddr)) {
+                    errorMap.put("emailAddr" + i, "GENERAL_ERR0014");
+                }
+            }
+
+            validateWeek(appSvcBusinessDtos.get(i),prefix,errorMap);
+            validatePh(appSvcBusinessDtos.get(i),prefix, errorMap);
+            validateEvent(appSvcBusinessDtos.get(i), prefix,errorMap);
+        }
+    }
+
+    //event
+    private static void validateEvent(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+        List<AppPremEventPeriodDto> eventDtos = appSvcBusinessDto.getEventDtoList();
+        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        if (!IaisCommonUtils.isEmpty(eventDtos)) {
+            int j = 0;
+            for (AppPremEventPeriodDto eventDto : eventDtos) {
+                String eventName = eventDto.getEventName();
+                Date startDate = eventDto.getStartDate();
+                Date endDate = eventDto.getEndDate();
+                if (!StringUtil.isEmpty(eventName) || startDate != null || endDate != null) {
+                    boolean dateIsEmpty = false;
+                    if (StringUtil.isEmpty(eventName)) {
+                        errorMap.put(prefix + "onSiteEvent" + j, emptyErrMsg);
+                    } else if (eventName.length() > 100) {
+                        errorMap.put(prefix + "onSiteEvent" + j, repLength("Event Name", "100"));
+                    }
+                    if (startDate == null) {
+                        errorMap.put(prefix + "onSiteEventStart" + j, emptyErrMsg);
+                        dateIsEmpty = true;
+                    }
+                    if (endDate == null) {
+                        errorMap.put(prefix + "onSiteEventEnd"  + j, emptyErrMsg);
+                        dateIsEmpty = true;
+                    }
+                    if (!dateIsEmpty) {
+                        if (startDate.after(endDate)) {
+                            errorMap.put(prefix + "onSiteEventDate" + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
+                        }
+                    }
+                }
+                j++;
+            }
+        }
+    }
+
+    //ph
+    private static void validatePh(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+        List<OperationHoursReloadDto> phDtos = appSvcBusinessDto.getPhDtoList();
+        if (!IaisCommonUtils.isEmpty(phDtos)) {
+            int j = 0;
+            for (OperationHoursReloadDto phDto : phDtos) {
+                Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
+                errNameMap.put("select", prefix + "onSitePubHoliday");
+                errNameMap.put("start", prefix + "onSitePhStart");
+                errNameMap.put("end", prefix + "onSitePhEnd");
+                errNameMap.put("time", prefix + "onSitePhTime");
+                doOperationHoursValidate(phDto, errorMap, errNameMap, j + "", false);
+                j++;
+            }
+        }
+    }
+
+    //weekly
+    private static void validateWeek(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+        List<OperationHoursReloadDto> weeklyDtos = appSvcBusinessDto.getWeeklyDtoList();
+        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        if (IaisCommonUtils.isEmpty(weeklyDtos)) {
+            errorMap.put(prefix + "onSiteWeekly" + 0 , emptyErrMsg);
+            errorMap.put(prefix + "onSiteWeeklyStart" + 0 , emptyErrMsg);
+            errorMap.put(prefix + "onSiteWeeklyEnd" + 0 , emptyErrMsg);
+        } else {
+            int j = 0;
+            for (OperationHoursReloadDto weeklyDto : weeklyDtos) {
+                Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
+                errNameMap.put("select", prefix + "onSiteWeekly");
+                errNameMap.put("start", prefix + "onSiteWeeklyStart");
+                errNameMap.put("end", prefix + "onSiteWeeklyEnd");
+                errNameMap.put("time", prefix + "onSiteWeeklyTime");
+                doOperationHoursValidate(weeklyDto, errorMap, errNameMap, j+"", true);
+                j++;
+            }
+        }
+    }
+
+    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto, Map<String, String> errorMap,
+                                                 Map<String, String> errNameMap, String count, boolean isMandatory) {
+        boolean isEmpty = false;
+        String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
+        String selectVal = operationHoursReloadDto.getSelectVal();
+        String startHH = operationHoursReloadDto.getStartFromHH();
+        String startMM = operationHoursReloadDto.getStartFromMM();
+        String endHH = operationHoursReloadDto.getEndToHH();
+        String endMM = operationHoursReloadDto.getEndToMM();
+        if (!isMandatory) {
+            if (StringUtil.isEmpty(selectVal) &&
+                    StringUtil.isEmpty(startHH) &&
+                    StringUtil.isEmpty(startMM) &&
+                    StringUtil.isEmpty(endHH) &&
+                    StringUtil.isEmpty(endMM)&&!selectAllDay){
+                return;
+            }
+        }
+
+
+        if (StringUtil.isEmpty(selectVal)) {
+            errorMap.put(errNameMap.get("select") + count, emptyErrMsg);
+        }
+        if (selectAllDay) {
+            if (!isEmpty) {
+                Time time = Time.valueOf(LocalTime.of(0, 0, 0));
+                operationHoursReloadDto.setStartFrom(time);
+                operationHoursReloadDto.setEndTo(time);
+            }
+        } else {
+            if (StringUtil.isEmpty(startHH) || StringUtil.isEmpty(startMM)) {
+                errorMap.put(errNameMap.get("start") + count, emptyErrMsg);
+                isEmpty = true;
+            }
+            if (StringUtil.isEmpty(endHH) || StringUtil.isEmpty(endMM)) {
+                errorMap.put(errNameMap.get("end") + count, emptyErrMsg);
+                isEmpty = true;
+            }
+
+            if (!isEmpty) {
+                LocalTime startTime = LocalTime.of(Integer.parseInt(startHH), Integer.parseInt(startMM));
+                operationHoursReloadDto.setStartFrom(Time.valueOf(startTime));
+                LocalTime endTime = LocalTime.of(Integer.parseInt(endHH), Integer.parseInt(endMM));
+                operationHoursReloadDto.setEndTo(Time.valueOf(endTime));
+                //compare
+                if (startTime.isAfter(endTime)) {
+                    errorMap.put(errNameMap.get("time") + count, MessageUtil.getMessageDesc("NEW_ERR0015"));
+                } else if (startTime.equals(endTime)) {
+                    errorMap.put(errNameMap.get("time") + count, MessageUtil.getMessageDesc("NEW_ERR0019"));
+                }
+
             }
         }
     }
