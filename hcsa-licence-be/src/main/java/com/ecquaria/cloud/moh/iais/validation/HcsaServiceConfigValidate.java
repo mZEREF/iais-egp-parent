@@ -1,10 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -80,12 +83,56 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                 }
             }
        // }
+        //for routingStages
+        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+            Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
+            for(String key : hcsaConfigPageDtoMap.keySet()){
+                List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
+                Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
+                if(HcsaConfigPageDtoError.size() > 0){
+                    result.put(key,"Error");
+                    result.putAll(HcsaConfigPageDtoError);
+                }
+            }
 
-
-
+        }
+        result.put("APTY002","error");
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));
         return result;
     }
+
+    private Map<String,String> validateHcsaConfigPageDto(List<HcsaConfigPageDto> hcsaConfigPageDtos,String serviceType ){
+        Map<String,String> result = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(hcsaConfigPageDtos)){
+            for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos ){
+                ValidationResult validationResultHcsaConfigPageDto = WebValidationHelper.validateProperty(hcsaConfigPageDto,serviceType);
+                if(validationResultHcsaConfigPageDto.isHasErrors()){
+                    Map<String,String>  validationResultHcsaConfigPageDtoMap = validationResultHcsaConfigPageDto.retrieveAll();
+                    for(String key : validationResultHcsaConfigPageDtoMap.keySet()){
+                        result.put(key+hcsaConfigPageDto.getStageCode()+hcsaConfigPageDto.getAppType(),
+                                validationResultHcsaConfigPageDtoMap.get(key));
+                    }
+                }
+                // for Ins HcsaSvcSpeRoutingSchemeDto
+                List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
+                if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
+                    for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto : hcsaSvcSpeRoutingSchemeDtos ) {
+                        ValidationResult validationResultHcsaSvcSpeRoutingSchemeDto = WebValidationHelper.validateProperty(hcsaSvcSpeRoutingSchemeDto, serviceType);
+                        if (validationResultHcsaSvcSpeRoutingSchemeDto.isHasErrors()) {
+                            Map<String, String> validationResultHcsaSvcSpeRoutingSchemeDtoMap = validationResultHcsaSvcSpeRoutingSchemeDto.retrieveAll();
+                            for (String key : validationResultHcsaSvcSpeRoutingSchemeDtoMap.keySet()) {
+                                result.put(key + hcsaConfigPageDto.getStageCode() + hcsaConfigPageDto.getAppType()+hcsaSvcSpeRoutingSchemeDto.getInsOder(),
+                                        validationResultHcsaSvcSpeRoutingSchemeDtoMap.get(key));
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return result;
+    }
+
 
     private int getCountForTitle(String docTitle,List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos){
         int result = 0;

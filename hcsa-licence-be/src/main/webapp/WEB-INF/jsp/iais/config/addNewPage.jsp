@@ -922,7 +922,7 @@
 
         <div id = "routingStages">
         <c:set var="index" value="0"></c:set>
-        <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
+        <c:forEach items="${hcsaServiceConfigDto.hcsaConfigPageDtoMap}" var="routingStages" varStatus="sta">
           <div class="form-group" style="display: none" id="${routingStages.key}" >
             <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
                 <table aria-describedby="" border="1px" style="text-align: center" valign="middle">
@@ -939,15 +939,9 @@
                       <td >${routingStage.stageName}</td>
                       <td>
                         <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
-                         <%-- <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
-                            <option value="">Please Select</option>
-                            <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if>>Mandatory</option>
-                            <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
-                          </select>--%>
-                            <iais:select name="isMandatory${routingStage.stageCode}${routingStages.key}" options="selectOptions" firstOption="Please Select"/>
-                          <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
+                            <iais:select name="isMandatory${routingStage.stageCode}${routingStages.key}"
+                                         options="selectOptions" firstOption="Please Select" value="${routingStage.isMandatory}"/>
                           <br>
-
                           <c:if test="${routingStage.stageCode=='AO1'|| routingStage.stageCode=='AO2'}">
                             <input type="hidden" value="${routingStage.canApprove}" name="canApprove${routingStage.stageCode}${routingStages.key}">
                             <input type="checkbox"  <c:if test="${routingStage.canApprove=='1'}">checked</c:if> onclick="canApprove(this)" /><span>&nbsp;Can Approve ?</span>
@@ -955,68 +949,27 @@
                         </div>
 
                         <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
-                          <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
-                            <option value="" >Please Select</option>
-                            <option value="common"
-                                    <c:choose>
-                                      <c:when test="${routingStage.routingSchemeName=='common'}">
-                                        selected="selected"
-                                      </c:when>
-                                    </c:choose>
-                            >Common Pool</option>
-                            <option value="round"
-                                    <c:choose>
-                                      <c:when test="${routingStage.routingSchemeName=='round'}">
-                                        selected="selected"
-                                      </c:when>
-                                    </c:choose>
-
-                            >Round Robin</option>
-                            <option value="assign"
-                                    <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
-                            >Supervisor Assign</option>
-                         </select>
+                          <iais:select name="routingSchemeName${routingStage.stageCode}${routingStages.key}"
+                                       options="routingStagesOption" firstOption="Please Select" value="${routingStage.routingSchemeName}" />
 
                           <c:if test="${routingStage.stageCode=='INS'}">
                             <p>Inspector</p>
                           </c:if>
                           <c:if test="${routingStage.stageCode=='INS'}">
                             <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
-                              <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
-                                <option value="" >Please Select</option>
-                                <option value="common"
-                                        <c:choose>
-                                          <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
-                                            selected="selected"
-                                          </c:when>
-                                        </c:choose>
-                                >Common Pool</option>
-                                <option value="round"
-                                        <c:choose>
-                                          <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
-                                            selected="selected"
-                                          </c:when>
-                                        </c:choose>
-                                >Round Robin</option>
-                                <option value="assign"
-                                        <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
-                                >Supervisor Assign</option>
-                              </select>
-                              <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
-                                <p>Inspector AO1</p>
-                              </c:if>
-                              <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
-                                <p>Inspector Lead</p>
-                              </c:if>
+                              <iais:select name="schemeType${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"
+                                           options="routingStagesOption" firstOption="Please Select" value="${hcsaSvcSpeRoutingSchemeDto.schemeType}" />
+
+                              <p>${hcsaSvcSpeRoutingSchemeDto.getInsOderName()}</p>
                             </c:forEach>
                           </c:if>
-                          <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
+                         <%-- <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>--%>
                         </div>
                       </td>
 
                       <td>
                         <div class="col-xs-12 col-md-12" style="text-align:left">
-                          <input style="margin: 0px 0px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+                          <input style="margin: 0px 0px" type="text" maxlength="2" name="manhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
                           <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
                         </div>
                       </td>

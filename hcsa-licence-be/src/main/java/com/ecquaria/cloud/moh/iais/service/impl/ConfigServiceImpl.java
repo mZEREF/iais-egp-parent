@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -31,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -266,6 +266,13 @@ public class ConfigServiceImpl implements ConfigService {
         selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
 
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
+    }
+
+    @Override
+    public Map<String, List<HcsaConfigPageDto>> getHcsaConfigPageDto() {
+        Map<String, List<HcsaConfigPageDto>> result = this.getEmptyHcsaConfigPageDto();
+        return result;
+       // return  null;
     }
 
     @Override
@@ -1195,6 +1202,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         List<WorkingGroupDto> workingGroup = getWorkingGroup();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
+
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
             HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
             hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
@@ -1299,6 +1307,33 @@ public class ConfigServiceImpl implements ConfigService {
         }
         return list;
 
+    }
+
+    private  Map<String, List<HcsaConfigPageDto>>  getEmptyHcsaConfigPageDto(){
+        Map<String, List<HcsaConfigPageDto>> map = IaisCommonUtils.genNewHashMap();
+        List<String> types = getType();
+        for(String type:types){
+            List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,APPEAL);
+            }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+                hcsaConfigPageDtos=  getWorkGrop(type,NEW_APPLICATION);
+            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
+                hcsaConfigPageDtos = getWorkGrop(type, REQUEST_FOR_CHANGE);
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+                hcsaConfigPageDtos=  getWorkGrop(type,RENEW);
+            }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,CESSATION);
+            }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,SUSPENSION);
+            }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
+            }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,WITHDRAWAL);
+            }
+            map.put(type,hcsaConfigPageDtos);
+        }
+        return map;
     }
 
     private  Map<String, List<HcsaConfigPageDto>>  getTables(HttpServletRequest request){

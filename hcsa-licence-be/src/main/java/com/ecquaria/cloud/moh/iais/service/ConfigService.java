@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
@@ -27,6 +28,8 @@ public interface ConfigService {
     void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
 
     void addNewService(HttpServletRequest request);
+
+    Map<String, List<HcsaConfigPageDto>>  getHcsaConfigPageDto();
 
     void update(HttpServletRequest request,HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
 
