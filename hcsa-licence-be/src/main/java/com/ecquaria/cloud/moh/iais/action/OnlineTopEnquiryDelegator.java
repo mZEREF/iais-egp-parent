@@ -222,6 +222,7 @@ public class OnlineTopEnquiryDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto=topInfo.getTerminationOfPregnancyDto();
         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
         if(terminationDto!=null){
+
             if(StringUtil.isNotEmpty(terminationDto.getTopPlace())&&premisesMap.containsKey(terminationDto.getTopPlace())){
                 terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
             }
@@ -243,6 +244,39 @@ public class OnlineTopEnquiryDelegator {
             if(StringUtil.isNotEmpty(preDto.getCounsellingPlace())&&premisesMap.containsKey(preDto.getCounsellingPlace())){
                 preDto.setCounsellingPlace(premisesMap.get(preDto.getCounsellingPlace()).getPremiseLabel());
             }
+            if(StringUtil.isNotEmpty(preDto.getCounsellingDate())){
+                try {
+                    if(terminationDto!=null&&StringUtil.isNotEmpty(terminationDto.getTopDate())){
+                        if(StringUtil.isNotEmpty(preDto.getCounsellingResult())&&!preDto.getCounsellingResult().equals("TOPPCR003")){
+                            if(preDto.getCounsellingResult().equals("TOPPCR001")){
+                                if(StringUtil.isNotEmpty(preDto.getSecCounsellingResult())&&!preDto.getSecCounsellingResult().equals("TOPSP003")&&!preDto.getSecCounsellingResult().equals("TOPSP001")){
+                                    if(Formatter.compareDateByDay(terminationDto.getTopDate(),preDto.getCounsellingDate())<1){
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                    }else {
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                    }
+                                }
+                                if(preDto.getPatientAppointment().equals("0")){
+                                    if(Formatter.compareDateByDay(terminationDto.getTopDate(),preDto.getCounsellingDate())<1){
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                    }else {
+                                        ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                    }
+                                }
+                            }else {
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preDto.getCounsellingDate())<1){
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
+                                }else {
+                                    ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
+                                }
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    log.error(StringUtil.changeForLog("CounsellingDate is error"));
+                }
+            }
+
         }
         if(!StringUtil.isEmpty(terminationDto)){
             if(!StringUtil.isEmpty(terminationDto)&&StringUtil.isNotEmpty(terminationDto.getDoctorInformationId())){

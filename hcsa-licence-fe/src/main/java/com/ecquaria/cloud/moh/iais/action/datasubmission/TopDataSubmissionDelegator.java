@@ -1046,21 +1046,21 @@ public class TopDataSubmissionDelegator {
                     if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
                             if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
-                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                             if(preTerminationDto.getPatientAppointment().equals("0")){
-                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                         }else {
-                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                 ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                             }else {
                                 ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
@@ -1298,21 +1298,21 @@ public class TopDataSubmissionDelegator {
                     if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
                             if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
-                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                             if(preTerminationDto.getPatientAppointment().equals("0")){
-                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                                if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                                 }else {
                                     ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);
                                 }
                             }
                         }else {
-                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<2){
+                            if(Formatter.compareDateByDay(terminationDto.getTopDate(),preTerminationDto.getCounsellingDate())<1){
                                 ParamUtil.setSessionAttr(request, "topDates", Boolean.TRUE);
                             }else {
                                 ParamUtil.setSessionAttr(request, "topDates", Boolean.FALSE);

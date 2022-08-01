@@ -105,9 +105,9 @@
                             <c:when test="${isLate}">
                                 <iais:field width="5" value="Date of Counselling" info="${toolMsg}"/>
                             </c:when>
-                            <c:when test="${isDS_MSG030}">
-                                <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
-                            </c:when>
+<%--                            <c:when test="${isDS_MSG030}">--%>
+<%--                                <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>--%>
+<%--                            </c:when>--%>
                             <c:otherwise>
                                 <iais:field width="5" value="Date of Counselling"/>
                             </c:otherwise>
