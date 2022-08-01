@@ -1385,6 +1385,9 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, postTerminationDto);
+        if(StringUtil.isNotEmpty(postTerminationDto.getCounsellorIdNo())){
+            postTerminationDto.setCounsellorIdNo(postTerminationDto.getCounsellorIdNo().toUpperCase());
+        }
         String TopPlace=ParamUtil.getString(request,"TopPlace");
         postTerminationDto.setCounsellingPlace(TopPlace);
         terminationOfPregnancyDto.setPostTerminationDto(postTerminationDto);
