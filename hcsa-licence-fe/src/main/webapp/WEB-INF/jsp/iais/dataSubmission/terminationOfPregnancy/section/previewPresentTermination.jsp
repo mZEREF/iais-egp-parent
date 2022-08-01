@@ -126,8 +126,7 @@
                     <div
                             <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="5" value="Place of Surgical Termination of Pregnancy"
-                                        info="${MessageUtil.getMessageDesc('DS_MSG029')}"/>
+                            <iais:field width="5" value="Place of Surgical Termination of Pregnancy"/>
                             <iais:value width="7" display="true" cssClass="col-md-7">
                                 <c:if test="${terminationDto.performedOwn == true}">${topSuperDataSubmissionDto.premisesDto.premiseLabel}</c:if>
                                 <c:if test="${terminationDto.performedOwn == false}"><iais:optionText
