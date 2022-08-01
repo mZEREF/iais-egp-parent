@@ -450,6 +450,7 @@ public class TopDataSubmissionDelegator {
             currentConfig.setStatus(status);
             DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, currentConfig, bpc.request);
         }
+        topDataSubmissionService.displayToolTipJudgement(bpc.request);
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
 

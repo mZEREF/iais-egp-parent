@@ -876,13 +876,13 @@
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
-                        $('#ELIS_SERVICE').modal('show');
+                        // $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                         console.log("5");
                     } else if (isEmpty(data.selections) && data.selection.hasException == false) {
                         $('#doctorInformationPE').val(false);
-                        $('#PRS_SERVICE').modal('show');
+                        // $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
                         console.log("6");

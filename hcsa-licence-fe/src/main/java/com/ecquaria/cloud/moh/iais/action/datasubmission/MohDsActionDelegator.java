@@ -178,6 +178,7 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
+            dpDataSubmissionService.displayToolTipJudgement(bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
             ldtSuperDataSubmissionDto.setAppType(ldtSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
@@ -199,8 +200,8 @@ public class MohDsActionDelegator {
                 sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
                 sexualSterilizationDto.setDoctorInformations("true");
             }
-
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+            vssDataSubmissionService.displayToolTipJudgement(bpc.request);
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
@@ -235,6 +236,7 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
+            topDataSubmissionService.displayToolTipJudgement(bpc.request);
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }

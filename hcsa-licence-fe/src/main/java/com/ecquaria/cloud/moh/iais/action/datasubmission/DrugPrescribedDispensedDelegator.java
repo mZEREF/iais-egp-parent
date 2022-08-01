@@ -394,6 +394,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
+        dpDataSubmissionService.displayToolTipJudgement(request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }
 

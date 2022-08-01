@@ -322,7 +322,7 @@ public class VssDataSubmissionDelegator {
             currentConfig.setStatus(status);
             DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
         }
-
+        vssDataSubmissionService.displayToolTipJudgement(request);
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.ACTION_STATUS, status);
         ParamUtil.setRequestAttr(request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);

@@ -216,6 +216,9 @@
                                                                    paramValues="counsellor" escape="false"/></c:set>
                         </c:if>
                     </c:if>
+                    <c:if test="${'N' eq terminationDto.toolTipShow}">
+                        <c:set var="toolMsgRegn"/>
+                    </c:if>
                     <iais:row>
                         <iais:field width="5" value="Doctor's Professional Regn / MCR No." info="${toolMsgRegn}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">

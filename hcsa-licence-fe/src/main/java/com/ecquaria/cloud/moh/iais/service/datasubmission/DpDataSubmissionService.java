@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribed
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +49,7 @@ public interface DpDataSubmissionService {
     DrugPrescribedDispensedDto getDrugMedicationDtoBySubmissionNo(String submissionNo);
 
     List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo,String rfcSubmissionNo);
+
+    void displayToolTipJudgement(HttpServletRequest request);
 
 }

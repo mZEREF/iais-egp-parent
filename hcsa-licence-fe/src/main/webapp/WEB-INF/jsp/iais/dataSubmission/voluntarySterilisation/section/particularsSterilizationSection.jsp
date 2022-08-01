@@ -406,12 +406,12 @@
                     if ('-1' == data.selection.statusCode || '-2' == data.selection.statusCode) {
                         clearPrsInfoElis();
                         $('#doctorInformationPE').val(true);
-                        $('#ELIS_SERVICE').modal('show');
+                        // $('#ELIS_SERVICE').modal('show');
                         $('#doctorInformationElis').show();
                         $('#doctorInformationPrs').hide();
                         console.log("5");
                     }else if(isEmpty(data.selections) && data.selection.hasException==false){
-                        $('#PRS_SERVICE').modal('show');
+                        // $('#PRS_SERVICE').modal('show');
                         $('#doctorInformationPE').val(false);
                         $('#doctorInformationElis').hide();
                         $('#doctorInformationPrs').show();
