@@ -338,6 +338,18 @@ public class TopDataSubmissionDelegator {
                 topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             }
+        }else
+        if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
+
+            for (DsConfig cfg:configList
+            ) {
+                if(!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PATIENT)){
+                    cfg.setStatus(1);
+                    DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, cfg, bpc.request);
+                }
+            }
+
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
@@ -621,11 +633,8 @@ public class TopDataSubmissionDelegator {
                                     if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
                                         if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
                                             ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                                            errMap.put("rfcNOchange","rfcNOchange");
 
-                                            if(!errMap.isEmpty()){
-                                                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
-                                                return 0;
-                                            }
                                         }
                                     }
                                 }
