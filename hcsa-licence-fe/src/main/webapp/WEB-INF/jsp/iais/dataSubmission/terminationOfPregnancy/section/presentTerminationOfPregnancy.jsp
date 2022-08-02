@@ -692,7 +692,6 @@
             $('#takenOwnLabel').show();
         } else {
             $('#takenOwnLabel').hide();
-            $('#otherTopDrugPlaces').hide();
             $('#otherTopDrugPlaceText').val(null);
             fillValue($('#otherTopDrugPlace'), null);
         }
@@ -739,7 +738,6 @@
             $('#takenOwnYes').prop('checked',true);
             $('#topDrugPlace').show();
             $('#topDrugPlaces').hide();
-            $('#otherTopDrugPlaces').hide();
             fillValue($('#otherTopDrugPlace'), null);
             $('#otherTopDrugPlaceText').val(null);
             $('#drugTypes').show();
@@ -801,7 +799,6 @@
         if ($('#takenOwnYes').prop('checked')) {
             $('#topDrugPlace').show();
             $('#topDrugPlaces').hide();
-            $('#otherTopDrugPlaces').hide();
             fillValue($('#otherTopDrugPlace'), null);
             $('#otherTopDrugPlaceText').val(null);
 
@@ -809,7 +806,6 @@
         if ($('#takenOwnNo').prop('checked')) {
             $('#topDrugPlaces').show();
             $('#topDrugPlace').hide();
-            $('#otherTopDrugPlaces').hide();
         }
     }
 
