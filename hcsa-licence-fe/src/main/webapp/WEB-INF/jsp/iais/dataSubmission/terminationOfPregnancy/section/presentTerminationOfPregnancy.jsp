@@ -322,8 +322,8 @@
             </iais:row>
         </div>
         <iais:row>
-            <iais:value width="7" cssClass="col-md-7">
-                <strong>Doctor who Performed the Termination of Pregnancy</strong>
+            <iais:value width="10" cssClass="col-md-10">
+                <strong style="font-size: 2.5rem;">Doctor who Performed the Termination of Pregnancy</strong>
             </iais:value>
         </iais:row>
         <iais:row>
