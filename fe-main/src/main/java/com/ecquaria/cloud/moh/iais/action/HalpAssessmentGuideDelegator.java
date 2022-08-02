@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -71,7 +72,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -2163,10 +2172,25 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void submitDateMohStep(BaseProcessClass bpc) throws IOException {
+        String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         StringBuilder url = new StringBuilder();
+        switch (additional){
+            case DataSubmissionConsts.DS_AR:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","AR");break;
+            case DataSubmissionConsts.DS_DRP:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","DP");break;
+            case DataSubmissionConsts.DS_LDT:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","LDT");break;
+            case DataSubmissionConsts.DS_TOP:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","TP"); break;
+            case DataSubmissionConsts.DS_VSS:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","VS");break;
+            default:
+                ParamUtil.setSessionAttr(bpc.request,"DsModleSelect","LDT");
+        }
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLDTDataSubmission").append("?selfAssessmentGuide=true");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohDataSubmission/PrepareCompliance").append("?selfAssessmentGuide=true");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

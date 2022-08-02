@@ -2,12 +2,25 @@
     <c:if test="${privilege.id == 'HALP_HCSA_INBOX'}">
         <c:set var="hcsaPrivilege" value="1"/>
     </c:if>
+
+    <c:if test="${privilege.id == 'HALP_MOH_DS_ART_CRE'}">
+        <c:set var="dataSubARTPrivilege" value="1"/>
+    </c:if>
+    <c:if test="${privilege.id == 'HALP_MOH_DS_DP_CRE'}">
+        <c:set var="dataSubDPPrivilege" value="1"/>
+    </c:if>
+    <c:if test="${privilege.id == 'HALP_MOH_DS_TOP_CRE'}">
+        <c:set var="dataSubTOPPrivilege" value="1"/>
+    </c:if>
     <c:if test="${privilege.id == 'HALP_MOH_DS_LDT_CRE'}">
         <c:set var="dataSubLDTPrivilege" value="1"/>
     </c:if>
+    <c:if test="${privilege.id == 'HALP_MOH_DS_VSS_CRE'}">
+        <c:set var="dataSubVSSPrivilege" value="1"/>
+    </c:if>
     <c:set var="adminPersonnelPrivilege" value="1"/>
 </c:forEach>
-<c:set var="selfAssessmentControl" value="${(hcsaPrivilege == 1 || dataSubLDTPrivilege == 1 || adminPersonnelPrivilege ==1) ? 1 : 0}"/>
+<c:set var="selfAssessmentControl" value="${(hcsaPrivilege == 1 || dataSubARTPrivilege == 1 ||dataSubDPPrivilege == 1 ||dataSubTOPPrivilege == 1 ||dataSubLDTPrivilege == 1 ||dataSubVSSPrivilege == 1 || adminPersonnelPrivilege ==1) ? 1 : 0}"/>
 <c:if test="${selfAssessmentControl == 1}">
 <div class="self-assessment-item completed">
     <div class="amendLicence">
@@ -169,7 +182,7 @@
 <%--                    >i</a></div>--%>
             </div>
             </c:if>
-            <c:if test="${dataSubLDTPrivilege == 1}">
+            <c:if test="${dataSubARTPrivilege == 1 ||dataSubDPPrivilege == 1 ||dataSubTOPPrivilege == 1 ||dataSubLDTPrivilege == 1 ||dataSubVSSPrivilege == 1 }">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="submitDataMoh"
                        type="radio" name="selfAssessmentType"

@@ -210,10 +210,25 @@
     });
 
     function submitDataMoh(){
-        if ($('#submitDateMohLab').is(':checked')){
+        if ($('#submitDateMohArt').is(':checked')){
+            $("input[name='crud_action_additional']").val('ART');
             guideSubmit("submieDateMoh","second");
-        }else{
-            console.log("checkbox is not check")
+        }
+        if ($('#submitDateMohDrp').is(':checked')){
+            $("input[name='crud_action_additional']").val('DRP');
+            guideSubmit("submieDateMoh","second");
+        }
+        if ($('#submitDateMohLab').is(':checked')){
+            $("input[name='crud_action_additional']").val('LDT');
+            guideSubmit("submieDateMoh","second");
+        }
+        if ($('#submitDateMohTop').is(':checked')){
+            $("input[name='crud_action_additional']").val('TOP');
+            guideSubmit("submieDateMoh","second");
+        }
+        if ($('#submitDateMohVss').is(':checked')){
+            $("input[name='crud_action_additional']").val('VSS');
+            guideSubmit("submieDateMoh","second");
         }
     }
 </script>
