@@ -145,7 +145,7 @@ public interface ConfigCommClient {
     @GetMapping(value = "/iais-hcsa-service/service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> serviceCorrelation();
 
-    @GetMapping(value = "/service-correlations/{baseSvcId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-hcsa-service/service-correlations/{baseSvcId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getSvcSpeCorrelationsByBaseSvcId(
             @PathVariable("baseSvcId") String baseSvcId, @RequestParam(value = "type", required = false) String... type);
 
