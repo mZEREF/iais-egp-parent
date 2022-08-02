@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -25,14 +26,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,14 +55,6 @@ public class ConfigCommServiceImpl implements ConfigCommService {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
-
-    @Override
-    public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
-        log.info(StringUtil.changeForLog("Service Id: " + serviceId));
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("svcId", serviceId);
-        return configCommClient.listSubCorrelation(serviceId).getEntity();
-    }
 
     @Override
     public HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName) {
@@ -100,9 +94,9 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         }
         List<HcsaServiceDto> result = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> hcsaServiceDtos = getHcsaServiceByNames(names);
-        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                if(AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())){
+        if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                if (AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())) {
                     result.add(hcsaServiceDto);
                 }
             }
@@ -128,6 +122,15 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     @Override
     public List<HcsaServiceCorrelationDto> getActiveSvcCorrelation() {
         return configCommClient.getActiveSvcCorrelation().getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, String... type) {
+        log.info(StringUtil.changeForLog("Base Service Id: " + baseSvcId + " - type: " + Arrays.toString(type)));
+        if (StringUtil.isEmpty(baseSvcId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return configCommClient.getSvcSpeCorrelationsByBaseSvcId(baseSvcId, type).getEntity();
     }
 
     @Override
@@ -260,7 +263,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         RecommendInspectionDto recommendInspectionDto = new RecommendInspectionDto();
         List<RiskAcceptiionDto> riskAcceptiionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
             riskAcceptiionDto.setSvcType(appSvcRelatedInfoDto.getServiceType());
@@ -298,10 +301,10 @@ public class ConfigCommServiceImpl implements ConfigCommService {
 
     @Override
     public List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String serviceId, String psnType) {
-        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
-        return  configCommClient.getServiceType(serviceId,psnType).getEntity();
+        return configCommClient.getServiceType(serviceId, psnType).getEntity();
     }
 
     @Override
@@ -326,7 +329,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         }
         PostCodeDto postCodeDto = null;
         if (ApplicationHelper.isFrontend()) {
-            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("feEicGatewayClient","getPostalCode", postalCode);
+            postCodeDto = IaisEGPHelper.invokeFeignRespMethod("feEicGatewayClient", "getPostalCode", postalCode);
         } else if (ApplicationHelper.isBackend()) {
             postCodeDto = systemAdminClient.getPostCodeByCode(postalCode).getEntity();
         }

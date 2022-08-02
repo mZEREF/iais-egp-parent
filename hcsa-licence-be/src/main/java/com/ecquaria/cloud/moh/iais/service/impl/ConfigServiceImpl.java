@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
@@ -87,6 +88,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private ConfigCommClient configCommClient;
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
@@ -1480,7 +1483,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaSvcDocConfigDto> comDocConfigDtos =  hcsaConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
         request.setAttribute("comDocSize",comDocConfigDtos.size());
         request.setAttribute("comDoc",comDocConfigDtos);
-        List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
+        List<HcsaSvcSubtypeOrSubsumedDto> entity = configCommClient.listSubtype(id).getEntity();
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = IaisCommonUtils.genNewArrayList();
         ids.add(id);

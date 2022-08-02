@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
@@ -190,6 +191,11 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubtype(String serviceId) {
+        return IaisEGPHelper.getFeignResponseEntity(serviceId);
+    }
+
+    @Override
     public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(String serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -222,7 +228,8 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
-    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module, String subTypeName) {
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module,
+            String subTypeName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -246,6 +253,12 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId,
+            String... type) {
+        return IaisEGPHelper.getFeignResponseEntity(baseSvcId, type);
+    }
+
+    @Override
     public FeignResponseEntity<ChecklistItemDto> getChklItemById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -254,7 +267,8 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
-    public FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(SearchParam searchParam) {
+    public FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(
+            SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -436,4 +450,5 @@ public class ConfigCommClientFallback implements ConfigCommClient {
         entity.setHeaders(headers);
         return entity;
     }
+
 }

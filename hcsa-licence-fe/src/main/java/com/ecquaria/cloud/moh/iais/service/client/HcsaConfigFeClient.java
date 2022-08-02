@@ -332,9 +332,6 @@ public interface HcsaConfigFeClient {
     @PutMapping(value = "/hcsa-config/service-cannot-use")
     FeignResponseEntity updateService(@RequestParam("serviceId") String serviceId);
 
-    @GetMapping(value = "/iais-hcsa-service/subtype/{svcId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubtype(@PathVariable(name = "svcId") String serviceId);
-
     @GetMapping(value = "/hcsa-config/hcsa-svc-doc-config-service-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfigDto(@RequestParam("serviceId") String serviceId);
 

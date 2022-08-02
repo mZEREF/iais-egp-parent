@@ -165,15 +165,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
-        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("svcId", serviceId);
-
-        return configCommClient.listSubCorrelation(serviceId).getEntity();
-    }
-
-
-    @Override
     public List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType) {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("serviceId", serviceId);

@@ -1957,7 +1957,7 @@ public final class ApplicationHelper {
         return result;
     }
 
-    public static Map<String, HcsaSvcSubtypeOrSubsumedDto> getScopeAlignMap(String svcId) {
+    /*public static Map<String, HcsaSvcSubtypeOrSubsumedDto> getScopeAlignMap(String svcId) {
         return getScopeAlignMap(svcId, null);
     }
 
@@ -1975,7 +1975,7 @@ public final class ApplicationHelper {
         }
         recursingSvcScope(svcScopeDtoList, svcScopeAlignMap);
         return svcScopeAlignMap;
-    }
+    }*/
 
     //key is config id
     public static void recursingSvcScope(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,

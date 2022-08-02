@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.service.callback.ConfigCommClientFallback;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -114,6 +115,9 @@ public interface ConfigCommClient {
     @GetMapping(path = "/iais-hcsa-checklist/config/{ids}/list")
     FeignResponseEntity<List<ChecklistConfigDto>> getChecklistConfigByIds(@PathVariable(value = "ids")  List<String> ids);
 
+    @GetMapping(value = "/iais-hcsa-service/subtype/{svcId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubtype(@PathVariable(name = "svcId") String serviceId);
+
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);
 
@@ -140,6 +144,10 @@ public interface ConfigCommClient {
 
     @GetMapping(value = "/iais-hcsa-service/service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> serviceCorrelation();
+
+    @GetMapping(value = "/service-correlations/{baseSvcId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getSvcSpeCorrelationsByBaseSvcId(
+            @PathVariable("baseSvcId") String baseSvcId, @RequestParam(value = "type", required = false) String... type);
 
     @GetMapping(path = "/iais-hcsa-checklist/item/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistItemDto> getChklItemById(@PathVariable(value = "id") String id);

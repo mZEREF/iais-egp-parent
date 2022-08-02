@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 
@@ -22,8 +23,6 @@ import java.util.Set;
  * @Auther chenlei on 5/3/2022.
  */
 public interface ConfigCommService {
-
-    List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);
 
     HcsaServiceDto getActiveHcsaServiceDtoByName(String svcName);
 
@@ -40,6 +39,8 @@ public interface ConfigCommService {
     List<HcsaServiceDto> allHcsaService();
 
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
+
+    List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, String... type);
 
     String getServiceNameById(String svcId);
 

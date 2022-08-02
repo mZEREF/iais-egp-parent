@@ -32,7 +32,7 @@ public interface ServiceConfigService {
     String getSvcIdBySvcCode(String svcCode);
     String saveFileToRepo(MultipartFile file) throws IOException;
     List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId);
-    List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);
+
     List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType);
     byte[] downloadFile(String fileRepoId);
     void updatePaymentStatus(ApplicationGroupDto appGrp);
