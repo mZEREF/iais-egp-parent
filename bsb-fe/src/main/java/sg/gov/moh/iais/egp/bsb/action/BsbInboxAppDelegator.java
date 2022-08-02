@@ -24,6 +24,9 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APPROVED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_OTHERS_SEARCH_STATUS;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PENDING_MOH;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_STATUS_OPS;
@@ -94,8 +97,12 @@ public class BsbInboxAppDelegator {
 
         List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
         ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
-        // TODO: liran update app status option
-        List<SelectOption> appStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
+        // inbox search app status are made up of PENDING_MOH, APPROVED, INBOX_APP_OTHERS_SEARCH_STATUS
+        List<SelectOption> appStatusOps = new ArrayList<>(100);
+        appStatusOps.add(new SelectOption(PENDING_MOH, PENDING_MOH));
+        appStatusOps.add(new SelectOption(APPROVED, APPROVED));
+        List<SelectOption> othersAppStatusList = MasterCodeUtil.retrieveOptionsByCodes(INBOX_APP_OTHERS_SEARCH_STATUS.toArray(new String[0]));
+        appStatusOps.addAll(othersAppStatusList);
         ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, appStatusOps);
         List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, appTypeOps);

@@ -124,6 +124,15 @@ public class MasterCodeConstants {
     public static final Set<String> UNAVAILABLE_APP_STATUS;
     public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
+    // not an actual app status
+    public static final String PENDING_MOH            = "Pending MOH";
+    public static final String APPROVED               = "Approved";
+
+    public static final Set<String> PENDING_MOH_APP_STATUS;
+    public static final Set<String> APPROVED_APP_STATUS;
+    // no "removed", "Pending MOH", "Approved"
+    public static final Set<String> INBOX_APP_OTHERS_SEARCH_STATUS;
+
     // TODO: check these app status
     static {
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
@@ -170,6 +179,61 @@ public class MasterCodeConstants {
         Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
         rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
         APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
+
+        Set<String> pendingMohAppStatus = Sets.newHashSetWithExpectedSize(27);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_CLARIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_SCREENING);
+        pendingMohAppStatus.add(APP_STATUS_PEND_HM_DECISION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_RECOMMENDATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_APPROVAL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_HM_APPROVAL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_VERIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
+        pendingMohAppStatus.add(APP_STATUS_PEND_APPOINTMENT_CONFIRMATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT_REVISION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_REPORT_APPROVAL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_REPORT_APPROVAL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_HM_REPORT_APPROVAL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL);
+        pendingMohAppStatus.add(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_RECTIFICATION_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_RECTIFICATION_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AFC_SELECTION_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_DO_REPORT_REVIEW);
+        pendingMohAppStatus.add(APP_STATUS_PEND_AO_REPORT_REVIEW);
+        PENDING_MOH_APP_STATUS = Collections.unmodifiableSet(pendingMohAppStatus);
+
+        Set<String> approvedAppStatus = Sets.newHashSetWithExpectedSize(3);
+        approvedAppStatus.add(APP_STATUS_APPROVED);
+        approvedAppStatus.add(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT);
+        approvedAppStatus.add(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW);
+        APPROVED_APP_STATUS = Collections.unmodifiableSet(approvedAppStatus);
+
+        Set<String> inboxAppSearchStatus = Sets.newHashSetWithExpectedSize(19);
+        inboxAppSearchStatus.add(APP_STATUS_DRAFT);
+        inboxAppSearchStatus.add(APP_STATUS_ACCEPTED);
+        inboxAppSearchStatus.add(APP_STATUS_PARTIAL_ACCEPTANCE);
+        inboxAppSearchStatus.add(APP_STATUS_VERIFIED);
+        inboxAppSearchStatus.add(APP_STATUS_WITHDRAWN);
+        inboxAppSearchStatus.add(APP_STATUS_REJECTED);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_APPLICANT_CLARIFICATION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_APPLICANT_INPUT);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_NC_RECTIFICATION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_REPORT_UPLOAD);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_SELECTION);
+        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_INPUT);
+        INBOX_APP_OTHERS_SEARCH_STATUS = Collections.unmodifiableSet(inboxAppSearchStatus);
     }
 
 
