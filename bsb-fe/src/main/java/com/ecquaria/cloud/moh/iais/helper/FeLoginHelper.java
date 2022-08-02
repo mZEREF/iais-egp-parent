@@ -16,8 +16,11 @@ import ecq.commons.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +30,8 @@ public final class FeLoginHelper {
     public static final String MAIN_WEB_URL = "/main-web/";
     public static final String CORPPASS_URL = "/main-web/eservice/INTERNET/FE_Landing/1/croppass";
 
-    public static void initUserInfo(HttpServletRequest request, FeUserDto mohUser) throws FeignException, BaseException {
+    public static void initUserInfo(BaseProcessClass bpc, FeUserDto mohUser) throws FeignException, BaseException {
+        HttpServletRequest request = bpc.request;
         User user = new User();
         user.setDisplayName(mohUser.getDisplayName());
         user.setUserDomain(mohUser.getUserDomain());
@@ -48,6 +52,17 @@ public final class FeLoginHelper {
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
         AccessUtil.initLoginUserInfo(request);
+        // clear bsb cookie ("service_bsb", "service_bsb_afc")
+        HttpServletResponse response = bpc.response;
+        Cookie killServiceBsb = new Cookie("service_bsb", null);
+        killServiceBsb.setMaxAge(0);
+        killServiceBsb.setPath("/");
+        response.addCookie(killServiceBsb);
+        Cookie killServiceBsbAfc = new Cookie("service_bsb_afc", null);
+        killServiceBsbAfc.setMaxAge(0);
+        killServiceBsbAfc.setPath("/");
+        response.addCookie(killServiceBsbAfc);
+
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);

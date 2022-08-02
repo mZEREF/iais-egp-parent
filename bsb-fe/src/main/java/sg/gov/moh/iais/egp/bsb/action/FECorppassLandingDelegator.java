@@ -168,7 +168,7 @@ public class FECorppassLandingDelegator {
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "Y");
-            FeLoginHelper.initUserInfo(bpc.request, userSession);
+            FeLoginHelper.initUserInfo(bpc, userSession);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");
@@ -206,7 +206,7 @@ public class FECorppassLandingDelegator {
                 FeUserDto createdUser = orgUserManageService.createCorpPassUser(orgn);
                 //create egp user
                 orgUserManageService.createClientUser(createdUser);
-                FeLoginHelper.initUserInfo(request, createdUser);
+                FeLoginHelper.initUserInfo(bpc, createdUser);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
         }
