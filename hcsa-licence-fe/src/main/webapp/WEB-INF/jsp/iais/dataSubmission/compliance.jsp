@@ -21,7 +21,7 @@
         <h3>MODULES SELECTED</h3>
       </div>
       <div class="col-xs-12">
-        <ul><li style=""><span><Strong>${complianceDto.submissionTypeDisplay}</Strong></span></li></ul>
+        <ul><li style="padding-bottom: 14px;"><span><Strong>${complianceDto.submissionTypeDisplay}</Strong></span></li></ul>
         <h3>Before You Begin</h3>
       </div>
       <div class="col-xs-12">
