@@ -2150,13 +2150,14 @@ public final class ApplicationHelper {
     }
 
     private static List<AppPremSpecialisedDto> genAppPremSpecialisedDtoList(List<AppGrpPremisesDto> appGrpPremisesDtos,
-            List<HcsaServiceDto> hcsaServiceDtoList) {
-        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+            List<HcsaServiceDto> baseServiceDtoList) {
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(baseServiceDtoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
-        for (HcsaServiceDto serviceDto : hcsaServiceDtoList) {
-            List<HcsaServiceDto> specialServices = getConfigCommService().getSpecialServices(serviceDto.getId());
+        for (HcsaServiceDto serviceDto : baseServiceDtoList) {
+            ConfigCommService configCommService = getConfigCommService();
+            List<HcsaServiceDto> specialServices = configCommService.getSpecialServices(serviceDto.getId());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 AppPremSpecialisedDto appPremSpecialisedDto = new AppPremSpecialisedDto();
                 appPremSpecialisedDto.setAppGrpPremisesDto(appGrpPremisesDto);
