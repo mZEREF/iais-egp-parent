@@ -88,7 +88,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                     if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
                         for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
-                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ONCHANGE);
+                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_UNCHANGE);
                         }
                     }
                     broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
@@ -99,10 +99,10 @@ public class BroadcastServiceImpl implements BroadcastService {
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
-                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ONCHANGE);
+                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_UNCHANGE);
                         } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
-                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ONCHANGE);
+                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_UNCHANGE);
                         }
                     }
                     broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
