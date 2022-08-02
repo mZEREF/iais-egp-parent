@@ -34,13 +34,15 @@ public interface ConfigCommService {
 
     List<HcsaServiceDto> getHcsaServiceByNames(List<String> svcNames);
 
-    List<HcsaServiceDto> getSpecialServices(String baseSvcId);
+    //List<HcsaServiceDto> getSpecialServices(String baseSvcId);
 
     List<HcsaServiceDto> allHcsaService();
 
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
 
     List<HcsaSvcSpecifiedCorrelationDto> getSvcSpeCorrelationsByBaseSvcId(String baseSvcId, String... type);
+
+    List<HcsaSvcSubtypeOrSubsumedDto> listSubtype(String serviceId);
 
     String getServiceNameById(String svcId);
 

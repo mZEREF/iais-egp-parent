@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -1339,10 +1340,10 @@ public final class ApplicationHelper {
     }
 
     public static boolean readonlyPremises(AppSubmissionDto appSubmissionDto) {
-        boolean readonly = false;
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-            return readonly;
+            return false;
         }
+        boolean readonly = false;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
@@ -2142,7 +2143,7 @@ public final class ApplicationHelper {
             return;
         }
         List<AppPremSpecialisedDto> appPremSpecialisedDtos = genAppPremSpecialisedDtoList(appSubmissionDto.getAppGrpPremisesDtoList(),
-                hcsaServiceDtoList);
+                appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtoList);
         appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtos);
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
             appSvcRelatedInfoDto.setDocumentShowDtoList(null);
@@ -2150,19 +2151,31 @@ public final class ApplicationHelper {
     }
 
     private static List<AppPremSpecialisedDto> genAppPremSpecialisedDtoList(List<AppGrpPremisesDto> appGrpPremisesDtos,
-            List<HcsaServiceDto> baseServiceDtoList) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtos, List<HcsaServiceDto> baseServiceDtoList) {
         if (IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(baseServiceDtoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto serviceDto : baseServiceDtoList) {
             ConfigCommService configCommService = getConfigCommService();
-            List<HcsaServiceDto> specialServices = configCommService.getSpecialServices(serviceDto.getId());
+            List<HcsaSvcSpecifiedCorrelationDto> svcSpeCorrelationList = configCommService.getSvcSpeCorrelationsByBaseSvcId(
+                    serviceDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED);
+            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeDtos = configCommService.listSubtype(serviceDto.getId());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                AppPremSpecialisedDto appPremSpecialisedDto = new AppPremSpecialisedDto();
+                AppPremSpecialisedDto appPremSpecialisedDto;
+                if (appPremSpecialisedDtos != null) {
+                    appPremSpecialisedDto = appPremSpecialisedDtos.stream()
+                            .filter(dto -> Objects.equals(dto.getPremisesVal(), appGrpPremisesDto.getPremisesIndexNo())
+                            && Objects.equals(dto.getBaseSvcId(),serviceDto.getId()))
+                            .findAny()
+                            .orElseGet(AppPremSpecialisedDto::new);
+                } else {
+                    appPremSpecialisedDto = new AppPremSpecialisedDto();
+                }
                 appPremSpecialisedDto.setAppGrpPremisesDto(appGrpPremisesDto);
                 appPremSpecialisedDto.setBaseSvcConfigDto(serviceDto);
-                appPremSpecialisedDto.setSpecialServices(specialServices);
+                appPremSpecialisedDto.setSvcSpecifiedCorrelationList(svcSpeCorrelationList);
+                appPremSpecialisedDto.setSvcSubtypeList(hcsaSvcSubtypeDtos);
                 result.add(appPremSpecialisedDto);
             }
         }
@@ -3042,7 +3055,7 @@ public final class ApplicationHelper {
         String appType = appSubmissionDto.getAppType();
         boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
                 .map(AppEditSelectDto::isLicenseeEdit)
-                .orElseGet(() -> Boolean.TRUE);
+                .orElse(Boolean.TRUE);
         return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
     }
 
@@ -3313,7 +3326,7 @@ public final class ApplicationHelper {
 
     public static void reSetCurrentPremises(Map<String, AppGrpPremisesDto> allData, HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+        if (appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
         String errorMsg = (String) request.getAttribute(IaisEGPConstant.ERRORMSG);
@@ -3510,11 +3523,11 @@ public final class ApplicationHelper {
     public static AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         if (canEdit) {
-            appEditSelectDto.setLicenseeEdit(canEdit);
-            appEditSelectDto.setPremisesEdit(canEdit);
-            appEditSelectDto.setPremisesListEdit(canEdit);
-            appEditSelectDto.setSpecialisedEdit(canEdit);
-            appEditSelectDto.setServiceEdit(canEdit);
+            appEditSelectDto.setLicenseeEdit(true);
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setPremisesListEdit(true);
+            appEditSelectDto.setSpecialisedEdit(true);
+            appEditSelectDto.setServiceEdit(true);
         }
         appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -3545,13 +3558,8 @@ public final class ApplicationHelper {
     }
 
     public static String getFileMapKey(String premVal, String svcId, String svcDocConfigId, String psnIndexNo, Integer seqNum) {
-        return new StringBuilder()
-                .append(StringUtil.getNonNull(premVal))
-                .append(svcId)
-                .append(svcDocConfigId)
-                .append("svcDoc")
-                .append(StringUtil.getNonNull(psnIndexNo))
-                .append(seqNum)
+        return new StringBuilder().append(StringUtil.getNonNull(premVal)).append(svcId).append(svcDocConfigId)
+                .append("svcDoc").append(StringUtil.getNonNull(psnIndexNo)).append(seqNum)
                 .toString();
     }
 }

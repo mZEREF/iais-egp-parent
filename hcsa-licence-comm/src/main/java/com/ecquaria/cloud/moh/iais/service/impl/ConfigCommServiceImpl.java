@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @Auther chenlei on 5/3/2022.
+ * @author chenlei on 5/3/2022.
  */
 @Slf4j
 @Service
@@ -109,10 +109,10 @@ public class ConfigCommServiceImpl implements ConfigCommService {
         return configCommClient.getHcsaServiceByNames(svcNames).getEntity();
     }
 
-    @Override
-    public List<HcsaServiceDto> getSpecialServices(String baseSvcId) {
-        return IaisCommonUtils.genNewArrayList();
-    }
+//    @Override
+//    public List<HcsaServiceDto> getSpecialServices(String baseSvcId) {
+//        return IaisCommonUtils.genNewArrayList();
+//    }
 
     @Override
     public List<HcsaServiceDto> allHcsaService() {
@@ -131,6 +131,15 @@ public class ConfigCommServiceImpl implements ConfigCommService {
             return IaisCommonUtils.genNewArrayList();
         }
         return configCommClient.getSvcSpeCorrelationsByBaseSvcId(baseSvcId, type).getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcSubtypeOrSubsumedDto> listSubtype(String serviceId) {
+        log.info(StringUtil.changeForLog("Service Id: " + serviceId));
+        if (StringUtil.isEmpty(serviceId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return configCommClient.listSubtype(serviceId).getEntity();
     }
 
     @Override
