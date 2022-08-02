@@ -154,7 +154,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                 if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)){
                     List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
                     for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
-                        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAppPremSubSvcRelDtos()){
+                        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAppPremSubSvcRelDtoList()){
                             ChecklistConfigDto specSvceConfig = getChecklistConfigDtoWithHciCode(appPremSubSvcRelDto.getSvcCode(), chklModule, type, baseSvcConfig, hciCode);
                             if (!Objects.isNull(specSvceConfig)){
                                 specSvcChecklistConfig.add(specSvceConfig);
