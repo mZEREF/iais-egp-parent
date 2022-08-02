@@ -308,22 +308,22 @@
                     </iais:value>
                     <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topDrugPlace"></span>
                 </iais:row>
+                <div id="otherTopDrugPlaces"
+                     <c:if test="${terminationDto.topDrugPlace!='AR_SC_001'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used"
+                                    mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="100" type="text" name="otherTopDrugPlace" id="otherTopDrugPlaceText"
+                                        value="${terminationDto.otherTopDrugPlace}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
-        </div>
-        <div id="otherTopDrugPlaces"
-             <c:if test="${terminationDto.topDrugPlace!='AR_SC_001'}">style="display: none"</c:if>>
-            <iais:row>
-                <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used"
-                            mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
-                    <iais:input maxLength="100" type="text" name="otherTopDrugPlace" id="otherTopDrugPlaceText"
-                                value="${terminationDto.otherTopDrugPlace}"/>
-                </iais:value>
-            </iais:row>
         </div>
         <iais:row>
             <iais:value width="10" cssClass="col-md-10">
-                <strong style="font-size: 2.5rem;">Doctor who Performed the Termination of Pregnancy</strong>
+                <strong style="font-size: 2.0rem;">Doctor who Performed the Termination of Pregnancy</strong>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -732,18 +732,15 @@
 
     function topType() {
         var topType = $('#topType').val();
-        if (topType == "TOPTTP001" ) {
+        if (topType == "TOPTTP001" || topType == "TOPTTP002") {
             $('#pregnancyOwnYes').prop('checked',true);
             $('#prescribeTopPlace').show();
             $('#prescribeTopPlaces').hide();
             $('#takenOwnYes').prop('checked',true);
             $('#topDrugPlace').show();
             $('#topDrugPlaces').hide();
-            $('#otherTopDrugPlaces').hide();
             fillValue($('#otherTopDrugPlace'), null);
             $('#otherTopDrugPlaceText').val(null);
-        }
-        if (topType == "TOPTTP001" || topType == "TOPTTP002") {
             $('#drugTypes').show();
         } else {
             $('#drugTypes').hide();
@@ -803,7 +800,6 @@
         if ($('#takenOwnYes').prop('checked')) {
             $('#topDrugPlace').show();
             $('#topDrugPlaces').hide();
-            $('#otherTopDrugPlaces').hide();
             fillValue($('#otherTopDrugPlace'), null);
             $('#otherTopDrugPlaceText').val(null);
 
@@ -811,7 +807,6 @@
         if ($('#takenOwnNo').prop('checked')) {
             $('#topDrugPlaces').show();
             $('#topDrugPlace').hide();
-            $('#otherTopDrugPlaces').hide();
         }
     }
 
