@@ -52,7 +52,7 @@ public class MohDsPrintDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,"isPrintDoc","yes");
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);
-        ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
+        //ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
         ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
     }
