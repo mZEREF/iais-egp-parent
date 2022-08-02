@@ -85,7 +85,7 @@
                             <div class="col-md-5 col-xs-5 text-center all-day-position">
                                 <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                             </div>
-                            <div class="col-md-5 col-xs-5 delpubHolidayDiv <c:if test="${index == 0}">hidden</c:if>">
+                            <div class="col-md-4 col-xs-4 delpubHolidayDiv <c:if test="${index == 0}">hidden</c:if>">
                                 <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
                             </div>
                         </div>

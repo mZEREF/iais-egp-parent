@@ -11,7 +11,7 @@
     <iais:row>
         <div class="col-xs-12">
             <h2 class="app-title"><c:out value="${currStepName}"/></h2>
-            <p><h4>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</h4></p>
+            <p><h4><iais:message key="NEW_ACK034"/></h4></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
     </iais:row>

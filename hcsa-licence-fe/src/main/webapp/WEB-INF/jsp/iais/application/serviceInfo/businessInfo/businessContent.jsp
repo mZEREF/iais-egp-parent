@@ -86,7 +86,7 @@
                 <div class="panel-heading " id="business-heading"  role="tab">
                     <h4 class="panel-title">
                         <strong >
-                            <c:out value="${businessDto.premType}"/>: <c:out value="${businessDto.premAddress}"/>
+                            <c:out value="${appGrpPremisesDto.premisesType}"/>: <c:out value="${appGrpPremisesDto.address}"/>
                         </strong>
                     </h4>
                 </div>
@@ -150,6 +150,9 @@
         });
 
         clickAllDay();
+        removeWeekly();
+        removePh();
+        removeEvent();
 
         $("input.allDay").each(function (){
             // $(this).trigger('click');

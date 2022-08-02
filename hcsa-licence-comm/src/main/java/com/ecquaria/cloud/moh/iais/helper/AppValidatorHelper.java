@@ -1628,7 +1628,9 @@ public final class AppValidatorHelper {
                 }
             }
 
-            validateWeek(appSvcBusinessDtos.get(i),prefix,errorMap);
+            if(appSvcBusinessDtos.get(i).getWeeklyDtoList()!=null){
+                validateWeek(appSvcBusinessDtos.get(i),prefix,errorMap);
+            }
             validatePh(appSvcBusinessDtos.get(i),prefix, errorMap);
             validateEvent(appSvcBusinessDtos.get(i), prefix,errorMap);
         }
@@ -1728,8 +1730,6 @@ public final class AppValidatorHelper {
                 return;
             }
         }
-
-
         if (StringUtil.isEmpty(selectVal)) {
             errorMap.put(errNameMap.get("select") + count, emptyErrMsg);
         }

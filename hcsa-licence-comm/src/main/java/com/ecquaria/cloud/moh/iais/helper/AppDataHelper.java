@@ -1794,6 +1794,7 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        String isSpecialService = ParamUtil.getString(request, "isSpecialService");
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -1915,10 +1916,14 @@ public final class AppDataHelper {
                     appSvcBusinessDto.setBusinessName(businessName);
                     appSvcBusinessDto.setContactNo(contactNo);
                     appSvcBusinessDto.setEmailAddr(emailAddr);
-                    appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);
-                    appSvcBusinessDto.setPhDtoList(phDtoList);
-                    appSvcBusinessDto.setEventDtoList(eventList);
 
+                    if (AppConsts.TRUE.equals(isSpecialService)) {
+                        appSvcBusinessDto.setWeeklyDtoList(null);
+                    }else {
+                        appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);
+                        appSvcBusinessDto.setPhDtoList(phDtoList);
+                        appSvcBusinessDto.setEventDtoList(eventList);
+                    }
                     if (StringUtil.isEmpty(businessIndexNo)) {
                         appSvcBusinessDto.setBusinessIndexNo(UUID.randomUUID().toString());
                     } else {

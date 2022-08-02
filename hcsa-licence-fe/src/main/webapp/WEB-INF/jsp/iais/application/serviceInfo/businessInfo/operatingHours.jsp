@@ -27,7 +27,9 @@
     </c:otherwise>
 </c:choose>
 
-<c:if test="${serviceCode==AppServicesConsts.SERVICE_CODE_BLOOD_BANKING}">
+<c:set var="isSpecialService" value="${serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"></c:set>
+<input class="isSpecialService" type="hidden" name="isSpecialService" value="${isSpecialService}"/>
+<c:if test="${!isSpecialService}">
     <iais:row>
         <div class="col-md-12 col-xs-12">
             <label class="control-label">Operating Hours</label>

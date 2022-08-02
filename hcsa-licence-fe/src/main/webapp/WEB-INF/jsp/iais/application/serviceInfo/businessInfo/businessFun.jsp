@@ -34,7 +34,11 @@
             //reset name
             refreshIndex($weeklyContent.find('div.weeklyDiv'));
             var weeklyLength = $weeklyContent.find('.weeklyDiv').length;
-            $('input.weeklyLength').val(weeklyLength);
+            if (weeklyLength==0){
+                $('input.weeklyLength').val(1);
+            }else {
+                $('input.weeklyLength').val(weeklyLength);
+            }
             if(weeklyLength < '${maxCount}'){
                 $weeklyContent.find('.addWeeklyDiv').removeClass('hidden');
             }
@@ -74,7 +78,11 @@
             //reset name
             refreshIndex($phContent.find('div.pubHolidayDiv'));
             var phLength = $phContent.find('.pubHolidayDiv').length;
-            $('input.phLength').val(phLength);
+            if(phLength==0){
+                $('input.phLength').val(1);
+            } else{
+                $('input.phLength').val(phLength);
+            }
             if(phLength < '${maxCount}'){
                 $phContent.find('.addPhDiv').removeClass('hidden');
             }
@@ -115,7 +123,11 @@
             //reset name
             refreshIndex($eventContent.find('div.eventDiv'));
             var eventLength = $eventContent.find('.eventDiv').length;
-            $('input.eventLength').val(length);
+            if(eventLength==0){
+                $('input.eventLength').val(1);
+            }else {
+                $('input.eventLength').val(length);
+            }
             if(eventLength < '${maxCount}'){
                 $eventContent.find('.addEventDiv').removeClass('hidden');
             }

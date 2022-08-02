@@ -82,7 +82,7 @@
                             <div class="col-md-5 text-center col-xs-5 all-day-position">
                                 <input class="form-check-input allDay" name="${premValue}onSiteWeeklyAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                             </div>
-                            <div class="col-md-5 col-xs-5 weeklyDelDiv <c:if test="${index == 0}">hidden</c:if>">
+                            <div class="col-md-4 col-xs-4 weeklyDelDiv <c:if test="${index == 0}">hidden</c:if>">
                                 <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
                             </div>
                         </div>
