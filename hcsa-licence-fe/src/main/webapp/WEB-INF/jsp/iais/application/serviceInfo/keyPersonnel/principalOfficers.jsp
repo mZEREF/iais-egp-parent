@@ -88,7 +88,7 @@
 
                             <div class="form-group col-md-12 col-xs-12 addPoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                                 <span class="addPoBtn" style="color:deepskyblue;cursor:pointer;">
-                                    <span style="">+ Add <c:out value="${singleName}"/></span>
+                                    <span style="">+ Add Another <c:out value="${singleName}"/></span>
                                 </span>
                             </div>
                         </c:if>
@@ -185,9 +185,9 @@
                         </c:forEach>
 
                         <div class="form-group col-md-12 col-xs-12 addDpoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-                                <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
-                                    <span style="">+ Add <c:out value="${singleName}"/></span>
-                                </span>
+                            <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">+ Add Another <c:out value="${singleName}"/></span>
+                            </span>
                         </div>
 
                     </div>

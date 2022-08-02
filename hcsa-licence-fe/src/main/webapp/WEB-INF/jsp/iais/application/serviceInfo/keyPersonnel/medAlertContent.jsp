@@ -66,7 +66,7 @@
 
         <div class="col-md-12 col-xs-12 addMedAlertPersonDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addMedAlertPersonBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Another MedAlert Person</span>
+                <span style="">+ Add Another <c:out value="${singleName}"/></span>
             </span>
         </div>
     </c:if>
