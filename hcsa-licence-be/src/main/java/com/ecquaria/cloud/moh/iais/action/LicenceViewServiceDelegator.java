@@ -1237,7 +1237,7 @@ public class LicenceViewServiceDelegator {
     }
 
     private void dealWithMultipleDoc(AppSubmissionDto appSubmissionDto) {
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
         if(multipleSvcDoc==null){
@@ -1247,7 +1247,7 @@ public class LicenceViewServiceDelegator {
         //appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         if(appSubmissionDto.getOldAppSubmissionDto()!=null){
             dealWithMultipleDoc(appSubmissionDto.getOldAppSubmissionDto());
-        }
+        }*/
     }
 
     private void groupWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
