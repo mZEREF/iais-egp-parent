@@ -37,12 +37,12 @@
       <div class="col-xs-12">
         <div class="application-tab-footer">
           <div class="col-xs-12 col-sm-4 col-md-2 text-left">
-            <c:if test="${selfAssessmentGuide=='true'}">
+            <c:if test="${selfAssessmentGuide!='true'}">
               <a style="padding-left: 5px;" class="back" id="back" onclick=" showWaiting();submit('back');" >
                 <em class="fa fa-angle-left">&nbsp;</em> Back
               </a>
             </c:if>
-            <c:if test="${selfAssessmentGuide!='true'}">
+            <c:if test="${selfAssessmentGuide=='true'}">
               <a style="padding-left: 5px;" class="back" id="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide">
                 <em class="fa fa-angle-left">&nbsp;</em> Back
               </a>
