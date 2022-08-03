@@ -91,7 +91,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void processLicence() {
         log.info("start processLicence");
         String path = sharedPath + "/" + LICENCE_FILE + DATE_STR + ".txt";
+        log.info("start generate licenceFile");
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
+        log.info("generate licenceFile end");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -268,7 +270,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void processUsers() {
         log.info("start processUsers");
         String path = sharedPath + "/" + USER_FILE + DATE_STR + ".txt";
+        log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
+        log.info("generate userFile end");
         boolean flag = true;
         if (userFile.exists()) {
             List<DsElisUserDto> dsElisUserDtoList = FileUtils.transformCsvToJavaBean(userFile, DsElisUserDto.class, false, '|');
@@ -385,8 +389,12 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("start processDoctor");
         String topPath = sharedPath + "/" + TOP_DOCTOR_FILE + DATE_STR + ".txt";
         String dpPath = sharedPath + "/" + DP_DOCTOR_FILE + DATE_STR + ".txt";
+        log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
+        log.info("generate topDoctorFile end");
+        log.info("start generate dpDoctorFile");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
+        log.info("generate dpDoctorFile end");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
