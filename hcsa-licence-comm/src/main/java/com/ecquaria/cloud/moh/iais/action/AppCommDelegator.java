@@ -473,7 +473,16 @@ public abstract class AppCommDelegator {
 
     public void prepareSpecialisedData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        //TODO
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
+        String svcCode = ParamUtil.getString(request, HcsaAppConst.SPECIALISED_SVC_CODE);
+        if (StringUtil.isEmpty(svcCode)) {
+            svcCode = hcsaServiceDtoList.get(0).getSvcCode();
+        }
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
     public void doSpecialisedData(BaseProcessClass bpc) {

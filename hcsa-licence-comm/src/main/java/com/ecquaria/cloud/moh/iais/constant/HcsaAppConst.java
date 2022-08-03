@@ -54,6 +54,8 @@ public final class HcsaAppConst {
 
     public static final String CURRENT_SVC_CODE                             = "CURRENT_SVC_CODE";
 
+    public static final String SPECIALISED_SVC_CODE                         = "specialised_svc_code";
+
     public static final String PREMISESTYPE                                 = "premisesType";
     public static final String HCSASERVICEDTO                               = "hcsaServiceDto";
     public static final String CURRENTSERVICEID                             = "currentServiceId";

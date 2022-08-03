@@ -14,6 +14,7 @@
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+    <input type="hidden" name="specialised_svc_code" value="${specialised_svc_code}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -22,8 +23,17 @@
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
-                                <%@ include file="section/specialisedDetail.jsp" %>
-                                <%@ include file="common/appFooter.jsp"%>
+                                <div class="multiservice">
+                                    <div class="tab-gp side-tab clearfix">
+                                        <%@ include file="common/formTabs.jsp" %>
+                                        <div class="tab-content">
+                                            <div class="tab-pane in active">
+                                                <%@ include file="section/specialisedDetail.jsp" %>
+                                                <%@ include file="common/appFooter.jsp"%>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -49,4 +59,13 @@
             submit('specialised', 'saveDraft', $('#selectDraftNo').val());
         });
     });
+
+    function submitFormTabs(action){
+        $("[name='crud_action_type']").val('specialised');
+        // $("[name='crud_action_type_tab']").val(action);
+        // $("[name='crud_action_type_form_page']").val('jump');
+        $("[name='specialised_svc_code']").val(action);
+        var mainForm = document.getElementById("mainForm");
+        mainForm.submit();
+    }
 </script>

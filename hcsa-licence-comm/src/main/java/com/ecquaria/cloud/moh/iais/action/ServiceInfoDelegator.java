@@ -645,7 +645,7 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-            ApplicationHelper.initDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
+            ApplicationHelper.initShowDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
@@ -689,11 +689,12 @@ public class ServiceInfoDelegator {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList);
+            List<HcsaServiceDto> serviceConfigs = ApplicationHelper.getServiceConfigsFormApp(appSubmissionDto);
+            appPremSpecialisedDtoList = ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, serviceConfigs);
+            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList, false);
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
         }
-
         log.info(StringUtil.changeForLog("the do prepareView end ...."));
     }
 

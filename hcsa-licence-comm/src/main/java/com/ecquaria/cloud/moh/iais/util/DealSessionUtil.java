@@ -376,7 +376,7 @@ public class DealSessionUtil {
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
+        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
         if (documentShowDtos != null && request != null) {
             HttpSession session = request.getSession();
             for (DocumentShowDto documentShowDto : documentShowDtos) {

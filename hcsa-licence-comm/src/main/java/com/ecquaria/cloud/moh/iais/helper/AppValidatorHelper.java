@@ -1393,11 +1393,13 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Qualification", "100"));
                 }
-                String holdCerByEMS = person.getHoldCerByEMS();
-                if (StringUtil.isEmpty(holdCerByEMS)) {
-                    errMap.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
-                } else if (AppConsts.NO.equals(holdCerByEMS)) {
-                    errMap.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
+                if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR})) {
+                    String holdCerByEMS = person.getHoldCerByEMS();
+                    if (StringUtil.isEmpty(holdCerByEMS)) {
+                        errMap.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
+                    } else if (AppConsts.NO.equals(holdCerByEMS)) {
+                        errMap.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
+                    }
                 }
                 String aclsExpiryDate = person.getAclsExpiryDateStr();
                 if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
