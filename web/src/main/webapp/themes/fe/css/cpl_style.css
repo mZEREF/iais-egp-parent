@@ -6032,3 +6032,167 @@ ul.v-numberlist li::before {
 .padding-left {
     padding-left: 0px;
 }
+/***************************Stage indicator nav bar 26 July 2022*****************************/
+
+
+.stage-tracker {
+    display: flex;
+    margin-bottom: 50px;
+}
+.stage-tracker li {
+    list-style-type: none;
+    font-size: 1.3rem;
+    color: #333333;
+    flex-basis: 100%;
+    position: relative;
+    padding-left: 0;
+    text-align: center;
+    padding: 0 10px;
+}
+.stage-tracker li:before {
+    content: "";
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #BFBFBF;
+    border-radius: 50%;
+    background-color: white;
+    display: block;
+    left: 50%;
+    margin-left: -7.5px;
+    top: 0;
+    margin-bottom: 10px;
+    z-index: 10;
+}
+.stage-tracker li:not(:first-child):after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    right: 50%;
+    background-color: #BFBFBF;
+    top: 7px;
+}
+.stage-tracker li.active {
+    font-weight: 700;
+}
+.stage-tracker li.active:before {
+    background-color: #FAE53B;
+    border-color: #FAE53B;
+}
+.stage-tracker li.active:after {
+    height: 1px;
+    top: 7.5px;
+    /* background-color: #FAE53B;*/
+}
+.stage-tracker li.completed:before {
+    background-color: #13D60E;
+    border-color: #13D60E;
+}
+.stage-tracker li.completed:after {
+    height: 1px;
+    top: 7.5px;
+    /* background-color: #13D60E;*/
+}
+.stage-tracker li.incomplete {
+    color: #6a6a6a;
+}
+
+.stage-tracker li.disabled {
+    color: #6a6a6a;
+}
+.stage-tracker li.disabled:before {
+    background: #6a6a6a;
+}
+.stage-tracker li a {
+    color: #6a6a6a;
+}
+
+.stage-tracker-legend {
+    display: flex;
+    margin-bottom: 50px;
+}
+.stage-tracker-legend li {
+    list-style-type: none;
+    font-size: 1.3rem;
+    color: #333333;
+    width: 155px;
+    position: relative;
+    padding-left: 0;
+    text-align: left;
+    padding: 0 10px;
+}
+.stage-tracker-legend li::before {
+    content: "";
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #BFBFBF;
+    border-radius: 50%;
+    background-color: white;
+    display: inline-block;
+    top: 3px;
+    z-index: 10;
+    padding-left: 10px;
+    /* right: 3px; */
+}
+
+.stage-tracker-legend li p {
+    display: inline-block;
+    font-size: 13px;
+    margin-left: 5px;
+}
+.stage-tracker-legend li.active:before {
+    background: #FAE53B;
+}
+
+.stage-tracker-legend li.disabled:before {
+    background: #6a6a6a;
+}
+
+.stage-tracker-legend li.completed:before {
+    background: #13D60E;
+}
+
+
+@media only screen and (max-width : 767px) {
+    .stage-tracker {
+        margin-bottom: 30px;
+    }
+    .stage-tracker li {
+        font-size: 0;
+    }
+    .stage-tracker li:before {
+        left: 50%;
+        width: 12px;
+        height: 12px;
+        margin-left: -6px;
+        margin-bottom: 0;
+    }
+    .stage-tracker li:not(:first-child):after {
+        top: 50%;
+        right: 50%;
+        margin-top: -0.5px;
+    }
+    .stage-tracker li:not(:first-child)::after {
+        content: "";
+        position: absolute;
+        height: 1px;
+        /* width: 125%;*/
+        right: 50%;
+        background-color: #BFBFBF;
+        top: 6px;
+    }
+    .stage-tracker li.completed:after {
+        top: 50%;
+        margin-top: -1px;
+    }
+}
+@media only screen and (min-width : 768px) and (max-width : 992px) {
+    .stage-tracker {
+        margin-bottom: 30px;
+    }
+    .stage-tracker li {
+        font-size: 14px;
+    }
+}
