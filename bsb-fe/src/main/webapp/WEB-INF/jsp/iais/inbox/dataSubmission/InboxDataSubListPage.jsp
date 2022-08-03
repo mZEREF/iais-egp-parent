@@ -17,14 +17,14 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
-<%@include file="../dashboard/dashboard.jsp" %>
+<%@include file="../dashboard/dashboardFAC.jsp" %>
 
 <div class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBar.jsp" %>
+                    <%@ include file="../InnerNavBarFAC.jsp" %>
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
                             <div id="inboxFilter" class="tab-search">

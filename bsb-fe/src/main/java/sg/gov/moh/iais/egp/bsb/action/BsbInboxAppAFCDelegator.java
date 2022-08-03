@@ -11,8 +11,8 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppPageInfoResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -22,9 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_FACILITY_ADMIN;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_AFC_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_STATUS_OPS;
@@ -32,11 +32,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_T
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_APP_SEARCH_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_PAGE_INFO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_PROCESS_TYPE_OPS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_APP_NO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_APP_TYPE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_FACILITY_NAME;
-import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_PROCESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_SUBMISSION_DATE_FROM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_SEARCH_SUBMISSION_DATE_TO;
@@ -45,13 +42,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 
 
 @Slf4j
-@Delegator("bsbInboxAppDelegator")
-public class BsbInboxAppDelegator {
+@Delegator("bsbInboxAppAFCDelegator")
+public class BsbInboxAppAFCDelegator {
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
 
     @Autowired
-    public BsbInboxAppDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
+    public BsbInboxAppAFCDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
         this.inboxService = inboxService;
     }
@@ -59,7 +56,7 @@ public class BsbInboxAppDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_APP_SEARCH_DTO);
-        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPLICATION_FACILITY_ADMIN);
+        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPLICATION_AFC_ADMIN);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -76,13 +73,12 @@ public class BsbInboxAppDelegator {
         // call API to get dashboard data
         inboxService.retrieveDashboardData(request);
         // call API to get searched data
-        ResponseDto<InboxAppPageInfoResultDto> resultDto = inboxClient.getInboxApplication(searchDto);
+        ResponseDto<InboxAppPageInfoResultDto> resultDto = inboxClient.getInboxApplicationAFC(searchDto);
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApplications());
-            ParamUtil.setRequestAttr(request,"facilityNoNameMap", resultDto.getEntity().getFacilityNoNameMap());
         } else {
-            log.warn("Search Inbox Application Fail");
+            log.warn("Search Inbox Application AFC Fail");
             ParamUtil.setRequestAttr(request, KEY_INBOX_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
@@ -90,10 +86,8 @@ public class BsbInboxAppDelegator {
             }
         }
 
-        List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
-        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
-        // inbox search app FAC status
-        ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, INBOX_APP_SEARCH_STATUS_FAC);
+        // inbox search app AFC status
+        ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, INBOX_APP_SEARCH_STATUS_AFC);
         List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, appTypeOps);
     }
@@ -144,10 +138,8 @@ public class BsbInboxAppDelegator {
 
     private static InboxAppSearchDto bindModel(HttpServletRequest request, InboxAppSearchDto dto) {
         dto.setSearchAppNo(request.getParameter(KEY_SEARCH_APP_NO));
-        dto.setSearchProcessType(request.getParameter(KEY_SEARCH_PROCESS_TYPE));
-        dto.setSearchFacilityName(request.getParameter(KEY_SEARCH_FACILITY_NAME));
-        dto.setSearchStatus(request.getParameter(KEY_SEARCH_STATUS));
         dto.setSearchAppType(request.getParameter(KEY_SEARCH_APP_TYPE));
+        dto.setSearchStatus(request.getParameter(KEY_SEARCH_STATUS));
         dto.setSearchSubmissionDateFrom(request.getParameter(KEY_SEARCH_SUBMISSION_DATE_FROM));
         dto.setSearchSubmissionDateTo(request.getParameter(KEY_SEARCH_SUBMISSION_DATE_TO));
         return dto;

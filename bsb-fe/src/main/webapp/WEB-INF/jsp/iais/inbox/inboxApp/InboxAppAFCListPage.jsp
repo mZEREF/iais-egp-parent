@@ -19,7 +19,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 
-<%@include file="../dashboard/dashboardFAC.jsp"%>
+<%@include file="../dashboard/dashboardAFC.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <div class="main-content">
@@ -27,7 +27,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBarFAC.jsp"%>
+                    <%@ include file="../InnerNavBarAFC.jsp"%>
 
                     <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -41,38 +41,27 @@
 
                                 <%--@elvariable id="inboxAppSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto"--%>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-4">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchAppNo" style="padding-left: 0">Application No.:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <input type="text" id="searchAppNo" name="searchAppNo" value="${inboxAppSearchDto.searchAppNo}"/>
                                             <span data-err-ind="searchAppNo" class="error-msg"></span>
                                         </div>
-
                                     </div>
-                                    <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" for="searchProcessType" style="padding-left: 0">Application Sub-Type:</label>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <label for="searchAppType" class="col-xs-12 col-sm-5 control-label" style="padding-left: 0">Application Type:</label>
                                         <div class="col-xs-12 col-sm-7">
-                                            <select id="searchProcessType" class="searchProcessTypeDropdown" name="searchProcessType">
-                                                <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
-                                                <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                                <c:forEach var="appStatusItem" items="${processTypeOps}">
-                                                    <option value='<c:out value="${appStatusItem.value}"/>' <c:if test="${inboxAppSearchDto.searchProcessType eq appStatusItem.value}">selected="selected"</c:if> ><c:out value="${appStatusItem.text}"/></option>
+                                            <select id="searchAppType" class="searchAppTypeDropdown" name="searchAppType">
+                                                <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchAppType eq ''}">selected="selected"</c:if>>All</option>
+                                                <%--@elvariable id="appTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                                <c:forEach var="appTypeItem" items="${appTypeOps}">
+                                                    <option value='<c:out value="${appTypeItem.value}"/>' <c:if test="${inboxAppSearchDto.searchAppType eq appTypeItem.value}">selected="selected"</c:if> ><c:out value="${appTypeItem.text}"/></option>
                                                 </c:forEach>
                                             </select>
-                                            <span data-err-ind="searchProcessType" class="error-msg"></span>
+                                            <span data-err-ind="searchAppType" class="error-msg"></span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName" style="padding-left: 0">Facility Name:</label>
-                                        <div class="col-xs-12 col-sm-7">
-                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="${inboxAppSearchDto.searchFacilityName}"/>
-                                            <span data-err-ind="searchFacilityName" class="error-msg"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-4">
                                         <label class="col-xs-12 col-sm-5 control-label" for="searchStatus" style="padding-left: 0">Application Status:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchStatus" class="searchStatusDropdown" name="searchStatus">
@@ -86,30 +75,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" style="margin-bottom: 20px">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <label for="searchAppType" class="col-xs-12 col-sm-5 control-label" style="padding-left: 0">Application Type:</label>
-                                        <div class="col-xs-12 col-sm-7">
-                                            <select id="searchAppType" class="searchAppTypeDropdown" name="searchAppType">
-                                                <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchAppType eq ''}">selected="selected"</c:if>>All</option>
-                                                <%--@elvariable id="appTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                                <c:forEach var="appTypeItem" items="${appTypeOps}">
-                                                    <option value='<c:out value="${appTypeItem.value}"/>' <c:if test="${inboxAppSearchDto.searchAppType eq appTypeItem.value}">selected="selected"</c:if> ><c:out value="${appTypeItem.text}"/></option>
-                                                </c:forEach>
-                                            </select>
-                                            <span data-err-ind="searchAppType" class="error-msg"></span>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-4">
                                         <label class="col-xs-12 col-sm-5 control-label" style="padding-left: 0">Date Saved/Submitted From:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <iais:datePicker id="searchSubmissionDateFrom" name="searchSubmissionDateFrom" value="${inboxAppSearchDto.searchSubmissionDateFrom}"/>
                                         </div>
                                         <span data-err-ind="searchSubmissionDateFrom" class="error-msg"></span>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-4">
                                         <label class="col-xs-12 col-sm-5 control-label" style="padding-left: 0">Date Saved/Submitted To:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <iais:datePicker id="searchSubmissionDateTo" name="searchSubmissionDateTo" value="${inboxAppSearchDto.searchSubmissionDateTo}"/>
@@ -135,7 +109,6 @@
                                                 <%-- need to use new tag in future --%>
                                                 <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="applicationNo" value="Application No." isFE="true" style="width:15%"/>
-                                                <iais:sortableHeader needSort="false" field="facilityName" value="Facility Name" isFE="true" style="width:13%"/>
                                                 <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="true" style="width:14%"/>
                                                 <iais:sortableHeader needSort="true" field="processType" value="Application Sub-Type" style="width:13%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="status" value="Application Status" style="width:13%" isFE="true"/>
@@ -173,10 +146,6 @@
                                                                         <c:out value="${app.appNo}"/>
                                                                     </c:otherwise>
                                                                 </c:choose>
-                                                            </td>
-                                                            <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Facility Name</p>
-                                                                <p style="text-align: center"><c:out value="${facilityNoNameMap.get(app.facilityNo)}"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application Type</p>

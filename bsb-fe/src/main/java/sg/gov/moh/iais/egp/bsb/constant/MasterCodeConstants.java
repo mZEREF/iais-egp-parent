@@ -1,7 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.google.common.collect.Sets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -124,14 +127,12 @@ public class MasterCodeConstants {
     public static final Set<String> UNAVAILABLE_APP_STATUS;
     public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
-    // not an actual app status
+    // not an actual app status, this is a compound status
     public static final String PENDING_MOH            = "Pending MOH";
     public static final String APPROVED               = "Approved";
 
     public static final Set<String> PENDING_MOH_APP_STATUS;
     public static final Set<String> APPROVED_APP_STATUS;
-    // no "removed", "Pending MOH", "Approved"
-    public static final Set<String> INBOX_APP_OTHERS_SEARCH_STATUS;
 
     // TODO: check these app status
     static {
@@ -215,27 +216,43 @@ public class MasterCodeConstants {
         approvedAppStatus.add(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT);
         approvedAppStatus.add(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW);
         APPROVED_APP_STATUS = Collections.unmodifiableSet(approvedAppStatus);
-
-        Set<String> inboxAppSearchStatus = Sets.newHashSetWithExpectedSize(19);
-        inboxAppSearchStatus.add(APP_STATUS_DRAFT);
-        inboxAppSearchStatus.add(APP_STATUS_ACCEPTED);
-        inboxAppSearchStatus.add(APP_STATUS_PARTIAL_ACCEPTANCE);
-        inboxAppSearchStatus.add(APP_STATUS_VERIFIED);
-        inboxAppSearchStatus.add(APP_STATUS_WITHDRAWN);
-        inboxAppSearchStatus.add(APP_STATUS_REJECTED);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_APPLICANT_CLARIFICATION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_APPLICANT_INPUT);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_NC_RECTIFICATION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_REPORT_UPLOAD);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_SELECTION);
-        inboxAppSearchStatus.add(APP_STATUS_PEND_AFC_INPUT);
-        INBOX_APP_OTHERS_SEARCH_STATUS = Collections.unmodifiableSet(inboxAppSearchStatus);
     }
 
+    public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_FAC;
+    public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_AFC;
+
+    static {
+        List<SelectOption> appSearchStatusFAC = new ArrayList<>(18);
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(APP_STATUS_DRAFT)));
+        appSearchStatusFAC.add(new SelectOption(PENDING_MOH, PENDING_MOH));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_INPUT)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_CHECKLIST_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_CHECKLIST_SUBMISSION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_EXTENSION_REVIEW, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_EXTENSION_REVIEW)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_REPORT_UPLOAD)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_SELECTION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_SELECTION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_INPUT)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PARTIAL_ACCEPTANCE, MasterCodeUtil.getCodeDesc(APP_STATUS_PARTIAL_ACCEPTANCE)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_VERIFIED, MasterCodeUtil.getCodeDesc(APP_STATUS_VERIFIED)));
+        appSearchStatusFAC.add(new SelectOption(APPROVED, APPROVED));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_REJECTED, MasterCodeUtil.getCodeDesc(APP_STATUS_REJECTED)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_ACCEPTED, MasterCodeUtil.getCodeDesc(APP_STATUS_ACCEPTED)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_WITHDRAWN, MasterCodeUtil.getCodeDesc(APP_STATUS_WITHDRAWN)));
+        INBOX_APP_SEARCH_STATUS_FAC = Collections.unmodifiableList(appSearchStatusFAC);
+
+        List<SelectOption> appSearchStatusAFC = new ArrayList<>(7);
+        appSearchStatusAFC.add(new SelectOption(APP_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(APP_STATUS_DRAFT)));
+        appSearchStatusAFC.add(new SelectOption(PENDING_MOH, PENDING_MOH));
+        appSearchStatusAFC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_INPUT)));
+        appSearchStatusAFC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
+        appSearchStatusAFC.add(new SelectOption(APPROVED, APPROVED));
+        appSearchStatusAFC.add(new SelectOption(APP_STATUS_REJECTED, MasterCodeUtil.getCodeDesc(APP_STATUS_REJECTED)));
+        appSearchStatusAFC.add(new SelectOption(APP_STATUS_WITHDRAWN, MasterCodeUtil.getCodeDesc(APP_STATUS_WITHDRAWN)));
+        INBOX_APP_SEARCH_STATUS_AFC = Collections.unmodifiableList(appSearchStatusAFC);
+    }
 
     public static final String PROCESS_TYPE_FAC_REG = "PROTYPE001";
     public static final String PROCESS_TYPE_APPROVE_POSSESS = "PROTYPE002";
