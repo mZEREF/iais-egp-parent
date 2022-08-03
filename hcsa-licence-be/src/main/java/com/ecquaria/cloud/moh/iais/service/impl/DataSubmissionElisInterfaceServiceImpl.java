@@ -170,6 +170,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move license file failed");
                 }
             }
+        }else {
+            log.info("create licenceFile failed");
         }
     }
 
@@ -334,6 +336,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move user file failed");
                 }
             }
+        }else {
+            log.info("create userFile failed");
         }
     }
 
@@ -392,6 +396,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 log.info("topDoctorDtoList size is {}", topDoctorDtoList.size());
                 doctorDtoList.addAll(topDoctorDtoList);
             }
+        }else {
+            log.info("create topDoctorFile failed");
         }
         if (dpDoctorFile.exists()) {
             List<DsElisDoctorDto> dpDoctorDtoList = FileUtils.transformCsvToJavaBean(dpDoctorFile, DsElisDoctorDto.class, false, '|');
@@ -399,6 +405,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 log.info("dpDoctorDtoList size is {}", dpDoctorDtoList.size());
                 doctorDtoList.addAll(dpDoctorDtoList);
             }
+        }else {
+            log.info("create dpDoctorFile failed");
         }
         boolean flag = true;
         if (!CollectionUtils.isEmpty(doctorDtoList)) {
