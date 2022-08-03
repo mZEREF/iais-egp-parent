@@ -481,18 +481,7 @@ public class TopDataSubmissionDelegator {
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
-        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-        if(terminationDto==null){
-            terminationDto=new TerminationDto();
-        }
-        boolean b = true;
-        if(StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
-            terminationDto.setPregnancyOwn(b);
-        }
-        if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
-            terminationDto.setTakenOwn(b);
-        }
-        terminationOfPregnancyDto.setTerminationDto(terminationDto);
+
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
     }
@@ -507,6 +496,17 @@ public class TopDataSubmissionDelegator {
     }
     private void preparePresentTermination(HttpServletRequest request) {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        TerminationDto terminationDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto();
+        if(terminationDto==null){
+            terminationDto=new TerminationDto();
+        }
+        boolean b = true;
+        if(StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
+            terminationDto.setPregnancyOwn(b);
+        }
+        if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
+            terminationDto.setTakenOwn(b);
+        }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
     }
     private void preparePostTermination(HttpServletRequest request) {
@@ -630,13 +630,19 @@ public class TopDataSubmissionDelegator {
                         if(terminationOfPregnancyDto.getPatientInformationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto())){
                             if(terminationOfPregnancyDto.getFamilyPlanDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto())){
                                 if(terminationOfPregnancyDto.getPreTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPreTerminationDto())){
-                                    if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
-                                        if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
-                                            ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                                            errMap.put("rfcNOchange","rfcNOchange");
+                                    if(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto()!=null){
+                                        if(terminationOfPregnancyDto.getTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
+                                            if(terminationOfPregnancyDto.getPostTerminationDto().equals(topOldSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPostTerminationDto())){
+                                                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                                                errMap.put("rfcNOchange","rfcNOchange");
 
+                                            }
                                         }
+                                    }else if(terminationOfPregnancyDto.getTerminationDto().equals(new TerminationDto())){
+                                        ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                                        errMap.put("rfcNOchange","rfcNOchange");
                                     }
+
                                 }
                             }
                         }
