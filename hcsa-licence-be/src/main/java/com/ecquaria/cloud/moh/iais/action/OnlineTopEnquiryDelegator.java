@@ -252,7 +252,7 @@ public class OnlineTopEnquiryDelegator {
         }
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto();
         if(preTerminationDto!=null){
-            String submitDt=Formatter.formatDateTime(new Date(), "dd/MM/yyyy HH:mm:ss");
+            String submitDt=Formatter.formatDateTime(topInfo.getDataSubmissionDto().getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
             try {
                 ParamUtil.setSessionAttr(request, "counsellingLateSubmit", null);
                 ParamUtil.setSessionAttr(request, "secondLateSubmit", null);
