@@ -85,6 +85,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
        // }
         //for routingStages
         if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+            log.info(StringUtil.changeForLog("validate the HcsaConfigPageDto"));
             Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
             for(String key : hcsaConfigPageDtoMap.keySet()){
                 List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
@@ -96,15 +97,16 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             }
 
         }
-        result.put("APTY002","error");
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));
         return result;
     }
 
     private Map<String,String> validateHcsaConfigPageDto(List<HcsaConfigPageDto> hcsaConfigPageDtos,String serviceType ){
+        log.info(StringUtil.changeForLog("The validateHcsaConfigPageDto start ..."));
         Map<String,String> result = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(hcsaConfigPageDtos)){
             for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos ){
+                // for Ins hcsaConfigPageDto
                 ValidationResult validationResultHcsaConfigPageDto = WebValidationHelper.validateProperty(hcsaConfigPageDto,serviceType);
                 if(validationResultHcsaConfigPageDto.isHasErrors()){
                     Map<String,String>  validationResultHcsaConfigPageDtoMap = validationResultHcsaConfigPageDto.retrieveAll();
@@ -130,6 +132,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             }
 
         }
+        log.info(StringUtil.changeForLog("The validateHcsaConfigPageDto end ..."));
         return result;
     }
 

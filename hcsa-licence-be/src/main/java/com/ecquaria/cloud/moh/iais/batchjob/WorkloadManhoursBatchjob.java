@@ -44,7 +44,7 @@ public class WorkloadManhoursBatchjob {
         Integer workload = 0;
         for (HcsaSvcSpecificStageWorkloadDto item :hcsaSvcSpecificStageWorkloadDtoList
              ) {
-            workload += item.getManhourCount();
+            workload += Integer.parseInt(item.getManhourCount());
         }
         log.debug(StringUtil.changeForLog("The workload is  ..." + workload));
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtoList = IaisCommonUtils.genNewArrayList();

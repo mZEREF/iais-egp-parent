@@ -694,7 +694,7 @@
                             placeholder="minimum count" needErrorSpan="true"/>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SPD" value="${SPDE.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SPDE" value="${SPDE.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPDE"></span>
               </div>
@@ -963,14 +963,13 @@
                               <p>${hcsaSvcSpeRoutingSchemeDto.getInsOderName()}</p>
                             </c:forEach>
                           </c:if>
-                         <%-- <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>--%>
                         </div>
                       </td>
 
                       <td>
                         <div class="col-xs-12 col-md-12" style="text-align:left">
                           <input style="margin: 0px 0px" type="text" maxlength="2" name="manhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
-                          <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_manhours${routingStage.stageCode}${routingStages.key}"></span>
                         </div>
                       </td>
 
