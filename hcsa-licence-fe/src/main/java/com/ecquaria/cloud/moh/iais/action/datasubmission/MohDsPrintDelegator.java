@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -126,6 +127,16 @@ public class MohDsPrintDelegator {
             dataSubmissionDto.setAmendReason(amendReason);
             dataSubmissionDto.setAmendReasonOther(amendReasonOther);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
+        }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_LDT})) {
+            LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
+            DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            String[] declaration = ParamUtil.getStrings(request, "declaration");
+            if (declaration != null && declaration.length > 0) {
+                dataSubmissionDto.setDeclaration(declaration[0]);
+            } else {
+                dataSubmissionDto.setDeclaration(null);
+            }
+            DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
         }
         return AppConsts.YES;
     }
