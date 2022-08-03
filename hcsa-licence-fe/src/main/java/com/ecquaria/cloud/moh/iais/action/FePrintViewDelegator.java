@@ -193,7 +193,7 @@ public class FePrintViewDelegator {
                     }
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
                     Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
-                    appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+                    //appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
         }

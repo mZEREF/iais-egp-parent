@@ -992,7 +992,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         //set svc doc title
                         Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
                                 newPremisesDtos, appSvcRelatedInfoDto);
-                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+//                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         // sort po and dpo
                         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(
