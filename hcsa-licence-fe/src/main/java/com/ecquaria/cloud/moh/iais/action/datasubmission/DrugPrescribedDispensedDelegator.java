@@ -241,6 +241,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugSubmission = new DrugSubmissionDto();
         }
         ControllerHelper.get(request, drugSubmission);
+        if(StringUtil.isNotEmpty(drugSubmission.getIdNumber())){
+            drugSubmission.setIdNumber(drugSubmission.getIdNumber().toUpperCase());
+        }
         String medication = (String) ParamUtil.getSessionAttr(request, "medication");
         if (StringUtils.hasLength(medication) && DRUG_DISPENSED.equals(drugSubmission.getDrugType())) {
             drugSubmission.setMedication(medication);

@@ -52,7 +52,7 @@ public class DpAjaxController {
         String nationality = ParamUtil.getString(request, "nationality");
         PatientDto patient = new PatientDto();
         patient.setIdType(idType);
-        patient.setIdNumber(idNo);
+        patient.setIdNumber(idNo.toUpperCase());
         patient.setNationality(nationality);
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
