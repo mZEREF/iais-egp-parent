@@ -1334,7 +1334,7 @@ public class ConfigServiceImpl implements ConfigService {
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,APPEAL);
             }
-            /*else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+            else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
                 hcsaConfigPageDtos=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
                 hcsaConfigPageDtos = getWorkGrop(type, REQUEST_FOR_CHANGE);
@@ -1348,7 +1348,7 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,WITHDRAWAL);
-            }*/
+            }
             map.put(type,hcsaConfigPageDtos);
         }
         return map;
