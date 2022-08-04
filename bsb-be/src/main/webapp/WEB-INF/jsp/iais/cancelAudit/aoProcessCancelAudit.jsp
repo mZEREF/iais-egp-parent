@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -53,8 +55,9 @@
                                 <iais:value width="10">
                                     <select name="aoDecision" class="aoDecisionDropdown" id="aoDecision">
                                         <option value="">Please Select</option>
-                                        <option value="MOHPRO007" <c:if test="${processData.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
-                                        <option value="MOHPRO003" <c:if test="${processData.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                            <%--TODO: check these decision--%>
+                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${processData.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected = 'selected'</c:if>>Approve</option>
+                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${processData.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected = 'selected'</c:if>>Reject</option>
                                     </select>
                                     <span data-err-ind="aoDecision" class="error-msg"></span>
                                 </iais:value>

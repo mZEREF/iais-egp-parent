@@ -2,8 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -119,10 +119,11 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <%--TODO: check these decision--%>
                                                                     <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
-                                                                        <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
-                                                                        <option value="MOHPRO025" <c:if test="${insDecision.decision eq 'MOHPRO025'}">selected="selected"</c:if>>Accepts Rectification and Route to AO</option>
-                                                                        <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">selected="selected"</c:if>>Request for Information</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Accepts Rectification and Route to AO</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>
@@ -130,7 +131,8 @@
 
                                                             <span data-err-ind="decision" class="error-msg" ></span>
 
-                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${insDecision.decision ne 'MOHPRO025'}">style="display: none;"</c:if>>
+                                                            <%--TODO: check this decision--%>
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${insDecision.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">

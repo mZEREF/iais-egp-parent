@@ -97,18 +97,19 @@
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision / Recommendation <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
+                                                                        <%--TODO: check all decision--%>
                                                                         <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="MOHPRO007" <c:if test="${processDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
-                                                                            <option value="MOHPRO003" <c:if test="${processDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
-                                                                            <option value="MOHPRO002" <c:if test="${processDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request For Information</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${processDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${processDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}" <c:if test="${processDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">selected="selected"</c:if>>Request For Information</option>
                                                                         </select>
                                                                         <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.processingDecision ne 'MOHPRO007'}">style ="display:none"</c:if>>
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.processingDecision ne MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">style ="display:none"</c:if>>
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select Approving Officer <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
@@ -123,7 +124,7 @@
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div id="rfiDiv" <c:if test="${processDto.processingDecision ne 'MOHPRO002'}">style="display:none"</c:if>>
+                                                            <div id="rfiDiv" <c:if test="${processDto.processingDecision ne MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">style="display:none"</c:if>>
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Sections allowed to change</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">

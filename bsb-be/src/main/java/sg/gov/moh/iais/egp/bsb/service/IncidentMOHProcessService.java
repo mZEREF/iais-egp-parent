@@ -187,27 +187,30 @@ public class IncidentMOHProcessService {
     public List<SelectOption> getDOTempDecisionOps(){
         List<SelectOption> selectOptions = new ArrayList<>(3);
         selectOptions.add(new SelectOption("",PARAM_PLEASE_SELECT));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Acknowledged"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
+        // TODO: check these decision
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE,"Acknowledged"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION, MESSAGE_REQUEST_FOR_INFORMATION));
         return selectOptions;
     }
 
     public List<SelectOption> getAOTempDecisionOps(){
         List<SelectOption> selectOptions = new ArrayList<>(5);
         selectOptions.add(new SelectOption("",PARAM_PLEASE_SELECT));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Approve"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT,"Reject"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM,"Route To HM"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
+        // TODO: check these decision
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE,"Approve"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_REJECT,"Reject"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM,"Route To HM"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION,"MESSAGE_REQUEST_FOR_INFORMATION"));
         return selectOptions;
     }
 
     public List<SelectOption> getHMTempDecisionOps(){
         List<SelectOption> selectOptions = new ArrayList<>(4);
         selectOptions.add(new SelectOption("",PARAM_PLEASE_SELECT));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Approve"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT,"Reject"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
+        // TODO: check these decision
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE,"Approve"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_REJECT,"Reject"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION,"MESSAGE_REQUEST_FOR_INFORMATION"));
         return selectOptions;
     }
 

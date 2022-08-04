@@ -2,14 +2,14 @@ $(function () {
     validate();
     var processingDecisionObj = $("#processingDecision");
     var processingDecisionVal =  processingDecisionObj.val();
-    if (processingDecisionVal === "MOHPRO009") {
+    if (processingDecisionVal === "MOHPRO005") {
         $("#selectMohUserDiv").show();
     } else {
         $("#selectMohUserDiv").hide();
     }
     processingDecisionObj.change(function () {
         var selectValue = $(this).val();
-        if (selectValue === "MOHPRO009") {
+        if (selectValue === "MOHPRO005") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();

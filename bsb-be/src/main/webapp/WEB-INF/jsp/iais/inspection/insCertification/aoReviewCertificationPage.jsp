@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -100,8 +101,9 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="ao-cert-decision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO008" <c:if test="${insDecision.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Internal Route Back to DO</option>
-                                                                                <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <%--TODO: check these decision--%>
+                                                                                <option value="" <c:if test="${insDecision.decision eq ''}">selected="selected"</c:if>>Internal Route Back to DO</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
                                                                             </select>
                                                                             <span data-err-ind="decision" class="error-msg" ></span>
                                                                         </div>

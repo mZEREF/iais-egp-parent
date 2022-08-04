@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -138,10 +139,11 @@
                                                                             <iais:value width="10">
                                                                                 <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                                     <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
-                                                                                    <option value="MOHPRO003" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
-                                                                                    <option value="MOHPRO008" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to Duty Officer</option>
-                                                                                    <option value="MOHPRO009" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO009'}">selected="selected"</c:if>>Route to Higher Manager</option>
+                                                                                        <%--TODO: check these decision--%>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${aoProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${aoProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${aoProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back to Duty Officer</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM}" <c:if test="${aoProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM}">selected="selected"</c:if>>Route to Higher Manager</option>
                                                                                 </select>
                                                                                 <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                             </iais:value>

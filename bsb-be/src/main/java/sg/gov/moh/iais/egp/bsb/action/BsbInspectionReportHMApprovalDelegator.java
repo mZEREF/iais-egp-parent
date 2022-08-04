@@ -121,12 +121,13 @@ public class BsbInspectionReportHMApprovalDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
+        // TODO: check these decision
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionHMApprovalDecision(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processDto.getDecision())) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_REJECT.equals(processDto.getDecision())) {
                 validateResult = "reject";
             } else {
                 validateResult = "invalid";

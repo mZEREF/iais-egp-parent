@@ -193,16 +193,17 @@ public class FacilityApprovalOfficerDelegator {
         ValidationResultDto validationResultDto = facApprovalClient.validateFacApprovalProcessDto(processDto);
         String decision = processDto.getProcessingDecision();
         String validateResult;
+        // TODO: check these decision
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(decision)) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION.equals(decision)) {
                 validateResult = "rfi";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(decision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_REJECT.equals(decision)) {
                 validateResult = "reject";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(decision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(decision)) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(decision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(decision)) {
                 validateResult = "routeDO";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM.equals(decision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM.equals(decision)) {
                 validateResult = "routeHM";
             } else {
                 validateResult = "invalid";

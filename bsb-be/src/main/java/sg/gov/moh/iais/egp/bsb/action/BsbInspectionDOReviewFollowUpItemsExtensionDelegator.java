@@ -81,12 +81,13 @@ public class BsbInspectionDOReviewFollowUpItemsExtensionDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validatePostInspectionDOReviewFollowUpItems(insProcessDto);
         String validateResult;
         if (validationResultDto.isPass()) {
+            // TODO: check these decision
             String processingDecision = insProcessDto.getDecision();
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processingDecision)) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processingDecision)) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
                 validateResult = "skip";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_REJECT.equals(processingDecision)) {
                 validateResult = "reject";
             } else {
                 validateResult = "invalid";

@@ -136,13 +136,14 @@ public class BsbSubmitInspectionReportDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionDOSubmitReportDecision(processDto, appId);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW.equals(processDto.getDecision())) {
+            // TODO: check these decision
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW.equals(processDto.getDecision())) {
                 validateResult = "ao";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT.equals(processDto.getDecision())) {
                 validateResult = "applicant";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_MARK_AS_FINAL_AND_ROUTE_TO_AO.equals(processDto.getDecision())) {
                 validateResult = "final";
-            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+            } else if(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
                 validateResult = "skip";
             }else {
                 validateResult = "invalid";

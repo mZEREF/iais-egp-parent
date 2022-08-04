@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -150,10 +152,11 @@
                                                                             <iais:value width="10">
                                                                                 <select name="aoDecision" class="aoDecisionDropdown" id="aoDecision">
                                                                                     <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
-                                                                                    <option value="MOHPRO003" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
-                                                                                    <option value="MOHPRO008" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO008'}">selected = 'selected'</c:if>>Route Back to DO</option>
-                                                                                    <option value="MOHPRO009" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO009'}">selected = 'selected'</c:if>>Route to HM</option>
+                                                                                        <%--TODO: check these decision--%>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${suspensionReinstatementDto.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected = 'selected'</c:if>>Approve</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${suspensionReinstatementDto.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected = 'selected'</c:if>>Reject</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${suspensionReinstatementDto.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}">selected = 'selected'</c:if>>Route Back to DO</option>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM}" <c:if test="${suspensionReinstatementDto.aoDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM}">selected = 'selected'</c:if>>Route to HM</option>
                                                                                 </select>
                                                                                 <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>

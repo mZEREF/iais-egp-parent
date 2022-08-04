@@ -14,7 +14,7 @@ $(function (){
     $("#processingDecision").change(function () {
         var decision = $("#processingDecision").val();
         var currentStatus = $("#currentStatus").val();
-        // TODO: check these app status
+        // TODO: check these app status and decision
         if (decision === 'MOHPRO007' && currentStatus === 'BSBAPST030' || decision === 'BSBAPST031' && currentStatus === 'BSBAPST032') {
             $("#selectMohUserDiv").show();
             $("#rfiDiv").hide();

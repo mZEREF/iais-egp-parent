@@ -136,16 +136,17 @@ public class MohOfficerInsApprovalLetterDelegator {
         letterDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request,KEY_INS_DTO_INS_LETTER,letterDto);
 
+        // TODO: check these decision
         ValidationResultDto validationResultDto = inspectionClient.validateInsApprovalLetter(letterDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_AO.equals(letterDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO.equals(letterDto.getDecision())) {
                 validateResult = "ao";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(letterDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(letterDto.getDecision())){
                 validateResult = "approve";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(letterDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(letterDto.getDecision())){
                 validateResult = "do";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(letterDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(letterDto.getDecision())){
                 validateResult = "skip";
             }else {
                 validateResult = "invalid";

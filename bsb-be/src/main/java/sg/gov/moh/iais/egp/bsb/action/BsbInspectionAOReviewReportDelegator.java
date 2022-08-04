@@ -130,16 +130,17 @@ public class BsbInspectionAOReviewReportDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
+        // TODO: check these decision
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionAOReviewDecision(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processDto.getDecision())) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(processDto.getDecision())) {
                 validateResult = "routeDO";
-            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW.equals(processDto.getDecision())){
+            } else if(MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW.equals(processDto.getDecision())){
                 validateResult = "routeHM";
-            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+            } else if(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
                 validateResult = "skip";
             } else {
                 validateResult = "invalid";

@@ -129,18 +129,19 @@
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back to DO</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW}">selected="selected"</c:if>>Route to HM for Review</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                            <%--TODO: check these decision--%>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back to DO</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW}">selected="selected"</c:if>>Route to HM for Review</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-
-                                                            <div id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW}">style ="display:none"</c:if>>
+                                                            <%--TODO: check this decision--%>
+                                                            <div id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW}">style ="display:none"</c:if>>
                                                                 <div class="form-group">
                                                                     <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select HM <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">

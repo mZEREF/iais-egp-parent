@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -133,10 +134,11 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <iais:value width="10">
+                                                                                    <%--TODO: check these decision--%>
                                                                                     <select name="doDecision" class="doDecisionDropdown" id="doDecision">
                                                                                         <option value="">Please Select</option>
-                                                                                        <option value="MOHPRO010" <c:if test="${processData.doDecision eq 'MOHPRO010'}">selected = 'selected'</c:if>>Verified</option>
-                                                                                        <option value="MOHPRO003" <c:if test="${processData.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                        <option value="" <c:if test="${processData.doDecision eq ''}">selected = 'selected'</c:if>>Verified</option>
+                                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${processData.doDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected = 'selected'</c:if>>Reject</option>
                                                                                     </select>
                                                                                     <span data-err-ind="doDecision" class="error-msg"></span>
                                                                                 </iais:value>

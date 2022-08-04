@@ -138,20 +138,21 @@
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
-                                                                            <%--todo: check this app status and logic--%>
+                                                                            <%--todo: check this app status, logic and decision--%>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
                                                                             <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_APPROVAL}">
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}">selected="selected"</c:if>>Mark report as final</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_MARK_AS_FINAL_AND_ROUTE_TO_AO}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_MARK_AS_FINAL_AND_ROUTE_TO_AO}">selected="selected"</c:if>>Mark report as final</option>
                                                                             </c:if>
-                                                                            <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
+                                                            <%--TODO: check this decision--%>
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">

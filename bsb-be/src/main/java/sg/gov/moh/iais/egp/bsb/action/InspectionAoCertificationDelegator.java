@@ -202,12 +202,13 @@ public class InspectionAoCertificationDelegator {
 
         ValidationResultDto validationProcessDto = inspectionClient.validateDoCertification(processDto);
         String validateResult;
+        // TODO: check these decision
         if (validationProcessDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(processDto.getDecision())) {
                 validateResult = "routeBack";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processDto.getDecision())) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())) {
                 validateResult = "skip";
             } else {
                 validateResult = "invalid";

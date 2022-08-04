@@ -304,28 +304,29 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
 
     //BE DECISION VALUE
-    public static final String MOH_PROCESSING_DECISION_SCREENED_BY_DO = "MOHPRO001";
-    public static final String MOH_PROCESSING_DECISION_REQUEST_FOR_INFO = "MOHPRO002";
-    public static final String MOH_PROCESSING_DECISION_REJECT = "MOHPRO003";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_APPROVAL = "MOHPRO004";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_REJECT = "MOHPRO005";
-    public static final String MOH_PROCESSING_DECISION_APPROVE_FOR_INSPECTION = "MOHPRO006";
-    public static final String MOH_PROCESSING_DECISION_APPROVE = "MOHPRO007";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO = "MOHPRO008";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM = "MOHPRO009";
-    public static final String MOH_PROCESSING_DECISION_VERIFIED = "MOHPRO010";
-    public static final String MOH_PROCESSING_DECISION_INTERNAL_CLARIFICATIONS = "MOHPRO011";
-    public static final String MOH_PROCESSING_DECISION_MARK_AS_READY = "MOHPRO021";
-    public static final String MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW = "MOHPRO022";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT = "MOHPRO023";
-    public static final String MOH_PROCESSING_DECISION_MARK_AS_FINAL = "MOHPRO024";
-    public static final String MOH_PROCESSING_DECISION_ACCEPTS_RECTIFICATIONS_AND_ROUTE_TO_AO = "MOHPRO025";
-    public static final String MOH_PROCESSING_DECISION_REJECT_AND_ROUTE_TO_DO_FOR_REVISION = "MOHPRO026";
-    public static final String MOH_PROCESSING_DECISION_ACCEPT = "MOHPRO027";
-    public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
-    public static final String MOH_PROCESSING_DECISION_SKIP_INSPECTION = "MOHPRO029";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_AO = "MOHPRO030";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW = "MOHPRO031";
+    public static final String MOH_PROCESS_DECISION_SCREENED_BY_DO_PROCEED_TO_NEXT_STAGE                  = "MOHPRO001";
+    public static final String MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION                               = "MOHPRO002";
+    public static final String MOH_PROCESS_DECISION_REJECT                                                = "MOHPRO003";
+    public static final String MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE                      = "MOHPRO004";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_HM                                           = "MOHPRO005";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO                                      = "MOHPRO006";
+    public static final String MOH_PROCESS_DECISION_APPROVE                                               = "MOHPRO007";
+    public static final String MOH_PROCESS_DECISION_ACCEPT                                                = "MOHPRO008";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_APPROVAL                              = "MOHPRO009";
+    public static final String MOH_PROCESS_DECISION_SELECT_ANOTHER_DATE                                   = "MOHPRO010";
+    public static final String MOH_PROCESS_DECISION_CONFIRM_PROPOSED_DATE                                 = "MOHPRO011";
+    public static final String MOH_PROCESS_DECISION_MARK_INSPECTION_TASK_AS_READY                         = "MOHPRO012";
+    public static final String MOH_PROCESS_DECISION_PROCEED_TO_INSPECTION_REPORT_PREPARATION              = "MOHPRO013";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW                                = "MOHPRO014";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO_FOR_REVISION                         = "MOHPRO015";
+    public static final String MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT       = "MOHPRO016";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_APPLICANT                               = "MOHPRO017";
+    public static final String MOH_PROCESS_DECISION_MARK_AS_FINAL_AND_ROUTE_TO_AO                         = "MOHPRO018";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW                                = "MOHPRO019";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_APPLICANT                                    = "MOHPRO020";
+    public static final String MOH_PROCESS_DECISION_APPROVE_AND_ROUTE_TO_APPLICANT                        = "MOHPRO021";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO                                           = "MOHPRO022";
+    public static final String MOH_PROCESS_DECISION_SKIP_INSPECTION                                       = "MOHPRO023";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";

@@ -94,20 +94,21 @@
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
+                                                                <%--TODO: check all decision--%>
                                                                 <div class="form-group">
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="ao-cert-decision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO030" <c:if test="${insDecision.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Route to AO</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO}">selected="selected"</c:if>>Route to AO</option>
                                                                             </select>
                                                                             <span data-err-ind="decision" class="error-msg" ></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
-                                                                <div class="form-group" id="selectMohUserDiv"  <c:if test="${insDecision.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_AO}">style="display: none;"</c:if>>
+                                                                <div class="form-group" id="selectMohUserDiv"  <c:if test="${insDecision.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO}">style="display: none;"</c:if>>
                                                                     <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
