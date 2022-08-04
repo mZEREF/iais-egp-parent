@@ -4,19 +4,27 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +54,11 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
 
     @Autowired
     private DsLicenceService dsLicenceService;
+
+    @Autowired
+    private AppCommService appSubmissionService;
+    @Autowired
+    private DocInfoService docInfoService;
 
     @Override
     public Map<String, PremisesDto> getVssCenterPremises(String licenseeId) {
@@ -156,5 +169,27 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
             return null;
         }
         return vssFeClient.getVssSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
+    }
+
+    @Override
+    public void displayToolTipJudgement(HttpServletRequest request) {
+        VssSuperDataSubmissionDto currentVssDataSubmission = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        VssTreatmentDto vssTreatmentDto = currentVssDataSubmission.getVssTreatmentDto();
+        if (vssTreatmentDto != null){
+            SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
+            if (sexualSterilizationDto != null){
+                ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), "ELIS");
+                if (professionalResponseDto != null && doctorInformationDto != null
+                        && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
+                    sexualSterilizationDto.setToolTipShow("N");
+                } else if (professionalResponseDto != null && doctorInformationDto == null && StringUtils.hasLength(professionalResponseDto.getName())) {
+                    sexualSterilizationDto.setToolTipShow("N");
+                } else {
+                    sexualSterilizationDto.setToolTipShow("Y");
+                }
+            }
+        }
+        DataSubmissionHelper.setCurrentVssDataSubmission(currentVssDataSubmission,request);
     }
 }

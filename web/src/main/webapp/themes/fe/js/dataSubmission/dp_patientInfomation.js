@@ -3,6 +3,7 @@ $(document).ready(function () {
     $('#country').change(function (){
         countryStar();
     });
+    countryStar();
 
     var appType = $('input[name="appType"]').val();
     var isNew = $('input[name="isNew"]').val();
@@ -21,7 +22,7 @@ function  test(sel,val,id1,id2){
 }
 function countryStar(){
     var country= $('#country option:selected').val();
-    if("SG" ==country){
+    if(isEmpty(country) || "SG" == country){
         $('#cityStar').text("")
         $('#stateStar').text("")
     }else {

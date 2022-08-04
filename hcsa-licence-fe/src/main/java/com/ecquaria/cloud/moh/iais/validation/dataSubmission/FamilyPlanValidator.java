@@ -3,14 +3,18 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Map;
 
 public class FamilyPlanValidator implements CustomizeValidator {
@@ -114,6 +118,15 @@ public class FamilyPlanValidator implements CustomizeValidator {
             if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
                 errorMap.putAll(result.retrieveAll());
+            }
+        }
+        String pastDate = familyPlanDto.getFirstDayOfLastMenstPer();
+        if (!StringUtil.isEmpty(pastDate) && CommonValidator.isDate(pastDate)) {
+            try {
+                if (Formatter.compareDateByDay(pastDate) > 0) {
+                    errorMap.put("firstDayOfLastMenstPer", MessageUtil.replaceMessage("DS_ERR001", "First Day of Last Menstrual Period", "field"));
+                }
+            } catch (ParseException ignored) {
             }
         }
         return errorMap;

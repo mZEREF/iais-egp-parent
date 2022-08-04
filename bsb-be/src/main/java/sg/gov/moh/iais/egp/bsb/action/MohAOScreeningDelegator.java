@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
@@ -20,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_SCREENING;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_FACILITY_REGISTRATION;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_SCREENING;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO;
@@ -74,25 +75,24 @@ public class MohAOScreeningDelegator {
         switch (processingDecision) {
             case MOH_PROCESSING_DECISION_APPROVE:
                 String nextAppStatus = processClient.saveAoScreeningApprove(appId, taskId, mohProcessDto);
-                if (nextAppStatus.equals(APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT)) {
-                    ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT));
+                if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
-                } else if (nextAppStatus.equals(APP_STATUS_PEND_DO)) {
-                    ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO) + " Processing");
+                } else if (nextAppStatus.equals(APP_STATUS_PEND_DO_RECOMMENDATION)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 }
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextAppStatus));
                 break;
             case MOH_PROCESSING_DECISION_REJECT:
                 processClient.saveAoScreeningReject(appId, taskId, mohProcessDto);
                 break;
             case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO:
                 processClient.saveAoScreeningRouteBackToDo(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK,MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO) + " Screening");
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK,MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_SCREENING));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM:
                 processClient.saveAoScreeningRouteToHm(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_HM));
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_DECISION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);
                 break;
             default:

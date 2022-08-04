@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -38,29 +37,11 @@ public class ApplicationDto extends BaseEntityDto {
 
     private String applicantUserId;
 
-    private LocalDate approvalDate;
-
-    private Date doVerifiedDt;
-
-    private Date aoVerifiedDt;
-
-    private Date hmVerifiedDt;
-
     private String assigned;
-
-    private LocalDate effectiveDate;
-
-    private String stageId;
-
-    private String toBeSuspendReinstateAppId;
 
     private String doUserId;
 
     private String aoUserId;
 
     private String hmUserId;
-
-    private LocalDate prefInspectionStart;
-
-    private LocalDate prefInspectionEnd;
 }

@@ -22,12 +22,6 @@ public final class RevocationConstants {
     //facility status and approval status
     public static final String PARAM_APPLICATION_TYPE_REVOCATION = "BSBAPTY006";
 
-    public static final String PARAM_APPLICATION_STATUS_PENDING_DO = "BSBAPST001";
-    public static final String PARAM_APPLICATION_STATUS_PENDING_AO = "BSBAPST002";
-    public static final String PARAM_APPLICATION_STATUS_PENDING_HM = "BSBAPST003";
-    public static final String PARAM_APPLICATION_STATUS_REJECTED = "BSBAPST008";
-    public static final String PARAM_APPLICATION_STATUS_APPROVED = "BSBAPST009";
-
     public static final String KEY_APPLICATION_PAGE_INFO = "pageInfo";
     public static final String KEY_APPLICATION_DATA_LIST = "dataList";
     public static final String KEY_ACTION_VALUE = "action_value";

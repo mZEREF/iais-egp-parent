@@ -178,6 +178,7 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
+            dpDataSubmissionService.displayToolTipJudgement(bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
             ldtSuperDataSubmissionDto.setAppType(ldtSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
@@ -188,8 +189,9 @@ public class MohDsActionDelegator {
             SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
             TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
             try {
-                int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate());
-                treatmentDto.setAge(age / 365);
+                int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
+                int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+                treatmentDto.setAge(ageNew);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -199,8 +201,8 @@ public class MohDsActionDelegator {
                 sexualSterilizationDto.setDoctorReignNo(doctorInformationDto.getDoctorReignNo());
                 sexualSterilizationDto.setDoctorInformations("true");
             }
-
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+            vssDataSubmissionService.displayToolTipJudgement(bpc.request);
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
@@ -235,10 +237,11 @@ public class MohDsActionDelegator {
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
+            topDataSubmissionService.displayToolTipJudgement(bpc.request);
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
+        ParamUtil.setRequestAttr(bpc.request, "headingSigns", "hide");
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 

@@ -17,7 +17,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityCertifierRegistrationService;
 import sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService;
@@ -49,6 +48,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NOD
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.STEP_NAME_FACILITY_CERTIFIER_PREVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_VERIFICATION;
 import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_ADDRESS;
 
 /**
@@ -208,7 +208,8 @@ public class FacCertifierRegistrationDelegator {
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-                    finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
+                    // TODO: check this app status
+                    finalAllDataDto.setAppStatus(APP_STATUS_PEND_DO_VERIFICATION);
                     String response = facilityCertifierRegistrationService.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facilityCertifierRegister response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
 

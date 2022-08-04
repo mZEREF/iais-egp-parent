@@ -163,14 +163,15 @@ public class FacilityApprovalOfficerDelegator {
         // view application
         SubmissionDetailsInfo submissionDetailsInfo = (SubmissionDetailsInfo) ParamUtil.getSessionAttr(request, ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO);
         String appStatus = submissionDetailsInfo.getApplicationStatus();
+        // TODO: check these app status
         switch(appStatus) {
-            case MasterCodeConstants.APP_STATUS_PEND_DO:
+            case MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION:
                 AppViewService.approvalAppViewApp(request, appId, TaskType.DO_PROCESSING_FACILITY_APPROVAL);
                 break;
-            case MasterCodeConstants.APP_STATUS_PEND_AO:
+            case MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL:
                 AppViewService.approvalAppViewApp(request, appId, TaskType.AO_PROCESSING_FACILITY_APPROVAL);
                 break;
-            case MasterCodeConstants.APP_STATUS_PEND_HM:
+            case MasterCodeConstants.APP_STATUS_PEND_HM_APPROVAL:
                 AppViewService.approvalAppViewApp(request, appId, TaskType.HM_PROCESSING_FACILITY_APPROVAL);
                 break;
             default:

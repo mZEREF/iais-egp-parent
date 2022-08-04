@@ -32,14 +32,10 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <div class="row">
-    <div class="container">
+    <div class="container center-content">
       <div class="col-xs-12">
         <h3>Please select the submission you wish to make</h3>
       </div>
-    </div>
-  </div>
-  <div class="row" >
-        <div class="container">
           <c:if test="${dataSubARTPrivilege == 1}">
             <div class="col-xs-12" style="height: 60px">
               <div class="col-xs-8 col-md-4 text-left">

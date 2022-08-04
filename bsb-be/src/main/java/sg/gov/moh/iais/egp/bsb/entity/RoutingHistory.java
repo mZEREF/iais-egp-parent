@@ -14,8 +14,6 @@ public class RoutingHistory extends BaseEntity {
 
   private String id;
 
-  private RoutingStage routingStage;
-
   private String internalRemarks;
 
   private String processDecision;

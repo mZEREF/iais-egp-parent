@@ -284,10 +284,18 @@
                             </div>
 
                         </div>
-
-                        <iais:action style="text-align:right;">
-                            <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>
+                        <iais:action >
+                            <div class="col-xs-12 col-md-2 text-left">
+                                <a style="padding-left: 5px;" class="back " href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
+                                    <em class="fa fa-angle-left">&nbsp;</em> Back
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-md-10 margin-bottom-10">
+                                <div class="text-right">
+                                    <a style="text-align:right;" class="btn btn-secondary"
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/DonorSample-SearchResults-DownloadS">Download</a>
+                                </div>
+                            </div>
                         </iais:action>
                     </div>
             </div>

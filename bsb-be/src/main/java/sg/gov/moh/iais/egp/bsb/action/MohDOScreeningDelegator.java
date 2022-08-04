@@ -69,12 +69,12 @@ public class MohDOScreeningDelegator {
         switch (processingDecision) {
             case MOH_PROCESSING_DECISION_SCREENED_BY_DO:
                 processClient.saveDoScreeningScreenedByDO(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO) + " Screening");
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_SCREENING));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
                 break;
             case MOH_PROCESSING_DECISION_REQUEST_FOR_INFO:
                 processClient.saveDoScreeningRequestForInformation(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INPUT));
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
                 break;
             case MOH_PROCESSING_DECISION_REJECT:

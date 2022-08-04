@@ -4,17 +4,26 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 
@@ -42,6 +51,11 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
 
     @Autowired
     private DsLicenceService dsLicenceService;
+
+    @Autowired
+    private AppCommService appSubmissionService;
+    @Autowired
+    private DocInfoService docInfoService;
 
     @Override
     public Map<String, PremisesDto> getTopCenterPremises(String licenseeId) {
@@ -193,7 +207,29 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         return topFeClient.getTopPatientSelect(idType, idNumber, orgId).getEntity();
     }
 
-   /* @Override
+    @Override
+    public void displayToolTipJudgement(HttpServletRequest request) {
+        TopSuperDataSubmissionDto currentTopDataSubmission = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        TerminationOfPregnancyDto terminationOfPregnancyDto = currentTopDataSubmission.getTerminationOfPregnancyDto();
+        if (terminationOfPregnancyDto != null) {
+            TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
+            if (terminationDto != null) {
+                ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(), "ELIS");
+                if (professionalResponseDto != null && doctorInformationDto != null
+                        && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
+                    terminationDto.setToolTipShow("N");
+                } else if (professionalResponseDto != null && doctorInformationDto == null && StringUtils.hasLength(professionalResponseDto.getName())) {
+                    terminationDto.setToolTipShow("N");
+                } else {
+                    terminationDto.setToolTipShow("Y");
+                }
+            }
+        }
+        DataSubmissionHelper.setCurrentTopDataSubmission(currentTopDataSubmission,request);
+    }
+
+    /* @Override
     public String getDraftNo() {
         String draftNo = systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
         log.info(StringUtil.changeForLog("The Draft No: " + draftNo));

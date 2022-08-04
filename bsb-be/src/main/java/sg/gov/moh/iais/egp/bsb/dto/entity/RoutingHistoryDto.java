@@ -15,8 +15,6 @@ import lombok.ToString;
 public class RoutingHistoryDto extends BaseEntityDto {
     private String id;
 
-    private RoutingStageDto routingStage;
-
     private String processDecision;
 
     private String appStatus;

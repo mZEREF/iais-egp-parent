@@ -580,8 +580,10 @@ public final class AppDataHelper {
                 if (oldAppSvcVehicleDto != null) {
                     dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
                     appSvcVehicleDto.setStatus(oldAppSvcVehicleDto.getStatus());
+                    appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_EDIT);
                 } else {
                     appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_SUBMIT);
+                    appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ADD);
                 }
                 if (StringUtil.isEmpty(dummyVehNum)) {
                     dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);

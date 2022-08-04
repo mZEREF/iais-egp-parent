@@ -16,15 +16,6 @@ public class MasterCodeConstants {
     public static final String YES_CAPITALIZED = "Yes";
     public static final String NO_CAPITALIZED = "No";
 
-    public static String readUpperCaseYesNo(String raw) {
-        String value = null;
-        if (YES_UPPER_CASE.equals(raw)) {
-            value = YES;
-        } else if (NO_UPPER_CASE.equals(raw)) {
-            value = NO;
-        }
-        return value;
-    }
     public static String displayYesNo(String value) {
         String display = null;
         if (YES.equals(value)) {
@@ -53,84 +44,116 @@ public class MasterCodeConstants {
     public static final String APP_TYPE_WITHDRAW = "BSBAPTY009";
     public static final String APP_TYPE_SUBMISSION = "BSBAPTY010";
 
-    public static final String APP_STATUS_PEND_DO                       = "BSBAPST001";
-    public static final String APP_STATUS_PEND_AO                       = "BSBAPST002";
-    public static final String APP_STATUS_PEND_HM                       = "BSBAPST003";
-    public static final String APP_STATUS_PEND_INPUT                    = "BSBAPST004";
-    public static final String APP_STATUS_ALL_INSPECTION                = "BSBAPST005";  // Not a actual status, it means all inspection status
-    public static final String APP_STATUS_WITHDRAW                      = "BSBAPST007";
-    public static final String APP_STATUS_REJECTED                      = "BSBAPST008";
-    public static final String APP_STATUS_APPROVED                      = "BSBAPST009";
-    public static final String APP_STATUS_REGISTERED                    = "BSBAPST010";
-    public static final String APP_STATUS_DRAFT                         = "BSBAPST011";
-    public static final String APP_STATUS_REMOVED                       = "BSBAPST012";
-    public static final String APP_STATUS_PEND_APPOINTMENT_SCHEDULE     = "BSBAPST021";
-    public static final String APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT   = "BSBAPST022";
-    public static final String APP_STATUS_PEND_INSPECTION_READINESS     = "BSBAPST023";
-    public static final String APP_STATUS_PEND_CLARIFICATION            = "BSBAPST024";
-    public static final String APP_STATUS_PEND_INSPECTION               = "BSBAPST025";
-    public static final String APP_STATUS_PEND_INSPECTION_REPORT        = "BSBAPST026";
-    public static final String APP_STATUS_PEND_AO_REVIEW                = "BSBAPST027";
-    public static final String APP_STATUS_PEND_REPORT_REVISION          = "BSBAPST028";
-    public static final String APP_STATUS_PEND_REPORT_FINALISATION      = "BSBAPST029";
-    public static final String APP_STATUS_PEND_NC_RECTIFICATION         = "BSBAPST030";
-    public static final String APP_STATUS_PEND_DO_RECTIFICATION_REVIEW  = "BSBAPST031";
-    public static final String APP_STATUS_PEND_AO_RECTIFICATION_REVIEW  = "BSBAPST032";
-    public static final String APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS   = "BSBAPST033";
-    public static final String APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW   = "BSBAPST034";
-    public static final String APP_STATUS_PEND_EXTENSION_REVIEW         = "BSBAPST035";
-    public static final String APP_STATUS_PENDING_DO_APPROVAL_LETTER_DRAFT = "BSBAPST036";
-    public static final String APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW = "BSBAPST037";
-    public static final String APP_STATUS_PEND_AFC_REPORT_UPLOAD        = "BSBAPST038";
-    public static final String APP_STATUS_PEND_AFC_INPUT                = "BSBAPST039";
-    public static final String APP_STATUS_PEND_APPLICANT_REPORT_REVIEW  = "BSBAPST040";
-    public static final String APP_STATUS_PEND_DO_REPORT_REVIEW         = "BSBAPST043";
-    public static final String APP_STATUS_PEND_AO_REPORT_REVIEW         = "BSBAPST044";
-    public static final String APP_STATUS_PEND_DO_CONFIRM_INSPECTION_DATE = "BSBAPST045";
-    public static final String APP_STATUS_PEND_DO_NC_EMAIL_DRAFT        = "BSBAPST046";
-    public static final String APP_STATUS_PEND_AO_NC_EMAIL_REVIEW       = "BSBAPST047";
-    public static final String APP_STATUS_PEND_HM_REPORT_APPROVAL       = "BSBAPST048";
-    public static final String APP_STATUS_HM_RESPONDED                  = "BSBAPST049";
+    // App Status
+    // main
+    public static final String APP_STATUS_REMOVED                                   = "BSBAPST000";
+    public static final String APP_STATUS_DRAFT                                     = "BSBAPST001";
+    public static final String APP_STATUS_APPROVED                                  = "BSBAPST002";
+    public static final String APP_STATUS_ACCEPTED                                  = "BSBAPST003";
+    public static final String APP_STATUS_PARTIAL_ACCEPTANCE                        = "BSBAPST004";
+    public static final String APP_STATUS_VERIFIED                                  = "BSBAPST005";
+    public static final String APP_STATUS_WITHDRAWN                                 = "BSBAPST006";
+    public static final String APP_STATUS_REJECTED                                  = "BSBAPST007";
+    public static final String APP_STATUS_PEND_APPLICANT_CLARIFICATION              = "BSBAPST008";
+    public static final String APP_STATUS_PEND_APPLICANT_INPUT                      = "BSBAPST009";
+    // screening
+    public static final String APP_STATUS_PEND_DO_SCREENING                         = "BSBAPST020";
+    public static final String APP_STATUS_PEND_DO_CLARIFICATION                     = "BSBAPST021";
+    public static final String APP_STATUS_PEND_AO_SCREENING                         = "BSBAPST022";
+    public static final String APP_STATUS_PEND_HM_DECISION                          = "BSBAPST023";
+    // processing
+    public static final String APP_STATUS_PEND_DO_RECOMMENDATION                    = "BSBAPST030";
+    public static final String APP_STATUS_PEND_AO_APPROVAL                          = "BSBAPST031";
+    public static final String APP_STATUS_PEND_HM_APPROVAL                          = "BSBAPST032";
+    public static final String APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT             = "BSBAPST033";
+    public static final String APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW            = "BSBAPST034";
+    public static final String APP_STATUS_PEND_DO_VERIFICATION                      = "BSBAPST035";
+    // pre-inspection
+    public static final String APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT           = "BSBAPST100";
+    public static final String APP_STATUS_PEND_CHECKLIST_SUBMISSION                 = "BSBAPST101";
+    public static final String APP_STATUS_PEND_APPOINTMENT_SCHEDULING               = "BSBAPST102";
+    public static final String APP_STATUS_PEND_APPOINTMENT_CONFIRMATION             = "BSBAPST103";
+    public static final String APP_STATUS_PEND_INSPECTION_READINESS                 = "BSBAPST104";
+    // on-site inspection
+    public static final String APP_STATUS_PEND_INSPECTION                           = "BSBAPST200";
+    // post-inspection(report)
+    public static final String APP_STATUS_PEND_INSPECTION_REPORT                    = "BSBAPST300";
+    public static final String APP_STATUS_PEND_INSPECTION_REPORT_REVIEW             = "BSBAPST301";
+    public static final String APP_STATUS_PEND_INSPECTION_REPORT_REVISION           = "BSBAPST302";
+    public static final String APP_STATUS_PEND_DO_REPORT_APPROVAL                   = "BSBAPST303";
+    public static final String APP_STATUS_PEND_AO_REPORT_APPROVAL                   = "BSBAPST304";
+    public static final String APP_STATUS_PEND_HM_REPORT_APPROVAL                   = "BSBAPST305";
+    // post-inspection(Non-Compliance)
+    public static final String APP_STATUS_PEND_NC_RECTIFICATION                     = "BSBAPST310";
+    public static final String APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION       = "BSBAPST311";
+    public static final String APP_STATUS_PEND_NC_NOTIFICATION_EMAIL                = "BSBAPST312";
+    public static final String APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW         = "BSBAPST313";
+    public static final String APP_STATUS_PEND_DO_RECTIFICATION_REVIEW              = "BSBAPST314";
+    public static final String APP_STATUS_PEND_AO_RECTIFICATION_REVIEW              = "BSBAPST315";
+    // post-inspection(Follow-Up)
+    public static final String APP_STATUS_PEND_EXTENSION_REVIEW                     = "BSBAPST320";
+    public static final String APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION            = "BSBAPST321";
+    public static final String APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION       = "BSBAPST322";
+    public static final String APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION       = "BSBAPST323";
+    // certification
+    public static final String APP_STATUS_PEND_AFC_REPORT_UPLOAD                    = "BSBAPST400";
+    public static final String APP_STATUS_PEND_AFC_SELECTION                        = "BSBAPST401";
+    public static final String APP_STATUS_PEND_AFC_SELECTION_REVIEW                 = "BSBAPST402";
+    public static final String APP_STATUS_PEND_DO_REPORT_REVIEW                     = "BSBAPST403";
+    public static final String APP_STATUS_PEND_AO_REPORT_REVIEW                     = "BSBAPST404";
+    public static final String APP_STATUS_PEND_AFC_INPUT                            = "BSBAPST405";
 
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
     public static final Set<String> UNAVAILABLE_APP_STATUS;
+    public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
+    // TODO: check these app status
     static {
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
         // BE don't add 'Draft', because BE DB don't save it
-        commonQueryAppStatus.add(APP_STATUS_PEND_DO);
-        commonQueryAppStatus.add(APP_STATUS_PEND_AO);
-        commonQueryAppStatus.add(APP_STATUS_PEND_HM);
-        commonQueryAppStatus.add(APP_STATUS_PEND_INPUT);
-        commonQueryAppStatus.add(APP_STATUS_ALL_INSPECTION);
-        commonQueryAppStatus.add(APP_STATUS_WITHDRAW);
+        commonQueryAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
+        commonQueryAppStatus.add(APP_STATUS_PEND_AO_SCREENING);
+        commonQueryAppStatus.add(APP_STATUS_PEND_HM_DECISION);
+        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_CLARIFICATION);
+        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_INPUT);
+        commonQueryAppStatus.add(APP_STATUS_WITHDRAWN);
         commonQueryAppStatus.add(APP_STATUS_REJECTED);
         commonQueryAppStatus.add(APP_STATUS_APPROVED);
-        commonQueryAppStatus.add(APP_STATUS_REGISTERED);
         COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
 
         Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
-        inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULE);
-        inspectionAppStatus.add(APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT);
+        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
+        inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
+        inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
+        inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_CONFIRMATION);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
-        inspectionAppStatus.add(APP_STATUS_PEND_CLARIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT);
-        inspectionAppStatus.add(APP_STATUS_PEND_AO_REVIEW);
-        inspectionAppStatus.add(APP_STATUS_PEND_REPORT_REVISION);
-        inspectionAppStatus.add(APP_STATUS_PEND_REPORT_FINALISATION);
+        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT_REVIEW);
+        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_REPORT_REVISION);
+        inspectionAppStatus.add(APP_STATUS_PEND_DO_REPORT_APPROVAL);
+        inspectionAppStatus.add(APP_STATUS_PEND_AO_REPORT_APPROVAL);
+        inspectionAppStatus.add(APP_STATUS_PEND_HM_REPORT_APPROVAL);
         inspectionAppStatus.add(APP_STATUS_PEND_NC_RECTIFICATION);
+        inspectionAppStatus.add(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION);
+        inspectionAppStatus.add(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL);
+        inspectionAppStatus.add(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL_REVIEW);
         inspectionAppStatus.add(APP_STATUS_PEND_DO_RECTIFICATION_REVIEW);
         inspectionAppStatus.add(APP_STATUS_PEND_AO_RECTIFICATION_REVIEW);
-        inspectionAppStatus.add(APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS);
-        inspectionAppStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW);
         inspectionAppStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
+        inspectionAppStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION);
+        inspectionAppStatus.add(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION);
+        inspectionAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
 
         Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
         unavailableAppStatus.add(APP_STATUS_REMOVED);
         UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
+
+        Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
+        rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
+        APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
     }
 
 

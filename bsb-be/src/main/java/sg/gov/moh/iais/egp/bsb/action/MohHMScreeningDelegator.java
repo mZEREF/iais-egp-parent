@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_SCREENING;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_FACILITY_REGISTRATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_HM_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -62,7 +62,7 @@ public class MohHMScreeningDelegator {
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         processClient.saveHmScreeningApproveOrReject(appId, taskId, mohProcessDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Higher Management Screening");
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeConstants.APP_STATUS_PEND_AO + " Screening");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, APP_STATUS_PEND_AO_SCREENING);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
     }
 }

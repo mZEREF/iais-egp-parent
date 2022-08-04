@@ -3,12 +3,12 @@
  <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a  data-toggle="collapse" href="#arAmendment">
+            <a class="collapsed" data-toggle="collapse" href="#arAmendment">
                 Amendment
             </a>
         </h4>
     </div>
-    <div id="arAmendment" class="panel-collapse collapse in">
+    <div id="arAmendment" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="amendReasonCodeCategory" value="${dataSubmission.submissionType == 'AR_TP003' ? 'DATA_SUBMISSION_DONOR_SMAPLE_AMENDMENT' :

@@ -46,6 +46,9 @@ public interface BsbInboxClient {
     @GetMapping(value = "/fe-inbox/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxAppPageInfoResultDto> getInboxApplication(@SpringQueryMap InboxAppSearchDto dto);
 
+    @GetMapping(value = "/fe-inbox/app/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<InboxAppPageInfoResultDto> getInboxApplicationAFC(@SpringQueryMap InboxAppSearchDto dto);
+
     @GetMapping(value = "/fe-inbox/approval/facAdmin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxApprovalFacAdminResultDto> getInboxApprovalForFacAdmin(@SpringQueryMap InboxApprovalSearchDto dto);
 

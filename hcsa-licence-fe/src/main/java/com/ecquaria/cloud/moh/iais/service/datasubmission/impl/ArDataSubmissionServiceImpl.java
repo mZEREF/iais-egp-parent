@@ -28,9 +28,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -47,19 +50,23 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -825,5 +832,61 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             default:
                 return MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL_VSS;
         }
+    }
+
+    private List<String> getSubmittedStageList(String cycleId){
+        List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+        if (!CollectionUtils.isEmpty(dataSubmissionDtoList)){
+            return dataSubmissionDtoList.stream().map(DataSubmissionDto::getCycleStage).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request) {
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+        String currentCycle = ParamUtil.getString(request, "stage");
+        String actionValue = ParamUtil.getString(request, "action_value");
+        String stage;
+        List<String> submittedStageList = new ArrayList<>();
+        if (selectionDto != null) {
+            stage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
+            List<CycleDto> cycleDtos = selectionDto.getCycleDtos();
+            if (!CollectionUtils.isEmpty(cycleDtos)){
+                String cycleId = cycleDtos.stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equals(cycleDto.getCycleType())).map(CycleDto::getId).collect(Collectors.joining(","));
+                submittedStageList = getSubmittedStageList(cycleId);
+            }
+        } else {
+            stage = StringUtils.hasLength(actionValue) ? actionValue : currentCycle;
+        }
+        //if current and submitted stage is same one, display ongoingStage status
+        submittedStageList.remove(stage);
+        List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
+        List<String> options = DataSubmissionHelper.getAllARCycleStages();
+        for (String option : options) {
+            String codeDesc;
+            if (DataSubmissionConsts.AR_STAGE_THAWING.equals(option)) {
+                codeDesc = "Thawing";
+            } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
+                codeDesc = "Preimplantation Genetic Testing";
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(option)) {
+                codeDesc = "Outcome";
+            } else if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(option)) {
+                codeDesc = "Transfer In & Out";
+            } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)) {
+                codeDesc = "Completed/Abandoned Cycle";
+            } else {
+                codeDesc = MasterCodeUtil.getCodeDesc(option);
+            }
+            if (option.equals(stage)) {
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING));
+            } else if (submittedStageList.contains(option)){
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED));
+            } else {
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_NOT_SUBMITTED));
+            }
+        }
+        return arCycleStageDtos;
     }
 }

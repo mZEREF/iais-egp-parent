@@ -22,6 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_REVIEW_FOLLOW_UP_ITEMS;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.NO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
@@ -108,8 +111,9 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsRFI(appId, taskId, insProcessDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
+        // TODO: check this app status
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
 
     }
@@ -125,9 +129,10 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
+        // TODO: check this app status
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_APPROVAL));
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
 
     }
 
@@ -141,8 +146,9 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO));
+        // TODO: check this app status
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_APPROVAL));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_AO);
     }
 

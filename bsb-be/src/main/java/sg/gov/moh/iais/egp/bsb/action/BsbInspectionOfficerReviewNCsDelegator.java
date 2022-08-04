@@ -36,6 +36,7 @@ import java.util.List;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_REVIEW_NC_RECTIFICATION_EVIDENCE_DOCUMENTS;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP;
@@ -198,7 +199,7 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.reviewInspectionNCDORequestForInformation(appId,taskId,processDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(submissionDetailsInfo.getApplicationStatus()));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INPUT));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
 
@@ -222,7 +223,7 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.finalizeReviewInspectionNC(appId,taskId,processDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(submissionDetailsInfo.getApplicationStatus()));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_DO));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_RECOMMENDATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_DO);
     }
 

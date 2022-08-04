@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
@@ -205,7 +206,7 @@
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Intended Purpose of Test</p>
-                                                        <c:out value="${ldt.intendedPurpose}"/>
+                                                            ${StringUtil.viewTextHtml(ldt.intendedPurpose)}
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Date LDT was made or will be made available</p>
@@ -227,7 +228,7 @@
                                                     </td>
                                                     <td style="vertical-align:middle;">
                                                         <p class="visible-xs visible-sm table-row-title">Remarks</p>
-                                                        <c:out value="${ldt.remarks}"/>
+                                                            ${StringUtil.viewTextHtml(ldt.remarks)}
                                                     </td>
 
                                                 </tr>
@@ -239,11 +240,19 @@
                             </div>
 
                         </div>
-                        <iais:action style="text-align:right;">
-                            <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/hcsa/enquiry/ar/LDT-SearchResults-DownloadS">Download</a>
+                        <iais:action >
+                            <div class="col-xs-12 col-md-2 text-left">
+                                <a style="padding-left: 5px;" class="back " href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
+                                    <em class="fa fa-angle-left">&nbsp;</em> Back
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-md-10 margin-bottom-10">
+                                <div class="text-right">
+                                    <a style="text-align:right;" class="btn btn-secondary"
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/LDT-SearchResults-DownloadS">Download</a>
+                                </div>
+                            </div>
                         </iais:action>
-
                     </div>
             </div>
         </div>

@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohDPDrugPrescribed" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="MohDPDrugPrescribed" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="50" y="310">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="Return" x="550" y="70">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="return_OnStepProcess_0" name="return_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="return_OnStepProcess_0" name="return_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreparePage" x="560" y="190">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareConfim" x="560" y="310">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareConfim_OnStepProcess_0" name="prepareConfim_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareConfim_OnStepProcess_0" name="prepareConfim_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Draft" x="560" y="460">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Submission" x="540" y="560">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submission_OnStepProcess_0" name="submission_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="submission_OnStepProcess_0" name="submission_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PageAction" x="890" y="190">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="pageAction_OnStepProcess_0" name="pageAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="pageAction_OnStepProcess_0" name="pageAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PageConfirmAction" x="900" y="310">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="pageConfirmAction_OnStepProcess_0" name="pageConfirmAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="pageConfirmAction_OnStepProcess_0" name="pageConfirmAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Retrun" x="730" y="70">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
   </ReturnInvokeProcessStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="190" y="310">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Patient" processname="MohDPPatientInfo" project="" version="-1" x="350" y="550">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePage" stageIndicator="" x="730" y="190">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePageConfirm" stageIndicator="" x="730" y="310">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="690" y="560">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Return" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(370,330)(570,90)}</position>
@@ -151,32 +151,35 @@
    <position>{(210,330)(370,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-
    <position>{(1170,330)(1171,167)(700,24)(231,22)(210,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Patient" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(370,330)(370,570)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/Patient" style="rectanular">
+   <position>{(370,570)(230,571)(210,330)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="350" y="310">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/Return" value="&quot;return&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
-   <SwitchCase component="/Steps/InvokeStep/Patient" value="&quot;patient&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Return" value="&quot;return&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Patient" value="&quot;patient&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1150" y="310">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

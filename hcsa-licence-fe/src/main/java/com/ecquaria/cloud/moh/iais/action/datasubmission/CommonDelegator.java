@@ -37,6 +37,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
+
 /**
  * CommonDelegator
  *
@@ -96,6 +98,7 @@ public abstract class CommonDelegator {
         prepareSwitch(bpc);
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
                 currentArDataSubmission.getAppType(), currentArDataSubmission.getSubmissionType()));
+        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));
     }
 
     /**
@@ -114,28 +117,33 @@ public abstract class CommonDelegator {
      */
     public void doReturn(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("The doReturn start ..."));
-        returnStep(bpc);
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        String uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-        if(arSuperDataSubmission != null){
-            if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
-                uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-            }else {
-                if (StringUtil.stringsContainKey(arSuperDataSubmission.getSubmissionType(),DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO)) {
-                    uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/1/PrepareARSubmission";
-                }else {
-                    uri =  InboxConst.URL_LICENCE_WEB_MODULE+ "MohARCycleStagesManual";
+        String actionType = ParamUtil.getRequestString(bpc.request, ACTION_TYPE);
+        if ("jumpStage".equals(actionType)) {
+            DataSubmissionHelper.jumpJudgement(bpc.request);
+        } else {
+            returnStep(bpc);
+            ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+            String uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+            if (arSuperDataSubmission != null) {
+                if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+                    uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+                } else {
+                    if (StringUtil.stringsContainKey(arSuperDataSubmission.getSubmissionType(), DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO)) {
+                        uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/1/PrepareARSubmission";
+                    } else {
+                        uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual";
+                    }
                 }
             }
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS)
+                    .append(bpc.request.getServerName())
+                    .append(uri);
+            log.info(StringUtil.changeForLog("The url is -->:" + url));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            log.info(StringUtil.changeForLog("The doReturn end ..."));
         }
-        StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS)
-                .append(bpc.request.getServerName())
-                .append(uri);
-        log.info(StringUtil.changeForLog("The url is -->:"+url));
-        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-        log.info(StringUtil.changeForLog("The doReturn end ..."));
     }
 
     /**
@@ -355,6 +363,10 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         getRfcCommon(bpc.request);
         pageAction(bpc);
+        if ("return".equals(actionType)) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, null);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        }
     }
 
     /**

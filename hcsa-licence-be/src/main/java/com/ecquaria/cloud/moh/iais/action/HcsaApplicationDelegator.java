@@ -408,6 +408,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request,"aoSelect",null);
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");

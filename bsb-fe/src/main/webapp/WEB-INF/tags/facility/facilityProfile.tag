@@ -310,30 +310,38 @@
                                             </div>
                                         </div>
 
-                                        <div id="docUploadDiv" class="document-upload-gp" <c:if test="${facProfile.facilityProtected ne 'Y'}">style="display: none"</c:if>>
-                                            <div class="document-upload-list">
-                                                <h3>Gazette Order <span class="mandatory otherQualificationSpan">*</span></h3>
-                                                <div class="file-upload-gp">
-                                                    <c:forEach var="info" items="${facProfile.savedDocMap.values()}">
-                                                        <c:set var="repoId"><iais:mask name="file" value="${info.repoId}"/></c:set>
-                                                        <div id="${repoId}FileDiv">
-                                                            <a href="/bsb-web/ajax/doc/download/facReg/profile/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
-                                                                type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button><button
-                                                                type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${repoId}', 'gazetteOrder')">Reload</button>
-                                                            <span data-err-ind="${info.repoId}" class="error-msg"></span>
-                                                        </div>
-                                                    </c:forEach>
-                                                    <c:forEach var="info" items="${facProfile.newDocMap.values()}">
-                                                        <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
-                                                        <div id="${tmpId}FileDiv">
-                                                            <a href="/bsb-web/ajax/doc/download/facReg/profile/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
-                                                                type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
-                                                                type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', 'gazetteOrder')">Reload</button>
-                                                            <span data-err-ind="${info.tmpId}" class="error-msg"></span>
-                                                        </div>
-                                                    </c:forEach>
-                                                    <a class="btn file-upload btn-secondary" data-upload-file="gazetteOrder" href="javascript:void(0);">Upload</a>
-                                                    <span data-err-ind="gazetteOrder" class="error-msg"></span>
+                                        <div id="docUploadDiv" class="document-content" <c:if test="${facProfile.facilityProtected ne 'Y'}">style="display: none"</c:if>>
+                                            <div>
+                                                <ul>
+                                                    <li>The maximum file size per document is 10 MB.</li>
+                                                    <li>Acceptable file formats: JPG, PNG, PDF, CSV, DOCX, JPEG, XLS, DOC and XLSX.</li>
+                                                </ul>
+                                            </div>
+                                            <div class="document-upload-gp">
+                                                <div class="document-upload-list">
+                                                    <h3>Gazette Order <span class="mandatory otherQualificationSpan">*</span></h3>
+                                                    <div class="file-upload-gp">
+                                                        <c:forEach var="info" items="${facProfile.savedDocMap.values()}">
+                                                            <c:set var="repoId"><iais:mask name="file" value="${info.repoId}"/></c:set>
+                                                            <div id="${repoId}FileDiv">
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/profile/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button><button
+                                                                    type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${repoId}', 'gazetteOrder')">Reload</button>
+                                                                <span data-err-ind="${info.repoId}" class="error-msg"></span>
+                                                            </div>
+                                                        </c:forEach>
+                                                        <c:forEach var="info" items="${facProfile.newDocMap.values()}">
+                                                            <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
+                                                            <div id="${tmpId}FileDiv">
+                                                                <a href="/bsb-web/ajax/doc/download/facReg/profile/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                                    type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
+                                                                    type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', 'gazetteOrder')">Reload</button>
+                                                                <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                                            </div>
+                                                        </c:forEach>
+                                                        <a class="btn file-upload btn-secondary" data-upload-file="gazetteOrder" href="javascript:void(0);">Upload</a>
+                                                        <span data-err-ind="gazetteOrder" class="error-msg"></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
