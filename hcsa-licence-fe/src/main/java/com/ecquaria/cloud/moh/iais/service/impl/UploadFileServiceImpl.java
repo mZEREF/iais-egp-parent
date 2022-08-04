@@ -463,32 +463,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                         appGrpPremisesDtos.add(appliGrpPremisesDto);
                         appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
                         String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
-                        for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
-                            String premId = appPremPhOpenPeriodDto.getPremId();
-                            if(appliGrpPremisesDtoId.equals(premId)){
-                                appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
-                            }
-                        }
+
                         for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
                             String premisesId = appPremisesOperationalUnitDto.getPremisesId();
                             if(appliGrpPremisesDtoId.equals(premisesId)){
                                 appPremisesOperationalUnitDtoSet.add(appPremisesOperationalUnitDto);
-                            }
-                        }
-                        if(appPremEventPeriods!=null){
-                            for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
-                                String appGrpPremId = appPremEventPeriodDto.getAppGrpPremId();
-                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                                    appPremEventPeriodDtoSet.add(appPremEventPeriodDto);
-                                }
-                            }
-                        }
-                        if(appPremOpenPeriods!=null){
-                            for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
-                                String appGrpPremId = appPremOpenPeriodDto.getAppGrpPremId();
-                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                                    appPremOpenPeriodDtoSet.add(appPremOpenPeriodDto);
-                                }
                             }
                         }
                         if(appPremNonLicRelationDtos!=null){
@@ -533,6 +512,29 @@ public class UploadFileServiceImpl implements UploadFileService {
                                     for (AppSubLicenseeCorrelationDto v : appSubLicenseeCorrelationDtos) {
                                         if(v.getApplicationId().equals(applicationId)){
                                             appSubLicenseeCorrelationDtoList.add(v);
+                                        }
+                                    }
+                                }
+                                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
+                                    String appPremCorreId = appPremPhOpenPeriodDto.getAppPremId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
+                                    }
+                                }
+
+                                if(appPremEventPeriods!=null){
+                                    for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
+                                        String appPremCorreId = appPremEventPeriodDto.getAppPremId();
+                                        if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                            appPremEventPeriodDtoSet.add(appPremEventPeriodDto);
+                                        }
+                                    }
+                                }
+                                if(appPremOpenPeriods!=null){
+                                    for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
+                                        String appPremCorreId = appPremOpenPeriodDto.getAppPremId();
+                                        if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                            appPremOpenPeriodDtoSet.add(appPremOpenPeriodDto);
                                         }
                                     }
                                 }
