@@ -1,15 +1,17 @@
 <c:set var="eventList" value="${businessDto.eventDtoList}"/>
 
-<c:choose>
-    <c:when test="${businessDto.eventDtoList != null && businessDto.eventDtoList.size()>1}">
-        <c:set var="eventLength" value="${businessDto.eventDtoList.size()}"/>
-    </c:when>
-    <c:otherwise>
-        <c:set var="eventLength" value="1"/>
-    </c:otherwise>
-</c:choose>
-
 <div class="eventContent">
+
+    <c:choose>
+        <c:when test="${businessDto.eventDtoList != null && businessDto.eventDtoList.size()>1}">
+            <input class="eventLength" type="hidden" name="eventLength${status.index}" value="${businessDto.eventDtoList.size()}"/>
+            <c:set var="eventLength" value="${businessDto.eventDtoList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <input class="eventLength" type="hidden" name="eventLength${status.index}" value="1"/>
+            <c:set var="eventLength" value="1"/>
+        </c:otherwise>
+    </c:choose>
 
     <iais:row>
         <div class="col-md-12 col-xs-12">
@@ -26,20 +28,20 @@
                     <div class="col-md-4 col-xs-4">
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
-                                <iais:input type="text" maxLength="100" cssClass="Event" name="${premValue}onSiteEvent${index}" value="${event.eventName}" />
+                                <iais:input type="text" maxLength="100" cssClass="Event" name="onSiteEvent${status.index}${index}" value="${event.eventName}" />
                             </div>
                             <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEvent${index}"></span>
+                                <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEvent${status.index}${index}"></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        <iais:datePicker cssClass="EventStart" name="${premValue}onSiteEventStart${index}" value="${event.startDateStr}" />
-                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventStart${index}"></span>
+                        <iais:datePicker cssClass="EventStart" name="onSiteEventStart${status.index}${index}" value="${event.startDateStr}" />
+                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventStart${status.index}${index}"></span>
                     </div>
                     <div class="col-md-3 col-xs-3">
-                        <iais:datePicker cssClass="EventEnd" name="${premValue}onSiteEventEnd${index}" value="${event.endDateStr}" />
-                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventEnd${index}"></span>
+                        <iais:datePicker cssClass="EventEnd" name="onSiteEventEnd${status.index}${index}" value="${event.endDateStr}" />
+                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventEnd${status.index}${index}"></span>
                     </div>
                     <div class="col-md-2 col-xs-2">
                         <div class="row">
@@ -51,7 +53,7 @@
                         </div>
                     </div>
                     <div class="col-md-8 col-xs-8">
-                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventDate${index}"></span>
+                        <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventDate${status.index}${index}"></span>
                     </div>
                 </div>
             </iais:row>

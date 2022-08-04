@@ -1581,8 +1581,9 @@ public final class AppValidatorHelper {
         }
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
 
-            String prefix="";
+            String subfix=""+i;
 
+            String serviceCode=appSvcBusinessDtos.get(i).getCurrService();
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
                 errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
@@ -1601,6 +1602,9 @@ public final class AppValidatorHelper {
                     if (!map.isEmpty()) {
                         errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0016"));
                     }
+                }
+                if(/*AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL*/"BLB".equals(serviceCode)&&businessName.toUpperCase().contains("GENERAL")){
+                    errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0073"));
                 }
             }
 
@@ -1631,15 +1635,19 @@ public final class AppValidatorHelper {
             }
 
             if(appSvcBusinessDtos.get(i).getWeeklyDtoList()!=null){
-                validateWeek(appSvcBusinessDtos.get(i),prefix,errorMap);
+                validateWeek(appSvcBusinessDtos.get(i),subfix,errorMap);
             }
-            validatePh(appSvcBusinessDtos.get(i),prefix, errorMap);
-            validateEvent(appSvcBusinessDtos.get(i), prefix,errorMap);
+            if(appSvcBusinessDtos.get(i).getPhDtoList()!=null){
+                validatePh(appSvcBusinessDtos.get(i),subfix, errorMap);
+            }
+            if(appSvcBusinessDtos.get(i).getEventDtoList()!=null){
+                validateEvent(appSvcBusinessDtos.get(i), subfix,errorMap);
+            }
         }
     }
 
     //event
-    private static void validateEvent(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+    private static void validateEvent(AppSvcBusinessDto appSvcBusinessDto, String subfix, Map<String, String> errorMap) {
         List<AppPremEventPeriodDto> eventDtos = appSvcBusinessDto.getEventDtoList();
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (!IaisCommonUtils.isEmpty(eventDtos)) {
@@ -1651,21 +1659,21 @@ public final class AppValidatorHelper {
                 if (!StringUtil.isEmpty(eventName) || startDate != null || endDate != null) {
                     boolean dateIsEmpty = false;
                     if (StringUtil.isEmpty(eventName)) {
-                        errorMap.put(prefix + "onSiteEvent" + j, emptyErrMsg);
+                        errorMap.put("onSiteEvent" + subfix + j, emptyErrMsg);
                     } else if (eventName.length() > 100) {
-                        errorMap.put(prefix + "onSiteEvent" + j, repLength("Event Name", "100"));
+                        errorMap.put("onSiteEvent"+ subfix + j, repLength("Event Name", "100"));
                     }
                     if (startDate == null) {
-                        errorMap.put(prefix + "onSiteEventStart" + j, emptyErrMsg);
+                        errorMap.put("onSiteEventStart" + subfix + j, emptyErrMsg);
                         dateIsEmpty = true;
                     }
                     if (endDate == null) {
-                        errorMap.put(prefix + "onSiteEventEnd"  + j, emptyErrMsg);
+                        errorMap.put("onSiteEventEnd" + subfix  + j, emptyErrMsg);
                         dateIsEmpty = true;
                     }
                     if (!dateIsEmpty) {
                         if (startDate.after(endDate)) {
-                            errorMap.put(prefix + "onSiteEventDate" + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
+                            errorMap.put("onSiteEventDate" + subfix + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
                         }
                     }
                 }
@@ -1675,16 +1683,16 @@ public final class AppValidatorHelper {
     }
 
     //ph
-    private static void validatePh(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+    private static void validatePh(AppSvcBusinessDto appSvcBusinessDto, String subfix, Map<String, String> errorMap) {
         List<OperationHoursReloadDto> phDtos = appSvcBusinessDto.getPhDtoList();
         if (!IaisCommonUtils.isEmpty(phDtos)) {
             int j = 0;
             for (OperationHoursReloadDto phDto : phDtos) {
                 Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", prefix + "onSitePubHoliday");
-                errNameMap.put("start", prefix + "onSitePhStart");
-                errNameMap.put("end", prefix + "onSitePhEnd");
-                errNameMap.put("time", prefix + "onSitePhTime");
+                errNameMap.put("select","onSitePubHoliday"+subfix );
+                errNameMap.put("start","onSitePhStart"+subfix);
+                errNameMap.put("end", "onSitePhEnd"+ subfix);
+                errNameMap.put("time","onSitePhTime"+ subfix);
                 doOperationHoursValidate(phDto, errorMap, errNameMap, j + "", false);
                 j++;
             }
@@ -1692,21 +1700,21 @@ public final class AppValidatorHelper {
     }
 
     //weekly
-    private static void validateWeek(AppSvcBusinessDto appSvcBusinessDto, String prefix, Map<String, String> errorMap) {
+    private static void validateWeek(AppSvcBusinessDto appSvcBusinessDto, String subfix, Map<String, String> errorMap) {
         List<OperationHoursReloadDto> weeklyDtos = appSvcBusinessDto.getWeeklyDtoList();
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (IaisCommonUtils.isEmpty(weeklyDtos)) {
-            errorMap.put(prefix + "onSiteWeekly" + 0 , emptyErrMsg);
-            errorMap.put(prefix + "onSiteWeeklyStart" + 0 , emptyErrMsg);
-            errorMap.put(prefix + "onSiteWeeklyEnd" + 0 , emptyErrMsg);
+            errorMap.put( "onSiteWeekly" +subfix+ 0 , emptyErrMsg);
+            errorMap.put( "onSiteWeeklyStart"+subfix + 0 , emptyErrMsg);
+            errorMap.put( "onSiteWeeklyEnd" +subfix + 0 , emptyErrMsg);
         } else {
             int j = 0;
             for (OperationHoursReloadDto weeklyDto : weeklyDtos) {
                 Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", prefix + "onSiteWeekly");
-                errNameMap.put("start", prefix + "onSiteWeeklyStart");
-                errNameMap.put("end", prefix + "onSiteWeeklyEnd");
-                errNameMap.put("time", prefix + "onSiteWeeklyTime");
+                errNameMap.put("select","onSiteWeekly" +subfix);
+                errNameMap.put("start","onSiteWeeklyStart"+subfix);
+                errNameMap.put("end","onSiteWeeklyEnd" +subfix );
+                errNameMap.put("time","onSiteWeeklyTime"+ subfix);
                 doOperationHoursValidate(weeklyDto, errorMap, errNameMap, j+"", true);
                 j++;
             }

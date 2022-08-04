@@ -54,7 +54,7 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal outermost">
 
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
@@ -74,7 +74,6 @@
     <c:set var="maxCount" value="${maxCount}"/>
 
     <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-
         <c:forEach var="premBusinessItem" items="${premBusinessMap}" varStatus="premBusinessStatus">
             <c:if test="${premBusinessItem.key == appGrpPremisesDto.premisesIndexNo}">
                 <c:set var="businessDto" value="${premBusinessItem.value}"/>
@@ -93,6 +92,7 @@
                 <div class="businessContent panel-collapse collapse in"  role="tabpanel" aria-labelledby="business-heading">
                     <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                     <input type="hidden" class="businessIndexNo" name="businessIndexNo${status.index}" value="${businessDto.businessIndexNo}"/>
+                    <input type="hidden" class="currService" name="currService${status.index}" value="${serviceCode}">
                     <div class="row panel-body" style="padding-left: 6%">
                         <div class="panel-main-content">
                             <iais:row cssClass="edit-content">
@@ -138,15 +138,15 @@
 
     $(function() {
         $('.addWeekly').on('click', function () {
-            addWeekly('div.weeklyContent');
+            addWeekly($(this).closest('div.weeklyContent'));
         });
 
         $('.addPubHolDay').on('click', function () {
-            addPubHolDay('div.pubHolDayContent');
+            addPubHolDay($(this).closest('div.pubHolDayContent'));
         });
 
         $('.addEvent').on('click', function () {
-            addEvent('div.eventContent');
+            addEvent($(this).closest('div.eventContent'));
         });
 
         clickAllDay();
@@ -155,7 +155,6 @@
         removeEvent();
 
         $("input.allDay").each(function (){
-            // $(this).trigger('click');
             var $allDayDiv = $(this).closest('div.all-day-div');
             if($(this).is(':checked')){
                 disabeleForAllDay($allDayDiv);
@@ -164,7 +163,6 @@
                 unDisableContent($allDayDiv.siblings('.end-div'));
             }
         })
-
 
     });
 

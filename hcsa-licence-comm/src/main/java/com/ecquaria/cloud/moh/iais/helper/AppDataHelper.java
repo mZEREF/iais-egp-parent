@@ -1796,7 +1796,6 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        String isSpecialService = ParamUtil.getString(request, "isSpecialService");
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -1818,6 +1817,16 @@ public final class AppDataHelper {
                     appSvcBusinessDto = getAppSvcBusinessDtoByIndexNo(appSvcRelatedInfoDto, businessIndexNo);
                 } else if (getPageData) {
                     appSvcBusinessDto = new AppSvcBusinessDto();
+                    boolean getOHData=true;
+                    String premisesType = appGrpPremisesDto.getPremisesType();
+                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType)||ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premisesType)){
+                        getOHData=false;
+                    }
+                    String serviceCode=ParamUtil.getString(request,"currService"+i);
+                    if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)||AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)){
+                        getOHData=false;
+                    }
+
                     List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
                     List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
                     List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();
@@ -1825,106 +1834,115 @@ public final class AppDataHelper {
                     String businessName = ParamUtil.getString(request, "businessName" + i);
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
-                    int weeklyLength=ParamUtil.getInt(request,"weeklyLength");
-                    int phLength=ParamUtil.getInt(request,"phLength");
-                    int eventLength=ParamUtil.getInt(request,"eventLength");
 
-                    //weekly
-                    for (int j = 0; j < weeklyLength; j++) {
-                        OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
-                        String[] weeklyVal = ParamUtil.getStrings(request,"onSiteWeekly"+j);
-                        String allDay = ParamUtil.getString(request,"onSiteWeeklyAllDay"+j);
-                        //reload
-                        String weeklySelect = StringUtil.arrayToString(weeklyVal);
-                        weeklyDto.setSelectVal(weeklySelect);
-                        if (weeklyVal != null) {
-                            List<String> selectValList = Arrays.asList(weeklyVal);
-                            weeklyDto.setSelectValList(selectValList);
-                        }
-                        if (AppConsts.TRUE.equals(allDay)) {
-                            weeklyDto.setSelectAllDay(true);
-                            weeklyDto.setStartFromHH(null);
-                            weeklyDto.setStartFromMM(null);
-                            weeklyDto.setEndToHH(null);
-                            weeklyDto.setEndToMM(null);
-                        } else {
-                            String weeklyStartHH = ParamUtil.getString(request,"onSiteWeeklyStartHH"+j);
-                            String weeklyStartMM = ParamUtil.getString(request,"onSiteWeeklyStartMM"+j);
-                            String weeklyEndHH = ParamUtil.getString(request,"onSiteWeeklyEndHH"+j);
-                            String weeklyEndMM = ParamUtil.getString(request,"onSiteWeeklyEndMM"+j);
-                            weeklyDto.setStartFromHH(weeklyStartHH);
-                            weeklyDto.setStartFromMM(weeklyStartMM);
-                            weeklyDto.setEndToHH(weeklyEndHH);
-                            weeklyDto.setEndToMM(weeklyEndMM);
-                        }
-                        weeklyDtoList.add(weeklyDto);
-                    }
 
-                    //ph
-                    for (int j = 0; j < phLength; j++) {
-                        OperationHoursReloadDto phDto = new OperationHoursReloadDto();
-                        String[] phVal = ParamUtil.getStrings(request, "onSitePubHoliday"+j);
-                        String allDay = ParamUtil.getString(request,"onSitePhAllDay"+j);
-                        //reload
-                        String phSelect = StringUtil.arrayToString(phVal);
-                        phDto.setSelectVal(phSelect);
-                        if (phSelect != null) {
-                            List<String> selectValList = Arrays.asList(phVal);
-                            phDto.setSelectValList(selectValList);
+                    if (getOHData){
+
+                        int weeklyLength=ParamUtil.getInt(request,"weeklyLength"+ i);
+                        int phLength=ParamUtil.getInt(request,"phLength"+ i);
+                        int eventLength=ParamUtil.getInt(request,"eventLength"+ i);
+
+                        //weekly
+                        for (int j = 0; j < weeklyLength; j++) {
+                            OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
+                            String[] weeklyVal = ParamUtil.getStrings(request,"onSiteWeekly"+i+j);
+                            String allDay = ParamUtil.getString(request,"onSiteWeeklyAllDay"+i+j);
+                            //reload
+                            String weeklySelect = StringUtil.arrayToString(weeklyVal);
+                            weeklyDto.setSelectVal(weeklySelect);
+                            if (weeklyVal != null) {
+                                List<String> selectValList = Arrays.asList(weeklyVal);
+                                weeklyDto.setSelectValList(selectValList);
+                            }
+                            if (AppConsts.TRUE.equals(allDay)) {
+                                weeklyDto.setSelectAllDay(true);
+                                weeklyDto.setStartFromHH(null);
+                                weeklyDto.setStartFromMM(null);
+                                weeklyDto.setEndToHH(null);
+                                weeklyDto.setEndToMM(null);
+                            } else {
+                                String weeklyStartHH = ParamUtil.getString(request,"onSiteWeeklyStartHH"+i+j);
+                                String weeklyStartMM = ParamUtil.getString(request,"onSiteWeeklyStartMM"+i+j);
+                                String weeklyEndHH = ParamUtil.getString(request,"onSiteWeeklyEndHH"+i+j);
+                                String weeklyEndMM = ParamUtil.getString(request,"onSiteWeeklyEndMM"+i+j);
+                                weeklyDto.setStartFromHH(weeklyStartHH);
+                                weeklyDto.setStartFromMM(weeklyStartMM);
+                                weeklyDto.setEndToHH(weeklyEndHH);
+                                weeklyDto.setEndToMM(weeklyEndMM);
+                            }
+                            weeklyDtoList.add(weeklyDto);
                         }
-                        if (AppConsts.TRUE.equals(allDay)) {
-                            phDto.setSelectAllDay(true);
-                            phDto.setStartFromHH(null);
-                            phDto.setStartFromMM(null);
-                            phDto.setEndToHH(null);
-                            phDto.setEndToMM(null);
-                            phDtoList.add(phDto);
-                        } else {
-                            String phStartHH = ParamUtil.getString(request,"onSitePhStartHH"+j);
-                            String phStartMM = ParamUtil.getString(request,"onSitePhStartMM"+j);
-                            String phEndHH = ParamUtil.getString(request,"onSitePhEndHH"+j);
-                            String phEndMM = ParamUtil.getString(request,"onSitePhEndMM"+j);
-                            phDto.setStartFromHH(phStartHH);
-                            phDto.setStartFromMM(phStartMM);
-                            phDto.setEndToHH(phEndHH);
-                            phDto.setEndToMM(phEndMM);
-                            if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
-                                    phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
+
+                        //ph
+                        for (int j = 0; j < phLength; j++) {
+                            OperationHoursReloadDto phDto = new OperationHoursReloadDto();
+                            String[] phVal = ParamUtil.getStrings(request, "onSitePubHoliday"+i+j);
+                            String allDay = ParamUtil.getString(request,"onSitePhAllDay"+i+j);
+                            //reload
+                            String phSelect = StringUtil.arrayToString(phVal);
+                            phDto.setSelectVal(phSelect);
+                            if (phSelect != null) {
+                                List<String> selectValList = Arrays.asList(phVal);
+                                phDto.setSelectValList(selectValList);
+                            }
+                            if (AppConsts.TRUE.equals(allDay)) {
+                                phDto.setSelectAllDay(true);
+                                phDto.setStartFromHH(null);
+                                phDto.setStartFromMM(null);
+                                phDto.setEndToHH(null);
+                                phDto.setEndToMM(null);
                                 phDtoList.add(phDto);
+                            } else {
+                                String phStartHH = ParamUtil.getString(request,"onSitePhStartHH"+i+j);
+                                String phStartMM = ParamUtil.getString(request,"onSitePhStartMM"+i+j);
+                                String phEndHH = ParamUtil.getString(request,"onSitePhEndHH"+i+j);
+                                String phEndMM = ParamUtil.getString(request,"onSitePhEndMM"+i+j);
+                                phDto.setStartFromHH(phStartHH);
+                                phDto.setStartFromMM(phStartMM);
+                                phDto.setEndToHH(phEndHH);
+                                phDto.setEndToMM(phEndMM);
+                                if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
+                                        phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
+                                    phDtoList.add(phDto);
+                                }
+                            }
+
+                        }
+
+                        //event
+                        for (int j = 0; j < eventLength; j++) {
+                            AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
+                            String eventName = ParamUtil.getString(request, "onSiteEvent"+i+j);
+                            String eventStartStr = ParamUtil.getString(request,"onSiteEventStart"+i+j);
+                            Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
+                            String eventEndStr = ParamUtil.getString(request,"onSiteEventEnd"+i+ j);
+                            Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
+                            appPremEventPeriodDto.setEventName(eventName);
+                            appPremEventPeriodDto.setStartDate(eventStart);
+                            appPremEventPeriodDto.setStartDateStr(eventStartStr);
+                            appPremEventPeriodDto.setEndDate(eventEnd);
+                            appPremEventPeriodDto.setEndDateStr(eventEndStr);
+                            if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
+                                    eventEndStr)) {
+                                eventList.add(appPremEventPeriodDto);
                             }
                         }
-
                     }
 
-                    //event
-                    for (int j = 0; j < eventLength; j++) {
-                        AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
-                        String eventName = ParamUtil.getString(request, "onSiteEvent"+j);
-                        String eventStartStr = ParamUtil.getString(request,"onSiteEventStart"+j);
-                        Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
-                        String eventEndStr = ParamUtil.getString(request,"onSiteEventEnd"+ j);
-                        Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
-                        appPremEventPeriodDto.setEventName(eventName);
-                        appPremEventPeriodDto.setStartDate(eventStart);
-                        appPremEventPeriodDto.setStartDateStr(eventStartStr);
-                        appPremEventPeriodDto.setEndDate(eventEnd);
-                        appPremEventPeriodDto.setEndDateStr(eventEndStr);
-                        if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
-                                eventEndStr)) {
-                            eventList.add(appPremEventPeriodDto);
-                        }
-                    }
-
+                    appSvcBusinessDto.setCurrService(serviceCode);
                     appSvcBusinessDto.setBusinessName(businessName);
                     appSvcBusinessDto.setContactNo(contactNo);
                     appSvcBusinessDto.setEmailAddr(emailAddr);
 
-                    if (AppConsts.TRUE.equals(isSpecialService)) {
-                        appSvcBusinessDto.setWeeklyDtoList(null);
-                    }else {
+                    if (getOHData) {
                         appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);
                         appSvcBusinessDto.setPhDtoList(phDtoList);
                         appSvcBusinessDto.setEventDtoList(eventList);
+
+                    }else {
+                        appSvcBusinessDto.setWeeklyDtoList(null);
+                        appSvcBusinessDto.setPhDtoList(null);
+                        appSvcBusinessDto.setEventDtoList(null);
                     }
                     if (StringUtil.isEmpty(businessIndexNo)) {
                         appSvcBusinessDto.setBusinessIndexNo(UUID.randomUUID().toString());

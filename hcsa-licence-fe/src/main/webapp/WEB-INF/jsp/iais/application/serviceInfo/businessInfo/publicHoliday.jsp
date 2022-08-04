@@ -1,15 +1,17 @@
 <c:set var="phList" value="${businessDto.phDtoList}"/>
 
-<c:choose>
-    <c:when test="${businessDto.phDtoList != null && businessDto.phDtoList.size()>1}">
-        <c:set var="phLength" value="${businessDto.phDtoList.size()}"/>
-    </c:when>
-    <c:otherwise>
-        <c:set var="phLength" value="1"/>
-    </c:otherwise>
-</c:choose>
-
 <div class="pubHolDayContent">
+
+    <c:choose>
+        <c:when test="${businessDto.phDtoList != null && businessDto.phDtoList.size()>1}">
+            <input class="phLength" type="hidden" name="phLength${status.index}" value="${businessDto.phDtoList.size()}"/>
+            <c:set var="phLength" value="${businessDto.phDtoList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <input class="phLength" type="hidden" name="phLength${status.index}" value="1"/>
+            <c:set var="phLength" value="1"/>
+        </c:otherwise>
+    </c:choose>
 
     <iais:row>
         <div class="col-md-12">
@@ -26,10 +28,10 @@
                     <div class="col-md-4 multi-sel-padding">
                         <div class="row d-flex">
                             <div class="col-md-12 multi-select col-xs-12">
-                                <iais:select cssClass="onSitePubHoliday" name="${premValue}onSitePubHoliday${index}" multiValues="${ph.selectValList}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" multiSelect="true"/>
+                                <iais:select cssClass="onSitePubHoliday" name="onSitePubHoliday${status.index}${index}" multiValues="${ph.selectValList}" codeCategory="CATE_ID_PUBLIC_HOLIDAY" needErrorSpan="false" multiSelect="true"/>
                             </div>
                             <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePubHoliday${index}"></span>
+                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePubHoliday${status.index}${index}"></span>
                             </div>
                         </div>
                     </div>
@@ -39,19 +41,19 @@
                                 <label class="control-label">Start</label>
                             </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="PhStartHH" name="onSitePhStartHH${status.index}${index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-2 col-lg-1 col-3 label-padding">
                                 (HH)
                             </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhStartMM" name="${premValue}onSitePhStartMM${index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="PhStartMM" name="onSitePhStartMM${status.index}${index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-2 col-lg-1 col-3 label-padding">
                                 (MM)
                             </div>
                             <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhStart${index}"></span>
+                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhStart${status.index}${index}"></span>
                             </div>
                         </div>
                     </div>
@@ -61,19 +63,19 @@
                                 <label class="control-label">End</label>
                             </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhEndHH" name="${premValue}onSitePhEndHH${index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="PhEndHH" name="onSitePhEndHH${status.index}${index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-2 col-lg-1 col-3 label-padding">
                                 (HH)
                             </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhEndMM" name="${premValue}onSitePhEndMM${index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="PhEndMM" name="onSitePhEndMM${status.index}${index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-2 col-lg-1 col-3 label-padding">
                                 (MM)
                             </div>
                             <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhEnd${index}"></span>
+                                <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhEnd${status.index}${index}"></span>
                             </div>
                         </div>
                     </div>
@@ -83,7 +85,7 @@
                                 <label class="control-label">24 Hours</label>
                             </div>
                             <div class="col-md-5 col-xs-5 text-center all-day-position">
-                                <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
+                                <input class="form-check-input allDay" name="onSitePhAllDay${status.index}${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                             </div>
                             <div class="col-md-4 col-xs-4 delpubHolidayDiv <c:if test="${index == 0}">hidden</c:if>">
                                 <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
@@ -93,7 +95,7 @@
                     <div class="col-md-4 col-xs-4">
                     </div>
                     <div class="col-md-8 col-xs-8">
-                        <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhTime${index}"></span>
+                        <span class="error-msg " name="iaisErrorMsg" id="error_onSitePhTime${status.index}${index}"></span>
                     </div>
                 </div>
             </iais:row>
