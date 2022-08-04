@@ -16,7 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -178,8 +180,7 @@ public final class AppValidatorHelper {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(bpc.request),
                 oldAppSubmissionDto, false, bpc.request);
-        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, bpc);
-        return previewAndSubmitMap;
+        return doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, bpc);
     }
 
     public static Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap,
@@ -250,10 +251,15 @@ public final class AppValidatorHelper {
             errorMap.putAll(premissMap);
             errorList.add(HcsaAppConst.SECTION_PREMISES);
         }
+        // Category/Discipline & Specialised Service/Specified Test
+        Map<String, String> speMap = doValidateSpecialisedDtoList(null, appSubmissionDto.getAppPremSpecialisedDtoList());
+        if (!speMap.isEmpty()) {
+            errorMap.putAll(speMap);
+            errorList.add(HcsaAppConst.SECTION_SPECIALISED);
+        }
         // service info
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        for (int i = 0; i < dto.size(); i++) {
-            AppSvcRelatedInfoDto currSvcInfoDto = dto.get(i);
+        for (AppSvcRelatedInfoDto currSvcInfoDto : dto) {
             Map<String, String> map = doCheckBox(currSvcInfoDto, appSubmissionDto, null, errorList);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
@@ -284,12 +290,9 @@ public final class AppValidatorHelper {
                 appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getSubLicenseeDto(), errorList);
     }
 
-    private static Map<String, String> doCheckBox(AppSvcRelatedInfoDto dto,
-            List<AppSvcRelatedInfoDto> dtos,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap,
-            List<AppGrpPremisesDto> appGrpPremisesDtos,
-            SubLicenseeDto subLicenseeDto,
-            List<String> errorList) {
+    private static Map<String, String> doCheckBox(AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, List<AppGrpPremisesDto> appGrpPremisesDtos,
+            SubLicenseeDto subLicenseeDto, List<String> errorList) {
         if (dto == null) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -311,9 +314,6 @@ public final class AppValidatorHelper {
             }
         }*/
         String prsFlag = ApplicationHelper.getPrsFlag();
-        SystemParamConfig systemParamConfig = getSystemParamConfig();
-        int uploadFileLimit = systemParamConfig.getUploadFileLimit();
-        String sysFileType = systemParamConfig.getUploadFileType();
 
         ConfigCommService configCommService = getConfigCommService();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = configCommService.getHcsaServiceStepSchemesByServiceId(serviceId);
@@ -367,7 +367,7 @@ public final class AppValidatorHelper {
                 String currSvcCode = dto.getServiceCode();
                 if (StringUtil.isEmpty(currSvcCode)) {
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
+                    currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElse("");
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
                 new ValidateClincalDirector().doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), licPersonMap,
@@ -513,7 +513,7 @@ public final class AppValidatorHelper {
         } else if (ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)) {
             List<AppSvcChargesDto> appSvcChargesDtos = Optional.ofNullable(dto.getAppSvcChargesPageDto())
                     .map(AppSvcChargesPageDto::getGeneralChargesDtos)
-                    .orElseGet(() -> null);
+                    .orElse(null);
             validatePersonMandatoryCount(appSvcChargesDtos, errorMap, psnType, mandatoryCount, stepDtos, errorList);
         } else if (ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)) {
             List<AppSvcChargesDto> otherChargesDtos = Optional.ofNullable(dto.getAppSvcChargesPageDto())
@@ -632,7 +632,7 @@ public final class AppValidatorHelper {
                             if (!"UOT002".equals(easMtsUseOnly)) {
                                 errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                             }
-                        } else if (!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")) {
+                        } else if (!easMtsPubHotline.matches("^[6|89][0-9]{7}$")) {
                             errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
                         }
                         if (StringUtil.isEmpty(email)) {
@@ -883,7 +883,7 @@ public final class AppValidatorHelper {
                 if (!floorUnitList.isEmpty()) {
                     List<String> sbList = new ArrayList<>();
                     for (String str : floorUnitList) {
-                        String sb = new StringBuilder(postalCode).append(AppConsts.DFT_DELIMITER).append(str).toString();
+                        String sb = postalCode + AppConsts.DFT_DELIMITER + str;
                         if (list.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
                             errorMap.put(postalCodeKey, "NEW_ACK010");
@@ -904,8 +904,6 @@ public final class AppValidatorHelper {
             String> errorMap) {
         boolean addrTypeFlag = true;
         //String premisesType = appGrpPremisesDto.getPremisesType();
-        String diff = "";
-        String prefix = "";
         String floorNo = appGrpPremisesDto.getFloorNo();
         String unitNo = appGrpPremisesDto.getUnitNo();
         String blkNo = appGrpPremisesDto.getBlkNo();
@@ -1074,7 +1072,7 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidateClincalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList,
-                                          Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
         if (appSvcClinicalDirectorList == null) {
             return new HashMap<>(1);
         }
@@ -1722,7 +1720,7 @@ public final class AppValidatorHelper {
     }
 
     private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto, Map<String, String> errorMap,
-                                                 Map<String, String> errNameMap, String count, boolean isMandatory) {
+            Map<String, String> errNameMap, String count, boolean isMandatory) {
         boolean isEmpty = false;
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
@@ -1736,7 +1734,7 @@ public final class AppValidatorHelper {
                     StringUtil.isEmpty(startHH) &&
                     StringUtil.isEmpty(startMM) &&
                     StringUtil.isEmpty(endHH) &&
-                    StringUtil.isEmpty(endMM)&&!selectAllDay){
+                    StringUtil.isEmpty(endMM) && !selectAllDay) {
                 return;
             }
         }
@@ -2504,8 +2502,46 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSpecialisedDtoList(Map<String, String> errorMap,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, HttpServletRequest request) {
+    public static Map<String, String> doValidateSpecialisedDtoList(String svcCode,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        /*
+         * 4.2.3.6:
+         * 7. There should be at least 1 Category selected for Acute hospital service (ACH),
+         * renal dialysis centre (RDC) and 1 discipline selected for Clinical Laboratory service (CLB).
+         * Likewise, for any service with options to select specialised service/specified test,
+         * there must be a minimum of 1 option selected.
+         */
+        for (AppPremSpecialisedDto specialisedDto : appPremSpecialisedDtoList) {
+            if (StringUtil.isNotEmpty(svcCode) && !Objects.equals(specialisedDto.getBaseSvcCode(), svcCode)) {
+                continue;
+            }
+            String premisesVal = specialisedDto.getPremisesVal();
+            String baseSvcCode = specialisedDto.getBaseSvcCode();
+            if (StringUtil.isIn(baseSvcCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
+                    AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE,
+                    AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY})) {
+                List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
+                List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
+                if (appPremScopeDtoList == null || appPremScopeDtoList.isEmpty()) {
+                    errorMap.put(premisesVal + "_mandatory",
+                            "The system must configure one item at least for " + specialisedDto.getCategorySectionName());
+                } else if (checkedAppPremScopeDtoList == null || checkedAppPremScopeDtoList.isEmpty()) {
+                    errorMap.put(premisesVal + "_sub_type", "GENERAL_ERR0006");
+                }
+            }
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specialisedDto.getAppPremSubSvcRelDtoList();
+            if (appPremSubSvcRelDtoList != null && !appPremSubSvcRelDtoList.isEmpty()) {
+                List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
+                if (checkedAppPremSubSvcRelDtoList == null || checkedAppPremSubSvcRelDtoList.isEmpty()) {
+                    errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
+                }
+            }
+        }
+        return errorMap;
     }
 
 }

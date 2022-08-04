@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
@@ -303,7 +304,6 @@ public class DealSessionUtil {
         }
         String licenceId = appSubmissionDto.getLicenceId();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
@@ -354,7 +354,7 @@ public class DealSessionUtil {
         if (!StringUtil.isEmpty(svcId)) {
             hcsaServiceDto = getConfigCommService().getHcsaServiceDtoById(svcId);
         } else if (!StringUtil.isEmpty(name)) {
-            hcsaServiceDto = getConfigCommService().getActiveHcsaServiceDtoByName(name);
+            hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(name);
         }
         if (hcsaServiceDto != null) {
             svcId = hcsaServiceDto.getId();

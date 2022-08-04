@@ -2247,7 +2247,8 @@ public final class ApplicationHelper {
             if (appPremSubSvcRelDtos == null) {
                 appPremSubSvcRelDtos = IaisCommonUtils.genNewArrayList();
             }
-            AppPremSubSvcRelDto relDto = new AppPremSubSvcRelDto(svcConfig);
+            AppPremSubSvcRelDto relDto = new AppPremSubSvcRelDto();
+            relDto.setSvcConfigDto(svcConfig);
             relDto.setChecked(true);
             appPremSubSvcRelDtos.add(relDto);
             appPremSpecialisedDto.setAppPremSubSvcRelDtoList(appPremSubSvcRelDtos);
@@ -2272,7 +2273,7 @@ public final class ApplicationHelper {
         if (appSvcDocDtoLit == null || appSvcDocDtoLit.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();
         }
-        List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(appPremSpecialisedDtoList, currSvcInfoDto);
+        List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);
         currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);
         return documentShowDtos;
     }

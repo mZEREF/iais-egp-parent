@@ -12,6 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -667,7 +670,8 @@ public final class AppDataHelper {
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "", request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "",
+                request);
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto end ..."));
         return appSvcCgoDtoList;
     }
@@ -1328,10 +1332,10 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "otherQualification", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "mobileNo", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "emailAddr", prefix, suffix, request);
-        setPsnValue(person, appPsnEditDto, "holdCerByEMS",prefix,suffix,request);
-        setPsnValue(person, appPsnEditDto, "aclsExpiryDate",prefix,suffix,true,request);
-        setPsnValue(person, appPsnEditDto, "relevantExperience",prefix,suffix,request);
-        setPsnValue(person, appPsnEditDto, "bclsExpiryDate",prefix,suffix,true,request);
+        setPsnValue(person, appPsnEditDto, "holdCerByEMS", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "aclsExpiryDate", prefix, suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "bclsExpiryDate", prefix, suffix, true, request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {
@@ -1796,6 +1800,7 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        String isSpecialService = ParamUtil.getString(request, "isSpecialService");
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -2026,7 +2031,7 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, String appGrpId, String appNo,
+    public static void setSvcDocuments(List<DocumentShowDto> documentShowDtoList, String appGrpId, String appNo,
             int maxPsnTypeNum, Map<String, File> saveFileMap, HttpServletRequest request) {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
@@ -2135,6 +2140,53 @@ public final class AppDataHelper {
         if (StringUtil.isEmpty(appSvcDocDto.getSubmitBy())) {
             appSvcDocDto.setSubmitBy(ApplicationHelper.getLoginContext().getUserId());
         }
+    }
+
+    public static void setSpecialisedData(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+            String svcCode, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return;
+        }
+        for (AppPremSpecialisedDto specialisedDto : appPremSpecialisedDtoList) {
+            if (!Objects.equals(specialisedDto.getBaseSvcCode(), svcCode)) {
+                continue;
+            }
+            String premisesVal = specialisedDto.getPremisesVal();
+            specialisedDto.setAppPremScopeDtoList(genAppPremScopeDtoList(specialisedDto.getAppPremScopeDtoList(),
+                    premisesVal, "", request));
+            specialisedDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(specialisedDto.getAppPremSubSvcRelDtoList(),
+                    premisesVal, "", request));
+            specialisedDto.initAllAppPremScopeDtoList();
+            specialisedDto.initAllAppPremSubSvcRelDtoList();
+        }
+    }
+
+    private static List<AppPremSubSvcRelDto> genAppPremSubSvcRelDtoList(List<AppPremSubSvcRelDto> appPremScopeDtoList,
+            String premisesVal, String parentId, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return null;
+        }
+        String[] values = ParamUtil.getStrings(request, premisesVal + "_" + parentId + "_service");
+        for (AppPremSubSvcRelDto relDto : appPremScopeDtoList) {
+            relDto.setChecked(StringUtil.isIn(relDto.getSvcId(), values));
+            relDto.setAppPremSubSvcRelDtos(genAppPremSubSvcRelDtoList(relDto.getAppPremSubSvcRelDtos(), premisesVal,
+                    relDto.getSvcId(), request));
+        }
+        return appPremScopeDtoList;
+    }
+
+    private static List<AppPremScopeDto> genAppPremScopeDtoList(List<AppPremScopeDto> appPremScopeDtoList,
+            String premisesVal, String parentId, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return null;
+        }
+        String[] values = ParamUtil.getStrings(request, premisesVal + "_" + parentId + "_sub_type");
+        for (AppPremScopeDto scopeDto : appPremScopeDtoList) {
+            scopeDto.setChecked(StringUtil.isIn(scopeDto.getSubTypeId(), values));
+            scopeDto.setAppPremScopeDtos(genAppPremScopeDtoList(scopeDto.getAppPremScopeDtos(), premisesVal,
+                    scopeDto.getSubTypeId(), request));
+        }
+        return appPremScopeDtoList;
     }
 
 }
