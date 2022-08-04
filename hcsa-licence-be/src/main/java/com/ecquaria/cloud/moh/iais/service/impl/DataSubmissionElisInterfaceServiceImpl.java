@@ -90,7 +90,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processLicence() {
         log.info("start processLicence");
-        String path = sharedPath + "/" + LICENCE_FILE + DATE_STR + ".txt";
         log.info("start generate licenceFile");
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
         log.info("licenceFile path: {}",licenceFile.getAbsolutePath());
@@ -166,7 +165,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag) {
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    FileUtils.copyFileToOtherPosition(licenceFile.getAbsolutePath(),NEW_PATH);
                     FileUtils.deleteTempFile(licenceFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -207,7 +206,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         licenseeDto.setStatus(COMMON_STATUS_ACTIVE);
         //
         LicenseeEntityDto licenseeEntityDto = new LicenseeEntityDto();
-        licenseeEntityDto.setEntityType("ds");
+        licenseeEntityDto.setEntityType("CL");
         licenseeEntityDto.setOfficeTelNo(null);
         licenseeEntityDto.setOfficeEmailAddr(null);
         licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
@@ -270,7 +269,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processUsers() {
         log.info("start processUsers");
-        String path = sharedPath + "/" + USER_FILE + DATE_STR + ".txt";
         log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
         log.info("userFile path: {}",userFile.getAbsolutePath());
@@ -335,7 +333,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag){
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    FileUtils.copyFileToOtherPosition(userFile.getAbsolutePath(),NEW_PATH);
                     FileUtils.deleteTempFile(userFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -389,8 +387,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processDoctor() {
         log.info("start processDoctor");
-        String topPath = sharedPath + "/" + TOP_DOCTOR_FILE + DATE_STR + ".txt";
-        String dpPath = sharedPath + "/" + DP_DOCTOR_FILE + DATE_STR + ".txt";
         log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
         log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
@@ -467,7 +463,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             //move file
             if (topDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(topPath, NEW_PATH);
+                    FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), NEW_PATH);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -476,7 +472,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             }
             if (dpDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(dpPath, NEW_PATH);
+                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getAbsolutePath(), NEW_PATH);
                     FileUtils.deleteTempFile(dpDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
