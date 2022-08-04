@@ -128,11 +128,13 @@ public class MasterCodeConstants {
     public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
     // not an actual app status, this is a compound status
-    public static final String PENDING_MOH            = "Pending MOH";
-    public static final String APPROVED               = "Approved";
+    public static final String PENDING_MOH                               = "Pending MOH";
+    public static final String APPROVED                                  = "Approved";
+    public static final String PENDING_INSPECTION_OR_CERTIFICATION       = "Pending Inspection/Certification";
 
     public static final Set<String> PENDING_MOH_APP_STATUS;
     public static final Set<String> APPROVED_APP_STATUS;
+    public static final Set<String> PENDING_INSPECTION_OR_CERTIFICATION_APP_STATUS;
 
     // TODO: check these app status
     static {
@@ -211,31 +213,36 @@ public class MasterCodeConstants {
         pendingMohAppStatus.add(APP_STATUS_PEND_AO_REPORT_REVIEW);
         PENDING_MOH_APP_STATUS = Collections.unmodifiableSet(pendingMohAppStatus);
 
-        Set<String> approvedAppStatus = Sets.newHashSetWithExpectedSize(3);
+        Set<String> approvedAppStatus = Sets.newHashSetWithExpectedSize(4);
         approvedAppStatus.add(APP_STATUS_APPROVED);
         approvedAppStatus.add(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT);
         approvedAppStatus.add(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW);
+        approvedAppStatus.add(APP_STATUS_PARTIAL_ACCEPTANCE);
         APPROVED_APP_STATUS = Collections.unmodifiableSet(approvedAppStatus);
+
+        Set<String> pendingInspectionOrCertificationAppStatus = Sets.newHashSetWithExpectedSize(2);
+        pendingInspectionOrCertificationAppStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
+        pendingInspectionOrCertificationAppStatus.add(APP_STATUS_PEND_AFC_SELECTION);
+        PENDING_INSPECTION_OR_CERTIFICATION_APP_STATUS = Collections.unmodifiableSet(pendingInspectionOrCertificationAppStatus);
     }
 
     public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_FAC;
     public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_AFC;
 
     static {
-        List<SelectOption> appSearchStatusFAC = new ArrayList<>(18);
+        List<SelectOption> appSearchStatusFAC = new ArrayList<>(17);
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(APP_STATUS_DRAFT)));
         appSearchStatusFAC.add(new SelectOption(PENDING_MOH, PENDING_MOH));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_INPUT)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_CHECKLIST_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_CHECKLIST_SUBMISSION)));
+        appSearchStatusFAC.add(new SelectOption(PENDING_INSPECTION_OR_CERTIFICATION, PENDING_INSPECTION_OR_CERTIFICATION));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPOINTMENT_SCHEDULING)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_REPORT_UPLOAD)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_INPUT)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_EXTENSION_REVIEW, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_EXTENSION_REVIEW)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_REPORT_UPLOAD)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_SELECTION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_SELECTION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_INPUT)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PARTIAL_ACCEPTANCE, MasterCodeUtil.getCodeDesc(APP_STATUS_PARTIAL_ACCEPTANCE)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_VERIFIED, MasterCodeUtil.getCodeDesc(APP_STATUS_VERIFIED)));
         appSearchStatusFAC.add(new SelectOption(APPROVED, APPROVED));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_REJECTED, MasterCodeUtil.getCodeDesc(APP_STATUS_REJECTED)));
