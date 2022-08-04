@@ -1000,7 +1000,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="pageName">
+                <input type="text" maxlength="100" value="${pageName}" name="permanent-SectionHeader">
                 <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
               </div>
             </div>
@@ -1009,26 +1009,26 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
+                <input type="text" maxlength="100" value="${categoryPermanent}" name="permanent-categoryDiscipline">
                 <span name="iaisErrorMsg" class="error-msg" id="error_pageName3"></span>
               </div>
             </div>
           </div>
+
           <div class="add col-xs-12 col-md-9 marg-1">
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
             <div class="col-xs-10 col-md-4">
-              <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
+              <input type="text" maxlength="100" value="${categoryPermanent}" name="permanent-categoryDiscipline">
             </div>
             <div class="col-xs-12 col-md-1">
               <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
             </div>
           </div>
 
-
-
           <div class="col-xs-12 col-md-12">
             <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this)"> + </a><label for="addCategory"> Add Item</label>
           </div>
+
           <div class="col-xs-12 col-md-9 marg-1">
             <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
             <div class="col-xs-10 col-md-4">
