@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
@@ -88,11 +89,13 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             log.info(StringUtil.changeForLog("validate the HcsaConfigPageDto"));
             Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
             for(String key : hcsaConfigPageDtoMap.keySet()){
-                List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
-                Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
-                if(HcsaConfigPageDtoError.size() > 0){
-                    result.put(key,"Error");
-                    result.putAll(HcsaConfigPageDtoError);
+                if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(key) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(key)){
+                    List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
+                    Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
+                    if(HcsaConfigPageDtoError.size() > 0){
+                        result.put(key,"Error");
+                        result.putAll(HcsaConfigPageDtoError);
+                    }
                 }
             }
 

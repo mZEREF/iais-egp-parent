@@ -1223,40 +1223,6 @@ public class ConfigServiceImpl implements ConfigService {
                 }
                 hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtos);
             }
-
-
-            /*List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
-            for (WorkingGroupDto workingGroupDto : workingGroup) {
-                String groupName = workingGroupDto.getGroupName();
-                String stageCode = hcsaSvcRoutingStageDto.getStageCode();
-                if (groupName.contains("Admin Screening") && stageCode.contains("ASO")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Inspection") && stageCode.contains("INS")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                    List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos=new ArrayList<>(2);
-                    for(int i=0;i<2;i++){
-                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto=new HcsaSvcSpeRoutingSchemeDto();
-                        hcsaSvcSpeRoutingSchemeDto.setInsOder(String.valueOf(i));
-                        hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
-                    }
-                    hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtos);
-                }
-                if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Level 2 Approval") && stageCode.contains("AO2")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Level 3 Approval") && stageCode.contains("AO3")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
-            }*/
-
             hcsaConfigPageDtos.add(hcsaConfigPageDto);
         }
         return  hcsaConfigPageDtos;
@@ -1331,8 +1297,7 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,APPEAL);
-            }
-            else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+            } else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
                 hcsaConfigPageDtos=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
                 hcsaConfigPageDtos = getWorkGrop(type, REQUEST_FOR_CHANGE);
@@ -1340,12 +1305,12 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaConfigPageDtos=  getWorkGrop(type,RENEW);
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,CESSATION);
-            }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-                hcsaConfigPageDtos= getWorkGrop(type,SUSPENSION);
-            }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
-                hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,WITHDRAWAL);
+            }else  if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,SUSPENSION);
+            }else if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
             }
             map.put(type,hcsaConfigPageDtos);
         }

@@ -319,7 +319,7 @@ public class ConfigServiceDelegator {
 
                 HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
                 hcsaSvcSpecificStageWorkloadDto.setAppType(hcsaConfigPageDto.getAppType());
-                hcsaSvcSpecificStageWorkloadDto.setManhourCount(hcsaConfigPageDto.getManhours());
+                hcsaSvcSpecificStageWorkloadDto.setManhourCount(StringUtil.isNotEmpty(hcsaConfigPageDto.getManhours())?hcsaConfigPageDto.getManhours():"1");
                 hcsaSvcSpecificStageWorkloadDto.setStageId(hcsaConfigPageDto.getStageId());
                 hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 hcsaSvcRoutingStageCompoundDto.setHcsaSvcSpecificStageWorkloadDto(hcsaSvcSpecificStageWorkloadDto);
@@ -332,10 +332,18 @@ public class ConfigServiceDelegator {
                 setWorkGroupId(hcsaSvcCateWrkgrpCorrelationDtos,hcsaSvcStageWorkingGroupDto);
                 hcsaSvcRoutingStageCompoundDto.setHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto);
 
+                String schemeName = hcsaConfigPageDto.getRoutingSchemeName();
+                if(StringUtil.isEmpty(schemeName)){
+                  if("INS".equals(hcsaConfigPageDto.getStageCode()) || "AO2".equals(hcsaConfigPageDto.getStageCode())){
+                      schemeName = "common";
+                  }else{
+                      schemeName = "round";
+                  }
+                }
                 HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto = new HcsaSvcSpeRoutingSchemeDto();
                 hcsaSvcSpeRoutingSchemeDto.setAppType(hcsaConfigPageDto.getAppType());
                 hcsaSvcSpeRoutingSchemeDto.setStageId(hcsaConfigPageDto.getStageId());
-                hcsaSvcSpeRoutingSchemeDto.setSchemeType(hcsaConfigPageDto.getRoutingSchemeName());
+                hcsaSvcSpeRoutingSchemeDto.setSchemeType(schemeName);
                 hcsaSvcSpeRoutingSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 hcsaSvcRoutingStageCompoundDto.setHcsaSvcSpeRoutingSchemeDto(hcsaSvcSpeRoutingSchemeDto);
 
@@ -349,6 +357,8 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
                         hcsaSvcSpeRoutingSchemeDtoIns.setStageId(hcsaConfigPageDto.getStageId());
                         hcsaSvcSpeRoutingSchemeDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        hcsaSvcSpeRoutingSchemeDtoIns.setSchemeType(StringUtil.isEmpty(hcsaConfigPageDto.getRoutingSchemeName())?
+                                "round" : hcsaConfigPageDto.getRoutingSchemeName());
                         hcsaSvcRoutingStageCompoundDtoIns.setHcsaSvcSpeRoutingSchemeDto(hcsaSvcSpeRoutingSchemeDtoIns);
 
                         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDtoIns = new HcsaSvcStageWorkingGroupDto();
@@ -372,15 +382,29 @@ public class ConfigServiceDelegator {
     private void setWorkGroupId(
             List<HcsaSvcCateWrkgrpCorrelationDto> hcsaSvcCateWrkgrpCorrelationDtos,
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto){
+            String groupId = null;
+            Integer subOrder = hcsaSvcStageWorkingGroupDto.getOrder();
+            if(subOrder == 3){
+                subOrder = 1;
+            }
            if(IaisCommonUtils.isNotEmpty(hcsaSvcCateWrkgrpCorrelationDtos)){
              for(HcsaSvcCateWrkgrpCorrelationDto hcsaSvcCateWrkgrpCorrelationDto :hcsaSvcCateWrkgrpCorrelationDtos ){
                  if(hcsaSvcCateWrkgrpCorrelationDto.getStageId().equals(hcsaSvcStageWorkingGroupDto.getStageId())
-                         && hcsaSvcCateWrkgrpCorrelationDto.getSubOrder().equals(String.valueOf(hcsaSvcStageWorkingGroupDto.getOrder()))){
-                     hcsaSvcStageWorkingGroupDto.setGroupId(hcsaSvcCateWrkgrpCorrelationDto.getWrkGrpId());
+                         && hcsaSvcCateWrkgrpCorrelationDto.getSubOrder().equals(String.valueOf(subOrder))){
+                     groupId = hcsaSvcCateWrkgrpCorrelationDto.getWrkGrpId();
                      break;
                  }
              }
            }
+           if(StringUtil.isNotEmpty(groupId)){
+               hcsaSvcStageWorkingGroupDto.setGroupId(groupId);
+           }else{
+               log.error(StringUtil.changeForLog(
+                       "stagetId:" + hcsaSvcStageWorkingGroupDto.getStageId()
+                       +" -- SubOrder:" + hcsaSvcStageWorkingGroupDto.getOrder())
+                       + " can no get the work groupId");
+           }
+
 
     }
 
