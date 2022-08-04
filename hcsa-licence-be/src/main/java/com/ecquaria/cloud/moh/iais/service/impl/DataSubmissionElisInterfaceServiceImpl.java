@@ -363,10 +363,11 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
         orgUserDto.setUserId(userId);
         orgUserDto.setDisplayName(dsElisUserDto.getName());
-        orgUserDto.setSalutation(dsElisUserDto.getSalutation());
+        orgUserDto.setSalutation(processSalutation(dsElisUserDto.getSalutation()));
         orgUserDto.setIdType(type);
         orgUserDto.setIdNumber(dsElisUserDto.getNric());
-        orgUserDto.setDesignation(dsElisUserDto.getDesignation());
+        orgUserDto.setDesignation("DES999");
+        orgUserDto.setDesignationOther(dsElisUserDto.getDesignation());
         orgUserDto.setMobileNo(dsElisUserDto.getMobile());
         orgUserDto.setOfficeTelNo(dsElisUserDto.getOffice());
         orgUserDto.setEmail(dsElisUserDto.getEmail());
@@ -382,6 +383,32 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         ArrayList<String> strings = new ArrayList<>(Arrays.asList(getFeUserRoleArr(dsElisUserDto.getRole())));
         orgUserDto.setUserRoles(strings);
         return orgUserDto;
+    }
+
+    private String processSalutation(String salutation){
+        String code;
+        if (StringUtils.isEmpty(salutation)){
+            code = null;
+        } else if (salutation.equals("MR")){
+            code = "SALU003";
+        } else if (salutation.equals("MISS")|| salutation.equals("MS")){
+            code = "SALU005";
+        } else if (salutation.equals("MRS")){
+            code = "SALU004";
+        } else if (salutation.equals("MDM")){
+            code = "SALU002";
+        } else if (salutation.equals("DR")){
+            code = "SALU001";
+        } else if (salutation.equals("A/PROF")){
+            code = "SALU008";
+        } else if (salutation.equals("PROF")){
+            code = "SALU007";
+        } else if (salutation.equals("VEN")){
+            code = "SALU006";
+        } else {
+            code = null;
+        }
+        return code;
     }
 
     @Override
