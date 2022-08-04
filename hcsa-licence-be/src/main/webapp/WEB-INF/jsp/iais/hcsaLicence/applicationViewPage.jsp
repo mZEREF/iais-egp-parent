@@ -96,6 +96,10 @@
                                                     <%--         Inspection end                       --%>
 
                                                 <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                                    <c:if test="${applicationViewDto.applicationDto.status=='APST050'}" var="isApproveAsoEmail">
+                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/licenceGenerateEmail.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${!isApproveAsoEmail}">
                                                     <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                     <br/><br/>
                                                     <div class="alert alert-info" role="alert">
@@ -451,6 +455,8 @@
                                                             </div>
                                                         </div>
                                                     </form>
+                                                    </c:if>
+
                                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                                                 </div>
                                             </div>
