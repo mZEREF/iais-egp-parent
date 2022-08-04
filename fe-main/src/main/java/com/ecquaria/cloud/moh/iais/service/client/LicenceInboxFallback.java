@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -408,6 +409,16 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<List<DrugSubmissionDto>> getDrugSubmissionDtosBySubmissionNo( String submissionNo){
+        return getEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<DataSubmissionDraftDto> getDataSubmissionDraftDtoBySubmissionId(String submissionId) {
+        return getEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Void> deleteDraftBySubmissionId(String submissionId) {
         return getEntity();
     }
 }

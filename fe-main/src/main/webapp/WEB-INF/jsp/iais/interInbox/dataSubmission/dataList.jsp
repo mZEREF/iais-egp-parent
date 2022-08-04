@@ -248,10 +248,15 @@
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
         <input type="hidden" value="${rfcType}" id="rfcType" name="rfcType">
+        <input type="hidden" value="" id="crud_type" name="crud_type">
+        <input type="hidden" value="${hasDrafts}" id="hasDrafts" name="hasDrafts">
+        <input type="hidden" value="${rfcSubmissionNo}" id="selectedSubmissionNo" name="selectedSubmissionNo">
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
         <iais:confirm msg="DS_ERR057" needFungDuoJi="false" needCancel="false" popupOrder="actionNoDraftDataDelete"  yesBtnDesc="OK"   yesBtnCls="btn btn-secondary"  callBack="actionNoDraftDataDeleteCancelBallDsButton()" />
+        <c:set var="popupMsg"><iais:message key="DS_MSG035" paramKeys="1" paramValues="${draftSubmissionNo}"/></c:set>
+        <iais:confirm msg="${popupMsg}" callBack="draftModalCancelBtn()" popupOrder="_draftModal"  yesBtnDesc="CANCEL" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelBtnDesc="DELETE" cancelFunc="draftModalDeleteBtn()" />
 </form>
 <script type="application/javascript">
 
@@ -261,6 +266,19 @@
         }
         if($("#deleteDraftOkShow").val() == 1){
             $("#deleteDraftOkButton").modal('show');
+        }
+        var submissionNo = $("#selectedSubmissionNo").val();
+        console.log("submissionNo: "+ submissionNo);
+        if (submissionNo != '' && submissionNo != null) {
+            $("#dataSubmission" + submissionNo).prop('checked', true);
+            $("#needValidatorSize").val(1);
+        }
+
+        var hasDrafts = $("#hasDrafts").val();
+        console.log("hasDrafts: "+ hasDrafts);
+        if (hasDrafts){
+            console.log("222");
+            $("#_draftModal").modal('show');
         }
     });
 
@@ -427,5 +445,14 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         doSubmitForDataSubmission('sort');
+    }
+
+    function draftModalCancelBtn(){
+        $("#_draftModal").modal('hide');
+    }
+    function draftModalDeleteBtn(){
+        $("#_draftModal").modal('hide');
+        $("[name='crud_type']").val("delete");
+        doSubmitForDataSubmission('rfc');
     }
 </script>
