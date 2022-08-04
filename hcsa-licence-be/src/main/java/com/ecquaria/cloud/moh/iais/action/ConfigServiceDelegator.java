@@ -346,6 +346,8 @@ public class ConfigServiceDelegator {
                 if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                     for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
                         HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = new HcsaSvcRoutingStageCompoundDto();
+                        hcsaSvcSpeRoutingSchemeDtoIns.setAppType(hcsaConfigPageDto.getAppType());
+                        hcsaSvcSpeRoutingSchemeDtoIns.setStageId(hcsaConfigPageDto.getStageId());
                         hcsaSvcSpeRoutingSchemeDtoIns.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcRoutingStageCompoundDtoIns.setHcsaSvcSpeRoutingSchemeDto(hcsaSvcSpeRoutingSchemeDtoIns);
 
@@ -373,7 +375,7 @@ public class ConfigServiceDelegator {
            if(IaisCommonUtils.isNotEmpty(hcsaSvcCateWrkgrpCorrelationDtos)){
              for(HcsaSvcCateWrkgrpCorrelationDto hcsaSvcCateWrkgrpCorrelationDto :hcsaSvcCateWrkgrpCorrelationDtos ){
                  if(hcsaSvcCateWrkgrpCorrelationDto.getStageId().equals(hcsaSvcStageWorkingGroupDto.getStageId())
-                         && hcsaSvcCateWrkgrpCorrelationDto.getSubOrder().equals(hcsaSvcStageWorkingGroupDto.getOrder())){
+                         && hcsaSvcCateWrkgrpCorrelationDto.getSubOrder().equals(String.valueOf(hcsaSvcStageWorkingGroupDto.getOrder()))){
                      hcsaSvcStageWorkingGroupDto.setGroupId(hcsaSvcCateWrkgrpCorrelationDto.getWrkGrpId());
                      break;
                  }
